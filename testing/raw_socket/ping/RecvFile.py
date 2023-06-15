@@ -4,7 +4,7 @@ import threading
 from time import sleep
 import os
 
-interface = "enp4s0" # Network interface to send the packet on
+interface = "enp2s0" # Network interface to send the packet on
 s = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003))
 s.bind((interface, 0))
 
@@ -39,7 +39,10 @@ def receive_file(s,filename, mac_address, fileNumber):
             tmp.append(str(line))
             if(line_cnt == 0):
                 for i in reversed(tmp):
-                    f.write(i+"\n")
+                    x = int(i)
+                    if (x>127):
+                        x-= 256
+                    f.write(str(x)+"\n")
                     tmp = []
     if(line_cnt != 0):
         for i in reversed(tmp):
