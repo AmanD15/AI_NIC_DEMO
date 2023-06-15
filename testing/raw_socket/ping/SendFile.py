@@ -8,7 +8,7 @@ flag = 1
 
 
 
-interface = "enp4s0" # Network interface to send the packet on
+interface = "enp2s0" # Network interface to send the packet on
 s = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003))
 s.bind((interface, 0))
 
@@ -26,6 +26,8 @@ def send_file(s,filename, dest_mac, src_mac):
             tmp.append(int(line))
             if (line_cnt == 0):
                 for i in reversed(tmp):
+                    if (i<0):
+                        i+=256
                     file_data.append(i)
                     tmp = []
     if (line_cnt != 0):
@@ -54,13 +56,13 @@ def send_file(s,filename, dest_mac, src_mac):
             s.send(packet)
             print("Packet sent : "+str(i))
             #flag = 0
-            sleep(10000/1000000) #100/1000000 for VCU
-            '''
+            #sleep(10000/1000000) #100/1000000 for VCU
             while True:
                 packet_rcv = s.recvfrom(65535)
                 if(packet_rcv[0][12:14] == b'\t\x00'):
                     break;
             print("ACK received : "+str(i))
+            '''
             '''
 
     else:
