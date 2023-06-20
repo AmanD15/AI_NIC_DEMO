@@ -1,0 +1,86 @@
+#-----------------------------------------------------------
+# Vivado v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:47:09 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Tue Jun 20 15:12:25 2023
+# Process ID: 16740
+# Current directory: /home/harshad/Project/boards/vcu_128/demo/vhdl_libs
+# Command line: vivado
+# Log file: /home/harshad/Project/boards/vcu_128/demo/vhdl_libs/vivado.log
+# Journal file: /home/harshad/Project/boards/vcu_128/demo/vhdl_libs/vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_hw
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/home/tools_shared/Vivado/2019.1/data/ip'.
+connect_hw_server
+INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121
+INFO: [Labtools 27-2222] Launching hw_server...
+INFO: [Labtools 27-2221] Launch Output:
+
+****** Xilinx hw_server v2019.1
+  **** Build date : May 24 2019 at 15:06:40
+    ** Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+
+
+open_hw_target
+INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Xilinx/721946111949A
+current_hw_device [get_hw_devices xcvu37p_0]
+refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xcvu37p_0] 0]
+INFO: [Labtools 27-2302] Device xcvu37p (JTAG device index = 0) is programmed with a design that has 2 ILA core(s).
+INFO: [Labtools 27-2302] Device xcvu37p (JTAG device index = 0) is programmed with a design that has 1 MIG core(s).
+INFO: [Labtools 27-2302] Device xcvu37p (JTAG device index = 0) is programmed with a design that has 2 VIO core(s).
+set_property PROBES.FILE {/home/harshad/Project/boards/vcu_128/demo/vivado_synth/system.ltx} [get_hw_devices xcvu37p_0]
+set_property FULL_PROBES.FILE {/home/harshad/Project/boards/vcu_128/demo/vivado_synth/system.ltx} [get_hw_devices xcvu37p_0]
+set_property PROGRAM.FILE {/home/harshad/Project/boards/vcu_128/demo/vivado_synth/system.bit} [get_hw_devices xcvu37p_0]
+program_hw_devices [get_hw_devices xcvu37p_0]
+INFO: [Labtools 27-3164] End of startup status: HIGH
+program_hw_devices: Time (s): cpu = 00:00:36 ; elapsed = 00:00:34 . Memory (MB): peak = 7608.375 ; gain = 25.922 ; free physical = 58475 ; free virtual = 84567
+refresh_hw_device [lindex [get_hw_devices xcvu37p_0] 0]
+WARNING: [Labtools 27-3089] Calibration is still in-progress.
+INFO: [Labtools 27-2302] Device xcvu37p (JTAG device index = 0) is programmed with a design that has 2 ILA core(s).
+INFO: [Labtools 27-2302] Device xcvu37p (JTAG device index = 0) is programmed with a design that has 1 MIG core(s).
+INFO: [Labtools 27-2302] Device xcvu37p (JTAG device index = 0) is programmed with a design that has 2 VIO core(s).
+INFO: [Labtools 27-1889] Uploading output probe values for VIO core [hw_vio_1]
+INFO: [Labtools 27-1889] Uploading output probe values for VIO core [hw_vio_2]
+display_hw_ila_data [ get_hw_ila_data hw_ila_data_1 -of_objects [get_hw_ilas -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"ETH_TOP_inst/fpga_top_vcu128_inst/your_instance_name"}]]
+display_hw_ila_data [ get_hw_ila_data hw_ila_data_2 -of_objects [get_hw_ilas -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"ila_2_inst"}]]
+INFO: [Labtools 27-3143] Calibration status change detected, refreshing MIG_1
+set_property OUTPUT_VALUE 1 [get_hw_probes prog -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset_mac"}]]
+commit_hw_vio [get_hw_probes {prog} -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset_mac"}]]
+set_property OUTPUT_VALUE 1 [get_hw_probes reset_proc -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset"}]]
+commit_hw_vio [get_hw_probes {reset_proc} -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset"}]]
+WARNING: [Labtools 27-3089] Calibration is still in-progress.
+INFO: [Labtools 27-3143] Calibration status change detected, refreshing MIG_1
+set_property OUTPUT_VALUE 0 [get_hw_probes reset_proc -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset"}]]
+commit_hw_vio [get_hw_probes {reset_proc} -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset"}]]
+INFO: [Labtools 27-3143] Calibration status change detected, refreshing MIG_1
+set_property OUTPUT_VALUE 0 [get_hw_probes prog -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset_mac"}]]
+commit_hw_vio [get_hw_probes {prog} -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset_mac"}]]
+set_property OUTPUT_VALUE 1 [get_hw_probes reset_proc -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset"}]]
+commit_hw_vio [get_hw_probes {reset_proc} -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset"}]]
+WARNING: [Labtools 27-3089] Calibration is still in-progress.
+INFO: [Labtools 27-3143] Calibration status change detected, refreshing MIG_1
+set_property OUTPUT_VALUE 1 [get_hw_probes prog -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset_mac"}]]
+commit_hw_vio [get_hw_probes {prog} -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset_mac"}]]
+INFO: [Labtools 27-3143] Calibration status change detected, refreshing MIG_1
+set_property OUTPUT_VALUE 0 [get_hw_probes reset_proc -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset"}]]
+commit_hw_vio [get_hw_probes {reset_proc} -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset"}]]
+set_property OUTPUT_VALUE 0 [get_hw_probes prog -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset_mac"}]]
+commit_hw_vio [get_hw_probes {prog} -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset_mac"}]]
+set_property OUTPUT_VALUE 1 [get_hw_probes reset_proc -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset"}]]
+commit_hw_vio [get_hw_probes {reset_proc} -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset"}]]
+WARNING: [Labtools 27-3089] Calibration is still in-progress.
+INFO: [Labtools 27-3143] Calibration status change detected, refreshing MIG_1
+set_property OUTPUT_VALUE 0 [get_hw_probes reset_proc -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset"}]]
+commit_hw_vio [get_hw_probes {reset_proc} -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset"}]]
+INFO: [Labtools 27-3143] Calibration status change detected, refreshing MIG_1
+set_property OUTPUT_VALUE 1 [get_hw_probes prog -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset_mac"}]]
+commit_hw_vio [get_hw_probes {prog} -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset_mac"}]]
+set_property OUTPUT_VALUE 0 [get_hw_probes prog -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset_mac"}]]
+commit_hw_vio [get_hw_probes {prog} -of_objects [get_hw_vios -of_objects [get_hw_devices xcvu37p_0] -filter {CELL_NAME=~"virtual_reset_mac"}]]
+save_wave_config {/home/harshad/Project/boards/vcu_128/demo/vhdl_libs/.Xil/Vivado-16740-ajit2-System-Product-Name/hw_1/wave/hw_ila_data_1/hw_ila_data_1.wcfg}
+save_wave_config {/home/harshad/Project/boards/vcu_128/demo/vhdl_libs/.Xil/Vivado-16740-ajit2-System-Product-Name/hw_1/wave/hw_ila_data_2/hw_ila_data_2.wcfg}
+exit
+INFO: [Common 17-206] Exiting Vivado at Tue Jun 20 16:05:52 2023...

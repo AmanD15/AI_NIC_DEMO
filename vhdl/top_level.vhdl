@@ -29,7 +29,9 @@ library GenericGlueStuff;
 use GenericGlueStuff.GenericGlueStuffComponents.all;
 
 library work;
-use work.ahir_system_global_package.all;
+use work.ai_ml_engine_global_package.all;
+use work.nic_system_global_package.all;
+use work.ethernet_boot_global_package.all;
 
 library simpleUartLib;
 use simpleUartLib.all;
@@ -74,7 +76,24 @@ port(
       -- ENABLE FOR MAC+FIFO (mapped to a switch on the board)
 --      reset,reset_clk: in std_logic;
       CLKREF_P : in std_logic;
-      CLKREF_N : in std_logic
+      CLKREF_N : in std_logic;
+    
+    c0_sys_clk_p : in STD_LOGIC;
+    c0_sys_clk_n : in STD_LOGIC;
+    c0_ddr4_act_n : out STD_LOGIC;
+    c0_ddr4_adr : out STD_LOGIC_VECTOR ( 16 downto 0 );
+    c0_ddr4_ba : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    c0_ddr4_bg : out STD_LOGIC_VECTOR ( 0 to 0 );
+    c0_ddr4_cke : out STD_LOGIC_VECTOR ( 0 to 0 );
+    c0_ddr4_odt : out STD_LOGIC_VECTOR ( 0 to 0 );
+    c0_ddr4_cs_n : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    c0_ddr4_ck_t : out STD_LOGIC_VECTOR ( 0 to 0 );
+    c0_ddr4_ck_c : out STD_LOGIC_VECTOR ( 0 to 0 );
+    c0_ddr4_reset_n : out STD_LOGIC;
+    c0_ddr4_dm_dbi_n : inout STD_LOGIC_VECTOR ( 7 downto 0 );
+    c0_ddr4_dq : inout STD_LOGIC_VECTOR ( 63 downto 0 );
+    c0_ddr4_dqs_c : inout STD_LOGIC_VECTOR ( 7 downto 0 );
+    c0_ddr4_dqs_t : inout STD_LOGIC_VECTOR ( 7 downto 0 )
 	);
 end entity top_level;
 
@@ -113,8 +132,84 @@ architecture structure of top_level is
   --
   end component processor_1x1x32;
   
+   COMPONENT ACB_to_UI_EA
+  port (
+  ui_clk                                        : IN STD_LOGIC;
+  sys_rst                                       : IN STD_LOGIC;
+  init_calib_complete                           : IN STD_LOGIC;
+
+  app_addr                                      : OUT STD_LOGIC_VECTOR(28 DOWNTO 0);
+  app_cmd                                       : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+  app_en                                        : OUT STD_LOGIC;
+
+  app_wdf_data                                  : OUT STD_LOGIC_VECTOR(511 DOWNTO 0);
+  app_wdf_end                                   : OUT STD_LOGIC;
+  app_wdf_mask                                  : OUT STD_LOGIC_VECTOR(63 DOWNTO 0);
+  app_wdf_wren                                  : OUT STD_LOGIC;
+
+  app_rd_data                                   : IN STD_LOGIC_VECTOR(511 DOWNTO 0);
+
+  app_rd_data_end                               : IN STD_LOGIC;
+  app_rd_data_valid                             : IN STD_LOGIC;
+  app_rdy                                       : IN STD_LOGIC;
+  app_wdf_rdy                                   : IN STD_LOGIC;
+
+
+  app_sr_req                                    : OUT STD_LOGIC;
+  app_ref_req                                   : OUT STD_LOGIC;
+  app_zq_req                                    : OUT STD_LOGIC;
+
+
+  app_sr_active                                : IN STD_LOGIC;
+  app_ref_ack                                  : IN STD_LOGIC;
+  app_zq_ack                                   : IN STD_LOGIC;
+  ui_clk_sync_rst                              : IN STD_LOGIC;
+
+
+  DRAM_REQUEST_pipe_write_ack                  : OUT STD_LOGIC_VECTOR(0 downto 0);
+  DRAM_REQUEST_pipe_write_req                  : IN STD_LOGIC_VECTOR(0 downto 0);
+  DRAM_REQUEST_pipe_write_data                 : IN STD_LOGIC_VECTOR(109 DOWNTO 0);
+  DRAM_RESPONSE_pipe_read_req                  : IN STD_LOGIC_VECTOR(0 downto 0);
+
+
+  DRAM_RESPONSE_pipe_read_ack                  : OUT STD_LOGIC_VECTOR(0 downto 0);
+  DRAM_RESPONSE_pipe_read_data                 : OUT STD_LOGIC_VECTOR(64 DOWNTO 0)
+  --fatal_error                                  : OUT STD_LOGIC_VECTOR(0 downto 0)
+    );
+
+  END  COMPONENT;
+
   -- NIC component
-  component ahir_system is  -- system 
+  component nic_system is  -- system 
+  port (-- 
+    clk : in std_logic;
+    reset : in std_logic;
+    AFB_NIC_REQUEST_pipe_write_data: in std_logic_vector(73 downto 0);
+    AFB_NIC_REQUEST_pipe_write_req : in std_logic_vector(0 downto 0);
+    AFB_NIC_REQUEST_pipe_write_ack : out std_logic_vector(0 downto 0);
+    AFB_NIC_RESPONSE_pipe_read_data: out std_logic_vector(32 downto 0);
+    AFB_NIC_RESPONSE_pipe_read_req : in std_logic_vector(0 downto 0);
+    AFB_NIC_RESPONSE_pipe_read_ack : out std_logic_vector(0 downto 0);
+    MEMORY_TO_NIC_RESPONSE_pipe_write_data: in std_logic_vector(64 downto 0);
+    MEMORY_TO_NIC_RESPONSE_pipe_write_req : in std_logic_vector(0 downto 0);
+    MEMORY_TO_NIC_RESPONSE_pipe_write_ack : out std_logic_vector(0 downto 0);
+    NIC_TO_MEMORY_REQUEST_pipe_read_data: out std_logic_vector(109 downto 0);
+    NIC_TO_MEMORY_REQUEST_pipe_read_req : in std_logic_vector(0 downto 0);
+    NIC_TO_MEMORY_REQUEST_pipe_read_ack : out std_logic_vector(0 downto 0);
+    enable_mac_pipe_read_data: out std_logic_vector(0 downto 0);
+    enable_mac_pipe_read_req : in std_logic_vector(0 downto 0);
+    enable_mac_pipe_read_ack : out std_logic_vector(0 downto 0);
+    mac_to_nic_data_pipe_write_data: in std_logic_vector(72 downto 0);
+    mac_to_nic_data_pipe_write_req : in std_logic_vector(0 downto 0);
+    mac_to_nic_data_pipe_write_ack : out std_logic_vector(0 downto 0);
+    nic_to_mac_transmit_pipe_pipe_read_data: out std_logic_vector(72 downto 0);
+    nic_to_mac_transmit_pipe_pipe_read_req : in std_logic_vector(0 downto 0);
+    nic_to_mac_transmit_pipe_pipe_read_ack : out std_logic_vector(0 downto 0)
+    );
+  -- 
+  end component; 
+
+  component ai_ml_engine is  -- system 
   port (-- 
     clk : in std_logic;
     reset : in std_logic;
@@ -128,44 +223,70 @@ architecture structure of top_level is
     AFB_ACCELERATOR_RESPONSE_pipe_read_data: out std_logic_vector(32 downto 0);
     AFB_ACCELERATOR_RESPONSE_pipe_read_req : in std_logic_vector(0 downto 0);
     AFB_ACCELERATOR_RESPONSE_pipe_read_ack : out std_logic_vector(0 downto 0);
-    AFB_NIC_REQUEST_pipe_write_data: in std_logic_vector(73 downto 0);
-    AFB_NIC_REQUEST_pipe_write_req : in std_logic_vector(0 downto 0);
-    AFB_NIC_REQUEST_pipe_write_ack : out std_logic_vector(0 downto 0);
-    AFB_NIC_RESPONSE_pipe_read_data: out std_logic_vector(32 downto 0);
-    AFB_NIC_RESPONSE_pipe_read_req : in std_logic_vector(0 downto 0);
-    AFB_NIC_RESPONSE_pipe_read_ack : out std_logic_vector(0 downto 0);
     MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_data: in std_logic_vector(64 downto 0);
     MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_req : in std_logic_vector(0 downto 0);
-    MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_ack : out std_logic_vector(0 downto 0);
-    MEMORY_TO_NIC_RESPONSE_pipe_write_data: in std_logic_vector(64 downto 0);
-    MEMORY_TO_NIC_RESPONSE_pipe_write_req : in std_logic_vector(0 downto 0);
-    MEMORY_TO_NIC_RESPONSE_pipe_write_ack : out std_logic_vector(0 downto 0);
+    MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_ack : out std_logic_vector(0 downto 0)); -- 
+  -- 
+  end component; 
+
+  component ethernet_boot is  -- system 
+  port (-- 
+    clk : in std_logic;
+    reset : in std_logic;
     MEMORY_TO_PROG_RESPONSE_pipe_write_data: in std_logic_vector(64 downto 0);
     MEMORY_TO_PROG_RESPONSE_pipe_write_req : in std_logic_vector(0 downto 0);
     MEMORY_TO_PROG_RESPONSE_pipe_write_ack : out std_logic_vector(0 downto 0);
-    NIC_TO_MEMORY_REQUEST_pipe_read_data: out std_logic_vector(109 downto 0);
-    NIC_TO_MEMORY_REQUEST_pipe_read_req : in std_logic_vector(0 downto 0);
-    NIC_TO_MEMORY_REQUEST_pipe_read_ack : out std_logic_vector(0 downto 0);
     PROG_TO_MEMORY_REQUEST_pipe_read_data: out std_logic_vector(109 downto 0);
     PROG_TO_MEMORY_REQUEST_pipe_read_req : in std_logic_vector(0 downto 0);
     PROG_TO_MEMORY_REQUEST_pipe_read_ack : out std_logic_vector(0 downto 0);
-    enable_mac_pipe_read_data: out std_logic_vector(0 downto 0);
-    enable_mac_pipe_read_req : in std_logic_vector(0 downto 0);
-    enable_mac_pipe_read_ack : out std_logic_vector(0 downto 0);
-    mac_to_nic_data_pipe_write_data: in std_logic_vector(72 downto 0);
-    mac_to_nic_data_pipe_write_req : in std_logic_vector(0 downto 0);
-    mac_to_nic_data_pipe_write_ack : out std_logic_vector(0 downto 0);
     mac_to_prog_pipe_write_data: in std_logic_vector(72 downto 0);
     mac_to_prog_pipe_write_req : in std_logic_vector(0 downto 0);
     mac_to_prog_pipe_write_ack : out std_logic_vector(0 downto 0);
-    nic_to_mac_transmit_pipe_pipe_read_data: out std_logic_vector(72 downto 0);
-    nic_to_mac_transmit_pipe_pipe_read_req : in std_logic_vector(0 downto 0);
-    nic_to_mac_transmit_pipe_pipe_read_ack : out std_logic_vector(0 downto 0);
     prog_to_mac_pipe_read_data: out std_logic_vector(72 downto 0);
     prog_to_mac_pipe_read_req : in std_logic_vector(0 downto 0);
-    prog_to_mac_pipe_read_ack : out std_logic_vector(0 downto 0);
-    time_val: out std_logic_vector(63 downto 0)); -- 
+    prog_to_mac_pipe_read_ack : out std_logic_vector(0 downto 0)); -- 
   -- 
+  end component; 
+
+  component ddr4_0 is
+  Port ( 
+        sys_rst : in STD_LOGIC;
+      c0_sys_clk_p : in STD_LOGIC;
+      c0_sys_clk_n : in STD_LOGIC;
+      c0_ddr4_act_n : out STD_LOGIC;
+      c0_ddr4_adr : out STD_LOGIC_VECTOR ( 16 downto 0 );
+      c0_ddr4_ba : out STD_LOGIC_VECTOR ( 1 downto 0 );
+      c0_ddr4_bg : out STD_LOGIC_VECTOR ( 0 to 0 );
+      c0_ddr4_cke : out STD_LOGIC_VECTOR ( 0 to 0 );
+      c0_ddr4_odt : out STD_LOGIC_VECTOR ( 0 to 0 );
+      c0_ddr4_cs_n : out STD_LOGIC_VECTOR ( 1 downto 0 );
+      c0_ddr4_ck_t : out STD_LOGIC_VECTOR ( 0 to 0 );
+      c0_ddr4_ck_c : out STD_LOGIC_VECTOR ( 0 to 0 );
+      c0_ddr4_reset_n : out STD_LOGIC;
+      c0_ddr4_dm_dbi_n : inout STD_LOGIC_VECTOR ( 7 downto 0 );
+      c0_ddr4_dq : inout STD_LOGIC_VECTOR ( 63 downto 0 );
+      c0_ddr4_dqs_c : inout STD_LOGIC_VECTOR ( 7 downto 0 );
+      c0_ddr4_dqs_t : inout STD_LOGIC_VECTOR ( 7 downto 0 );
+      c0_init_calib_complete : out STD_LOGIC;
+      c0_ddr4_ui_clk : out STD_LOGIC;
+      addn_ui_clkout1 : out STD_LOGIC;
+      c0_ddr4_ui_clk_sync_rst : out STD_LOGIC;
+      dbg_clk : out STD_LOGIC;
+      c0_ddr4_app_addr : in STD_LOGIC_VECTOR ( 28 downto 0 );
+      c0_ddr4_app_cmd : in STD_LOGIC_VECTOR ( 2 downto 0 );
+      c0_ddr4_app_en : in STD_LOGIC;
+      c0_ddr4_app_hi_pri : in STD_LOGIC;
+      c0_ddr4_app_wdf_data : in STD_LOGIC_VECTOR ( 511 downto 0 );
+      c0_ddr4_app_wdf_end : in STD_LOGIC;
+      c0_ddr4_app_wdf_mask : in STD_LOGIC_VECTOR ( 63 downto 0 );
+      c0_ddr4_app_wdf_wren : in STD_LOGIC;
+      c0_ddr4_app_rd_data : out STD_LOGIC_VECTOR ( 511 downto 0 );
+      c0_ddr4_app_rd_data_end : out STD_LOGIC;
+      c0_ddr4_app_rd_data_valid : out STD_LOGIC;
+      c0_ddr4_app_rdy : out STD_LOGIC;
+      c0_ddr4_app_wdf_rdy : out STD_LOGIC;
+      dbg_bus : out STD_LOGIC_VECTOR ( 511 downto 0 )
+  );
   end component;
 
   component uartTopGenericEasilyConfigurable is
@@ -503,13 +624,6 @@ component rx_concat_system is --
    signal AFB_NIC_RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
    signal AFB_NIC_RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
    
-   signal AFB_ACCELERATOR_REQUEST_pipe_read_data : std_logic_vector(73 downto 0);
-   signal AFB_ACCELERATOR_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
-   signal AFB_ACCELERATOR_REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
-   
-   signal AFB_ACCELERATOR_RESPONSE_pipe_write_data : std_logic_vector(32 downto 0);
-   signal AFB_ACCELERATOR_RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
-   signal AFB_ACCELERATOR_RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
    -- NIC to mem
    signal NIC_TO_MEMORY_REQUEST_pipe_read_data : std_logic_vector(109 downto 0);
    signal NIC_TO_MEMORY_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
@@ -536,7 +650,7 @@ component rx_concat_system is --
    signal MEMORY_TO_IN_RESPONSE_pipe_read_req : std_logic_vector(0 downto 0);
    signal MEMORY_TO_IN_RESPONSE_pipe_read_ack : std_logic_vector(0 downto 0);
    
-
+	-- ACCELERATOR SIGNALS
 
    signal ACCELERATOR_TO_MEMORY_REQUEST_pipe_read_data : std_logic_vector(109 downto 0);
    signal ACCELERATOR_TO_MEMORY_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
@@ -546,8 +660,111 @@ component rx_concat_system is --
    signal MEMORY_TO_ACCELERATOR_RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
    signal MEMORY_TO_ACCELERATOR_RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
    
+   signal AFB_ACCELERATOR_REQUEST_pipe_read_data : std_logic_vector(73 downto 0);
+   signal AFB_ACCELERATOR_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR_REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR_RESPONSE_pipe_write_data : std_logic_vector(32 downto 0);
+   signal AFB_ACCELERATOR_RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR_RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
    
   
+   signal ACCELERATOR1_2TO_MEMORY_REQUEST_pipe_read_data : std_logic_vector(109 downto 0);
+   signal ACCELERATOR1_2TO_MEMORY_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal ACCELERATOR1_2TO_MEMORY_REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal MEMORY_TO_ACCELERATOR1_2RESPONSE_pipe_write_data : std_logic_vector(64 downto 0);
+   signal MEMORY_TO_ACCELERATOR1_2RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal MEMORY_TO_ACCELERATOR1_2RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR1_2REQUEST_pipe_read_data : std_logic_vector(73 downto 0);
+   signal AFB_ACCELERATOR1_2REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR1_2REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR1_2RESPONSE_pipe_write_data : std_logic_vector(32 downto 0);
+   signal AFB_ACCELERATOR1_2RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR1_2RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
+   
+   signal ACCELERATOR3_4TO_MEMORY_REQUEST_pipe_read_data : std_logic_vector(109 downto 0);
+   signal ACCELERATOR3_4TO_MEMORY_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal ACCELERATOR3_4TO_MEMORY_REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal MEMORY_TO_ACCELERATOR3_4RESPONSE_pipe_write_data : std_logic_vector(64 downto 0);
+   signal MEMORY_TO_ACCELERATOR3_4RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal MEMORY_TO_ACCELERATOR3_4RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR3_4REQUEST_pipe_read_data : std_logic_vector(73 downto 0);
+   signal AFB_ACCELERATOR3_4REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR3_4REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR3_4RESPONSE_pipe_write_data : std_logic_vector(32 downto 0);
+   signal AFB_ACCELERATOR3_4RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR3_4RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
+   
+   signal ACCELERATOR4_TO_MEMORY_REQUEST_pipe_read_data : std_logic_vector(109 downto 0);
+   signal ACCELERATOR4_TO_MEMORY_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal ACCELERATOR4_TO_MEMORY_REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal MEMORY_TO_ACCELERATOR4_RESPONSE_pipe_write_data : std_logic_vector(64 downto 0);
+   signal MEMORY_TO_ACCELERATOR4_RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal MEMORY_TO_ACCELERATOR4_RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR4_REQUEST_pipe_read_data : std_logic_vector(73 downto 0);
+   signal AFB_ACCELERATOR4_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR4_REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR4_RESPONSE_pipe_write_data : std_logic_vector(32 downto 0);
+   signal AFB_ACCELERATOR4_RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR4_RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
+   
+   signal ACCELERATOR3_TO_MEMORY_REQUEST_pipe_read_data : std_logic_vector(109 downto 0);
+   signal ACCELERATOR3_TO_MEMORY_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal ACCELERATOR3_TO_MEMORY_REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal MEMORY_TO_ACCELERATOR3_RESPONSE_pipe_write_data : std_logic_vector(64 downto 0);
+   signal MEMORY_TO_ACCELERATOR3_RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal MEMORY_TO_ACCELERATOR3_RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR3_REQUEST_pipe_read_data : std_logic_vector(73 downto 0);
+   signal AFB_ACCELERATOR3_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR3_REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR3_RESPONSE_pipe_write_data : std_logic_vector(32 downto 0);
+   signal AFB_ACCELERATOR3_RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR3_RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
+   
+   signal ACCELERATOR2_TO_MEMORY_REQUEST_pipe_read_data : std_logic_vector(109 downto 0);
+   signal ACCELERATOR2_TO_MEMORY_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal ACCELERATOR2_TO_MEMORY_REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal MEMORY_TO_ACCELERATOR2_RESPONSE_pipe_write_data : std_logic_vector(64 downto 0);
+   signal MEMORY_TO_ACCELERATOR2_RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal MEMORY_TO_ACCELERATOR2_RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR2_REQUEST_pipe_read_data : std_logic_vector(73 downto 0);
+   signal AFB_ACCELERATOR2_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR2_REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR2_RESPONSE_pipe_write_data : std_logic_vector(32 downto 0);
+   signal AFB_ACCELERATOR2_RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR2_RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
+   
+   signal ACCELERATOR1_TO_MEMORY_REQUEST_pipe_read_data : std_logic_vector(109 downto 0);
+   signal ACCELERATOR1_TO_MEMORY_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal ACCELERATOR1_TO_MEMORY_REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal MEMORY_TO_ACCELERATOR1_RESPONSE_pipe_write_data : std_logic_vector(64 downto 0);
+   signal MEMORY_TO_ACCELERATOR1_RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal MEMORY_TO_ACCELERATOR1_RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR1_REQUEST_pipe_read_data : std_logic_vector(73 downto 0);
+   signal AFB_ACCELERATOR1_REQUEST_pipe_read_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR1_REQUEST_pipe_read_ack : std_logic_vector(0 downto 0);
+   
+   signal AFB_ACCELERATOR1_RESPONSE_pipe_write_data : std_logic_vector(32 downto 0);
+   signal AFB_ACCELERATOR1_RESPONSE_pipe_write_req : std_logic_vector(0 downto 0);
+   signal AFB_ACCELERATOR1_RESPONSE_pipe_write_ack : std_logic_vector(0 downto 0);
+   
    signal rx_pipe_data :  std_logic_vector(9 downto 0);
    signal rx_pipe_ack :  std_logic_vector(0 downto 0);
    signal rx_pipe_req :  std_logic_vector(0 downto 0);
@@ -680,6 +897,32 @@ component rx_concat_system is --
 
   signal clock_proc, reset_proc : std_logic;
    -- ADDITIONAL SIGNALS FOR MAC + NIC + SWITCH 
+
+
+	-- DRAM connections
+signal app_addr :  STD_LOGIC_VECTOR ( 28 downto 0 );
+signal app_cmd  :  STD_LOGIC_VECTOR ( 2 downto 0 );
+signal app_en   :  STD_LOGIC;
+signal app_wdf_data :  STD_LOGIC_VECTOR ( 511 downto 0 );
+signal app_wdf_end  :  STD_LOGIC;
+signal app_wdf_mask :  STD_LOGIC_VECTOR ( 63 downto 0 );
+signal app_wdf_wren :  STD_LOGIC;
+signal app_rd_data  :  STD_LOGIC_VECTOR ( 511 downto 0 );
+signal app_rd_data_end   :  STD_LOGIC;
+signal app_rd_data_valid :  STD_LOGIC;
+signal app_rdy     :  STD_LOGIC;
+signal app_wdf_rdy :  STD_LOGIC;
+signal app_sr_req  :  STD_LOGIC;
+signal app_ref_req :  STD_LOGIC;
+signal app_zq_req  :  STD_LOGIC;
+signal app_sr_active :  STD_LOGIC;
+signal app_ref_ack   :  STD_LOGIC;
+signal app_zq_ack    :  STD_LOGIC;
+signal ui_clk        :  STD_LOGIC;
+signal ui_clk_sync_rst   :  STD_LOGIC;
+signal init_calib_complete :  STD_LOGIC;
+
+
 begin
 
 	-- make '1'
@@ -1087,30 +1330,16 @@ begin
 			pop_ack => MUX_TO_MEM_RESPONSE_pipe_write_req(0) -- out
 		);
   
-  nic_instance : ahir_system 			-- TODO : done
+  nic_instance : nic_system 			-- TODO : done
 	port map( 
 		clk => clock_mac, 
 		reset => reset_sync_mac,
-		-- ACCELERATOR_INTERRUPT_8 -- out std_logic_vector(7 downto 0);
-    		ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_data => ACCELERATOR_TO_MEMORY_REQUEST_pipe_read_data, -- out 
-                ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_req => ACCELERATOR_TO_MEMORY_REQUEST_pipe_read_req, -- in    
-                ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_ack => ACCELERATOR_TO_MEMORY_REQUEST_pipe_read_ack, -- out
-		AFB_ACCELERATOR_REQUEST_pipe_write_data => AFB_ACCELERATOR_REQUEST_pipe_read_data, -- in std_logic_vector(73 downto 0);
-    		AFB_ACCELERATOR_REQUEST_pipe_write_req => AFB_ACCELERATOR_REQUEST_pipe_read_req, -- in std_logic_vector(0 downto 0);
-    		AFB_ACCELERATOR_REQUEST_pipe_write_ack => AFB_ACCELERATOR_REQUEST_pipe_read_ack, -- out std_logic_vector(0 downto 0);
-    		AFB_ACCELERATOR_RESPONSE_pipe_read_data => AFB_ACCELERATOR_RESPONSE_pipe_write_data, -- out std_logic_vector(32 downto 0);
-    		AFB_ACCELERATOR_RESPONSE_pipe_read_req => AFB_ACCELERATOR_RESPONSE_pipe_write_req, -- in std_logic_vector(0 downto 0);
-    		AFB_ACCELERATOR_RESPONSE_pipe_read_ack => AFB_ACCELERATOR_RESPONSE_pipe_write_ack, -- out std_logic_vector(0 downto 0);
  		AFB_NIC_REQUEST_pipe_write_data => AFB_NIC_REQUEST_pipe_read_data, --AFB_NIC_REQUEST_tap_pipe_read_data, -- in
 		AFB_NIC_REQUEST_pipe_write_req => AFB_NIC_REQUEST_pipe_read_req, --AFB_NIC_REQUEST_tap_pipe_read_ack, -- in
 		AFB_NIC_REQUEST_pipe_write_ack => AFB_NIC_REQUEST_pipe_read_ack, -- out
 		AFB_NIC_RESPONSE_pipe_read_data => AFB_NIC_RESPONSE_pipe_write_data, -- out
 		AFB_NIC_RESPONSE_pipe_read_req => AFB_NIC_RESPONSE_pipe_write_req, -- in
 		AFB_NIC_RESPONSE_pipe_read_ack  => AFB_NIC_RESPONSE_pipe_write_ack, -- out
-		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_data => MEMORY_TO_ACCELERATOR_RESPONSE_pipe_write_data, -- in
-		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_req => MEMORY_TO_ACCELERATOR_RESPONSE_pipe_write_req, -- in
-		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_ack => MEMORY_TO_ACCELERATOR_RESPONSE_pipe_write_ack, -- out
-		-------------------------------------
 		MEMORY_TO_NIC_RESPONSE_pipe_write_data => MEMORY_TO_IN_RESPONSE_pipe_read_data, -- in
 		MEMORY_TO_NIC_RESPONSE_pipe_write_req => MEMORY_TO_IN_RESPONSE_pipe_read_req, -- in
 		MEMORY_TO_NIC_RESPONSE_pipe_write_ack => MEMORY_TO_IN_RESPONSE_pipe_read_ack, -- out
@@ -1118,19 +1347,6 @@ begin
 		NIC_TO_MEMORY_REQUEST_pipe_read_req => OUT_TO_MEMORY_REQUEST_pipe_read_req, -- in
 		NIC_TO_MEMORY_REQUEST_pipe_read_ack => OUT_TO_MEMORY_REQUEST_pipe_read_ack, -- out
 		
-		--MEMORY_TO_NIC_RESPONSE_pipe_write_data => MEMORY_TO_NIC_RESPONSE_pipe_write_data, -- in
-		--MEMORY_TO_NIC_RESPONSE_pipe_write_req => MEMORY_TO_NIC_RESPONSE_pipe_write_req, -- in
-		--MEMORY_TO_NIC_RESPONSE_pipe_write_ack => MEMORY_TO_NIC_RESPONSE_pipe_write_ack, -- out
-		--NIC_TO_MEMORY_REQUEST_pipe_read_data => NIC_TO_MEMORY_REQUEST_pipe_read_data, -- out
-		--NIC_TO_MEMORY_REQUEST_pipe_read_req => NIC_TO_MEMORY_REQUEST_pipe_read_req, -- in
-		--NIC_TO_MEMORY_REQUEST_pipe_read_ack => NIC_TO_MEMORY_REQUEST_pipe_read_ack, -- out
-		
-		MEMORY_TO_PROG_RESPONSE_pipe_write_data => MEMORY_TO_PROG_RESPONSE_pipe_read_data, -- in
-		MEMORY_TO_PROG_RESPONSE_pipe_write_req => MEMORY_TO_PROG_RESPONSE_pipe_read_req, -- in
-		MEMORY_TO_PROG_RESPONSE_pipe_write_ack => MEMORY_TO_PROG_RESPONSE_pipe_read_ack, -- out
-		PROG_TO_MEMORY_REQUEST_pipe_read_data => PROG_TO_MEMORY_REQUEST_pipe_read_data, -- out
-		PROG_TO_MEMORY_REQUEST_pipe_read_req => PROG_TO_MEMORY_REQUEST_pipe_read_req, -- in
-		PROG_TO_MEMORY_REQUEST_pipe_read_ack => PROG_TO_MEMORY_REQUEST_pipe_read_ack, -- out
 		-----------------------------------------
    		enable_mac_pipe_read_data => enable_mac_pipe_read_data, --out
     		enable_mac_pipe_read_req =>  enable_mac_pipe_read_req, --in
@@ -1140,25 +1356,29 @@ begin
 		mac_to_nic_data_pipe_write_req => NIC_FIFO_pipe_read_ack, -- in
 		mac_to_nic_data_pipe_write_ack => NIC_FIFO_pipe_read_req, -- out
 		
-		--mac_to_nic_data_pipe_write_data => RX_FIFO_pipe_read_data, -- in
-		--mac_to_nic_data_pipe_write_req => RX_FIFO_pipe_read_ack, -- in
-		--mac_to_nic_data_pipe_write_ack => RX_FIFO_pipe_read_req, -- out
-		
 		nic_to_mac_transmit_pipe_pipe_read_data => NIC_TX_pipe_write_data, --out
 		nic_to_mac_transmit_pipe_pipe_read_req => NIC_TX_pipe_write_req, -- in
-		nic_to_mac_transmit_pipe_pipe_read_ack => NIC_TX_pipe_write_ack, -- out
-		
-		--nic_to_mac_transmit_pipe_pipe_read_data => TX_FIFO_pipe_write_data, --out
-		--nic_to_mac_transmit_pipe_pipe_read_req => TX_FIFO_pipe_write_req, -- in
-		--nic_to_mac_transmit_pipe_pipe_read_ack => TX_FIFO_pipe_write_ack -- out
+		nic_to_mac_transmit_pipe_pipe_read_ack => NIC_TX_pipe_write_ack -- out
 		-----------------------------
+	); 
+	bootloader : ethernet_boot
+	port map(
+		
+		clk => clock_mac, 
+		reset => reset_sync_mac,
     		mac_to_prog_pipe_write_data => PROG_FIFO_pipe_read_data, --in
     		mac_to_prog_pipe_write_req => PROG_FIFO_pipe_read_ack, --in
     		mac_to_prog_pipe_write_ack => PROG_FIFO_pipe_read_req, --out
     		prog_to_mac_pipe_read_data => PROG_RET_pipe_write_data, -- out std_logic_vector(72 downto 0);
 		prog_to_mac_pipe_read_req => PROG_RET_pipe_write_req, --in std_logic_vector(0 downto 0);
-    		prog_to_mac_pipe_read_ack => PROG_RET_pipe_write_ack --out std_logic_vector(0 downto 0)); -- 
-	); 
+    		prog_to_mac_pipe_read_ack => PROG_RET_pipe_write_ack, --out std_logic_vector(0 downto 0)); -- 
+		MEMORY_TO_PROG_RESPONSE_pipe_write_data => MEMORY_TO_PROG_RESPONSE_pipe_read_data, -- in
+		MEMORY_TO_PROG_RESPONSE_pipe_write_req => MEMORY_TO_PROG_RESPONSE_pipe_read_req, -- in
+		MEMORY_TO_PROG_RESPONSE_pipe_write_ack => MEMORY_TO_PROG_RESPONSE_pipe_read_ack, -- out
+		PROG_TO_MEMORY_REQUEST_pipe_read_data => PROG_TO_MEMORY_REQUEST_pipe_read_data, -- out
+		PROG_TO_MEMORY_REQUEST_pipe_read_req => PROG_TO_MEMORY_REQUEST_pipe_read_req, -- in
+		PROG_TO_MEMORY_REQUEST_pipe_read_ack => PROG_TO_MEMORY_REQUEST_pipe_read_ack -- out
+		);
 
 
 	--------------
@@ -1190,7 +1410,261 @@ begin
 	MEMORY_TO_NIC_RESPONSE_pipe_write_ack <= MEMORY_TO_IN_RESPONSE_pipe_read_ack when prog = '0' else MEMORY_TO_PROG_RESPONSE_pipe_read_ack;
 
 
-	----------------------------------
+  engine1 : ai_ml_engine 			-- TODO : done
+	port map( 
+		clk => clock_mac, 
+		reset => reset_sync_mac,
+		-- ACCELERATOR_INTERRUPT_8 -- out std_logic_vector(7 downto 0);
+    		ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_data => ACCELERATOR1_TO_MEMORY_REQUEST_pipe_read_data, -- out 
+                ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_req => ACCELERATOR1_TO_MEMORY_REQUEST_pipe_read_req, -- in    
+                ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_ack => ACCELERATOR1_TO_MEMORY_REQUEST_pipe_read_ack, -- out
+		AFB_ACCELERATOR_REQUEST_pipe_write_data => AFB_ACCELERATOR1_REQUEST_pipe_read_data, -- in std_logic_vector(73 downto 0);
+    		AFB_ACCELERATOR_REQUEST_pipe_write_req => AFB_ACCELERATOR1_REQUEST_pipe_read_req, -- in std_logic_vector(0 downto 0);
+    		AFB_ACCELERATOR_REQUEST_pipe_write_ack => AFB_ACCELERATOR1_REQUEST_pipe_read_ack, -- out std_logic_vector(0 downto 0);
+    		AFB_ACCELERATOR_RESPONSE_pipe_read_data => AFB_ACCELERATOR1_RESPONSE_pipe_write_data, -- out std_logic_vector(32 downto 0);
+    		AFB_ACCELERATOR_RESPONSE_pipe_read_req => AFB_ACCELERATOR1_RESPONSE_pipe_write_req, -- in std_logic_vector(0 downto 0);
+    		AFB_ACCELERATOR_RESPONSE_pipe_read_ack => AFB_ACCELERATOR1_RESPONSE_pipe_write_ack, -- out std_logic_vector(0 downto 0);
+		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_data => MEMORY_TO_ACCELERATOR1_RESPONSE_pipe_write_data, -- in
+		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_req => MEMORY_TO_ACCELERATOR1_RESPONSE_pipe_write_req, -- in
+		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_ack => MEMORY_TO_ACCELERATOR1_RESPONSE_pipe_write_ack -- out
+	);
+	
+  engine2 : ai_ml_engine 			-- TODO : done
+	port map( 
+		clk => clock_mac, 
+		reset => reset_sync_mac,
+		-- ACCELERATOR_INTERRUPT_8 -- out std_logic_vector(7 downto 0);
+    		ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_data => ACCELERATOR2_TO_MEMORY_REQUEST_pipe_read_data, -- out 
+                ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_req => ACCELERATOR2_TO_MEMORY_REQUEST_pipe_read_req, -- in    
+                ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_ack => ACCELERATOR2_TO_MEMORY_REQUEST_pipe_read_ack, -- out
+		AFB_ACCELERATOR_REQUEST_pipe_write_data => AFB_ACCELERATOR2_REQUEST_pipe_read_data, -- in std_logic_vector(73 downto 0);
+    		AFB_ACCELERATOR_REQUEST_pipe_write_req => AFB_ACCELERATOR2_REQUEST_pipe_read_req, -- in std_logic_vector(0 downto 0);
+    		AFB_ACCELERATOR_REQUEST_pipe_write_ack => AFB_ACCELERATOR2_REQUEST_pipe_read_ack, -- out std_logic_vector(0 downto 0);
+    		AFB_ACCELERATOR_RESPONSE_pipe_read_data => AFB_ACCELERATOR2_RESPONSE_pipe_write_data, -- out std_logic_vector(32 downto 0);
+    		AFB_ACCELERATOR_RESPONSE_pipe_read_req => AFB_ACCELERATOR2_RESPONSE_pipe_write_req, -- in std_logic_vector(0 downto 0);
+    		AFB_ACCELERATOR_RESPONSE_pipe_read_ack => AFB_ACCELERATOR2_RESPONSE_pipe_write_ack, -- out std_logic_vector(0 downto 0);
+		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_data => MEMORY_TO_ACCELERATOR2_RESPONSE_pipe_write_data, -- in
+		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_req => MEMORY_TO_ACCELERATOR2_RESPONSE_pipe_write_req, -- in
+		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_ack => MEMORY_TO_ACCELERATOR2_RESPONSE_pipe_write_ack -- out
+	);
+
+  engine3 : ai_ml_engine 			-- TODO : done
+	port map( 
+		clk => clock_mac, 
+		reset => reset_sync_mac,
+		-- ACCELERATOR_INTERRUPT_8 -- out std_logic_vector(7 downto 0);
+    		ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_data => ACCELERATOR3_TO_MEMORY_REQUEST_pipe_read_data, -- out 
+                ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_req => ACCELERATOR3_TO_MEMORY_REQUEST_pipe_read_req, -- in    
+                ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_ack => ACCELERATOR3_TO_MEMORY_REQUEST_pipe_read_ack, -- out
+		AFB_ACCELERATOR_REQUEST_pipe_write_data => AFB_ACCELERATOR3_REQUEST_pipe_read_data, -- in std_logic_vector(73 downto 0);
+    		AFB_ACCELERATOR_REQUEST_pipe_write_req => AFB_ACCELERATOR3_REQUEST_pipe_read_req, -- in std_logic_vector(0 downto 0);
+    		AFB_ACCELERATOR_REQUEST_pipe_write_ack => AFB_ACCELERATOR3_REQUEST_pipe_read_ack, -- out std_logic_vector(0 downto 0);
+    		AFB_ACCELERATOR_RESPONSE_pipe_read_data => AFB_ACCELERATOR3_RESPONSE_pipe_write_data, -- out std_logic_vector(32 downto 0);
+    		AFB_ACCELERATOR_RESPONSE_pipe_read_req => AFB_ACCELERATOR3_RESPONSE_pipe_write_req, -- in std_logic_vector(0 downto 0);
+    		AFB_ACCELERATOR_RESPONSE_pipe_read_ack => AFB_ACCELERATOR3_RESPONSE_pipe_write_ack, -- out std_logic_vector(0 downto 0);
+		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_data => MEMORY_TO_ACCELERATOR3_RESPONSE_pipe_write_data, -- in
+		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_req => MEMORY_TO_ACCELERATOR3_RESPONSE_pipe_write_req, -- in
+		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_ack => MEMORY_TO_ACCELERATOR3_RESPONSE_pipe_write_ack -- out
+	);
+
+  engine4 : ai_ml_engine 			-- TODO : done
+	port map( 
+		clk => clock_mac, 
+		reset => reset_sync_mac,
+		-- ACCELERATOR_INTERRUPT_8 -- out std_logic_vector(7 downto 0);
+    		ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_data => ACCELERATOR4_TO_MEMORY_REQUEST_pipe_read_data, -- out 
+                ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_req => ACCELERATOR4_TO_MEMORY_REQUEST_pipe_read_req, -- in    
+                ACCELERATOR_MEMORY_REQUEST_PIPE_pipe_read_ack => ACCELERATOR4_TO_MEMORY_REQUEST_pipe_read_ack, -- out
+		AFB_ACCELERATOR_REQUEST_pipe_write_data => AFB_ACCELERATOR4_REQUEST_pipe_read_data, -- in std_logic_vector(73 downto 0);
+    		AFB_ACCELERATOR_REQUEST_pipe_write_req => AFB_ACCELERATOR4_REQUEST_pipe_read_req, -- in std_logic_vector(0 downto 0);
+    		AFB_ACCELERATOR_REQUEST_pipe_write_ack => AFB_ACCELERATOR4_REQUEST_pipe_read_ack, -- out std_logic_vector(0 downto 0);
+    		AFB_ACCELERATOR_RESPONSE_pipe_read_data => AFB_ACCELERATOR4_RESPONSE_pipe_write_data, -- out std_logic_vector(32 downto 0);
+    		AFB_ACCELERATOR_RESPONSE_pipe_read_req => AFB_ACCELERATOR4_RESPONSE_pipe_write_req, -- in std_logic_vector(0 downto 0);
+    		AFB_ACCELERATOR_RESPONSE_pipe_read_ack => AFB_ACCELERATOR4_RESPONSE_pipe_write_ack, -- out std_logic_vector(0 downto 0);
+		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_data => MEMORY_TO_ACCELERATOR4_RESPONSE_pipe_write_data, -- in
+		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_req => MEMORY_TO_ACCELERATOR4_RESPONSE_pipe_write_req, -- in
+		MEMORY_ACCELERATOR_RESPONSE_PIPE_pipe_write_ack => MEMORY_TO_ACCELERATOR4_RESPONSE_pipe_write_ack -- out
+	);
+
+
+	engine_1_2_tap: afb_fast_tap  -- done
+		port map (
+				clk => clock_mac, reset => reset_sync_mac,
+
+    				AFB_BUS_REQUEST_pipe_write_data => AFB_ACCELERATOR1_2REQUEST_pipe_read_data, -- in
+    				AFB_BUS_REQUEST_pipe_write_req  => AFB_ACCELERATOR1_2REQUEST_pipe_read_req, -- in
+    				AFB_BUS_REQUEST_pipe_write_ack  => AFB_ACCELERATOR1_2REQUEST_pipe_read_ack, -- out
+
+    				AFB_BUS_RESPONSE_pipe_read_data => AFB_ACCELERATOR1_2RESPONSE_pipe_write_data, -- out
+    				AFB_BUS_RESPONSE_pipe_read_req  => AFB_ACCELERATOR1_2RESPONSE_pipe_write_req, -- in
+    				AFB_BUS_RESPONSE_pipe_read_ack  => AFB_ACCELERATOR1_2RESPONSE_pipe_write_ack, -- out
+
+				-- connect to the tap.
+    				AFB_BUS_REQUEST_TAP_pipe_read_data => AFB_ACCELERATOR1_REQUEST_pipe_read_data, -- out
+    				AFB_BUS_REQUEST_TAP_pipe_read_req  => AFB_ACCELERATOR1_REQUEST_pipe_read_ack, -- in
+    				AFB_BUS_REQUEST_TAP_pipe_read_ack  => AFB_ACCELERATOR1_REQUEST_pipe_read_req, -- out
+				-- MAIN_TAP_RESPONSE
+    				AFB_BUS_RESPONSE_TAP_pipe_write_data => AFB_ACCELERATOR1_RESPONSE_pipe_write_data, -- in
+    				AFB_BUS_RESPONSE_TAP_pipe_write_req  => AFB_ACCELERATOR1_RESPONSE_pipe_write_ack, -- in
+    				AFB_BUS_RESPONSE_TAP_pipe_write_ack  => AFB_ACCELERATOR1_RESPONSE_pipe_write_req, -- out
+
+				-- MAIN_THROUGH_REQUEST
+    				AFB_BUS_REQUEST_THROUGH_pipe_read_data => AFB_ACCELERATOR2_REQUEST_pipe_read_data, -- out
+    				AFB_BUS_REQUEST_THROUGH_pipe_read_req  => AFB_ACCELERATOR2_REQUEST_pipe_read_ack, -- in
+    				AFB_BUS_REQUEST_THROUGH_pipe_read_ack  => AFB_ACCELERATOR2_REQUEST_pipe_read_req, -- out
+				-- MAIN_THROUGH_RESPONSE
+    				AFB_BUS_RESPONSE_THROUGH_pipe_write_data => AFB_ACCELERATOR2_RESPONSE_pipe_write_data, -- in
+    				AFB_BUS_RESPONSE_THROUGH_pipe_write_req  => AFB_ACCELERATOR2_RESPONSE_pipe_write_ack, -- in
+    				AFB_BUS_RESPONSE_THROUGH_pipe_write_ack  => AFB_ACCELERATOR2_RESPONSE_pipe_write_req, -- out
+
+    				MAX_ADDR_TAP => X"01001FFFF", -- in
+    				MIN_ADDR_TAP => X"010010000" -- in
+			);
+
+	engine_3_4_tap: afb_fast_tap  -- done
+		port map (
+				clk => clock_mac, reset => reset_sync_mac,
+
+    				AFB_BUS_REQUEST_pipe_write_data => AFB_ACCELERATOR3_4REQUEST_pipe_read_data, -- in
+    				AFB_BUS_REQUEST_pipe_write_req  => AFB_ACCELERATOR3_4REQUEST_pipe_read_req, -- in
+    				AFB_BUS_REQUEST_pipe_write_ack  => AFB_ACCELERATOR3_4REQUEST_pipe_read_ack, -- out
+
+    				AFB_BUS_RESPONSE_pipe_read_data => AFB_ACCELERATOR3_4RESPONSE_pipe_write_data, -- out
+    				AFB_BUS_RESPONSE_pipe_read_req  => AFB_ACCELERATOR3_4RESPONSE_pipe_write_req, -- in
+    				AFB_BUS_RESPONSE_pipe_read_ack  => AFB_ACCELERATOR3_4RESPONSE_pipe_write_ack, -- out
+
+				-- connect to the tap.
+    				AFB_BUS_REQUEST_TAP_pipe_read_data => AFB_ACCELERATOR3_REQUEST_pipe_read_data, -- out
+    				AFB_BUS_REQUEST_TAP_pipe_read_req  => AFB_ACCELERATOR3_REQUEST_pipe_read_ack, -- in
+    				AFB_BUS_REQUEST_TAP_pipe_read_ack  => AFB_ACCELERATOR3_REQUEST_pipe_read_req, -- out
+				-- MAIN_TAP_RESPONSE
+    				AFB_BUS_RESPONSE_TAP_pipe_write_data => AFB_ACCELERATOR3_RESPONSE_pipe_write_data, -- in
+    				AFB_BUS_RESPONSE_TAP_pipe_write_req  => AFB_ACCELERATOR3_RESPONSE_pipe_write_ack, -- in
+    				AFB_BUS_RESPONSE_TAP_pipe_write_ack  => AFB_ACCELERATOR3_RESPONSE_pipe_write_req, -- out
+
+				-- MAIN_THROUGH_REQUEST
+    				AFB_BUS_REQUEST_THROUGH_pipe_read_data => AFB_ACCELERATOR4_REQUEST_pipe_read_data, -- out
+    				AFB_BUS_REQUEST_THROUGH_pipe_read_req  => AFB_ACCELERATOR4_REQUEST_pipe_read_ack, -- in
+    				AFB_BUS_REQUEST_THROUGH_pipe_read_ack  => AFB_ACCELERATOR4_REQUEST_pipe_read_req, -- out
+				-- MAIN_THROUGH_RESPONSE
+    				AFB_BUS_RESPONSE_THROUGH_pipe_write_data => AFB_ACCELERATOR4_RESPONSE_pipe_write_data, -- in
+    				AFB_BUS_RESPONSE_THROUGH_pipe_write_req  => AFB_ACCELERATOR4_RESPONSE_pipe_write_ack, -- in
+    				AFB_BUS_RESPONSE_THROUGH_pipe_write_ack  => AFB_ACCELERATOR4_RESPONSE_pipe_write_req, -- out
+
+    				MAX_ADDR_TAP => X"01003FFFF", -- in
+    				MIN_ADDR_TAP => X"010030000" -- in
+			);
+
+	engine_1_4_tap: afb_fast_tap  -- done
+		port map (
+				clk => clock_mac, reset => reset_sync_mac,
+
+    				AFB_BUS_REQUEST_pipe_write_data => AFB_ACCELERATOR_REQUEST_pipe_read_data, -- in
+    				AFB_BUS_REQUEST_pipe_write_req  => AFB_ACCELERATOR_REQUEST_pipe_read_req, -- in
+    				AFB_BUS_REQUEST_pipe_write_ack  => AFB_ACCELERATOR_REQUEST_pipe_read_ack, -- out
+
+    				AFB_BUS_RESPONSE_pipe_read_data => AFB_ACCELERATOR_RESPONSE_pipe_write_data, -- out
+    				AFB_BUS_RESPONSE_pipe_read_req  => AFB_ACCELERATOR_RESPONSE_pipe_write_req, -- in
+    				AFB_BUS_RESPONSE_pipe_read_ack  => AFB_ACCELERATOR_RESPONSE_pipe_write_ack, -- out
+
+				-- connect to the tap.
+    				AFB_BUS_REQUEST_TAP_pipe_read_data => AFB_ACCELERATOR1_2REQUEST_pipe_read_data, -- out
+    				AFB_BUS_REQUEST_TAP_pipe_read_req  => AFB_ACCELERATOR1_2REQUEST_pipe_read_ack, -- in
+    				AFB_BUS_REQUEST_TAP_pipe_read_ack  => AFB_ACCELERATOR1_2REQUEST_pipe_read_req, -- out
+				-- MAIN_TAP_RESPONSE
+    				AFB_BUS_RESPONSE_TAP_pipe_write_data => AFB_ACCELERATOR1_2RESPONSE_pipe_write_data, -- in
+    				AFB_BUS_RESPONSE_TAP_pipe_write_req  => AFB_ACCELERATOR1_2RESPONSE_pipe_write_ack, -- in
+    				AFB_BUS_RESPONSE_TAP_pipe_write_ack  => AFB_ACCELERATOR1_2RESPONSE_pipe_write_req, -- out
+
+				-- MAIN_THROUGH_REQUEST
+    				AFB_BUS_REQUEST_THROUGH_pipe_read_data => AFB_ACCELERATOR3_4REQUEST_pipe_read_data, -- out
+    				AFB_BUS_REQUEST_THROUGH_pipe_read_req  => AFB_ACCELERATOR3_4REQUEST_pipe_read_ack, -- in
+    				AFB_BUS_REQUEST_THROUGH_pipe_read_ack  => AFB_ACCELERATOR3_4REQUEST_pipe_read_req, -- out
+				-- MAIN_THROUGH_RESPONSE
+    				AFB_BUS_RESPONSE_THROUGH_pipe_write_data => AFB_ACCELERATOR3_4RESPONSE_pipe_write_data, -- in
+    				AFB_BUS_RESPONSE_THROUGH_pipe_write_req  => AFB_ACCELERATOR3_4RESPONSE_pipe_write_ack, -- in
+    				AFB_BUS_RESPONSE_THROUGH_pipe_write_ack  => AFB_ACCELERATOR3_4RESPONSE_pipe_write_req, -- out
+
+    				MAX_ADDR_TAP => X"01002FFFF", -- in
+    				MIN_ADDR_TAP => X"010010000" -- in
+			);
+
+  engine_1_2_mux: acb_fast_mux   -- done
+	port map( 
+		clk => clock_mac, reset => reset_sync_mac,
+		CORE_BUS_REQUEST_HIGH_pipe_write_data => ACCELERATOR1_TO_MEMORY_REQUEST_pipe_read_data, -- in
+		CORE_BUS_REQUEST_HIGH_pipe_write_req  => ACCELERATOR1_TO_MEMORY_REQUEST_pipe_read_ack, -- in
+		CORE_BUS_REQUEST_HIGH_pipe_write_ack  => ACCELERATOR1_TO_MEMORY_REQUEST_pipe_read_req, -- out
+		CORE_BUS_REQUEST_LOW_pipe_write_data  => ACCELERATOR2_TO_MEMORY_REQUEST_pipe_read_data, -- in
+		CORE_BUS_REQUEST_LOW_pipe_write_req   => ACCELERATOR2_TO_MEMORY_REQUEST_pipe_read_ack, -- in
+		CORE_BUS_REQUEST_LOW_pipe_write_ack   => ACCELERATOR2_TO_MEMORY_REQUEST_pipe_read_req, -- out
+		CORE_BUS_RESPONSE_pipe_write_data     => MEMORY_TO_ACCELERATOR1_2RESPONSE_pipe_write_data, -- in
+		CORE_BUS_RESPONSE_pipe_write_req      => MEMORY_TO_ACCELERATOR1_2RESPONSE_pipe_write_req, -- in
+		CORE_BUS_RESPONSE_pipe_write_ack      => MEMORY_TO_ACCELERATOR1_2RESPONSE_pipe_write_ack, -- out
+		CORE_BUS_REQUEST_pipe_read_data       => ACCELERATOR1_2TO_MEMORY_REQUEST_pipe_read_data, --out
+		CORE_BUS_REQUEST_pipe_read_req        => ACCELERATOR1_2TO_MEMORY_REQUEST_pipe_read_req, -- in
+		CORE_BUS_REQUEST_pipe_read_ack        => ACCELERATOR1_2TO_MEMORY_REQUEST_pipe_read_ack, -- out
+		CORE_BUS_RESPONSE_HIGH_pipe_read_data => MEMORY_TO_ACCELERATOR1_RESPONSE_pipe_write_data, -- out
+		CORE_BUS_RESPONSE_HIGH_pipe_read_req  => MEMORY_TO_ACCELERATOR1_RESPONSE_pipe_write_ack, -- in
+		CORE_BUS_RESPONSE_HIGH_pipe_read_ack  => MEMORY_TO_ACCELERATOR1_RESPONSE_pipe_write_req, -- out
+		CORE_BUS_RESPONSE_LOW_pipe_read_data  => MEMORY_TO_ACCELERATOR2_RESPONSE_pipe_write_data, -- out
+		CORE_BUS_RESPONSE_LOW_pipe_read_req   => MEMORY_TO_ACCELERATOR2_RESPONSE_pipe_write_ack, -- in
+		CORE_BUS_RESPONSE_LOW_pipe_read_ack   => MEMORY_TO_ACCELERATOR2_RESPONSE_pipe_write_req -- out
+	);
+
+
+  engine_3_4_mux: acb_fast_mux   -- done
+	port map( 
+		clk => clock_mac, reset => reset_sync_mac,
+		CORE_BUS_REQUEST_HIGH_pipe_write_data => ACCELERATOR3_TO_MEMORY_REQUEST_pipe_read_data, -- in
+		CORE_BUS_REQUEST_HIGH_pipe_write_req  => ACCELERATOR3_TO_MEMORY_REQUEST_pipe_read_ack, -- in
+		CORE_BUS_REQUEST_HIGH_pipe_write_ack  => ACCELERATOR3_TO_MEMORY_REQUEST_pipe_read_req, -- out
+		CORE_BUS_REQUEST_LOW_pipe_write_data  => ACCELERATOR4_TO_MEMORY_REQUEST_pipe_read_data, -- in
+		CORE_BUS_REQUEST_LOW_pipe_write_req   => ACCELERATOR4_TO_MEMORY_REQUEST_pipe_read_ack, -- in
+		CORE_BUS_REQUEST_LOW_pipe_write_ack   => ACCELERATOR4_TO_MEMORY_REQUEST_pipe_read_req, -- out
+		CORE_BUS_RESPONSE_pipe_write_data     => MEMORY_TO_ACCELERATOR3_4RESPONSE_pipe_write_data, -- in
+		CORE_BUS_RESPONSE_pipe_write_req      => MEMORY_TO_ACCELERATOR3_4RESPONSE_pipe_write_req, -- in
+		CORE_BUS_RESPONSE_pipe_write_ack      => MEMORY_TO_ACCELERATOR3_4RESPONSE_pipe_write_ack, -- out
+		CORE_BUS_REQUEST_pipe_read_data       => ACCELERATOR3_4TO_MEMORY_REQUEST_pipe_read_data, --out
+		CORE_BUS_REQUEST_pipe_read_req        => ACCELERATOR3_4TO_MEMORY_REQUEST_pipe_read_req, -- in
+		CORE_BUS_REQUEST_pipe_read_ack        => ACCELERATOR3_4TO_MEMORY_REQUEST_pipe_read_ack, -- out
+		CORE_BUS_RESPONSE_HIGH_pipe_read_data => MEMORY_TO_ACCELERATOR3_RESPONSE_pipe_write_data, -- out
+		CORE_BUS_RESPONSE_HIGH_pipe_read_req  => MEMORY_TO_ACCELERATOR3_RESPONSE_pipe_write_ack, -- in
+		CORE_BUS_RESPONSE_HIGH_pipe_read_ack  => MEMORY_TO_ACCELERATOR3_RESPONSE_pipe_write_req, -- out
+		CORE_BUS_RESPONSE_LOW_pipe_read_data  => MEMORY_TO_ACCELERATOR4_RESPONSE_pipe_write_data, -- out
+		CORE_BUS_RESPONSE_LOW_pipe_read_req   => MEMORY_TO_ACCELERATOR4_RESPONSE_pipe_write_ack, -- in
+		CORE_BUS_RESPONSE_LOW_pipe_read_ack   => MEMORY_TO_ACCELERATOR4_RESPONSE_pipe_write_req -- out
+	);
+
+
+  engine_1_4_mux: acb_fast_mux   -- done
+	port map( 
+		clk => clock_mac, reset => reset_sync_mac,
+		CORE_BUS_REQUEST_HIGH_pipe_write_data => ACCELERATOR1_2TO_MEMORY_REQUEST_pipe_read_data, -- in
+		CORE_BUS_REQUEST_HIGH_pipe_write_req  => ACCELERATOR1_2TO_MEMORY_REQUEST_pipe_read_ack, -- in
+		CORE_BUS_REQUEST_HIGH_pipe_write_ack  => ACCELERATOR1_2TO_MEMORY_REQUEST_pipe_read_req, -- out
+		CORE_BUS_REQUEST_LOW_pipe_write_data  => ACCELERATOR3_4TO_MEMORY_REQUEST_pipe_read_data, -- in
+		CORE_BUS_REQUEST_LOW_pipe_write_req   => ACCELERATOR3_4TO_MEMORY_REQUEST_pipe_read_ack, -- in
+		CORE_BUS_REQUEST_LOW_pipe_write_ack   => ACCELERATOR3_4TO_MEMORY_REQUEST_pipe_read_req, -- out
+		CORE_BUS_RESPONSE_pipe_write_data     => MEMORY_TO_ACCELERATOR_RESPONSE_pipe_write_data, -- in
+		CORE_BUS_RESPONSE_pipe_write_req      => MEMORY_TO_ACCELERATOR_RESPONSE_pipe_write_req, -- in
+		CORE_BUS_RESPONSE_pipe_write_ack      => MEMORY_TO_ACCELERATOR_RESPONSE_pipe_write_ack, -- out
+		CORE_BUS_REQUEST_pipe_read_data       => ACCELERATOR_TO_MEMORY_REQUEST_pipe_read_data, --out
+		CORE_BUS_REQUEST_pipe_read_req        => ACCELERATOR_TO_MEMORY_REQUEST_pipe_read_req, -- in
+		CORE_BUS_REQUEST_pipe_read_ack        => ACCELERATOR_TO_MEMORY_REQUEST_pipe_read_ack, -- out
+		CORE_BUS_RESPONSE_HIGH_pipe_read_data => MEMORY_TO_ACCELERATOR1_2RESPONSE_pipe_write_data, -- out
+		CORE_BUS_RESPONSE_HIGH_pipe_read_req  => MEMORY_TO_ACCELERATOR1_2RESPONSE_pipe_write_ack, -- in
+		CORE_BUS_RESPONSE_HIGH_pipe_read_ack  => MEMORY_TO_ACCELERATOR1_2RESPONSE_pipe_write_req, -- out
+		CORE_BUS_RESPONSE_LOW_pipe_read_data  => MEMORY_TO_ACCELERATOR3_4RESPONSE_pipe_write_data, -- out
+		CORE_BUS_RESPONSE_LOW_pipe_read_req   => MEMORY_TO_ACCELERATOR3_4RESPONSE_pipe_write_ack, -- in
+		CORE_BUS_RESPONSE_LOW_pipe_read_ack   => MEMORY_TO_ACCELERATOR3_4RESPONSE_pipe_write_req -- out
+	);
+	
+   
+   
+   
+   ----------------------------------
+
  
    ETH_TOP_inst : ETH_TOP 
    port map(
@@ -1296,10 +1770,10 @@ begin
 		    write_data_in => MUX_TO_MEM_REQUEST_BUF_pipe_read_data,
 		    write_ack_in => MUX_TO_MEM_REQUEST_BUF_pipe_read_req(0),
 		
-		    read_clk => clock_70mhz_int,
+		    read_clk => ui_clk,
 		    write_clk => clock_mac,
 		    
-		    reset => reset_sync_pre_buf);	
+		    reset => ui_clk_sync_rst);	
 	
 	DualClockedQueue_ACB_resp_inst_memside : DualClockedQueue_ACB_resp -- done
 		port map( 
@@ -1313,68 +1787,142 @@ begin
 		    write_ack_in => MUX_TO_MEM_RESPONSE_BUF_dfifo_pipe_write_req(0),
 		
 		    read_clk => clock_mac,
-		    write_clk => clock_70mhz_int,
+		    write_clk => ui_clk,
 
 		    reset => reset_sync_mac);
 		    
-  mem_tap: acb_fast_tap  -- done
-		port map (
-      				clk => clock_70mhz_int, 
-      				reset => reset_sync_pre_buf,
-
-    				CORE_BUS_REQUEST_pipe_write_data => MUX_TO_MEM_REQUEST_BUF_dfifo_pipe_read_data, -- in
-    				CORE_BUS_REQUEST_pipe_write_req  => MUX_TO_MEM_REQUEST_BUF_dfifo_pipe_read_ack, -- in
-    				CORE_BUS_REQUEST_pipe_write_ack  => MUX_TO_MEM_REQUEST_BUF_dfifo_pipe_read_req, -- out
-
-    				CORE_BUS_RESPONSE_pipe_read_data => MUX_TO_MEM_RESPONSE_BUF_dfifo_pipe_write_data, -- out
-    				CORE_BUS_RESPONSE_pipe_read_req  => MUX_TO_MEM_RESPONSE_BUF_dfifo_pipe_write_ack, -- in
-    				CORE_BUS_RESPONSE_pipe_read_ack  => MUX_TO_MEM_RESPONSE_BUF_dfifo_pipe_write_req, -- out
-
-				-- connect to the tap.
-    				CORE_BUS_REQUEST_TAP_pipe_read_data => MEM1_TAP_REQUEST_pipe_read_data, -- out
-    				CORE_BUS_REQUEST_TAP_pipe_read_req  => MEM1_TAP_REQUEST_pipe_read_req, -- in
-    				CORE_BUS_REQUEST_TAP_pipe_read_ack  => MEM1_TAP_REQUEST_pipe_read_ack, -- out
-				-- MEM1_TAP_RESPONSE
-    				CORE_BUS_RESPONSE_TAP_pipe_write_data => MEM1_TAP_RESPONSE_pipe_write_data, -- in
-    				CORE_BUS_RESPONSE_TAP_pipe_write_req  => MEM1_TAP_RESPONSE_pipe_write_req, -- in
-    				CORE_BUS_RESPONSE_TAP_pipe_write_ack  => MEM1_TAP_RESPONSE_pipe_write_ack, -- out
-
-				-- MEM1_THROUGH_REQUEST
-    				CORE_BUS_REQUEST_THROUGH_pipe_read_data => MEM1_THROUGH_REQUEST_pipe_read_data, -- out
-    				CORE_BUS_REQUEST_THROUGH_pipe_read_req  => MEM1_THROUGH_REQUEST_pipe_read_req, -- in
-    				CORE_BUS_REQUEST_THROUGH_pipe_read_ack  => MEM1_THROUGH_REQUEST_pipe_read_ack, -- out
-				-- MEM1_THROUGH_RESPONSE
-    				CORE_BUS_RESPONSE_THROUGH_pipe_write_data => MEM1_THROUGH_RESPONSE_pipe_write_data, -- in
-    				CORE_BUS_RESPONSE_THROUGH_pipe_write_req  => MEM1_THROUGH_RESPONSE_pipe_write_req, -- in
-    				CORE_BUS_RESPONSE_THROUGH_pipe_write_ack  => MEM1_THROUGH_RESPONSE_pipe_write_ack, -- out
-
-    				MAX_ADDR_TAP => MAX_ADDR_TAP_MEM, -- in
-    				MIN_ADDR_TAP => MIN_ADDR_TAP_MEM -- in
-			);
+	ACB_to_UI_Inst: ACB_to_UI_EA
+	port map(
+		ui_clk                                       => ui_clk,
+		sys_rst                                      => ui_clk_sync_rst,
+		init_calib_complete                          => init_calib_complete,
+		app_addr                                     => app_addr,
+		app_cmd                                      => app_cmd,
+		app_en                                       => app_en,
+		app_wdf_data                                 => app_wdf_data, 
+		app_wdf_end                                  => app_wdf_end, 
+		app_wdf_mask                                 => app_wdf_mask, 
+		app_wdf_wren                                 => app_wdf_wren, 
+		app_rd_data                                  => app_rd_data,
+		app_rd_data_end                              => app_rd_data_end, 
+		app_rd_data_valid                            => app_rd_data_valid, 
+		app_rdy                                      => app_rdy, 
+		app_wdf_rdy                                  => app_wdf_rdy, 
+		app_sr_req                                   => app_sr_req,  
+		app_ref_req                                  => app_ref_req,  
+		app_zq_req                                   => app_zq_req, 
+		app_sr_active                                => app_sr_active,
+		app_ref_ack                                  => app_ref_ack,
+		app_zq_ack                                   => app_zq_ack,
+		ui_clk_sync_rst                              => ui_clk_sync_rst,                           
+		DRAM_REQUEST_pipe_write_ack                  => MUX_TO_MEM_REQUEST_BUF_dfifo_pipe_read_req,                 
+		DRAM_REQUEST_pipe_write_req                  => MUX_TO_MEM_REQUEST_BUF_dfifo_pipe_read_ack,
+		DRAM_REQUEST_pipe_write_data                 => MUX_TO_MEM_REQUEST_BUF_dfifo_pipe_read_data,
+		DRAM_RESPONSE_pipe_read_req                  => MUX_TO_MEM_RESPONSE_BUF_dfifo_pipe_write_ack,
+		DRAM_RESPONSE_pipe_read_ack                  => MUX_TO_MEM_RESPONSE_BUF_dfifo_pipe_write_req,
+		DRAM_RESPONSE_pipe_read_data                 => MUX_TO_MEM_RESPONSE_BUF_dfifo_pipe_write_data
+		--fatal_error                                  => fatal_error 
+    );
 
 
-   MAX_ADDR_TAP_MEM <= X"000FFFFFF";  -- MMIO for NIC+ 256B-1
-   MIN_ADDR_TAP_MEM <= X"000000000"; -- MMIO for NIC
-  bram1:acb_sram_stub_rmw generic map (addr_width => 24) port map (
-      CORE_BUS_REQUEST_PIPE_WRITE_DATA => MEM1_TAP_REQUEST_pipe_read_data, -- in
-      CORE_BUS_REQUEST_PIPE_WRITE_REQ  => MEM1_TAP_REQUEST_pipe_read_ack, -- in
-      CORE_BUS_REQUEST_PIPE_WRITE_ACK  => MEM1_TAP_REQUEST_pipe_read_req, -- out
-      CORE_BUS_RESPONSE_PIPE_READ_DATA => MEM1_TAP_RESPONSE_pipe_write_data, -- out
-      CORE_BUS_RESPONSE_PIPE_READ_REQ  => MEM1_TAP_RESPONSE_pipe_write_ack, -- in
-      CORE_BUS_RESPONSE_PIPE_READ_ACK  => MEM1_TAP_RESPONSE_pipe_write_req, -- out
-      clk => clock_70mhz_int, 
-      reset => reset_sync_pre_buf
-   );
-  bram2:acb_sram_stub_rmw generic map (addr_width => 23) port map (
-      CORE_BUS_REQUEST_PIPE_WRITE_DATA => MEM1_THROUGH_REQUEST_pipe_read_data, -- in
-      CORE_BUS_REQUEST_PIPE_WRITE_REQ  => MEM1_THROUGH_REQUEST_pipe_read_ack, -- in
-      CORE_BUS_REQUEST_PIPE_WRITE_ACK  => MEM1_THROUGH_REQUEST_pipe_read_req, -- out
-      CORE_BUS_RESPONSE_PIPE_READ_DATA => MEM1_THROUGH_RESPONSE_pipe_write_data, -- out
-      CORE_BUS_RESPONSE_PIPE_READ_REQ  => MEM1_THROUGH_RESPONSE_pipe_write_ack, -- in
-      CORE_BUS_RESPONSE_PIPE_READ_ACK  => MEM1_THROUGH_RESPONSE_pipe_write_req, -- out
-      clk => clock_70mhz_int, 
-      reset => reset_sync_pre_buf
-   );
+  ddr4_0_inst :  ddr4_0
+  port map ( 
+    sys_rst => reset, --in STD_LOGIC;
+    c0_sys_clk_p => c0_sys_clk_p, --c0_sys_clk_p, --in STD_LOGIC;
+    c0_sys_clk_n => c0_sys_clk_n, --c0_sys_clk_n, --in STD_LOGIC;
+    c0_ddr4_act_n => c0_ddr4_act_n, --out STD_LOGIC;
+    c0_ddr4_adr => c0_ddr4_adr, --out STD_LOGIC_VECTOR ( 16 downto 0 );
+    c0_ddr4_ba => c0_ddr4_ba, --out STD_LOGIC_VECTOR ( 1 downto 0 );
+    c0_ddr4_bg => c0_ddr4_bg, --out STD_LOGIC_VECTOR ( 0 to 0 );
+    c0_ddr4_cke => c0_ddr4_cke, --out STD_LOGIC_VECTOR ( 0 to 0 );
+    c0_ddr4_odt => c0_ddr4_odt, --out STD_LOGIC_VECTOR ( 0 to 0 );
+    c0_ddr4_cs_n => c0_ddr4_cs_n, --out STD_LOGIC_VECTOR ( 1 downto 0 );
+    c0_ddr4_ck_t => c0_ddr4_ck_t, --out STD_LOGIC_VECTOR ( 0 to 0 );
+    c0_ddr4_ck_c => c0_ddr4_ck_c, --out STD_LOGIC_VECTOR ( 0 to 0 );
+    c0_ddr4_reset_n => c0_ddr4_reset_n, --out STD_LOGIC;
+    c0_ddr4_dm_dbi_n => c0_ddr4_dm_dbi_n, --inout STD_LOGIC_VECTOR ( 8 downto 0 );
+    c0_ddr4_dq => c0_ddr4_dq, --inout STD_LOGIC_VECTOR ( 71 downto 0 );
+    c0_ddr4_dqs_c => c0_ddr4_dqs_c, --inout STD_LOGIC_VECTOR ( 8 downto 0 );
+    c0_ddr4_dqs_t => c0_ddr4_dqs_t, --inout STD_LOGIC_VECTOR ( 8 downto 0 );
+    c0_init_calib_complete => init_calib_complete, --out STD_LOGIC;
+    c0_ddr4_ui_clk => ui_clk, --out STD_LOGIC;
+    c0_ddr4_ui_clk_sync_rst => ui_clk_sync_rst, --out STD_LOGIC;
+    --addn_ui_clkout1 => clock_proc,
+    --dbg_clk => , --out STD_LOGIC;
+    c0_ddr4_app_addr => app_addr, --in STD_LOGIC_VECTOR ( 28 downto 0 );
+    c0_ddr4_app_cmd => app_cmd, --in STD_LOGIC_VECTOR ( 2 downto 0 );
+    c0_ddr4_app_en => app_en, --in STD_LOGIC;
+    c0_ddr4_app_hi_pri => '0', --in STD_LOGIC;
+    c0_ddr4_app_wdf_data => app_wdf_data, --in STD_LOGIC_VECTOR ( 511 downto 0 );
+    c0_ddr4_app_wdf_end => app_wdf_end, --in STD_LOGIC;
+    c0_ddr4_app_wdf_mask => app_wdf_mask, --in STD_LOGIC_VECTOR ( 63 downto 0 );
+    c0_ddr4_app_wdf_wren => app_wdf_wren, --in STD_LOGIC;
+    c0_ddr4_app_rd_data => app_rd_data, --out STD_LOGIC_VECTOR ( 511 downto 0 );
+    c0_ddr4_app_rd_data_end => app_rd_data_end, --out STD_LOGIC;
+    c0_ddr4_app_rd_data_valid => app_rd_data_valid, --out STD_LOGIC;
+    c0_ddr4_app_rdy => app_rdy, --out STD_LOGIC;
+    c0_ddr4_app_wdf_rdy => app_wdf_rdy --out STD_LOGIC
+    --dbg_bus =>  --out STD_LOGIC_VECTOR ( 511 downto 0 )
+  );
+
+--  mem_tap: acb_fast_tap  -- done
+--		port map (
+--      				clk => clock_70mhz_int, 
+--      				reset => reset_sync_pre_buf,
+--
+--    				CORE_BUS_REQUEST_pipe_write_data => MUX_TO_MEM_REQUEST_BUF_dfifo_pipe_read_data, -- in
+--    				CORE_BUS_REQUEST_pipe_write_req  => MUX_TO_MEM_REQUEST_BUF_dfifo_pipe_read_ack, -- in
+--    				CORE_BUS_REQUEST_pipe_write_ack  => MUX_TO_MEM_REQUEST_BUF_dfifo_pipe_read_req, -- out
+--
+--    				CORE_BUS_RESPONSE_pipe_read_data => MUX_TO_MEM_RESPONSE_BUF_dfifo_pipe_write_data, -- out
+--    				CORE_BUS_RESPONSE_pipe_read_req  => MUX_TO_MEM_RESPONSE_BUF_dfifo_pipe_write_ack, -- in
+--    				CORE_BUS_RESPONSE_pipe_read_ack  => MUX_TO_MEM_RESPONSE_BUF_dfifo_pipe_write_req, -- out
+--
+--				-- connect to the tap.
+--    				CORE_BUS_REQUEST_TAP_pipe_read_data => MEM1_TAP_REQUEST_pipe_read_data, -- out
+--    				CORE_BUS_REQUEST_TAP_pipe_read_req  => MEM1_TAP_REQUEST_pipe_read_req, -- in
+--    				CORE_BUS_REQUEST_TAP_pipe_read_ack  => MEM1_TAP_REQUEST_pipe_read_ack, -- out
+--				-- MEM1_TAP_RESPONSE
+--    				CORE_BUS_RESPONSE_TAP_pipe_write_data => MEM1_TAP_RESPONSE_pipe_write_data, -- in
+--    				CORE_BUS_RESPONSE_TAP_pipe_write_req  => MEM1_TAP_RESPONSE_pipe_write_req, -- in
+--    				CORE_BUS_RESPONSE_TAP_pipe_write_ack  => MEM1_TAP_RESPONSE_pipe_write_ack, -- out
+--
+--				-- MEM1_THROUGH_REQUEST
+--    				CORE_BUS_REQUEST_THROUGH_pipe_read_data => MEM1_THROUGH_REQUEST_pipe_read_data, -- out
+--    				CORE_BUS_REQUEST_THROUGH_pipe_read_req  => MEM1_THROUGH_REQUEST_pipe_read_req, -- in
+--    				CORE_BUS_REQUEST_THROUGH_pipe_read_ack  => MEM1_THROUGH_REQUEST_pipe_read_ack, -- out
+--				-- MEM1_THROUGH_RESPONSE
+--    				CORE_BUS_RESPONSE_THROUGH_pipe_write_data => MEM1_THROUGH_RESPONSE_pipe_write_data, -- in
+--    				CORE_BUS_RESPONSE_THROUGH_pipe_write_req  => MEM1_THROUGH_RESPONSE_pipe_write_req, -- in
+--    				CORE_BUS_RESPONSE_THROUGH_pipe_write_ack  => MEM1_THROUGH_RESPONSE_pipe_write_ack, -- out
+--
+--    				MAX_ADDR_TAP => MAX_ADDR_TAP_MEM, -- in
+--    				MIN_ADDR_TAP => MIN_ADDR_TAP_MEM -- in
+--			);
+--
+--
+--   MAX_ADDR_TAP_MEM <= X"000FFFFFF";  -- MMIO for NIC+ 256B-1
+--   MIN_ADDR_TAP_MEM <= X"000000000"; -- MMIO for NIC
+--  bram1:acb_sram_stub_rmw generic map (addr_width => 24) port map (
+--      CORE_BUS_REQUEST_PIPE_WRITE_DATA => MEM1_TAP_REQUEST_pipe_read_data, -- in
+--      CORE_BUS_REQUEST_PIPE_WRITE_REQ  => MEM1_TAP_REQUEST_pipe_read_ack, -- in
+--      CORE_BUS_REQUEST_PIPE_WRITE_ACK  => MEM1_TAP_REQUEST_pipe_read_req, -- out
+--      CORE_BUS_RESPONSE_PIPE_READ_DATA => MEM1_TAP_RESPONSE_pipe_write_data, -- out
+--      CORE_BUS_RESPONSE_PIPE_READ_REQ  => MEM1_TAP_RESPONSE_pipe_write_ack, -- in
+--      CORE_BUS_RESPONSE_PIPE_READ_ACK  => MEM1_TAP_RESPONSE_pipe_write_req, -- out
+--      clk => clock_70mhz_int, 
+--      reset => reset_sync_pre_buf
+--   );
+--  bram2:acb_sram_stub_rmw generic map (addr_width => 23) port map (
+--      CORE_BUS_REQUEST_PIPE_WRITE_DATA => MEM1_THROUGH_REQUEST_pipe_read_data, -- in
+--      CORE_BUS_REQUEST_PIPE_WRITE_REQ  => MEM1_THROUGH_REQUEST_pipe_read_ack, -- in
+--      CORE_BUS_REQUEST_PIPE_WRITE_ACK  => MEM1_THROUGH_REQUEST_pipe_read_req, -- out
+--      CORE_BUS_RESPONSE_PIPE_READ_DATA => MEM1_THROUGH_RESPONSE_pipe_write_data, -- out
+--      CORE_BUS_RESPONSE_PIPE_READ_REQ  => MEM1_THROUGH_RESPONSE_pipe_write_ack, -- in
+--      CORE_BUS_RESPONSE_PIPE_READ_ACK  => MEM1_THROUGH_RESPONSE_pipe_write_req, -- out
+--      clk => clock_70mhz_int, 
+--      reset => reset_sync_pre_buf
+--   );
 
 
   --debug_uart_inst: configurable_uart
