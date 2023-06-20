@@ -3,12 +3,19 @@ import socket
 import threading
 from time import sleep
 import os
+import subprocess
+
+
 
 flag = 1
 
 
 
 interface = "enp4s0" # Network interface to send the packet on
+
+## without wireshark
+subprocess.run(['sudo', 'ifconfig', interface, 'promisc'], check=True)
+
 s = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003))
 s.bind((interface, 0))
 
@@ -60,7 +67,7 @@ def send_file(s,filename):
         #    x = 1
         s.send(packet)
         #print("Packet sent!")
-    '''
+    
     i = 0
     while (i < len(packets)):
         p = packets[i]
@@ -73,7 +80,7 @@ def send_file(s,filename):
         s.send(p)
         sleep(10000/1000000) #100/1000000 for VCUi
         #x = input("Entre :")
-        
+    '''     
     print("*********** FILE SENT ***********")
 
 recv_stop = 0
