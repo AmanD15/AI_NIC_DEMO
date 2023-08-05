@@ -1,0 +1,23 @@
+
+All Networking related stuff
+
+	Here I describe all contents of directory.
+	Small description of each file is done.
+	Stage shows how much I have worked(for 
+	suitcase) on it.
+		stage
+		1.	Nothing is there.
+		2.	Some Needed content is there.
+		3.	All contents present
+			   You can read and understand.
+		4.	All setup done you can use.
+
+
+File			Desc.			Stage
+
+build 		: aa to vhdl  			 3	
+src  		: NIC aa description		 3
+testbench	: NIC testbenches		 3
+
+kc705		: Setup on KC705		 2
+vcu128		: Setup on VCU128		 2

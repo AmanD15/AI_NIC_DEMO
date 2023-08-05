@@ -1,0 +1,92 @@
+pkg load image;
+
+cmd_line = argv();
+if (length(cmd_line) > 0)
+	outfile2 = cmd_line{1};
+else outfile2 = "ignore.txt";
+endif
+
+dims = zeros(1,3);
+dims_k = zeros(1,4);
+for i = 1:3
+  dims(4-i) = input("");
+  dims_k(4 - mod(i,3)) = input("");
+end
+scale_val = input("");
+shift_val = input("");
+pad = input("");
+pool = input("");
+relu = input("");
+CT = input("");
+concat = input("");
+dims_k(1) = dims(1);
+T = zeros(dims);
+K = zeros(dims_k);
+input_size = prod(dims);
+for i = 1:input_size
+  T(i) = input("");
+  if (T(i) > 127) T(i) = T(i) - 256; endif
+end
+if (concat == 1)
+T1 = reshape(T(1:input_size/2),[dims(1)/2,dims(2),dims(3)]);
+T2 = reshape(T((input_size/2)+1:input_size),[dims(1)/2,dims(2),dims(3)]);
+T = [T1;T2];
+end
+input_size = prod(dims_k);
+for i = 1:input_size
+  K(i) = input("");
+  if (K(i) > 127) K(i) = K(i) - 256; endif
+end
+T = reshape(T,dims);
+if (CT==1)
+tmp_val = zeros(dims(1),2*dims(2)+1,2*dims(3)+1);
+tmp_val(:,2:2:2*dims(2),2:2:2*dims(3)) = T;
+T = tmp_val;
+dims = size(T);
+else
+T = padarray(T,[0,pad,pad]);
+endif
+K = reshape(K,dims_k);
+out_dims = [dims_k(4),dims(2)+2*pad-dims_k(2)+1,dims(3)+2*pad-dims_k(3)+1];
+
+count = 1;
+for row = 1:out_dims(3)
+  for col = 1:out_dims(2)
+    for chl = 1:out_dims(1)
+      val = rem(sum(floor((T(:,col:col+dims_k(2)-1,row:row+dims_k(3)-1).*K(:,:,:,chl)))(:)),2**32);
+      %val = rem(sum(floor((T(:,col:col+dims_k(2)-1,row:row+dims_k(3)-1).*K(:,:,:,chl))/256)(:)),2**16);
+      if (val < 0)
+	if (relu == 1)
+	val = 0;
+	endif
+      endif
+      val = floor(val*scale_val/(2**shift_val));
+      val = mod(val,2**8);
+      if (val > 2**7 - 1)
+	val = val - 2**8; 
+      endif
+      if (pool != 1) printf("%u\n",val);endif
+      count = count + 1;
+	B(chl,col,row) = val;
+    end
+  end
+end
+
+if (pool != 0)
+out_dims(3) /= 2;
+out_dims(2) /= 2;
+
+f = fopen(outfile2,"w");
+
+count = 1;
+for row = 1:(out_dims(3))
+  for col = 1:(out_dims(2))
+	for chl = 1:out_dims(1)
+	  val = max(max(B(chl,2*col-1:2*col,2*row-1:2*row)));
+	  fprintf(f,"%u\n",val);
+	  count = count + 1;
+	end
+  end
+end
+fclose(f);
+endif;

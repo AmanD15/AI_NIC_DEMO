@@ -1,0 +1,49 @@
+Usage
+
+*Makefile
+---------------
+
+	make all
+		creats both software and hardware testbenches.
+
+	make TOVC
+		aa -> VC 
+	
+	make VC2VHDL 
+		VC -> VHDL
+		creates simulation files.
+
+	make AA2VHDLSIM
+		aa -> VC
+		VC -> VHDL
+		creates simulation files.
+		
+	make TOVHDL
+		aa -> VHDL
+		
+
+	Refer Makefile for more details.
+
+
+*simulation
+----------------
+	1.Software
+		Single terminal
+		
+		run 
+		$ ./testbench_sw <option>
+			option : null : no trace
+				 stdout : trace
+
+	2.Hardware
+		Two terminals
+
+		term1 -
+			
+			$ ./testbench_hw <option>
+				option : null : no trace
+					 stdout : trace
+
+		term2 -
+
+			$ ./nic_test_bench --stop-time=25000ns

@@ -1,0 +1,198 @@
+// decleration of pipes
+
+$pipe mac_test_data : $uint<8> $depth 1
+
+$pipe mac_to_nic_data_0 : $uint<64> $depth 2//16
+$pipe mac_to_nic_data_1 : $uint<16> $depth 2//16
+
+$pipe nic_to_mac_data_0 : $uint<64> $depth 2//16
+$pipe nic_to_mac_data_1 : $uint<16> $depth 2//16
+
+$pipe control_word_request_pipe_0 : $uint<32> $depth 2
+$pipe control_word_request_pipe_1 : $uint<64> $depth 2
+$pipe control_word_response_pipe : $uint<64> $depth 2
+
+$pipe mem_req0_pipe0 : $uint<64>  $depth 2//16
+$pipe mem_req0_pipe1 : $uint<64>  $depth 2//16
+$pipe mem_req1_pipe0 : $uint<64>  $depth 2//16
+$pipe mem_req1_pipe1 : $uint<64>  $depth 2//16
+
+$pipe mem_req0_pipe0_tester : $uint<64>  $depth 2//16
+$pipe mem_req0_pipe1_tester : $uint<64>  $depth 2//16
+$pipe mem_resp0_pipe0_tester : $uint<64> $depth 2//16
+$pipe mem_resp0_pipe1_tester : $uint<8> $depth 2//16
+
+$pipe mem_resp0_pipe0 : $uint<64> $depth 2//16
+$pipe mem_resp0_pipe1 : $uint<8> $depth 2//16
+$pipe mem_resp1_pipe0 : $uint<64> $depth 2//16
+$pipe mem_resp1_pipe1 : $uint<8> $depth 2//16
+
+
+//
+// All modules are daemons
+//
+
+
+$module[macToNicInterface] $in() $out()
+$is
+{
+	$branchblock[loop]{
+		$dopipeline $depth 7 $fullrate
+			$merge $entry $loopback
+				// 64 bit wide
+				$phi rdata0 := mac_to_nic_data_0 $on $entry, $loopback	
+				// 16 bit wide
+				$phi rdata1 := mac_to_nic_data_1 $on $entry, $loopback
+			$endmerge
+			// 73 bit wide
+			$rreport(macToNicInterface writing_data rdata1 rdata0)
+			mac_to_nic_data := ($concat ($slice rdata1 8 0) rdata0)
+		$while 1
+	}
+}
+
+$module[nicToMacInterface] $in() $out()
+$is
+{
+	$branchblock[loop]{
+		$dopipeline $depth 7 $fullrate
+			$merge $entry $loopback
+				// 73 bit wide
+				$phi rdata := nic_to_mac_transmit_pipe $on $entry, $loopback
+			$endmerge
+			// 64 bit wide
+			$rreport(nicToMacInterface read_data_is rdata)
+			nic_to_mac_data_0 := ($slice rdata 63 0)
+			// 16 bit wide
+			nic_to_mac_data_1 := ($bitcast ($uint<16>) ($slice rdata 72 64))
+		$while 1
+	}
+}
+
+$module[processorToNicInterface] $in() $out()
+$is
+{
+	
+	$branchblock[loop]{
+		$dopipeline $depth 7 $fullrate
+			$merge $entry $loopback
+				// 32 bit wide
+				$phi rdata0 := control_word_request_pipe_0 $on $entry, $loopback
+				// 64 bit wide
+				$phi rdata1 := control_word_request_pipe_1 $on $entry, $loopback
+			$endmerge
+			// 74 bit wide
+			$rreport(processorToNicInterface got_afb_Req rdata0 rdata1)
+			AFB_NIC_REQUEST := ($concat ($slice rdata1 41 0) rdata0)
+		$while 1
+	}
+}
+
+$module[nicToProcessorInterface] $in() $out()
+$is
+{
+	$branchblock[loop]{
+		$dopipeline $depth 7 $fullrate
+			$merge $entry $loopback
+				// 33 bit wide
+				$phi rdata := AFB_NIC_RESPONSE $on $entry, $loopback
+			$endmerge
+			// 64 bit wide
+			control_word_response_pipe := ($bitcast ($uint<64>) rdata)
+		$while 1
+	}
+	
+}
+
+$module[memoryToNicInterface] $in() $out()
+$is
+{
+	
+	$branchblock[loop]{
+		$dopipeline $depth 7 $fullrate
+			$merge $entry $loopback
+				// 64 bit wide
+				$phi rdata0 := mem_resp1_pipe0 $on $entry, $loopback
+				// 8 bit wide
+				$phi rdata1 := mem_resp1_pipe1 $on $entry, $loopback
+			$endmerge
+			MEMORY_TO_NIC_RESPONSE := ($concat (rdata1 [] 0) rdata0)
+		$while 1
+	}
+}
+
+$module[nicToMemoryInterface] $in() $out()
+$is
+{
+	$branchblock[loop]{
+		$dopipeline $depth 7 $fullrate
+			$merge $entry $loopback
+				//110 bit wide
+				$phi rdata := NIC_TO_MEMORY_REQUEST $on $entry, $loopback
+			$endmerge
+			// 64 bit wide
+			$rreport(nicToMemoryInterface writing_to_mem_pipe rdata)
+			mem_req1_pipe0 := ($slice rdata 63 0)
+			// 64 bit wide
+			mem_req1_pipe1 := ($bitcast ($uint<64>) ($slice rdata 109 64))
+		$while 1
+	}
+	
+}
+
+$module[memoryToProcessorInterface] $in() $out()
+$is
+{
+	
+	$branchblock[loop]{
+		$dopipeline $depth 7 $fullrate
+			$merge $entry $loopback
+				// 64 bit wide
+				$phi rdata0 := mem_resp0_pipe0 $on $entry, $loopback
+				// 8 bit wide
+				$phi rdata1 := mem_resp0_pipe1 $on $entry, $loopback
+			$endmerge
+			mem_resp0_pipe0_tester := rdata0
+			mem_resp0_pipe1_tester := rdata1
+		$while 1
+	}
+}
+
+$module[processorToMemoryInterface] $in() $out()
+$is
+{
+	$branchblock[loop]{
+		$dopipeline $depth 7 $fullrate
+			$merge $entry $loopback
+				//110 bit wide
+				$phi rdata0 := mem_req0_pipe0_tester $on $entry, $loopback
+				$phi rdata1 := mem_req0_pipe1_tester $on $entry, $loopback
+			$endmerge
+			// 64 bit wide
+			$rreport(ProcessorToMemoryInterface writing_to_mem_pipe rdata0 rdata1)
+			mem_req0_pipe0 := rdata0
+			// 64 bit wide
+			mem_req0_pipe1 := rdata1
+		$while 1
+	}
+}
+
+$module [mac_enable_tester]
+	$in()
+	$out()
+$is
+{
+	$branchblock[loop]
+	{
+		$dopipeline $depth 7 $fullrate
+		$merge $entry $loopback $endmerge
+
+		$rreport(mac_enable_tester reading_mac_enable)
+		data := enable_mac 
+		$rreport(mac_enable_tester read_mac_enable data)
+		mac_test_data := ($concat $zero<7> data) 
+
+		$while 1	
+	}
+
+}

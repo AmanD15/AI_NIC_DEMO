@@ -1,0 +1,39 @@
+The testbench written in C:
+
+	will model the MAC (generate a stream of bytes for a "standard" packet".
+	will model the external memory (connected directly to NIC).
+	will model the processor (programs the nic using the peripheral bus).
+	will model the "algorithm"
+		- initialize the queues 
+		- pop from nic->server queues.
+		- push into server->nic queues.
+
+Folder contains :
+	header.h :
+        	all declerations.
+
+	InterfaceDataStructures_Utils.h:
+        	queues related functions.
+
+	MAC.c :
+	        MAC tx and rx threads
+
+	Memory_8.c :
+	        Memory thread.
+
+	Processor.c :
+	        Processor thread.
+
+	register_config.c :
+        	functionality to configure NIC.
+
+	testbench.c :
+	        Main testbench file.
+
+	test_compile.sh:
+	        To compile testbench.
+
+	tester.aa :
+	        contains modules which merge/split pipes.
+~                                                  
+

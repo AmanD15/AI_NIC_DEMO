@@ -1,0 +1,109 @@
+//
+//states :
+//	S0 ->	RX := pipe
+//		send to header pipe
+//		send to payload pipe
+//		goto S1
+//	S1 ->	RX := pipe
+//		send to header pipe (tkeep := 00111111)
+//		send to payload pipe
+//		goto S2
+//	S2 ->	RX := pipe
+//		send to payload pipe
+//		if(tlast == 1)
+//			goto S0
+//		else
+//			goto S2
+
+$constant S0: $uint<2> := 0
+$constant S1: $uint<2> := 1
+$constant S2: $uint<2> := 2
+$constant S3: $uint<2> := 3
+// upper two bytes of last word of header are unused.
+//	so modify tkeep of last word.
+$constant HEADER_TKEEP : $uint<8> := _b00111111
+
+$module [nicRxFromMacDaemon] $in () $out () $is
+{
+	$branchblock[loop]{
+		// loop around until enabled by Software
+		$rreport(nicRxFromMacDaemon waiting_for_control)
+		$merge $entry not_enabled_yet_loopback disable_loopback $endmerge
+		
+			// for Debug
+			$call AccessRegister ($zero<1> (~$zero<4>) 22 $zero<32>) (ignore_resp0)
+		
+			
+		// If not enabled yet -> Loopback
+		$if (~(CONTROL_REGISTER [] 0)) $then
+			$place [not_enabled_yet_loopback]
+		$endif
+
+		//enable_mac := 1
+
+		$rreport(nicRxFromMacDaemon got_the__control )
+			// for Debug
+			$call AccessRegister ($zero<1> (~$zero<4>) 22 $one<32>) (ignore_resp1)
+			
+			$dopipeline $depth 7 $fullrate
+			$merge $entry $loopback
+				// where are we in the packet
+				// S0	S1	S2
+				//start	Header	Payload	
+				// local_state
+				//	2
+				$phi LSTATE := S0 $on $entry nLSTATE $on $loopback
+				$phi RX := mac_to_nic_data $on $entry, $loopback
+					// for Debug
+					$phi pkt_cnt := $zero<32> $on $entry npkt_cnt $on $loopback
+			$endmerge
+			
+			$rreport(nicRxFromMacDaemon data_is RX LSTATE)
+			// compute next state
+			$volatile $call nextLSTATE (RX LSTATE)	(nLSTATE)
+			
+			// state 0 nd state 1 contains ethernet header
+			$volatile write_to_header := ((LSTATE == S0) | (LSTATE == S1))
+			
+			// if state is S1 modify the tkeep and send to header pipe
+			$guard (write_to_header) 
+				nic_rx_to_header := ($mux (LSTATE == S1)
+								($concat ($slice RX 72 8) HEADER_TKEEP)
+								RX)
+			// send to packet pipe
+			nic_rx_to_packet := RX
+
+				// for Debug
+				$volatile pkt_complete := (nLSTATE == S0)
+				$volatile npkt_cnt := ($mux pkt_complete (pkt_cnt + $one<32>) pkt_cnt)			
+				$guard(pkt_complete)
+					$call AccessRegister ($zero<1> (~$zero<4>) 23 pkt_cnt) (ignore_resp2)
+					
+			$rreport(nicRxFromMacDaemon data_written_is RX nLSTATE)
+			$while (CONTROL_REGISTER [] 0)
+			
+			$place [disable_loopback]
+	}
+}
+
+
+//
+//	this module finds out next state using present state  
+//		and input(RX)
+//	state machine is shown at start.
+$volatile $module [nextLSTATE]
+	$in (RX : $uint<73> LSTATE : $uint<2> )
+	$out(nLSTATE : $uint<2>)
+$is
+{
+	$volatile $split(RX 1 64 8) (tlast tdata tkeep)
+	$volatile last_word := (tlast == 1)
+	$volatile go_to_s0 := ((last_word == 1) & (LSTATE != S2))
+	nLSTATE := ($excmux
+			(LSTATE == S0) 				S1
+			((LSTATE == S3) |(go_to_s0 == 1))	S0
+			(LSTATE == S1)				S2
+			((LSTATE == S2) & (~last_word))		S2
+			((LSTATE == S2) & last_word)		S0)
+}
+
