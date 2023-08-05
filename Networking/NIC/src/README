@@ -5,3 +5,16 @@ NIC desing with cortos queue Interfaces.
 	2. This design assumes that the msgSizeInBytes for all queue is 4.
 		as these interfaces right now contains 32 bit addresses only.
 
+What do these files contain?
+
+control.aa
+decls.aa
+general_utils.aa
+memory_utils.aa
+pipes.aa
+queue_utils.aa
+receive_engine.aa
+register_utils.aa
+rx_from_mac.aa
+signals.aa
+transmit_engine.aa

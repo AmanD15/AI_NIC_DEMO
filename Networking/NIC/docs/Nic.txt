@@ -1,0 +1,47 @@
+
+	Design and verification of the NIC
+		Harshad Ugale
+
+
+1. Overview
+-------------
+
+	The NIC is intended to be a bridge between
+	the Ethernet MAC and the AJIT/Processing subsystem.
+
+
+2. Interfaces
+--------------
+	- MAC side
+	- Processor side
+		- control interface (AFB, slave)
+		- data interface (ACB, master)
+
+3. Behaviour
+-------------
+
+	- interface buffers in shared memory between
+		NIC and processor.
+
+	- buffer management
+
+		Free buffer queue
+
+		Nic->Processor queues
+		Processor->Nic queues
+		
+		control/registers
+			- addresses of the buffer queues
+				(for each nic, there is a per-processor-thread
+					tx-queue and rx-queue)
+
+	- for MAC -> Processor path
+		Nic gets free buffer from free queue
+		Nic collects packet into buffer 
+		Nic writes buffer id into -> Processor-thread queue
+
+
+	- for Processor -> MAC path
+		Nic polls queues from processor-threads
+		... to be filled in  ....
+
