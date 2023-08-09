@@ -1,6 +1,6 @@
 The testbench written in C:
 
-	will model the MAC (generate a stream of bytes for a "standard" packet".
+	will model the MAC (generate a stream of bytes for a "standard" packet.
 	will model the external memory (connected directly to NIC).
 	will model the processor (programs the nic using the peripheral bus).
 	will model the "algorithm"
