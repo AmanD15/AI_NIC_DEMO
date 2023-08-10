@@ -16,6 +16,7 @@
 //  Id	       offset	
 //------------------------------------------------------------
 //  0	  	  0x00		        control register
+//					 bit [0] is nic enable
 //--------------------------------------------------------------
 //  1		  0x04		        number of servers  (we can make this a mask...)
 //         Note: specify the servers to be polled..
@@ -138,6 +139,7 @@ $module [SoftwareRegisterAccessDaemon] $in () $out () $is
 			control_data := nic_registers[0]
 
 			$rreport(SoftwareRegisterAccessDaemon control control_data)
+
 			// Initialise the value for the signals on entry and don't change
 			// until software changes the value of the corresponding register
 			$volatile update_control_register_pipe := ((~INIT) | (INIT & control_register))

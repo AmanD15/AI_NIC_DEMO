@@ -1,5 +1,5 @@
-SRC =../../../../code/NicWithMacIf/Nic/src
-
+#SRC =../../../../code/NicWithMacIf/Nic/src
+SRC=../../NIC/src/
 
 all:tester
 
