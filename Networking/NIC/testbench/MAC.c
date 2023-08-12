@@ -101,7 +101,7 @@ void macToNicData(void)
 		(DEBUG == 0) && fprintf(stderr,"MAC_TX : Sent packet[%d]\n",pkt_cnt);
 		pkt_cnt++;
 
-		//if(pkt_cnt == 15) break;
+		if(pkt_cnt == 15) break;
 		}
 	}
 }

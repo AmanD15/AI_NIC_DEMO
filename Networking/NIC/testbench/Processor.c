@@ -12,9 +12,9 @@ void cpu_model()
 	//readNicReg();
 
 	readNicReg();
-	initQueue(FREE_QUEUE, 4, 4);
-	initQueue(RX_QUEUE, 4,4);
-	initQueue(TX_QUEUE, 4,4);
+	initQueue(FREE_QUEUE, 8, 4);
+	initQueue(RX_QUEUE, 8,4);
+	initQueue(TX_QUEUE, 8,4);
 
 	(DEBUG == 0) && fprintf(stderr, "CPU_THREAD : Init queue done. \n");
 	

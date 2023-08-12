@@ -46,4 +46,4 @@ Usage
 
 		term2 -
 
-			$ ./nic_test_bench --stop-time=25000ns
+			$ ./nic_test_bench --stop-time=250000ns

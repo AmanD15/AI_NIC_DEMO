@@ -21,6 +21,7 @@ uint32_t reserve_lock()
 {
 	uint32_t lock_ptr = lock_index;
 	lock_index += 1;
+	fprintf(stderr,"lock_ptr = 0x%x\n", lock_ptr);
 	return lock_ptr;
 }
 
