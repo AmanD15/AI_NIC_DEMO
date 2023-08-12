@@ -1,5 +1,5 @@
 
-char DEBUG = 1; // 0 for no print and 1 for print
+char DEBUG = 0; // 0 for no print and 1 for print
 
 // function declerations,
 //  defined in register_config.c
@@ -15,7 +15,7 @@ uint32_t reserve_lock(void);
 // For number of buffer
 // if you change NUM_OF_BUFFERS then make same change to QUEUE_SIZE_MESK in ../src/decls.aa
 
-#define NUM_OF_BUFFERS	4 // should be miltiple of 4 
+#define NUM_OF_BUFFERS	8 // should be miltiple of 4 
 
 #define QUEUE_LENGTH	(32 + 4*NUM_OF_BUFFERS)		//64
 #define FREE_QUEUE 	0		
@@ -184,7 +184,7 @@ int push(uint64_t queue_offset, uint32_t buffer_address)
 	length = getSliceFromWord(wpointer, 31, 0);
 	uint32_t next_pointer = (write_pointer + 1) % (length);
 
-	uint64_t element_pair_address = queue_offset + 24 + ((write_pointer >> 1)<<3) ;
+	uint64_t element_pair_address = queue_offset + 32 + ((write_pointer >> 1)<<3) ;
 	(DEBUG == 1) && fprintf(stderr, "CPU_THREAD [push] : buffer_address = %lx,Queue_Offset = %lx"
 				" Read Pointers = pointerss = 0x%lx, next_pointer = 0x%lx, pair_addr "
 				"= 0x%lx write_pointer = 0x%lx, queue_offset = 0x%lx. \n",buffer_address,
@@ -270,7 +270,7 @@ int pop(uint64_t queue_offset , uint32_t* buf_address)
 		// Date 14/7/22	
 	uint32_t total_msgs = getSliceFromWord(rpointer, 63,32);
 	uint32_t length  = getSliceFromWord(wpointer, 31, 0);
-	uint64_t element_pair_address = queue_offset + 24 + ((read_pointer >> 1)<<3) ;
+	uint64_t element_pair_address = queue_offset + 32 + ((read_pointer >> 1)<<3) ;
 	
 	(DEBUG == 1) && fprintf(stderr, "CPU_THREAD [pop] : write_pointer = 0x%lx,"
 				" read_pointer = 0x%lx element_pair_address = 0x%lx"
