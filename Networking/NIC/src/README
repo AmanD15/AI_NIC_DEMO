@@ -7,14 +7,14 @@ NIC desing with cortos queue Interfaces.
 
 What do these files contain?
 
-control.aa
-decls.aa
-general_utils.aa
-memory_utils.aa
-pipes.aa
-queue_utils.aa
-receive_engine.aa
-register_utils.aa
-rx_from_mac.aa
-signals.aa
-transmit_engine.aa
+control.aa - NIC registers description 
+decls.aa - All declerartions
+general_utils.aa - 
+memory_utils.aa - Memory access 
+pipes.aa - All pipes
+queue_utils.aa - queue modules (push, pop, acquirelock & releaselock)
+receive_engine.aa - Daemon to store RX packet in memory
+register_utils.aa - Module for NIC to access registers
+rx_from_mac.aa - Parser separates header 
+signals.aa - all signal declerations
+transmit_engine.aa - Daemon to send Tx packet out
