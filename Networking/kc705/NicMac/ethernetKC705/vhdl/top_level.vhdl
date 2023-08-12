@@ -660,11 +660,17 @@ begin
     virtual_reset : vio_0
         port map (
                         clk => clock,
+			-- these three can be observed
+			-- from the vivado GUI.
                         probe_in0 =>  dcm_locked,
                         probe_in1 =>  CPU_MODE(1),
                         probe_in2 =>  CPU_MODE(0),
-                        probe_out0 => reset_sync,
+			-- careful, do not assert this
+			-- else the vio itself will be reset.
                         probe_out1 => reset_clk,
+			-- these four can be controlled 
+			-- by the vivado GUI.
+                        probe_out0 => reset_sync,
                         probe_out2 => CPU_RESET(0),
                         probe_out3 => DEBUG_MODE(0),
                         probe_out4 => SINGLE_STEP_MODE(0)

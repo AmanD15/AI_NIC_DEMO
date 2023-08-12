@@ -1,21 +1,44 @@
-
-All Networking related stuff
-
-	Here I describe all contents of directory.
-	Small description of each file is done.
-	Stage shows how much I have worked(for 
-	suitcase) on it.
-		stage
-		1.	Nothing is there.
-		2.	Some Needed content is there.
-		3.	All contents present
-			   You can read and understand.
-		4.	All setup done you can use.
+	Organization of the NIC related work
+	--------------------------------------
 
 
-File			Desc.			Stage
+1. Overview
+	
+	Contains the NIC implementation in Aa (in src/),
+	a testbench in C (in testbench/), a build/ directory
+	and documentation (docs/)
 
-build 		: aa to vhdl  			 3	
-src  		: NIC aa description		 3
-testbench	: NIC testbenches		 3
+1.  How to build and test
+
+	Go to build/ and type make.
+	Environment variable AHIR_RELEASE must be defined.
+
+
+2.  Test algorithm
+
+	A mac-to-nic thread generates packets for the NIC.
+	The packets carry data whose values form an arithmetic
+	progression.
+
+	The CPU first initializes and then enables the NIC.
+
+	The NIC handles the incoming packets and puts them
+	into buffers and enqueues the buffer pointers to the
+	CPU.
+
+	The CPU reads the incoming buffer queue and transfers
+	its entry to the outgoing buffer queue (no modifications	
+	are made)
+
+	The NIC polls the outgoint queue and transmits packet to
+	MAC
+
+	A nic-to-mac thread receives the transmitted packets from
+	the NIC and confirms that they are OK.
+
+3. Correctness
+
+	Packets must be received in the same sequence they were
+	sent (arithmetic progression is checked).  This is checked
+	in the nic-to-mac thread.
 
