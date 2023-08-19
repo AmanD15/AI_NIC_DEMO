@@ -1,0 +1,17 @@
+#include decl.aa
+
+#include prog.aa
+
+#include kernelModule.aa
+#include kernelModule2.aa
+
+#include inputModule.aa
+#include inputModule2.aa
+
+#include convCore.aa
+
+#include sendModule.aa
+#include sendModule2.aa
+#include sendPool.aa
+
+#include scaler.aa

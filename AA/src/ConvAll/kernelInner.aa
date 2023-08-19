@@ -1,0 +1,83 @@
+
+$module [kernelModule_in##num ]
+$in (init_addr : $uint<32> chl_in chl_out rk ck : $uint<16> base_address : $uint<ADDRESS_WIDTH>)
+$out ()
+$is
+{
+
+	$branchblock [load_block]
+	{
+		row_size := (chl_in * ck)
+		count_update := (row_size*(rk-1))
+		
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi chl_num := ($bitcast ($uint<16>) 1) $on $entry n_chl_num $on $loopback
+		$phi sent := ($bitcast ($uint<16>) 0) $on $entry n_sent $on $loopback
+		$phi fv1 := 0 $on $entry nfv1 $on $loopback
+		$phi cv1 := ($bitcast ($uint<64>) 0) $on $entry ncv1 $on $loopback 
+		$phi left := chl_in $on $entry n_left $on $loopback
+		$phi head := ($bitcast ($uint<3>) 0) $on $entry n_head $on $loopback
+		$phi addr1 := init_addr $on $entry n_addr1 $on $loopback
+		$phi fn := ($bitcast ($uint<1>) 1) $on $entry n_fn $on $loopback
+		$endmerge
+		
+		$volatile chl_3 := ($bitcast ($uint<3>) chl_num)
+		$volatile sp := ($bitcast ($uint<3>) addr1)
+
+		// Compute number of elements to send
+		$volatile min1 := ($mux (sp > head) sp head)
+		$volatile mi71 := (8 - ($bitcast ($uint<16>) min1))
+		$volatile ns := ($mux (mi71 < left) mi71 left)
+		// Decide whether to send or not
+		$volatile hns := (head + ($bitcast ($uint<3>) ns))
+		$volatile sns := (sp + ($bitcast ($uint<3>) ns))
+		$volatile done := (left == ns)
+		$volatile send := (done | (hns == 0))
+		// Update number left
+		$volatile n_left := ($mux done chl_in (left - ns))
+		
+		$guard (fn) $call readModule_convolutionk (base_address (addr1>>3)) (read_val)
+		$volatile val_in_use := ($mux fn read_val fv1)
+		// Shift to the head of cv
+		$volatile tmp1 := ((val_in_use << (($bitcast ($uint<64>) sp) << 3)) >> (($bitcast ($uint<64>) head) << 3))
+		$volatile bytemask := (($bitcast ($uint<64>) _hFFFFFFFFFFFFFFFF) << (($bitcast ($uint<64>) (8 - hns)) << 3))
+		// Apply bitmask to get the desired value
+		$volatile send_data := ((cv1 | tmp1) & bytemask)
+		$volatile ncv1 := ($mux send 0 send_data)
+		
+		// Send if done
+		$volatile send_to_1 := (send & (chl_3==1))
+		$volatile send_to_2 := (send & (chl_3==2))
+		$volatile send_to_3 := (send & (chl_3==3))
+		$volatile send_to_4 := (send & (chl_3==4))
+		$volatile send_to_5 := (send & (chl_3==5))
+		$volatile send_to_6 := (send & (chl_3==6))
+		$volatile send_to_7 := (send & (chl_3==7))
+		$volatile send_to_8 := (send & (chl_3==8))
+		$guard (send_to_1) core1_kp##num := send_data
+		$guard (send_to_2) core2_kp##num := send_data
+		$guard (send_to_3) core3_kp##num := send_data
+		$guard (send_to_4) core4_kp##num := send_data
+		$guard (send_to_5) core5_kp##num := send_data
+		$guard (send_to_6) core6_kp##num := send_data
+		$guard (send_to_7) core7_kp##num := send_data
+		$guard (send_to_8) core8_kp##num := send_data
+		$volatile n_sent := ($mux done ($mux (sent == (ck-1)) 0 (sent+1)) sent)
+		// Update head and start pointers
+		$volatile n_head := ($mux send 0 hns)
+
+		// Compute next channel address etc variables
+		$volatile nxt_chl := ((n_sent == 0) & done)
+		$volatile n_addr1 := (addr1 + ($bitcast ($uint<32>) ($mux nxt_chl (count_update+ns) ns)))
+		$volatile n_chl_num := ($mux nxt_chl (chl_num + 1) chl_num)
+
+		// Fetch next memory if needed
+		$volatile na3_1 := (n_addr1 >> 3)
+		$volatile n_fn := (((sns == 0) | nxt_chl) | (done & (na3_1 != (addr1 >> 3))))
+		$volatile nfv1 := val_in_use
+
+		$volatile exit_cond := (nxt_chl & (chl_num == chl_out))
+		$while (~exit_cond)
+	}
+}

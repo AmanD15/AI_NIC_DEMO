@@ -1,0 +1,79 @@
+// Load the kernel channel into the kernel pipes
+$module [kernelModule8]
+$in (chl_in chl_out rk ck : $uint<16> base_address : $uint<ADDRESS_WIDTH>)
+$out ()
+$is
+{  
+    
+    $branchblock [load_block]
+    { 
+        row_size := (chl_in * ck)
+        chl_size := ($bitcast ($uint<32>) (row_size * rk))
+        chl_size2 := (chl_size << 1)
+        chl_size3 := (chl_size2 + chl_size)
+        chl_size4 := (chl_size << 2)
+        chl_size5 := (chl_size4 + chl_size)
+        chl_size6 := (chl_size4 + chl_size2)
+        chl_size7 := (chl_size4 + chl_size3)
+        chl_size8 := (chl_size << 3)
+        count_update := (chl_size8 - ($bitcast ($uint<32>) row_size))
+        rk_s := ($bitcast ($uint <2>) rk)
+        
+        $dopipeline $depth 15 $buffering 2 $fullrate
+        $merge $entry $loopback
+        $phi chl_num := ($bitcast ($uint<16>) 1) $on $entry n_chl_num $on $loopback
+        $phi ea := ($bitcast ($uint<32>) (row_size - 1)) $on $entry n_ea $on $loopback
+        $phi mycount := ($bitcast ($uint<32>) 0) $on $entry nmycount $on $loopback
+        $phi ind := ($bitcast ($uint<2>) 1) $on $entry n_ind $on $loopback
+        $endmerge
+
+        $volatile next_row := (ind == rk_s)
+        $volatile nxt_chl := ( (mycount == ea) & next_row)
+        $volatile nmycount := (mycount + ($mux next_row (1 + ($mux nxt_chl count_update 0)) 0))
+        $volatile n_chl_num := ($mux nxt_chl (chl_num + 1) chl_num)
+        $volatile n_ea := (ea + ($mux nxt_chl chl_size8 0))
+        $volatile n_ind := ($mux next_row 1 (ind + 1))
+        $volatile add_val := ($bitcast ($uint<32> )($excmux (ind == 2) row_size (ind == 3) (row_size<<1)))
+        // $call timer (3) (time_pipe)
+        
+        $call readModule_convolutionk (base_address (mycount+add_val)) (fetch_val1)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size)) (fetch_val2)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size2)) (fetch_val3)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size3)) (fetch_val4)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size4)) (fetch_val5)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size5)) (fetch_val6)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size6)) (fetch_val7)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size7)) (fetch_val8)
+
+        $call writeToPipe1 (ind fetch_val1) (a1)
+        $call writeToPipe2 (ind fetch_val2) (a2)
+        $call writeToPipe3 (ind fetch_val3) (a3)
+        $call writeToPipe4 (ind fetch_val4) (a4)
+        $call writeToPipe5 (ind fetch_val5) (a5)
+        $call writeToPipe6 (ind fetch_val6) (a6)
+        $call writeToPipe7 (ind fetch_val7) (a7)
+        $call writeToPipe8 (ind fetch_val8) (a8)
+
+        $volatile exit_cond := (nxt_chl & (chl_num == chl_out))
+        $while (~exit_cond)
+        // $call timer (100) (time_pipe)
+		//debug_output_pipe := 91
+    }
+}
+
+#define num 1
+#include writePipes.aa
+#define num 2
+#include writePipes.aa
+#define num 3
+#include writePipes.aa
+#define num 4
+#include writePipes.aa
+#define num 5
+#include writePipes.aa
+#define num 6
+#include writePipes.aa
+#define num 7
+#include writePipes.aa
+#define num 8
+#include writePipes.aa

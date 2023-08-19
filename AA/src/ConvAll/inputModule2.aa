@@ -1,0 +1,186 @@
+// Access the input tensor and write to iput pipe
+	$module [inputModule8]
+$in(row_in ct chl_in rk pad: $uint<16> num_parts : $uint<8> base_address : $uint<ADDRESS_WIDTH>)
+$out()
+$is
+{
+	mode_3 := (rk == 3)
+	$parallelblock [blk]
+	{
+	$call singleFetch (row_in ct pad chl_in num_parts mode_3) ()
+	$branchblock [access_block]
+	{
+	ct_new := (ct + (pad<<1))
+	row_size_total := ($bitcast ($uint<32>) (ct_new * chl_in))
+	p_chl_in := ($bitcast ($uint<32>) (pad*chl_in))
+	m_factor := ($bitcast ($uint<32>) (ct*chl_in))
+	m2_factor := (m_factor << 1)
+	m3_factor := (m2_factor+m_factor)
+	addr_init := (-1*(($bitcast ($uint<32>) pad)*m_factor))
+
+		// Pipeline for sending inputs
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi address := addr_init $on $entry n_address $on $loopback
+		$phi row1 := ($bitcast ($uint<16>) 0) $on $entry n_row1 $on $loopback
+		$phi mycounter := ($bitcast ($uint<32>) row_size_total) $on $entry n_mycounter $on $loopback
+		$phi part_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on $loopback
+		$endmerge
+
+		// $call timer (4) (time_pipe)
+		$volatile next_row :=  (mycounter == 1)
+		$volatile tmp_cnt := (mycounter - 1)
+		$volatile n_mycounter := ($mux next_row row_size_total tmp_cnt ) 
+
+		$volatile update_row := ($mux next_row (row1 + N_ROWS_S) row1 )
+		$volatile continue_flag1 := (update_row < (row_in+2))
+
+		$volatile mc_lt_p := ((mycounter <= p_chl_in) | (mycounter > (row_size_total - p_chl_in))) 
+		$volatile n_row1 := ($mux continue_flag1 update_row 0)
+		$volatile n_address := ($mux continue_flag1 (address + (($mux next_row m_factor 0) + ($mux mc_lt_p 0 1))) addr_init)
+		$volatile np_cnt := (part_cnt + ($mux continue_flag1 0 1))
+
+		$volatile p1_zero := (mc_lt_p | ((row1 < pad) | (row1 > ((row_in + 1) - pad))))
+		$volatile p2_zero := (mc_lt_p | (((row1+1) < pad) | (row1 > (row_in- pad))))
+
+		//$volatile p1_zero := (mc_lt_p | ((row1 < pad) | (row1 >= ((row_in + 3) - pad))))
+		//$volatile p2_zero := (mc_lt_p | (((row1+1) < pad) | (row1 >= ((row_in + 2)- pad))))
+		//$volatile p3_zero := (mc_lt_p | (((row1+2) < pad) | (row1 >= ((row_in + 1)- pad))))
+		//$volatile p4_zero := (mc_lt_p | (((row1+3) < pad) | (row1 >= (row_in - pad))))
+		$volatile addr2 := (address+ m_factor)
+		//$volatile addr3 := (address+ m2_factor)
+		//$volatile addr4 := (address+ m3_factor)
+
+		$guard (~p1_zero) $call readModule_convolution (base_address address) (val1)
+		$guard (~p2_zero) $call readModule_convolution (base_address addr2) (val2)
+		//$guard (~p3_zero) $call readModule_convolution (base_address addr3) (val3)
+		//$guard (~p4_zero) $call readModule_convolution (base_address addr4) (val4)
+		prev_core_ip1 := ($mux p1_zero 0 val1)
+		prev_core_ip2 := ($mux p2_zero 0 val2)
+		//core_ip3 := ($mux p3_zero 0 val3)
+		//$guard (mode_3) core_ip4 := ($mux p4_zero 0 val4)
+
+		$while (continue_flag1 | (part_cnt < num_parts))
+
+	}
+	}
+}
+
+// Access the input tensor and write to iput pipe
+$module [inputModuleCT]
+$in(row_in ct chl_in: $uint<16> num_parts : $uint<8> base_address : $uint<ADDRESS_WIDTH>)
+$out()
+$is
+{
+	$branchblock [access_block]
+	{
+	ct_new := ((ct<<1) + 1)
+
+		// Pipeline for sending inputs
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi address := ($bitcast ($uint<32>) 0) $on $entry n_address $on $loopback
+		$phi row1 := ($bitcast ($uint<16>) 0) $on $entry n_row1 $on $loopback
+		$phi chl := ($bitcast ($uint<16>) 1) $on $entry n_chl $on $loopback
+		$phi mycounter := ($bitcast ($uint<16>) 1) $on $entry n_mycounter $on $loopback
+		$phi part_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on $loopback
+		$endmerge
+
+		$volatile chl_done := (chl == chl_in)
+		$volatile n_chl := ($mux chl_done 1 (chl+1))
+		$volatile next_row :=  ((mycounter == ct_new) & chl_done)
+		$volatile tmp_cnt := (mycounter + 1)
+		$volatile n_mycounter := ($mux chl_done ($mux next_row 1 tmp_cnt ) mycounter)
+
+		$volatile update_row := ($mux next_row (row1 + N_ROWS_S) row1 )
+		$volatile continue_flag1 := (update_row < row_in)
+		$volatile n_row1 := ($mux continue_flag1 update_row 0)
+
+		$volatile p2_zero := (mycounter [] 0)
+		$volatile n_address := ($mux continue_flag1 (address + ($mux p2_zero 0 1)) 0)
+		$volatile np_cnt := (part_cnt + ($mux continue_flag1 0 1))
+
+
+		$guard (~p2_zero) $call readModule_convolution (base_address address) (val2)
+		core_ip1 := 0
+		core_ip2 := ($mux p2_zero 0 val2)
+		core_ip3 := 0
+		
+
+		$while (continue_flag1 | (part_cnt < num_parts))
+
+	}
+}
+
+
+// Access the input tensor and write to iput pipe
+$module [inputModuleConcat]
+$in(row_in ct chl_in rk pad: $uint<16> num_parts : $uint<8> base_address1 base_address2 : $uint<ADDRESS_WIDTH>)
+$out()
+$is
+{
+	mode_3 := (rk == 3)
+	$parallelblock [blk]
+	{
+	$call singleFetch (row_in ct pad chl_in num_parts mode_3) ()
+
+	$branchblock [access_block]
+	{
+	$volatile ct_new := (ct + (pad<<1))
+	row_size_total := ($bitcast ($uint<32>) (ct_new * chl_in))
+	$volatile ct1 := (ct >> 1)
+	rs1 := (row_size_total >> 1)
+	cs1 := (chl_in >> 1)
+	m_factor := ($bitcast ($uint<32>) (ct*cs1))
+	m2_factor := (m_factor << 1)
+	m3_factor := (m2_factor+m_factor)
+	addr_init := (-1*(($bitcast ($uint<32>) pad)*m_factor))
+
+		// Pipeline for sending inputs
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi address1 := addr_init $on $entry n_address1 $on $loopback
+		$phi address2 := addr_init $on $entry n_address2 $on $loopback
+		$phi row1 := ($bitcast ($uint<16>) 0) $on $entry n_row1 $on $loopback
+		$phi col := ($bitcast ($uint<16>) 0) $on $entry n_col $on $loopback
+		$phi chl := ($bitcast ($uint<16>) 0) $on $entry n_chl $on $loopback
+		$phi part_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on $loopback
+		$endmerge
+
+		$volatile chl_done := (chl == (chl_in - 1))
+		$volatile col_done := (col == (ct_new - 1))
+		$volatile next_row := (col_done & chl_done)
+		$volatile n_chl := ($mux chl_done  0 (chl+1)) 
+		$volatile n_col := ($mux next_row 0 (col + ($mux chl_done 1 0)))
+		$volatile inp1 := (chl < cs1)
+		$volatile inp1_done := (chl == (cs1-1))
+
+		$volatile update_row := ($mux next_row (row1 + N_ROWS_S) row1 )
+		$volatile continue_flag1 := (update_row < (row_in+2))
+
+		$volatile mc_lt_p := ((col < pad) | (col >= (ct_new - pad))) 
+		$volatile tmp_sum := ($mux mc_lt_p 0 1)
+		$volatile update_val1 := (($mux (col_done & inp1_done) m_factor 0) + tmp_sum)
+		$volatile update_val2 := (($mux (col_done & chl_done) m_factor 0) + tmp_sum)
+		$volatile address := ($mux inp1 address1 address2)
+
+		$volatile p1_zero := (mc_lt_p | ((row1 < pad) | (row1 > ((row_in + 1) - pad))))
+		$volatile p2_zero := (mc_lt_p | (((row1+1) < pad) | (row1 > (row_in- pad))))
+		$volatile addr2 := (address+ m_factor)
+		$volatile base_address := ($mux inp1 base_address1 base_address2)
+
+		$guard (~p1_zero) $call readModule_convolution (base_address address) (val1)
+		$guard (~p2_zero) $call readModule_convolution (base_address addr2) (val2)
+		prev_core_ip1 := ($mux p1_zero 0 val1)
+		prev_core_ip2 := ($mux p2_zero 0 val2)
+
+		$volatile n_row1 := ($mux continue_flag1 update_row 0)
+		$volatile n_address1 := ($mux continue_flag1 ($mux inp1 (address1 + update_val1) address1)  addr_init)
+		$volatile n_address2 := ($mux continue_flag1 ($mux inp1 address2 (address2 + update_val2))  addr_init)
+		$volatile np_cnt := (part_cnt + ($mux continue_flag1 0 1))
+
+		$while (continue_flag1 | (part_cnt < num_parts))
+
+	}
+	}
+}

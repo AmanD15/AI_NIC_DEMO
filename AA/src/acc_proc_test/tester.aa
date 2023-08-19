@@ -1,0 +1,34 @@
+
+$module [tester_control_daemon]
+ 	$in () $out () $is
+{
+	$branchblock[loop] {
+		$merge $entry loopback $endmerge
+
+		c64 := tester_control_command
+		$volatile $split (c64 1 31 32)
+					(rwbar a31 wdata)
+		$volatile afb_cmd :=
+			($concat $zero<1> rwbar (~$zero<4>) ($bitcast ($uint<36>) ($concat a31 $zero<2>)) wdata)
+		AFB_ACCELERATOR_REQUEST := afb_cmd
+		afb_resp := AFB_ACCELERATOR_RESPONSE
+
+		tester_control_response := ($slice afb_resp 31 0)
+
+		$place [loopback] 
+	}
+}
+
+$module [interrupt_daemon]
+	$in () $out () $is
+{
+
+	$branchblock[loop] {
+		$merge $entry loopback $endmerge
+
+		i := ACCELERATOR_INTERRUPT
+		ACCELERATOR_INTERRUPT_8 := ($bitcast ($uint<8>) i)
+
+		$place [loopback]
+	}
+}

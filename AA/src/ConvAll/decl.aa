@@ -1,0 +1,109 @@
+$parameter PIPE_WIDTH 64
+$parameter INTERMEDIATE_PIPE_DEPTH 512
+$parameter SMALL_PIPE_DEPTH 16
+$parameter IP_DEPTH 256
+$parameter K_DEPTH 4096
+$parameter N_ROWS_S 2
+$parameter ACC_WIDTH 32
+$parameter DATA_WIDTH 32
+$parameter ADDRESS_WIDTH 32
+
+$pipe core1_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core1_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core1_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core2_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core2_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core2_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core3_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core3_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core3_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core4_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core4_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core4_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core5_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core5_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core5_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core6_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core6_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core6_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core7_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core7_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core7_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core8_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core8_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core8_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+
+$pipe prev_core_ip1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe prev_core_ip2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+
+$pipe core_ip1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe core_ip2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe core_ip3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core_ip4 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+
+$pipe output_pipe1_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe1_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe2_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe2_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe3_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe3_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe4_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe4_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe5_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe5_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe6_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe6_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe7_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe7_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe8_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe8_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+
+$pipe acc_pipe1_1 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_2 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_3 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_4 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_5 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_6 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_7 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_8 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_1 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_2 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_3 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_4 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_5 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_6 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_7 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_8 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+
+$pipe conv_ip1 : $uint<PIPE_WIDTH> $depth IP_DEPTH
+$pipe conv_ip2 : $uint<PIPE_WIDTH> $depth IP_DEPTH
+$pipe conv_ip3 : $uint<PIPE_WIDTH> $depth IP_DEPTH
+$pipe conv_ip4 : $uint<PIPE_WIDTH> $depth IP_DEPTH
+$pipe conv1_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv1_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv1_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv2_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv2_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv2_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv3_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv3_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv3_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv4_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv4_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv4_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv5_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv5_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv5_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv6_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv6_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv6_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv7_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv7_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv7_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv8_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv8_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv8_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+
+$pipe pool_buffer : $uint<PIPE_WIDTH> $depth IP_DEPTH
+$pipe send_to_pool_pipe1 : $uint<PIPE_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe send_to_pool_pipe2 : $uint<PIPE_WIDTH> $depth SMALL_PIPE_DEPTH

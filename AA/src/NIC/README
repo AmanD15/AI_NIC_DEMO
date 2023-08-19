@@ -1,0 +1,7 @@
+NIC desing with cortos queue Interfaces.
+-----------------------------------------
+
+	1. Cortos queue structure is availble in file ../InterfaceDataStructures.h
+	2. This design assumes that the msgSizeInBytes for all queue is 4.
+		as these interfaces right now contains 32 bit addresses only.
+

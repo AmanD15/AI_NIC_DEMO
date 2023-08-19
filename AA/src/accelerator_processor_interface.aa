@@ -1,0 +1,110 @@
+// Need at least 10 32-bit registers
+$parameter MAX_ACC_REG 16
+$parameter BITS_MAX_ACC_REG 4
+
+$storage accelerator_reg : $array[MAX_ACC_REG] $of $uint<32>
+
+$pipe start_worker: $uint<1>
+$module [accelerator_control_daemon]
+	$in () $out () $is
+{
+	// initialize
+	$branchblock[init_loop] {
+		$merge $entry loopback 
+			$phi I := $zero<BITS_MAX_ACC_REG> $on $entry nI $on loopback
+		$endmerge
+		$volatile nI := (I + 1)
+		accelerator_reg[I] := 0
+
+		$if (I < {MAX_ACC_REG-1}) $then $place[loopback] $endif
+	}
+
+	start_worker := 1
+
+	$branchblock[run_loop] {
+		$merge $entry loopback $endmerge 
+
+		cmd := AFB_ACCELERATOR_REQUEST
+		$volatile $split (cmd 1 1 4 36 32)
+				(lock rwbar bmask addr wdata)
+
+		$volatile reg_index := ($slice addr {BITS_MAX_ACC_REG+1} 2)
+
+		// we assume bmask is always 0xf
+		$guard (rwbar)    rdata := accelerator_reg[reg_index]
+		$guard (~rwbar)   accelerator_reg[reg_index] := wdata
+
+		$volatile resp := ($concat $zero<1> ($mux rwbar rdata 0))
+		AFB_ACCELERATOR_RESPONSE := resp
+
+		$place [loopback]
+	}
+}
+
+$module [accelerator_worker_daemon] $in () $out () $is
+{
+	sw := start_worker // wait on initialization
+
+	$branchblock[loop] {
+		$merge $entry loopback $endmerge	
+		
+
+		// spin, wait for command...
+		$merge $entry look_for_command $endmerge
+			r0 := accelerator_reg[0]
+			$volatile cmd_flag := ($reduce & (r0 [] 0) (r0 [] 2) (~(r0 [] 3)))
+		$if (~cmd_flag) $then $place [look_for_command] $endif
+	
+		//clear bits 2, 4 of register 0
+		accelerator_reg[0] := (r0 & (~ 36))
+		
+		r1 := accelerator_reg[1]
+		r2 := accelerator_reg[2]
+		r3 := accelerator_reg[3]
+		r4 := accelerator_reg[4]
+		r5 := accelerator_reg[5]
+		r6 := accelerator_reg[6]
+		$split (r1 16 16) (ro co)
+		$split (r2 16 16) (ri ci)
+		$split (r3 16 16) (cho chi)
+		$split (r4 16 16) (rk ck)
+		$split (r5 16 16) (shift_val pad)
+		$split (r6 8 8 8 8) (unused1 concat  pool act)
+		in1_base_addr := accelerator_reg[7]
+		in2_base_addr := accelerator_reg[8]
+		out_base_addr1 := accelerator_reg[9]
+		out_base_addr2 := accelerator_reg[10]
+		kernel_base_addr := accelerator_reg[11]
+		scale_val := accelerator_reg[12]
+
+		$barrier
+
+		$call convolutionAll (
+			ro co ri ci cho chi rk ck
+			in1_base_addr in2_base_addr kernel_base_addr out_base_addr1 out_base_addr2
+			scale_val shift_val pad pool concat act
+			) ()
+		
+		$barrier
+		// set interrupt flag in r0.
+		$volatile set_intr := ((r0 [] 0) & (r0 [] 1))
+		accelerator_reg[0] := ($concat ($slice r0 31 5) set_intr $one<1> ($slice r0 2 0))
+
+
+		$place [loopback]
+	}
+}
+
+$module [accelerator_interrupt_daemon]
+	$in () $out () $is
+{
+	$branchblock[loop] {
+		$merge $entry loopback $endmerge
+
+		r0 := accelerator_reg[0]
+		ACCELERATOR_INTERRUPT_8 := ($bitcast ($uint<8>)  (r0 [] 4))
+
+
+	 	$place[loopback]
+	}
+}

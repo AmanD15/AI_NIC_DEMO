@@ -1,0 +1,41 @@
+There are 16 registers:
+
+Reg 0 - Ctrl
+
+Reg 1 - 
+	31:16 Output rows
+	15:0  Output columns
+
+Reg 2 - 
+	31:16 Input rows
+	15:0  Input columns
+
+Reg 3 - 
+	31:16 Output channels
+	15:0  Input channels
+
+Reg 4 - 
+	31:16 Kernel rows
+	15:0  Kernel columns
+
+Reg 5 - 
+	31:16 Shift value
+	15:0  Pad
+
+Reg 6 -
+	31:16 Unused
+	15:8  Pool
+	7:0   Activation
+
+Reg 7 -
+	31:0 Base address input1
+
+Reg 8 -
+	31:0 Base address input2
+
+Reg 9 -
+	31:0 Base address output
+
+Reg 10 -
+	31:0 Base address kernel
+

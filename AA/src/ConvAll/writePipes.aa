@@ -1,0 +1,17 @@
+$pipeline $depth 15 $buffering 2 $fullrate
+$opaque $module [writeToPipe##num ] $in (base_address : $uint<2> in_data1 : $uint<64>) $out (done : $uint<1>) $is
+{
+    c1 := (base_address == 1)
+    c2 := (base_address == 2)
+    c3 := (base_address == 3)
+	$guard (c1) core##num\_kp1 := in_data1
+	$guard (c2) core##num\_kp2 := in_data1
+	$guard (c3) core##num\_kp3 := in_data1
+	done := (in_data1 [] 0)
+}
+
+// $pipeline $depth 15 $fullrate
+// $module [multiplier##num ] $in (input kernel : $int<8> ) $out (mul_val : $int<16>) $is
+//{
+//    mul_val := ($cast ($int<16>) (input * kernel))
+//}

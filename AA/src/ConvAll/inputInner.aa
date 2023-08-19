@@ -1,0 +1,85 @@
+$module [loadInput_in##num ]
+$in(addr_init : $uint<32> row_in ct chl_in pad : $uint<16> num_parts_1 : $uint<8> base_address: $uint<ADDRESS_WIDTH>)
+$out()
+$is
+{
+	$branchblock [access_block]
+	{
+		ct_new := (ct + (pad<<1))
+		m_factor := ($bitcast ($uint<32>) (ct*chl_in))
+		row_last := (row_in + {##num + 1})
+		np := (num_parts_1+1)
+		
+		// Pipeline for sending inputs
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi row1 := ($bitcast ($uint<16>) {##num - 1} ) $on $entry n_row1 $on $loopback
+		$phi part_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on $loopback
+		//$phi chl_num := ($bitcast ($uint<16>) 0) $on $entry n_chl_num $on $loopback
+		$phi sent := ($bitcast ($uint<16>) 0) $on $entry n_sent $on $loopback
+		$phi fv1 := 0 $on $entry nfv1 $on $loopback
+		$phi cv1 := ($bitcast ($uint<64>) 0) $on $entry ncv1 $on $loopback 
+		$phi left := chl_in $on $entry n_left $on $loopback
+		$phi head := ($bitcast ($uint<3>) 0) $on $entry n_head $on $loopback
+		$phi addr1 := addr_init $on $entry n_addr1 $on $loopback
+		$phi fn := ($bitcast ($uint<1>) 1) $on $entry n_fn $on $loopback
+		$endmerge
+		
+		
+		$volatile mc_lt_p := ((sent < pad) | (sent >= (ct + pad)))
+		//$volatile r_lt_p := ((row1 < pad) | (row1 >= (row_in + pad)))
+		$volatile r_lt_p := ((row1 < pad) | (row1 >= ((row_in +2) - pad)))
+		$volatile p1_zero := (mc_lt_p | r_lt_p)
+		$volatile sp := ($bitcast ($uint<3>) addr1)
+
+		// Compute number of elements to send
+		$volatile min1 := ($mux (sp > head) sp head)
+		$volatile mi71 := (8 - ($bitcast ($uint<16>) min1))
+		$volatile cmp_val := ($mux p1_zero 8 mi71)
+		$volatile ns := ($mux (cmp_val < left) cmp_val left)
+
+		// Decide whether to send or not
+		$volatile hns := (head + ($bitcast ($uint<3>) ns))
+		$volatile sns := (sp + ($bitcast ($uint<3>) ns))
+		$volatile done := (left == ns)
+		$volatile send := (done | (hns == 0))
+
+		// Read next value if needed
+		read_from_pipe := (fn & (~p1_zero))
+		$guard (read_from_pipe) $call readModule_convolution (base_address (addr1>>3)) (read_val)
+
+		$volatile val_in_use := ($mux read_from_pipe read_val fv1)
+		// Shift to the head of cv
+		$volatile tmp1 := ((val_in_use << (($bitcast ($uint<64>) sp) << 3)) >> (($bitcast ($uint<64>) head) << 3))
+		// Apply bitmask to get the desired value
+		$volatile bytemask := (($bitcast ($uint<64>) _hFFFFFFFFFFFFFFFF) << (($bitcast ($uint<64>) (8 - hns)) << 3))
+		$volatile send_data := ($mux p1_zero 0 ((cv1 | tmp1) & bytemask))
+		
+		$guard (send) prev_core_ip##num := send_data
+		//$guard (send) time_pipe := send_data
+		$volatile ncv1 := ($mux send 0 send_data)
+		// Update number left
+		$volatile next_row := ((sent == (ct_new-1)) & done)
+		$volatile n_left := ($mux done chl_in (left - ns))
+		$volatile n_sent := ($mux done ($mux next_row 0 (sent+1)) sent)
+		$volatile n_head := ($mux send 0 hns)
+
+		// Compute next address
+		$volatile update_row := ($mux next_row (row1 + N_ROWS_S) row1 )
+		$volatile continue_flag1 := (update_row < row_last)
+		
+		$volatile n_row1 := ($mux continue_flag1 update_row {##num -1} )
+		$volatile n_addr1 := ($mux r_lt_p addr_init (addr1 + (($mux next_row m_factor 0) + ($mux mc_lt_p 0 ($bitcast ($uint<32>) ns) ))))
+		$volatile na3_1 := (n_addr1 >> 3)
+		$volatile n_fn := (((sns == 0) | (done & (na3_1 != (addr1 >> 3)))) | ( next_row | (p1_zero & fn)))
+		$volatile nfv1 := val_in_use
+		
+		$volatile np_cnt := (part_cnt + ($mux continue_flag1 0 1))
+		//$volatile n_chl_num := ($mux continue_flag1 chl_num (chl_num + 1))
+		//$volatile not_end_flag := ((n_chl_num != chl_out) | continue_flag1)
+		$while (continue_flag1 | (np_cnt != np))
+		//$while not_end_flag
+
+	}
+}
+

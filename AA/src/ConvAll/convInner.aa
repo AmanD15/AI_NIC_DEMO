@@ -1,0 +1,46 @@
+// Start of convInner
+		
+
+		$volatile rk_v##core_num := (read_k & o_chl##core_num\_valid)
+		$volatile nrk_v##core_num := (not_read_k & o_chl##core_num\_valid)
+		#define k_num 1
+		#include macro_file4.aa
+
+		#define mul_num 1
+		#define in_num 1
+		#include macro_file3.aa
+		#define mul_num 4
+		#define in_num 2
+		#include macro_file3.aa
+
+		#define k_num 2
+		#include macro_file4.aa
+
+		#define mul_num 2
+		#define in_num 2
+		#include macro_file3.aa
+		#define mul_num 5
+		#define in_num 3
+		#include macro_file3.aa
+
+		#define k_num 3
+		#include macro_file5.aa
+
+		#define mul_num 3
+		#define in_num 3
+		#include macro_file3.aa
+		#define mul_num 6
+		#define in_num 4
+		#include macro_file3.aa
+
+		acc_val##core_num\_1 :=  ((t_acc_val_##core_num\_1 + t_acc_val_##core_num\_2) + t_acc_val_##core_num\_3)
+		acc_val##core_num\_2 :=  ((t_acc_val_##core_num\_4 + t_acc_val_##core_num\_5) + t_acc_val_##core_num\_6)
+
+
+		$volatile store_kernel##core_num := (store_kernel & o_chl##core_num\_valid)
+		$volatile store_3##core_num := (store_3 & o_chl##core_num\_valid)
+		$guard (store_kernel##core_num ) conv##core_num\_kp1 := kread_##core_num\_1
+		$guard (store_kernel##core_num ) conv##core_num\_kp2 := kread_##core_num\_2
+		$guard (store_3##core_num ) conv##core_num\_kp3 := kread_##core_num\_3
+		
+// End of convInner

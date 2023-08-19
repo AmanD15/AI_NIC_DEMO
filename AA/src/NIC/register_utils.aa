@@ -1,0 +1,38 @@
+// Utilities that allows the NIC to access the Registers via a Request Response Format defined
+// below : 
+// 1.  Request packet:
+//	A 43-bit format.
+
+//		Request[42]  = rwbar
+//		Request[41 : 38]  = bmask 
+//		Request[37 : 32] = index
+//		Request[31:0]  = write-data
+
+	
+//2.  Response packet:
+//	A 33-bit format.
+
+//		Response[32] = Error
+//		Response[31:0] = response-data
+
+
+
+$module [AccessRegister] 
+$in (rwbar : $uint<1> bmask : $uint<4> register_index : $uint<6> wdata : $uint<32>)
+$out(rdata : $uint<32>)
+$is
+{
+	$rreport(AccessRegister In_Access_Register)
+	// Create Request Packet by concatenating all the required blocks
+	$volatile request :=  ($concat rwbar bmask register_index wdata)
+	$rreport(AccessRegister Request rwbar bmask register_index wdata)
+        // Send Request on NIC Register Request Pipe
+ 	NIC_REQUEST_REGISTER_ACCESS_PIPE := request
+	$rreport(AccessRegister Request_Sent)
+	// Get Response from NIC Register Response Pipe
+	response := NIC_RESPONSE_REGISTER_ACCESS_PIPE
+	$rreport(AccessRegister Response response)
+	// Send Received data on out-ports
+	$volatile $split (response 1 32) (status rdata)
+
+}

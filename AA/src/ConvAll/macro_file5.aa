@@ -1,0 +1,19 @@
+//
+		
+		$volatile rk_3v##core_num := (readk_3 & o_chl##core_num\_valid)
+		$volatile nrk_3v##core_num := (not_readk_3 & o_chl##core_num\_valid)
+
+		$guard (rk_3v##core_num ) tempk1_##core_num\_##k_num := core##core_num\_kp##k_num
+		$guard (nrk_3v##core_num ) tempk2_##core_num\_##k_num := conv##core_num\_kp##k_num
+		kread_##core_num\_##k_num := ($mux o_chl##core_num\_valid ($mux mode_2 0 ($mux read_k tempk1_##core_num\_##k_num tempk2_##core_num\_##k_num )) 0)
+
+		$split (kread_##core_num\_##k_num 8 8 8 8 8 8 8 8) (kr_##core_num\_1_##k_num kr_##core_num\_2_##k_num kr_##core_num\_3_##k_num kr_##core_num\_4_##k_num kr_##core_num\_5_##k_num kr_##core_num\_6_##k_num kr_##core_num\_7_##k_num kr_##core_num\_8_##k_num )
+
+		kval_##core_num\_1_##k_num := ($bitcast ($int<8>) kr_##core_num\_1_##k_num )
+		kval_##core_num\_2_##k_num := ($bitcast ($int<8>) kr_##core_num\_2_##k_num )
+		kval_##core_num\_3_##k_num := ($bitcast ($int<8>) kr_##core_num\_3_##k_num )
+		kval_##core_num\_4_##k_num := ($bitcast ($int<8>) kr_##core_num\_4_##k_num )
+		kval_##core_num\_5_##k_num := ($bitcast ($int<8>) kr_##core_num\_5_##k_num )
+		kval_##core_num\_6_##k_num := ($bitcast ($int<8>) kr_##core_num\_6_##k_num )
+		kval_##core_num\_7_##k_num := ($bitcast ($int<8>) kr_##core_num\_7_##k_num )
+		kval_##core_num\_8_##k_num := ($bitcast ($int<8>) kr_##core_num\_8_##k_num )

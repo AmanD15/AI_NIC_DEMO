@@ -1,0 +1,12 @@
+$opaque $module [sendModule] $in (rb cb chl_out shift_val : $uint<16> scale_val : $uint<32> num_parts : $uint<8> max_chl : $uint<16> activation : $uint<8> base_address : $uint<ADDRESS_WIDTH>) $out () $is
+{
+	$parallelblock [sendBlock]{
+		$call sendInner1 (0 rb cb chl_out shift_val scale_val num_parts max_chl activation base_address) ()
+		$call sendInner2 (($bitcast ($uint<32>) (chl_out*cb)) rb cb chl_out shift_val scale_val num_parts max_chl activation base_address) ()
+	}
+}
+
+#define num 1
+#include sendInner.aa
+#define num 2
+#include sendInner.aa

@@ -1,0 +1,155 @@
+$module [sendInner##num ]
+$in (init_addr : $uint<32> rb cb chl_out shift_val : $uint<16> scale_val : $uint<32>  num_parts : $uint<8> max_chl : $uint<16> activation : $uint<8> base_address : $uint<ADDRESS_WIDTH>)
+$out ()
+$is
+{
+	$branchblock [SI_blk]
+	{
+		row_size := ($bitcast ($uint<32>) (chl_out*cb))
+		apply_relu := (activation == 1)
+		
+		$merge $entry loopback
+		$phi p_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on loopback
+		$phi chl_max_itr := max_chl $on $entry n_cmi $on loopback
+		$phi chl_left := (chl_out - max_chl) $on $entry n_chl_left $on loopback
+		$phi addr := init_addr $on $entry n_addr $on loopback
+		$endmerge
+
+		chl_change_inc := ($bitcast ($uint<32>) (chl_out - chl_max_itr))
+		rs := (row_size + chl_change_inc)
+
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi row := ($bitcast ($uint<16>) 1) $on $entry n_row $on $loopback
+
+//--------------------------------------------------------------------------------------------------------------------------//
+		// Phi region for the packing part
+		
+		$phi left := chl_max_itr $on $entry n_left $on $loopback
+		$phi sent := ($bitcast ($uint<16>) 0) $on $entry n_sent $on $loopback
+		$phi fv1 := ($bitcast ($uint<64>) 0) $on $entry nfv1 $on $loopback
+		$phi cv1 := ($bitcast ($uint<64>) 0) $on $entry ncv1 $on $loopback 
+		$phi head := ($bitcast ($uint<3>) 0) $on $entry n_head $on $loopback
+		$phi addr1 := addr $on $entry n_addr1 $on $loopback
+		$phi fn := ($bitcast ($uint<1>) 1) $on $entry n_fn $on $loopback
+		
+		//$phi bm := ($bitcast ($uint<64>) 0) $on $entry nbm $on $loopback 
+		$phi bm := ($bitcast ($uint<8>) 0) $on $entry nbm $on $loopback 
+//--------------------------------------------------------------------------------------------------------------------------//
+
+		$endmerge
+
+//--------------------------------------------------------------------------------------------------------------------------//
+		// Code region for the packing part
+
+		//sp is start of data in memory
+		// head is start of data fetched
+		$volatile sp := ($bitcast ($uint<3>) addr1)
+
+		// Compute number of elements to send
+		$volatile min1 := ($mux (sp > head) sp head)
+		$volatile mi71 := (8 - ($bitcast ($uint<16>) min1))
+		$volatile ns := ($mux (mi71 < left) mi71 left)
+		// Decide whether to send or not
+		$volatile hns := (head + ($bitcast ($uint<3>) ns))
+		$volatile sns := (sp + ($bitcast ($uint<3>) ns))
+		$volatile done := (left == ns)
+		$volatile n_fn := (done | (hns == 0))
+		// Update number left
+		$volatile n_left := ($mux done chl_max_itr (left - ns))
+		
+		$guard (fn) read_val1  := output_pipe1_##num
+		$guard (fn) read_val2  := output_pipe2_##num
+		$guard (fn) read_val3  := output_pipe3_##num
+		$guard (fn) read_val4  := output_pipe4_##num
+		$guard (fn) read_val5  := output_pipe5_##num
+		$guard (fn) read_val6  := output_pipe6_##num
+		$guard (fn) read_val7  := output_pipe7_##num
+		$guard (fn) read_val8  := output_pipe8_##num
+		//tmp1 := ($mux (apply_relu & ((read_val1[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val1 >> shift_val)))
+		//tmp2 := ($mux (apply_relu & ((read_val2[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val2 >> shift_val)))
+		//tmp3 := ($mux (apply_relu & ((read_val3[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val3 >> shift_val)))
+		//tmp4 := ($mux (apply_relu & ((read_val4[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val4 >> shift_val)))
+		//tmp5 := ($mux (apply_relu & ((read_val5[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val5 >> shift_val)))
+		//tmp6 := ($mux (apply_relu & ((read_val6[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val6 >> shift_val)))
+		//tmp7 := ($mux (apply_relu & ((read_val7[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val7 >> shift_val)))
+		//tmp8 := ($mux (apply_relu & ((read_val8[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val8 >> shift_val)))
+		
+		grd_cnd1 :=  (apply_relu & ((read_val1[]{ACC_WIDTH-1}) == 1))
+                grd_cnd2 :=  (apply_relu & ((read_val2[]{ACC_WIDTH-1}) == 1))
+                grd_cnd3 :=  (apply_relu & ((read_val3[]{ACC_WIDTH-1}) == 1))
+                grd_cnd4 :=  (apply_relu & ((read_val4[]{ACC_WIDTH-1}) == 1))
+                grd_cnd5 :=  (apply_relu & ((read_val5[]{ACC_WIDTH-1}) == 1))
+                grd_cnd6 :=  (apply_relu & ((read_val6[]{ACC_WIDTH-1}) == 1))
+                grd_cnd7 :=  (apply_relu & ((read_val7[]{ACC_WIDTH-1}) == 1))
+                grd_cnd8 :=  (apply_relu & ((read_val8[]{ACC_WIDTH-1}) == 1))
+                $guard (~grd_cnd1) $call scaler (read_val1 scale_val shift_val) (scaled1)
+                $guard (~grd_cnd2) $call scaler (read_val2 scale_val shift_val) (scaled2)
+                $guard (~grd_cnd3) $call scaler (read_val3 scale_val shift_val) (scaled3)
+                $guard (~grd_cnd4) $call scaler (read_val4 scale_val shift_val) (scaled4)
+                $guard (~grd_cnd5) $call scaler (read_val5 scale_val shift_val) (scaled5)
+                $guard (~grd_cnd6) $call scaler (read_val6 scale_val shift_val) (scaled6)
+                $guard (~grd_cnd7) $call scaler (read_val7 scale_val shift_val) (scaled7)
+                $guard (~grd_cnd8) $call scaler (read_val8 scale_val shift_val) (scaled8)
+                tmp1 := ($mux grd_cnd1 0 scaled1)
+                tmp2 := ($mux grd_cnd2 0 scaled2)
+                tmp3 := ($mux grd_cnd3 0 scaled3)
+                tmp4 := ($mux grd_cnd4 0 scaled4)
+                tmp5 := ($mux grd_cnd5 0 scaled5)
+                tmp6 := ($mux grd_cnd6 0 scaled6)
+                tmp7 := ($mux grd_cnd7 0 scaled7)
+                tmp8 := ($mux grd_cnd8 0 scaled8)
+
+		$volatile rd1 := ($concat tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8)
+		$volatile val_in_use := ($mux fn rd1 fv1)
+		// Shift to the head of cv
+		$volatile tmp := ((val_in_use << (($bitcast ($uint<64>) head) << 3)) >> (($bitcast ($uint<64>) sp) << 3))
+		
+		$volatile bytemask := (bm | ((($bitcast ($uint<8>) _hFF) >> ($bitcast ($uint<8>) sp) ) & (($bitcast ($uint<8>) _hFF) << ($bitcast ($uint<8>)(8 - sns)))))
+		// Apply bitmask to get the desired value
+		//$volatile send_data := ((cv1 | tmp) & bytemask)
+		
+		// Bytemask done in memory
+		$volatile send_data := (cv1 | tmp)
+		
+		//time_pipe := (($bitcast ($uint<32>) ##num ) && (($bitcast ($uint<32>) (head && sp ))
+		$volatile n_sent := ($mux done ($mux (sent == (cb-1)) 0 (sent+1)) sent)
+		// Update head and start pointers
+		$volatile n_head := ($mux n_fn 0 hns)
+
+		// Compute next channel address etc variables
+		$volatile nxt_chl := ((n_sent == 0) & done)
+		$volatile n_addr1 := ((addr1 + ($bitcast ($uint<32>) ns)) + ($bitcast ($uint<32>) ($mux nxt_chl rs ($mux done chl_change_inc 0))))
+
+		// Fetch next memory if needed
+		$volatile na3 := (n_addr1 >> 3)
+		$volatile send := (((sns == 0) | nxt_chl) | (done & (na3 != (addr1 >> 3))))
+		$volatile nfv1 := val_in_use
+		$volatile ncv1 := ($mux send 0 send_data)
+		$volatile nbm := ($mux send 0 bytemask)
+
+		$guard (send) $call writeModule_convolution (base_address (addr1>>3) send_data bytemask) (a2)
+		//$volatile bytefull := (bytemask == _hFFFFFFFFFFFFFFFF)
+		//$volatile send_all := (send & bytefull)
+		//$volatile send_part := (send & (~bytefull))
+		//$guard (send_all) B[0][(addr1>>3)] := send_data
+		//$guard (send_part) B[0][(addr1>>3)] := ((B[0][(addr1>>3)] & (~bytemask)) | send_data)
+		//$guard (send_part) $call atomicMaskedWrite ((addr1>>3) (~bytemask)  send_data) ()
+
+//--------------------------------------------------------------------------------------------------------------------------//
+
+		// Check this later - odd values of row will be incorrect
+		$volatile n_row := ($mux nxt_chl (row + N_ROWS_S) row)
+		
+		continue_flag := (n_row < rb)
+		$while continue_flag
+		// $call timer (104) (time_pipe)
+		
+		$volatile np_cnt := (p_cnt + 1)
+		$volatile n_cmi := ($mux (chl_left > max_chl) max_chl chl_left)
+		$volatile n_chl_left := (chl_left - n_cmi)
+		$volatile n_addr := (addr + ($bitcast ($uint<32>) chl_max_itr))
+				
+		$if (p_cnt < num_parts) $then $place [loopback] $endif
+	}
+}

@@ -1,0 +1,8 @@
+// From macro_file1 with num = ##num
+		
+		$volatile n_row##num := ($mux next_row (row##num + N_ROWS_S) row##num )
+		$volatile n_address##num := ((address##num + 1) + ($mux next_row m_factor  0))
+		$volatile send_flag##num := (row##num < row_in)
+		$guard (send_flag##num ) $call readModule2 (0 address##num ) (core_ip##num )
+		
+// End of macro_file1

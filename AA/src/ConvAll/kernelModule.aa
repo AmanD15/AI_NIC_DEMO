@@ -1,0 +1,27 @@
+// Load the kernel channel into the kernel pipes
+
+$module [kernelModule]
+$in (chl_in chl_out rk ck : $uint<16> base_address : $uint<ADDRESS_WIDTH>)
+$out ()
+$is
+{
+	row_size := (chl_in*ck)
+	mode_3 := (rk == 3)
+	addr1 := 0
+	addr2 := ($bitcast ($uint<32>) row_size)
+	addr3 := ($bitcast ($uint<32>) (row_size<<1))
+	$parallelblock[k_block]
+	{
+		$call kernelModule_in1 (addr1 chl_in chl_out rk ck base_address) ()
+		$call kernelModule_in2 (addr2 chl_in chl_out rk ck base_address) ()
+		$guard (mode_3) $call kernelModule_in3 (addr3 chl_in chl_out rk ck base_address) ()
+	}
+	//debug_output_pipe := 71
+}
+
+#define num 1
+#include kernelInner.aa
+#define num 2
+#include kernelInner.aa
+#define num 3
+#include kernelInner.aa

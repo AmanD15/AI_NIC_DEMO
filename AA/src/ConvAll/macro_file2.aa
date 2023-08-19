@@ -1,0 +1,26 @@
+// Start of macro_file2
+
+		$guard (##guard_for_ip1 ) temp2_##num := core_ip##num
+		$guard (##guard_for_ip2 ) temp1_##num := conv_ip##num
+		#if normal_ip
+		$volatile iread##num := ($mux read_ip temp2_##num temp1_##num )
+		$guard (write_input) conv_ip##num := iread##num
+		#endif
+		#if abnormal_ip
+		$volatile iread##num := ($mux mode_2 0 ($mux read_ip temp2_##num temp1_##num ))
+		$guard (write_input3) conv_ip##num := iread##num
+		#endif
+
+
+		$split (iread##num 8 8 8 8 8 8 8 8) (ir1_##num ir2_##num ir3_##num ir4_##num ir5_##num ir6_##num ir7_##num ir8_##num )
+
+		$volatile ival1_##num := ($bitcast ($int<8>) ir1_##num )
+		$volatile ival2_##num := ($bitcast ($int<8>) ir2_##num )
+		$volatile ival3_##num := ($bitcast ($int<8>) ir3_##num )
+		$volatile ival4_##num := ($bitcast ($int<8>) ir4_##num )
+		$volatile ival5_##num := ($bitcast ($int<8>) ir5_##num )
+		$volatile ival6_##num := ($bitcast ($int<8>) ir6_##num )
+		$volatile ival7_##num := ($bitcast ($int<8>) ir7_##num )
+		$volatile ival8_##num := ($bitcast ($int<8>) ir8_##num )
+		
+// End of macro_file2

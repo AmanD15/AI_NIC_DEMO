@@ -1,0 +1,24 @@
+//
+// Memory Access Module
+//
+//$pipeline $depth 15 $fullrate
+$module [accessMemory]
+	$in (lock rwbar: $uint<1> bmask: $uint<8> addr: $uint<36> wdata : $uint<64>)
+	$out (rdata : $uint<64>)
+$is
+{
+	$branchblock[loop]
+	{
+		$dopipeline $depth 15 $fullrate
+		$merge $entry $loopback $endmerge
+		$volatile request :=  ($concat lock rwbar bmask addr wdata)
+		NIC_TO_MEMORY_REQUEST := request
+	
+		response := MEMORY_TO_NIC_RESPONSE
+		$volatile $split (response 1 64) (err rdata)
+		$rreport(accessMemory byte_mask bmask rwbar addr wdata err)
+		
+		$while(err == 1)
+	}
+}
+

@@ -1,0 +1,99 @@
+// Aa code produced by llvm2aa (version 1.0)
+$parameter NO_ACT 0
+$parameter RELU 1
+
+$module [convolutionAll] $in (rb cb rt ct chl_out chl_in rk ck: $uint<16> base_address_in1 base_address_in2 base_address_k base_address_out1 base_address_out2 : $uint<ADDRESS_WIDTH> scale_val : $uint<32> shift_val pad : $uint<16> pool : $uint<8> concat : $uint<8> activation : $uint<8>) $out() $is
+{
+	in_8 := (($slice chl_in 2 0) == 0) 
+	out_8 := (($slice chl_out 2 0) == 0)
+	inout_8 := (in_8 & out_8)
+	//chl_in8 := (chl_in >> 3)
+	//chl_out8 := (chl_out >> 3)
+	chl_out_ceil := ((chl_out + 7)>>3)
+	chl_in_ceil := ((chl_in + 7)>>3)
+	
+	inCT := (rk == 2)
+	inConcat := ((concat != 0) & (~inCT))
+	in_nCT := (((~inCT) & (~inConcat)) & (~in_8))
+	in_nCT8 := (((~inCT) & (~inConcat)) & in_8)
+	
+	out_pool := (pool [] 0)
+	sBP_pool := (pool [] 1)
+	callPool := (out_pool | sBP_pool)
+	saveFull := ((out_8 & (~out_pool)) | sBP_pool)
+	out_np8 := out_8
+	out_np := (~out_8)
+	
+	// Creating partitions
+	$call Divider (K_DEPTH (chl_in_ceil*ck)) (alpha)
+	cnd_partition := (alpha < chl_out_ceil)
+	$guard (cnd_partition) $call Divider ((chl_out_ceil-1) alpha) (tmp1)
+	parts := ($bitcast ($uint<8>) ($mux cnd_partition tmp1 0))
+	max_per_part := ($mux cnd_partition (alpha<<3) chl_out)
+	mpp2 := ($mux cnd_partition alpha chl_out_ceil)
+	$call TopMult (($bitcast ($uint<32>) rb) (($bitcast ($uint<32>)  (cb * chl_out_ceil)) >> 1)) (op_size)
+
+	$parallelblock [topBlocks]
+	{
+		// Note chl_in_ceil = chl_in8 for chl_in being a multiple of 8
+		// Note chl_out_ceil = chl_out8 for chl_out being a multiple of 8
+		
+		$guard (~inout_8) $call kernelModule (chl_in chl_out rk ck base_address_k) ()
+		$guard (inout_8) $call kernelModule8 (chl_in_ceil chl_out_ceil rk ck base_address_k) ()
+		
+		// Exactly one of them is called
+		$guard (in_nCT) $call inputModule (rb rt ct chl_in rk pad parts base_address_in1) ()
+		$guard (in_nCT8) $call inputModule8 (rb ct chl_in_ceil rk pad parts base_address_in1) ()
+		$guard (inCT) $call inputModuleCT (rb ct chl_in_ceil parts base_address_in1) ()
+		$guard (inConcat) $call inputModuleConcat (rb ct chl_in_ceil rk pad parts base_address_in1 base_address_in2) ()
+		
+		$call convolveCore (rb cb chl_in_ceil chl_out rk ck parts max_per_part) ()
+		$call accumulator (chl_in_ceil ck op_size) ()
+		
+		$guard (out_np) $call sendModule (rb cb chl_out shift_val scale_val parts max_per_part activation base_address_out1) ()
+		$guard (out_np8) $call sendModule8 (rb cb chl_out_ceil shift_val scale_val parts mpp2 activation base_address_out1 callPool saveFull) ()
+		$guard (callPool) $call sendPool (rb cb chl_out_ceil parts mpp2 base_address_out2) ()
+	}
+	//debug_output_pipe := 70
+}
+
+$opaque $module [TopMult] $in (in1 : $uint<32> in2 : $uint<32>) $out (output : $uint<32>)
+$is
+{
+	output := (in1 * in2)
+}
+
+$opaque $module [Divider] $in (dividend : $uint<16> $divisor : $uint<16>) $out (quotient : $uint<16>) $is
+{
+	//quotient := dividend/divisor
+	$branchblock [DivBlock]
+	{
+		$volatile ext_div := ($bitcast ($uint<17>) dividend)
+		
+		$dopipeline $depth 7 $fullrate
+		$merge $entry $loopback
+		$phi div := ($bitcast ($uint<17>) divisor) $on $entry ndiv $on $loopback
+		$phi cnt := ($bitcast ($uint<5>) 0) $on $entry ncnt $on $loopback
+		$endmerge
+		$volatile cmp := (div >= ext_div)
+		$volatile ndiv := (div<<1)
+		$volatile ncnt := (cnt + 1)
+		$while (~cmp)
+		
+		$dopipeline $depth 7 $fullrate
+		$merge $entry $loopback
+		$phi div_2 := div $on $entry ndiv_2 $on $loopback
+		$phi ediv_2 := ext_div $on $entry nediv_2 $on $loopback
+		$phi quo := ($bitcast ($uint<16>) 0) $on $entry nq $on $loopback
+		$phi cnt2 := cnt $on $entry ncnt2 $on $loopback
+		$endmerge
+		$volatile cmp2 := (div_2 > ediv_2)
+		$volatile ndiv_2 := (div_2 >> 1)
+		$volatile nediv_2 := (ediv_2 - ($mux cmp2 0 div_2))
+		$volatile ncnt2 := (cnt2 - 1) 
+		nq := ((quo << 1) + ($mux cmp2 0 1))
+		$while (cnt2 > 0)
+		
+		quotient := nq
+	}	
+}

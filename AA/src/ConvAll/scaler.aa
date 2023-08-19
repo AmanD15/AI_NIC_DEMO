@@ -1,0 +1,13 @@
+$pipeline $depth 15 $fullrate
+$module [scaler]
+$in (input : $uint<ACC_WIDTH> scale_val_in : $uint<32> shift_val : $uint<16>)
+$out (output : $uint<8>)
+$is
+{
+	$volatile scale_val := ($cast ($int<32>) scale_val_in)
+	$volatile in_adj := ($cast ($int<32>) ($cast ($int<ACC_WIDTH>) input))
+	$volatile mul_output := ($bitcast ($uint<32>) (in_adj * scale_val))
+	$volatile ret_val := (mul_output >> ($bitcast ($uint<32>) shift_val))
+	output := ($bitcast ($uint<8>) ret_val)
+
+}

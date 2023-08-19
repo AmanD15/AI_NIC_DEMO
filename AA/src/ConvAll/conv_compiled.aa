@@ -1,0 +1,3792 @@
+$parameter PIPE_WIDTH 64
+$parameter INTERMEDIATE_PIPE_DEPTH 512
+$parameter SMALL_PIPE_DEPTH 16
+$parameter IP_DEPTH 256
+$parameter K_DEPTH 4096
+$parameter N_ROWS_S 2
+$parameter ACC_WIDTH 32
+$parameter DATA_WIDTH 32
+$parameter ADDRESS_WIDTH 32
+
+$pipe core1_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core1_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core1_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core2_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core2_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core2_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core3_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core3_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core3_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core4_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core4_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core4_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core5_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core5_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core5_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core6_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core6_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core6_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core7_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core7_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core7_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core8_kp1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core8_kp2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core8_kp3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+
+$pipe prev_core_ip1 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe prev_core_ip2 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+
+$pipe core_ip1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe core_ip2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe core_ip3 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+$pipe core_ip4 : $uint<PIPE_WIDTH> $depth INTERMEDIATE_PIPE_DEPTH
+
+$pipe output_pipe1_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe1_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe2_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe2_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe3_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe3_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe4_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe4_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe5_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe5_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe6_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe6_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe7_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe7_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe8_1 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe output_pipe8_2 : $uint<ACC_WIDTH> $depth SMALL_PIPE_DEPTH
+
+$pipe acc_pipe1_1 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_2 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_3 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_4 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_5 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_6 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_7 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe1_8 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_1 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_2 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_3 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_4 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_5 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_6 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_7 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe acc_pipe2_8 : $uint<DATA_WIDTH> $depth SMALL_PIPE_DEPTH
+
+$pipe conv_ip1 : $uint<PIPE_WIDTH> $depth IP_DEPTH
+$pipe conv_ip2 : $uint<PIPE_WIDTH> $depth IP_DEPTH
+$pipe conv_ip3 : $uint<PIPE_WIDTH> $depth IP_DEPTH
+$pipe conv_ip4 : $uint<PIPE_WIDTH> $depth IP_DEPTH
+$pipe conv1_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv1_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv1_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv2_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv2_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv2_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv3_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv3_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv3_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv4_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv4_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv4_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv5_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv5_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv5_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv6_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv6_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv6_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv7_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv7_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv7_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv8_kp1 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv8_kp2 : $uint<PIPE_WIDTH> $depth K_DEPTH
+$pipe conv8_kp3 : $uint<PIPE_WIDTH> $depth K_DEPTH
+
+$pipe pool_buffer : $uint<PIPE_WIDTH> $depth IP_DEPTH
+$pipe send_to_pool_pipe1 : $uint<PIPE_WIDTH> $depth SMALL_PIPE_DEPTH
+$pipe send_to_pool_pipe2 : $uint<PIPE_WIDTH> $depth SMALL_PIPE_DEPTH
+
+
+// Aa code produced by llvm2aa (version 1.0)
+$parameter NO_ACT 0
+$parameter RELU 1
+
+$module [convolutionAll] $in (rb cb rt ct chl_out chl_in rk ck: $uint<16> base_address_in1 base_address_in2 base_address_k base_address_out1 base_address_out2 : $uint<ADDRESS_WIDTH> scale_val : $uint<32> shift_val pad : $uint<16> pool : $uint<8> concat : $uint<8> activation : $uint<8>) $out() $is
+{
+	in_8 := (($slice chl_in 2 0) == 0) 
+	out_8 := (($slice chl_out 2 0) == 0)
+	inout_8 := (in_8 & out_8)
+	//chl_in8 := (chl_in >> 3)
+	//chl_out8 := (chl_out >> 3)
+	chl_out_ceil := ((chl_out + 7)>>3)
+	chl_in_ceil := ((chl_in + 7)>>3)
+	
+	inCT := (rk == 2)
+	inConcat := ((concat != 0) & (~inCT))
+	in_nCT := (((~inCT) & (~inConcat)) & (~in_8))
+	in_nCT8 := (((~inCT) & (~inConcat)) & in_8)
+	
+	out_pool := (pool [] 0)
+	sBP_pool := (pool [] 1)
+	callPool := (out_pool | sBP_pool)
+	saveFull := ((out_8 & (~out_pool)) | sBP_pool)
+	out_np8 := out_8
+	out_np := (~out_8)
+	
+	// Creating partitions
+	$call Divider (K_DEPTH (chl_in_ceil*ck)) (alpha)
+	cnd_partition := (alpha < chl_out_ceil)
+	$guard (cnd_partition) $call Divider ((chl_out_ceil-1) alpha) (tmp1)
+	parts := ($bitcast ($uint<8>) ($mux cnd_partition tmp1 0))
+	max_per_part := ($mux cnd_partition (alpha<<3) chl_out)
+	mpp2 := ($mux cnd_partition alpha chl_out_ceil)
+	$call TopMult (($bitcast ($uint<32>) rb) (($bitcast ($uint<32>)  (cb * chl_out_ceil)) >> 1)) (op_size)
+
+	$parallelblock [topBlocks]
+	{
+		// Note chl_in_ceil = chl_in8 for chl_in being a multiple of 8
+		// Note chl_out_ceil = chl_out8 for chl_out being a multiple of 8
+		
+		$guard (~inout_8) $call kernelModule (chl_in chl_out rk ck base_address_k) ()
+		$guard (inout_8) $call kernelModule8 (chl_in_ceil chl_out_ceil rk ck base_address_k) ()
+		
+		// Exactly one of them is called
+		$guard (in_nCT) $call inputModule (rb rt ct chl_in rk pad parts base_address_in1) ()
+		$guard (in_nCT8) $call inputModule8 (rb ct chl_in_ceil rk pad parts base_address_in1) ()
+		$guard (inCT) $call inputModuleCT (rb ct chl_in_ceil parts base_address_in1) ()
+		$guard (inConcat) $call inputModuleConcat (rb ct chl_in_ceil rk pad parts base_address_in1 base_address_in2) ()
+		
+		$call convolveCore (rb cb chl_in_ceil chl_out rk ck parts max_per_part) ()
+		$call accumulator (chl_in_ceil ck op_size) ()
+		
+		$guard (out_np) $call sendModule (rb cb chl_out shift_val scale_val parts max_per_part activation base_address_out1) ()
+		$guard (out_np8) $call sendModule8 (rb cb chl_out_ceil shift_val scale_val parts mpp2 activation base_address_out1 callPool saveFull) ()
+		$guard (callPool) $call sendPool (rb cb chl_out_ceil parts mpp2 base_address_out2) ()
+	}
+	//debug_output_pipe := 70
+}
+
+$opaque $module [TopMult] $in (in1 : $uint<32> in2 : $uint<32>) $out (output : $uint<32>)
+$is
+{
+	output := (in1 * in2)
+}
+
+$opaque $module [Divider] $in (dividend : $uint<16> $divisor : $uint<16>) $out (quotient : $uint<16>) $is
+{
+	//quotient := dividend/divisor
+	$branchblock [DivBlock]
+	{
+		$volatile ext_div := ($bitcast ($uint<17>) dividend)
+		
+		$dopipeline $depth 7 $fullrate
+		$merge $entry $loopback
+		$phi div := ($bitcast ($uint<17>) divisor) $on $entry ndiv $on $loopback
+		$phi cnt := ($bitcast ($uint<5>) 0) $on $entry ncnt $on $loopback
+		$endmerge
+		$volatile cmp := (div >= ext_div)
+		$volatile ndiv := (div<<1)
+		$volatile ncnt := (cnt + 1)
+		$while (~cmp)
+		
+		$dopipeline $depth 7 $fullrate
+		$merge $entry $loopback
+		$phi div_2 := div $on $entry ndiv_2 $on $loopback
+		$phi ediv_2 := ext_div $on $entry nediv_2 $on $loopback
+		$phi quo := ($bitcast ($uint<16>) 0) $on $entry nq $on $loopback
+		$phi cnt2 := cnt $on $entry ncnt2 $on $loopback
+		$endmerge
+		$volatile cmp2 := (div_2 > ediv_2)
+		$volatile ndiv_2 := (div_2 >> 1)
+		$volatile nediv_2 := (ediv_2 - ($mux cmp2 0 div_2))
+		$volatile ncnt2 := (cnt2 - 1) 
+		nq := ((quo << 1) + ($mux cmp2 0 1))
+		$while (cnt2 > 0)
+		
+		quotient := nq
+	}	
+}
+
+
+// Load the kernel channel into the kernel pipes
+
+$module [kernelModule]
+$in (chl_in chl_out rk ck : $uint<16> base_address : $uint<ADDRESS_WIDTH>)
+$out ()
+$is
+{
+	row_size := (chl_in*ck)
+	mode_3 := (rk == 3)
+	addr1 := 0
+	addr2 := ($bitcast ($uint<32>) row_size)
+	addr3 := ($bitcast ($uint<32>) (row_size<<1))
+	$parallelblock[k_block]
+	{
+		$call kernelModule_in1 (addr1 chl_in chl_out rk ck base_address) ()
+		$call kernelModule_in2 (addr2 chl_in chl_out rk ck base_address) ()
+		$guard (mode_3) $call kernelModule_in3 (addr3 chl_in chl_out rk ck base_address) ()
+	}
+	//debug_output_pipe := 71
+}
+
+
+
+$module [kernelModule_in1 ]
+$in (init_addr : $uint<32> chl_in chl_out rk ck : $uint<16> base_address : $uint<ADDRESS_WIDTH>)
+$out ()
+$is
+{
+
+	$branchblock [load_block]
+	{
+		row_size := (chl_in * ck)
+		count_update := (row_size*(rk-1))
+		
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi chl_num := ($bitcast ($uint<16>) 1) $on $entry n_chl_num $on $loopback
+		$phi sent := ($bitcast ($uint<16>) 0) $on $entry n_sent $on $loopback
+		$phi fv1 := 0 $on $entry nfv1 $on $loopback
+		$phi cv1 := ($bitcast ($uint<64>) 0) $on $entry ncv1 $on $loopback 
+		$phi left := chl_in $on $entry n_left $on $loopback
+		$phi head := ($bitcast ($uint<3>) 0) $on $entry n_head $on $loopback
+		$phi addr1 := init_addr $on $entry n_addr1 $on $loopback
+		$phi fn := ($bitcast ($uint<1>) 1) $on $entry n_fn $on $loopback
+		$endmerge
+		
+		$volatile chl_3 := ($bitcast ($uint<3>) chl_num)
+		$volatile sp := ($bitcast ($uint<3>) addr1)
+
+		// Compute number of elements to send
+		$volatile min1 := ($mux (sp > head) sp head)
+		$volatile mi71 := (8 - ($bitcast ($uint<16>) min1))
+		$volatile ns := ($mux (mi71 < left) mi71 left)
+		// Decide whether to send or not
+		$volatile hns := (head + ($bitcast ($uint<3>) ns))
+		$volatile sns := (sp + ($bitcast ($uint<3>) ns))
+		$volatile done := (left == ns)
+		$volatile send := (done | (hns == 0))
+		// Update number left
+		$volatile n_left := ($mux done chl_in (left - ns))
+		
+		$guard (fn) $call readModule_convolutionk (base_address (addr1>>3)) (read_val)
+		$volatile val_in_use := ($mux fn read_val fv1)
+		// Shift to the head of cv
+		$volatile tmp1 := ((val_in_use << (($bitcast ($uint<64>) sp) << 3)) >> (($bitcast ($uint<64>) head) << 3))
+		$volatile bytemask := (($bitcast ($uint<64>) _hFFFFFFFFFFFFFFFF) << (($bitcast ($uint<64>) (8 - hns)) << 3))
+		// Apply bitmask to get the desired value
+		$volatile send_data := ((cv1 | tmp1) & bytemask)
+		$volatile ncv1 := ($mux send 0 send_data)
+		
+		// Send if done
+		$volatile send_to_1 := (send & (chl_3==1))
+		$volatile send_to_2 := (send & (chl_3==2))
+		$volatile send_to_3 := (send & (chl_3==3))
+		$volatile send_to_4 := (send & (chl_3==4))
+		$volatile send_to_5 := (send & (chl_3==5))
+		$volatile send_to_6 := (send & (chl_3==6))
+		$volatile send_to_7 := (send & (chl_3==7))
+		$volatile send_to_8 := (send & (chl_3==8))
+		$guard (send_to_1) core1_kp1 := send_data
+		$guard (send_to_2) core2_kp1 := send_data
+		$guard (send_to_3) core3_kp1 := send_data
+		$guard (send_to_4) core4_kp1 := send_data
+		$guard (send_to_5) core5_kp1 := send_data
+		$guard (send_to_6) core6_kp1 := send_data
+		$guard (send_to_7) core7_kp1 := send_data
+		$guard (send_to_8) core8_kp1 := send_data
+		$volatile n_sent := ($mux done ($mux (sent == (ck-1)) 0 (sent+1)) sent)
+		// Update head and start pointers
+		$volatile n_head := ($mux send 0 hns)
+
+		// Compute next channel address etc variables
+		$volatile nxt_chl := ((n_sent == 0) & done)
+		$volatile n_addr1 := (addr1 + ($bitcast ($uint<32>) ($mux nxt_chl (count_update+ns) ns)))
+		$volatile n_chl_num := ($mux nxt_chl (chl_num + 1) chl_num)
+
+		// Fetch next memory if needed
+		$volatile na3_1 := (n_addr1 >> 3)
+		$volatile n_fn := (((sns == 0) | nxt_chl) | (done & (na3_1 != (addr1 >> 3))))
+		$volatile nfv1 := val_in_use
+
+		$volatile exit_cond := (nxt_chl & (chl_num == chl_out))
+		$while (~exit_cond)
+	}
+}
+
+
+
+$module [kernelModule_in2 ]
+$in (init_addr : $uint<32> chl_in chl_out rk ck : $uint<16> base_address : $uint<ADDRESS_WIDTH>)
+$out ()
+$is
+{
+
+	$branchblock [load_block]
+	{
+		row_size := (chl_in * ck)
+		count_update := (row_size*(rk-1))
+		
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi chl_num := ($bitcast ($uint<16>) 1) $on $entry n_chl_num $on $loopback
+		$phi sent := ($bitcast ($uint<16>) 0) $on $entry n_sent $on $loopback
+		$phi fv1 := 0 $on $entry nfv1 $on $loopback
+		$phi cv1 := ($bitcast ($uint<64>) 0) $on $entry ncv1 $on $loopback 
+		$phi left := chl_in $on $entry n_left $on $loopback
+		$phi head := ($bitcast ($uint<3>) 0) $on $entry n_head $on $loopback
+		$phi addr1 := init_addr $on $entry n_addr1 $on $loopback
+		$phi fn := ($bitcast ($uint<1>) 1) $on $entry n_fn $on $loopback
+		$endmerge
+		
+		$volatile chl_3 := ($bitcast ($uint<3>) chl_num)
+		$volatile sp := ($bitcast ($uint<3>) addr1)
+
+		// Compute number of elements to send
+		$volatile min1 := ($mux (sp > head) sp head)
+		$volatile mi71 := (8 - ($bitcast ($uint<16>) min1))
+		$volatile ns := ($mux (mi71 < left) mi71 left)
+		// Decide whether to send or not
+		$volatile hns := (head + ($bitcast ($uint<3>) ns))
+		$volatile sns := (sp + ($bitcast ($uint<3>) ns))
+		$volatile done := (left == ns)
+		$volatile send := (done | (hns == 0))
+		// Update number left
+		$volatile n_left := ($mux done chl_in (left - ns))
+		
+		$guard (fn) $call readModule_convolutionk (base_address (addr1>>3)) (read_val)
+		$volatile val_in_use := ($mux fn read_val fv1)
+		// Shift to the head of cv
+		$volatile tmp1 := ((val_in_use << (($bitcast ($uint<64>) sp) << 3)) >> (($bitcast ($uint<64>) head) << 3))
+		$volatile bytemask := (($bitcast ($uint<64>) _hFFFFFFFFFFFFFFFF) << (($bitcast ($uint<64>) (8 - hns)) << 3))
+		// Apply bitmask to get the desired value
+		$volatile send_data := ((cv1 | tmp1) & bytemask)
+		$volatile ncv1 := ($mux send 0 send_data)
+		
+		// Send if done
+		$volatile send_to_1 := (send & (chl_3==1))
+		$volatile send_to_2 := (send & (chl_3==2))
+		$volatile send_to_3 := (send & (chl_3==3))
+		$volatile send_to_4 := (send & (chl_3==4))
+		$volatile send_to_5 := (send & (chl_3==5))
+		$volatile send_to_6 := (send & (chl_3==6))
+		$volatile send_to_7 := (send & (chl_3==7))
+		$volatile send_to_8 := (send & (chl_3==8))
+		$guard (send_to_1) core1_kp2 := send_data
+		$guard (send_to_2) core2_kp2 := send_data
+		$guard (send_to_3) core3_kp2 := send_data
+		$guard (send_to_4) core4_kp2 := send_data
+		$guard (send_to_5) core5_kp2 := send_data
+		$guard (send_to_6) core6_kp2 := send_data
+		$guard (send_to_7) core7_kp2 := send_data
+		$guard (send_to_8) core8_kp2 := send_data
+		$volatile n_sent := ($mux done ($mux (sent == (ck-1)) 0 (sent+1)) sent)
+		// Update head and start pointers
+		$volatile n_head := ($mux send 0 hns)
+
+		// Compute next channel address etc variables
+		$volatile nxt_chl := ((n_sent == 0) & done)
+		$volatile n_addr1 := (addr1 + ($bitcast ($uint<32>) ($mux nxt_chl (count_update+ns) ns)))
+		$volatile n_chl_num := ($mux nxt_chl (chl_num + 1) chl_num)
+
+		// Fetch next memory if needed
+		$volatile na3_1 := (n_addr1 >> 3)
+		$volatile n_fn := (((sns == 0) | nxt_chl) | (done & (na3_1 != (addr1 >> 3))))
+		$volatile nfv1 := val_in_use
+
+		$volatile exit_cond := (nxt_chl & (chl_num == chl_out))
+		$while (~exit_cond)
+	}
+}
+
+
+
+$module [kernelModule_in3 ]
+$in (init_addr : $uint<32> chl_in chl_out rk ck : $uint<16> base_address : $uint<ADDRESS_WIDTH>)
+$out ()
+$is
+{
+
+	$branchblock [load_block]
+	{
+		row_size := (chl_in * ck)
+		count_update := (row_size*(rk-1))
+		
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi chl_num := ($bitcast ($uint<16>) 1) $on $entry n_chl_num $on $loopback
+		$phi sent := ($bitcast ($uint<16>) 0) $on $entry n_sent $on $loopback
+		$phi fv1 := 0 $on $entry nfv1 $on $loopback
+		$phi cv1 := ($bitcast ($uint<64>) 0) $on $entry ncv1 $on $loopback 
+		$phi left := chl_in $on $entry n_left $on $loopback
+		$phi head := ($bitcast ($uint<3>) 0) $on $entry n_head $on $loopback
+		$phi addr1 := init_addr $on $entry n_addr1 $on $loopback
+		$phi fn := ($bitcast ($uint<1>) 1) $on $entry n_fn $on $loopback
+		$endmerge
+		
+		$volatile chl_3 := ($bitcast ($uint<3>) chl_num)
+		$volatile sp := ($bitcast ($uint<3>) addr1)
+
+		// Compute number of elements to send
+		$volatile min1 := ($mux (sp > head) sp head)
+		$volatile mi71 := (8 - ($bitcast ($uint<16>) min1))
+		$volatile ns := ($mux (mi71 < left) mi71 left)
+		// Decide whether to send or not
+		$volatile hns := (head + ($bitcast ($uint<3>) ns))
+		$volatile sns := (sp + ($bitcast ($uint<3>) ns))
+		$volatile done := (left == ns)
+		$volatile send := (done | (hns == 0))
+		// Update number left
+		$volatile n_left := ($mux done chl_in (left - ns))
+		
+		$guard (fn) $call readModule_convolutionk (base_address (addr1>>3)) (read_val)
+		$volatile val_in_use := ($mux fn read_val fv1)
+		// Shift to the head of cv
+		$volatile tmp1 := ((val_in_use << (($bitcast ($uint<64>) sp) << 3)) >> (($bitcast ($uint<64>) head) << 3))
+		$volatile bytemask := (($bitcast ($uint<64>) _hFFFFFFFFFFFFFFFF) << (($bitcast ($uint<64>) (8 - hns)) << 3))
+		// Apply bitmask to get the desired value
+		$volatile send_data := ((cv1 | tmp1) & bytemask)
+		$volatile ncv1 := ($mux send 0 send_data)
+		
+		// Send if done
+		$volatile send_to_1 := (send & (chl_3==1))
+		$volatile send_to_2 := (send & (chl_3==2))
+		$volatile send_to_3 := (send & (chl_3==3))
+		$volatile send_to_4 := (send & (chl_3==4))
+		$volatile send_to_5 := (send & (chl_3==5))
+		$volatile send_to_6 := (send & (chl_3==6))
+		$volatile send_to_7 := (send & (chl_3==7))
+		$volatile send_to_8 := (send & (chl_3==8))
+		$guard (send_to_1) core1_kp3 := send_data
+		$guard (send_to_2) core2_kp3 := send_data
+		$guard (send_to_3) core3_kp3 := send_data
+		$guard (send_to_4) core4_kp3 := send_data
+		$guard (send_to_5) core5_kp3 := send_data
+		$guard (send_to_6) core6_kp3 := send_data
+		$guard (send_to_7) core7_kp3 := send_data
+		$guard (send_to_8) core8_kp3 := send_data
+		$volatile n_sent := ($mux done ($mux (sent == (ck-1)) 0 (sent+1)) sent)
+		// Update head and start pointers
+		$volatile n_head := ($mux send 0 hns)
+
+		// Compute next channel address etc variables
+		$volatile nxt_chl := ((n_sent == 0) & done)
+		$volatile n_addr1 := (addr1 + ($bitcast ($uint<32>) ($mux nxt_chl (count_update+ns) ns)))
+		$volatile n_chl_num := ($mux nxt_chl (chl_num + 1) chl_num)
+
+		// Fetch next memory if needed
+		$volatile na3_1 := (n_addr1 >> 3)
+		$volatile n_fn := (((sns == 0) | nxt_chl) | (done & (na3_1 != (addr1 >> 3))))
+		$volatile nfv1 := val_in_use
+
+		$volatile exit_cond := (nxt_chl & (chl_num == chl_out))
+		$while (~exit_cond)
+	}
+}
+
+
+// Load the kernel channel into the kernel pipes
+$module [kernelModule8]
+$in (chl_in chl_out rk ck : $uint<16> base_address : $uint<ADDRESS_WIDTH>)
+$out ()
+$is
+{  
+    
+    $branchblock [load_block]
+    { 
+        row_size := (chl_in * ck)
+        chl_size := ($bitcast ($uint<32>) (row_size * rk))
+        chl_size2 := (chl_size << 1)
+        chl_size3 := (chl_size2 + chl_size)
+        chl_size4 := (chl_size << 2)
+        chl_size5 := (chl_size4 + chl_size)
+        chl_size6 := (chl_size4 + chl_size2)
+        chl_size7 := (chl_size4 + chl_size3)
+        chl_size8 := (chl_size << 3)
+        count_update := (chl_size8 - ($bitcast ($uint<32>) row_size))
+        rk_s := ($bitcast ($uint <2>) rk)
+        
+        $dopipeline $depth 15 $buffering 2 $fullrate
+        $merge $entry $loopback
+        $phi chl_num := ($bitcast ($uint<16>) 1) $on $entry n_chl_num $on $loopback
+        $phi ea := ($bitcast ($uint<32>) (row_size - 1)) $on $entry n_ea $on $loopback
+        $phi mycount := ($bitcast ($uint<32>) 0) $on $entry nmycount $on $loopback
+        $phi ind := ($bitcast ($uint<2>) 1) $on $entry n_ind $on $loopback
+        $endmerge
+
+        $volatile next_row := (ind == rk_s)
+        $volatile nxt_chl := ( (mycount == ea) & next_row)
+        $volatile nmycount := (mycount + ($mux next_row (1 + ($mux nxt_chl count_update 0)) 0))
+        $volatile n_chl_num := ($mux nxt_chl (chl_num + 1) chl_num)
+        $volatile n_ea := (ea + ($mux nxt_chl chl_size8 0))
+        $volatile n_ind := ($mux next_row 1 (ind + 1))
+        $volatile add_val := ($bitcast ($uint<32> )($excmux (ind == 2) row_size (ind == 3) (row_size<<1)))
+        // $call timer (3) (time_pipe)
+        
+        $call readModule_convolutionk (base_address (mycount+add_val)) (fetch_val1)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size)) (fetch_val2)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size2)) (fetch_val3)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size3)) (fetch_val4)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size4)) (fetch_val5)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size5)) (fetch_val6)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size6)) (fetch_val7)
+        $call readModule_convolutionk (base_address ((mycount+add_val)+chl_size7)) (fetch_val8)
+
+        $call writeToPipe1 (ind fetch_val1) (a1)
+        $call writeToPipe2 (ind fetch_val2) (a2)
+        $call writeToPipe3 (ind fetch_val3) (a3)
+        $call writeToPipe4 (ind fetch_val4) (a4)
+        $call writeToPipe5 (ind fetch_val5) (a5)
+        $call writeToPipe6 (ind fetch_val6) (a6)
+        $call writeToPipe7 (ind fetch_val7) (a7)
+        $call writeToPipe8 (ind fetch_val8) (a8)
+
+        $volatile exit_cond := (nxt_chl & (chl_num == chl_out))
+        $while (~exit_cond)
+        // $call timer (100) (time_pipe)
+		//debug_output_pipe := 91
+    }
+}
+
+
+$pipeline $depth 15 $buffering 2 $fullrate
+$opaque $module [writeToPipe1 ] $in (base_address : $uint<2> in_data1 : $uint<64>) $out (done : $uint<1>) $is
+{
+    c1 := (base_address == 1)
+    c2 := (base_address == 2)
+    c3 := (base_address == 3)
+	$guard (c1) core1_kp1 := in_data1
+	$guard (c2) core1_kp2 := in_data1
+	$guard (c3) core1_kp3 := in_data1
+	done := (in_data1 [] 0)
+}
+
+// $pipeline $depth 15 $fullrate
+// $module [multiplier1 ] $in (input kernel : $int<8> ) $out (mul_val : $int<16>) $is
+//{
+//    mul_val := ($cast ($int<16>) (input * kernel))
+//}
+
+
+$pipeline $depth 15 $buffering 2 $fullrate
+$opaque $module [writeToPipe2 ] $in (base_address : $uint<2> in_data1 : $uint<64>) $out (done : $uint<1>) $is
+{
+    c1 := (base_address == 1)
+    c2 := (base_address == 2)
+    c3 := (base_address == 3)
+	$guard (c1) core2_kp1 := in_data1
+	$guard (c2) core2_kp2 := in_data1
+	$guard (c3) core2_kp3 := in_data1
+	done := (in_data1 [] 0)
+}
+
+// $pipeline $depth 15 $fullrate
+// $module [multiplier2 ] $in (input kernel : $int<8> ) $out (mul_val : $int<16>) $is
+//{
+//    mul_val := ($cast ($int<16>) (input * kernel))
+//}
+
+
+$pipeline $depth 15 $buffering 2 $fullrate
+$opaque $module [writeToPipe3 ] $in (base_address : $uint<2> in_data1 : $uint<64>) $out (done : $uint<1>) $is
+{
+    c1 := (base_address == 1)
+    c2 := (base_address == 2)
+    c3 := (base_address == 3)
+	$guard (c1) core3_kp1 := in_data1
+	$guard (c2) core3_kp2 := in_data1
+	$guard (c3) core3_kp3 := in_data1
+	done := (in_data1 [] 0)
+}
+
+// $pipeline $depth 15 $fullrate
+// $module [multiplier3 ] $in (input kernel : $int<8> ) $out (mul_val : $int<16>) $is
+//{
+//    mul_val := ($cast ($int<16>) (input * kernel))
+//}
+
+
+$pipeline $depth 15 $buffering 2 $fullrate
+$opaque $module [writeToPipe4 ] $in (base_address : $uint<2> in_data1 : $uint<64>) $out (done : $uint<1>) $is
+{
+    c1 := (base_address == 1)
+    c2 := (base_address == 2)
+    c3 := (base_address == 3)
+	$guard (c1) core4_kp1 := in_data1
+	$guard (c2) core4_kp2 := in_data1
+	$guard (c3) core4_kp3 := in_data1
+	done := (in_data1 [] 0)
+}
+
+// $pipeline $depth 15 $fullrate
+// $module [multiplier4 ] $in (input kernel : $int<8> ) $out (mul_val : $int<16>) $is
+//{
+//    mul_val := ($cast ($int<16>) (input * kernel))
+//}
+
+
+$pipeline $depth 15 $buffering 2 $fullrate
+$opaque $module [writeToPipe5 ] $in (base_address : $uint<2> in_data1 : $uint<64>) $out (done : $uint<1>) $is
+{
+    c1 := (base_address == 1)
+    c2 := (base_address == 2)
+    c3 := (base_address == 3)
+	$guard (c1) core5_kp1 := in_data1
+	$guard (c2) core5_kp2 := in_data1
+	$guard (c3) core5_kp3 := in_data1
+	done := (in_data1 [] 0)
+}
+
+// $pipeline $depth 15 $fullrate
+// $module [multiplier5 ] $in (input kernel : $int<8> ) $out (mul_val : $int<16>) $is
+//{
+//    mul_val := ($cast ($int<16>) (input * kernel))
+//}
+
+
+$pipeline $depth 15 $buffering 2 $fullrate
+$opaque $module [writeToPipe6 ] $in (base_address : $uint<2> in_data1 : $uint<64>) $out (done : $uint<1>) $is
+{
+    c1 := (base_address == 1)
+    c2 := (base_address == 2)
+    c3 := (base_address == 3)
+	$guard (c1) core6_kp1 := in_data1
+	$guard (c2) core6_kp2 := in_data1
+	$guard (c3) core6_kp3 := in_data1
+	done := (in_data1 [] 0)
+}
+
+// $pipeline $depth 15 $fullrate
+// $module [multiplier6 ] $in (input kernel : $int<8> ) $out (mul_val : $int<16>) $is
+//{
+//    mul_val := ($cast ($int<16>) (input * kernel))
+//}
+
+
+$pipeline $depth 15 $buffering 2 $fullrate
+$opaque $module [writeToPipe7 ] $in (base_address : $uint<2> in_data1 : $uint<64>) $out (done : $uint<1>) $is
+{
+    c1 := (base_address == 1)
+    c2 := (base_address == 2)
+    c3 := (base_address == 3)
+	$guard (c1) core7_kp1 := in_data1
+	$guard (c2) core7_kp2 := in_data1
+	$guard (c3) core7_kp3 := in_data1
+	done := (in_data1 [] 0)
+}
+
+// $pipeline $depth 15 $fullrate
+// $module [multiplier7 ] $in (input kernel : $int<8> ) $out (mul_val : $int<16>) $is
+//{
+//    mul_val := ($cast ($int<16>) (input * kernel))
+//}
+
+
+$pipeline $depth 15 $buffering 2 $fullrate
+$opaque $module [writeToPipe8 ] $in (base_address : $uint<2> in_data1 : $uint<64>) $out (done : $uint<1>) $is
+{
+    c1 := (base_address == 1)
+    c2 := (base_address == 2)
+    c3 := (base_address == 3)
+	$guard (c1) core8_kp1 := in_data1
+	$guard (c2) core8_kp2 := in_data1
+	$guard (c3) core8_kp3 := in_data1
+	done := (in_data1 [] 0)
+}
+
+// $pipeline $depth 15 $fullrate
+// $module [multiplier8 ] $in (input kernel : $int<8> ) $out (mul_val : $int<16>) $is
+//{
+//    mul_val := ($cast ($int<16>) (input * kernel))
+//}
+
+
+
+// Access the input tensor and write to input pipe
+$module [inputModule]
+$in(row_in rt ct chl_in rk pad : $uint<16> num_parts_1 : $uint<8> base_address : $uint<ADDRESS_WIDTH>)
+$out()
+$is
+{
+	m_factor := ($bitcast ($uint<32>) (ct*chl_in))
+	m2_factor := (m_factor << 1)
+	bit0 := (pad [] 0)
+	bit1 := (pad [] 1)
+	addr1 := ($mux bit0 m_factor 0)
+	addr2 := ($mux bit0 0 m_factor)
+	//addr3 := (addr1 + ($mux (bit1 | bit0) 0 m2_factor))
+	//addr4 := (addr2 + ($mux bit1 0 m2_factor))
+	mode_3 := (rk == 3)
+	chl_in_ceil := ((chl_in + 7)>>3)
+	
+	$parallelblock [access_block]
+	{	
+		$call singleFetch (row_in ct pad chl_in_ceil num_parts_1 mode_3) ()
+		$call loadInput_in1 (addr1 row_in ct chl_in pad num_parts_1 base_address) ()
+		$call loadInput_in2 (addr2 row_in ct chl_in pad num_parts_1 base_address) ()
+		//$call loadInput_in3 (addr3 row_in ct chl_in pad num_parts_1 base_address) ()
+		//$guard (mode_3) $call loadInput_in4 (addr4 row_in ct chl_in pad num_parts_1 base_address) ()
+	}
+	//debug_output_pipe := 72
+}
+
+$module [singleFetch] $in (rt ct pad chl_in : $uint<16> max_parts : $uint<8> mode_3 : $uint<1>) $out  ()
+$is
+{
+	$branchblock [block]
+	{
+		cnt_max := ((ct + (pad << 1))*chl_in)
+		$dopipeline $depth 15 $fullrate
+		$merge $entry $loopback
+		$phi start := ($bitcast ($uint<1>) 1) $on $entry n_start $on $loopback
+		$phi cnt := ($bitcast ($uint<16>) 1) $on $entry n_cnt $on $loopback
+		$phi row := ($bitcast ($uint<16>) 0) $on $entry n_row $on $loopback
+		$phi parts := 0 $on $entry n_parts $on $loopback
+		$endmerge
+		val_read1 := prev_core_ip1
+		val_read2 := prev_core_ip2
+
+		$volatile change := (cnt == cnt_max)
+		n_cnt := ($mux change 1 (cnt+1))
+		incr_row := (row + N_ROWS_S)
+		update_row := ($mux change incr_row row)
+		chng_prt := (update_row > rt)
+		n_row := ($mux chng_prt 0 update_row)
+		n_parts := ($mux chng_prt (parts + 1) parts)
+		n_start := (n_row == 0)
+		do_4 := (mode_3 & (~start))
+		$volatile end := (incr_row > rt)
+		$guard (~end) core_ip1 := val_read1
+		$guard (~start) core_ip3 := val_read1
+		$guard (~end) core_ip2 := val_read2
+		$guard (do_4) core_ip4 := val_read2
+
+		$while (n_parts <= max_parts)
+	}
+}
+
+
+$module [loadInput_in1 ]
+$in(addr_init : $uint<32> row_in ct chl_in pad : $uint<16> num_parts_1 : $uint<8> base_address: $uint<ADDRESS_WIDTH>)
+$out()
+$is
+{
+	$branchblock [access_block]
+	{
+		ct_new := (ct + (pad<<1))
+		m_factor := ($bitcast ($uint<32>) (ct*chl_in))
+		row_last := (row_in + {1 + 1})
+		np := (num_parts_1+1)
+		
+		// Pipeline for sending inputs
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi row1 := ($bitcast ($uint<16>) {1 - 1} ) $on $entry n_row1 $on $loopback
+		$phi part_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on $loopback
+		//$phi chl_num := ($bitcast ($uint<16>) 0) $on $entry n_chl_num $on $loopback
+		$phi sent := ($bitcast ($uint<16>) 0) $on $entry n_sent $on $loopback
+		$phi fv1 := 0 $on $entry nfv1 $on $loopback
+		$phi cv1 := ($bitcast ($uint<64>) 0) $on $entry ncv1 $on $loopback 
+		$phi left := chl_in $on $entry n_left $on $loopback
+		$phi head := ($bitcast ($uint<3>) 0) $on $entry n_head $on $loopback
+		$phi addr1 := addr_init $on $entry n_addr1 $on $loopback
+		$phi fn := ($bitcast ($uint<1>) 1) $on $entry n_fn $on $loopback
+		$endmerge
+		
+		
+		$volatile mc_lt_p := ((sent < pad) | (sent >= (ct + pad)))
+		//$volatile r_lt_p := ((row1 < pad) | (row1 >= (row_in + pad)))
+		$volatile r_lt_p := ((row1 < pad) | (row1 >= ((row_in +2) - pad)))
+		$volatile p1_zero := (mc_lt_p | r_lt_p)
+		$volatile sp := ($bitcast ($uint<3>) addr1)
+
+		// Compute number of elements to send
+		$volatile min1 := ($mux (sp > head) sp head)
+		$volatile mi71 := (8 - ($bitcast ($uint<16>) min1))
+		$volatile cmp_val := ($mux p1_zero 8 mi71)
+		$volatile ns := ($mux (cmp_val < left) cmp_val left)
+
+		// Decide whether to send or not
+		$volatile hns := (head + ($bitcast ($uint<3>) ns))
+		$volatile sns := (sp + ($bitcast ($uint<3>) ns))
+		$volatile done := (left == ns)
+		$volatile send := (done | (hns == 0))
+
+		// Read next value if needed
+		read_from_pipe := (fn & (~p1_zero))
+		$guard (read_from_pipe) $call readModule_convolution (base_address (addr1>>3)) (read_val)
+
+		$volatile val_in_use := ($mux read_from_pipe read_val fv1)
+		// Shift to the head of cv
+		$volatile tmp1 := ((val_in_use << (($bitcast ($uint<64>) sp) << 3)) >> (($bitcast ($uint<64>) head) << 3))
+		// Apply bitmask to get the desired value
+		$volatile bytemask := (($bitcast ($uint<64>) _hFFFFFFFFFFFFFFFF) << (($bitcast ($uint<64>) (8 - hns)) << 3))
+		$volatile send_data := ($mux p1_zero 0 ((cv1 | tmp1) & bytemask))
+		
+		$guard (send) prev_core_ip1 := send_data
+		//$guard (send) time_pipe := send_data
+		$volatile ncv1 := ($mux send 0 send_data)
+		// Update number left
+		$volatile next_row := ((sent == (ct_new-1)) & done)
+		$volatile n_left := ($mux done chl_in (left - ns))
+		$volatile n_sent := ($mux done ($mux next_row 0 (sent+1)) sent)
+		$volatile n_head := ($mux send 0 hns)
+
+		// Compute next address
+		$volatile update_row := ($mux next_row (row1 + N_ROWS_S) row1 )
+		$volatile continue_flag1 := (update_row < row_last)
+		
+		$volatile n_row1 := ($mux continue_flag1 update_row {1 -1} )
+		$volatile n_addr1 := ($mux r_lt_p addr_init (addr1 + (($mux next_row m_factor 0) + ($mux mc_lt_p 0 ($bitcast ($uint<32>) ns) ))))
+		$volatile na3_1 := (n_addr1 >> 3)
+		$volatile n_fn := (((sns == 0) | (done & (na3_1 != (addr1 >> 3)))) | ( next_row | (p1_zero & fn)))
+		$volatile nfv1 := val_in_use
+		
+		$volatile np_cnt := (part_cnt + ($mux continue_flag1 0 1))
+		//$volatile n_chl_num := ($mux continue_flag1 chl_num (chl_num + 1))
+		//$volatile not_end_flag := ((n_chl_num != chl_out) | continue_flag1)
+		$while (continue_flag1 | (np_cnt != np))
+		//$while not_end_flag
+
+	}
+}
+
+
+
+$module [loadInput_in2 ]
+$in(addr_init : $uint<32> row_in ct chl_in pad : $uint<16> num_parts_1 : $uint<8> base_address: $uint<ADDRESS_WIDTH>)
+$out()
+$is
+{
+	$branchblock [access_block]
+	{
+		ct_new := (ct + (pad<<1))
+		m_factor := ($bitcast ($uint<32>) (ct*chl_in))
+		row_last := (row_in + {2 + 1})
+		np := (num_parts_1+1)
+		
+		// Pipeline for sending inputs
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi row1 := ($bitcast ($uint<16>) {2 - 1} ) $on $entry n_row1 $on $loopback
+		$phi part_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on $loopback
+		//$phi chl_num := ($bitcast ($uint<16>) 0) $on $entry n_chl_num $on $loopback
+		$phi sent := ($bitcast ($uint<16>) 0) $on $entry n_sent $on $loopback
+		$phi fv1 := 0 $on $entry nfv1 $on $loopback
+		$phi cv1 := ($bitcast ($uint<64>) 0) $on $entry ncv1 $on $loopback 
+		$phi left := chl_in $on $entry n_left $on $loopback
+		$phi head := ($bitcast ($uint<3>) 0) $on $entry n_head $on $loopback
+		$phi addr1 := addr_init $on $entry n_addr1 $on $loopback
+		$phi fn := ($bitcast ($uint<1>) 1) $on $entry n_fn $on $loopback
+		$endmerge
+		
+		
+		$volatile mc_lt_p := ((sent < pad) | (sent >= (ct + pad)))
+		//$volatile r_lt_p := ((row1 < pad) | (row1 >= (row_in + pad)))
+		$volatile r_lt_p := ((row1 < pad) | (row1 >= ((row_in +2) - pad)))
+		$volatile p1_zero := (mc_lt_p | r_lt_p)
+		$volatile sp := ($bitcast ($uint<3>) addr1)
+
+		// Compute number of elements to send
+		$volatile min1 := ($mux (sp > head) sp head)
+		$volatile mi71 := (8 - ($bitcast ($uint<16>) min1))
+		$volatile cmp_val := ($mux p1_zero 8 mi71)
+		$volatile ns := ($mux (cmp_val < left) cmp_val left)
+
+		// Decide whether to send or not
+		$volatile hns := (head + ($bitcast ($uint<3>) ns))
+		$volatile sns := (sp + ($bitcast ($uint<3>) ns))
+		$volatile done := (left == ns)
+		$volatile send := (done | (hns == 0))
+
+		// Read next value if needed
+		read_from_pipe := (fn & (~p1_zero))
+		$guard (read_from_pipe) $call readModule_convolution (base_address (addr1>>3)) (read_val)
+
+		$volatile val_in_use := ($mux read_from_pipe read_val fv1)
+		// Shift to the head of cv
+		$volatile tmp1 := ((val_in_use << (($bitcast ($uint<64>) sp) << 3)) >> (($bitcast ($uint<64>) head) << 3))
+		// Apply bitmask to get the desired value
+		$volatile bytemask := (($bitcast ($uint<64>) _hFFFFFFFFFFFFFFFF) << (($bitcast ($uint<64>) (8 - hns)) << 3))
+		$volatile send_data := ($mux p1_zero 0 ((cv1 | tmp1) & bytemask))
+		
+		$guard (send) prev_core_ip2 := send_data
+		//$guard (send) time_pipe := send_data
+		$volatile ncv1 := ($mux send 0 send_data)
+		// Update number left
+		$volatile next_row := ((sent == (ct_new-1)) & done)
+		$volatile n_left := ($mux done chl_in (left - ns))
+		$volatile n_sent := ($mux done ($mux next_row 0 (sent+1)) sent)
+		$volatile n_head := ($mux send 0 hns)
+
+		// Compute next address
+		$volatile update_row := ($mux next_row (row1 + N_ROWS_S) row1 )
+		$volatile continue_flag1 := (update_row < row_last)
+		
+		$volatile n_row1 := ($mux continue_flag1 update_row {2 -1} )
+		$volatile n_addr1 := ($mux r_lt_p addr_init (addr1 + (($mux next_row m_factor 0) + ($mux mc_lt_p 0 ($bitcast ($uint<32>) ns) ))))
+		$volatile na3_1 := (n_addr1 >> 3)
+		$volatile n_fn := (((sns == 0) | (done & (na3_1 != (addr1 >> 3)))) | ( next_row | (p1_zero & fn)))
+		$volatile nfv1 := val_in_use
+		
+		$volatile np_cnt := (part_cnt + ($mux continue_flag1 0 1))
+		//$volatile n_chl_num := ($mux continue_flag1 chl_num (chl_num + 1))
+		//$volatile not_end_flag := ((n_chl_num != chl_out) | continue_flag1)
+		$while (continue_flag1 | (np_cnt != np))
+		//$while not_end_flag
+
+	}
+}
+
+
+
+// Access the input tensor and write to iput pipe
+	$module [inputModule8]
+$in(row_in ct chl_in rk pad: $uint<16> num_parts : $uint<8> base_address : $uint<ADDRESS_WIDTH>)
+$out()
+$is
+{
+	mode_3 := (rk == 3)
+	$parallelblock [blk]
+	{
+	$call singleFetch (row_in ct pad chl_in num_parts mode_3) ()
+	$branchblock [access_block]
+	{
+	ct_new := (ct + (pad<<1))
+	row_size_total := ($bitcast ($uint<32>) (ct_new * chl_in))
+	p_chl_in := ($bitcast ($uint<32>) (pad*chl_in))
+	m_factor := ($bitcast ($uint<32>) (ct*chl_in))
+	m2_factor := (m_factor << 1)
+	m3_factor := (m2_factor+m_factor)
+	addr_init := (-1*(($bitcast ($uint<32>) pad)*m_factor))
+
+		// Pipeline for sending inputs
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi address := addr_init $on $entry n_address $on $loopback
+		$phi row1 := ($bitcast ($uint<16>) 0) $on $entry n_row1 $on $loopback
+		$phi mycounter := ($bitcast ($uint<32>) row_size_total) $on $entry n_mycounter $on $loopback
+		$phi part_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on $loopback
+		$endmerge
+
+		// $call timer (4) (time_pipe)
+		$volatile next_row :=  (mycounter == 1)
+		$volatile tmp_cnt := (mycounter - 1)
+		$volatile n_mycounter := ($mux next_row row_size_total tmp_cnt ) 
+
+		$volatile update_row := ($mux next_row (row1 + N_ROWS_S) row1 )
+		$volatile continue_flag1 := (update_row < (row_in+2))
+
+		$volatile mc_lt_p := ((mycounter <= p_chl_in) | (mycounter > (row_size_total - p_chl_in))) 
+		$volatile n_row1 := ($mux continue_flag1 update_row 0)
+		$volatile n_address := ($mux continue_flag1 (address + (($mux next_row m_factor 0) + ($mux mc_lt_p 0 1))) addr_init)
+		$volatile np_cnt := (part_cnt + ($mux continue_flag1 0 1))
+
+		$volatile p1_zero := (mc_lt_p | ((row1 < pad) | (row1 > ((row_in + 1) - pad))))
+		$volatile p2_zero := (mc_lt_p | (((row1+1) < pad) | (row1 > (row_in- pad))))
+
+		//$volatile p1_zero := (mc_lt_p | ((row1 < pad) | (row1 >= ((row_in + 3) - pad))))
+		//$volatile p2_zero := (mc_lt_p | (((row1+1) < pad) | (row1 >= ((row_in + 2)- pad))))
+		//$volatile p3_zero := (mc_lt_p | (((row1+2) < pad) | (row1 >= ((row_in + 1)- pad))))
+		//$volatile p4_zero := (mc_lt_p | (((row1+3) < pad) | (row1 >= (row_in - pad))))
+		$volatile addr2 := (address+ m_factor)
+		//$volatile addr3 := (address+ m2_factor)
+		//$volatile addr4 := (address+ m3_factor)
+
+		$guard (~p1_zero) $call readModule_convolution (base_address address) (val1)
+		$guard (~p2_zero) $call readModule_convolution (base_address addr2) (val2)
+		//$guard (~p3_zero) $call readModule_convolution (base_address addr3) (val3)
+		//$guard (~p4_zero) $call readModule_convolution (base_address addr4) (val4)
+		prev_core_ip1 := ($mux p1_zero 0 val1)
+		prev_core_ip2 := ($mux p2_zero 0 val2)
+		//core_ip3 := ($mux p3_zero 0 val3)
+		//$guard (mode_3) core_ip4 := ($mux p4_zero 0 val4)
+
+		$while (continue_flag1 | (part_cnt < num_parts))
+
+	}
+	}
+}
+
+// Access the input tensor and write to iput pipe
+$module [inputModuleCT]
+$in(row_in ct chl_in: $uint<16> num_parts : $uint<8> base_address : $uint<ADDRESS_WIDTH>)
+$out()
+$is
+{
+	$branchblock [access_block]
+	{
+	ct_new := ((ct<<1) + 1)
+
+		// Pipeline for sending inputs
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi address := ($bitcast ($uint<32>) 0) $on $entry n_address $on $loopback
+		$phi row1 := ($bitcast ($uint<16>) 0) $on $entry n_row1 $on $loopback
+		$phi chl := ($bitcast ($uint<16>) 1) $on $entry n_chl $on $loopback
+		$phi mycounter := ($bitcast ($uint<16>) 1) $on $entry n_mycounter $on $loopback
+		$phi part_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on $loopback
+		$endmerge
+
+		$volatile chl_done := (chl == chl_in)
+		$volatile n_chl := ($mux chl_done 1 (chl+1))
+		$volatile next_row :=  ((mycounter == ct_new) & chl_done)
+		$volatile tmp_cnt := (mycounter + 1)
+		$volatile n_mycounter := ($mux chl_done ($mux next_row 1 tmp_cnt ) mycounter)
+
+		$volatile update_row := ($mux next_row (row1 + N_ROWS_S) row1 )
+		$volatile continue_flag1 := (update_row < row_in)
+		$volatile n_row1 := ($mux continue_flag1 update_row 0)
+
+		$volatile p2_zero := (mycounter [] 0)
+		$volatile n_address := ($mux continue_flag1 (address + ($mux p2_zero 0 1)) 0)
+		$volatile np_cnt := (part_cnt + ($mux continue_flag1 0 1))
+
+
+		$guard (~p2_zero) $call readModule_convolution (base_address address) (val2)
+		core_ip1 := 0
+		core_ip2 := ($mux p2_zero 0 val2)
+		core_ip3 := 0
+		
+
+		$while (continue_flag1 | (part_cnt < num_parts))
+
+	}
+}
+
+
+// Access the input tensor and write to iput pipe
+$module [inputModuleConcat]
+$in(row_in ct chl_in rk pad: $uint<16> num_parts : $uint<8> base_address1 base_address2 : $uint<ADDRESS_WIDTH>)
+$out()
+$is
+{
+	mode_3 := (rk == 3)
+	$parallelblock [blk]
+	{
+	$call singleFetch (row_in ct pad chl_in num_parts mode_3) ()
+
+	$branchblock [access_block]
+	{
+	$volatile ct_new := (ct + (pad<<1))
+	row_size_total := ($bitcast ($uint<32>) (ct_new * chl_in))
+	$volatile ct1 := (ct >> 1)
+	rs1 := (row_size_total >> 1)
+	cs1 := (chl_in >> 1)
+	m_factor := ($bitcast ($uint<32>) (ct*cs1))
+	m2_factor := (m_factor << 1)
+	m3_factor := (m2_factor+m_factor)
+	addr_init := (-1*(($bitcast ($uint<32>) pad)*m_factor))
+
+		// Pipeline for sending inputs
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi address1 := addr_init $on $entry n_address1 $on $loopback
+		$phi address2 := addr_init $on $entry n_address2 $on $loopback
+		$phi row1 := ($bitcast ($uint<16>) 0) $on $entry n_row1 $on $loopback
+		$phi col := ($bitcast ($uint<16>) 0) $on $entry n_col $on $loopback
+		$phi chl := ($bitcast ($uint<16>) 0) $on $entry n_chl $on $loopback
+		$phi part_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on $loopback
+		$endmerge
+
+		$volatile chl_done := (chl == (chl_in - 1))
+		$volatile col_done := (col == (ct_new - 1))
+		$volatile next_row := (col_done & chl_done)
+		$volatile n_chl := ($mux chl_done  0 (chl+1)) 
+		$volatile n_col := ($mux next_row 0 (col + ($mux chl_done 1 0)))
+		$volatile inp1 := (chl < cs1)
+		$volatile inp1_done := (chl == (cs1-1))
+
+		$volatile update_row := ($mux next_row (row1 + N_ROWS_S) row1 )
+		$volatile continue_flag1 := (update_row < (row_in+2))
+
+		$volatile mc_lt_p := ((col < pad) | (col >= (ct_new - pad))) 
+		$volatile tmp_sum := ($mux mc_lt_p 0 1)
+		$volatile update_val1 := (($mux (col_done & inp1_done) m_factor 0) + tmp_sum)
+		$volatile update_val2 := (($mux (col_done & chl_done) m_factor 0) + tmp_sum)
+		$volatile address := ($mux inp1 address1 address2)
+
+		$volatile p1_zero := (mc_lt_p | ((row1 < pad) | (row1 > ((row_in + 1) - pad))))
+		$volatile p2_zero := (mc_lt_p | (((row1+1) < pad) | (row1 > (row_in- pad))))
+		$volatile addr2 := (address+ m_factor)
+		$volatile base_address := ($mux inp1 base_address1 base_address2)
+
+		$guard (~p1_zero) $call readModule_convolution (base_address address) (val1)
+		$guard (~p2_zero) $call readModule_convolution (base_address addr2) (val2)
+		prev_core_ip1 := ($mux p1_zero 0 val1)
+		prev_core_ip2 := ($mux p2_zero 0 val2)
+
+		$volatile n_row1 := ($mux continue_flag1 update_row 0)
+		$volatile n_address1 := ($mux continue_flag1 ($mux inp1 (address1 + update_val1) address1)  addr_init)
+		$volatile n_address2 := ($mux continue_flag1 ($mux inp1 address2 (address2 + update_val2))  addr_init)
+		$volatile np_cnt := (part_cnt + ($mux continue_flag1 0 1))
+
+		$while (continue_flag1 | (part_cnt < num_parts))
+
+	}
+	}
+}
+
+
+$pipeline $depth 15 $fullrate
+$operator $module [multiplier] $in (in1 in2 : $int<16>) $out (output : $int<ACC_WIDTH>) $is
+{
+
+        tmp := ($cast ($int<ACC_WIDTH>) (in1 * in2))
+        output := tmp
+}
+
+// Perform convolution operation
+$module [convolveCore ]
+$in (rb cb chl_in_read chl_out rk ck: $uint<16> num_parts : $uint<8> max_chl : $uint<16>)
+$out ()
+$is
+{
+	$branchblock [conv_block]
+	{
+		num_row := (rb - N_ROWS_S)
+		num_col := (cb - 1)
+		chl_in := (chl_in_read - 1)
+		ck_s := (($bitcast ($uint<2>) ck) - 1)
+		mode_2 := (rk == 2)
+		not_mode_2 := (~mode_2)
+
+		$merge $entry loopback
+		$phi p_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on loopback
+		$phi chl_max_itr := max_chl $on $entry n_cmi $on loopback
+		$phi chl_left := (chl_out - max_chl) $on $entry n_chl_left $on loopback
+		$endmerge
+
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi chl := ($bitcast ($uint<16>) 0) $on $entry ($mux chl_done 0 (chl + 1)) $on $loopback
+		$phi num := ($bitcast ($uint<2>) 0) $on $entry ($mux chl_done ($mux nd 0 (num+1)) num) $on $loopback
+		$phi chl_out_var := ($bitcast ($uint<16>) 1) $on $entry ($mux num_done ($mux chl_done_flag 1 (chl_out_var+8)) chl_out_var) $on $loopback
+		$phi col := ($bitcast ($uint<16>) 0) $on $entry ($mux chl_done_flag ($mux col_done 0 (col + 1)) col) $on $loopback
+		$phi row := ($bitcast ($uint<16>) 0) $on $entry ($mux col_done (row + N_ROWS_S) row) $on $loopback
+		$endmerge
+
+		$volatile nd := (num == ck_s)
+		$volatile chl_done := (chl >= chl_in)
+		$volatile num_done := (nd & chl_done)
+		$volatile chl_done_flag := (((chl_out_var+8) > chl_max_itr) & num_done)
+		$volatile last_col := (col == num_col)
+		$volatile col_done := (last_col & chl_done_flag)
+		$volatile out_done_flag := (row >= num_row)
+		$volatile all_done_flag := (out_done_flag & col_done)
+		
+		$volatile o_chl1_valid := (chl_out_var <= chl_max_itr)
+		$volatile o_chl2_valid := ((chl_out_var+1) <= chl_max_itr)
+		$volatile o_chl3_valid := ((chl_out_var+2) <= chl_max_itr)
+		$volatile o_chl4_valid := ((chl_out_var+3) <= chl_max_itr)
+		$volatile o_chl5_valid := ((chl_out_var+4) <= chl_max_itr)
+		$volatile o_chl6_valid := ((chl_out_var+5) <= chl_max_itr)
+		$volatile o_chl7_valid := ((chl_out_var+6) <= chl_max_itr)
+		$volatile o_chl8_valid := ((chl_out_var+7) <= chl_max_itr)
+
+		$volatile read_ip := (((col == 0) | nd) & (chl_out_var == 1))
+		$volatile not_read_ip := (~read_ip)
+		$volatile write_input := (((chl_out_var+8) < chl_max_itr) | ((col < num_col) & (num > 0)))
+				$volatile read_k := ((col == 0) & (row == 0))
+		$volatile not_read_k := (~read_k)
+		$volatile store_kernel := (out_done_flag ~& last_col)
+
+		$volatile read_ip3 := (not_mode_2 & read_ip)
+		$volatile not_read_ip3 := (not_mode_2 & not_read_ip)
+		$volatile write_input3 := (write_input & not_mode_2)
+		
+		
+		
+		
+		// Start of macro_file2
+
+		$guard (read_ip ) temp2_1 := core_ip1
+		$guard (not_read_ip ) temp1_1 := conv_ip1
+		
+		$volatile iread1 := ($mux read_ip temp2_1 temp1_1 )
+		$guard (write_input) conv_ip1 := iread1
+				
+
+		$split (iread1 8 8 8 8 8 8 8 8) (ir1_1 ir2_1 ir3_1 ir4_1 ir5_1 ir6_1 ir7_1 ir8_1 )
+
+		$volatile ival1_1 := ($bitcast ($int<8>) ir1_1 )
+		$volatile ival2_1 := ($bitcast ($int<8>) ir2_1 )
+		$volatile ival3_1 := ($bitcast ($int<8>) ir3_1 )
+		$volatile ival4_1 := ($bitcast ($int<8>) ir4_1 )
+		$volatile ival5_1 := ($bitcast ($int<8>) ir5_1 )
+		$volatile ival6_1 := ($bitcast ($int<8>) ir6_1 )
+		$volatile ival7_1 := ($bitcast ($int<8>) ir7_1 )
+		$volatile ival8_1 := ($bitcast ($int<8>) ir8_1 )
+		
+// End of macro_file2
+
+		
+		// Start of macro_file2
+
+		$guard (read_ip ) temp2_2 := core_ip2
+		$guard (not_read_ip ) temp1_2 := conv_ip2
+		
+		$volatile iread2 := ($mux read_ip temp2_2 temp1_2 )
+		$guard (write_input) conv_ip2 := iread2
+				
+
+		$split (iread2 8 8 8 8 8 8 8 8) (ir1_2 ir2_2 ir3_2 ir4_2 ir5_2 ir6_2 ir7_2 ir8_2 )
+
+		$volatile ival1_2 := ($bitcast ($int<8>) ir1_2 )
+		$volatile ival2_2 := ($bitcast ($int<8>) ir2_2 )
+		$volatile ival3_2 := ($bitcast ($int<8>) ir3_2 )
+		$volatile ival4_2 := ($bitcast ($int<8>) ir4_2 )
+		$volatile ival5_2 := ($bitcast ($int<8>) ir5_2 )
+		$volatile ival6_2 := ($bitcast ($int<8>) ir6_2 )
+		$volatile ival7_2 := ($bitcast ($int<8>) ir7_2 )
+		$volatile ival8_2 := ($bitcast ($int<8>) ir8_2 )
+		
+// End of macro_file2
+
+		
+		// Start of macro_file2
+
+		$guard (read_ip ) temp2_3 := core_ip3
+		$guard (not_read_ip ) temp1_3 := conv_ip3
+		
+		$volatile iread3 := ($mux read_ip temp2_3 temp1_3 )
+		$guard (write_input) conv_ip3 := iread3
+				
+
+		$split (iread3 8 8 8 8 8 8 8 8) (ir1_3 ir2_3 ir3_3 ir4_3 ir5_3 ir6_3 ir7_3 ir8_3 )
+
+		$volatile ival1_3 := ($bitcast ($int<8>) ir1_3 )
+		$volatile ival2_3 := ($bitcast ($int<8>) ir2_3 )
+		$volatile ival3_3 := ($bitcast ($int<8>) ir3_3 )
+		$volatile ival4_3 := ($bitcast ($int<8>) ir4_3 )
+		$volatile ival5_3 := ($bitcast ($int<8>) ir5_3 )
+		$volatile ival6_3 := ($bitcast ($int<8>) ir6_3 )
+		$volatile ival7_3 := ($bitcast ($int<8>) ir7_3 )
+		$volatile ival8_3 := ($bitcast ($int<8>) ir8_3 )
+		
+// End of macro_file2
+
+		
+		
+		
+		
+		
+		// Start of macro_file2
+
+		$guard (read_ip3 ) temp2_4 := core_ip4
+		$guard (not_read_ip3 ) temp1_4 := conv_ip4
+				
+		$volatile iread4 := ($mux mode_2 0 ($mux read_ip temp2_4 temp1_4 ))
+		$guard (write_input3) conv_ip4 := iread4
+		
+
+		$split (iread4 8 8 8 8 8 8 8 8) (ir1_4 ir2_4 ir3_4 ir4_4 ir5_4 ir6_4 ir7_4 ir8_4 )
+
+		$volatile ival1_4 := ($bitcast ($int<8>) ir1_4 )
+		$volatile ival2_4 := ($bitcast ($int<8>) ir2_4 )
+		$volatile ival3_4 := ($bitcast ($int<8>) ir3_4 )
+		$volatile ival4_4 := ($bitcast ($int<8>) ir4_4 )
+		$volatile ival5_4 := ($bitcast ($int<8>) ir5_4 )
+		$volatile ival6_4 := ($bitcast ($int<8>) ir6_4 )
+		$volatile ival7_4 := ($bitcast ($int<8>) ir7_4 )
+		$volatile ival8_4 := ($bitcast ($int<8>) ir8_4 )
+		
+// End of macro_file2
+
+
+		$volatile readk_3 := (read_k & not_mode_2)
+		$volatile not_readk_3 := (not_read_k & not_mode_2)
+		$volatile store_3 := (store_kernel & not_mode_2)
+
+		
+		// Start of convInner
+		
+
+		$volatile rk_v1 := (read_k & o_chl1_valid)
+		$volatile nrk_v1 := (not_read_k & o_chl1_valid)
+		
+		
+		$guard (rk_v1 ) tempk1_1_1 := core1_kp1
+		$guard (nrk_v1 ) tempk2_1_1 := conv1_kp1
+		kread_1_1 := ($mux o_chl1_valid ($mux read_k tempk1_1_1 tempk2_1_1 ) 0)
+
+		$split (kread_1_1 8 8 8 8 8 8 8 8) (kr_1_1_1 kr_1_2_1 kr_1_3_1 kr_1_4_1 kr_1_5_1 kr_1_6_1 kr_1_7_1 kr_1_8_1 )
+
+		kval_1_1_1 := ($bitcast ($int<8>) kr_1_1_1 )
+		kval_1_2_1 := ($bitcast ($int<8>) kr_1_2_1 )
+		kval_1_3_1 := ($bitcast ($int<8>) kr_1_3_1 )
+		kval_1_4_1 := ($bitcast ($int<8>) kr_1_4_1 )
+		kval_1_5_1 := ($bitcast ($int<8>) kr_1_5_1 )
+		kval_1_6_1 := ($bitcast ($int<8>) kr_1_6_1 )
+		kval_1_7_1 := ($bitcast ($int<8>) kr_1_7_1 )
+		kval_1_8_1 := ($bitcast ($int<8>) kr_1_8_1 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_1_1_1 := ($cast ($int<16>) (kval_1_1_1 * ival1_1 ))
+//		mul_val_1_2_1 := ($cast ($int<16>) (kval_1_2_1 * ival2_1 ))
+//		mul_val_1_3_1 := ($cast ($int<16>) (kval_1_3_1 * ival3_1 ))
+//		mul_val_1_4_1 := ($cast ($int<16>) (kval_1_4_1 * ival4_1 ))
+//		mul_val_1_5_1 := ($cast ($int<16>) (kval_1_5_1 * ival5_1 ))
+//		mul_val_1_6_1 := ($cast ($int<16>) (kval_1_6_1 * ival6_1 ))
+//		mul_val_1_7_1 := ($cast ($int<16>) (kval_1_7_1 * ival7_1 ))
+//		mul_val_1_8_1 := ($cast ($int<16>) (kval_1_8_1 * ival8_1 ))
+                $call multiplier (($cast ($int<16>) ival1_1 ) ($cast ($int<16>) kval_1_1_1 )) ( mul_val_1_1_1 )
+                $call multiplier (($cast ($int<16>) ival2_1 ) ($cast ($int<16>) kval_1_2_1 )) ( mul_val_1_2_1 )
+                $call multiplier (($cast ($int<16>) ival3_1 ) ($cast ($int<16>) kval_1_3_1 )) ( mul_val_1_3_1 )
+                $call multiplier (($cast ($int<16>) ival4_1 ) ($cast ($int<16>) kval_1_4_1 )) ( mul_val_1_4_1 )
+                $call multiplier (($cast ($int<16>) ival5_1 ) ($cast ($int<16>) kval_1_5_1 )) ( mul_val_1_5_1 )
+                $call multiplier (($cast ($int<16>) ival6_1 ) ($cast ($int<16>) kval_1_6_1 )) ( mul_val_1_6_1 )
+                $call multiplier (($cast ($int<16>) ival7_1 ) ($cast ($int<16>) kval_1_7_1 )) ( mul_val_1_7_1 )
+                $call multiplier (($cast ($int<16>) ival8_1 ) ($cast ($int<16>) kval_1_8_1 )) ( mul_val_1_8_1 )
+
+		t_acc_val_1_1 := (((mul_val_1_1_1 + mul_val_1_2_1 ) + (mul_val_1_3_1 + mul_val_1_4_1 )) + ((mul_val_1_5_1 + mul_val_1_6_1 ) + (mul_val_1_7_1 + mul_val_1_8_1 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_1_1_4 := ($cast ($int<16>) (kval_1_1_1 * ival1_2 ))
+//		mul_val_1_2_4 := ($cast ($int<16>) (kval_1_2_1 * ival2_2 ))
+//		mul_val_1_3_4 := ($cast ($int<16>) (kval_1_3_1 * ival3_2 ))
+//		mul_val_1_4_4 := ($cast ($int<16>) (kval_1_4_1 * ival4_2 ))
+//		mul_val_1_5_4 := ($cast ($int<16>) (kval_1_5_1 * ival5_2 ))
+//		mul_val_1_6_4 := ($cast ($int<16>) (kval_1_6_1 * ival6_2 ))
+//		mul_val_1_7_4 := ($cast ($int<16>) (kval_1_7_1 * ival7_2 ))
+//		mul_val_1_8_4 := ($cast ($int<16>) (kval_1_8_1 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_1_1_1 )) ( mul_val_1_1_4 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_1_2_1 )) ( mul_val_1_2_4 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_1_3_1 )) ( mul_val_1_3_4 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_1_4_1 )) ( mul_val_1_4_4 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_1_5_1 )) ( mul_val_1_5_4 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_1_6_1 )) ( mul_val_1_6_4 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_1_7_1 )) ( mul_val_1_7_4 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_1_8_1 )) ( mul_val_1_8_4 )
+
+		t_acc_val_1_4 := (((mul_val_1_1_4 + mul_val_1_2_4 ) + (mul_val_1_3_4 + mul_val_1_4_4 )) + ((mul_val_1_5_4 + mul_val_1_6_4 ) + (mul_val_1_7_4 + mul_val_1_8_4 )))
+		
+// End of macro_file3
+
+
+		
+		
+		$guard (rk_v1 ) tempk1_1_2 := core1_kp2
+		$guard (nrk_v1 ) tempk2_1_2 := conv1_kp2
+		kread_1_2 := ($mux o_chl1_valid ($mux read_k tempk1_1_2 tempk2_1_2 ) 0)
+
+		$split (kread_1_2 8 8 8 8 8 8 8 8) (kr_1_1_2 kr_1_2_2 kr_1_3_2 kr_1_4_2 kr_1_5_2 kr_1_6_2 kr_1_7_2 kr_1_8_2 )
+
+		kval_1_1_2 := ($bitcast ($int<8>) kr_1_1_2 )
+		kval_1_2_2 := ($bitcast ($int<8>) kr_1_2_2 )
+		kval_1_3_2 := ($bitcast ($int<8>) kr_1_3_2 )
+		kval_1_4_2 := ($bitcast ($int<8>) kr_1_4_2 )
+		kval_1_5_2 := ($bitcast ($int<8>) kr_1_5_2 )
+		kval_1_6_2 := ($bitcast ($int<8>) kr_1_6_2 )
+		kval_1_7_2 := ($bitcast ($int<8>) kr_1_7_2 )
+		kval_1_8_2 := ($bitcast ($int<8>) kr_1_8_2 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_1_1_2 := ($cast ($int<16>) (kval_1_1_2 * ival1_2 ))
+//		mul_val_1_2_2 := ($cast ($int<16>) (kval_1_2_2 * ival2_2 ))
+//		mul_val_1_3_2 := ($cast ($int<16>) (kval_1_3_2 * ival3_2 ))
+//		mul_val_1_4_2 := ($cast ($int<16>) (kval_1_4_2 * ival4_2 ))
+//		mul_val_1_5_2 := ($cast ($int<16>) (kval_1_5_2 * ival5_2 ))
+//		mul_val_1_6_2 := ($cast ($int<16>) (kval_1_6_2 * ival6_2 ))
+//		mul_val_1_7_2 := ($cast ($int<16>) (kval_1_7_2 * ival7_2 ))
+//		mul_val_1_8_2 := ($cast ($int<16>) (kval_1_8_2 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_1_1_2 )) ( mul_val_1_1_2 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_1_2_2 )) ( mul_val_1_2_2 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_1_3_2 )) ( mul_val_1_3_2 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_1_4_2 )) ( mul_val_1_4_2 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_1_5_2 )) ( mul_val_1_5_2 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_1_6_2 )) ( mul_val_1_6_2 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_1_7_2 )) ( mul_val_1_7_2 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_1_8_2 )) ( mul_val_1_8_2 )
+
+		t_acc_val_1_2 := (((mul_val_1_1_2 + mul_val_1_2_2 ) + (mul_val_1_3_2 + mul_val_1_4_2 )) + ((mul_val_1_5_2 + mul_val_1_6_2 ) + (mul_val_1_7_2 + mul_val_1_8_2 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_1_1_5 := ($cast ($int<16>) (kval_1_1_2 * ival1_3 ))
+//		mul_val_1_2_5 := ($cast ($int<16>) (kval_1_2_2 * ival2_3 ))
+//		mul_val_1_3_5 := ($cast ($int<16>) (kval_1_3_2 * ival3_3 ))
+//		mul_val_1_4_5 := ($cast ($int<16>) (kval_1_4_2 * ival4_3 ))
+//		mul_val_1_5_5 := ($cast ($int<16>) (kval_1_5_2 * ival5_3 ))
+//		mul_val_1_6_5 := ($cast ($int<16>) (kval_1_6_2 * ival6_3 ))
+//		mul_val_1_7_5 := ($cast ($int<16>) (kval_1_7_2 * ival7_3 ))
+//		mul_val_1_8_5 := ($cast ($int<16>) (kval_1_8_2 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_1_1_2 )) ( mul_val_1_1_5 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_1_2_2 )) ( mul_val_1_2_5 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_1_3_2 )) ( mul_val_1_3_5 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_1_4_2 )) ( mul_val_1_4_5 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_1_5_2 )) ( mul_val_1_5_5 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_1_6_2 )) ( mul_val_1_6_5 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_1_7_2 )) ( mul_val_1_7_5 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_1_8_2 )) ( mul_val_1_8_5 )
+
+		t_acc_val_1_5 := (((mul_val_1_1_5 + mul_val_1_2_5 ) + (mul_val_1_3_5 + mul_val_1_4_5 )) + ((mul_val_1_5_5 + mul_val_1_6_5 ) + (mul_val_1_7_5 + mul_val_1_8_5 )))
+		
+// End of macro_file3
+
+
+		
+		//
+		
+		$volatile rk_3v1 := (readk_3 & o_chl1_valid)
+		$volatile nrk_3v1 := (not_readk_3 & o_chl1_valid)
+
+		$guard (rk_3v1 ) tempk1_1_3 := core1_kp3
+		$guard (nrk_3v1 ) tempk2_1_3 := conv1_kp3
+		kread_1_3 := ($mux o_chl1_valid ($mux mode_2 0 ($mux read_k tempk1_1_3 tempk2_1_3 )) 0)
+
+		$split (kread_1_3 8 8 8 8 8 8 8 8) (kr_1_1_3 kr_1_2_3 kr_1_3_3 kr_1_4_3 kr_1_5_3 kr_1_6_3 kr_1_7_3 kr_1_8_3 )
+
+		kval_1_1_3 := ($bitcast ($int<8>) kr_1_1_3 )
+		kval_1_2_3 := ($bitcast ($int<8>) kr_1_2_3 )
+		kval_1_3_3 := ($bitcast ($int<8>) kr_1_3_3 )
+		kval_1_4_3 := ($bitcast ($int<8>) kr_1_4_3 )
+		kval_1_5_3 := ($bitcast ($int<8>) kr_1_5_3 )
+		kval_1_6_3 := ($bitcast ($int<8>) kr_1_6_3 )
+		kval_1_7_3 := ($bitcast ($int<8>) kr_1_7_3 )
+		kval_1_8_3 := ($bitcast ($int<8>) kr_1_8_3 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_1_1_3 := ($cast ($int<16>) (kval_1_1_3 * ival1_3 ))
+//		mul_val_1_2_3 := ($cast ($int<16>) (kval_1_2_3 * ival2_3 ))
+//		mul_val_1_3_3 := ($cast ($int<16>) (kval_1_3_3 * ival3_3 ))
+//		mul_val_1_4_3 := ($cast ($int<16>) (kval_1_4_3 * ival4_3 ))
+//		mul_val_1_5_3 := ($cast ($int<16>) (kval_1_5_3 * ival5_3 ))
+//		mul_val_1_6_3 := ($cast ($int<16>) (kval_1_6_3 * ival6_3 ))
+//		mul_val_1_7_3 := ($cast ($int<16>) (kval_1_7_3 * ival7_3 ))
+//		mul_val_1_8_3 := ($cast ($int<16>) (kval_1_8_3 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_1_1_3 )) ( mul_val_1_1_3 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_1_2_3 )) ( mul_val_1_2_3 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_1_3_3 )) ( mul_val_1_3_3 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_1_4_3 )) ( mul_val_1_4_3 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_1_5_3 )) ( mul_val_1_5_3 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_1_6_3 )) ( mul_val_1_6_3 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_1_7_3 )) ( mul_val_1_7_3 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_1_8_3 )) ( mul_val_1_8_3 )
+
+		t_acc_val_1_3 := (((mul_val_1_1_3 + mul_val_1_2_3 ) + (mul_val_1_3_3 + mul_val_1_4_3 )) + ((mul_val_1_5_3 + mul_val_1_6_3 ) + (mul_val_1_7_3 + mul_val_1_8_3 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_1_1_6 := ($cast ($int<16>) (kval_1_1_3 * ival1_4 ))
+//		mul_val_1_2_6 := ($cast ($int<16>) (kval_1_2_3 * ival2_4 ))
+//		mul_val_1_3_6 := ($cast ($int<16>) (kval_1_3_3 * ival3_4 ))
+//		mul_val_1_4_6 := ($cast ($int<16>) (kval_1_4_3 * ival4_4 ))
+//		mul_val_1_5_6 := ($cast ($int<16>) (kval_1_5_3 * ival5_4 ))
+//		mul_val_1_6_6 := ($cast ($int<16>) (kval_1_6_3 * ival6_4 ))
+//		mul_val_1_7_6 := ($cast ($int<16>) (kval_1_7_3 * ival7_4 ))
+//		mul_val_1_8_6 := ($cast ($int<16>) (kval_1_8_3 * ival8_4 ))
+                $call multiplier (($cast ($int<16>) ival1_4 ) ($cast ($int<16>) kval_1_1_3 )) ( mul_val_1_1_6 )
+                $call multiplier (($cast ($int<16>) ival2_4 ) ($cast ($int<16>) kval_1_2_3 )) ( mul_val_1_2_6 )
+                $call multiplier (($cast ($int<16>) ival3_4 ) ($cast ($int<16>) kval_1_3_3 )) ( mul_val_1_3_6 )
+                $call multiplier (($cast ($int<16>) ival4_4 ) ($cast ($int<16>) kval_1_4_3 )) ( mul_val_1_4_6 )
+                $call multiplier (($cast ($int<16>) ival5_4 ) ($cast ($int<16>) kval_1_5_3 )) ( mul_val_1_5_6 )
+                $call multiplier (($cast ($int<16>) ival6_4 ) ($cast ($int<16>) kval_1_6_3 )) ( mul_val_1_6_6 )
+                $call multiplier (($cast ($int<16>) ival7_4 ) ($cast ($int<16>) kval_1_7_3 )) ( mul_val_1_7_6 )
+                $call multiplier (($cast ($int<16>) ival8_4 ) ($cast ($int<16>) kval_1_8_3 )) ( mul_val_1_8_6 )
+
+		t_acc_val_1_6 := (((mul_val_1_1_6 + mul_val_1_2_6 ) + (mul_val_1_3_6 + mul_val_1_4_6 )) + ((mul_val_1_5_6 + mul_val_1_6_6 ) + (mul_val_1_7_6 + mul_val_1_8_6 )))
+		
+// End of macro_file3
+
+
+		acc_val1_1 :=  ((t_acc_val_1_1 + t_acc_val_1_2) + t_acc_val_1_3)
+		acc_val1_2 :=  ((t_acc_val_1_4 + t_acc_val_1_5) + t_acc_val_1_6)
+
+
+		$volatile store_kernel1 := (store_kernel & o_chl1_valid)
+		$volatile store_31 := (store_3 & o_chl1_valid)
+		$guard (store_kernel1 ) conv1_kp1 := kread_1_1
+		$guard (store_kernel1 ) conv1_kp2 := kread_1_2
+		$guard (store_31 ) conv1_kp3 := kread_1_3
+		
+// End of convInner
+
+		
+		// Start of convInner
+		
+
+		$volatile rk_v2 := (read_k & o_chl2_valid)
+		$volatile nrk_v2 := (not_read_k & o_chl2_valid)
+		
+		
+		$guard (rk_v2 ) tempk1_2_1 := core2_kp1
+		$guard (nrk_v2 ) tempk2_2_1 := conv2_kp1
+		kread_2_1 := ($mux o_chl2_valid ($mux read_k tempk1_2_1 tempk2_2_1 ) 0)
+
+		$split (kread_2_1 8 8 8 8 8 8 8 8) (kr_2_1_1 kr_2_2_1 kr_2_3_1 kr_2_4_1 kr_2_5_1 kr_2_6_1 kr_2_7_1 kr_2_8_1 )
+
+		kval_2_1_1 := ($bitcast ($int<8>) kr_2_1_1 )
+		kval_2_2_1 := ($bitcast ($int<8>) kr_2_2_1 )
+		kval_2_3_1 := ($bitcast ($int<8>) kr_2_3_1 )
+		kval_2_4_1 := ($bitcast ($int<8>) kr_2_4_1 )
+		kval_2_5_1 := ($bitcast ($int<8>) kr_2_5_1 )
+		kval_2_6_1 := ($bitcast ($int<8>) kr_2_6_1 )
+		kval_2_7_1 := ($bitcast ($int<8>) kr_2_7_1 )
+		kval_2_8_1 := ($bitcast ($int<8>) kr_2_8_1 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_2_1_1 := ($cast ($int<16>) (kval_2_1_1 * ival1_1 ))
+//		mul_val_2_2_1 := ($cast ($int<16>) (kval_2_2_1 * ival2_1 ))
+//		mul_val_2_3_1 := ($cast ($int<16>) (kval_2_3_1 * ival3_1 ))
+//		mul_val_2_4_1 := ($cast ($int<16>) (kval_2_4_1 * ival4_1 ))
+//		mul_val_2_5_1 := ($cast ($int<16>) (kval_2_5_1 * ival5_1 ))
+//		mul_val_2_6_1 := ($cast ($int<16>) (kval_2_6_1 * ival6_1 ))
+//		mul_val_2_7_1 := ($cast ($int<16>) (kval_2_7_1 * ival7_1 ))
+//		mul_val_2_8_1 := ($cast ($int<16>) (kval_2_8_1 * ival8_1 ))
+                $call multiplier (($cast ($int<16>) ival1_1 ) ($cast ($int<16>) kval_2_1_1 )) ( mul_val_2_1_1 )
+                $call multiplier (($cast ($int<16>) ival2_1 ) ($cast ($int<16>) kval_2_2_1 )) ( mul_val_2_2_1 )
+                $call multiplier (($cast ($int<16>) ival3_1 ) ($cast ($int<16>) kval_2_3_1 )) ( mul_val_2_3_1 )
+                $call multiplier (($cast ($int<16>) ival4_1 ) ($cast ($int<16>) kval_2_4_1 )) ( mul_val_2_4_1 )
+                $call multiplier (($cast ($int<16>) ival5_1 ) ($cast ($int<16>) kval_2_5_1 )) ( mul_val_2_5_1 )
+                $call multiplier (($cast ($int<16>) ival6_1 ) ($cast ($int<16>) kval_2_6_1 )) ( mul_val_2_6_1 )
+                $call multiplier (($cast ($int<16>) ival7_1 ) ($cast ($int<16>) kval_2_7_1 )) ( mul_val_2_7_1 )
+                $call multiplier (($cast ($int<16>) ival8_1 ) ($cast ($int<16>) kval_2_8_1 )) ( mul_val_2_8_1 )
+
+		t_acc_val_2_1 := (((mul_val_2_1_1 + mul_val_2_2_1 ) + (mul_val_2_3_1 + mul_val_2_4_1 )) + ((mul_val_2_5_1 + mul_val_2_6_1 ) + (mul_val_2_7_1 + mul_val_2_8_1 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_2_1_4 := ($cast ($int<16>) (kval_2_1_1 * ival1_2 ))
+//		mul_val_2_2_4 := ($cast ($int<16>) (kval_2_2_1 * ival2_2 ))
+//		mul_val_2_3_4 := ($cast ($int<16>) (kval_2_3_1 * ival3_2 ))
+//		mul_val_2_4_4 := ($cast ($int<16>) (kval_2_4_1 * ival4_2 ))
+//		mul_val_2_5_4 := ($cast ($int<16>) (kval_2_5_1 * ival5_2 ))
+//		mul_val_2_6_4 := ($cast ($int<16>) (kval_2_6_1 * ival6_2 ))
+//		mul_val_2_7_4 := ($cast ($int<16>) (kval_2_7_1 * ival7_2 ))
+//		mul_val_2_8_4 := ($cast ($int<16>) (kval_2_8_1 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_2_1_1 )) ( mul_val_2_1_4 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_2_2_1 )) ( mul_val_2_2_4 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_2_3_1 )) ( mul_val_2_3_4 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_2_4_1 )) ( mul_val_2_4_4 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_2_5_1 )) ( mul_val_2_5_4 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_2_6_1 )) ( mul_val_2_6_4 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_2_7_1 )) ( mul_val_2_7_4 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_2_8_1 )) ( mul_val_2_8_4 )
+
+		t_acc_val_2_4 := (((mul_val_2_1_4 + mul_val_2_2_4 ) + (mul_val_2_3_4 + mul_val_2_4_4 )) + ((mul_val_2_5_4 + mul_val_2_6_4 ) + (mul_val_2_7_4 + mul_val_2_8_4 )))
+		
+// End of macro_file3
+
+
+		
+		
+		$guard (rk_v2 ) tempk1_2_2 := core2_kp2
+		$guard (nrk_v2 ) tempk2_2_2 := conv2_kp2
+		kread_2_2 := ($mux o_chl2_valid ($mux read_k tempk1_2_2 tempk2_2_2 ) 0)
+
+		$split (kread_2_2 8 8 8 8 8 8 8 8) (kr_2_1_2 kr_2_2_2 kr_2_3_2 kr_2_4_2 kr_2_5_2 kr_2_6_2 kr_2_7_2 kr_2_8_2 )
+
+		kval_2_1_2 := ($bitcast ($int<8>) kr_2_1_2 )
+		kval_2_2_2 := ($bitcast ($int<8>) kr_2_2_2 )
+		kval_2_3_2 := ($bitcast ($int<8>) kr_2_3_2 )
+		kval_2_4_2 := ($bitcast ($int<8>) kr_2_4_2 )
+		kval_2_5_2 := ($bitcast ($int<8>) kr_2_5_2 )
+		kval_2_6_2 := ($bitcast ($int<8>) kr_2_6_2 )
+		kval_2_7_2 := ($bitcast ($int<8>) kr_2_7_2 )
+		kval_2_8_2 := ($bitcast ($int<8>) kr_2_8_2 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_2_1_2 := ($cast ($int<16>) (kval_2_1_2 * ival1_2 ))
+//		mul_val_2_2_2 := ($cast ($int<16>) (kval_2_2_2 * ival2_2 ))
+//		mul_val_2_3_2 := ($cast ($int<16>) (kval_2_3_2 * ival3_2 ))
+//		mul_val_2_4_2 := ($cast ($int<16>) (kval_2_4_2 * ival4_2 ))
+//		mul_val_2_5_2 := ($cast ($int<16>) (kval_2_5_2 * ival5_2 ))
+//		mul_val_2_6_2 := ($cast ($int<16>) (kval_2_6_2 * ival6_2 ))
+//		mul_val_2_7_2 := ($cast ($int<16>) (kval_2_7_2 * ival7_2 ))
+//		mul_val_2_8_2 := ($cast ($int<16>) (kval_2_8_2 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_2_1_2 )) ( mul_val_2_1_2 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_2_2_2 )) ( mul_val_2_2_2 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_2_3_2 )) ( mul_val_2_3_2 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_2_4_2 )) ( mul_val_2_4_2 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_2_5_2 )) ( mul_val_2_5_2 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_2_6_2 )) ( mul_val_2_6_2 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_2_7_2 )) ( mul_val_2_7_2 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_2_8_2 )) ( mul_val_2_8_2 )
+
+		t_acc_val_2_2 := (((mul_val_2_1_2 + mul_val_2_2_2 ) + (mul_val_2_3_2 + mul_val_2_4_2 )) + ((mul_val_2_5_2 + mul_val_2_6_2 ) + (mul_val_2_7_2 + mul_val_2_8_2 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_2_1_5 := ($cast ($int<16>) (kval_2_1_2 * ival1_3 ))
+//		mul_val_2_2_5 := ($cast ($int<16>) (kval_2_2_2 * ival2_3 ))
+//		mul_val_2_3_5 := ($cast ($int<16>) (kval_2_3_2 * ival3_3 ))
+//		mul_val_2_4_5 := ($cast ($int<16>) (kval_2_4_2 * ival4_3 ))
+//		mul_val_2_5_5 := ($cast ($int<16>) (kval_2_5_2 * ival5_3 ))
+//		mul_val_2_6_5 := ($cast ($int<16>) (kval_2_6_2 * ival6_3 ))
+//		mul_val_2_7_5 := ($cast ($int<16>) (kval_2_7_2 * ival7_3 ))
+//		mul_val_2_8_5 := ($cast ($int<16>) (kval_2_8_2 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_2_1_2 )) ( mul_val_2_1_5 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_2_2_2 )) ( mul_val_2_2_5 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_2_3_2 )) ( mul_val_2_3_5 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_2_4_2 )) ( mul_val_2_4_5 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_2_5_2 )) ( mul_val_2_5_5 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_2_6_2 )) ( mul_val_2_6_5 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_2_7_2 )) ( mul_val_2_7_5 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_2_8_2 )) ( mul_val_2_8_5 )
+
+		t_acc_val_2_5 := (((mul_val_2_1_5 + mul_val_2_2_5 ) + (mul_val_2_3_5 + mul_val_2_4_5 )) + ((mul_val_2_5_5 + mul_val_2_6_5 ) + (mul_val_2_7_5 + mul_val_2_8_5 )))
+		
+// End of macro_file3
+
+
+		
+		//
+		
+		$volatile rk_3v2 := (readk_3 & o_chl2_valid)
+		$volatile nrk_3v2 := (not_readk_3 & o_chl2_valid)
+
+		$guard (rk_3v2 ) tempk1_2_3 := core2_kp3
+		$guard (nrk_3v2 ) tempk2_2_3 := conv2_kp3
+		kread_2_3 := ($mux o_chl2_valid ($mux mode_2 0 ($mux read_k tempk1_2_3 tempk2_2_3 )) 0)
+
+		$split (kread_2_3 8 8 8 8 8 8 8 8) (kr_2_1_3 kr_2_2_3 kr_2_3_3 kr_2_4_3 kr_2_5_3 kr_2_6_3 kr_2_7_3 kr_2_8_3 )
+
+		kval_2_1_3 := ($bitcast ($int<8>) kr_2_1_3 )
+		kval_2_2_3 := ($bitcast ($int<8>) kr_2_2_3 )
+		kval_2_3_3 := ($bitcast ($int<8>) kr_2_3_3 )
+		kval_2_4_3 := ($bitcast ($int<8>) kr_2_4_3 )
+		kval_2_5_3 := ($bitcast ($int<8>) kr_2_5_3 )
+		kval_2_6_3 := ($bitcast ($int<8>) kr_2_6_3 )
+		kval_2_7_3 := ($bitcast ($int<8>) kr_2_7_3 )
+		kval_2_8_3 := ($bitcast ($int<8>) kr_2_8_3 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_2_1_3 := ($cast ($int<16>) (kval_2_1_3 * ival1_3 ))
+//		mul_val_2_2_3 := ($cast ($int<16>) (kval_2_2_3 * ival2_3 ))
+//		mul_val_2_3_3 := ($cast ($int<16>) (kval_2_3_3 * ival3_3 ))
+//		mul_val_2_4_3 := ($cast ($int<16>) (kval_2_4_3 * ival4_3 ))
+//		mul_val_2_5_3 := ($cast ($int<16>) (kval_2_5_3 * ival5_3 ))
+//		mul_val_2_6_3 := ($cast ($int<16>) (kval_2_6_3 * ival6_3 ))
+//		mul_val_2_7_3 := ($cast ($int<16>) (kval_2_7_3 * ival7_3 ))
+//		mul_val_2_8_3 := ($cast ($int<16>) (kval_2_8_3 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_2_1_3 )) ( mul_val_2_1_3 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_2_2_3 )) ( mul_val_2_2_3 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_2_3_3 )) ( mul_val_2_3_3 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_2_4_3 )) ( mul_val_2_4_3 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_2_5_3 )) ( mul_val_2_5_3 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_2_6_3 )) ( mul_val_2_6_3 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_2_7_3 )) ( mul_val_2_7_3 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_2_8_3 )) ( mul_val_2_8_3 )
+
+		t_acc_val_2_3 := (((mul_val_2_1_3 + mul_val_2_2_3 ) + (mul_val_2_3_3 + mul_val_2_4_3 )) + ((mul_val_2_5_3 + mul_val_2_6_3 ) + (mul_val_2_7_3 + mul_val_2_8_3 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_2_1_6 := ($cast ($int<16>) (kval_2_1_3 * ival1_4 ))
+//		mul_val_2_2_6 := ($cast ($int<16>) (kval_2_2_3 * ival2_4 ))
+//		mul_val_2_3_6 := ($cast ($int<16>) (kval_2_3_3 * ival3_4 ))
+//		mul_val_2_4_6 := ($cast ($int<16>) (kval_2_4_3 * ival4_4 ))
+//		mul_val_2_5_6 := ($cast ($int<16>) (kval_2_5_3 * ival5_4 ))
+//		mul_val_2_6_6 := ($cast ($int<16>) (kval_2_6_3 * ival6_4 ))
+//		mul_val_2_7_6 := ($cast ($int<16>) (kval_2_7_3 * ival7_4 ))
+//		mul_val_2_8_6 := ($cast ($int<16>) (kval_2_8_3 * ival8_4 ))
+                $call multiplier (($cast ($int<16>) ival1_4 ) ($cast ($int<16>) kval_2_1_3 )) ( mul_val_2_1_6 )
+                $call multiplier (($cast ($int<16>) ival2_4 ) ($cast ($int<16>) kval_2_2_3 )) ( mul_val_2_2_6 )
+                $call multiplier (($cast ($int<16>) ival3_4 ) ($cast ($int<16>) kval_2_3_3 )) ( mul_val_2_3_6 )
+                $call multiplier (($cast ($int<16>) ival4_4 ) ($cast ($int<16>) kval_2_4_3 )) ( mul_val_2_4_6 )
+                $call multiplier (($cast ($int<16>) ival5_4 ) ($cast ($int<16>) kval_2_5_3 )) ( mul_val_2_5_6 )
+                $call multiplier (($cast ($int<16>) ival6_4 ) ($cast ($int<16>) kval_2_6_3 )) ( mul_val_2_6_6 )
+                $call multiplier (($cast ($int<16>) ival7_4 ) ($cast ($int<16>) kval_2_7_3 )) ( mul_val_2_7_6 )
+                $call multiplier (($cast ($int<16>) ival8_4 ) ($cast ($int<16>) kval_2_8_3 )) ( mul_val_2_8_6 )
+
+		t_acc_val_2_6 := (((mul_val_2_1_6 + mul_val_2_2_6 ) + (mul_val_2_3_6 + mul_val_2_4_6 )) + ((mul_val_2_5_6 + mul_val_2_6_6 ) + (mul_val_2_7_6 + mul_val_2_8_6 )))
+		
+// End of macro_file3
+
+
+		acc_val2_1 :=  ((t_acc_val_2_1 + t_acc_val_2_2) + t_acc_val_2_3)
+		acc_val2_2 :=  ((t_acc_val_2_4 + t_acc_val_2_5) + t_acc_val_2_6)
+
+
+		$volatile store_kernel2 := (store_kernel & o_chl2_valid)
+		$volatile store_32 := (store_3 & o_chl2_valid)
+		$guard (store_kernel2 ) conv2_kp1 := kread_2_1
+		$guard (store_kernel2 ) conv2_kp2 := kread_2_2
+		$guard (store_32 ) conv2_kp3 := kread_2_3
+		
+// End of convInner
+
+		
+		// Start of convInner
+		
+
+		$volatile rk_v3 := (read_k & o_chl3_valid)
+		$volatile nrk_v3 := (not_read_k & o_chl3_valid)
+		
+		
+		$guard (rk_v3 ) tempk1_3_1 := core3_kp1
+		$guard (nrk_v3 ) tempk2_3_1 := conv3_kp1
+		kread_3_1 := ($mux o_chl3_valid ($mux read_k tempk1_3_1 tempk2_3_1 ) 0)
+
+		$split (kread_3_1 8 8 8 8 8 8 8 8) (kr_3_1_1 kr_3_2_1 kr_3_3_1 kr_3_4_1 kr_3_5_1 kr_3_6_1 kr_3_7_1 kr_3_8_1 )
+
+		kval_3_1_1 := ($bitcast ($int<8>) kr_3_1_1 )
+		kval_3_2_1 := ($bitcast ($int<8>) kr_3_2_1 )
+		kval_3_3_1 := ($bitcast ($int<8>) kr_3_3_1 )
+		kval_3_4_1 := ($bitcast ($int<8>) kr_3_4_1 )
+		kval_3_5_1 := ($bitcast ($int<8>) kr_3_5_1 )
+		kval_3_6_1 := ($bitcast ($int<8>) kr_3_6_1 )
+		kval_3_7_1 := ($bitcast ($int<8>) kr_3_7_1 )
+		kval_3_8_1 := ($bitcast ($int<8>) kr_3_8_1 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_3_1_1 := ($cast ($int<16>) (kval_3_1_1 * ival1_1 ))
+//		mul_val_3_2_1 := ($cast ($int<16>) (kval_3_2_1 * ival2_1 ))
+//		mul_val_3_3_1 := ($cast ($int<16>) (kval_3_3_1 * ival3_1 ))
+//		mul_val_3_4_1 := ($cast ($int<16>) (kval_3_4_1 * ival4_1 ))
+//		mul_val_3_5_1 := ($cast ($int<16>) (kval_3_5_1 * ival5_1 ))
+//		mul_val_3_6_1 := ($cast ($int<16>) (kval_3_6_1 * ival6_1 ))
+//		mul_val_3_7_1 := ($cast ($int<16>) (kval_3_7_1 * ival7_1 ))
+//		mul_val_3_8_1 := ($cast ($int<16>) (kval_3_8_1 * ival8_1 ))
+                $call multiplier (($cast ($int<16>) ival1_1 ) ($cast ($int<16>) kval_3_1_1 )) ( mul_val_3_1_1 )
+                $call multiplier (($cast ($int<16>) ival2_1 ) ($cast ($int<16>) kval_3_2_1 )) ( mul_val_3_2_1 )
+                $call multiplier (($cast ($int<16>) ival3_1 ) ($cast ($int<16>) kval_3_3_1 )) ( mul_val_3_3_1 )
+                $call multiplier (($cast ($int<16>) ival4_1 ) ($cast ($int<16>) kval_3_4_1 )) ( mul_val_3_4_1 )
+                $call multiplier (($cast ($int<16>) ival5_1 ) ($cast ($int<16>) kval_3_5_1 )) ( mul_val_3_5_1 )
+                $call multiplier (($cast ($int<16>) ival6_1 ) ($cast ($int<16>) kval_3_6_1 )) ( mul_val_3_6_1 )
+                $call multiplier (($cast ($int<16>) ival7_1 ) ($cast ($int<16>) kval_3_7_1 )) ( mul_val_3_7_1 )
+                $call multiplier (($cast ($int<16>) ival8_1 ) ($cast ($int<16>) kval_3_8_1 )) ( mul_val_3_8_1 )
+
+		t_acc_val_3_1 := (((mul_val_3_1_1 + mul_val_3_2_1 ) + (mul_val_3_3_1 + mul_val_3_4_1 )) + ((mul_val_3_5_1 + mul_val_3_6_1 ) + (mul_val_3_7_1 + mul_val_3_8_1 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_3_1_4 := ($cast ($int<16>) (kval_3_1_1 * ival1_2 ))
+//		mul_val_3_2_4 := ($cast ($int<16>) (kval_3_2_1 * ival2_2 ))
+//		mul_val_3_3_4 := ($cast ($int<16>) (kval_3_3_1 * ival3_2 ))
+//		mul_val_3_4_4 := ($cast ($int<16>) (kval_3_4_1 * ival4_2 ))
+//		mul_val_3_5_4 := ($cast ($int<16>) (kval_3_5_1 * ival5_2 ))
+//		mul_val_3_6_4 := ($cast ($int<16>) (kval_3_6_1 * ival6_2 ))
+//		mul_val_3_7_4 := ($cast ($int<16>) (kval_3_7_1 * ival7_2 ))
+//		mul_val_3_8_4 := ($cast ($int<16>) (kval_3_8_1 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_3_1_1 )) ( mul_val_3_1_4 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_3_2_1 )) ( mul_val_3_2_4 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_3_3_1 )) ( mul_val_3_3_4 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_3_4_1 )) ( mul_val_3_4_4 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_3_5_1 )) ( mul_val_3_5_4 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_3_6_1 )) ( mul_val_3_6_4 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_3_7_1 )) ( mul_val_3_7_4 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_3_8_1 )) ( mul_val_3_8_4 )
+
+		t_acc_val_3_4 := (((mul_val_3_1_4 + mul_val_3_2_4 ) + (mul_val_3_3_4 + mul_val_3_4_4 )) + ((mul_val_3_5_4 + mul_val_3_6_4 ) + (mul_val_3_7_4 + mul_val_3_8_4 )))
+		
+// End of macro_file3
+
+
+		
+		
+		$guard (rk_v3 ) tempk1_3_2 := core3_kp2
+		$guard (nrk_v3 ) tempk2_3_2 := conv3_kp2
+		kread_3_2 := ($mux o_chl3_valid ($mux read_k tempk1_3_2 tempk2_3_2 ) 0)
+
+		$split (kread_3_2 8 8 8 8 8 8 8 8) (kr_3_1_2 kr_3_2_2 kr_3_3_2 kr_3_4_2 kr_3_5_2 kr_3_6_2 kr_3_7_2 kr_3_8_2 )
+
+		kval_3_1_2 := ($bitcast ($int<8>) kr_3_1_2 )
+		kval_3_2_2 := ($bitcast ($int<8>) kr_3_2_2 )
+		kval_3_3_2 := ($bitcast ($int<8>) kr_3_3_2 )
+		kval_3_4_2 := ($bitcast ($int<8>) kr_3_4_2 )
+		kval_3_5_2 := ($bitcast ($int<8>) kr_3_5_2 )
+		kval_3_6_2 := ($bitcast ($int<8>) kr_3_6_2 )
+		kval_3_7_2 := ($bitcast ($int<8>) kr_3_7_2 )
+		kval_3_8_2 := ($bitcast ($int<8>) kr_3_8_2 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_3_1_2 := ($cast ($int<16>) (kval_3_1_2 * ival1_2 ))
+//		mul_val_3_2_2 := ($cast ($int<16>) (kval_3_2_2 * ival2_2 ))
+//		mul_val_3_3_2 := ($cast ($int<16>) (kval_3_3_2 * ival3_2 ))
+//		mul_val_3_4_2 := ($cast ($int<16>) (kval_3_4_2 * ival4_2 ))
+//		mul_val_3_5_2 := ($cast ($int<16>) (kval_3_5_2 * ival5_2 ))
+//		mul_val_3_6_2 := ($cast ($int<16>) (kval_3_6_2 * ival6_2 ))
+//		mul_val_3_7_2 := ($cast ($int<16>) (kval_3_7_2 * ival7_2 ))
+//		mul_val_3_8_2 := ($cast ($int<16>) (kval_3_8_2 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_3_1_2 )) ( mul_val_3_1_2 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_3_2_2 )) ( mul_val_3_2_2 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_3_3_2 )) ( mul_val_3_3_2 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_3_4_2 )) ( mul_val_3_4_2 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_3_5_2 )) ( mul_val_3_5_2 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_3_6_2 )) ( mul_val_3_6_2 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_3_7_2 )) ( mul_val_3_7_2 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_3_8_2 )) ( mul_val_3_8_2 )
+
+		t_acc_val_3_2 := (((mul_val_3_1_2 + mul_val_3_2_2 ) + (mul_val_3_3_2 + mul_val_3_4_2 )) + ((mul_val_3_5_2 + mul_val_3_6_2 ) + (mul_val_3_7_2 + mul_val_3_8_2 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_3_1_5 := ($cast ($int<16>) (kval_3_1_2 * ival1_3 ))
+//		mul_val_3_2_5 := ($cast ($int<16>) (kval_3_2_2 * ival2_3 ))
+//		mul_val_3_3_5 := ($cast ($int<16>) (kval_3_3_2 * ival3_3 ))
+//		mul_val_3_4_5 := ($cast ($int<16>) (kval_3_4_2 * ival4_3 ))
+//		mul_val_3_5_5 := ($cast ($int<16>) (kval_3_5_2 * ival5_3 ))
+//		mul_val_3_6_5 := ($cast ($int<16>) (kval_3_6_2 * ival6_3 ))
+//		mul_val_3_7_5 := ($cast ($int<16>) (kval_3_7_2 * ival7_3 ))
+//		mul_val_3_8_5 := ($cast ($int<16>) (kval_3_8_2 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_3_1_2 )) ( mul_val_3_1_5 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_3_2_2 )) ( mul_val_3_2_5 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_3_3_2 )) ( mul_val_3_3_5 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_3_4_2 )) ( mul_val_3_4_5 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_3_5_2 )) ( mul_val_3_5_5 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_3_6_2 )) ( mul_val_3_6_5 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_3_7_2 )) ( mul_val_3_7_5 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_3_8_2 )) ( mul_val_3_8_5 )
+
+		t_acc_val_3_5 := (((mul_val_3_1_5 + mul_val_3_2_5 ) + (mul_val_3_3_5 + mul_val_3_4_5 )) + ((mul_val_3_5_5 + mul_val_3_6_5 ) + (mul_val_3_7_5 + mul_val_3_8_5 )))
+		
+// End of macro_file3
+
+
+		
+		//
+		
+		$volatile rk_3v3 := (readk_3 & o_chl3_valid)
+		$volatile nrk_3v3 := (not_readk_3 & o_chl3_valid)
+
+		$guard (rk_3v3 ) tempk1_3_3 := core3_kp3
+		$guard (nrk_3v3 ) tempk2_3_3 := conv3_kp3
+		kread_3_3 := ($mux o_chl3_valid ($mux mode_2 0 ($mux read_k tempk1_3_3 tempk2_3_3 )) 0)
+
+		$split (kread_3_3 8 8 8 8 8 8 8 8) (kr_3_1_3 kr_3_2_3 kr_3_3_3 kr_3_4_3 kr_3_5_3 kr_3_6_3 kr_3_7_3 kr_3_8_3 )
+
+		kval_3_1_3 := ($bitcast ($int<8>) kr_3_1_3 )
+		kval_3_2_3 := ($bitcast ($int<8>) kr_3_2_3 )
+		kval_3_3_3 := ($bitcast ($int<8>) kr_3_3_3 )
+		kval_3_4_3 := ($bitcast ($int<8>) kr_3_4_3 )
+		kval_3_5_3 := ($bitcast ($int<8>) kr_3_5_3 )
+		kval_3_6_3 := ($bitcast ($int<8>) kr_3_6_3 )
+		kval_3_7_3 := ($bitcast ($int<8>) kr_3_7_3 )
+		kval_3_8_3 := ($bitcast ($int<8>) kr_3_8_3 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_3_1_3 := ($cast ($int<16>) (kval_3_1_3 * ival1_3 ))
+//		mul_val_3_2_3 := ($cast ($int<16>) (kval_3_2_3 * ival2_3 ))
+//		mul_val_3_3_3 := ($cast ($int<16>) (kval_3_3_3 * ival3_3 ))
+//		mul_val_3_4_3 := ($cast ($int<16>) (kval_3_4_3 * ival4_3 ))
+//		mul_val_3_5_3 := ($cast ($int<16>) (kval_3_5_3 * ival5_3 ))
+//		mul_val_3_6_3 := ($cast ($int<16>) (kval_3_6_3 * ival6_3 ))
+//		mul_val_3_7_3 := ($cast ($int<16>) (kval_3_7_3 * ival7_3 ))
+//		mul_val_3_8_3 := ($cast ($int<16>) (kval_3_8_3 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_3_1_3 )) ( mul_val_3_1_3 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_3_2_3 )) ( mul_val_3_2_3 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_3_3_3 )) ( mul_val_3_3_3 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_3_4_3 )) ( mul_val_3_4_3 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_3_5_3 )) ( mul_val_3_5_3 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_3_6_3 )) ( mul_val_3_6_3 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_3_7_3 )) ( mul_val_3_7_3 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_3_8_3 )) ( mul_val_3_8_3 )
+
+		t_acc_val_3_3 := (((mul_val_3_1_3 + mul_val_3_2_3 ) + (mul_val_3_3_3 + mul_val_3_4_3 )) + ((mul_val_3_5_3 + mul_val_3_6_3 ) + (mul_val_3_7_3 + mul_val_3_8_3 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_3_1_6 := ($cast ($int<16>) (kval_3_1_3 * ival1_4 ))
+//		mul_val_3_2_6 := ($cast ($int<16>) (kval_3_2_3 * ival2_4 ))
+//		mul_val_3_3_6 := ($cast ($int<16>) (kval_3_3_3 * ival3_4 ))
+//		mul_val_3_4_6 := ($cast ($int<16>) (kval_3_4_3 * ival4_4 ))
+//		mul_val_3_5_6 := ($cast ($int<16>) (kval_3_5_3 * ival5_4 ))
+//		mul_val_3_6_6 := ($cast ($int<16>) (kval_3_6_3 * ival6_4 ))
+//		mul_val_3_7_6 := ($cast ($int<16>) (kval_3_7_3 * ival7_4 ))
+//		mul_val_3_8_6 := ($cast ($int<16>) (kval_3_8_3 * ival8_4 ))
+                $call multiplier (($cast ($int<16>) ival1_4 ) ($cast ($int<16>) kval_3_1_3 )) ( mul_val_3_1_6 )
+                $call multiplier (($cast ($int<16>) ival2_4 ) ($cast ($int<16>) kval_3_2_3 )) ( mul_val_3_2_6 )
+                $call multiplier (($cast ($int<16>) ival3_4 ) ($cast ($int<16>) kval_3_3_3 )) ( mul_val_3_3_6 )
+                $call multiplier (($cast ($int<16>) ival4_4 ) ($cast ($int<16>) kval_3_4_3 )) ( mul_val_3_4_6 )
+                $call multiplier (($cast ($int<16>) ival5_4 ) ($cast ($int<16>) kval_3_5_3 )) ( mul_val_3_5_6 )
+                $call multiplier (($cast ($int<16>) ival6_4 ) ($cast ($int<16>) kval_3_6_3 )) ( mul_val_3_6_6 )
+                $call multiplier (($cast ($int<16>) ival7_4 ) ($cast ($int<16>) kval_3_7_3 )) ( mul_val_3_7_6 )
+                $call multiplier (($cast ($int<16>) ival8_4 ) ($cast ($int<16>) kval_3_8_3 )) ( mul_val_3_8_6 )
+
+		t_acc_val_3_6 := (((mul_val_3_1_6 + mul_val_3_2_6 ) + (mul_val_3_3_6 + mul_val_3_4_6 )) + ((mul_val_3_5_6 + mul_val_3_6_6 ) + (mul_val_3_7_6 + mul_val_3_8_6 )))
+		
+// End of macro_file3
+
+
+		acc_val3_1 :=  ((t_acc_val_3_1 + t_acc_val_3_2) + t_acc_val_3_3)
+		acc_val3_2 :=  ((t_acc_val_3_4 + t_acc_val_3_5) + t_acc_val_3_6)
+
+
+		$volatile store_kernel3 := (store_kernel & o_chl3_valid)
+		$volatile store_33 := (store_3 & o_chl3_valid)
+		$guard (store_kernel3 ) conv3_kp1 := kread_3_1
+		$guard (store_kernel3 ) conv3_kp2 := kread_3_2
+		$guard (store_33 ) conv3_kp3 := kread_3_3
+		
+// End of convInner
+
+		
+		// Start of convInner
+		
+
+		$volatile rk_v4 := (read_k & o_chl4_valid)
+		$volatile nrk_v4 := (not_read_k & o_chl4_valid)
+		
+		
+		$guard (rk_v4 ) tempk1_4_1 := core4_kp1
+		$guard (nrk_v4 ) tempk2_4_1 := conv4_kp1
+		kread_4_1 := ($mux o_chl4_valid ($mux read_k tempk1_4_1 tempk2_4_1 ) 0)
+
+		$split (kread_4_1 8 8 8 8 8 8 8 8) (kr_4_1_1 kr_4_2_1 kr_4_3_1 kr_4_4_1 kr_4_5_1 kr_4_6_1 kr_4_7_1 kr_4_8_1 )
+
+		kval_4_1_1 := ($bitcast ($int<8>) kr_4_1_1 )
+		kval_4_2_1 := ($bitcast ($int<8>) kr_4_2_1 )
+		kval_4_3_1 := ($bitcast ($int<8>) kr_4_3_1 )
+		kval_4_4_1 := ($bitcast ($int<8>) kr_4_4_1 )
+		kval_4_5_1 := ($bitcast ($int<8>) kr_4_5_1 )
+		kval_4_6_1 := ($bitcast ($int<8>) kr_4_6_1 )
+		kval_4_7_1 := ($bitcast ($int<8>) kr_4_7_1 )
+		kval_4_8_1 := ($bitcast ($int<8>) kr_4_8_1 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_4_1_1 := ($cast ($int<16>) (kval_4_1_1 * ival1_1 ))
+//		mul_val_4_2_1 := ($cast ($int<16>) (kval_4_2_1 * ival2_1 ))
+//		mul_val_4_3_1 := ($cast ($int<16>) (kval_4_3_1 * ival3_1 ))
+//		mul_val_4_4_1 := ($cast ($int<16>) (kval_4_4_1 * ival4_1 ))
+//		mul_val_4_5_1 := ($cast ($int<16>) (kval_4_5_1 * ival5_1 ))
+//		mul_val_4_6_1 := ($cast ($int<16>) (kval_4_6_1 * ival6_1 ))
+//		mul_val_4_7_1 := ($cast ($int<16>) (kval_4_7_1 * ival7_1 ))
+//		mul_val_4_8_1 := ($cast ($int<16>) (kval_4_8_1 * ival8_1 ))
+                $call multiplier (($cast ($int<16>) ival1_1 ) ($cast ($int<16>) kval_4_1_1 )) ( mul_val_4_1_1 )
+                $call multiplier (($cast ($int<16>) ival2_1 ) ($cast ($int<16>) kval_4_2_1 )) ( mul_val_4_2_1 )
+                $call multiplier (($cast ($int<16>) ival3_1 ) ($cast ($int<16>) kval_4_3_1 )) ( mul_val_4_3_1 )
+                $call multiplier (($cast ($int<16>) ival4_1 ) ($cast ($int<16>) kval_4_4_1 )) ( mul_val_4_4_1 )
+                $call multiplier (($cast ($int<16>) ival5_1 ) ($cast ($int<16>) kval_4_5_1 )) ( mul_val_4_5_1 )
+                $call multiplier (($cast ($int<16>) ival6_1 ) ($cast ($int<16>) kval_4_6_1 )) ( mul_val_4_6_1 )
+                $call multiplier (($cast ($int<16>) ival7_1 ) ($cast ($int<16>) kval_4_7_1 )) ( mul_val_4_7_1 )
+                $call multiplier (($cast ($int<16>) ival8_1 ) ($cast ($int<16>) kval_4_8_1 )) ( mul_val_4_8_1 )
+
+		t_acc_val_4_1 := (((mul_val_4_1_1 + mul_val_4_2_1 ) + (mul_val_4_3_1 + mul_val_4_4_1 )) + ((mul_val_4_5_1 + mul_val_4_6_1 ) + (mul_val_4_7_1 + mul_val_4_8_1 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_4_1_4 := ($cast ($int<16>) (kval_4_1_1 * ival1_2 ))
+//		mul_val_4_2_4 := ($cast ($int<16>) (kval_4_2_1 * ival2_2 ))
+//		mul_val_4_3_4 := ($cast ($int<16>) (kval_4_3_1 * ival3_2 ))
+//		mul_val_4_4_4 := ($cast ($int<16>) (kval_4_4_1 * ival4_2 ))
+//		mul_val_4_5_4 := ($cast ($int<16>) (kval_4_5_1 * ival5_2 ))
+//		mul_val_4_6_4 := ($cast ($int<16>) (kval_4_6_1 * ival6_2 ))
+//		mul_val_4_7_4 := ($cast ($int<16>) (kval_4_7_1 * ival7_2 ))
+//		mul_val_4_8_4 := ($cast ($int<16>) (kval_4_8_1 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_4_1_1 )) ( mul_val_4_1_4 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_4_2_1 )) ( mul_val_4_2_4 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_4_3_1 )) ( mul_val_4_3_4 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_4_4_1 )) ( mul_val_4_4_4 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_4_5_1 )) ( mul_val_4_5_4 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_4_6_1 )) ( mul_val_4_6_4 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_4_7_1 )) ( mul_val_4_7_4 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_4_8_1 )) ( mul_val_4_8_4 )
+
+		t_acc_val_4_4 := (((mul_val_4_1_4 + mul_val_4_2_4 ) + (mul_val_4_3_4 + mul_val_4_4_4 )) + ((mul_val_4_5_4 + mul_val_4_6_4 ) + (mul_val_4_7_4 + mul_val_4_8_4 )))
+		
+// End of macro_file3
+
+
+		
+		
+		$guard (rk_v4 ) tempk1_4_2 := core4_kp2
+		$guard (nrk_v4 ) tempk2_4_2 := conv4_kp2
+		kread_4_2 := ($mux o_chl4_valid ($mux read_k tempk1_4_2 tempk2_4_2 ) 0)
+
+		$split (kread_4_2 8 8 8 8 8 8 8 8) (kr_4_1_2 kr_4_2_2 kr_4_3_2 kr_4_4_2 kr_4_5_2 kr_4_6_2 kr_4_7_2 kr_4_8_2 )
+
+		kval_4_1_2 := ($bitcast ($int<8>) kr_4_1_2 )
+		kval_4_2_2 := ($bitcast ($int<8>) kr_4_2_2 )
+		kval_4_3_2 := ($bitcast ($int<8>) kr_4_3_2 )
+		kval_4_4_2 := ($bitcast ($int<8>) kr_4_4_2 )
+		kval_4_5_2 := ($bitcast ($int<8>) kr_4_5_2 )
+		kval_4_6_2 := ($bitcast ($int<8>) kr_4_6_2 )
+		kval_4_7_2 := ($bitcast ($int<8>) kr_4_7_2 )
+		kval_4_8_2 := ($bitcast ($int<8>) kr_4_8_2 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_4_1_2 := ($cast ($int<16>) (kval_4_1_2 * ival1_2 ))
+//		mul_val_4_2_2 := ($cast ($int<16>) (kval_4_2_2 * ival2_2 ))
+//		mul_val_4_3_2 := ($cast ($int<16>) (kval_4_3_2 * ival3_2 ))
+//		mul_val_4_4_2 := ($cast ($int<16>) (kval_4_4_2 * ival4_2 ))
+//		mul_val_4_5_2 := ($cast ($int<16>) (kval_4_5_2 * ival5_2 ))
+//		mul_val_4_6_2 := ($cast ($int<16>) (kval_4_6_2 * ival6_2 ))
+//		mul_val_4_7_2 := ($cast ($int<16>) (kval_4_7_2 * ival7_2 ))
+//		mul_val_4_8_2 := ($cast ($int<16>) (kval_4_8_2 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_4_1_2 )) ( mul_val_4_1_2 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_4_2_2 )) ( mul_val_4_2_2 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_4_3_2 )) ( mul_val_4_3_2 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_4_4_2 )) ( mul_val_4_4_2 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_4_5_2 )) ( mul_val_4_5_2 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_4_6_2 )) ( mul_val_4_6_2 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_4_7_2 )) ( mul_val_4_7_2 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_4_8_2 )) ( mul_val_4_8_2 )
+
+		t_acc_val_4_2 := (((mul_val_4_1_2 + mul_val_4_2_2 ) + (mul_val_4_3_2 + mul_val_4_4_2 )) + ((mul_val_4_5_2 + mul_val_4_6_2 ) + (mul_val_4_7_2 + mul_val_4_8_2 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_4_1_5 := ($cast ($int<16>) (kval_4_1_2 * ival1_3 ))
+//		mul_val_4_2_5 := ($cast ($int<16>) (kval_4_2_2 * ival2_3 ))
+//		mul_val_4_3_5 := ($cast ($int<16>) (kval_4_3_2 * ival3_3 ))
+//		mul_val_4_4_5 := ($cast ($int<16>) (kval_4_4_2 * ival4_3 ))
+//		mul_val_4_5_5 := ($cast ($int<16>) (kval_4_5_2 * ival5_3 ))
+//		mul_val_4_6_5 := ($cast ($int<16>) (kval_4_6_2 * ival6_3 ))
+//		mul_val_4_7_5 := ($cast ($int<16>) (kval_4_7_2 * ival7_3 ))
+//		mul_val_4_8_5 := ($cast ($int<16>) (kval_4_8_2 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_4_1_2 )) ( mul_val_4_1_5 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_4_2_2 )) ( mul_val_4_2_5 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_4_3_2 )) ( mul_val_4_3_5 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_4_4_2 )) ( mul_val_4_4_5 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_4_5_2 )) ( mul_val_4_5_5 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_4_6_2 )) ( mul_val_4_6_5 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_4_7_2 )) ( mul_val_4_7_5 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_4_8_2 )) ( mul_val_4_8_5 )
+
+		t_acc_val_4_5 := (((mul_val_4_1_5 + mul_val_4_2_5 ) + (mul_val_4_3_5 + mul_val_4_4_5 )) + ((mul_val_4_5_5 + mul_val_4_6_5 ) + (mul_val_4_7_5 + mul_val_4_8_5 )))
+		
+// End of macro_file3
+
+
+		
+		//
+		
+		$volatile rk_3v4 := (readk_3 & o_chl4_valid)
+		$volatile nrk_3v4 := (not_readk_3 & o_chl4_valid)
+
+		$guard (rk_3v4 ) tempk1_4_3 := core4_kp3
+		$guard (nrk_3v4 ) tempk2_4_3 := conv4_kp3
+		kread_4_3 := ($mux o_chl4_valid ($mux mode_2 0 ($mux read_k tempk1_4_3 tempk2_4_3 )) 0)
+
+		$split (kread_4_3 8 8 8 8 8 8 8 8) (kr_4_1_3 kr_4_2_3 kr_4_3_3 kr_4_4_3 kr_4_5_3 kr_4_6_3 kr_4_7_3 kr_4_8_3 )
+
+		kval_4_1_3 := ($bitcast ($int<8>) kr_4_1_3 )
+		kval_4_2_3 := ($bitcast ($int<8>) kr_4_2_3 )
+		kval_4_3_3 := ($bitcast ($int<8>) kr_4_3_3 )
+		kval_4_4_3 := ($bitcast ($int<8>) kr_4_4_3 )
+		kval_4_5_3 := ($bitcast ($int<8>) kr_4_5_3 )
+		kval_4_6_3 := ($bitcast ($int<8>) kr_4_6_3 )
+		kval_4_7_3 := ($bitcast ($int<8>) kr_4_7_3 )
+		kval_4_8_3 := ($bitcast ($int<8>) kr_4_8_3 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_4_1_3 := ($cast ($int<16>) (kval_4_1_3 * ival1_3 ))
+//		mul_val_4_2_3 := ($cast ($int<16>) (kval_4_2_3 * ival2_3 ))
+//		mul_val_4_3_3 := ($cast ($int<16>) (kval_4_3_3 * ival3_3 ))
+//		mul_val_4_4_3 := ($cast ($int<16>) (kval_4_4_3 * ival4_3 ))
+//		mul_val_4_5_3 := ($cast ($int<16>) (kval_4_5_3 * ival5_3 ))
+//		mul_val_4_6_3 := ($cast ($int<16>) (kval_4_6_3 * ival6_3 ))
+//		mul_val_4_7_3 := ($cast ($int<16>) (kval_4_7_3 * ival7_3 ))
+//		mul_val_4_8_3 := ($cast ($int<16>) (kval_4_8_3 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_4_1_3 )) ( mul_val_4_1_3 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_4_2_3 )) ( mul_val_4_2_3 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_4_3_3 )) ( mul_val_4_3_3 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_4_4_3 )) ( mul_val_4_4_3 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_4_5_3 )) ( mul_val_4_5_3 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_4_6_3 )) ( mul_val_4_6_3 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_4_7_3 )) ( mul_val_4_7_3 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_4_8_3 )) ( mul_val_4_8_3 )
+
+		t_acc_val_4_3 := (((mul_val_4_1_3 + mul_val_4_2_3 ) + (mul_val_4_3_3 + mul_val_4_4_3 )) + ((mul_val_4_5_3 + mul_val_4_6_3 ) + (mul_val_4_7_3 + mul_val_4_8_3 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_4_1_6 := ($cast ($int<16>) (kval_4_1_3 * ival1_4 ))
+//		mul_val_4_2_6 := ($cast ($int<16>) (kval_4_2_3 * ival2_4 ))
+//		mul_val_4_3_6 := ($cast ($int<16>) (kval_4_3_3 * ival3_4 ))
+//		mul_val_4_4_6 := ($cast ($int<16>) (kval_4_4_3 * ival4_4 ))
+//		mul_val_4_5_6 := ($cast ($int<16>) (kval_4_5_3 * ival5_4 ))
+//		mul_val_4_6_6 := ($cast ($int<16>) (kval_4_6_3 * ival6_4 ))
+//		mul_val_4_7_6 := ($cast ($int<16>) (kval_4_7_3 * ival7_4 ))
+//		mul_val_4_8_6 := ($cast ($int<16>) (kval_4_8_3 * ival8_4 ))
+                $call multiplier (($cast ($int<16>) ival1_4 ) ($cast ($int<16>) kval_4_1_3 )) ( mul_val_4_1_6 )
+                $call multiplier (($cast ($int<16>) ival2_4 ) ($cast ($int<16>) kval_4_2_3 )) ( mul_val_4_2_6 )
+                $call multiplier (($cast ($int<16>) ival3_4 ) ($cast ($int<16>) kval_4_3_3 )) ( mul_val_4_3_6 )
+                $call multiplier (($cast ($int<16>) ival4_4 ) ($cast ($int<16>) kval_4_4_3 )) ( mul_val_4_4_6 )
+                $call multiplier (($cast ($int<16>) ival5_4 ) ($cast ($int<16>) kval_4_5_3 )) ( mul_val_4_5_6 )
+                $call multiplier (($cast ($int<16>) ival6_4 ) ($cast ($int<16>) kval_4_6_3 )) ( mul_val_4_6_6 )
+                $call multiplier (($cast ($int<16>) ival7_4 ) ($cast ($int<16>) kval_4_7_3 )) ( mul_val_4_7_6 )
+                $call multiplier (($cast ($int<16>) ival8_4 ) ($cast ($int<16>) kval_4_8_3 )) ( mul_val_4_8_6 )
+
+		t_acc_val_4_6 := (((mul_val_4_1_6 + mul_val_4_2_6 ) + (mul_val_4_3_6 + mul_val_4_4_6 )) + ((mul_val_4_5_6 + mul_val_4_6_6 ) + (mul_val_4_7_6 + mul_val_4_8_6 )))
+		
+// End of macro_file3
+
+
+		acc_val4_1 :=  ((t_acc_val_4_1 + t_acc_val_4_2) + t_acc_val_4_3)
+		acc_val4_2 :=  ((t_acc_val_4_4 + t_acc_val_4_5) + t_acc_val_4_6)
+
+
+		$volatile store_kernel4 := (store_kernel & o_chl4_valid)
+		$volatile store_34 := (store_3 & o_chl4_valid)
+		$guard (store_kernel4 ) conv4_kp1 := kread_4_1
+		$guard (store_kernel4 ) conv4_kp2 := kread_4_2
+		$guard (store_34 ) conv4_kp3 := kread_4_3
+		
+// End of convInner
+
+		
+		// Start of convInner
+		
+
+		$volatile rk_v5 := (read_k & o_chl5_valid)
+		$volatile nrk_v5 := (not_read_k & o_chl5_valid)
+		
+		
+		$guard (rk_v5 ) tempk1_5_1 := core5_kp1
+		$guard (nrk_v5 ) tempk2_5_1 := conv5_kp1
+		kread_5_1 := ($mux o_chl5_valid ($mux read_k tempk1_5_1 tempk2_5_1 ) 0)
+
+		$split (kread_5_1 8 8 8 8 8 8 8 8) (kr_5_1_1 kr_5_2_1 kr_5_3_1 kr_5_4_1 kr_5_5_1 kr_5_6_1 kr_5_7_1 kr_5_8_1 )
+
+		kval_5_1_1 := ($bitcast ($int<8>) kr_5_1_1 )
+		kval_5_2_1 := ($bitcast ($int<8>) kr_5_2_1 )
+		kval_5_3_1 := ($bitcast ($int<8>) kr_5_3_1 )
+		kval_5_4_1 := ($bitcast ($int<8>) kr_5_4_1 )
+		kval_5_5_1 := ($bitcast ($int<8>) kr_5_5_1 )
+		kval_5_6_1 := ($bitcast ($int<8>) kr_5_6_1 )
+		kval_5_7_1 := ($bitcast ($int<8>) kr_5_7_1 )
+		kval_5_8_1 := ($bitcast ($int<8>) kr_5_8_1 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_5_1_1 := ($cast ($int<16>) (kval_5_1_1 * ival1_1 ))
+//		mul_val_5_2_1 := ($cast ($int<16>) (kval_5_2_1 * ival2_1 ))
+//		mul_val_5_3_1 := ($cast ($int<16>) (kval_5_3_1 * ival3_1 ))
+//		mul_val_5_4_1 := ($cast ($int<16>) (kval_5_4_1 * ival4_1 ))
+//		mul_val_5_5_1 := ($cast ($int<16>) (kval_5_5_1 * ival5_1 ))
+//		mul_val_5_6_1 := ($cast ($int<16>) (kval_5_6_1 * ival6_1 ))
+//		mul_val_5_7_1 := ($cast ($int<16>) (kval_5_7_1 * ival7_1 ))
+//		mul_val_5_8_1 := ($cast ($int<16>) (kval_5_8_1 * ival8_1 ))
+                $call multiplier (($cast ($int<16>) ival1_1 ) ($cast ($int<16>) kval_5_1_1 )) ( mul_val_5_1_1 )
+                $call multiplier (($cast ($int<16>) ival2_1 ) ($cast ($int<16>) kval_5_2_1 )) ( mul_val_5_2_1 )
+                $call multiplier (($cast ($int<16>) ival3_1 ) ($cast ($int<16>) kval_5_3_1 )) ( mul_val_5_3_1 )
+                $call multiplier (($cast ($int<16>) ival4_1 ) ($cast ($int<16>) kval_5_4_1 )) ( mul_val_5_4_1 )
+                $call multiplier (($cast ($int<16>) ival5_1 ) ($cast ($int<16>) kval_5_5_1 )) ( mul_val_5_5_1 )
+                $call multiplier (($cast ($int<16>) ival6_1 ) ($cast ($int<16>) kval_5_6_1 )) ( mul_val_5_6_1 )
+                $call multiplier (($cast ($int<16>) ival7_1 ) ($cast ($int<16>) kval_5_7_1 )) ( mul_val_5_7_1 )
+                $call multiplier (($cast ($int<16>) ival8_1 ) ($cast ($int<16>) kval_5_8_1 )) ( mul_val_5_8_1 )
+
+		t_acc_val_5_1 := (((mul_val_5_1_1 + mul_val_5_2_1 ) + (mul_val_5_3_1 + mul_val_5_4_1 )) + ((mul_val_5_5_1 + mul_val_5_6_1 ) + (mul_val_5_7_1 + mul_val_5_8_1 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_5_1_4 := ($cast ($int<16>) (kval_5_1_1 * ival1_2 ))
+//		mul_val_5_2_4 := ($cast ($int<16>) (kval_5_2_1 * ival2_2 ))
+//		mul_val_5_3_4 := ($cast ($int<16>) (kval_5_3_1 * ival3_2 ))
+//		mul_val_5_4_4 := ($cast ($int<16>) (kval_5_4_1 * ival4_2 ))
+//		mul_val_5_5_4 := ($cast ($int<16>) (kval_5_5_1 * ival5_2 ))
+//		mul_val_5_6_4 := ($cast ($int<16>) (kval_5_6_1 * ival6_2 ))
+//		mul_val_5_7_4 := ($cast ($int<16>) (kval_5_7_1 * ival7_2 ))
+//		mul_val_5_8_4 := ($cast ($int<16>) (kval_5_8_1 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_5_1_1 )) ( mul_val_5_1_4 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_5_2_1 )) ( mul_val_5_2_4 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_5_3_1 )) ( mul_val_5_3_4 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_5_4_1 )) ( mul_val_5_4_4 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_5_5_1 )) ( mul_val_5_5_4 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_5_6_1 )) ( mul_val_5_6_4 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_5_7_1 )) ( mul_val_5_7_4 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_5_8_1 )) ( mul_val_5_8_4 )
+
+		t_acc_val_5_4 := (((mul_val_5_1_4 + mul_val_5_2_4 ) + (mul_val_5_3_4 + mul_val_5_4_4 )) + ((mul_val_5_5_4 + mul_val_5_6_4 ) + (mul_val_5_7_4 + mul_val_5_8_4 )))
+		
+// End of macro_file3
+
+
+		
+		
+		$guard (rk_v5 ) tempk1_5_2 := core5_kp2
+		$guard (nrk_v5 ) tempk2_5_2 := conv5_kp2
+		kread_5_2 := ($mux o_chl5_valid ($mux read_k tempk1_5_2 tempk2_5_2 ) 0)
+
+		$split (kread_5_2 8 8 8 8 8 8 8 8) (kr_5_1_2 kr_5_2_2 kr_5_3_2 kr_5_4_2 kr_5_5_2 kr_5_6_2 kr_5_7_2 kr_5_8_2 )
+
+		kval_5_1_2 := ($bitcast ($int<8>) kr_5_1_2 )
+		kval_5_2_2 := ($bitcast ($int<8>) kr_5_2_2 )
+		kval_5_3_2 := ($bitcast ($int<8>) kr_5_3_2 )
+		kval_5_4_2 := ($bitcast ($int<8>) kr_5_4_2 )
+		kval_5_5_2 := ($bitcast ($int<8>) kr_5_5_2 )
+		kval_5_6_2 := ($bitcast ($int<8>) kr_5_6_2 )
+		kval_5_7_2 := ($bitcast ($int<8>) kr_5_7_2 )
+		kval_5_8_2 := ($bitcast ($int<8>) kr_5_8_2 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_5_1_2 := ($cast ($int<16>) (kval_5_1_2 * ival1_2 ))
+//		mul_val_5_2_2 := ($cast ($int<16>) (kval_5_2_2 * ival2_2 ))
+//		mul_val_5_3_2 := ($cast ($int<16>) (kval_5_3_2 * ival3_2 ))
+//		mul_val_5_4_2 := ($cast ($int<16>) (kval_5_4_2 * ival4_2 ))
+//		mul_val_5_5_2 := ($cast ($int<16>) (kval_5_5_2 * ival5_2 ))
+//		mul_val_5_6_2 := ($cast ($int<16>) (kval_5_6_2 * ival6_2 ))
+//		mul_val_5_7_2 := ($cast ($int<16>) (kval_5_7_2 * ival7_2 ))
+//		mul_val_5_8_2 := ($cast ($int<16>) (kval_5_8_2 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_5_1_2 )) ( mul_val_5_1_2 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_5_2_2 )) ( mul_val_5_2_2 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_5_3_2 )) ( mul_val_5_3_2 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_5_4_2 )) ( mul_val_5_4_2 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_5_5_2 )) ( mul_val_5_5_2 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_5_6_2 )) ( mul_val_5_6_2 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_5_7_2 )) ( mul_val_5_7_2 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_5_8_2 )) ( mul_val_5_8_2 )
+
+		t_acc_val_5_2 := (((mul_val_5_1_2 + mul_val_5_2_2 ) + (mul_val_5_3_2 + mul_val_5_4_2 )) + ((mul_val_5_5_2 + mul_val_5_6_2 ) + (mul_val_5_7_2 + mul_val_5_8_2 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_5_1_5 := ($cast ($int<16>) (kval_5_1_2 * ival1_3 ))
+//		mul_val_5_2_5 := ($cast ($int<16>) (kval_5_2_2 * ival2_3 ))
+//		mul_val_5_3_5 := ($cast ($int<16>) (kval_5_3_2 * ival3_3 ))
+//		mul_val_5_4_5 := ($cast ($int<16>) (kval_5_4_2 * ival4_3 ))
+//		mul_val_5_5_5 := ($cast ($int<16>) (kval_5_5_2 * ival5_3 ))
+//		mul_val_5_6_5 := ($cast ($int<16>) (kval_5_6_2 * ival6_3 ))
+//		mul_val_5_7_5 := ($cast ($int<16>) (kval_5_7_2 * ival7_3 ))
+//		mul_val_5_8_5 := ($cast ($int<16>) (kval_5_8_2 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_5_1_2 )) ( mul_val_5_1_5 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_5_2_2 )) ( mul_val_5_2_5 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_5_3_2 )) ( mul_val_5_3_5 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_5_4_2 )) ( mul_val_5_4_5 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_5_5_2 )) ( mul_val_5_5_5 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_5_6_2 )) ( mul_val_5_6_5 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_5_7_2 )) ( mul_val_5_7_5 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_5_8_2 )) ( mul_val_5_8_5 )
+
+		t_acc_val_5_5 := (((mul_val_5_1_5 + mul_val_5_2_5 ) + (mul_val_5_3_5 + mul_val_5_4_5 )) + ((mul_val_5_5_5 + mul_val_5_6_5 ) + (mul_val_5_7_5 + mul_val_5_8_5 )))
+		
+// End of macro_file3
+
+
+		
+		//
+		
+		$volatile rk_3v5 := (readk_3 & o_chl5_valid)
+		$volatile nrk_3v5 := (not_readk_3 & o_chl5_valid)
+
+		$guard (rk_3v5 ) tempk1_5_3 := core5_kp3
+		$guard (nrk_3v5 ) tempk2_5_3 := conv5_kp3
+		kread_5_3 := ($mux o_chl5_valid ($mux mode_2 0 ($mux read_k tempk1_5_3 tempk2_5_3 )) 0)
+
+		$split (kread_5_3 8 8 8 8 8 8 8 8) (kr_5_1_3 kr_5_2_3 kr_5_3_3 kr_5_4_3 kr_5_5_3 kr_5_6_3 kr_5_7_3 kr_5_8_3 )
+
+		kval_5_1_3 := ($bitcast ($int<8>) kr_5_1_3 )
+		kval_5_2_3 := ($bitcast ($int<8>) kr_5_2_3 )
+		kval_5_3_3 := ($bitcast ($int<8>) kr_5_3_3 )
+		kval_5_4_3 := ($bitcast ($int<8>) kr_5_4_3 )
+		kval_5_5_3 := ($bitcast ($int<8>) kr_5_5_3 )
+		kval_5_6_3 := ($bitcast ($int<8>) kr_5_6_3 )
+		kval_5_7_3 := ($bitcast ($int<8>) kr_5_7_3 )
+		kval_5_8_3 := ($bitcast ($int<8>) kr_5_8_3 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_5_1_3 := ($cast ($int<16>) (kval_5_1_3 * ival1_3 ))
+//		mul_val_5_2_3 := ($cast ($int<16>) (kval_5_2_3 * ival2_3 ))
+//		mul_val_5_3_3 := ($cast ($int<16>) (kval_5_3_3 * ival3_3 ))
+//		mul_val_5_4_3 := ($cast ($int<16>) (kval_5_4_3 * ival4_3 ))
+//		mul_val_5_5_3 := ($cast ($int<16>) (kval_5_5_3 * ival5_3 ))
+//		mul_val_5_6_3 := ($cast ($int<16>) (kval_5_6_3 * ival6_3 ))
+//		mul_val_5_7_3 := ($cast ($int<16>) (kval_5_7_3 * ival7_3 ))
+//		mul_val_5_8_3 := ($cast ($int<16>) (kval_5_8_3 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_5_1_3 )) ( mul_val_5_1_3 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_5_2_3 )) ( mul_val_5_2_3 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_5_3_3 )) ( mul_val_5_3_3 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_5_4_3 )) ( mul_val_5_4_3 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_5_5_3 )) ( mul_val_5_5_3 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_5_6_3 )) ( mul_val_5_6_3 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_5_7_3 )) ( mul_val_5_7_3 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_5_8_3 )) ( mul_val_5_8_3 )
+
+		t_acc_val_5_3 := (((mul_val_5_1_3 + mul_val_5_2_3 ) + (mul_val_5_3_3 + mul_val_5_4_3 )) + ((mul_val_5_5_3 + mul_val_5_6_3 ) + (mul_val_5_7_3 + mul_val_5_8_3 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_5_1_6 := ($cast ($int<16>) (kval_5_1_3 * ival1_4 ))
+//		mul_val_5_2_6 := ($cast ($int<16>) (kval_5_2_3 * ival2_4 ))
+//		mul_val_5_3_6 := ($cast ($int<16>) (kval_5_3_3 * ival3_4 ))
+//		mul_val_5_4_6 := ($cast ($int<16>) (kval_5_4_3 * ival4_4 ))
+//		mul_val_5_5_6 := ($cast ($int<16>) (kval_5_5_3 * ival5_4 ))
+//		mul_val_5_6_6 := ($cast ($int<16>) (kval_5_6_3 * ival6_4 ))
+//		mul_val_5_7_6 := ($cast ($int<16>) (kval_5_7_3 * ival7_4 ))
+//		mul_val_5_8_6 := ($cast ($int<16>) (kval_5_8_3 * ival8_4 ))
+                $call multiplier (($cast ($int<16>) ival1_4 ) ($cast ($int<16>) kval_5_1_3 )) ( mul_val_5_1_6 )
+                $call multiplier (($cast ($int<16>) ival2_4 ) ($cast ($int<16>) kval_5_2_3 )) ( mul_val_5_2_6 )
+                $call multiplier (($cast ($int<16>) ival3_4 ) ($cast ($int<16>) kval_5_3_3 )) ( mul_val_5_3_6 )
+                $call multiplier (($cast ($int<16>) ival4_4 ) ($cast ($int<16>) kval_5_4_3 )) ( mul_val_5_4_6 )
+                $call multiplier (($cast ($int<16>) ival5_4 ) ($cast ($int<16>) kval_5_5_3 )) ( mul_val_5_5_6 )
+                $call multiplier (($cast ($int<16>) ival6_4 ) ($cast ($int<16>) kval_5_6_3 )) ( mul_val_5_6_6 )
+                $call multiplier (($cast ($int<16>) ival7_4 ) ($cast ($int<16>) kval_5_7_3 )) ( mul_val_5_7_6 )
+                $call multiplier (($cast ($int<16>) ival8_4 ) ($cast ($int<16>) kval_5_8_3 )) ( mul_val_5_8_6 )
+
+		t_acc_val_5_6 := (((mul_val_5_1_6 + mul_val_5_2_6 ) + (mul_val_5_3_6 + mul_val_5_4_6 )) + ((mul_val_5_5_6 + mul_val_5_6_6 ) + (mul_val_5_7_6 + mul_val_5_8_6 )))
+		
+// End of macro_file3
+
+
+		acc_val5_1 :=  ((t_acc_val_5_1 + t_acc_val_5_2) + t_acc_val_5_3)
+		acc_val5_2 :=  ((t_acc_val_5_4 + t_acc_val_5_5) + t_acc_val_5_6)
+
+
+		$volatile store_kernel5 := (store_kernel & o_chl5_valid)
+		$volatile store_35 := (store_3 & o_chl5_valid)
+		$guard (store_kernel5 ) conv5_kp1 := kread_5_1
+		$guard (store_kernel5 ) conv5_kp2 := kread_5_2
+		$guard (store_35 ) conv5_kp3 := kread_5_3
+		
+// End of convInner
+
+		
+		// Start of convInner
+		
+
+		$volatile rk_v6 := (read_k & o_chl6_valid)
+		$volatile nrk_v6 := (not_read_k & o_chl6_valid)
+		
+		
+		$guard (rk_v6 ) tempk1_6_1 := core6_kp1
+		$guard (nrk_v6 ) tempk2_6_1 := conv6_kp1
+		kread_6_1 := ($mux o_chl6_valid ($mux read_k tempk1_6_1 tempk2_6_1 ) 0)
+
+		$split (kread_6_1 8 8 8 8 8 8 8 8) (kr_6_1_1 kr_6_2_1 kr_6_3_1 kr_6_4_1 kr_6_5_1 kr_6_6_1 kr_6_7_1 kr_6_8_1 )
+
+		kval_6_1_1 := ($bitcast ($int<8>) kr_6_1_1 )
+		kval_6_2_1 := ($bitcast ($int<8>) kr_6_2_1 )
+		kval_6_3_1 := ($bitcast ($int<8>) kr_6_3_1 )
+		kval_6_4_1 := ($bitcast ($int<8>) kr_6_4_1 )
+		kval_6_5_1 := ($bitcast ($int<8>) kr_6_5_1 )
+		kval_6_6_1 := ($bitcast ($int<8>) kr_6_6_1 )
+		kval_6_7_1 := ($bitcast ($int<8>) kr_6_7_1 )
+		kval_6_8_1 := ($bitcast ($int<8>) kr_6_8_1 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_6_1_1 := ($cast ($int<16>) (kval_6_1_1 * ival1_1 ))
+//		mul_val_6_2_1 := ($cast ($int<16>) (kval_6_2_1 * ival2_1 ))
+//		mul_val_6_3_1 := ($cast ($int<16>) (kval_6_3_1 * ival3_1 ))
+//		mul_val_6_4_1 := ($cast ($int<16>) (kval_6_4_1 * ival4_1 ))
+//		mul_val_6_5_1 := ($cast ($int<16>) (kval_6_5_1 * ival5_1 ))
+//		mul_val_6_6_1 := ($cast ($int<16>) (kval_6_6_1 * ival6_1 ))
+//		mul_val_6_7_1 := ($cast ($int<16>) (kval_6_7_1 * ival7_1 ))
+//		mul_val_6_8_1 := ($cast ($int<16>) (kval_6_8_1 * ival8_1 ))
+                $call multiplier (($cast ($int<16>) ival1_1 ) ($cast ($int<16>) kval_6_1_1 )) ( mul_val_6_1_1 )
+                $call multiplier (($cast ($int<16>) ival2_1 ) ($cast ($int<16>) kval_6_2_1 )) ( mul_val_6_2_1 )
+                $call multiplier (($cast ($int<16>) ival3_1 ) ($cast ($int<16>) kval_6_3_1 )) ( mul_val_6_3_1 )
+                $call multiplier (($cast ($int<16>) ival4_1 ) ($cast ($int<16>) kval_6_4_1 )) ( mul_val_6_4_1 )
+                $call multiplier (($cast ($int<16>) ival5_1 ) ($cast ($int<16>) kval_6_5_1 )) ( mul_val_6_5_1 )
+                $call multiplier (($cast ($int<16>) ival6_1 ) ($cast ($int<16>) kval_6_6_1 )) ( mul_val_6_6_1 )
+                $call multiplier (($cast ($int<16>) ival7_1 ) ($cast ($int<16>) kval_6_7_1 )) ( mul_val_6_7_1 )
+                $call multiplier (($cast ($int<16>) ival8_1 ) ($cast ($int<16>) kval_6_8_1 )) ( mul_val_6_8_1 )
+
+		t_acc_val_6_1 := (((mul_val_6_1_1 + mul_val_6_2_1 ) + (mul_val_6_3_1 + mul_val_6_4_1 )) + ((mul_val_6_5_1 + mul_val_6_6_1 ) + (mul_val_6_7_1 + mul_val_6_8_1 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_6_1_4 := ($cast ($int<16>) (kval_6_1_1 * ival1_2 ))
+//		mul_val_6_2_4 := ($cast ($int<16>) (kval_6_2_1 * ival2_2 ))
+//		mul_val_6_3_4 := ($cast ($int<16>) (kval_6_3_1 * ival3_2 ))
+//		mul_val_6_4_4 := ($cast ($int<16>) (kval_6_4_1 * ival4_2 ))
+//		mul_val_6_5_4 := ($cast ($int<16>) (kval_6_5_1 * ival5_2 ))
+//		mul_val_6_6_4 := ($cast ($int<16>) (kval_6_6_1 * ival6_2 ))
+//		mul_val_6_7_4 := ($cast ($int<16>) (kval_6_7_1 * ival7_2 ))
+//		mul_val_6_8_4 := ($cast ($int<16>) (kval_6_8_1 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_6_1_1 )) ( mul_val_6_1_4 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_6_2_1 )) ( mul_val_6_2_4 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_6_3_1 )) ( mul_val_6_3_4 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_6_4_1 )) ( mul_val_6_4_4 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_6_5_1 )) ( mul_val_6_5_4 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_6_6_1 )) ( mul_val_6_6_4 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_6_7_1 )) ( mul_val_6_7_4 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_6_8_1 )) ( mul_val_6_8_4 )
+
+		t_acc_val_6_4 := (((mul_val_6_1_4 + mul_val_6_2_4 ) + (mul_val_6_3_4 + mul_val_6_4_4 )) + ((mul_val_6_5_4 + mul_val_6_6_4 ) + (mul_val_6_7_4 + mul_val_6_8_4 )))
+		
+// End of macro_file3
+
+
+		
+		
+		$guard (rk_v6 ) tempk1_6_2 := core6_kp2
+		$guard (nrk_v6 ) tempk2_6_2 := conv6_kp2
+		kread_6_2 := ($mux o_chl6_valid ($mux read_k tempk1_6_2 tempk2_6_2 ) 0)
+
+		$split (kread_6_2 8 8 8 8 8 8 8 8) (kr_6_1_2 kr_6_2_2 kr_6_3_2 kr_6_4_2 kr_6_5_2 kr_6_6_2 kr_6_7_2 kr_6_8_2 )
+
+		kval_6_1_2 := ($bitcast ($int<8>) kr_6_1_2 )
+		kval_6_2_2 := ($bitcast ($int<8>) kr_6_2_2 )
+		kval_6_3_2 := ($bitcast ($int<8>) kr_6_3_2 )
+		kval_6_4_2 := ($bitcast ($int<8>) kr_6_4_2 )
+		kval_6_5_2 := ($bitcast ($int<8>) kr_6_5_2 )
+		kval_6_6_2 := ($bitcast ($int<8>) kr_6_6_2 )
+		kval_6_7_2 := ($bitcast ($int<8>) kr_6_7_2 )
+		kval_6_8_2 := ($bitcast ($int<8>) kr_6_8_2 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_6_1_2 := ($cast ($int<16>) (kval_6_1_2 * ival1_2 ))
+//		mul_val_6_2_2 := ($cast ($int<16>) (kval_6_2_2 * ival2_2 ))
+//		mul_val_6_3_2 := ($cast ($int<16>) (kval_6_3_2 * ival3_2 ))
+//		mul_val_6_4_2 := ($cast ($int<16>) (kval_6_4_2 * ival4_2 ))
+//		mul_val_6_5_2 := ($cast ($int<16>) (kval_6_5_2 * ival5_2 ))
+//		mul_val_6_6_2 := ($cast ($int<16>) (kval_6_6_2 * ival6_2 ))
+//		mul_val_6_7_2 := ($cast ($int<16>) (kval_6_7_2 * ival7_2 ))
+//		mul_val_6_8_2 := ($cast ($int<16>) (kval_6_8_2 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_6_1_2 )) ( mul_val_6_1_2 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_6_2_2 )) ( mul_val_6_2_2 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_6_3_2 )) ( mul_val_6_3_2 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_6_4_2 )) ( mul_val_6_4_2 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_6_5_2 )) ( mul_val_6_5_2 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_6_6_2 )) ( mul_val_6_6_2 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_6_7_2 )) ( mul_val_6_7_2 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_6_8_2 )) ( mul_val_6_8_2 )
+
+		t_acc_val_6_2 := (((mul_val_6_1_2 + mul_val_6_2_2 ) + (mul_val_6_3_2 + mul_val_6_4_2 )) + ((mul_val_6_5_2 + mul_val_6_6_2 ) + (mul_val_6_7_2 + mul_val_6_8_2 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_6_1_5 := ($cast ($int<16>) (kval_6_1_2 * ival1_3 ))
+//		mul_val_6_2_5 := ($cast ($int<16>) (kval_6_2_2 * ival2_3 ))
+//		mul_val_6_3_5 := ($cast ($int<16>) (kval_6_3_2 * ival3_3 ))
+//		mul_val_6_4_5 := ($cast ($int<16>) (kval_6_4_2 * ival4_3 ))
+//		mul_val_6_5_5 := ($cast ($int<16>) (kval_6_5_2 * ival5_3 ))
+//		mul_val_6_6_5 := ($cast ($int<16>) (kval_6_6_2 * ival6_3 ))
+//		mul_val_6_7_5 := ($cast ($int<16>) (kval_6_7_2 * ival7_3 ))
+//		mul_val_6_8_5 := ($cast ($int<16>) (kval_6_8_2 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_6_1_2 )) ( mul_val_6_1_5 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_6_2_2 )) ( mul_val_6_2_5 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_6_3_2 )) ( mul_val_6_3_5 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_6_4_2 )) ( mul_val_6_4_5 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_6_5_2 )) ( mul_val_6_5_5 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_6_6_2 )) ( mul_val_6_6_5 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_6_7_2 )) ( mul_val_6_7_5 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_6_8_2 )) ( mul_val_6_8_5 )
+
+		t_acc_val_6_5 := (((mul_val_6_1_5 + mul_val_6_2_5 ) + (mul_val_6_3_5 + mul_val_6_4_5 )) + ((mul_val_6_5_5 + mul_val_6_6_5 ) + (mul_val_6_7_5 + mul_val_6_8_5 )))
+		
+// End of macro_file3
+
+
+		
+		//
+		
+		$volatile rk_3v6 := (readk_3 & o_chl6_valid)
+		$volatile nrk_3v6 := (not_readk_3 & o_chl6_valid)
+
+		$guard (rk_3v6 ) tempk1_6_3 := core6_kp3
+		$guard (nrk_3v6 ) tempk2_6_3 := conv6_kp3
+		kread_6_3 := ($mux o_chl6_valid ($mux mode_2 0 ($mux read_k tempk1_6_3 tempk2_6_3 )) 0)
+
+		$split (kread_6_3 8 8 8 8 8 8 8 8) (kr_6_1_3 kr_6_2_3 kr_6_3_3 kr_6_4_3 kr_6_5_3 kr_6_6_3 kr_6_7_3 kr_6_8_3 )
+
+		kval_6_1_3 := ($bitcast ($int<8>) kr_6_1_3 )
+		kval_6_2_3 := ($bitcast ($int<8>) kr_6_2_3 )
+		kval_6_3_3 := ($bitcast ($int<8>) kr_6_3_3 )
+		kval_6_4_3 := ($bitcast ($int<8>) kr_6_4_3 )
+		kval_6_5_3 := ($bitcast ($int<8>) kr_6_5_3 )
+		kval_6_6_3 := ($bitcast ($int<8>) kr_6_6_3 )
+		kval_6_7_3 := ($bitcast ($int<8>) kr_6_7_3 )
+		kval_6_8_3 := ($bitcast ($int<8>) kr_6_8_3 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_6_1_3 := ($cast ($int<16>) (kval_6_1_3 * ival1_3 ))
+//		mul_val_6_2_3 := ($cast ($int<16>) (kval_6_2_3 * ival2_3 ))
+//		mul_val_6_3_3 := ($cast ($int<16>) (kval_6_3_3 * ival3_3 ))
+//		mul_val_6_4_3 := ($cast ($int<16>) (kval_6_4_3 * ival4_3 ))
+//		mul_val_6_5_3 := ($cast ($int<16>) (kval_6_5_3 * ival5_3 ))
+//		mul_val_6_6_3 := ($cast ($int<16>) (kval_6_6_3 * ival6_3 ))
+//		mul_val_6_7_3 := ($cast ($int<16>) (kval_6_7_3 * ival7_3 ))
+//		mul_val_6_8_3 := ($cast ($int<16>) (kval_6_8_3 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_6_1_3 )) ( mul_val_6_1_3 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_6_2_3 )) ( mul_val_6_2_3 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_6_3_3 )) ( mul_val_6_3_3 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_6_4_3 )) ( mul_val_6_4_3 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_6_5_3 )) ( mul_val_6_5_3 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_6_6_3 )) ( mul_val_6_6_3 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_6_7_3 )) ( mul_val_6_7_3 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_6_8_3 )) ( mul_val_6_8_3 )
+
+		t_acc_val_6_3 := (((mul_val_6_1_3 + mul_val_6_2_3 ) + (mul_val_6_3_3 + mul_val_6_4_3 )) + ((mul_val_6_5_3 + mul_val_6_6_3 ) + (mul_val_6_7_3 + mul_val_6_8_3 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_6_1_6 := ($cast ($int<16>) (kval_6_1_3 * ival1_4 ))
+//		mul_val_6_2_6 := ($cast ($int<16>) (kval_6_2_3 * ival2_4 ))
+//		mul_val_6_3_6 := ($cast ($int<16>) (kval_6_3_3 * ival3_4 ))
+//		mul_val_6_4_6 := ($cast ($int<16>) (kval_6_4_3 * ival4_4 ))
+//		mul_val_6_5_6 := ($cast ($int<16>) (kval_6_5_3 * ival5_4 ))
+//		mul_val_6_6_6 := ($cast ($int<16>) (kval_6_6_3 * ival6_4 ))
+//		mul_val_6_7_6 := ($cast ($int<16>) (kval_6_7_3 * ival7_4 ))
+//		mul_val_6_8_6 := ($cast ($int<16>) (kval_6_8_3 * ival8_4 ))
+                $call multiplier (($cast ($int<16>) ival1_4 ) ($cast ($int<16>) kval_6_1_3 )) ( mul_val_6_1_6 )
+                $call multiplier (($cast ($int<16>) ival2_4 ) ($cast ($int<16>) kval_6_2_3 )) ( mul_val_6_2_6 )
+                $call multiplier (($cast ($int<16>) ival3_4 ) ($cast ($int<16>) kval_6_3_3 )) ( mul_val_6_3_6 )
+                $call multiplier (($cast ($int<16>) ival4_4 ) ($cast ($int<16>) kval_6_4_3 )) ( mul_val_6_4_6 )
+                $call multiplier (($cast ($int<16>) ival5_4 ) ($cast ($int<16>) kval_6_5_3 )) ( mul_val_6_5_6 )
+                $call multiplier (($cast ($int<16>) ival6_4 ) ($cast ($int<16>) kval_6_6_3 )) ( mul_val_6_6_6 )
+                $call multiplier (($cast ($int<16>) ival7_4 ) ($cast ($int<16>) kval_6_7_3 )) ( mul_val_6_7_6 )
+                $call multiplier (($cast ($int<16>) ival8_4 ) ($cast ($int<16>) kval_6_8_3 )) ( mul_val_6_8_6 )
+
+		t_acc_val_6_6 := (((mul_val_6_1_6 + mul_val_6_2_6 ) + (mul_val_6_3_6 + mul_val_6_4_6 )) + ((mul_val_6_5_6 + mul_val_6_6_6 ) + (mul_val_6_7_6 + mul_val_6_8_6 )))
+		
+// End of macro_file3
+
+
+		acc_val6_1 :=  ((t_acc_val_6_1 + t_acc_val_6_2) + t_acc_val_6_3)
+		acc_val6_2 :=  ((t_acc_val_6_4 + t_acc_val_6_5) + t_acc_val_6_6)
+
+
+		$volatile store_kernel6 := (store_kernel & o_chl6_valid)
+		$volatile store_36 := (store_3 & o_chl6_valid)
+		$guard (store_kernel6 ) conv6_kp1 := kread_6_1
+		$guard (store_kernel6 ) conv6_kp2 := kread_6_2
+		$guard (store_36 ) conv6_kp3 := kread_6_3
+		
+// End of convInner
+
+		
+		// Start of convInner
+		
+
+		$volatile rk_v7 := (read_k & o_chl7_valid)
+		$volatile nrk_v7 := (not_read_k & o_chl7_valid)
+		
+		
+		$guard (rk_v7 ) tempk1_7_1 := core7_kp1
+		$guard (nrk_v7 ) tempk2_7_1 := conv7_kp1
+		kread_7_1 := ($mux o_chl7_valid ($mux read_k tempk1_7_1 tempk2_7_1 ) 0)
+
+		$split (kread_7_1 8 8 8 8 8 8 8 8) (kr_7_1_1 kr_7_2_1 kr_7_3_1 kr_7_4_1 kr_7_5_1 kr_7_6_1 kr_7_7_1 kr_7_8_1 )
+
+		kval_7_1_1 := ($bitcast ($int<8>) kr_7_1_1 )
+		kval_7_2_1 := ($bitcast ($int<8>) kr_7_2_1 )
+		kval_7_3_1 := ($bitcast ($int<8>) kr_7_3_1 )
+		kval_7_4_1 := ($bitcast ($int<8>) kr_7_4_1 )
+		kval_7_5_1 := ($bitcast ($int<8>) kr_7_5_1 )
+		kval_7_6_1 := ($bitcast ($int<8>) kr_7_6_1 )
+		kval_7_7_1 := ($bitcast ($int<8>) kr_7_7_1 )
+		kval_7_8_1 := ($bitcast ($int<8>) kr_7_8_1 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_7_1_1 := ($cast ($int<16>) (kval_7_1_1 * ival1_1 ))
+//		mul_val_7_2_1 := ($cast ($int<16>) (kval_7_2_1 * ival2_1 ))
+//		mul_val_7_3_1 := ($cast ($int<16>) (kval_7_3_1 * ival3_1 ))
+//		mul_val_7_4_1 := ($cast ($int<16>) (kval_7_4_1 * ival4_1 ))
+//		mul_val_7_5_1 := ($cast ($int<16>) (kval_7_5_1 * ival5_1 ))
+//		mul_val_7_6_1 := ($cast ($int<16>) (kval_7_6_1 * ival6_1 ))
+//		mul_val_7_7_1 := ($cast ($int<16>) (kval_7_7_1 * ival7_1 ))
+//		mul_val_7_8_1 := ($cast ($int<16>) (kval_7_8_1 * ival8_1 ))
+                $call multiplier (($cast ($int<16>) ival1_1 ) ($cast ($int<16>) kval_7_1_1 )) ( mul_val_7_1_1 )
+                $call multiplier (($cast ($int<16>) ival2_1 ) ($cast ($int<16>) kval_7_2_1 )) ( mul_val_7_2_1 )
+                $call multiplier (($cast ($int<16>) ival3_1 ) ($cast ($int<16>) kval_7_3_1 )) ( mul_val_7_3_1 )
+                $call multiplier (($cast ($int<16>) ival4_1 ) ($cast ($int<16>) kval_7_4_1 )) ( mul_val_7_4_1 )
+                $call multiplier (($cast ($int<16>) ival5_1 ) ($cast ($int<16>) kval_7_5_1 )) ( mul_val_7_5_1 )
+                $call multiplier (($cast ($int<16>) ival6_1 ) ($cast ($int<16>) kval_7_6_1 )) ( mul_val_7_6_1 )
+                $call multiplier (($cast ($int<16>) ival7_1 ) ($cast ($int<16>) kval_7_7_1 )) ( mul_val_7_7_1 )
+                $call multiplier (($cast ($int<16>) ival8_1 ) ($cast ($int<16>) kval_7_8_1 )) ( mul_val_7_8_1 )
+
+		t_acc_val_7_1 := (((mul_val_7_1_1 + mul_val_7_2_1 ) + (mul_val_7_3_1 + mul_val_7_4_1 )) + ((mul_val_7_5_1 + mul_val_7_6_1 ) + (mul_val_7_7_1 + mul_val_7_8_1 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_7_1_4 := ($cast ($int<16>) (kval_7_1_1 * ival1_2 ))
+//		mul_val_7_2_4 := ($cast ($int<16>) (kval_7_2_1 * ival2_2 ))
+//		mul_val_7_3_4 := ($cast ($int<16>) (kval_7_3_1 * ival3_2 ))
+//		mul_val_7_4_4 := ($cast ($int<16>) (kval_7_4_1 * ival4_2 ))
+//		mul_val_7_5_4 := ($cast ($int<16>) (kval_7_5_1 * ival5_2 ))
+//		mul_val_7_6_4 := ($cast ($int<16>) (kval_7_6_1 * ival6_2 ))
+//		mul_val_7_7_4 := ($cast ($int<16>) (kval_7_7_1 * ival7_2 ))
+//		mul_val_7_8_4 := ($cast ($int<16>) (kval_7_8_1 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_7_1_1 )) ( mul_val_7_1_4 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_7_2_1 )) ( mul_val_7_2_4 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_7_3_1 )) ( mul_val_7_3_4 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_7_4_1 )) ( mul_val_7_4_4 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_7_5_1 )) ( mul_val_7_5_4 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_7_6_1 )) ( mul_val_7_6_4 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_7_7_1 )) ( mul_val_7_7_4 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_7_8_1 )) ( mul_val_7_8_4 )
+
+		t_acc_val_7_4 := (((mul_val_7_1_4 + mul_val_7_2_4 ) + (mul_val_7_3_4 + mul_val_7_4_4 )) + ((mul_val_7_5_4 + mul_val_7_6_4 ) + (mul_val_7_7_4 + mul_val_7_8_4 )))
+		
+// End of macro_file3
+
+
+		
+		
+		$guard (rk_v7 ) tempk1_7_2 := core7_kp2
+		$guard (nrk_v7 ) tempk2_7_2 := conv7_kp2
+		kread_7_2 := ($mux o_chl7_valid ($mux read_k tempk1_7_2 tempk2_7_2 ) 0)
+
+		$split (kread_7_2 8 8 8 8 8 8 8 8) (kr_7_1_2 kr_7_2_2 kr_7_3_2 kr_7_4_2 kr_7_5_2 kr_7_6_2 kr_7_7_2 kr_7_8_2 )
+
+		kval_7_1_2 := ($bitcast ($int<8>) kr_7_1_2 )
+		kval_7_2_2 := ($bitcast ($int<8>) kr_7_2_2 )
+		kval_7_3_2 := ($bitcast ($int<8>) kr_7_3_2 )
+		kval_7_4_2 := ($bitcast ($int<8>) kr_7_4_2 )
+		kval_7_5_2 := ($bitcast ($int<8>) kr_7_5_2 )
+		kval_7_6_2 := ($bitcast ($int<8>) kr_7_6_2 )
+		kval_7_7_2 := ($bitcast ($int<8>) kr_7_7_2 )
+		kval_7_8_2 := ($bitcast ($int<8>) kr_7_8_2 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_7_1_2 := ($cast ($int<16>) (kval_7_1_2 * ival1_2 ))
+//		mul_val_7_2_2 := ($cast ($int<16>) (kval_7_2_2 * ival2_2 ))
+//		mul_val_7_3_2 := ($cast ($int<16>) (kval_7_3_2 * ival3_2 ))
+//		mul_val_7_4_2 := ($cast ($int<16>) (kval_7_4_2 * ival4_2 ))
+//		mul_val_7_5_2 := ($cast ($int<16>) (kval_7_5_2 * ival5_2 ))
+//		mul_val_7_6_2 := ($cast ($int<16>) (kval_7_6_2 * ival6_2 ))
+//		mul_val_7_7_2 := ($cast ($int<16>) (kval_7_7_2 * ival7_2 ))
+//		mul_val_7_8_2 := ($cast ($int<16>) (kval_7_8_2 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_7_1_2 )) ( mul_val_7_1_2 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_7_2_2 )) ( mul_val_7_2_2 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_7_3_2 )) ( mul_val_7_3_2 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_7_4_2 )) ( mul_val_7_4_2 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_7_5_2 )) ( mul_val_7_5_2 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_7_6_2 )) ( mul_val_7_6_2 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_7_7_2 )) ( mul_val_7_7_2 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_7_8_2 )) ( mul_val_7_8_2 )
+
+		t_acc_val_7_2 := (((mul_val_7_1_2 + mul_val_7_2_2 ) + (mul_val_7_3_2 + mul_val_7_4_2 )) + ((mul_val_7_5_2 + mul_val_7_6_2 ) + (mul_val_7_7_2 + mul_val_7_8_2 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_7_1_5 := ($cast ($int<16>) (kval_7_1_2 * ival1_3 ))
+//		mul_val_7_2_5 := ($cast ($int<16>) (kval_7_2_2 * ival2_3 ))
+//		mul_val_7_3_5 := ($cast ($int<16>) (kval_7_3_2 * ival3_3 ))
+//		mul_val_7_4_5 := ($cast ($int<16>) (kval_7_4_2 * ival4_3 ))
+//		mul_val_7_5_5 := ($cast ($int<16>) (kval_7_5_2 * ival5_3 ))
+//		mul_val_7_6_5 := ($cast ($int<16>) (kval_7_6_2 * ival6_3 ))
+//		mul_val_7_7_5 := ($cast ($int<16>) (kval_7_7_2 * ival7_3 ))
+//		mul_val_7_8_5 := ($cast ($int<16>) (kval_7_8_2 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_7_1_2 )) ( mul_val_7_1_5 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_7_2_2 )) ( mul_val_7_2_5 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_7_3_2 )) ( mul_val_7_3_5 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_7_4_2 )) ( mul_val_7_4_5 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_7_5_2 )) ( mul_val_7_5_5 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_7_6_2 )) ( mul_val_7_6_5 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_7_7_2 )) ( mul_val_7_7_5 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_7_8_2 )) ( mul_val_7_8_5 )
+
+		t_acc_val_7_5 := (((mul_val_7_1_5 + mul_val_7_2_5 ) + (mul_val_7_3_5 + mul_val_7_4_5 )) + ((mul_val_7_5_5 + mul_val_7_6_5 ) + (mul_val_7_7_5 + mul_val_7_8_5 )))
+		
+// End of macro_file3
+
+
+		
+		//
+		
+		$volatile rk_3v7 := (readk_3 & o_chl7_valid)
+		$volatile nrk_3v7 := (not_readk_3 & o_chl7_valid)
+
+		$guard (rk_3v7 ) tempk1_7_3 := core7_kp3
+		$guard (nrk_3v7 ) tempk2_7_3 := conv7_kp3
+		kread_7_3 := ($mux o_chl7_valid ($mux mode_2 0 ($mux read_k tempk1_7_3 tempk2_7_3 )) 0)
+
+		$split (kread_7_3 8 8 8 8 8 8 8 8) (kr_7_1_3 kr_7_2_3 kr_7_3_3 kr_7_4_3 kr_7_5_3 kr_7_6_3 kr_7_7_3 kr_7_8_3 )
+
+		kval_7_1_3 := ($bitcast ($int<8>) kr_7_1_3 )
+		kval_7_2_3 := ($bitcast ($int<8>) kr_7_2_3 )
+		kval_7_3_3 := ($bitcast ($int<8>) kr_7_3_3 )
+		kval_7_4_3 := ($bitcast ($int<8>) kr_7_4_3 )
+		kval_7_5_3 := ($bitcast ($int<8>) kr_7_5_3 )
+		kval_7_6_3 := ($bitcast ($int<8>) kr_7_6_3 )
+		kval_7_7_3 := ($bitcast ($int<8>) kr_7_7_3 )
+		kval_7_8_3 := ($bitcast ($int<8>) kr_7_8_3 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_7_1_3 := ($cast ($int<16>) (kval_7_1_3 * ival1_3 ))
+//		mul_val_7_2_3 := ($cast ($int<16>) (kval_7_2_3 * ival2_3 ))
+//		mul_val_7_3_3 := ($cast ($int<16>) (kval_7_3_3 * ival3_3 ))
+//		mul_val_7_4_3 := ($cast ($int<16>) (kval_7_4_3 * ival4_3 ))
+//		mul_val_7_5_3 := ($cast ($int<16>) (kval_7_5_3 * ival5_3 ))
+//		mul_val_7_6_3 := ($cast ($int<16>) (kval_7_6_3 * ival6_3 ))
+//		mul_val_7_7_3 := ($cast ($int<16>) (kval_7_7_3 * ival7_3 ))
+//		mul_val_7_8_3 := ($cast ($int<16>) (kval_7_8_3 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_7_1_3 )) ( mul_val_7_1_3 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_7_2_3 )) ( mul_val_7_2_3 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_7_3_3 )) ( mul_val_7_3_3 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_7_4_3 )) ( mul_val_7_4_3 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_7_5_3 )) ( mul_val_7_5_3 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_7_6_3 )) ( mul_val_7_6_3 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_7_7_3 )) ( mul_val_7_7_3 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_7_8_3 )) ( mul_val_7_8_3 )
+
+		t_acc_val_7_3 := (((mul_val_7_1_3 + mul_val_7_2_3 ) + (mul_val_7_3_3 + mul_val_7_4_3 )) + ((mul_val_7_5_3 + mul_val_7_6_3 ) + (mul_val_7_7_3 + mul_val_7_8_3 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_7_1_6 := ($cast ($int<16>) (kval_7_1_3 * ival1_4 ))
+//		mul_val_7_2_6 := ($cast ($int<16>) (kval_7_2_3 * ival2_4 ))
+//		mul_val_7_3_6 := ($cast ($int<16>) (kval_7_3_3 * ival3_4 ))
+//		mul_val_7_4_6 := ($cast ($int<16>) (kval_7_4_3 * ival4_4 ))
+//		mul_val_7_5_6 := ($cast ($int<16>) (kval_7_5_3 * ival5_4 ))
+//		mul_val_7_6_6 := ($cast ($int<16>) (kval_7_6_3 * ival6_4 ))
+//		mul_val_7_7_6 := ($cast ($int<16>) (kval_7_7_3 * ival7_4 ))
+//		mul_val_7_8_6 := ($cast ($int<16>) (kval_7_8_3 * ival8_4 ))
+                $call multiplier (($cast ($int<16>) ival1_4 ) ($cast ($int<16>) kval_7_1_3 )) ( mul_val_7_1_6 )
+                $call multiplier (($cast ($int<16>) ival2_4 ) ($cast ($int<16>) kval_7_2_3 )) ( mul_val_7_2_6 )
+                $call multiplier (($cast ($int<16>) ival3_4 ) ($cast ($int<16>) kval_7_3_3 )) ( mul_val_7_3_6 )
+                $call multiplier (($cast ($int<16>) ival4_4 ) ($cast ($int<16>) kval_7_4_3 )) ( mul_val_7_4_6 )
+                $call multiplier (($cast ($int<16>) ival5_4 ) ($cast ($int<16>) kval_7_5_3 )) ( mul_val_7_5_6 )
+                $call multiplier (($cast ($int<16>) ival6_4 ) ($cast ($int<16>) kval_7_6_3 )) ( mul_val_7_6_6 )
+                $call multiplier (($cast ($int<16>) ival7_4 ) ($cast ($int<16>) kval_7_7_3 )) ( mul_val_7_7_6 )
+                $call multiplier (($cast ($int<16>) ival8_4 ) ($cast ($int<16>) kval_7_8_3 )) ( mul_val_7_8_6 )
+
+		t_acc_val_7_6 := (((mul_val_7_1_6 + mul_val_7_2_6 ) + (mul_val_7_3_6 + mul_val_7_4_6 )) + ((mul_val_7_5_6 + mul_val_7_6_6 ) + (mul_val_7_7_6 + mul_val_7_8_6 )))
+		
+// End of macro_file3
+
+
+		acc_val7_1 :=  ((t_acc_val_7_1 + t_acc_val_7_2) + t_acc_val_7_3)
+		acc_val7_2 :=  ((t_acc_val_7_4 + t_acc_val_7_5) + t_acc_val_7_6)
+
+
+		$volatile store_kernel7 := (store_kernel & o_chl7_valid)
+		$volatile store_37 := (store_3 & o_chl7_valid)
+		$guard (store_kernel7 ) conv7_kp1 := kread_7_1
+		$guard (store_kernel7 ) conv7_kp2 := kread_7_2
+		$guard (store_37 ) conv7_kp3 := kread_7_3
+		
+// End of convInner
+
+		
+		// Start of convInner
+		
+
+		$volatile rk_v8 := (read_k & o_chl8_valid)
+		$volatile nrk_v8 := (not_read_k & o_chl8_valid)
+		
+		
+		$guard (rk_v8 ) tempk1_8_1 := core8_kp1
+		$guard (nrk_v8 ) tempk2_8_1 := conv8_kp1
+		kread_8_1 := ($mux o_chl8_valid ($mux read_k tempk1_8_1 tempk2_8_1 ) 0)
+
+		$split (kread_8_1 8 8 8 8 8 8 8 8) (kr_8_1_1 kr_8_2_1 kr_8_3_1 kr_8_4_1 kr_8_5_1 kr_8_6_1 kr_8_7_1 kr_8_8_1 )
+
+		kval_8_1_1 := ($bitcast ($int<8>) kr_8_1_1 )
+		kval_8_2_1 := ($bitcast ($int<8>) kr_8_2_1 )
+		kval_8_3_1 := ($bitcast ($int<8>) kr_8_3_1 )
+		kval_8_4_1 := ($bitcast ($int<8>) kr_8_4_1 )
+		kval_8_5_1 := ($bitcast ($int<8>) kr_8_5_1 )
+		kval_8_6_1 := ($bitcast ($int<8>) kr_8_6_1 )
+		kval_8_7_1 := ($bitcast ($int<8>) kr_8_7_1 )
+		kval_8_8_1 := ($bitcast ($int<8>) kr_8_8_1 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_8_1_1 := ($cast ($int<16>) (kval_8_1_1 * ival1_1 ))
+//		mul_val_8_2_1 := ($cast ($int<16>) (kval_8_2_1 * ival2_1 ))
+//		mul_val_8_3_1 := ($cast ($int<16>) (kval_8_3_1 * ival3_1 ))
+//		mul_val_8_4_1 := ($cast ($int<16>) (kval_8_4_1 * ival4_1 ))
+//		mul_val_8_5_1 := ($cast ($int<16>) (kval_8_5_1 * ival5_1 ))
+//		mul_val_8_6_1 := ($cast ($int<16>) (kval_8_6_1 * ival6_1 ))
+//		mul_val_8_7_1 := ($cast ($int<16>) (kval_8_7_1 * ival7_1 ))
+//		mul_val_8_8_1 := ($cast ($int<16>) (kval_8_8_1 * ival8_1 ))
+                $call multiplier (($cast ($int<16>) ival1_1 ) ($cast ($int<16>) kval_8_1_1 )) ( mul_val_8_1_1 )
+                $call multiplier (($cast ($int<16>) ival2_1 ) ($cast ($int<16>) kval_8_2_1 )) ( mul_val_8_2_1 )
+                $call multiplier (($cast ($int<16>) ival3_1 ) ($cast ($int<16>) kval_8_3_1 )) ( mul_val_8_3_1 )
+                $call multiplier (($cast ($int<16>) ival4_1 ) ($cast ($int<16>) kval_8_4_1 )) ( mul_val_8_4_1 )
+                $call multiplier (($cast ($int<16>) ival5_1 ) ($cast ($int<16>) kval_8_5_1 )) ( mul_val_8_5_1 )
+                $call multiplier (($cast ($int<16>) ival6_1 ) ($cast ($int<16>) kval_8_6_1 )) ( mul_val_8_6_1 )
+                $call multiplier (($cast ($int<16>) ival7_1 ) ($cast ($int<16>) kval_8_7_1 )) ( mul_val_8_7_1 )
+                $call multiplier (($cast ($int<16>) ival8_1 ) ($cast ($int<16>) kval_8_8_1 )) ( mul_val_8_8_1 )
+
+		t_acc_val_8_1 := (((mul_val_8_1_1 + mul_val_8_2_1 ) + (mul_val_8_3_1 + mul_val_8_4_1 )) + ((mul_val_8_5_1 + mul_val_8_6_1 ) + (mul_val_8_7_1 + mul_val_8_8_1 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_8_1_4 := ($cast ($int<16>) (kval_8_1_1 * ival1_2 ))
+//		mul_val_8_2_4 := ($cast ($int<16>) (kval_8_2_1 * ival2_2 ))
+//		mul_val_8_3_4 := ($cast ($int<16>) (kval_8_3_1 * ival3_2 ))
+//		mul_val_8_4_4 := ($cast ($int<16>) (kval_8_4_1 * ival4_2 ))
+//		mul_val_8_5_4 := ($cast ($int<16>) (kval_8_5_1 * ival5_2 ))
+//		mul_val_8_6_4 := ($cast ($int<16>) (kval_8_6_1 * ival6_2 ))
+//		mul_val_8_7_4 := ($cast ($int<16>) (kval_8_7_1 * ival7_2 ))
+//		mul_val_8_8_4 := ($cast ($int<16>) (kval_8_8_1 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_8_1_1 )) ( mul_val_8_1_4 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_8_2_1 )) ( mul_val_8_2_4 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_8_3_1 )) ( mul_val_8_3_4 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_8_4_1 )) ( mul_val_8_4_4 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_8_5_1 )) ( mul_val_8_5_4 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_8_6_1 )) ( mul_val_8_6_4 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_8_7_1 )) ( mul_val_8_7_4 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_8_8_1 )) ( mul_val_8_8_4 )
+
+		t_acc_val_8_4 := (((mul_val_8_1_4 + mul_val_8_2_4 ) + (mul_val_8_3_4 + mul_val_8_4_4 )) + ((mul_val_8_5_4 + mul_val_8_6_4 ) + (mul_val_8_7_4 + mul_val_8_8_4 )))
+		
+// End of macro_file3
+
+
+		
+		
+		$guard (rk_v8 ) tempk1_8_2 := core8_kp2
+		$guard (nrk_v8 ) tempk2_8_2 := conv8_kp2
+		kread_8_2 := ($mux o_chl8_valid ($mux read_k tempk1_8_2 tempk2_8_2 ) 0)
+
+		$split (kread_8_2 8 8 8 8 8 8 8 8) (kr_8_1_2 kr_8_2_2 kr_8_3_2 kr_8_4_2 kr_8_5_2 kr_8_6_2 kr_8_7_2 kr_8_8_2 )
+
+		kval_8_1_2 := ($bitcast ($int<8>) kr_8_1_2 )
+		kval_8_2_2 := ($bitcast ($int<8>) kr_8_2_2 )
+		kval_8_3_2 := ($bitcast ($int<8>) kr_8_3_2 )
+		kval_8_4_2 := ($bitcast ($int<8>) kr_8_4_2 )
+		kval_8_5_2 := ($bitcast ($int<8>) kr_8_5_2 )
+		kval_8_6_2 := ($bitcast ($int<8>) kr_8_6_2 )
+		kval_8_7_2 := ($bitcast ($int<8>) kr_8_7_2 )
+		kval_8_8_2 := ($bitcast ($int<8>) kr_8_8_2 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_8_1_2 := ($cast ($int<16>) (kval_8_1_2 * ival1_2 ))
+//		mul_val_8_2_2 := ($cast ($int<16>) (kval_8_2_2 * ival2_2 ))
+//		mul_val_8_3_2 := ($cast ($int<16>) (kval_8_3_2 * ival3_2 ))
+//		mul_val_8_4_2 := ($cast ($int<16>) (kval_8_4_2 * ival4_2 ))
+//		mul_val_8_5_2 := ($cast ($int<16>) (kval_8_5_2 * ival5_2 ))
+//		mul_val_8_6_2 := ($cast ($int<16>) (kval_8_6_2 * ival6_2 ))
+//		mul_val_8_7_2 := ($cast ($int<16>) (kval_8_7_2 * ival7_2 ))
+//		mul_val_8_8_2 := ($cast ($int<16>) (kval_8_8_2 * ival8_2 ))
+                $call multiplier (($cast ($int<16>) ival1_2 ) ($cast ($int<16>) kval_8_1_2 )) ( mul_val_8_1_2 )
+                $call multiplier (($cast ($int<16>) ival2_2 ) ($cast ($int<16>) kval_8_2_2 )) ( mul_val_8_2_2 )
+                $call multiplier (($cast ($int<16>) ival3_2 ) ($cast ($int<16>) kval_8_3_2 )) ( mul_val_8_3_2 )
+                $call multiplier (($cast ($int<16>) ival4_2 ) ($cast ($int<16>) kval_8_4_2 )) ( mul_val_8_4_2 )
+                $call multiplier (($cast ($int<16>) ival5_2 ) ($cast ($int<16>) kval_8_5_2 )) ( mul_val_8_5_2 )
+                $call multiplier (($cast ($int<16>) ival6_2 ) ($cast ($int<16>) kval_8_6_2 )) ( mul_val_8_6_2 )
+                $call multiplier (($cast ($int<16>) ival7_2 ) ($cast ($int<16>) kval_8_7_2 )) ( mul_val_8_7_2 )
+                $call multiplier (($cast ($int<16>) ival8_2 ) ($cast ($int<16>) kval_8_8_2 )) ( mul_val_8_8_2 )
+
+		t_acc_val_8_2 := (((mul_val_8_1_2 + mul_val_8_2_2 ) + (mul_val_8_3_2 + mul_val_8_4_2 )) + ((mul_val_8_5_2 + mul_val_8_6_2 ) + (mul_val_8_7_2 + mul_val_8_8_2 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_8_1_5 := ($cast ($int<16>) (kval_8_1_2 * ival1_3 ))
+//		mul_val_8_2_5 := ($cast ($int<16>) (kval_8_2_2 * ival2_3 ))
+//		mul_val_8_3_5 := ($cast ($int<16>) (kval_8_3_2 * ival3_3 ))
+//		mul_val_8_4_5 := ($cast ($int<16>) (kval_8_4_2 * ival4_3 ))
+//		mul_val_8_5_5 := ($cast ($int<16>) (kval_8_5_2 * ival5_3 ))
+//		mul_val_8_6_5 := ($cast ($int<16>) (kval_8_6_2 * ival6_3 ))
+//		mul_val_8_7_5 := ($cast ($int<16>) (kval_8_7_2 * ival7_3 ))
+//		mul_val_8_8_5 := ($cast ($int<16>) (kval_8_8_2 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_8_1_2 )) ( mul_val_8_1_5 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_8_2_2 )) ( mul_val_8_2_5 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_8_3_2 )) ( mul_val_8_3_5 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_8_4_2 )) ( mul_val_8_4_5 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_8_5_2 )) ( mul_val_8_5_5 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_8_6_2 )) ( mul_val_8_6_5 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_8_7_2 )) ( mul_val_8_7_5 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_8_8_2 )) ( mul_val_8_8_5 )
+
+		t_acc_val_8_5 := (((mul_val_8_1_5 + mul_val_8_2_5 ) + (mul_val_8_3_5 + mul_val_8_4_5 )) + ((mul_val_8_5_5 + mul_val_8_6_5 ) + (mul_val_8_7_5 + mul_val_8_8_5 )))
+		
+// End of macro_file3
+
+
+		
+		//
+		
+		$volatile rk_3v8 := (readk_3 & o_chl8_valid)
+		$volatile nrk_3v8 := (not_readk_3 & o_chl8_valid)
+
+		$guard (rk_3v8 ) tempk1_8_3 := core8_kp3
+		$guard (nrk_3v8 ) tempk2_8_3 := conv8_kp3
+		kread_8_3 := ($mux o_chl8_valid ($mux mode_2 0 ($mux read_k tempk1_8_3 tempk2_8_3 )) 0)
+
+		$split (kread_8_3 8 8 8 8 8 8 8 8) (kr_8_1_3 kr_8_2_3 kr_8_3_3 kr_8_4_3 kr_8_5_3 kr_8_6_3 kr_8_7_3 kr_8_8_3 )
+
+		kval_8_1_3 := ($bitcast ($int<8>) kr_8_1_3 )
+		kval_8_2_3 := ($bitcast ($int<8>) kr_8_2_3 )
+		kval_8_3_3 := ($bitcast ($int<8>) kr_8_3_3 )
+		kval_8_4_3 := ($bitcast ($int<8>) kr_8_4_3 )
+		kval_8_5_3 := ($bitcast ($int<8>) kr_8_5_3 )
+		kval_8_6_3 := ($bitcast ($int<8>) kr_8_6_3 )
+		kval_8_7_3 := ($bitcast ($int<8>) kr_8_7_3 )
+		kval_8_8_3 := ($bitcast ($int<8>) kr_8_8_3 )
+
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_8_1_3 := ($cast ($int<16>) (kval_8_1_3 * ival1_3 ))
+//		mul_val_8_2_3 := ($cast ($int<16>) (kval_8_2_3 * ival2_3 ))
+//		mul_val_8_3_3 := ($cast ($int<16>) (kval_8_3_3 * ival3_3 ))
+//		mul_val_8_4_3 := ($cast ($int<16>) (kval_8_4_3 * ival4_3 ))
+//		mul_val_8_5_3 := ($cast ($int<16>) (kval_8_5_3 * ival5_3 ))
+//		mul_val_8_6_3 := ($cast ($int<16>) (kval_8_6_3 * ival6_3 ))
+//		mul_val_8_7_3 := ($cast ($int<16>) (kval_8_7_3 * ival7_3 ))
+//		mul_val_8_8_3 := ($cast ($int<16>) (kval_8_8_3 * ival8_3 ))
+                $call multiplier (($cast ($int<16>) ival1_3 ) ($cast ($int<16>) kval_8_1_3 )) ( mul_val_8_1_3 )
+                $call multiplier (($cast ($int<16>) ival2_3 ) ($cast ($int<16>) kval_8_2_3 )) ( mul_val_8_2_3 )
+                $call multiplier (($cast ($int<16>) ival3_3 ) ($cast ($int<16>) kval_8_3_3 )) ( mul_val_8_3_3 )
+                $call multiplier (($cast ($int<16>) ival4_3 ) ($cast ($int<16>) kval_8_4_3 )) ( mul_val_8_4_3 )
+                $call multiplier (($cast ($int<16>) ival5_3 ) ($cast ($int<16>) kval_8_5_3 )) ( mul_val_8_5_3 )
+                $call multiplier (($cast ($int<16>) ival6_3 ) ($cast ($int<16>) kval_8_6_3 )) ( mul_val_8_6_3 )
+                $call multiplier (($cast ($int<16>) ival7_3 ) ($cast ($int<16>) kval_8_7_3 )) ( mul_val_8_7_3 )
+                $call multiplier (($cast ($int<16>) ival8_3 ) ($cast ($int<16>) kval_8_8_3 )) ( mul_val_8_8_3 )
+
+		t_acc_val_8_3 := (((mul_val_8_1_3 + mul_val_8_2_3 ) + (mul_val_8_3_3 + mul_val_8_4_3 )) + ((mul_val_8_5_3 + mul_val_8_6_3 ) + (mul_val_8_7_3 + mul_val_8_8_3 )))
+		
+// End of macro_file3
+
+		
+		
+		// Start of macro_file3
+
+//		mul_val_8_1_6 := ($cast ($int<16>) (kval_8_1_3 * ival1_4 ))
+//		mul_val_8_2_6 := ($cast ($int<16>) (kval_8_2_3 * ival2_4 ))
+//		mul_val_8_3_6 := ($cast ($int<16>) (kval_8_3_3 * ival3_4 ))
+//		mul_val_8_4_6 := ($cast ($int<16>) (kval_8_4_3 * ival4_4 ))
+//		mul_val_8_5_6 := ($cast ($int<16>) (kval_8_5_3 * ival5_4 ))
+//		mul_val_8_6_6 := ($cast ($int<16>) (kval_8_6_3 * ival6_4 ))
+//		mul_val_8_7_6 := ($cast ($int<16>) (kval_8_7_3 * ival7_4 ))
+//		mul_val_8_8_6 := ($cast ($int<16>) (kval_8_8_3 * ival8_4 ))
+                $call multiplier (($cast ($int<16>) ival1_4 ) ($cast ($int<16>) kval_8_1_3 )) ( mul_val_8_1_6 )
+                $call multiplier (($cast ($int<16>) ival2_4 ) ($cast ($int<16>) kval_8_2_3 )) ( mul_val_8_2_6 )
+                $call multiplier (($cast ($int<16>) ival3_4 ) ($cast ($int<16>) kval_8_3_3 )) ( mul_val_8_3_6 )
+                $call multiplier (($cast ($int<16>) ival4_4 ) ($cast ($int<16>) kval_8_4_3 )) ( mul_val_8_4_6 )
+                $call multiplier (($cast ($int<16>) ival5_4 ) ($cast ($int<16>) kval_8_5_3 )) ( mul_val_8_5_6 )
+                $call multiplier (($cast ($int<16>) ival6_4 ) ($cast ($int<16>) kval_8_6_3 )) ( mul_val_8_6_6 )
+                $call multiplier (($cast ($int<16>) ival7_4 ) ($cast ($int<16>) kval_8_7_3 )) ( mul_val_8_7_6 )
+                $call multiplier (($cast ($int<16>) ival8_4 ) ($cast ($int<16>) kval_8_8_3 )) ( mul_val_8_8_6 )
+
+		t_acc_val_8_6 := (((mul_val_8_1_6 + mul_val_8_2_6 ) + (mul_val_8_3_6 + mul_val_8_4_6 )) + ((mul_val_8_5_6 + mul_val_8_6_6 ) + (mul_val_8_7_6 + mul_val_8_8_6 )))
+		
+// End of macro_file3
+
+
+		acc_val8_1 :=  ((t_acc_val_8_1 + t_acc_val_8_2) + t_acc_val_8_3)
+		acc_val8_2 :=  ((t_acc_val_8_4 + t_acc_val_8_5) + t_acc_val_8_6)
+
+
+		$volatile store_kernel8 := (store_kernel & o_chl8_valid)
+		$volatile store_38 := (store_3 & o_chl8_valid)
+		$guard (store_kernel8 ) conv8_kp1 := kread_8_1
+		$guard (store_kernel8 ) conv8_kp2 := kread_8_2
+		$guard (store_38 ) conv8_kp3 := kread_8_3
+		
+// End of convInner
+
+
+		acc_pipe1_1 := ($bitcast ($uint<ACC_WIDTH>) acc_val1_1)
+		acc_pipe1_2 := ($bitcast ($uint<ACC_WIDTH>) acc_val2_1)
+		acc_pipe1_3 := ($bitcast ($uint<ACC_WIDTH>) acc_val3_1)
+		acc_pipe1_4 := ($bitcast ($uint<ACC_WIDTH>) acc_val4_1)
+		acc_pipe1_5 := ($bitcast ($uint<ACC_WIDTH>) acc_val5_1)
+		acc_pipe1_6 := ($bitcast ($uint<ACC_WIDTH>) acc_val6_1)
+		acc_pipe1_7 := ($bitcast ($uint<ACC_WIDTH>) acc_val7_1)
+		acc_pipe1_8 := ($bitcast ($uint<ACC_WIDTH>) acc_val8_1)
+		acc_pipe2_1 := ($bitcast ($uint<ACC_WIDTH>) acc_val1_2)
+		acc_pipe2_2 := ($bitcast ($uint<ACC_WIDTH>) acc_val2_2)
+		acc_pipe2_3 := ($bitcast ($uint<ACC_WIDTH>) acc_val3_2)
+		acc_pipe2_4 := ($bitcast ($uint<ACC_WIDTH>) acc_val4_2)
+		acc_pipe2_5 := ($bitcast ($uint<ACC_WIDTH>) acc_val5_2)
+		acc_pipe2_6 := ($bitcast ($uint<ACC_WIDTH>) acc_val6_2)
+		acc_pipe2_7 := ($bitcast ($uint<ACC_WIDTH>) acc_val7_2)
+		acc_pipe2_8 := ($bitcast ($uint<ACC_WIDTH>) acc_val8_2)
+		accelerator_reg[15] := ($concat chl_out_var row)
+		$while (~all_done_flag)
+
+		$volatile np_cnt := (p_cnt + 1)
+		$volatile n_cmi := ($mux (chl_left > max_chl) max_chl chl_left)
+		$volatile n_chl_left := (chl_left - n_cmi)
+
+		$if (p_cnt < num_parts) $then $place [loopback] $endif
+	}
+}
+
+$module [accumulator] $in (chl_in ck: $uint<16> op_size : $uint<32>) $out () $is
+{
+	$branchblock [acc_blk]
+	{
+		acc_count := ((chl_in * ck) - 1)
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi acc1_1 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val1_1) $on $loopback
+		$phi acc1_2 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val1_2) $on $loopback
+		$phi acc2_1 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val2_1) $on $loopback
+		$phi acc2_2 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val2_2) $on $loopback
+		$phi acc3_1 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val3_1) $on $loopback
+		$phi acc3_2 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val3_2) $on $loopback
+		$phi acc4_1 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val4_1) $on $loopback
+		$phi acc4_2 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val4_2) $on $loopback
+		$phi acc5_1 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val5_1) $on $loopback
+		$phi acc5_2 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val5_2) $on $loopback
+		$phi acc6_1 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val6_1) $on $loopback
+		$phi acc6_2 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val6_2) $on $loopback
+		$phi acc7_1 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val7_1) $on $loopback
+		$phi acc7_2 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val7_2) $on $loopback
+		$phi acc8_1 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val8_1) $on $loopback
+		$phi acc8_2 := ($bitcast ($uint<ACC_WIDTH>) 0) $on $entry ($mux num_done 0 acc_val8_2) $on $loopback
+		$phi c_count := ($bitcast ($uint<16>) 0) $on $entry nc_count $on $loopback
+		$phi op_count := ($bitcast ($uint<32>) 0) $on $entry nop_count $on $loopback
+		$phi t1 := acc_pipe1_1 $on $entry, $loopback
+		$phi t2 := acc_pipe1_2 $on $entry, $loopback
+		$phi t3 := acc_pipe1_3 $on $entry, $loopback
+		$phi t4 := acc_pipe1_4 $on $entry, $loopback
+		$phi t5 := acc_pipe1_5 $on $entry, $loopback
+		$phi t6 := acc_pipe1_6 $on $entry, $loopback
+		$phi t7 := acc_pipe1_7 $on $entry, $loopback
+		$phi t8 := acc_pipe1_8 $on $entry, $loopback
+		$phi r1 := acc_pipe2_1 $on $entry, $loopback
+		$phi r2 := acc_pipe2_2 $on $entry, $loopback
+		$phi r3 := acc_pipe2_3 $on $entry, $loopback
+		$phi r4 := acc_pipe2_4 $on $entry, $loopback
+		$phi r5 := acc_pipe2_5 $on $entry, $loopback
+		$phi r6 := acc_pipe2_6 $on $entry, $loopback
+		$phi r7 := acc_pipe2_7 $on $entry, $loopback
+		$phi r8 := acc_pipe2_8 $on $entry, $loopback
+		$endmerge
+
+		$volatile num_done := (c_count == acc_count)
+		$volatile nc_count := ($mux num_done 0 (c_count+1))
+		$volatile nop_count := ($mux num_done (op_count+1) op_count)
+
+		$volatile acc_val1_1 := (acc1_1 + t1)
+		$volatile acc_val2_1 := (acc2_1 + t2)
+		$volatile acc_val3_1 := (acc3_1 + t3)
+		$volatile acc_val4_1 := (acc4_1 + t4)
+		$volatile acc_val5_1 := (acc5_1 + t5)
+		$volatile acc_val6_1 := (acc6_1 + t6)
+		$volatile acc_val7_1 := (acc7_1 + t7)
+		$volatile acc_val8_1 := (acc8_1 + t8)
+
+		$volatile acc_val1_2 := (acc1_2 + r1)
+		$volatile acc_val2_2 := (acc2_2 + r2)
+		$volatile acc_val3_2 := (acc3_2 + r3)
+		$volatile acc_val4_2 := (acc4_2 + r4)
+		$volatile acc_val5_2 := (acc5_2 + r5)
+		$volatile acc_val6_2 := (acc6_2 + r6)
+		$volatile acc_val7_2 := (acc7_2 + r7)
+		$volatile acc_val8_2 := (acc8_2 + r8)
+
+		$guard (num_done) output_pipe1_1 := acc_val1_1
+		$guard (num_done) output_pipe1_2 := acc_val1_2
+		$guard (num_done) output_pipe2_1 := acc_val2_1
+		$guard (num_done) output_pipe2_2 := acc_val2_2
+		$guard (num_done) output_pipe3_1 := acc_val3_1
+		$guard (num_done) output_pipe3_2 := acc_val3_2
+		$guard (num_done) output_pipe4_1 := acc_val4_1
+		$guard (num_done) output_pipe4_2 := acc_val4_2
+		$guard (num_done) output_pipe5_1 := acc_val5_1
+		$guard (num_done) output_pipe5_2 := acc_val5_2
+		$guard (num_done) output_pipe6_1 := acc_val6_1
+		$guard (num_done) output_pipe6_2 := acc_val6_2
+		$guard (num_done) output_pipe7_1 := acc_val7_1
+		$guard (num_done) output_pipe7_2 := acc_val7_2
+		$guard (num_done) output_pipe8_1 := acc_val8_1
+		$guard (num_done) output_pipe8_2 := acc_val8_2
+
+		$while (nop_count < op_size)
+	}
+}
+
+
+$opaque $module [sendModule] $in (rb cb chl_out shift_val : $uint<16> scale_val : $uint<32> num_parts : $uint<8> max_chl : $uint<16> activation : $uint<8> base_address : $uint<ADDRESS_WIDTH>) $out () $is
+{
+	$parallelblock [sendBlock]{
+		$call sendInner1 (0 rb cb chl_out shift_val scale_val num_parts max_chl activation base_address) ()
+		$call sendInner2 (($bitcast ($uint<32>) (chl_out*cb)) rb cb chl_out shift_val scale_val num_parts max_chl activation base_address) ()
+	}
+}
+
+
+$module [sendInner1 ]
+$in (init_addr : $uint<32> rb cb chl_out shift_val : $uint<16> scale_val : $uint<32>  num_parts : $uint<8> max_chl : $uint<16> activation : $uint<8> base_address : $uint<ADDRESS_WIDTH>)
+$out ()
+$is
+{
+	$branchblock [SI_blk]
+	{
+		row_size := ($bitcast ($uint<32>) (chl_out*cb))
+		apply_relu := (activation == 1)
+		
+		$merge $entry loopback
+		$phi p_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on loopback
+		$phi chl_max_itr := max_chl $on $entry n_cmi $on loopback
+		$phi chl_left := (chl_out - max_chl) $on $entry n_chl_left $on loopback
+		$phi addr := init_addr $on $entry n_addr $on loopback
+		$endmerge
+
+		chl_change_inc := ($bitcast ($uint<32>) (chl_out - chl_max_itr))
+		rs := (row_size + chl_change_inc)
+
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi row := ($bitcast ($uint<16>) 1) $on $entry n_row $on $loopback
+
+//--------------------------------------------------------------------------------------------------------------------------//
+		// Phi region for the packing part
+		
+		$phi left := chl_max_itr $on $entry n_left $on $loopback
+		$phi sent := ($bitcast ($uint<16>) 0) $on $entry n_sent $on $loopback
+		$phi fv1 := ($bitcast ($uint<64>) 0) $on $entry nfv1 $on $loopback
+		$phi cv1 := ($bitcast ($uint<64>) 0) $on $entry ncv1 $on $loopback 
+		$phi head := ($bitcast ($uint<3>) 0) $on $entry n_head $on $loopback
+		$phi addr1 := addr $on $entry n_addr1 $on $loopback
+		$phi fn := ($bitcast ($uint<1>) 1) $on $entry n_fn $on $loopback
+		
+		//$phi bm := ($bitcast ($uint<64>) 0) $on $entry nbm $on $loopback 
+		$phi bm := ($bitcast ($uint<8>) 0) $on $entry nbm $on $loopback 
+//--------------------------------------------------------------------------------------------------------------------------//
+
+		$endmerge
+
+//--------------------------------------------------------------------------------------------------------------------------//
+		// Code region for the packing part
+
+		//sp is start of data in memory
+		// head is start of data fetched
+		$volatile sp := ($bitcast ($uint<3>) addr1)
+
+		// Compute number of elements to send
+		$volatile min1 := ($mux (sp > head) sp head)
+		$volatile mi71 := (8 - ($bitcast ($uint<16>) min1))
+		$volatile ns := ($mux (mi71 < left) mi71 left)
+		// Decide whether to send or not
+		$volatile hns := (head + ($bitcast ($uint<3>) ns))
+		$volatile sns := (sp + ($bitcast ($uint<3>) ns))
+		$volatile done := (left == ns)
+		$volatile n_fn := (done | (hns == 0))
+		// Update number left
+		$volatile n_left := ($mux done chl_max_itr (left - ns))
+		
+		$guard (fn) read_val1  := output_pipe1_1
+		$guard (fn) read_val2  := output_pipe2_1
+		$guard (fn) read_val3  := output_pipe3_1
+		$guard (fn) read_val4  := output_pipe4_1
+		$guard (fn) read_val5  := output_pipe5_1
+		$guard (fn) read_val6  := output_pipe6_1
+		$guard (fn) read_val7  := output_pipe7_1
+		$guard (fn) read_val8  := output_pipe8_1
+		//tmp1 := ($mux (apply_relu & ((read_val1[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val1 >> shift_val)))
+		//tmp2 := ($mux (apply_relu & ((read_val2[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val2 >> shift_val)))
+		//tmp3 := ($mux (apply_relu & ((read_val3[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val3 >> shift_val)))
+		//tmp4 := ($mux (apply_relu & ((read_val4[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val4 >> shift_val)))
+		//tmp5 := ($mux (apply_relu & ((read_val5[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val5 >> shift_val)))
+		//tmp6 := ($mux (apply_relu & ((read_val6[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val6 >> shift_val)))
+		//tmp7 := ($mux (apply_relu & ((read_val7[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val7 >> shift_val)))
+		//tmp8 := ($mux (apply_relu & ((read_val8[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val8 >> shift_val)))
+		
+		grd_cnd1 :=  (apply_relu & ((read_val1[]{ACC_WIDTH-1}) == 1))
+                grd_cnd2 :=  (apply_relu & ((read_val2[]{ACC_WIDTH-1}) == 1))
+                grd_cnd3 :=  (apply_relu & ((read_val3[]{ACC_WIDTH-1}) == 1))
+                grd_cnd4 :=  (apply_relu & ((read_val4[]{ACC_WIDTH-1}) == 1))
+                grd_cnd5 :=  (apply_relu & ((read_val5[]{ACC_WIDTH-1}) == 1))
+                grd_cnd6 :=  (apply_relu & ((read_val6[]{ACC_WIDTH-1}) == 1))
+                grd_cnd7 :=  (apply_relu & ((read_val7[]{ACC_WIDTH-1}) == 1))
+                grd_cnd8 :=  (apply_relu & ((read_val8[]{ACC_WIDTH-1}) == 1))
+                $guard (~grd_cnd1) $call scaler (read_val1 scale_val shift_val) (scaled1)
+                $guard (~grd_cnd2) $call scaler (read_val2 scale_val shift_val) (scaled2)
+                $guard (~grd_cnd3) $call scaler (read_val3 scale_val shift_val) (scaled3)
+                $guard (~grd_cnd4) $call scaler (read_val4 scale_val shift_val) (scaled4)
+                $guard (~grd_cnd5) $call scaler (read_val5 scale_val shift_val) (scaled5)
+                $guard (~grd_cnd6) $call scaler (read_val6 scale_val shift_val) (scaled6)
+                $guard (~grd_cnd7) $call scaler (read_val7 scale_val shift_val) (scaled7)
+                $guard (~grd_cnd8) $call scaler (read_val8 scale_val shift_val) (scaled8)
+                tmp1 := ($mux grd_cnd1 0 scaled1)
+                tmp2 := ($mux grd_cnd2 0 scaled2)
+                tmp3 := ($mux grd_cnd3 0 scaled3)
+                tmp4 := ($mux grd_cnd4 0 scaled4)
+                tmp5 := ($mux grd_cnd5 0 scaled5)
+                tmp6 := ($mux grd_cnd6 0 scaled6)
+                tmp7 := ($mux grd_cnd7 0 scaled7)
+                tmp8 := ($mux grd_cnd8 0 scaled8)
+
+		$volatile rd1 := ($concat tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8)
+		$volatile val_in_use := ($mux fn rd1 fv1)
+		// Shift to the head of cv
+		$volatile tmp := ((val_in_use << (($bitcast ($uint<64>) head) << 3)) >> (($bitcast ($uint<64>) sp) << 3))
+		
+		$volatile bytemask := (bm | ((($bitcast ($uint<8>) _hFF) >> ($bitcast ($uint<8>) sp) ) & (($bitcast ($uint<8>) _hFF) << ($bitcast ($uint<8>)(8 - sns)))))
+		// Apply bitmask to get the desired value
+		//$volatile send_data := ((cv1 | tmp) & bytemask)
+		
+		// Bytemask done in memory
+		$volatile send_data := (cv1 | tmp)
+		
+		//time_pipe := (($bitcast ($uint<32>) 1 ) && (($bitcast ($uint<32>) (head && sp ))
+		$volatile n_sent := ($mux done ($mux (sent == (cb-1)) 0 (sent+1)) sent)
+		// Update head and start pointers
+		$volatile n_head := ($mux n_fn 0 hns)
+
+		// Compute next channel address etc variables
+		$volatile nxt_chl := ((n_sent == 0) & done)
+		$volatile n_addr1 := ((addr1 + ($bitcast ($uint<32>) ns)) + ($bitcast ($uint<32>) ($mux nxt_chl rs ($mux done chl_change_inc 0))))
+
+		// Fetch next memory if needed
+		$volatile na3 := (n_addr1 >> 3)
+		$volatile send := (((sns == 0) | nxt_chl) | (done & (na3 != (addr1 >> 3))))
+		$volatile nfv1 := val_in_use
+		$volatile ncv1 := ($mux send 0 send_data)
+		$volatile nbm := ($mux send 0 bytemask)
+
+		$guard (send) $call writeModule_convolution (base_address (addr1>>3) send_data bytemask) (a2)
+		//$volatile bytefull := (bytemask == _hFFFFFFFFFFFFFFFF)
+		//$volatile send_all := (send & bytefull)
+		//$volatile send_part := (send & (~bytefull))
+		//$guard (send_all) B[0][(addr1>>3)] := send_data
+		//$guard (send_part) B[0][(addr1>>3)] := ((B[0][(addr1>>3)] & (~bytemask)) | send_data)
+		//$guard (send_part) $call atomicMaskedWrite ((addr1>>3) (~bytemask)  send_data) ()
+
+//--------------------------------------------------------------------------------------------------------------------------//
+
+		// Check this later - odd values of row will be incorrect
+		$volatile n_row := ($mux nxt_chl (row + N_ROWS_S) row)
+		
+		continue_flag := (n_row < rb)
+		$while continue_flag
+		// $call timer (104) (time_pipe)
+		
+		$volatile np_cnt := (p_cnt + 1)
+		$volatile n_cmi := ($mux (chl_left > max_chl) max_chl chl_left)
+		$volatile n_chl_left := (chl_left - n_cmi)
+		$volatile n_addr := (addr + ($bitcast ($uint<32>) chl_max_itr))
+				
+		$if (p_cnt < num_parts) $then $place [loopback] $endif
+	}
+}
+
+
+$module [sendInner2 ]
+$in (init_addr : $uint<32> rb cb chl_out shift_val : $uint<16> scale_val : $uint<32>  num_parts : $uint<8> max_chl : $uint<16> activation : $uint<8> base_address : $uint<ADDRESS_WIDTH>)
+$out ()
+$is
+{
+	$branchblock [SI_blk]
+	{
+		row_size := ($bitcast ($uint<32>) (chl_out*cb))
+		apply_relu := (activation == 1)
+		
+		$merge $entry loopback
+		$phi p_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on loopback
+		$phi chl_max_itr := max_chl $on $entry n_cmi $on loopback
+		$phi chl_left := (chl_out - max_chl) $on $entry n_chl_left $on loopback
+		$phi addr := init_addr $on $entry n_addr $on loopback
+		$endmerge
+
+		chl_change_inc := ($bitcast ($uint<32>) (chl_out - chl_max_itr))
+		rs := (row_size + chl_change_inc)
+
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi row := ($bitcast ($uint<16>) 1) $on $entry n_row $on $loopback
+
+//--------------------------------------------------------------------------------------------------------------------------//
+		// Phi region for the packing part
+		
+		$phi left := chl_max_itr $on $entry n_left $on $loopback
+		$phi sent := ($bitcast ($uint<16>) 0) $on $entry n_sent $on $loopback
+		$phi fv1 := ($bitcast ($uint<64>) 0) $on $entry nfv1 $on $loopback
+		$phi cv1 := ($bitcast ($uint<64>) 0) $on $entry ncv1 $on $loopback 
+		$phi head := ($bitcast ($uint<3>) 0) $on $entry n_head $on $loopback
+		$phi addr1 := addr $on $entry n_addr1 $on $loopback
+		$phi fn := ($bitcast ($uint<1>) 1) $on $entry n_fn $on $loopback
+		
+		//$phi bm := ($bitcast ($uint<64>) 0) $on $entry nbm $on $loopback 
+		$phi bm := ($bitcast ($uint<8>) 0) $on $entry nbm $on $loopback 
+//--------------------------------------------------------------------------------------------------------------------------//
+
+		$endmerge
+
+//--------------------------------------------------------------------------------------------------------------------------//
+		// Code region for the packing part
+
+		//sp is start of data in memory
+		// head is start of data fetched
+		$volatile sp := ($bitcast ($uint<3>) addr1)
+
+		// Compute number of elements to send
+		$volatile min1 := ($mux (sp > head) sp head)
+		$volatile mi71 := (8 - ($bitcast ($uint<16>) min1))
+		$volatile ns := ($mux (mi71 < left) mi71 left)
+		// Decide whether to send or not
+		$volatile hns := (head + ($bitcast ($uint<3>) ns))
+		$volatile sns := (sp + ($bitcast ($uint<3>) ns))
+		$volatile done := (left == ns)
+		$volatile n_fn := (done | (hns == 0))
+		// Update number left
+		$volatile n_left := ($mux done chl_max_itr (left - ns))
+		
+		$guard (fn) read_val1  := output_pipe1_2
+		$guard (fn) read_val2  := output_pipe2_2
+		$guard (fn) read_val3  := output_pipe3_2
+		$guard (fn) read_val4  := output_pipe4_2
+		$guard (fn) read_val5  := output_pipe5_2
+		$guard (fn) read_val6  := output_pipe6_2
+		$guard (fn) read_val7  := output_pipe7_2
+		$guard (fn) read_val8  := output_pipe8_2
+		//tmp1 := ($mux (apply_relu & ((read_val1[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val1 >> shift_val)))
+		//tmp2 := ($mux (apply_relu & ((read_val2[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val2 >> shift_val)))
+		//tmp3 := ($mux (apply_relu & ((read_val3[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val3 >> shift_val)))
+		//tmp4 := ($mux (apply_relu & ((read_val4[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val4 >> shift_val)))
+		//tmp5 := ($mux (apply_relu & ((read_val5[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val5 >> shift_val)))
+		//tmp6 := ($mux (apply_relu & ((read_val6[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val6 >> shift_val)))
+		//tmp7 := ($mux (apply_relu & ((read_val7[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val7 >> shift_val)))
+		//tmp8 := ($mux (apply_relu & ((read_val8[]{ACC_WIDTH-1}) == 1)) 0 ($bitcast ($uint<8>) (read_val8 >> shift_val)))
+		
+		grd_cnd1 :=  (apply_relu & ((read_val1[]{ACC_WIDTH-1}) == 1))
+                grd_cnd2 :=  (apply_relu & ((read_val2[]{ACC_WIDTH-1}) == 1))
+                grd_cnd3 :=  (apply_relu & ((read_val3[]{ACC_WIDTH-1}) == 1))
+                grd_cnd4 :=  (apply_relu & ((read_val4[]{ACC_WIDTH-1}) == 1))
+                grd_cnd5 :=  (apply_relu & ((read_val5[]{ACC_WIDTH-1}) == 1))
+                grd_cnd6 :=  (apply_relu & ((read_val6[]{ACC_WIDTH-1}) == 1))
+                grd_cnd7 :=  (apply_relu & ((read_val7[]{ACC_WIDTH-1}) == 1))
+                grd_cnd8 :=  (apply_relu & ((read_val8[]{ACC_WIDTH-1}) == 1))
+                $guard (~grd_cnd1) $call scaler (read_val1 scale_val shift_val) (scaled1)
+                $guard (~grd_cnd2) $call scaler (read_val2 scale_val shift_val) (scaled2)
+                $guard (~grd_cnd3) $call scaler (read_val3 scale_val shift_val) (scaled3)
+                $guard (~grd_cnd4) $call scaler (read_val4 scale_val shift_val) (scaled4)
+                $guard (~grd_cnd5) $call scaler (read_val5 scale_val shift_val) (scaled5)
+                $guard (~grd_cnd6) $call scaler (read_val6 scale_val shift_val) (scaled6)
+                $guard (~grd_cnd7) $call scaler (read_val7 scale_val shift_val) (scaled7)
+                $guard (~grd_cnd8) $call scaler (read_val8 scale_val shift_val) (scaled8)
+                tmp1 := ($mux grd_cnd1 0 scaled1)
+                tmp2 := ($mux grd_cnd2 0 scaled2)
+                tmp3 := ($mux grd_cnd3 0 scaled3)
+                tmp4 := ($mux grd_cnd4 0 scaled4)
+                tmp5 := ($mux grd_cnd5 0 scaled5)
+                tmp6 := ($mux grd_cnd6 0 scaled6)
+                tmp7 := ($mux grd_cnd7 0 scaled7)
+                tmp8 := ($mux grd_cnd8 0 scaled8)
+
+		$volatile rd1 := ($concat tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8)
+		$volatile val_in_use := ($mux fn rd1 fv1)
+		// Shift to the head of cv
+		$volatile tmp := ((val_in_use << (($bitcast ($uint<64>) head) << 3)) >> (($bitcast ($uint<64>) sp) << 3))
+		
+		$volatile bytemask := (bm | ((($bitcast ($uint<8>) _hFF) >> ($bitcast ($uint<8>) sp) ) & (($bitcast ($uint<8>) _hFF) << ($bitcast ($uint<8>)(8 - sns)))))
+		// Apply bitmask to get the desired value
+		//$volatile send_data := ((cv1 | tmp) & bytemask)
+		
+		// Bytemask done in memory
+		$volatile send_data := (cv1 | tmp)
+		
+		//time_pipe := (($bitcast ($uint<32>) 2 ) && (($bitcast ($uint<32>) (head && sp ))
+		$volatile n_sent := ($mux done ($mux (sent == (cb-1)) 0 (sent+1)) sent)
+		// Update head and start pointers
+		$volatile n_head := ($mux n_fn 0 hns)
+
+		// Compute next channel address etc variables
+		$volatile nxt_chl := ((n_sent == 0) & done)
+		$volatile n_addr1 := ((addr1 + ($bitcast ($uint<32>) ns)) + ($bitcast ($uint<32>) ($mux nxt_chl rs ($mux done chl_change_inc 0))))
+
+		// Fetch next memory if needed
+		$volatile na3 := (n_addr1 >> 3)
+		$volatile send := (((sns == 0) | nxt_chl) | (done & (na3 != (addr1 >> 3))))
+		$volatile nfv1 := val_in_use
+		$volatile ncv1 := ($mux send 0 send_data)
+		$volatile nbm := ($mux send 0 bytemask)
+
+		$guard (send) $call writeModule_convolution (base_address (addr1>>3) send_data bytemask) (a2)
+		//$volatile bytefull := (bytemask == _hFFFFFFFFFFFFFFFF)
+		//$volatile send_all := (send & bytefull)
+		//$volatile send_part := (send & (~bytefull))
+		//$guard (send_all) B[0][(addr1>>3)] := send_data
+		//$guard (send_part) B[0][(addr1>>3)] := ((B[0][(addr1>>3)] & (~bytemask)) | send_data)
+		//$guard (send_part) $call atomicMaskedWrite ((addr1>>3) (~bytemask)  send_data) ()
+
+//--------------------------------------------------------------------------------------------------------------------------//
+
+		// Check this later - odd values of row will be incorrect
+		$volatile n_row := ($mux nxt_chl (row + N_ROWS_S) row)
+		
+		continue_flag := (n_row < rb)
+		$while continue_flag
+		// $call timer (104) (time_pipe)
+		
+		$volatile np_cnt := (p_cnt + 1)
+		$volatile n_cmi := ($mux (chl_left > max_chl) max_chl chl_left)
+		$volatile n_chl_left := (chl_left - n_cmi)
+		$volatile n_addr := (addr + ($bitcast ($uint<32>) chl_max_itr))
+				
+		$if (p_cnt < num_parts) $then $place [loopback] $endif
+	}
+}
+
+
+//
+
+$opaque $module [sendModule8] $in (rb cb chl_out shift_val : $uint<16> scale_val : $uint<32> num_parts : $uint<8> max_chl : $uint<16> activation : $uint<8> base_address : $uint<ADDRESS_WIDTH> pool : $uint<1> save : $uint<1>) $out () $is
+{
+    $branchblock [sendBlock]{
+    	row_size := ($bitcast ($uint<32>) (chl_out*cb))
+		apply_relu := (activation == 1)
+		
+		$merge $entry loopback
+		$phi p_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on loopback
+		$phi chl_max_itr := max_chl $on $entry n_cmi $on loopback
+		$phi chl_left := (chl_out - max_chl) $on $entry n_chl_left $on loopback
+		$phi addr := ($bitcast ($uint<32>) 0) $on $entry n_addr $on loopback
+		$endmerge
+
+		chl_change_inc := ($bitcast ($uint<32>) (chl_out - chl_max_itr))
+		rs_1 := (row_size + chl_change_inc)
+
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi address1 := ($bitcast ($uint<32>) addr) $on $entry n_address1 $on $loopback
+		$phi address2 := ($bitcast ($uint<32>) (row_size+addr)) $on $entry n_address2 $on $loopback
+		$phi chl := ($bitcast ($uint<16>) 1) $on $entry n_chl $on $loopback
+		$phi col := ($bitcast ($uint<16>) 1) $on $entry n_col $on $loopback
+		$phi row := ($bitcast ($uint<16>) 1) $on $entry n_row $on $loopback
+		$endmerge
+
+		// Check this later - odd values of row will be incorrect
+		$volatile chl_change := (chl == chl_max_itr)
+		$volatile row_change := ((col == cb) & chl_change)
+		$volatile n_chl := ($mux chl_change 1 (chl+1))
+		$volatile n_col := ($mux row_change 1 ($mux chl_change (col + 1) col))
+		$volatile n_row := ($mux row_change (row + N_ROWS_S) row)
+		
+		$volatile tmp_sum := (1 + ($mux row_change rs_1 ($mux chl_change chl_change_inc 0)))
+		$volatile n_address1 := (address1 + tmp_sum)
+		$volatile n_address2 := (address2 + tmp_sum)
+		
+        read_val1_1 := output_pipe1_1
+        read_val2_1 := output_pipe2_1
+        read_val3_1 := output_pipe3_1
+        read_val4_1 := output_pipe4_1
+        read_val5_1 := output_pipe5_1
+        read_val6_1 := output_pipe6_1
+        read_val7_1 := output_pipe7_1
+        read_val8_1 := output_pipe8_1
+        read_val1_2 := output_pipe1_2
+        read_val2_2 := output_pipe2_2
+        read_val3_2 := output_pipe3_2
+        read_val4_2 := output_pipe4_2
+        read_val5_2 := output_pipe5_2
+        read_val6_2 := output_pipe6_2
+        read_val7_2 := output_pipe7_2
+        read_val8_2 := output_pipe8_2
+
+
+		grd_cnd1_1 :=  (apply_relu & ((read_val1_1[]{ACC_WIDTH-1}) == 1))
+                grd_cnd2_1 :=  (apply_relu & ((read_val2_1[]{ACC_WIDTH-1}) == 1))
+                grd_cnd3_1 :=  (apply_relu & ((read_val3_1[]{ACC_WIDTH-1}) == 1))
+                grd_cnd4_1 :=  (apply_relu & ((read_val4_1[]{ACC_WIDTH-1}) == 1))
+                grd_cnd5_1 :=  (apply_relu & ((read_val5_1[]{ACC_WIDTH-1}) == 1))
+                grd_cnd6_1 :=  (apply_relu & ((read_val6_1[]{ACC_WIDTH-1}) == 1))
+                grd_cnd7_1 :=  (apply_relu & ((read_val7_1[]{ACC_WIDTH-1}) == 1))
+                grd_cnd8_1 :=  (apply_relu & ((read_val8_1[]{ACC_WIDTH-1}) == 1))
+                $guard (~grd_cnd1_1) $call scaler (read_val1_1 scale_val shift_val) (scaled1_1)
+                $guard (~grd_cnd2_1) $call scaler (read_val2_1 scale_val shift_val) (scaled2_1)
+                $guard (~grd_cnd3_1) $call scaler (read_val3_1 scale_val shift_val) (scaled3_1)
+                $guard (~grd_cnd4_1) $call scaler (read_val4_1 scale_val shift_val) (scaled4_1)
+                $guard (~grd_cnd5_1) $call scaler (read_val5_1 scale_val shift_val) (scaled5_1)
+                $guard (~grd_cnd6_1) $call scaler (read_val6_1 scale_val shift_val) (scaled6_1)
+                $guard (~grd_cnd7_1) $call scaler (read_val7_1 scale_val shift_val) (scaled7_1)
+                $guard (~grd_cnd8_1) $call scaler (read_val8_1 scale_val shift_val) (scaled8_1)
+                tmp1_1 := ($mux grd_cnd1_1 0 scaled1_1)
+                tmp2_1 := ($mux grd_cnd2_1 0 scaled2_1)
+                tmp3_1 := ($mux grd_cnd3_1 0 scaled3_1)
+                tmp4_1 := ($mux grd_cnd4_1 0 scaled4_1)
+                tmp5_1 := ($mux grd_cnd5_1 0 scaled5_1)
+                tmp6_1 := ($mux grd_cnd6_1 0 scaled6_1)
+                tmp7_1 := ($mux grd_cnd7_1 0 scaled7_1)
+                tmp8_1 := ($mux grd_cnd8_1 0 scaled8_1)
+		grd_cnd1_2 :=  (apply_relu & ((read_val1_2[]{ACC_WIDTH-1}) == 1))
+                grd_cnd2_2 :=  (apply_relu & ((read_val2_2[]{ACC_WIDTH-1}) == 1))
+                grd_cnd3_2 :=  (apply_relu & ((read_val3_2[]{ACC_WIDTH-1}) == 1))
+                grd_cnd4_2 :=  (apply_relu & ((read_val4_2[]{ACC_WIDTH-1}) == 1))
+                grd_cnd5_2 :=  (apply_relu & ((read_val5_2[]{ACC_WIDTH-1}) == 1))
+                grd_cnd6_2 :=  (apply_relu & ((read_val6_2[]{ACC_WIDTH-1}) == 1))
+                grd_cnd7_2 :=  (apply_relu & ((read_val7_2[]{ACC_WIDTH-1}) == 1))
+                grd_cnd8_2 :=  (apply_relu & ((read_val8_2[]{ACC_WIDTH-1}) == 1))
+                $guard (~grd_cnd1_2) $call scaler (read_val1_2 scale_val shift_val) (scaled1_2)
+                $guard (~grd_cnd2_2) $call scaler (read_val2_2 scale_val shift_val) (scaled2_2)
+                $guard (~grd_cnd3_2) $call scaler (read_val3_2 scale_val shift_val) (scaled3_2)
+                $guard (~grd_cnd4_2) $call scaler (read_val4_2 scale_val shift_val) (scaled4_2)
+                $guard (~grd_cnd5_2) $call scaler (read_val5_2 scale_val shift_val) (scaled5_2)
+                $guard (~grd_cnd6_2) $call scaler (read_val6_2 scale_val shift_val) (scaled6_2)
+                $guard (~grd_cnd7_2) $call scaler (read_val7_2 scale_val shift_val) (scaled7_2)
+                $guard (~grd_cnd8_2) $call scaler (read_val8_2 scale_val shift_val) (scaled8_2)
+                tmp1_2 := ($mux grd_cnd1_2 0 scaled1_2)
+                tmp2_2 := ($mux grd_cnd2_2 0 scaled2_2)
+                tmp3_2 := ($mux grd_cnd3_2 0 scaled3_2)
+                tmp4_2 := ($mux grd_cnd4_2 0 scaled4_2)
+                tmp5_2 := ($mux grd_cnd5_2 0 scaled5_2)
+                tmp6_2 := ($mux grd_cnd6_2 0 scaled6_2)
+                tmp7_2 := ($mux grd_cnd7_2 0 scaled7_2)
+                tmp8_2 := ($mux grd_cnd8_2 0 scaled8_2)
+
+        $volatile rd1 := ($concat tmp1_1 tmp2_1 tmp3_1 tmp4_1 tmp5_1 tmp6_1 tmp7_1 tmp8_1)
+        $volatile rd2 := ($concat tmp1_2 tmp2_2 tmp3_2 tmp4_2 tmp5_2 tmp6_2 tmp7_2 tmp8_2)
+        $guard (save) $call writeModule_convolution (base_address address1 rd1 255) (a1)
+        $guard (save) $call writeModule_convolution (base_address address2 rd2 255) (a2)
+	$guard (pool) send_to_pool_pipe1 := rd1
+	$guard (pool) send_to_pool_pipe2 := rd2
+
+		continue_flag := ((row >= (rb -1)) ~& row_change)
+		$while continue_flag
+		
+		$volatile np_cnt := (p_cnt + 1)
+		$volatile n_cmi := ($mux (chl_left > max_chl) max_chl chl_left)
+		$volatile n_chl_left := (chl_left - n_cmi)
+		$volatile n_addr := (addr + ($bitcast ($uint<32>) chl_max_itr))
+				
+		$if (p_cnt < num_parts) $then $place [loopback] $endif
+
+    }
+}
+
+$opaque $module [sendPool] $in (rb cb chl_out : $uint<16> num_parts : $uint<8> max_chl : $uint<16> base_address : $uint<ADDRESS_WIDTH>) $out () $is
+{
+	$branchblock [sendBlock]{
+		row_size := ($bitcast ($uint<32>) (chl_out*cb))
+
+		$merge $entry loopback
+		$phi p_cnt := ($bitcast ($uint<8>) 0) $on $entry np_cnt $on loopback
+		$phi chl_max_itr := max_chl $on $entry n_cmi $on loopback
+		$phi chl_left := (chl_out - max_chl) $on $entry n_chl_left $on loopback
+		$phi addr := ($bitcast ($uint<32>) 0) $on $entry n_addr $on loopback
+		$endmerge
+
+		chl_change_inc := ($bitcast ($uint<32>) (chl_out - chl_max_itr))
+		rs_1 := chl_change_inc
+
+		$dopipeline $depth 15 $buffering 2 $fullrate
+		$merge $entry $loopback
+		$phi address1 := ($bitcast ($uint<32>) addr) $on $entry n_address1 $on $loopback
+		$phi chl := ($bitcast ($uint<16>) 1) $on $entry n_chl $on $loopback
+		$phi col := ($bitcast ($uint<16>) 1) $on $entry n_col $on $loopback
+		$phi row := ($bitcast ($uint<16>) 1) $on $entry n_row $on $loopback
+		$endmerge
+
+		// Check this later - odd values of row will be incorrect
+		$volatile chl_change := (chl == chl_max_itr)
+		$volatile row_change := ((col == cb) & chl_change)
+		$volatile n_chl := ($mux chl_change 1 (chl+1))
+		$volatile n_col := ($mux row_change 1 ($mux chl_change (col + 1) col))
+		$volatile n_row := ($mux row_change (row + N_ROWS_S) row)
+
+		r1 := send_to_pool_pipe1
+		r2 := send_to_pool_pipe2
+		$split (r1 8 8 8 8 8 8 8 8) (tmp1_1 tmp2_1 tmp3_1 tmp4_1 tmp5_1 tmp6_1 tmp7_1 tmp8_1)
+		$split (r2 8 8 8 8 8 8 8 8) (tmp1_2 tmp2_2 tmp3_2 tmp4_2 tmp5_2 tmp6_2 tmp7_2 tmp8_2)
+
+		mx1 := ($mux (($bitcast ($int<8>) tmp1_1) > ($bitcast ($int<8>) tmp1_2)) tmp1_1 tmp1_2)
+		mx2 := ($mux (($bitcast ($int<8>) tmp2_1) > ($bitcast ($int<8>) tmp2_2)) tmp2_1 tmp2_2)
+		mx3 := ($mux (($bitcast ($int<8>) tmp3_1) > ($bitcast ($int<8>) tmp3_2)) tmp3_1 tmp3_2)
+		mx4 := ($mux (($bitcast ($int<8>) tmp4_1) > ($bitcast ($int<8>) tmp4_2)) tmp4_1 tmp4_2)
+		mx5 := ($mux (($bitcast ($int<8>) tmp5_1) > ($bitcast ($int<8>) tmp5_2)) tmp5_1 tmp5_2)
+		mx6 := ($mux (($bitcast ($int<8>) tmp6_1) > ($bitcast ($int<8>) tmp6_2)) tmp6_1 tmp6_2)
+		mx7 := ($mux (($bitcast ($int<8>) tmp7_1) > ($bitcast ($int<8>) tmp7_2)) tmp7_1 tmp7_2)
+		mx8 := ($mux (($bitcast ($int<8>) tmp8_1) > ($bitcast ($int<8>) tmp8_2)) tmp8_1 tmp8_2)
+		$volatile rd1 := ($concat mx1 mx2 mx3 mx4 mx5 mx6 mx7 mx8)
+
+		$volatile pool_stage := (col [] 0)
+
+		$volatile tmp_sum := (1 + ($mux row_change rs_1 ($mux chl_change chl_change_inc 0)))
+		$volatile n_address1 := ($mux pool_stage address1 (address1 + tmp_sum))
+
+		$guard (pool_stage) pool_buffer := rd1
+		$guard (~pool_stage) val := pool_buffer
+		$split (val 8 8 8 8 8 8 8 8) (v1 v2 v3 v4 v5 v6 v7 v8)
+		mv1 := ($mux (($bitcast ($int<8>) mx1) > ($bitcast ($int<8>) v1)) mx1 v1)
+		mv2 := ($mux (($bitcast ($int<8>) mx2) > ($bitcast ($int<8>) v2)) mx2 v2)
+		mv3 := ($mux (($bitcast ($int<8>) mx3) > ($bitcast ($int<8>) v3)) mx3 v3)
+		mv4 := ($mux (($bitcast ($int<8>) mx4) > ($bitcast ($int<8>) v4)) mx4 v4)
+		mv5 := ($mux (($bitcast ($int<8>) mx5) > ($bitcast ($int<8>) v5)) mx5 v5)
+		mv6 := ($mux (($bitcast ($int<8>) mx6) > ($bitcast ($int<8>) v6)) mx6 v6)
+		mv7 := ($mux (($bitcast ($int<8>) mx7) > ($bitcast ($int<8>) v7)) mx7 v7)
+		mv8 := ($mux (($bitcast ($int<8>) mx8) > ($bitcast ($int<8>) v8)) mx8 v8)
+		max_val := ($concat mv1 mv2 mv3 mv4 mv5 mv6 mv7 mv8)
+		data_to_send := max_val
+		$guard (~pool_stage) $call writeModule_convolution (base_address address1 data_to_send 255) (a1)
+
+		continue_flag := ((row >= (rb -1)) ~& row_change)
+		$while continue_flag
+		// $call timer (104) (time_pipe)
+
+		$volatile np_cnt := (p_cnt + 1)
+		$volatile n_cmi := ($mux (chl_left > max_chl) max_chl chl_left)
+		$volatile n_chl_left := (chl_left - n_cmi)
+		$volatile n_addr := (addr + ($bitcast ($uint<32>) chl_max_itr))
+
+		$if (p_cnt < num_parts) $then $place [loopback] $endif
+
+	}
+}
+
+
+
+$pipeline $depth 15 $fullrate
+$module [scaler]
+$in (input : $uint<ACC_WIDTH> scale_val_in : $uint<32> shift_val : $uint<16>)
+$out (output : $uint<8>)
+$is
+{
+	$volatile scale_val := ($cast ($int<32>) scale_val_in)
+	$volatile in_adj := ($cast ($int<32>) ($cast ($int<ACC_WIDTH>) input))
+	$volatile mul_output := ($bitcast ($uint<32>) (in_adj * scale_val))
+	$volatile ret_val := (mul_output >> ($bitcast ($uint<32>) shift_val))
+	output := ($bitcast ($uint<8>) ret_val)
+
+}
+

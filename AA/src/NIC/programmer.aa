@@ -1,0 +1,49 @@
+$pipe mac_to_prog : $uint<73> $depth 2
+$pipe prog_to_mac : $uint<73> $depth 2
+$pipe PROG_TO_MEMORY_REQUEST : $uint<110> $depth 2//16
+$pipe MEMORY_TO_PROG_RESPONSE : $uint<65> $depth 2//16
+
+
+$module [ethernet_programmer]
+$in ()
+$out ()
+$is
+{
+	$branchblock [blk]
+	{
+		$dopipeline $depth 31 $fullrate
+		$merge $entry $loopback
+		$phi read_val := mac_to_prog $on $entry, $loopback
+		$endmerge
+
+		$split (read_val 1 64 8) (tlast tdata tkeep)
+		$split (tdata 32 32) (addr data)
+		$volatile pos := ($slice addr 2 0)
+		$volatile bytemask := (($bitcast ($uint<8>) 128) >> ($bitcast ($uint<8>) pos)) 
+		$volatile address := ($zero<4> && addr)
+		$volatile wdata := ((($bitcast ($uint<64>) data) << 56) >> (($bitcast ($uint<64>) pos) << 3))
+		$call accessMemory2 ($zero<1> $zero<1> bytemask address wdata)	(ignore_return)
+		$guard (tlast) prog_to_mac := ($one<1> && (($bitcast ($uint<64>) addr)  && ($bitcast ($uint<8>) 255)))
+		$while 1 
+	}
+}
+
+$module [accessMemory2]
+	$in (lock rwbar: $uint<1> bmask: $uint<8> addr: $uint<36> wdata : $uint<64>)
+	$out (rdata : $uint<64>)
+$is
+{
+	$branchblock[loop]
+	{
+		$dopipeline $depth 15 $fullrate
+		$merge $entry $loopback $endmerge
+		$volatile request :=  ($concat lock rwbar bmask addr wdata)
+		PROG_TO_MEMORY_REQUEST := request
+	
+		response := MEMORY_TO_PROG_RESPONSE
+		$volatile $split (response 1 64) (err rdata)
+		$rreport(accessMemory byte_mask bmask rwbar addr wdata err)
+		
+		$while(err == 1)
+	}
+}

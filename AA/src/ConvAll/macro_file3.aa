@@ -1,0 +1,22 @@
+// Start of macro_file3
+
+//		mul_val_##core_num\_1_##mul_num := ($cast ($int<16>) (kval_##core_num\_1_##k_num * ival1_##in_num ))
+//		mul_val_##core_num\_2_##mul_num := ($cast ($int<16>) (kval_##core_num\_2_##k_num * ival2_##in_num ))
+//		mul_val_##core_num\_3_##mul_num := ($cast ($int<16>) (kval_##core_num\_3_##k_num * ival3_##in_num ))
+//		mul_val_##core_num\_4_##mul_num := ($cast ($int<16>) (kval_##core_num\_4_##k_num * ival4_##in_num ))
+//		mul_val_##core_num\_5_##mul_num := ($cast ($int<16>) (kval_##core_num\_5_##k_num * ival5_##in_num ))
+//		mul_val_##core_num\_6_##mul_num := ($cast ($int<16>) (kval_##core_num\_6_##k_num * ival6_##in_num ))
+//		mul_val_##core_num\_7_##mul_num := ($cast ($int<16>) (kval_##core_num\_7_##k_num * ival7_##in_num ))
+//		mul_val_##core_num\_8_##mul_num := ($cast ($int<16>) (kval_##core_num\_8_##k_num * ival8_##in_num ))
+                $call multiplier (($cast ($int<16>) ival1_##in_num ) ($cast ($int<16>) kval_##core_num\_1_##k_num )) ( mul_val_##core_num\_1_##mul_num )
+                $call multiplier (($cast ($int<16>) ival2_##in_num ) ($cast ($int<16>) kval_##core_num\_2_##k_num )) ( mul_val_##core_num\_2_##mul_num )
+                $call multiplier (($cast ($int<16>) ival3_##in_num ) ($cast ($int<16>) kval_##core_num\_3_##k_num )) ( mul_val_##core_num\_3_##mul_num )
+                $call multiplier (($cast ($int<16>) ival4_##in_num ) ($cast ($int<16>) kval_##core_num\_4_##k_num )) ( mul_val_##core_num\_4_##mul_num )
+                $call multiplier (($cast ($int<16>) ival5_##in_num ) ($cast ($int<16>) kval_##core_num\_5_##k_num )) ( mul_val_##core_num\_5_##mul_num )
+                $call multiplier (($cast ($int<16>) ival6_##in_num ) ($cast ($int<16>) kval_##core_num\_6_##k_num )) ( mul_val_##core_num\_6_##mul_num )
+                $call multiplier (($cast ($int<16>) ival7_##in_num ) ($cast ($int<16>) kval_##core_num\_7_##k_num )) ( mul_val_##core_num\_7_##mul_num )
+                $call multiplier (($cast ($int<16>) ival8_##in_num ) ($cast ($int<16>) kval_##core_num\_8_##k_num )) ( mul_val_##core_num\_8_##mul_num )
+
+		t_acc_val_##core_num\_##mul_num := (((mul_val_##core_num\_1_##mul_num + mul_val_##core_num\_2_##mul_num ) + (mul_val_##core_num\_3_##mul_num + mul_val_##core_num\_4_##mul_num )) + ((mul_val_##core_num\_5_##mul_num + mul_val_##core_num\_6_##mul_num ) + (mul_val_##core_num\_7_##mul_num + mul_val_##core_num\_8_##mul_num )))
+		
+// End of macro_file3
