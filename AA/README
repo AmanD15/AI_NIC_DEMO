@@ -1,0 +1,18 @@
+To generate VHDL:
+
+sh ./docker_command.sh
+
+In Docker container:
+
+cd home
+make
+
+Now, you can exit docker
+
+The following files will be created:
+ai_ml_engine_global_package.vhdl
+ai_ml_engine.vhdl
+ethernet_boot_global_package.vhdl
+ethernet_boot.vhdl
+nic_system_global_package.vhdl
+nic_system.vhdl
