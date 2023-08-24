@@ -1,0 +1,17 @@
+Source code for AI-ML Accelerator, NIC and Ethernet booting sequence.
+It contains the following:
+
+ConvAll - Source code for AI-ML engine design
+
+NIC - Source code for NIC and Ethernet boot
+
+acc_proc_test - Contains peripheral functions for connecting acceletor to the processor 
+
+accelerator_processor_interface.aa - AA code for the register-based interface between accelerator and processor
+decl.aa - AA code for global declarations for convolution engine. Also has the memory definition 
+readWriteModules.aa - Maps the read write signals from modules to the memory module. Deadlock prevention mechanism is also implemented here
+timer.aa - Code for timer module (currently commented in Makefile)
+
+lib, vhdl, build.sh - Code and utilities to generate dualPort memories
+
+registers_info.txt - Description of various registers used
