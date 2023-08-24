@@ -1,0 +1,21 @@
+Source code for the engine. Contains the following files:
+
+prog.aa - Top level (convolutionAll) and associated multiplier/divider modue
+
+decl.aa - Comtains the parameter and pipe declarations used throughout the design
+
+input*.aa - Set of input modules that read the input and send to the convolution core
+
+kernel*.aa - Kernel modules performing DMA and supplying data to the core
+
+send*.aa - Output modules, read data from accumulator, and write back to memory 
+
+convCore.aa - Definition of the core module and the accumulator. Uses repeated macro definitions to generate the processing elements. The core module contains most control signals as they are common to all processing elements
+convInner.aa - Code for single core (48 processing elements). Contains definition of per-core control signals
+macro_files*.aa - Files instantiated using macro definition inside convCore and convInner to generate parallelism
+
+scaler.aa - Code implementing the scaling functionality 
+
+conv_macro.aa - File to collect all the source files and preprocess them into a single file
+
+conv_compiled.aa - Compilation of all source files in this directory. Do not edit as this is a script-generated file and will get overwritten 
