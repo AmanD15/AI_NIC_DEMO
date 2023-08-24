@@ -1,0 +1,22 @@
+$system nic_subsystem $library nic_subsystem_lib
+    $in 
+        $signal ETHERNET_PHY_TO_MAC ??? $depth 2
+        $pipe NIC_REGISTER_REQUEST $uint<74> $depth 2
+        $pipe NIC_MEMORY_REQUEST $uint<110> $depth 2
+
+    $out
+        $signal MAC_TO_ETHERNET_PHY ??? $depth 2
+        $pipe NIC_REGISTER_RESPONSE $uint<33> $depth 2
+        $pipe NIC_MEMORY_RESPONSE $uint<65> $depth 2
+{
+
+
+
+
+
+
+
+
+
+
+}
