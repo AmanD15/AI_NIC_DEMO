@@ -1,0 +1,5 @@
+$system processor_subsystem $library processor_subsystem_lib
+	$in
+	$out
+{
+}

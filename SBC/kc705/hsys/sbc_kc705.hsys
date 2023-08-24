@@ -1,0 +1,67 @@
+$system sbc_kc705 $library sbc_kc705_lib
+	$in
+		$signal DebugSerialRx
+		$signal PrintSerialRx
+		$signal SWITCHES
+
+		$signal ETHERNET_PHY_TO_SBC
+		$signal DRAM_TO_SBC
+
+		$signal SPI_FLASH_MISO
+
+		$signal CLOCK_TO_PROCESSOR
+		$signal CLOCK_TO_NIC
+		$signal CLOCK_TO_DRAM
+
+		
+	$out
+		$signal DebugSerialTx
+		$signal PrintSerialTx
+		$signal LEDS
+
+		$signal SBC_TO_ETHERNET_PHY
+		$signal SBC_TO_DRAM
+
+		$signal SPI_FLASH_MOSI
+		$signal SPI_FLASH_CLK
+		$signal SPI_FLASH_CS_L
+{
+
+	$pipe PROCESSOR_AFB_REQUEST
+	$pipe PROCESSOR_AFB_RESPONSE
+
+	$pipe PROCESSOR_ACB_REQUEST
+	$pipe PROCESSOR_ACB_RESPONSE
+
+	$pipe AFB_NIC_REQUEST
+	$pipe AFB_NIC_RESPONSE
+
+	$pipe ACB_FLASH_REQUEST
+	$pipe ACB_FLASH_RESPONSE
+
+	$pipe ACB_MEMORY_REQUEST
+	$pipe ACB_MEMORY_RESPONSE
+
+	$pipe NIC_ACB_MEMORY_REQUEST
+	$pipe NIC_ACB_MEMORY_RESPONSE
+
+
+	$signal NIC_INTERRUPT
+
+	$pipe ACB_DRAM_REQUEST
+	$pipe ACB_DRAM_RESPONSE
+
+	$instance processor_subsystem_inst processor_subsystem:processor_subsystem_lib
+
+	$instance afb_network_subsystem_inst afb_network_subsystem:afb_network_subsystem_lib
+	$instance acb_network_subsystem_inst acb_network_subsystem:acb_network_subsystem_lib
+	$instance spi_flash_controller_inst spi_flash_controller:spi_flash_lib
+
+	$instance nic_subsystem_inst nic_subsystem:nic_subsystem_lib
+			MAC_TO_ETHERNET_PHY => SBC_TO_ETHERNET_PHY
+			ETHERNET_PHY_TO_MAC => ETHERNET_PHY_TO_SBC
+
+	$instance dram_controller_subsystem_inst  dram_controller_subsystem:dram_controller_subsystem_lib
+			DRAM_CONTROLLER_TO_DRAM => SBC_TO_DRAM
+			DRAM_TO_DRAM_CONTROLLER => DRAM_TO_SBC
+}

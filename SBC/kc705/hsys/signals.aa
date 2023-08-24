@@ -1,0 +1,21 @@
+$signal DebugSerialRx: $uint<1> 
+$signal PrintSerialRx: $uint<1> 
+$signal SPI_FLASH_MISO: $uint<1> 
+$signal CLOCK_TO_PROCESSOR: $uint<1> 
+$signal CLOCK_TO_NIC: $uint<1> 
+$signal CLOCK_TO_DRAM: $uint<1> 
+$signal DebugSerialTx: $uint<1> 
+$signal PrintSerialTx: $uint<1> 
+$signal SPI_FLASH_MOSI: $uint<1> 
+$signal SPI_FLASH_CLK: $uint<1> 
+$signal SPI_FLASH_CS_L: $uint<1> 
+signal NIC_INTERRUPT: $uint<1> 
+
+$signal SWITCHES: $uint<4>
+$signal LEDS: $uint<4>
+
+$signal DRAM_TO_SBC
+$signal SBC_TO_DRAM
+
+$signal ETHERNET_PHY_TO_SBC
+$signal SBC_TO_ETHERNET_PHY

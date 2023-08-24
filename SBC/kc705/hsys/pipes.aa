@@ -1,0 +1,14 @@
+$pipe PROCESSOR_AFB_REQUEST: $uint<74> $depth 2 
+$pipe PROCESSOR_AFB_RESPONSE: $uint<33> $depth 2 
+$pipe PROCESSOR_ACB_REQUEST: $uint<110> $depth 2 $p2p
+$pipe PROCESSOR_ACB_RESPONSE: $uint<65> $depth 2 $p2p
+$pipe AFB_NIC_REQUEST: $uint<74> $depth 2
+$pipe AFB_NIC_RESPONSE: $uint<33> $depth 2
+$pipe ACB_FLASH_REQUEST: $uint<110> $depth 2
+$pipe ACB_FLASH_RESPONSE: $uint<65> $depth 2
+$pipe ACB_MEMORY_REQUEST: $uint<110> $depth 2 
+$pipe ACB_MEMORY_RESPONSE: $uint<65> $depth 2
+$pipe NIC_ACB_MEMORY_REQUEST: $uint<110> $depth 2
+$pipe NIC_ACB_MEMORY_RESPONSE: $uint<65> $depth 2
+$pipe ACB_DRAM_REQUEST: $uint<110> $depth 2
+$pipe ACB_DRAM_RESPONSE: $uint<65> $depth 2
