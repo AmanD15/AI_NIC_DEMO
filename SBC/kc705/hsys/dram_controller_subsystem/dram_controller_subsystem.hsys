@@ -1,0 +1,25 @@
+$system dram_controller_subsystem $library dram_controller_subsystem_lib
+    $in 
+        $signal DRAM_TO_DRAM_CONTROLLER $uint<> $depth 2
+        $signal UI_IN $uint<616> $depth 2
+        $signal PHY_IN $uint<80> $depth 2
+        $pipe ACB_DRAM_REQUEST: $uint<110> $depth 2
+        
+
+    $out
+        $signal DRAM_CONTROLLER_TO_DRAM $uint<> $depth 2
+        $signal UI_OUT $uint<534> $depth 2
+        $signal PHY_OUT $uint<114> $depth 2
+        $pipe ACB_DRAM_RESPONSE: $uint<65> $depth 2
+{
+
+
+
+
+
+
+
+
+
+
+}
