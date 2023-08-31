@@ -34,7 +34,13 @@ $system nic_subsystem $library nic_subsystem_lib
     // 5. dcm_locked   : 
 
         $split(NIC_CLKS 1 1 1 1 1 )(clk_proc clk_mac refclk_bufg s_axi_aclk dcm_locked)
-        $split(PHY_TO_MAC 4 1 1 1 1 1 1 1 1 1 1)(rgmii_rxd rgmii_rx_ctl rgmii_rxc mdio pause_req_s mac_speed update_speed config_board gen_tx_data chk_tx_data reset_error)
+
+        $split(PHY_TO_MAC 4 1 1 1 1 1 1 1 1 1 1)(rgmii_rxd rgmii_rx_ctl rgmii_rxc mdio
+        pause_req_s mac_speed update_speed config_board gen_tx_data chk_tx_data reset_error)
+
+        MAC_TO_PHY := $concat(gtx_clk_bufg_out phy_resetn rgmii_txd rgmii_tx_ctl rgmii_txc mdc
+        gtx_clk_reset tx_statistics_s rx_statistics_s serial_response frame_error frame_errorn activity_flash 
+        activity_flashn)
 
         $instance inst_ETH_KC nic_subsystem_lib : ETH_KC
 
@@ -98,8 +104,6 @@ $system nic_subsystem $library nic_subsystem_lib
     // PIPES FROM/TO NIC 
              rx_pipe_data => mac_to_rx_concat_data // output
              tx_pipe_data => tx_deconcat_to_mac_data // input
-
-        MAC_TO_PHY := $concat(gtx_clk_bufg_out phy_resetn rgmii_txd rgmii_tx_ctl rgmii_txc mdc  gtx_clk_reset tx_statistics_s rx_statistics_s serial_response frame_error frame_errorn activity_flash activity_flashn)
 
         $instance inst_rx_concat_system nic_subsystem_lib : rx_concat_system
                 clk => clk_mac
