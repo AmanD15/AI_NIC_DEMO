@@ -108,15 +108,15 @@ $system nic_subsystem $library nic_subsystem_lib
         $instance inst_rx_concat_system nic_subsystem_lib : rx_concat_system
                 clk => clk_mac
                 reset => nic_rst
-                rx_in_pipe_pipe_write_data => mac_to_rx_concat_data
-                rx_out_pipe_pipe_read_data => rx_concat_to_nic_data 
+                rx_in_pipe_pipe_write_data => mac_to_rx_concat_data // input(10)
+                rx_out_pipe_pipe_read_data => rx_concat_to_nic_data //output(73)
 
     
         $instance inst_tx_concat_system nic_subsystem_lib : tx_concat_system
                 clk => clk_mac
                 reset => nic_rst
-                rx_in_pipe_pipe_write_data => mac_to_rx_concat_data
-                rx_out_pipe_pipe_read_data => rx_concat_to_nic_data 
+                tx_in_pipe_pipe_write_data => nic_to_tx_deconcat_data // input(73)
+                tx_out_pipe_pipe_read_data => tx_deconcat_to_mac_data // output(10) 
     
         $instance inst_nic_ahir_system  nic_subsystem_lib : nic_ahir_system
 
