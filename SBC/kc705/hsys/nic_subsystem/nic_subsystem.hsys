@@ -1,16 +1,24 @@
 $system nic_subsystem $library nic_subsystem_lib
     $in       
-        $signal GLOBAL_RST $uint<1> $depth 2
-        $signal NIC_CLKS $uint<5> $depth 2
+        $pipe NIC_REGISTER_REQUEST
+        $pipe NIC_MEMORY_REQUEST
 
-        $signal PHY_TO_MAC $uint<14> $depth 2
-        $pipe NIC_REGISTER_REQUEST $uint<74> $depth 2
-        $pipe NIC_MEMORY_REQUEST $uint<110> $depth 2
+	-- AFB request pipe coming in
+
+	-- ACB response pipe coming in
+
+	-- MAC->NIC pipe coming in
 
     $out
-        $signal MAC_TO_PHY $uint<17> $depth 2
-        $pipe NIC_REGISTER_RESPONSE $uint<33> $depth 2
-        $pipe NIC_MEMORY_RESPONSE $uint<65> $depth 2
+
+
+	-- AFB response pipe going out
+
+	-- ACB request going out
+
+	-- NIC->MAC pipe going out.
+
+	-- INTERRUPT signal going out.
 {
 
    

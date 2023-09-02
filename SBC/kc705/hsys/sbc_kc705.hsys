@@ -71,7 +71,5 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 			MAC_TO_ETHERNET_PHY => SBC_TO_ETHERNET_PHY
 			ETHERNET_PHY_TO_MAC => ETHERNET_PHY_TO_SBC
 
-	$instance dram_controller_subsystem_inst  dram_controller_subsystem:dram_controller_subsystem_lib
-			DRAM_CONTROLLER_TO_DRAM => SBC_TO_DRAM
-			DRAM_TO_DRAM_CONTROLLER => DRAM_TO_SBC
+	$instance acb_dram_controller_bridge_inst  acb_dram_controller_bridge:acb_dram_controller_bridge_lib
 }

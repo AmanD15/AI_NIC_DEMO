@@ -1,1 +1,9 @@
-In progress
+The NIC subsystem includes the NIC and
+a small MAC-side interface.   The processor
+side interface consists of an AFB (slave)
+and ACB master interface.
+
+nic_subsystem.hsys
+	the hsys description
+
+signal.aa

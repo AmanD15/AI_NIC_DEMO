@@ -1,21 +1,38 @@
-$signal DebugSerialRx: $uint<1> 
-$signal PrintSerialRx: $uint<1> 
-$signal SPI_FLASH_MISO: $uint<1> 
-$signal CLOCK_TO_PROCESSOR: $uint<1> 
-$signal CLOCK_TO_NIC: $uint<1> 
-$signal CLOCK_TO_DRAM: $uint<1> 
-$signal DebugSerialTx: $uint<1> 
-$signal PrintSerialTx: $uint<1> 
-$signal SPI_FLASH_MOSI: $uint<1> 
-$signal SPI_FLASH_CLK: $uint<1> 
-$signal SPI_FLASH_CS_L: $uint<1> 
-signal NIC_INTERRUPT: $uint<1> 
+$pipe DebugSerialRx: $uint<1>  $signal
+$pipe PrintSerialRx: $uint<1>  $signal
+$pipe SPI_FLASH_MISO: $uint<1>  $signal
+$pipe CLOCK_TO_PROCESSOR: $uint<1>  $signal
+$pipe CLOCK_TO_NIC: $uint<1>  $signal
+$pipe CLOCK_TO_DRAM: $uint<1>  $signal
+$pipe DebugSerialTx: $uint<1>  $signal
+$pipe PrintSerialTx: $uint<1>  $signal
+$pipe SPI_FLASH_MOSI: $uint<1>  $signal
+$pipe SPI_FLASH_CLK: $uint<1>  $signal
+$pipe SPI_FLASH_CS_L: $uint<1>  $signal
+$pipe NIC_INTERRUPT: $uint<1>  $signal
 
-$signal SWITCHES: $uint<4>
-$signal LEDS: $uint<4>
+$pipe SWITCHES: $uint<4> $signal
+$pipe LEDS: $uint<4> $signal
 
-$signal DRAM_TO_SBC
-$signal SBC_TO_DRAM
 
-$signal ETHERNET_PHY_TO_SBC
-$signal SBC_TO_ETHERNET_PHY
+
+// what are these 522 bits (left downto right?)
+// 1                1
+// ui_clk init_calib_complete
+// 512              1                 1             1        1          1 
+// app_rd_data app_rd_data_end app_rd_data_valid app_rdy app_wdf_rdy app_sr_active
+//  1               1            1
+// app_ref_ack app_zq_ack ui_clk_sync_rst
+$pipe DRAM_CONTROLLER_TO_ACB_BRIDGE: $uint<522>  $depth 1 $signal
+
+//
+// widths? 
+// app_addr app_cmd app_en app_wdf_data app_wdf_end
+// widths
+// app_wdf_mask app_wdf_wren app_sr_req app_ref_req app_zq_req
+$pipe ACB_BRIDGE_TO_DRAM_CONTROLLER: $uint<613> $depth 1 $signal
+
+
+// TODO
+$pipe ETHERNET_PHY_TO_SBC: $uint<??> $signal
+$pipe SBC_TO_ETHERNET_PHY: $uint<??> $signal
