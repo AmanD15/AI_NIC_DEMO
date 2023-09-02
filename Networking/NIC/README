@@ -42,3 +42,12 @@
 	sent (arithmetic progression is checked).  This is checked
 	in the nic-to-mac thread.
 
+
+4. Builds
+	build/
+		nic + testbench
+
+	build_nic_only/
+		core nic only.
+
+	src/ contains the AA code.
