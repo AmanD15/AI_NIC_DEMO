@@ -14,3 +14,4 @@ $pipe ACB_DRAM_REQUEST: $uint<110> $depth 2
 $pipe ACB_DRAM_RESPONSE: $uint<65> $depth 2
 $pipe CORE_BUS_REQUEST: $uint<110> $depth 2
 $pipe CORE_BUS_RESPONSE: $uint<65> $depth 2
+

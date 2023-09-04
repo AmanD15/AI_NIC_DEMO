@@ -7,3 +7,11 @@ nic_subsystem.hsys
 	the hsys description
 
 signal.aa
+
+
+        $split(PHY_TO_MAC 4 1 1 1 1 1 1 1 1 1 1)(rgmii_rxd rgmii_rx_ctl rgmii_rxc mdio
+        pause_req_s mac_speed update_speed config_board gen_tx_data chk_tx_data reset_error)
+
+        MAC_TO_PHY := $concat(gtx_clk_bufg_out phy_resetn rgmii_txd rgmii_tx_ctl rgmii_txc mdc
+        gtx_clk_reset tx_statistics_s rx_statistics_s serial_response frame_error frame_errorn activity_flash
+        activity_flashn)
