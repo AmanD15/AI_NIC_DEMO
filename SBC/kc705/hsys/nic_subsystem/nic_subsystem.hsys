@@ -81,14 +81,11 @@ $system nic_subsystem $library nic_subsystem_lib
 {
 
 
-    // Local pipes to connect: NIC <--> (nic_mac_pipe_reset.v)
+    // Local pipes 
 
-        $pipe enable_mac 1 $depth 0
-        $pipe rx_concat_to_nic_data 73 $depth 0
-        $pipe nic_to_tx_deconcat_data 73 $depth 0
-
-        $instance inst_nic_mac_pipe_reset nic_subsystem_lib:nic_mac_pipe_reset
-            ENABLE_MAC => enable_mac
+        $pipe enable_mac 1 $depth 0 
+        $pipe rx_concat_to_nic_data 73 $depth 0 
+        $pipe nic_to_tx_deconcat_data 73 $depth 0 
 
 /////////////////////////// MAC <--> Bridge /////////////////////////////////////////
 
@@ -104,11 +101,15 @@ $system nic_subsystem $library nic_subsystem_lib
                 tx_out_pipe => NIC_TO_MAC_DATA         // output(10)
 
 ////////////////////////// Bridge <--> NIC <--> SBC_core /////////////////////////////
+          
 
+         $instance inst_nic_mac_pipe_reset nic_subsystem_lib:nic_mac_pipe_reset
+            
+                ENABLE_MAC => enable_mac // input
 
          $instance inst_nic nic_subsystem_lib:nic
 
-                enable_mac => enable_mac
+                enable_mac => enable_mac // output
 
                 AFB_NIC_REQUEST => AFB_NIC_REGISTER_REQUEST 
 
