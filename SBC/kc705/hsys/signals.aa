@@ -16,21 +16,25 @@ $pipe LEDS: $uint<4> $signal
 
 
 
-// what are these 522 bits (left downto right?)
-// 1                1
-// ui_clk init_calib_complete
-// 512              1                 1             1        1          1 
-// app_rd_data app_rd_data_end app_rd_data_valid app_rdy app_wdf_rdy app_sr_active
-//  1               1            1
-// app_ref_ack app_zq_ack ui_clk_sync_rst
+// Input 522 bits
+//   1                1
+// ui_clk         init_calib_complete
+//   512              1                 1             
+// app_rd_data    app_rd_data_end   app_rd_data_valid 
+//   1                1                 1 
+//app_rdy         app_wdf_rdy       app_sr_active
+//   1                1                 1
+// app_ref_ack    app_zq_ack        ui_clk_sync_rst
 $pipe DRAM_CONTROLLER_TO_ACB_BRIDGE: $uint<522>  $depth 1 $signal
 
-//
-// widths? 
-// app_addr app_cmd app_en app_wdf_data app_wdf_end
-// widths
-// app_wdf_mask app_wdf_wren app_sr_req app_ref_req app_zq_req
-$pipe ACB_BRIDGE_TO_DRAM_CONTROLLER: $uint<613> $depth 1 $signal
+// Output 614 bits
+//     29            3              1       
+// app_addr       app_cmd        app_en 
+//    512            1              64              1
+// app_wdf_data   app_wdf_end    app_wdf_mask   app_wdf_wren
+//     1             1              1 
+// app_sr_req     app_ref_req    app_zq_req
+$pipe ACB_BRIDGE_TO_DRAM_CONTROLLER: $uint<614> $depth 1 $signal
 
 
 // TODO

@@ -25,10 +25,10 @@ architecture VhpiLink of acb_dram_controller_bridge_Test_Bench is --
   signal DRAM_CONTROLLER_TO_ACB_BRIDGE_pipe_write_req  : std_logic_vector(0  downto 0) := (others => '0');
   signal DRAM_CONTROLLER_TO_ACB_BRIDGE_pipe_write_ack  : std_logic_vector(0  downto 0);
   signal DRAM_CONTROLLER_TO_ACB_BRIDGE: std_logic_vector(521 downto 0);
-  signal ACB_BRIDGE_TO_DRAM_CONTROLLER_pipe_read_data : std_logic_vector(612 downto 0);
+  signal ACB_BRIDGE_TO_DRAM_CONTROLLER_pipe_read_data : std_logic_vector(613 downto 0);
   signal ACB_BRIDGE_TO_DRAM_CONTROLLER_pipe_read_req  : std_logic_vector(0  downto 0) := (others => '0');
   signal ACB_BRIDGE_TO_DRAM_CONTROLLER_pipe_read_ack  : std_logic_vector(0  downto 0);
-  signal ACB_BRIDGE_TO_DRAM_CONTROLLER: std_logic_vector(612 downto 0) := (others => '0');
+  signal ACB_BRIDGE_TO_DRAM_CONTROLLER: std_logic_vector(613 downto 0) := (others => '0');
   signal CORE_BUS_RESPONSE_pipe_read_data : std_logic_vector(64 downto 0);
   signal CORE_BUS_RESPONSE_pipe_read_req  : std_logic_vector(0  downto 0) := (others => '0');
   signal CORE_BUS_RESPONSE_pipe_read_ack  : std_logic_vector(0  downto 0);
@@ -40,7 +40,7 @@ architecture VhpiLink of acb_dram_controller_bridge_Test_Bench is --
       CORE_BUS_REQUEST_pipe_write_req  : in std_logic_vector(0  downto 0);
       CORE_BUS_REQUEST_pipe_write_ack  : out std_logic_vector(0  downto 0);
       DRAM_CONTROLLER_TO_ACB_BRIDGE : in std_logic_vector(521 downto 0);
-      ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(612 downto 0);
+      ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(613 downto 0);
       CORE_BUS_RESPONSE_pipe_read_data : out std_logic_vector(64 downto 0);
       CORE_BUS_RESPONSE_pipe_read_req  : in std_logic_vector(0  downto 0);
       CORE_BUS_RESPONSE_pipe_read_ack  : out std_logic_vector(0  downto 0);
@@ -157,7 +157,7 @@ begin --
       Vhpi_Set_Port_Value(obj_ref,val_string,1);
       obj_ref := Pack_String_To_Vhpi_String("ACB_BRIDGE_TO_DRAM_CONTROLLER 0");
       val_string := Pack_SLV_To_Vhpi_String(ACB_BRIDGE_TO_DRAM_CONTROLLER_pipe_read_data);
-      Vhpi_Set_Port_Value(obj_ref,val_string,613);
+      Vhpi_Set_Port_Value(obj_ref,val_string,614);
       -- 
     end loop;
     --
