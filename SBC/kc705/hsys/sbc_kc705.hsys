@@ -12,6 +12,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$signal DRAM_TO_SBC
 		//
 		/////////////////////////////////////
+		$pipe MAC_TO_NIC
 
 		$signal SPI_FLASH_MISO
 
@@ -31,7 +32,8 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$signal SBC_TO_ETHERNET_PHY
 		$signal SBC_TO_DRAM
 		/////////////////////////////////////
-
+		$pipe NIC_TO_MAC
+			
 		$signal SPI_FLASH_MOSI
 		$signal SPI_FLASH_CLK
 		$signal SPI_FLASH_CS_L
@@ -43,8 +45,8 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$pipe PROCESSOR_ACB_REQUEST
 	$pipe PROCESSOR_ACB_RESPONSE
 
-	$pipe AFB_NIC_REQUEST
-	$pipe AFB_NIC_RESPONSE
+	$pipe NIC_AFB_REQUEST
+	$pipe NIC_AFB_RESPONSE
 
 	$pipe ACB_FLASH_REQUEST
 	$pipe ACB_FLASH_RESPONSE
@@ -67,9 +69,18 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$instance acb_network_subsystem_inst acb_network_subsystem:acb_network_subsystem_lib
 	$instance spi_flash_controller_inst spi_flash_controller:spi_flash_lib
 
-	$instance nic_subsystem_inst nic_subsystem:nic_subsystem_lib
-			MAC_TO_ETHERNET_PHY => SBC_TO_ETHERNET_PHY
-			ETHERNET_PHY_TO_MAC => ETHERNET_PHY_TO_SBC
+    $instance nic_subsystem_inst nic_subsystem:nic_subsystem_lib
+
+                        MAC_TO_NIC_DATA => MAC_TO_NIC
+                        NIC_TO_MAC_DATA => NIC_TO_MAC
+
+                        AFB_NIC_REGISTER_REQUEST => NIC_AFB_REQUEST
+                        AFB_NIC_REGISTER_RESPONSE => NIC_AFB_RESPONSE
+
+                        ACB_NIC_MEMORY_REQUEST => NIC_ACB_MEMORY_REQUEST 
+                        ACB_NIC_MEMORY_RESPONSE => NIC_ACB_MEMORY_REQUEST 
+
+
 
 	$instance acb_dram_controller_bridge_inst  acb_dram_controller_bridge:acb_dram_controller_bridge_lib
 }
