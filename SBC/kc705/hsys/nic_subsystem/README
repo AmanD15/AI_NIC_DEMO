@@ -1,17 +1,13 @@
-The NIC subsystem includes the NIC and
-a small MAC-side interface.   The processor
-side interface consists of an AFB (slave)
-and ACB master interface.
+#  NIC subsystem 
 
-nic_subsystem.hsys
-	the hsys description
+This nic_subsystem.hsys includes the following:<br/>
+1) NIC <br/>
+2) RX Concat and Tx Deconcat blocks <br/>
+3) nic_mac_pipe_reset block
 
-signal.aa
+This subsytem has 3 interfaces :<br/>
+1) MAC-side interface. <br/>
+2) The processor side interface consists of an AFB (slave).<br/>
+3) The interface to memory consists of an ACB (master).<br/>
 
 
-        $split(PHY_TO_MAC 4 1 1 1 1 1 1 1 1 1 1)(rgmii_rxd rgmii_rx_ctl rgmii_rxc mdio
-        pause_req_s mac_speed update_speed config_board gen_tx_data chk_tx_data reset_error)
-
-        MAC_TO_PHY := $concat(gtx_clk_bufg_out phy_resetn rgmii_txd rgmii_tx_ctl rgmii_txc mdc
-        gtx_clk_reset tx_statistics_s rx_statistics_s serial_response frame_error frame_errorn activity_flash
-        activity_flashn)
