@@ -24,21 +24,21 @@ library nic_subsystem_lib;
 --<<<<<
 entity nic_subsystem is -- 
   port( -- 
+    ACB_NIC_MEMORY_RESPONSE_pipe_write_data : in std_logic_vector(64 downto 0);
+    ACB_NIC_MEMORY_RESPONSE_pipe_write_req  : in std_logic_vector(0  downto 0);
+    ACB_NIC_MEMORY_RESPONSE_pipe_write_ack  : out std_logic_vector(0  downto 0);
     AFB_NIC_REGISTER_REQUEST_pipe_write_data : in std_logic_vector(73 downto 0);
     AFB_NIC_REGISTER_REQUEST_pipe_write_req  : in std_logic_vector(0  downto 0);
     AFB_NIC_REGISTER_REQUEST_pipe_write_ack  : out std_logic_vector(0  downto 0);
     MAC_TO_NIC_DATA_pipe_write_data : in std_logic_vector(9 downto 0);
     MAC_TO_NIC_DATA_pipe_write_req  : in std_logic_vector(0  downto 0);
     MAC_TO_NIC_DATA_pipe_write_ack  : out std_logic_vector(0  downto 0);
-    NIC_ACB_MEMORY_RESPONSE_pipe_write_data : in std_logic_vector(64 downto 0);
-    NIC_ACB_MEMORY_RESPONSE_pipe_write_req  : in std_logic_vector(0  downto 0);
-    NIC_ACB_MEMORY_RESPONSE_pipe_write_ack  : out std_logic_vector(0  downto 0);
+    ACB_NIC_MEMORY_REQUEST_pipe_read_data : out std_logic_vector(109 downto 0);
+    ACB_NIC_MEMORY_REQUEST_pipe_read_req  : in std_logic_vector(0  downto 0);
+    ACB_NIC_MEMORY_REQUEST_pipe_read_ack  : out std_logic_vector(0  downto 0);
     AFB_NIC_REGISTER_RESPONSE_pipe_read_data : out std_logic_vector(32 downto 0);
     AFB_NIC_REGISTER_RESPONSE_pipe_read_req  : in std_logic_vector(0  downto 0);
     AFB_NIC_REGISTER_RESPONSE_pipe_read_ack  : out std_logic_vector(0  downto 0);
-    NIC_ACB_MEMORY_REQUEST_pipe_read_data : out std_logic_vector(109 downto 0);
-    NIC_ACB_MEMORY_REQUEST_pipe_read_req  : in std_logic_vector(0  downto 0);
-    NIC_ACB_MEMORY_REQUEST_pipe_read_ack  : out std_logic_vector(0  downto 0);
     NIC_TO_MAC_DATA_pipe_read_data : out std_logic_vector(9 downto 0);
     NIC_TO_MAC_DATA_pipe_read_req  : in std_logic_vector(0  downto 0);
     NIC_TO_MAC_DATA_pipe_read_ack  : out std_logic_vector(0  downto 0);
@@ -156,12 +156,12 @@ begin --
     AFB_NIC_RESPONSE_pipe_read_data => AFB_NIC_REGISTER_RESPONSE_pipe_read_data,
     AFB_NIC_RESPONSE_pipe_read_req => AFB_NIC_REGISTER_RESPONSE_pipe_read_req,
     AFB_NIC_RESPONSE_pipe_read_ack => AFB_NIC_REGISTER_RESPONSE_pipe_read_ack,
-    MEMORY_TO_NIC_RESPONSE_pipe_write_data => NIC_ACB_MEMORY_RESPONSE_pipe_write_data,
-    MEMORY_TO_NIC_RESPONSE_pipe_write_req => NIC_ACB_MEMORY_RESPONSE_pipe_write_req,
-    MEMORY_TO_NIC_RESPONSE_pipe_write_ack => NIC_ACB_MEMORY_RESPONSE_pipe_write_ack,
-    NIC_TO_MEMORY_REQUEST_pipe_read_data => NIC_ACB_MEMORY_REQUEST_pipe_read_data,
-    NIC_TO_MEMORY_REQUEST_pipe_read_req => NIC_ACB_MEMORY_REQUEST_pipe_read_req,
-    NIC_TO_MEMORY_REQUEST_pipe_read_ack => NIC_ACB_MEMORY_REQUEST_pipe_read_ack,
+    MEMORY_TO_NIC_RESPONSE_pipe_write_data => ACB_NIC_MEMORY_RESPONSE_pipe_write_data,
+    MEMORY_TO_NIC_RESPONSE_pipe_write_req => ACB_NIC_MEMORY_RESPONSE_pipe_write_req,
+    MEMORY_TO_NIC_RESPONSE_pipe_write_ack => ACB_NIC_MEMORY_RESPONSE_pipe_write_ack,
+    NIC_TO_MEMORY_REQUEST_pipe_read_data => ACB_NIC_MEMORY_REQUEST_pipe_read_data,
+    NIC_TO_MEMORY_REQUEST_pipe_read_req => ACB_NIC_MEMORY_REQUEST_pipe_read_req,
+    NIC_TO_MEMORY_REQUEST_pipe_read_ack => ACB_NIC_MEMORY_REQUEST_pipe_read_ack,
     enable_mac_pipe_read_data => enable_mac_pipe_write_data,
     enable_mac_pipe_read_req => enable_mac_pipe_write_ack,
     enable_mac_pipe_read_ack => enable_mac_pipe_write_req,
