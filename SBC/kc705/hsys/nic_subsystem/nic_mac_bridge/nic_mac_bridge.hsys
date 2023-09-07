@@ -1,13 +1,14 @@
 $system nic_mac_bridge $library nic_mac_bridge_lib
     $in 
-	$pipe MAC_TO_NIC_DATA
-	$pipe tx_out_pipe 
-	$pipe enable_mac
+	    $pipe ENABLE_MAC
+        $pipe rx_in_pipe
+	    $pipe tx_in_pipe 
         
     $out
-	$pipe NIC_TO_MAC_DATA
-	$signal NIC_TO_MAC_RESET_N
-	$pipe rx_in_pipe
+	  
+	    $signal NIC_TO_MAC_RESET_N
+	    $pipe rx_out_pipe
+        $pipe tx_out_pipe
    
 {
 }

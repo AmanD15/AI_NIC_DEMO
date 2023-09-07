@@ -1,12 +1,5 @@
-//  1 1 4 6 3 
-//  a b c d e
-$pipe ETHERNET_PHY_TO_MAC: $uint<15> $signal
-
-// 
-// $split (SIG 1 1 4 6 3) (a b c d e)
-// SIG := ($concat a b c d e)
-
 
 $pipe NIC_TO_MAC_RESET_N : $uint<1> $signal
-$pipe ENABLE_MAC : $uint<1> $signal
+
 $pipe NIC_INTERRUPT_TO_PROCESSOR : $uint<1> $signal
+$pipe nic_intr : $uint<1> $signal

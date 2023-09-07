@@ -4,6 +4,7 @@ $system nic $library nic_subsystem_lib
         $pipe AFB_NIC_REQUEST
         $pipe MEMORY_TO_NIC_RESPONSE
         $pipe mac_to_nic_data
+        
 
     $out
 
@@ -11,6 +12,7 @@ $system nic $library nic_subsystem_lib
         $pipe AFB_NIC_RESPONSE
         $pipe NIC_TO_MEMORY_REQUEST
         $pipe nic_to_mac_transmit_pipe
+        $signal nic_intr
    
 {
 }
