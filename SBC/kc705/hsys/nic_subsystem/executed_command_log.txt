@@ -5,3 +5,5 @@ hierSys2Vhdl -s ghdl -o vhdl ./pipes.aa ./signals.aa ./nic/nic.hsys ./nic_mac_br
 formatVhdlFiles.py vhdl
 hierSys2Vhdl -s ghdl -o vhdl ./pipes.aa ./signals.aa ./nic/nic.hsys ./nic_mac_bridge/nic_mac_bridge.hsys ./nic_subsystem.hsys 
 formatVhdlFiles.py vhdl
+hierSys2Vhdl -s ghdl -o vhdl ./pipes.aa ./signals.aa ./nic/nic.hsys ./nic_mac_bridge/nic_mac_bridge.hsys ./nic_subsystem.hsys 
+formatVhdlFiles.py vhdl

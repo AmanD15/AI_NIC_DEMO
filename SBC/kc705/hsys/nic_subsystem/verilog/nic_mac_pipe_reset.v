@@ -21,7 +21,7 @@ begin
 		reset_reg <= ENABLE_MAC_pipe_data;	
 	end
 
-	nic_to_mac_resetn <= ~reset_reg; //  nic_to_mac_reset is active low!
+	nic_to_mac_resetn <= ~reset_reg; //  nic_to_mac_resetn is active low!
 end
 
 endmodule
