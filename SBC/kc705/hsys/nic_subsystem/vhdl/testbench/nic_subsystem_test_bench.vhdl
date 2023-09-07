@@ -40,10 +40,10 @@ architecture VhpiLink of nic_subsystem_Test_Bench is --
   signal NIC_TO_MAC_DATA_pipe_read_data : std_logic_vector(9 downto 0);
   signal NIC_TO_MAC_DATA_pipe_read_req  : std_logic_vector(0  downto 0) := (others => '0');
   signal NIC_TO_MAC_DATA_pipe_read_ack  : std_logic_vector(0  downto 0);
-  signal NIC_TO_MAC_RESET_N_pipe_read_data : std_logic_vector(0 downto 0);
-  signal NIC_TO_MAC_RESET_N_pipe_read_req  : std_logic_vector(0  downto 0) := (others => '0');
-  signal NIC_TO_MAC_RESET_N_pipe_read_ack  : std_logic_vector(0  downto 0);
-  signal NIC_TO_MAC_RESET_N: std_logic_vector(0 downto 0) := (others => '0');
+  signal NIC_TO_MAC_RESETN_pipe_read_data : std_logic_vector(0 downto 0);
+  signal NIC_TO_MAC_RESETN_pipe_read_req  : std_logic_vector(0  downto 0) := (others => '0');
+  signal NIC_TO_MAC_RESETN_pipe_read_ack  : std_logic_vector(0  downto 0);
+  signal NIC_TO_MAC_RESETN: std_logic_vector(0 downto 0) := (others => '0');
   signal clk : std_logic := '0'; 
   signal reset: std_logic := '1'; 
   component nic_subsystem is -- 
@@ -67,7 +67,7 @@ architecture VhpiLink of nic_subsystem_Test_Bench is --
       NIC_TO_MAC_DATA_pipe_read_data : out std_logic_vector(9 downto 0);
       NIC_TO_MAC_DATA_pipe_read_req  : in std_logic_vector(0  downto 0);
       NIC_TO_MAC_DATA_pipe_read_ack  : out std_logic_vector(0  downto 0);
-      NIC_TO_MAC_RESET_N : out std_logic_vector(0 downto 0);
+      NIC_TO_MAC_RESETN : out std_logic_vector(0 downto 0);
       clk, reset: in std_logic 
       -- 
     );
@@ -283,8 +283,8 @@ begin --
     end loop;
     --
   end process;
-  NIC_TO_MAC_RESET_N_pipe_read_ack(0) <= '1';
-  TruncateOrPad(NIC_TO_MAC_RESET_N, NIC_TO_MAC_RESET_N_pipe_read_data);
+  NIC_TO_MAC_RESETN_pipe_read_ack(0) <= '1';
+  TruncateOrPad(NIC_TO_MAC_RESETN, NIC_TO_MAC_RESETN_pipe_read_data);
   process
   variable val_string, obj_ref: VhpiString;
   begin --
@@ -297,15 +297,15 @@ begin --
     while true loop -- 
       wait until clk = '0';
       wait for 1 ns; 
-      obj_ref := Pack_String_To_Vhpi_String("NIC_TO_MAC_RESET_N req");
+      obj_ref := Pack_String_To_Vhpi_String("NIC_TO_MAC_RESETN req");
       Vhpi_Get_Port_Value(obj_ref,val_string,1);
-      NIC_TO_MAC_RESET_N_pipe_read_req <= Unpack_String(val_string,1);
+      NIC_TO_MAC_RESETN_pipe_read_req <= Unpack_String(val_string,1);
       wait until clk = '1';
-      obj_ref := Pack_String_To_Vhpi_String("NIC_TO_MAC_RESET_N ack");
-      val_string := Pack_SLV_To_Vhpi_String(NIC_TO_MAC_RESET_N_pipe_read_ack);
+      obj_ref := Pack_String_To_Vhpi_String("NIC_TO_MAC_RESETN ack");
+      val_string := Pack_SLV_To_Vhpi_String(NIC_TO_MAC_RESETN_pipe_read_ack);
       Vhpi_Set_Port_Value(obj_ref,val_string,1);
-      obj_ref := Pack_String_To_Vhpi_String("NIC_TO_MAC_RESET_N 0");
-      val_string := Pack_SLV_To_Vhpi_String(NIC_TO_MAC_RESET_N_pipe_read_data);
+      obj_ref := Pack_String_To_Vhpi_String("NIC_TO_MAC_RESETN 0");
+      val_string := Pack_SLV_To_Vhpi_String(NIC_TO_MAC_RESETN_pipe_read_data);
       Vhpi_Set_Port_Value(obj_ref,val_string,1);
       -- 
     end loop;
@@ -332,7 +332,7 @@ begin --
     NIC_TO_MAC_DATA_pipe_read_data => NIC_TO_MAC_DATA_pipe_read_data,
     NIC_TO_MAC_DATA_pipe_read_req => NIC_TO_MAC_DATA_pipe_read_req,
     NIC_TO_MAC_DATA_pipe_read_ack => NIC_TO_MAC_DATA_pipe_read_ack,
-    NIC_TO_MAC_RESET_N => NIC_TO_MAC_RESET_N,
+    NIC_TO_MAC_RESETN => NIC_TO_MAC_RESETN,
     clk => clk, reset => reset 
     ); -- 
   -- 

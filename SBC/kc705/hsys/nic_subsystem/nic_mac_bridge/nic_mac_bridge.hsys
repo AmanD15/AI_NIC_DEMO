@@ -6,7 +6,7 @@ $system nic_mac_bridge $library nic_mac_bridge_lib
         
     $out
 	  
-	    $signal NIC_TO_MAC_RESET_N
+	    $signal nic_to_mac_resetn
 	    $pipe rx_out_pipe
         $pipe tx_out_pipe
    

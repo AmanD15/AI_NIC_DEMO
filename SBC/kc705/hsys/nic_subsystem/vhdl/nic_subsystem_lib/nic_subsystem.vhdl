@@ -41,7 +41,7 @@ entity nic_subsystem is --
     NIC_TO_MAC_DATA_pipe_read_data : out std_logic_vector(9 downto 0);
     NIC_TO_MAC_DATA_pipe_read_req  : in std_logic_vector(0  downto 0);
     NIC_TO_MAC_DATA_pipe_read_ack  : out std_logic_vector(0  downto 0);
-    NIC_TO_MAC_RESET_N : out std_logic_vector(0 downto 0);
+    NIC_TO_MAC_RESETN : out std_logic_vector(0 downto 0);
     clk, reset: in std_logic 
     -- 
   );
@@ -110,7 +110,7 @@ architecture struct of nic_subsystem is --
       tx_in_pipe_pipe_write_data : in std_logic_vector(72 downto 0);
       tx_in_pipe_pipe_write_req  : in std_logic_vector(0  downto 0);
       tx_in_pipe_pipe_write_ack  : out std_logic_vector(0  downto 0);
-      NIC_TO_MAC_RESET_N : out std_logic_vector(0 downto 0);
+      nic_to_mac_resetn : out std_logic_vector(0 downto 0);
       rx_out_pipe_pipe_read_data : out std_logic_vector(72 downto 0);
       rx_out_pipe_pipe_read_req  : in std_logic_vector(0  downto 0);
       rx_out_pipe_pipe_read_ack  : out std_logic_vector(0  downto 0);
@@ -159,7 +159,7 @@ begin --
     ENABLE_MAC_pipe_write_data => nic_mac_enable_pipe_read_data,
     ENABLE_MAC_pipe_write_req => nic_mac_enable_pipe_read_ack,
     ENABLE_MAC_pipe_write_ack => nic_mac_enable_pipe_read_req,
-    NIC_TO_MAC_RESET_N => NIC_TO_MAC_RESET_N,
+    nic_to_mac_resetn => NIC_TO_MAC_RESETN,
     rx_in_pipe_pipe_write_data => MAC_TO_NIC_DATA_pipe_write_data,
     rx_in_pipe_pipe_write_req => MAC_TO_NIC_DATA_pipe_write_req,
     rx_in_pipe_pipe_write_ack => MAC_TO_NIC_DATA_pipe_write_ack,

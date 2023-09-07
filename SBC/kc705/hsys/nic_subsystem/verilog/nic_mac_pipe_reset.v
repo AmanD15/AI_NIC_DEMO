@@ -7,7 +7,7 @@ input clk,
 (* MARK_DEBUG = "true" *) input ENABLE_MAC_pipe_req,
 (* MARK_DEBUG = "true" *) output ENABLE_MAC_pipe_ack,
 
-output reg NIC_TO_MAC_RESET_N
+output reg nic_to_mac_resetn
 );
 
 assign ENABLE_MAC_pipe_ack = 1'b1;
@@ -21,7 +21,7 @@ begin
 		reset_reg <= ENABLE_MAC_pipe_data;	
 	end
 
-	NIC_TO_MAC_RESET_N <= ~reset_reg; //  nic_to_mac_reset is active low!
+	nic_to_mac_resetn <= ~reset_reg; //  nic_to_mac_reset is active low!
 end
 
 endmodule
