@@ -10,7 +10,7 @@ $pipe SPI_FLASH_MOSI: $uint<1>  $signal
 $pipe SPI_FLASH_CLK: $uint<1>  $signal
 $pipe SPI_FLASH_CS_L: $uint<1>  $signal
 $pipe NIC_INTERRUPT: $uint<1>  $signal
-
+$pipe NIC_MAC_RESETN: $uint<1>  $signal
 $pipe SWITCHES: $uint<4> $signal
 $pipe LEDS: $uint<4> $signal
 

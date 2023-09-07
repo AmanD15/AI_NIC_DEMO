@@ -45,7 +45,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$pipe PROCESSOR_ACB_REQUEST
 	$pipe PROCESSOR_ACB_RESPONSE
 
-	$pipe NIC_AFB_REQUEST
+	$pipe AFB_NIC_REQUEST
 	$pipe NIC_AFB_RESPONSE
 
 	$pipe ACB_FLASH_REQUEST
@@ -55,10 +55,11 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$pipe ACB_MEMORY_RESPONSE
 
 	$pipe NIC_ACB_MEMORY_REQUEST
-	$pipe NIC_ACB_MEMORY_RESPONSE
+	$pipe ACB_NIC_MEMORY_RESPONSE
 
 
 	$signal NIC_INTERRUPT
+    $signal NIC_MAC_RESETN
 
 	$pipe ACB_DRAM_REQUEST
 	$pipe ACB_DRAM_RESPONSE
@@ -71,16 +72,14 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 
     $instance nic_subsystem_inst nic_subsystem:nic_subsystem_lib
 
-                        MAC_TO_NIC_DATA => MAC_TO_NIC
-                        NIC_TO_MAC_DATA => NIC_TO_MAC
-
-                        AFB_NIC_REGISTER_REQUEST => NIC_AFB_REQUEST
-                        AFB_NIC_REGISTER_RESPONSE => NIC_AFB_RESPONSE
-
-                        ACB_NIC_MEMORY_REQUEST => NIC_ACB_MEMORY_REQUEST 
-                        ACB_NIC_MEMORY_RESPONSE => NIC_ACB_MEMORY_REQUEST 
-
-
+                        MAC_TO_NIC_DATA             => MAC_TO_NIC
+                        NIC_TO_MAC_DATA             => NIC_TO_MAC
+                        AFB_TO_NIC_REQUEST          => AFB_NIC_REQUEST
+                        NIC_TO_AFB_RESPONSE         => NIC_AFB_RESPONSE
+                        NIC_TO_ACB_REQUEST          => NIC_ACB_MEMORY_REQUEST 
+                        ACB_TO_NIC_RESPONSE         => ACB_NIC_MEMORY_RESPONSE
+                        NIC_INTERRUPT_TO_PROCESSOR  => NIC_INTERRUPT
+                        NIC_TO_MAC_RESETN           => NIC_MAC_RESETN
 
 	$instance acb_dram_controller_bridge_inst  acb_dram_controller_bridge:acb_dram_controller_bridge_lib
 }
