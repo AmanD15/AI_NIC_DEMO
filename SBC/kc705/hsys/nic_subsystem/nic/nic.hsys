@@ -1,0 +1,17 @@
+$system nic $library nic_subsystem_lib  
+    $in 
+        
+        $pipe AFB_NIC_REQUEST
+        $pipe MEMORY_TO_NIC_RESPONSE
+        $pipe mac_to_nic_data
+
+    $out
+
+        $pipe enable_mac
+        $pipe AFB_NIC_RESPONSE
+        $pipe NIC_TO_MEMORY_REQUEST
+        $pipe nic_to_mac_transmit_pipe
+   
+{
+}
+

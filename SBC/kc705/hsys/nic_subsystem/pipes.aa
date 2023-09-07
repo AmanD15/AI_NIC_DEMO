@@ -1,13 +1,12 @@
 $pipe AFB_NIC_REGISTER_REQUEST: $uint<74> $depth 2
 $pipe AFB_NIC_REGISTER_RESPONSE: $uint<33> $depth 2
 
-$pipe ACB_NIC_MEMORY_REQUEST: $uint<110> $depth 2
-$pipe ACB_NIC_MEMORY_RESPONSE: $uint<65> $depth 2
+$pipe NIC_ACB_MEMORY_REQUEST: $uint<110> $depth 2
+$pipe NIC_ACB_MEMORY_RESPONSE: $uint<65> $depth 2
 
 $pipe MAC_TO_NIC_DATA: $uint<10> $depth 2  
 $pipe NIC_TO_MAC_DATA: $uint<10> $depth 2  
 
-$pipe ENABLE_MAC: $uint<1> $depth 2  
 $pipe rx_in_pipe: $uint<10> $depth 2  
 $pipe rx_out_pipe: $uint<73> $depth 2  
 
