@@ -1,8 +1,67 @@
 library ieee;
 use ieee.std_logic_1164.all;
 package nic_subsystem_Type_Package is -- 
+  subtype unsigned_0_downto_0 is std_logic_vector(0 downto 0);
   -- 
 end package;
+library ahir;
+use ahir.BaseComponents.all;
+use ahir.Utilities.all;
+use ahir.Subprograms.all;
+use ahir.OperatorPackage.all;
+use ahir.BaseComponents.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+library nic_subsystem_lib;
+use nic_subsystem_lib.nic_subsystem_Type_Package.all;
+entity tie_interrupt_off is  -- 
+  port (-- 
+    out_sig: out std_logic_vector(0 downto 0);
+    clk, reset: in std_logic); --
+  --
+end entity tie_interrupt_off;
+architecture rtlThreadArch of tie_interrupt_off is --
+  type ThreadState is (s_dummy_reset_state);
+  signal current_thread_state : ThreadState;
+  signal out_sig_buffer: unsigned_0_downto_0;
+  --
+begin -- 
+  out_sig <= out_sig_buffer;
+  process(clk, reset, current_thread_state ) --
+    -- declared variables and implied variables 
+    variable next_thread_state : ThreadState;
+    --
+  begin -- 
+    -- default values 
+    next_thread_state := current_thread_state;
+    -- default initializations... 
+    --  $now  out_sig :=  ( $unsigned<1> )  0 
+    out_sig_buffer <= "0";
+    -- case statement 
+    case current_thread_state is -- 
+      when s_dummy_reset_state => -- 
+        next_thread_state := s_dummy_reset_state;
+        next_thread_state := s_dummy_reset_state;
+        --
+      --
+    end case;
+    if (clk'event and clk = '1') then -- 
+      if (reset = '1') then -- 
+        current_thread_state <= s_dummy_reset_state;
+        -- 
+      else -- 
+        current_thread_state <= next_thread_state; 
+        -- objects to be updated under tick.
+        -- specified tick assignments. 
+        -- 
+      end if; 
+      -- 
+    end if; 
+    --
+  end process; 
+  --
+end rtlThreadArch;
 library ahir;
 use ahir.BaseComponents.all;
 use ahir.Utilities.all;
@@ -17,7 +76,7 @@ library nic_subsystem_lib;
 use nic_subsystem_lib.nic_subsystem_Type_Package.all;
 --<<<<<
 -->>>>>
-library nic_subsystem_lib;
+library nic_lib;
 library nic_mac_bridge_lib;
 --<<<<<
 entity nic_subsystem is -- 
@@ -74,7 +133,7 @@ architecture struct of nic_subsystem is --
       MEMORY_TO_NIC_RESPONSE_pipe_write_data : in std_logic_vector(64 downto 0);
       MEMORY_TO_NIC_RESPONSE_pipe_write_req  : in std_logic_vector(0  downto 0);
       MEMORY_TO_NIC_RESPONSE_pipe_write_ack  : out std_logic_vector(0  downto 0);
-      mac_to_nic_data_pipe_write_data : in std_logic_vector(9 downto 0);
+      mac_to_nic_data_pipe_write_data : in std_logic_vector(72 downto 0);
       mac_to_nic_data_pipe_write_req  : in std_logic_vector(0  downto 0);
       mac_to_nic_data_pipe_write_ack  : out std_logic_vector(0  downto 0);
       AFB_NIC_RESPONSE_pipe_read_data : out std_logic_vector(32 downto 0);
@@ -86,8 +145,7 @@ architecture struct of nic_subsystem is --
       enable_mac_pipe_read_data : out std_logic_vector(0 downto 0);
       enable_mac_pipe_read_req  : in std_logic_vector(0  downto 0);
       enable_mac_pipe_read_ack  : out std_logic_vector(0  downto 0);
-      nic_intr : out std_logic_vector(0 downto 0);
-      nic_to_mac_transmit_pipe_pipe_read_data : out std_logic_vector(9 downto 0);
+      nic_to_mac_transmit_pipe_pipe_read_data : out std_logic_vector(72 downto 0);
       nic_to_mac_transmit_pipe_pipe_read_req  : in std_logic_vector(0  downto 0);
       nic_to_mac_transmit_pipe_pipe_read_ack  : out std_logic_vector(0  downto 0);
       clk, reset: in std_logic 
@@ -97,7 +155,7 @@ architecture struct of nic_subsystem is --
   end component;
   -->>>>>
   for inst_nic :  nic -- 
-    use entity nic_subsystem_lib.nic; -- 
+    use entity nic_lib.nic; -- 
   --<<<<<
   component nic_mac_bridge is -- 
     port( -- 
@@ -126,6 +184,16 @@ architecture struct of nic_subsystem is --
   for nic_mac_bridge_inst :  nic_mac_bridge -- 
     use entity nic_mac_bridge_lib.nic_mac_bridge; -- 
   --<<<<<
+  component tie_interrupt_off is  -- 
+    port (-- 
+      out_sig: out std_logic_vector(0 downto 0);
+      clk, reset: in std_logic); --
+    --
+  end component;
+  -->>>>>
+  for i0 :  tie_interrupt_off -- 
+    use entity nic_subsystem_lib.tie_interrupt_off; -- 
+  --<<<<<
   -- 
 begin -- 
   inst_nic: nic
@@ -148,7 +216,6 @@ begin --
     mac_to_nic_data_pipe_write_data => rx_concat_to_nic_data_pipe_read_data,
     mac_to_nic_data_pipe_write_req => rx_concat_to_nic_data_pipe_read_ack,
     mac_to_nic_data_pipe_write_ack => rx_concat_to_nic_data_pipe_read_req,
-    nic_intr => NIC_INTERRUPT_TO_PROCESSOR,
     nic_to_mac_transmit_pipe_pipe_read_data => nic_to_tx_deconcat_data_pipe_write_data,
     nic_to_mac_transmit_pipe_pipe_read_req => nic_to_tx_deconcat_data_pipe_write_ack,
     nic_to_mac_transmit_pipe_pipe_read_ack => nic_to_tx_deconcat_data_pipe_write_req,
@@ -173,6 +240,11 @@ begin --
     tx_out_pipe_pipe_read_req => NIC_TO_MAC_DATA_pipe_read_req,
     tx_out_pipe_pipe_read_ack => NIC_TO_MAC_DATA_pipe_read_ack,
     clk => clk, reset => reset 
+    ); -- 
+  i0: tie_interrupt_off -- 
+    port map ( -- 
+      out_sig => NIC_INTERRUPT_TO_PROCESSOR,
+      clk => clk, reset => reset--
     ); -- 
   nic_mac_enable_inst:  PipeBase -- 
     generic map( -- 

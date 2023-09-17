@@ -1,0 +1,14 @@
+// Constant Declarations
+/////////////////////////////////////////////////////////////////////////////////////
+// General constants
+$constant WAIT_TIME: $uint<10> := 10 // Wait for WAIT_TIME number of clock cycles
+$constant FULL_BYTE_MASK : $uint<8> := _b11111111 // Byte Mask to write entire word
+$constant BAD_PACKET_DATA : $uint<64> := _hffffffffffffffff // Data Identifier of Bad packet
+$constant QUEUE_SIZE_MASK : $uint<32> := 4
+
+// NIC Registers related
+$constant TX_QUEUES_REG_START_OFFSET : $uint<6> := 10 // tx queue registers start after 10th reg.
+$constant RX_QUEUES_REG_START_OFFSET : $uint<6> := 2 // rx queue registers start after 2nd reg.
+/////////////////////////////////////////////////////////////////////////////////////
+
+
