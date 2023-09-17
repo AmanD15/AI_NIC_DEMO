@@ -1,0 +1,15 @@
+$pipe LAST_WRITTEN_RX_QUEUE_INDEX: $uint<6> $signal
+$pipe LAST_READ_TX_QUEUE_INDEX: $uint<6> $signal
+
+$pipe MAC_ENABLE : $uint<1> $signal
+// 36-bit Free Queue
+// Address of Free Q Port // Since it is used frequently make it a speciic port and not a
+// ReQ-Resp Access
+
+$pipe FREE_Q : $uint<36> $signal
+
+// Control Register Port // Since it is used frequently make it a speciic port and not a
+// ReQ-Resp Access
+$pipe CONTROL_REGISTER : $uint<32> $signal
+
+$pipe NUMBER_OF_SERVERS : $uint<32> $signal

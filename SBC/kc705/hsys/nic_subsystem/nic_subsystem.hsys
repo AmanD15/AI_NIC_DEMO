@@ -3,14 +3,15 @@ $system nic_subsystem $library nic_subsystem_lib
         $pipe AFB_TO_NIC_REQUEST        // AFB request pipe coming in
         $pipe ACB_TO_NIC_RESPONSE       // ACB response pipe coming in
         $pipe MAC_TO_NIC_DATA           // MAC->NIC pipe coming in
+
     $out
 
 
         $pipe NIC_TO_AFB_RESPONSE       // AFB response pipe going out
         $pipe NIC_TO_ACB_REQUEST        // ACB request going out
         $pipe NIC_TO_MAC_DATA           // NIC->MAC pipe going out.
-	    $signal NIC_TO_MAC_RESETN
-	    $signal NIC_INTERRUPT_TO_PROCESSOR
+        $signal NIC_TO_MAC_RESETN
+        $signal NIC_INTERRUPT_TO_PROCESSOR
 {
 
 
@@ -31,7 +32,7 @@ $system nic_subsystem $library nic_subsystem_lib
 		
 ////////////////////////// Bridge <--> NIC <--> SBC_core /////////////////////////////
 
-         $instance inst_nic nic_subsystem_lib:nic
+         $instance inst_nic nic_lib:nic
                 enable_mac                  => nic_mac_enable // output
                 AFB_NIC_REQUEST             => AFB_TO_NIC_REQUEST 
                 AFB_NIC_RESPONSE            => NIC_TO_AFB_RESPONSE 
@@ -40,5 +41,17 @@ $system nic_subsystem $library nic_subsystem_lib
                 mac_to_nic_data             => rx_concat_to_nic_data //input
                 nic_to_mac_transmit_pipe    => nic_to_tx_deconcat_data //output
                 nic_intr                    => NIC_INTERRUPT_TO_PROCESSOR
+
+	// tie the interrupt off for now.
+	$thread tie_interrupt_off
+		$out $signal out_sig: $unsigned<1>
+		$default
+			$now out_sig := ($unsigned<1>) 0
+		<dummy_reset_state> {
+			$goto dummy_reset_state }
+		$now $tick
+
+	$string i0 : tie_interrupt_off
+		out_sig => NIC_INTERRUPT_TO_PROCESSOR
 }
 

@@ -5,13 +5,6 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$signal SWITCHES
 
 		/////////////////////////////////////
-		// TBD:
-		//    Pull the MAC and DRAM MIG
-		//    out of the core
-		$signal ETHERNET_PHY_TO_SBC
-		$signal DRAM_TO_SBC
-		//
-		/////////////////////////////////////
 		$pipe MAC_TO_NIC
 
 		$signal SPI_FLASH_MISO
@@ -20,6 +13,9 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$signal CLOCK_TO_NIC
 		$signal CLOCK_TO_DRAM
 
+		// aggregated input signal from dram controller
+		// ip to core.
+		$signal DRAM_CONTROLLER_TO_ACB_BRIDGE
 		
 	$out
 		$signal DebugSerialTx
@@ -37,6 +33,10 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$signal SPI_FLASH_MOSI
 		$signal SPI_FLASH_CLK
 		$signal SPI_FLASH_CS_L
+
+		// aggregated signal from core to dram controller ip.
+		$signal ACB_BRIDGE_TO_DRAM_CONTROLLER
+
 {
 
 	$pipe PROCESSOR_AFB_REQUEST
@@ -59,18 +59,17 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 
 
 	$signal NIC_INTERRUPT
-    $signal NIC_MAC_RESETN
+    	$signal NIC_MAC_RESETN
 
 	$pipe ACB_DRAM_REQUEST
 	$pipe ACB_DRAM_RESPONSE
 
 	$instance processor_subsystem_inst processor_subsystem:processor_subsystem_lib
-
 	$instance afb_network_subsystem_inst afb_network_subsystem:afb_network_subsystem_lib
 	$instance acb_network_subsystem_inst acb_network_subsystem:acb_network_subsystem_lib
 	$instance spi_flash_controller_inst spi_flash_controller:spi_flash_lib
 
-    $instance nic_subsystem_inst nic_subsystem:nic_subsystem_lib
+    	$instance nic_subsystem_inst nic_subsystem:nic_subsystem_lib
 
                         MAC_TO_NIC_DATA             => MAC_TO_NIC
                         NIC_TO_MAC_DATA             => NIC_TO_MAC
@@ -82,4 +81,11 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
                         NIC_TO_MAC_RESETN           => NIC_MAC_RESETN
 
 	$instance acb_dram_controller_bridge_inst  acb_dram_controller_bridge:acb_dram_controller_bridge_lib
+			// signals to/from dram controller ip.
+			DRAM_CONTROLLER_TO_ACB_BRIDGE => DRAM_CONTROLLER_TO_ACB_BRIDGE
+			ACB_BRIDGE_TO_DRAM_CONTROLLER => ACB_BRIDGE_TO_DRAM_CONTROLLER	
+			// acb bus interface (slave)
+			CORE_BUS_REQUEST => ACB_DRAM_REQUEST
+			CORE_BUS_RESPONSE => ACB_DRAM_RESPONSE
+
 }

@@ -1,0 +1,5 @@
+Verilog files used for NIC - MAC glue
+logic
+	reset the mac
+	10-bit -> 73 bit concat
+	73-bit -> 10 bit deconcat
