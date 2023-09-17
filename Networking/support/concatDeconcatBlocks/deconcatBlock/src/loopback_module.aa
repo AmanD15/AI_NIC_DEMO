@@ -1,0 +1,19 @@
+$pipe rx_pipe : $uint<10> $depth 2
+$pipe tx_pipe : $uint<10> $depth 2
+
+
+$module [loopback_Daemon] $in () $out () $is
+{
+	$branchblock[loop]{
+		
+		$dopipeline $depth 7 $fullrate
+		$merge $entry $loopback $endmerge
+
+		
+		X := rx_pipe
+		tx_pipe := X
+
+		$while 1	
+
+	}
+}

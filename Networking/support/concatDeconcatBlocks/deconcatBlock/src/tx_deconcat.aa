@@ -1,0 +1,48 @@
+
+
+//
+//	read pipe
+//		send 8 - 8 byte till tlast = 1
+//
+
+$module [tx_deconcat] $in () $out () $is
+{
+	$branchblock[loop]{
+
+		//$dopipeline $depth 7 $fullrate
+		
+		$merge $entry outer_loopback
+			$phi RX := tx_in_pipe $on $entry tx_in_pipe $on outer_loopback
+		$endmerge	
+			$volatile data := ($slice RX 71 8)
+			$volatile tkeep := ($slice RX 7 0)
+			$volatile tlast := (RX [] 72)
+			
+			$rreport(tx_deconcat data RX data tkeep tlast)
+		
+				$dopipeline $depth 7 $fullrate
+				$merge $entry $loopback
+					$phi count := $zero<4> $on $entry ncount $on $loopback 
+					$phi senddata := data $on $entry nsenddata $on $loopback
+				$endmerge
+					$volatile send := (tkeep [] count)		//(count == (bytes_to_send-1)) 
+					$volatile sendtlast := ((count == 7) | ((tkeep [] (count+1)) == 0))
+					$volatile nsenddata := (senddata >> ($bitcast ($uint<64>) 8))
+					$volatile data_to_send := ($concat ($mux sendtlast tlast $zero<1>)  ($slice senddata 7 0) $zero<1>)
+					$volatile ncount := ($mux sendtlast $zero<4> (count + 1))
+
+					tx_out_pipe := data_to_send		
+					
+					$rreport(tx_deconcat datainside send sendtlast nsenddata senddata ncount count data_to_send)	
+
+					//$if (~sendtlast) $then
+					//	$place [inner_loopback]
+					//$endif
+					
+					$while (~sendtlast)
+		$if (tkeep [] 0) $then
+			$place [outer_loopback]
+		$endif
+		//$while 1
+	}
+}

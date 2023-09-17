@@ -1,0 +1,40 @@
+$pipe outpipe : $uint<16> $depth 2
+$pipe inpipe0 : $uint<64> $depth 2
+$pipe inpipe1 : $uint<64> $depth 2
+
+$module [outBridgetx] $in () $out () $is
+{
+
+	$branchblock [loop]{
+		
+		$dopipeline $depth 7 $fullrate
+	
+			$merge $entry $loopback
+				$phi RX := tx_out_pipe $on $entry, $loopback
+			$endmerge
+
+		outpipe := ($bitcast ($uint<16>) RX)
+
+		$while 1	
+	}
+}
+
+
+$module [inBridgetx] $in () $out () $is
+{
+
+	$branchblock [loop]{
+		
+		$dopipeline $depth 7 $fullrate
+	
+			$merge $entry $loopback
+				$phi RX0 := inpipe0 $on $entry, $loopback
+				$phi RX1 := inpipe1 $on $entry, $loopback
+			$endmerge
+
+			tx_in_pipe := ($concat ($slice RX1 8 0) RX0)			
+
+		$while 1
+	}
+}
+

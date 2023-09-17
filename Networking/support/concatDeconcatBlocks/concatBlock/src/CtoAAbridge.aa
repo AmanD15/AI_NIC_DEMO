@@ -1,0 +1,39 @@
+$pipe inpipe : $uint<16> $depth 2
+$pipe outpipe0 : $uint<64> $depth 2
+$pipe outpipe1 : $uint<64> $depth 2
+
+$module [inBridge] $in () $out () $is
+{
+
+	$branchblock [loop]{
+		
+		$dopipeline $depth 7 $fullrate
+	
+			$merge $entry $loopback
+				$phi RX := inpipe $on $entry, $loopback
+			$endmerge
+
+		rx_in_pipe := ($slice RX 9 0)
+
+		$while 1	
+	}
+}
+
+
+$module [outBridge] $in () $out () $is
+{
+
+	$branchblock [loop]{
+		
+		$dopipeline $depth 7 $fullrate
+	
+			$merge $entry $loopback
+				$phi RX := rx_out_pipe $on $entry, $loopback
+			$endmerge
+
+			outpipe0 := ($slice RX 63 0)
+			outpipe1 := ($concat $zero<55> ($slice RX 72 64))
+		$while 1
+	}
+}
+
