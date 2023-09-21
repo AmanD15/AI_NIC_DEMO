@@ -1,0 +1,11 @@
+$system nic_mac_pipe_reset $library nic_mac_bridge_lib 
+    $in 
+        
+        $pipe ENABLE_MAC
+
+    $out
+        $signal nic_to_mac_resetn
+   
+{
+}
+
