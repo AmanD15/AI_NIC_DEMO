@@ -1,1 +1,0 @@
-This folder is to generate the vhdl file at this level of hierarchy, by using "dummy" system modules in nic_subsystem.hsys.
