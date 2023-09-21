@@ -16,7 +16,7 @@ $system nic_mac_bridge $library nic_mac_bridge_lib
                 rx_in_pipe => rx_in_pipe		        // input (10)
 		        rx_out_pipe => rx_out_pipe              // output (73)
 
-    $instance inst_tx_concat_system nic_mac_bridge_lib:tx_concat_system
+    $instance inst_tx_deconcat_system nic_mac_bridge_lib:tx_deconcat_system
                 tx_in_pipe  => tx_in_pipe               // input(73)
                 tx_out_pipe => tx_out_pipe              // output(10)
 
