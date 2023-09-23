@@ -20,3 +20,22 @@ $pipe CORE_BUS_REQUEST: $uint<110> $depth 2
 $pipe CORE_BUS_RESPONSE: $uint<65> $depth 2
 $pipe MAC_TO_NIC: $uint<10> $depth 2  
 $pipe NIC_TO_MAC: $uint<10> $depth 2  
+
+
+// pipes for ACB AFB complex
+
+$pipe ACB_REQUEST_FROM_PROCESSOR: $uint<110> $depth 2 $p2p
+$pipe ACB_RESPONSE_TO_PROCESSOR: $uint<65> $depth 2 $p2p
+
+$pipe AFB_REQUEST_TO_NIC: $uint<74> $depth 2
+$pipe AFB_RESPONSE_FROM_NIC: $uint<33> $depth 2
+
+$pipe AFB_REQUEST_TO_FLASH: $uint<74> $depth 2
+$pipe AFB_RESPONSE_FROM_FLASH: $uint<33> $depth 2
+
+$pipe ACB_REQUEST_FROM_NIC: $uint<110> $depth 2
+$pipe ACB_RESPONSE_TO_NIC: $uint<65> $depth 2
+
+$pipe ACB_REQUEST_TO_DRAM: $uint<110> $depth 2
+$pipe ACB_RESPONSE_FROM_DRAM: $uint<65> $depth 2
+
