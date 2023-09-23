@@ -4,7 +4,7 @@ $system acb_afb_complex $library acb_afb_complex_lib
 		$pipe ACB_REQUEST_FROM_NIC
 
 		$pipe AFB_RESPONSE_FROM_NIC
-		$pipe AFB_REQUEST_FROM_FLASH
+		$pipe AFB_RESPONSE_FROM_FLASH
 
 		$pipe ACB_RESPONSE_FROM_DRAM
 	$out
@@ -26,32 +26,92 @@ $system acb_afb_complex $library acb_afb_complex_lib
 
 	$signal MIN_ACB_TAP_ADDR   36	$depth 1
 	$signal MAX_ACB_TAP_ADDR   36	$depth 1
-
+ 
 	$pipe AFB_REQUEST_TO_NIC_FLASH 74 $depth 2
 	$pipe AFB_RESPONSE_FROM_NIC_FLASH 33  $depth 2
 
-	$instance acb_tap_inst  acb_fast_tap:GlueModules
-		CORE_BUS_REQUEST => 	ACB_REQUEST_FROM_PROCESSOR
-		CORE_BUS_RESPONSE =>    ACB_RESPONSE_TO_PROCESSOR
+    $signal MIN_AFB_TAP_ADDR   36	$depth 1
+	$signal MAX_AFB_TAP_ADDR   36	$depth 1
+
+
+	$instance acb_tap_inst  GlueModules:acb_fast_tap
+
+		CORE_BUS_REQUEST           => ACB_REQUEST_FROM_PROCESSOR
+		CORE_BUS_RESPONSE          => ACB_RESPONSE_TO_PROCESSOR
+
 		// tap to NIC+FLASH
-		CORE_BUS_REQUEST_TAP => ACB_REQUEST_TO_NIC_FLASH
-		CORE_BUS_RESPONSE_TAP => ACB_RESPONSE_FROM_NIC_FLASH
+		CORE_BUS_REQUEST_TAP       => ACB_REQUEST_TO_NIC_FLASH
+		CORE_BUS_RESPONSE_TAP      => ACB_RESPONSE_FROM_NIC_FLASH
+
 		// through, to DRAM
-		CORE_BUS_REQUEST_THROUGH => ACB_THROUGH_REQUEST_TO_DRAM
-		CORE_BUS_RESPONSE_THROUGH => ACB_THROUGH_RESPONSE_FROM_DRAM
+		CORE_BUS_REQUEST_THROUGH   => ACB_THROUGH_REQUEST_TO_DRAM
+		CORE_BUS_RESPONSE_THROUGH  => ACB_THROUGH_RESPONSE_FROM_DRAM
+
 		// address range for tap
-		MIN_ADDRESS_TAP => MIN_ACB_TAP_ADDR
-		MAX_ADDRESS_TAP => MAX_ACB_TAP_ADDR
+		MIN_ADDR_TAP            => MIN_ACB_TAP_ADDR
+		MAX_ADDR_TAP            => MAX_ACB_TAP_ADDR
+
 		
-	$instance acb_afb_bridge_inst  acb_afb_bridge:GlueModules
-		CORE_BUS_REQUEST => ACB_REQUEST_TO_NIC_FLASH
-		CORE_BUS_RESPONSE => ACB_RESPONSE_FROM_NIC_FLASH
-		AFB_BUS_REQUEST => AFB_REQUEST_TO_NIC_FLASH
-		AFB_BUS_RESPONSE => AFB_RESPONSE_FROM_NIC_FLASH
+	$instance acb_afb_bridge_inst  GlueModules:acb_afb_bridge
 
-	// AFB tap to NIC
+		CORE_BUS_REQUEST    => ACB_REQUEST_TO_NIC_FLASH
+		CORE_BUS_RESPONSE   => ACB_RESPONSE_FROM_NIC_FLASH
 
-	// ACB mux 
+		AFB_BUS_REQUEST     => AFB_REQUEST_TO_NIC_FLASH
+		AFB_BUS_RESPONSE    => AFB_RESPONSE_FROM_NIC_FLASH
 
+
+    $instance afb_fast_tap_inst  GlueModules:afb_fast_tap
+
+        AFB_BUS_REQUEST      => AFB_REQUEST_TO_NIC_FLASH
+        AFB_BUS_RESPONSE     => AFB_RESPONSE_FROM_NIC_FLASH
+
+        // tap to NIC
+		AFB_BUS_REQUEST_TAP  => AFB_REQUEST_TO_NIC
+		AFB_BUS_RESPONSE_TAP => AFB_RESPONSE_FROM_NIC
+
+        // through to FLASH
+		AFB_BUS_REQUEST_THROUGH   => AFB_REQUEST_TO_FLASH
+		AFB_BUS_RESPONSE_THROUGH  => AFB_RESPONSE_FROM_FLASH
+
+        // address range for tap
+		MIN_ADDR_TAP            => MIN_AFB_TAP_ADDR
+		MAX_ADDR_TAP            => MAX_AFB_TAP_ADDR
+
+
+	$instance acb_fast_mux_inst  GlueModules:acb_fast_mux
+
+        CORE_BUS_REQUEST_HIGH  => ACB_REQUEST_FROM_NIC
+        CORE_BUS_RESPONSE_HIGH => ACB_RESPONSE_TO_NIC
+
+		CORE_BUS_REQUEST_LOW   => ACB_THROUGH_REQUEST_TO_DRAM
+        CORE_BUS_RESPONSE_LOW  => ACB_THROUGH_RESPONSE_FROM_DRAM
+
+		CORE_BUS_REQUEST       => ACB_REQUEST_TO_DRAM
+        CORE_BUS_RESPONSE      => ACB_RESPONSE_FROM_DRAM
+
+     
+    $thread set_addr_tap
+		$out $signal min_afb_tap_addr: $unsigned<36>
+        $out $signal max_afb_tap_addr: $unsigned<36>
+        $out $signal min_acb_tap_addr: $unsigned<36>
+        $out $signal max_acb_tap_addr: $unsigned<36>
+
+		$default
+			$now min_afb_tap_addr := ($unsigned<36>) 1
+            $now max_afb_tap_addr := ($unsigned<36>) 2
+            $now min_acb_tap_addr := ($unsigned<36>) 3
+            $now max_acb_tap_addr := ($unsigned<36>) 4
+
+		<dummy_reset_state> {
+			$goto dummy_reset_state }
+		$now $tick
+
+	    $string i0 : set_addr_tap
+		    min_afb_tap_addr => MIN_AFB_TAP_ADDR
+            max_afb_tap_addr => MAX_AFB_TAP_ADDR
+            min_acb_tap_addr => MIN_ACB_TAP_ADDR
+            max_acb_tap_addr => MAX_ACB_TAP_ADDR
+        
 
 }
