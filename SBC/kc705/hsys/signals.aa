@@ -38,5 +38,5 @@ $pipe ACB_BRIDGE_TO_DRAM_CONTROLLER: $uint<614> $depth 1 $signal
 
 
 // TODO
-$pipe ETHERNET_PHY_TO_SBC: $uint<??> $signal
-$pipe SBC_TO_ETHERNET_PHY: $uint<??> $signal
+//$pipe ETHERNET_PHY_TO_SBC: $uint<??> $signal
+//$pipe SBC_TO_ETHERNET_PHY: $uint<??> $signal
