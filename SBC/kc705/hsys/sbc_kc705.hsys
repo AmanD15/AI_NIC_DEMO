@@ -12,6 +12,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 
 		// Flash
 		$signal SPI_FLASH_MISO
+		$signal WRITE_PROTECT
 
 		// Clocks! (hand-edited later)
 		$signal CLOCK_TO_PROCESSOR
