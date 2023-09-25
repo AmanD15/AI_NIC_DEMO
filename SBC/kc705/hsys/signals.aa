@@ -6,9 +6,19 @@ $pipe CLOCK_TO_NIC: $uint<1>  $signal
 $pipe CLOCK_TO_DRAM: $uint<1>  $signal
 $pipe DebugSerialTx: $uint<1>  $signal
 $pipe PrintSerialTx: $uint<1>  $signal
+
+$pipe SPI_FLASH_MISO: $uint<1>  $signal
 $pipe SPI_FLASH_MOSI: $uint<1>  $signal
 $pipe SPI_FLASH_CLK: $uint<1>  $signal
-$pipe SPI_FLASH_CS_L: $uint<1>  $signal
+$pipe SPI_FLASH_CS_L: $uint<8>  $signal
+
+$pipe WRITE_PROTECT: $uint<1> $signal
+
+$pipe SPI_MISO: $uint<1>  $signal
+$pipe SPI_MOSI: $uint<1>  $signal
+$pipe SPI_CLK: $uint<1>  $signal
+$pipe SPI_CS_L: $uint<8>  $signal
+
 $pipe NIC_INTERRUPT: $uint<1>  $signal
 $pipe NIC_MAC_RESETN: $uint<1>  $signal
 $pipe SWITCHES: $uint<4> $signal
@@ -40,3 +50,9 @@ $pipe ACB_BRIDGE_TO_DRAM_CONTROLLER: $uint<614> $depth 1 $signal
 // TODO
 //$pipe ETHERNET_PHY_TO_SBC: $uint<??> $signal
 //$pipe SBC_TO_ETHERNET_PHY: $uint<??> $signal
+
+$pipe MIN_ACB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MAX_ACB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+
+$pipe MIN_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MAX_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal

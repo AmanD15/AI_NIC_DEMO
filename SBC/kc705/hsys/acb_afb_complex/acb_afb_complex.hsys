@@ -7,6 +7,16 @@ $system acb_afb_complex $library acb_afb_complex_lib
 		$pipe AFB_RESPONSE_FROM_FLASH
 
 		$pipe ACB_RESPONSE_FROM_DRAM
+
+		// tap ranges could be made inputs
+		// so that we can delay the decision
+		// of which address ranges are used
+		$signal MIN_ACB_TAP_ADDR   36	$depth 1
+		$signal MAX_ACB_TAP_ADDR   36	$depth 1
+
+		$signal MIN_AFB_TAP_ADDR   36	$depth 1
+		$signal MAX_AFB_TAP_ADDR   36	$depth 1
+
 	$out
 		$pipe ACB_RESPONSE_TO_PROCESSOR
 		$pipe ACB_RESPONSE_TO_NIC
@@ -24,14 +34,10 @@ $system acb_afb_complex $library acb_afb_complex_lib
 	$pipe ACB_THROUGH_REQUEST_TO_DRAM     110 $depth 2
 	$pipe ACB_THROUGH_RESPONSE_FROM_DRAM  65 $depth 2
 
-	$signal MIN_ACB_TAP_ADDR   36	$depth 1
-	$signal MAX_ACB_TAP_ADDR   36	$depth 1
 
 	$pipe AFB_REQUEST_TO_NIC_FLASH 74 $depth 2
 	$pipe AFB_RESPONSE_FROM_NIC_FLASH 33  $depth 2
 
-	$signal MIN_AFB_TAP_ADDR   36	$depth 1
-	$signal MAX_AFB_TAP_ADDR   36	$depth 1
 
 
 	$instance acb_tap_inst  GlueModules:acb_fast_tap
@@ -85,28 +91,6 @@ $system acb_afb_complex $library acb_afb_complex_lib
 
 		CORE_BUS_REQUEST       => ACB_REQUEST_TO_DRAM
 		CORE_BUS_RESPONSE      => ACB_RESPONSE_FROM_DRAM
-
-	$thread set_addr_tap
-		$out $signal min_afb_tap_addr: $unsigned<36>
-		$out $signal max_afb_tap_addr: $unsigned<36>
-		$out $signal min_acb_tap_addr: $unsigned<36>
-		$out $signal max_acb_tap_addr: $unsigned<36>
-
-	$default
-		$now min_afb_tap_addr := ($unsigned<36>) 1
-		$now max_afb_tap_addr := ($unsigned<36>) 2
-		$now min_acb_tap_addr := ($unsigned<36>) 3
-		$now max_acb_tap_addr := ($unsigned<36>) 4
-
-		<dummy_reset_state> {
-			$goto dummy_reset_state }
-		$now $tick
-
-	$string i0 : set_addr_tap
-		min_afb_tap_addr => MIN_AFB_TAP_ADDR
-		max_afb_tap_addr => MAX_AFB_TAP_ADDR
-		min_acb_tap_addr => MIN_ACB_TAP_ADDR
-		max_acb_tap_addr => MAX_ACB_TAP_ADDR
 
 
 }

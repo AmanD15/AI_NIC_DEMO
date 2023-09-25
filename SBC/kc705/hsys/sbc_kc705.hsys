@@ -1,46 +1,49 @@
 $system sbc_kc705_core $library sbc_kc705_core_lib
 	$in
-		$signal DebugSerialRx
-		$signal PrintSerialRx
-		$signal SWITCHES
 
-		/////////////////////////////////////
+		// processor connections..
+		$signal THREAD_RESET 
+		$pipe   SOC_MONITOR_to_DEBUG
+		$pipe   CONSOLE_to_SERIAL_RX
+
+		
+		// NIC
 		$pipe MAC_TO_NIC
 
+		// Flash
 		$signal SPI_FLASH_MISO
 
+		// Clocks! (hand-edited later)
 		$signal CLOCK_TO_PROCESSOR
 		$signal CLOCK_TO_NIC
 		$signal CLOCK_TO_DRAM
 
-		// aggregated input signal from dram controller
-		// ip to core.
+		// DRAM controller IP 
 		$signal DRAM_CONTROLLER_TO_ACB_BRIDGE
 		
 	$out
-		$signal DebugSerialTx
-		$signal PrintSerialTx
-		$signal LEDS
+		// processor 
+		$pipe SOC_DEBUG_to_MONITOR 
+		$pipe SERIAL_TX_to_CONSOLE 
 
-		/////////////////////////////////////
-		// TBD:
-		//    Pull the MAC and DRAM MIG
+		$signal PROCESSOR_MODE
+
+		// To ethernet-phy port map 
 		$signal SBC_TO_ETHERNET_PHY
-		$signal SBC_TO_DRAM
-		/////////////////////////////////////
+
+		// NIC
 		$pipe NIC_TO_MAC
 			
+		// FLASH
 		$signal SPI_FLASH_MOSI
 		$signal SPI_FLASH_CLK
 		$signal SPI_FLASH_CS_L
 
-		// aggregated signal from core to dram controller ip.
+		// DRAM controller IP
 		$signal ACB_BRIDGE_TO_DRAM_CONTROLLER
 
 {
 
-	$pipe PROCESSOR_AFB_REQUEST
-	$pipe PROCESSOR_AFB_RESPONSE
 
 	$pipe PROCESSOR_ACB_REQUEST
 	$pipe PROCESSOR_ACB_RESPONSE
@@ -48,15 +51,11 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$pipe AFB_NIC_REQUEST
 	$pipe NIC_AFB_RESPONSE
 
-	$pipe ACB_FLASH_REQUEST
-	$pipe ACB_FLASH_RESPONSE
-
 	$pipe ACB_MEMORY_REQUEST
 	$pipe ACB_MEMORY_RESPONSE
 
 	$pipe NIC_ACB_MEMORY_REQUEST
 	$pipe ACB_NIC_MEMORY_RESPONSE
-
 
 	$signal NIC_INTERRUPT
     	$signal NIC_MAC_RESETN
@@ -64,10 +63,57 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$pipe ACB_DRAM_REQUEST
 	$pipe ACB_DRAM_RESPONSE
 
-	$instance processor_subsystem_inst processor_subsystem:processor_subsystem_lib
-	$instance afb_network_subsystem_inst afb_network_subsystem:afb_network_subsystem_lib
-	$instance acb_network_subsystem_inst acb_network_subsystem:acb_network_subsystem_lib
+	$signal MIN_ACB_TAP_ADDR   36	$depth 1
+	$signal MAX_ACB_TAP_ADDR   36	$depth 1
+
+	$signal MIN_AFB_TAP_ADDR   36	$depth 1
+	$signal MAX_AFB_TAP_ADDR   36	$depth 1
+
+	$pipe MAIN_MEM_INVALIDATE 30 $depth 2
+
+	$instance processor_inst ajit_processor_lib:processor_1x1x32
+		THREAD_RESET =>
+		SOC_MONITOR_to_DEBUG => SOC_MONITOR_to_DEBUG
+		SOC_DEBUG_to_MONITOR => SOC_DEBUG_to_MONITOR
+		CONSOLE_to_SERIAL_RX => CONSOLE_to_SERIAL_RX
+		SERIAL_TX_to_CONSOLE => SERIAL_TX_to_CONSOLE
+		MAIN_MEM_REQUEST => PROCESSOR_ACB_REQUEST
+		MAIN_MEM_RESPONSE => PROCESSOR_ACB_RESPONSE
+		MAIN_MEM_INVALIDATE => MAIN_MEM_INVALIDATE
+		EXTERNAL_INTERRUPT => EXTERNAL_INTERRUPT
+		PROCESSOR_MODE => PROCESSOR_MODE
+
+	$instance acb_afb_complex_inst acb_afb_complex: acb_afb_complex_lib
+		 ACB_REQUEST_FROM_PROCESSOR =>
+		 ACB_RESPONSE_TO_PROCESSOR =>
+
+		 ACB_REQUEST_FROM_NIC =>
+		 ACB_RESPONSE_TO_NIC => 
+
+		 ACB_REQUEST_TO_DRAM =>
+		 ACB_RESPONSE_FROM_DRAM =>
+
+		 AFB_REQUEST_TO_NIC  =>
+		 AFB_RESPONSE_FROM_NIC =>
+
+		 AFB_REQUEST_TO_FLASH =>
+		 AFB_RESPONSE_FROM_FLASH =>
+
+		 MIN_ACB_TAP_ADDR  =>
+		 MAX_ACB_TAP_ADDR  =>
+
+		 MIN_AFB_TAP_ADDR  =>
+		 MAX_AFB_TAP_ADDR  =>
+		
 	$instance spi_flash_controller_inst spi_flash_controller:spi_flash_lib
+
+		AFB_REQUEST_TO_FLASH =>
+		AFB_RESPONSE_FROM_FLASH =>
+		WRITE_PROTECT =>
+		SPI_FLASH_MISO =>
+		SPI_FLASH_CLK =>
+		SPI_FLASH_CS_L =>
+		SPI_FLASH_MOSI =>
 
     	$instance nic_subsystem_inst nic_subsystem:nic_subsystem_lib
 
@@ -88,4 +134,52 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 			CORE_BUS_REQUEST => ACB_DRAM_REQUEST
 			CORE_BUS_RESPONSE => ACB_DRAM_RESPONSE
 
+	$thread set_addr_tap
+		$out $signal min_afb_tap_addr: $unsigned<36>
+		$out $signal max_afb_tap_addr: $unsigned<36>
+		$out $signal min_acb_tap_addr: $unsigned<36>
+		$out $signal max_acb_tap_addr: $unsigned<36>
+
+	$default
+		$now min_afb_tap_addr := ($unsigned<36>) 1
+		$now max_afb_tap_addr := ($unsigned<36>) 2
+		$now min_acb_tap_addr := ($unsigned<36>) 3
+		$now max_acb_tap_addr := ($unsigned<36>) 4
+
+		<dummy_reset_state> {
+			$goto dummy_reset_state }
+		$now $tick
+
+	$string i0 : set_addr_tap
+		min_afb_tap_addr => MIN_AFB_TAP_ADDR
+		max_afb_tap_addr => MAX_AFB_TAP_ADDR
+		min_acb_tap_addr => MIN_ACB_TAP_ADDR
+		max_acb_tap_addr => MAX_ACB_TAP_ADDR
+
+	// invalidate 
+	$thread invalidateDummy
+		$in $signal c1: $unsigned<1>
+		$in $signal c2: $unsigned<1>
+		$in $signal c3: $unsigned<1>
+		$out $signal ei: $unsigned<1>
+		$out $pipe   inval: $unsigned<30>
+		$variable t1: $unsigned<1>
+		$variable t2: $unsigned<1>
+		$variable t3: $unsigned<1>
+	$default
+		$now inval$req := ($unsigned<1>) 0
+		$now inval     := ($unsigned<30>) 0
+		$now ei := ($unsigned<1>) 0
+		t1 := c1 t2 := c2 t3 := c3
+		<inval_rst_state> {
+			$goto inval_rst_state
+		}
+	$now $tick
+
+	$string inval_str: invalidateDummy
+		c1 => CLOCK_TO_PROCESSOR
+		c2 => CLOCK_TO_NIC
+		c3 => CLOCK_TO_DRAM
+		ei => EXTERNAL_INTERRUPT
+		inval => MAIN_MEM_INVALIDATE
 }

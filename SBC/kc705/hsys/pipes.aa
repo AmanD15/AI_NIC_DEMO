@@ -39,3 +39,9 @@ $pipe ACB_RESPONSE_TO_NIC: $uint<65> $depth 2
 $pipe ACB_REQUEST_TO_DRAM: $uint<110> $depth 2
 $pipe ACB_RESPONSE_FROM_DRAM: $uint<65> $depth 2
 
+$pipe master_in_data : $uint<16> $depth 2
+$pipe master_out_data:  $uint<8> $depth 2
+
+$pipe MAIN_MEM_REQUEST: $uint<110> $depth 2 
+$pipe MAIN_MEM_RESPONSE: $uint<65> $depth 2 
+$pipe MAIN_MEM_INVALIDATE: $uint<30> $depth 2
