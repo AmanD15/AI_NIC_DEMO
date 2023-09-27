@@ -44,33 +44,34 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 
 {
 
-    //Processor Pipes and Signals
+	//Processor Pipes and Signals
 	$pipe PROCESSOR_ACB_REQUEST
 	$pipe PROCESSOR_ACB_RESPONSE
-    $pipe MAIN_MEM_INVALIDATE 30 $depth 2
-    
-    // NIC Pipes and Signals
+	$pipe MAIN_MEM_INVALIDATE
+	$signal EXTERNAL_INTERRUPT
+
+	//NIC Pipes and Signals
 	$pipe AFB_NIC_REQUEST
 	$pipe NIC_AFB_RESPONSE
 	$pipe NIC_ACB_REQUEST
 	$pipe ACB_NIC_RESPONSE
 	$signal NIC_INTERRUPT
-    $signal NIC_MAC_RESETN
+	$signal NIC_MAC_RESETN
 
-    //DRAM Pipes
+	//DRAM Pipes
 	$pipe ACB_DRAM_REQUEST
 	$pipe DRAM_ACB_RESPONSE
-    
-    //FLASH Ctrl Pipes and Signals
-    $pipe AFB_FLASH_REQUEST
+
+	//FLASH Ctrl Pipes and Signals
+	$pipe AFB_FLASH_REQUEST
 	$pipe FLASH_AFB_RESPONSE
-    $signal WRITE_PROTECT
-    $signal SPI_FLASH_CLK
+	$signal WRITE_PROTECT
+	$signal SPI_FLASH_CLK
 	$signal SPI_FLASH_CS_L
 	$signal SPI_FLASH_MOSI
-    $signal SPI_FLASH_MISO
+	$signal SPI_FLASH_MISO
 
-    // ACB_AFB_COMPLEX Pipes and Signals
+	//ACB_AFB_COMPLEX Pipes and Signals
 	$signal MIN_ACB_TAP_ADDR   36	$depth 1
 	$signal MAX_ACB_TAP_ADDR   36	$depth 1
 	$signal MIN_AFB_TAP_ADDR   36	$depth 1
@@ -79,53 +80,53 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	
 
 	$instance processor_inst ajit_processor_lib:processor_1x1x32
-		 THREAD_RESET               =>
-		 SOC_MONITOR_to_DEBUG       => SOC_MONITOR_to_DEBUG
-		 SOC_DEBUG_to_MONITOR       => SOC_DEBUG_to_MONITOR
-		 CONSOLE_to_SERIAL_RX       => CONSOLE_to_SERIAL_RX
-		 SERIAL_TX_to_CONSOLE       => SERIAL_TX_to_CONSOLE
-		 MAIN_MEM_REQUEST           => PROCESSOR_ACB_REQUEST
-		 MAIN_MEM_RESPONSE          => PROCESSOR_ACB_RESPONSE
-		 MAIN_MEM_INVALIDATE        => MAIN_MEM_INVALIDATE
-		 EXTERNAL_INTERRUPT         => EXTERNAL_INTERRUPT
-		 PROCESSOR_MODE             => PROCESSOR_MODE
+		THREAD_RESET               => THREAD_RESET
+		SOC_MONITOR_to_DEBUG       => SOC_MONITOR_to_DEBUG
+		SOC_DEBUG_to_MONITOR       => SOC_DEBUG_to_MONITOR
+		CONSOLE_to_SERIAL_RX       => CONSOLE_to_SERIAL_RX
+		SERIAL_TX_to_CONSOLE       => SERIAL_TX_to_CONSOLE
+		MAIN_MEM_REQUEST           => PROCESSOR_ACB_REQUEST
+		MAIN_MEM_RESPONSE          => PROCESSOR_ACB_RESPONSE
+		MAIN_MEM_INVALIDATE        => MAIN_MEM_INVALIDATE
+		EXTERNAL_INTERRUPT         => EXTERNAL_INTERRUPT
+		PROCESSOR_MODE             => PROCESSOR_MODE
 
 	$instance acb_afb_complex_inst acb_afb_complex: acb_afb_complex_lib
-		 ACB_REQUEST_FROM_PROCESSOR => PROCESSOR_ACB_REQUEST
-		 ACB_RESPONSE_TO_PROCESSOR  => PROCESSOR_ACB_RESPONSE
-		 ACB_REQUEST_FROM_NIC       => NIC_ACB_REQUEST
-		 ACB_RESPONSE_TO_NIC        => ACB_NIC_RESPONSE
-		 ACB_REQUEST_TO_DRAM        => ACB_DRAM_REQUEST
-		 ACB_RESPONSE_FROM_DRAM     => ACB_DRAM_RESPONSE
-		 AFB_REQUEST_TO_NIC         => AFB_NIC_REQUEST
-		 AFB_RESPONSE_FROM_NIC      => NIC_AFB_RESPONSE
-		 AFB_REQUEST_TO_FLASH       => AFB_FLASH_REQUEST
-		 AFB_RESPONSE_FROM_FLASH    => FLASH_AFB_RESPONSE
-		 MIN_ACB_TAP_ADDR           => MIN_ACB_TAP_ADDR
-		 MAX_ACB_TAP_ADDR           => MAX_ACB_TAP_ADDR
-		 MIN_AFB_TAP_ADDR           => MIN_AFB_TAP_ADDR
-		 MAX_AFB_TAP_ADDR           => MAX_AFB_TAP_ADDR
+		ACB_REQUEST_FROM_PROCESSOR => PROCESSOR_ACB_REQUEST
+		ACB_RESPONSE_TO_PROCESSOR  => PROCESSOR_ACB_RESPONSE
+		ACB_REQUEST_FROM_NIC       => NIC_ACB_REQUEST
+		ACB_RESPONSE_TO_NIC        => ACB_NIC_RESPONSE
+		ACB_REQUEST_TO_DRAM        => ACB_DRAM_REQUEST
+		ACB_RESPONSE_FROM_DRAM     => ACB_DRAM_RESPONSE
+		AFB_REQUEST_TO_NIC         => AFB_NIC_REQUEST
+		AFB_RESPONSE_FROM_NIC      => NIC_AFB_RESPONSE
+		AFB_REQUEST_TO_FLASH       => AFB_FLASH_REQUEST
+		AFB_RESPONSE_FROM_FLASH    => FLASH_AFB_RESPONSE
+		MIN_ACB_TAP_ADDR           => MIN_ACB_TAP_ADDR
+		MAX_ACB_TAP_ADDR           => MAX_ACB_TAP_ADDR
+		MIN_AFB_TAP_ADDR           => MIN_AFB_TAP_ADDR
+		MAX_AFB_TAP_ADDR           => MAX_AFB_TAP_ADDR
 		
 	$instance spi_flash_controller_inst spi_flash_controller:spi_flash_lib
 
-		 AFB_REQUEST_TO_FLASH        => AFB_FLASH_REQUEST
-		 AFB_RESPONSE_FROM_FLASH     => FLASH_AFB_RESPONSE
-		 WRITE_PROTECT               => WRITE_PROTECT
-		 SPI_FLASH_MISO              => SPI_FLASH_MISO
-		 SPI_FLASH_CLK               => SPI_FLASH_CLK
-		 SPI_FLASH_CS_L              => SPI_FLASH_CS_L
-		 SPI_FLASH_MOSI              => SPI_FLASH_MOSI
+		AFB_REQUEST_TO_FLASH        => AFB_FLASH_REQUEST
+		AFB_RESPONSE_FROM_FLASH     => FLASH_AFB_RESPONSE
+		WRITE_PROTECT               => WRITE_PROTECT
+		SPI_FLASH_MISO              => SPI_FLASH_MISO
+		SPI_FLASH_CLK               => SPI_FLASH_CLK
+		SPI_FLASH_CS_L              => SPI_FLASH_CS_L
+		SPI_FLASH_MOSI              => SPI_FLASH_MOSI
 
-    $instance nic_subsystem_inst nic_subsystem:nic_subsystem_lib
+	$instance nic_subsystem_inst nic_subsystem:nic_subsystem_lib
 
-        MAC_TO_NIC_DATA              => MAC_TO_NIC
-        NIC_TO_MAC_DATA              => NIC_TO_MAC
-        AFB_TO_NIC_REQUEST           => AFB_NIC_REQUEST
-        NIC_TO_AFB_RESPONSE          => NIC_AFB_RESPONSE
-        NIC_TO_ACB_REQUEST           => NIC_ACB_REQUEST
-        ACB_TO_NIC_RESPONSE          => ACB_NIC_RESPONSE
-        NIC_INTERRUPT_TO_PROCESSOR   => NIC_INTERRUPT
-        NIC_TO_MAC_RESETN            => NIC_MAC_RESETN
+		MAC_TO_NIC_DATA             => MAC_TO_NIC
+		NIC_TO_MAC_DATA             => NIC_TO_MAC
+		AFB_TO_NIC_REQUEST          => AFB_NIC_REQUEST
+		NIC_TO_AFB_RESPONSE         => NIC_AFB_RESPONSE
+		NIC_TO_ACB_REQUEST          => NIC_ACB_REQUEST
+		ACB_TO_NIC_RESPONSE         => ACB_NIC_RESPONSE
+		NIC_INTERRUPT_TO_PROCESSOR  => NIC_INTERRUPT
+		NIC_TO_MAC_RESETN           => NIC_MAC_RESETN
 
 	$instance acb_dram_controller_bridge_inst  acb_dram_controller_bridge:acb_dram_controller_bridge_lib
 		// signals to/from dram controller ip.
@@ -133,8 +134,8 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		ACB_BRIDGE_TO_DRAM_CONTROLLER => ACB_BRIDGE_TO_DRAM_CONTROLLER	
 
 		// acb bus interface (slave)
-		CORE_BUS_REQUEST              => ACB_DRAM_REQUEST
-		CORE_BUS_RESPONSE             => DRAM_ACB_RESPONSE
+		CORE_BUS_REQUEST            => ACB_DRAM_REQUEST
+		CORE_BUS_RESPONSE           => DRAM_ACB_RESPONSE
 
 
 //************** STUBBING VARIOUS PORTS *******************//

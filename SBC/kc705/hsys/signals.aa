@@ -1,15 +1,16 @@
 
 // main SBC signals
+
 $pipe CLOCK_TO_PROCESSOR: $uint<1>  $signal
 $pipe CLOCK_TO_NIC: $uint<1>  $signal
 $pipe CLOCK_TO_DRAM: $uint<1>  $signal
 
 
 // Processor signals
-$pipe DebugSerialRx: $uint<1>  $signal
-$pipe PrintSerialRx: $uint<1>  $signal
-$pipe DebugSerialTx: $uint<1>  $signal
-$pipe PrintSerialTx: $uint<1>  $signal
+$pipe THREAD_RESET         : $uint<4>  $signal 
+$pipe PROCESSOR_MODE       : $uint<16> $signal 
+$pipe EXTERNAL_INTERRUPT   : $uint<1>  $signal
+
 
 // SPI FLASH signals
 $pipe SPI_FLASH_MISO: $uint<1>  $signal
