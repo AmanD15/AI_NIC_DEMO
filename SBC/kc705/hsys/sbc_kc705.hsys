@@ -29,11 +29,11 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$signal PROCESSOR_MODE
 
 		// To ethernet-phy port map 
-		$signal SBC_TO_ETHERNET_PHY
+		//$signal SBC_TO_ETHERNET_PHY
 
 		// NIC
 		$pipe NIC_TO_MAC
-			
+		$signal NIC_MAC_RESETN	
 		// FLASH
 		$signal SPI_FLASH_MOSI
 		$signal SPI_FLASH_CLK
@@ -48,7 +48,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$pipe PROCESSOR_ACB_REQUEST
 	$pipe PROCESSOR_ACB_RESPONSE
 	$pipe MAIN_MEM_INVALIDATE
-	$signal EXTERNAL_INTERRUPT
+	
 
 	//NIC Pipes and Signals
 	$pipe AFB_NIC_REQUEST
@@ -56,7 +56,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$pipe NIC_ACB_REQUEST
 	$pipe ACB_NIC_RESPONSE
 	$signal NIC_INTERRUPT
-	$signal NIC_MAC_RESETN
+	
 
 	//DRAM Pipes
 	$pipe ACB_DRAM_REQUEST
@@ -65,11 +65,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	//FLASH Ctrl Pipes and Signals
 	$pipe AFB_FLASH_REQUEST
 	$pipe FLASH_AFB_RESPONSE
-	$signal WRITE_PROTECT
-	$signal SPI_FLASH_CLK
-	$signal SPI_FLASH_CS_L
-	$signal SPI_FLASH_MOSI
-	$signal SPI_FLASH_MISO
+	
 
 	//ACB_AFB_COMPLEX Pipes and Signals
 	$signal MIN_ACB_TAP_ADDR   36	$depth 1
@@ -88,16 +84,16 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		MAIN_MEM_REQUEST           => PROCESSOR_ACB_REQUEST
 		MAIN_MEM_RESPONSE          => PROCESSOR_ACB_RESPONSE
 		MAIN_MEM_INVALIDATE        => MAIN_MEM_INVALIDATE
-		EXTERNAL_INTERRUPT         => EXTERNAL_INTERRUPT
+		EXTERNAL_INTERRUPT         => NIC_INTERRUPT
 		PROCESSOR_MODE             => PROCESSOR_MODE
 
-	$instance acb_afb_complex_inst acb_afb_complex: acb_afb_complex_lib
+	$instance acb_afb_complex_inst acb_afb_complex_lib: acb_afb_complex
 		ACB_REQUEST_FROM_PROCESSOR => PROCESSOR_ACB_REQUEST
 		ACB_RESPONSE_TO_PROCESSOR  => PROCESSOR_ACB_RESPONSE
 		ACB_REQUEST_FROM_NIC       => NIC_ACB_REQUEST
 		ACB_RESPONSE_TO_NIC        => ACB_NIC_RESPONSE
 		ACB_REQUEST_TO_DRAM        => ACB_DRAM_REQUEST
-		ACB_RESPONSE_FROM_DRAM     => ACB_DRAM_RESPONSE
+		ACB_RESPONSE_FROM_DRAM     => DRAM_ACB_RESPONSE
 		AFB_REQUEST_TO_NIC         => AFB_NIC_REQUEST
 		AFB_RESPONSE_FROM_NIC      => NIC_AFB_RESPONSE
 		AFB_REQUEST_TO_FLASH       => AFB_FLASH_REQUEST
@@ -107,7 +103,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		MIN_AFB_TAP_ADDR           => MIN_AFB_TAP_ADDR
 		MAX_AFB_TAP_ADDR           => MAX_AFB_TAP_ADDR
 		
-	$instance spi_flash_controller_inst spi_flash_controller:spi_flash_lib
+	$instance spi_flash_controller_inst spi_flash_controller_lib:spi_flash_controller
 
 		AFB_REQUEST_TO_FLASH        => AFB_FLASH_REQUEST
 		AFB_RESPONSE_FROM_FLASH     => FLASH_AFB_RESPONSE
@@ -117,7 +113,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		SPI_FLASH_CS_L              => SPI_FLASH_CS_L
 		SPI_FLASH_MOSI              => SPI_FLASH_MOSI
 
-	$instance nic_subsystem_inst nic_subsystem:nic_subsystem_lib
+	$instance nic_subsystem_inst nic_subsystem_lib:nic_subsystem
 
 		MAC_TO_NIC_DATA             => MAC_TO_NIC
 		NIC_TO_MAC_DATA             => NIC_TO_MAC
@@ -128,7 +124,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		NIC_INTERRUPT_TO_PROCESSOR  => NIC_INTERRUPT
 		NIC_TO_MAC_RESETN           => NIC_MAC_RESETN
 
-	$instance acb_dram_controller_bridge_inst  acb_dram_controller_bridge:acb_dram_controller_bridge_lib
+	$instance acb_dram_controller_bridge_inst  acb_dram_controller_bridge_lib:acb_dram_controller_bridge
 		// signals to/from dram controller ip.
 		DRAM_CONTROLLER_TO_ACB_BRIDGE => DRAM_CONTROLLER_TO_ACB_BRIDGE
 		ACB_BRIDGE_TO_DRAM_CONTROLLER => ACB_BRIDGE_TO_DRAM_CONTROLLER	
@@ -167,16 +163,18 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$in $signal c1: $unsigned<1>
 		$in $signal c2: $unsigned<1>
 		$in $signal c3: $unsigned<1>
+        $in $signal c4: $unsigned<1>
 		$out $signal ei: $unsigned<1>
 		$out $pipe   inval: $unsigned<30>
 		$variable t1: $unsigned<1>
 		$variable t2: $unsigned<1>
 		$variable t3: $unsigned<1>
+        $variable t4: $unsigned<1>
 	$default
 		$now inval$req := ($unsigned<1>) 0
 		$now inval     := ($unsigned<30>) 0
 		$now ei := ($unsigned<1>) 0
-		t1 := c1 t2 := c2 t3 := c3
+		t1 := c1 t2 := c2 t3 := c3 t4 := c4
 		<inval_rst_state> {
 			$goto inval_rst_state
 		}
@@ -186,6 +184,6 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		c1 => CLOCK_TO_PROCESSOR
 		c2 => CLOCK_TO_NIC
 		c3 => CLOCK_TO_DRAM
-		ei => EXTERNAL_INTERRUPT
+        c4 => NIC_INTERRUPT
 		inval => MAIN_MEM_INVALIDATE
 }
