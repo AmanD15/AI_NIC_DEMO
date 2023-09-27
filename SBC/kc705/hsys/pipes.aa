@@ -14,12 +14,11 @@ $pipe MAIN_MEM_INVALIDATE: $uint<30> $depth 2
 
 $pipe AFB_NIC_REQUEST: $uint<74> $depth 2
 $pipe NIC_AFB_RESPONSE: $uint<33> $depth 2
-$pipe AFB_FLASH_REQUEST: $uint<74> $depth 2
-$pipe FLASH_AFB_RESPONSE: $uint<33> $depth 2
 $pipe NIC_ACB_REQUEST: $uint<110> $depth 2
 $pipe ACB_NIC_RESPONSE: $uint<65> $depth 2
 $pipe MAC_TO_NIC: $uint<10> $depth 2  
 $pipe NIC_TO_MAC: $uint<10> $depth 2  
+ 
 
 // DRAM subsystem pipes
 
@@ -49,7 +48,8 @@ $pipe master_out_data:  $uint<8> $depth 2
 $pipe MAIN_MEM_REQUEST: $uint<110> $depth 2 
 $pipe MAIN_MEM_RESPONSE: $uint<65> $depth 2 
 $pipe MAIN_MEM_INVALIDATE: $uint<30> $depth 2
-
+$pipe AFB_FLASH_REQUEST: $uint<74> $depth 2
+$pipe FLASH_AFB_RESPONSE: $uint<33> $depth 2
 
 
 
