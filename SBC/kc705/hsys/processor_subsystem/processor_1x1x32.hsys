@@ -58,20 +58,20 @@ $system processor_1x1x32 $library ajit_processor_lib
 	$pipe TRACE_3_0  32 $depth 3
 	$pipe TRACE_3_1  32 $depth 3
 
-
-	$instance  mcore_inst  ajit_mcore_lib: mcore_1x1x32
+//********************************************************************//
+	//$instance  mcore_inst  ajit_mcore_lib: mcore_1x1x32
 
 	// vanilla peripherals 
-	$instance peripherals_isnt peripherals_lib: peripherals
-		INTR_LEVEL_0_0 => IRL_0_0
-		INTR_LEVEL_0_1 => IRL_0_1
-		INTR_LEVEL_1_0 => IRL_1_0
-		INTR_LEVEL_1_1 => IRL_1_1
-		INTR_LEVEL_2_0 => IRL_2_0
-		INTR_LEVEL_2_1 => IRL_2_1
-		INTR_LEVEL_3_0 => IRL_3_0
-		INTR_LEVEL_3_1 => IRL_3_1
-
+	//$instance peripherals_isnt peripherals_lib: peripherals
+		//INTR_LEVEL_0_0 => IRL_0_0
+		//INTR_LEVEL_0_1 => IRL_0_1
+		//INTR_LEVEL_1_0 => IRL_1_0
+		//INTR_LEVEL_1_1 => IRL_1_1
+		//INTR_LEVEL_2_0 => IRL_2_0
+		//INTR_LEVEL_2_1 => IRL_2_1
+		//INTR_LEVEL_3_0 => IRL_3_0
+		//INTR_LEVEL_3_1 => IRL_3_1
+//********************************************************************//
 	// Absorbs signals/pipes meant for missing threads.
 	$thread threadStubber
 		// ilvl from peripherals will need to be stubbed.
@@ -110,11 +110,11 @@ $system processor_1x1x32 $library ajit_processor_lib
 			$goto s_i_state
 		}
 	$now $tick
-
-	$string perfStubber_00: stubProcPerformanceUpdate
-			update_command => CPU_to_PERFORMANCE_COUNTER_UPDATE_0_0
+//********************************************************************//
+	//$string perfStubber_00: stubProcPerformanceUpdate
+			//update_command => CPU_to_PERFORMANCE_COUNTER_UPDATE_0_0
 		
-
+//********************************************************************//
 	$string threadStubber_01: threadStubber
 		ilvl => IRL_0_1
 	$string threadDummy_01 :  threadDummy
