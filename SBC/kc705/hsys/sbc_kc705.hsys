@@ -163,13 +163,13 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$in $signal c1: $unsigned<1>
 		$in $signal c2: $unsigned<1>
 		$in $signal c3: $unsigned<1>
-        $in $signal c4: $unsigned<1>
+	$in $signal c4: $unsigned<1>
 		$out $signal ei: $unsigned<1>
 		$out $pipe   inval: $unsigned<30>
 		$variable t1: $unsigned<1>
 		$variable t2: $unsigned<1>
 		$variable t3: $unsigned<1>
-        $variable t4: $unsigned<1>
+	$variable t4: $unsigned<1>
 	$default
 		$now inval$req := ($unsigned<1>) 0
 		$now inval     := ($unsigned<30>) 0
@@ -184,6 +184,6 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		c1 => CLOCK_TO_PROCESSOR
 		c2 => CLOCK_TO_NIC
 		c3 => CLOCK_TO_DRAM
-        c4 => NIC_INTERRUPT
+		c4 => NIC_INTERRUPT
 		inval => MAIN_MEM_INVALIDATE
 }
