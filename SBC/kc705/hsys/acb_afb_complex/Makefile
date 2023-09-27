@@ -5,7 +5,7 @@
 PIPES=../pipes.aa  ../signals.aa 
 
 all: acb_afb_complex.hsys  $(PIPES)
-	buildHierarchicalModel.py  -s ghdl -a acb_afb_complex_acb_afb_complex_lib -H $(PIPES)
+	buildHierarchicalModel.py  -s ghdl -a acb_afb_complex_acb_afb_complex_lib -H -J ../GlueModules/GlueModules.hsys $(PIPES)
 
 
 clean:
