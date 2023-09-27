@@ -1,0 +1,234 @@
+$system processor_1x1x32 $library ajit_processor_lib
+	$in
+		// common thread reset to all cores...
+		$signal  THREAD_RESET 4 $depth 1
+
+		$pipe SOC_MONITOR_to_DEBUG 8 $depth 2
+		$pipe CONSOLE_to_SERIAL_RX
+
+		$pipe MAIN_MEM_RESPONSE 65 $depth   2 $p2p
+		$pipe MAIN_MEM_INVALIDATE 30 $depth 4 $p2p
+
+
+		$signal EXTERNAL_INTERRUPT 1 $depth 1
+
+	$out
+		$pipe SOC_DEBUG_to_MONITOR 8 $depth 2
+		$pipe SERIAL_TX_to_CONSOLE 
+
+		//
+		// 2-bits per core..
+		//
+		$signal PROCESSOR_MODE 16 $depth 1
+
+		//
+		// Traces will be suppressed in the vanilla processor
+		//
+
+		$pipe MAIN_MEM_REQUEST  110 $depth 2 
+
+{
+
+
+
+	$signal TMODE_0_0 4 $depth 1
+	$signal TMODE_0_1 4 $depth 1
+	$signal TMODE_1_0 4 $depth 1
+	$signal TMODE_1_1 4 $depth 1
+	$signal TMODE_2_0 4 $depth 1
+	$signal TMODE_2_1 4 $depth 1
+	$signal TMODE_3_0 4 $depth 1
+	$signal TMODE_3_1 4 $depth 1
+
+	$signal IRL_0_0  4 $depth 1
+	$signal IRL_0_1  4 $depth 1
+	$signal IRL_1_0  4 $depth 1
+	$signal IRL_1_1  4 $depth 1
+	$signal IRL_2_0  4 $depth 1
+	$signal IRL_2_1  4 $depth 1
+	$signal IRL_3_0  4 $depth 1
+	$signal IRL_3_1  4 $depth 1
+
+	$pipe TRACE_0_0  32 $depth 3
+	$pipe TRACE_0_1  32 $depth 3
+	$pipe TRACE_1_0  32 $depth 3
+	$pipe TRACE_1_1  32 $depth 3
+	$pipe TRACE_2_0  32 $depth 3
+	$pipe TRACE_2_1  32 $depth 3
+	$pipe TRACE_3_0  32 $depth 3
+	$pipe TRACE_3_1  32 $depth 3
+
+
+	$instance  mcore_inst  ajit_mcore_lib: mcore_1x1x32
+
+	// vanilla peripherals 
+	$instance peripherals_isnt peripherals_lib: peripherals
+		INTR_LEVEL_0_0 => IRL_0_0
+		INTR_LEVEL_0_1 => IRL_0_1
+		INTR_LEVEL_1_0 => IRL_1_0
+		INTR_LEVEL_1_1 => IRL_1_1
+		INTR_LEVEL_2_0 => IRL_2_0
+		INTR_LEVEL_2_1 => IRL_2_1
+		INTR_LEVEL_3_0 => IRL_3_0
+		INTR_LEVEL_3_1 => IRL_3_1
+
+	// Absorbs signals/pipes meant for missing threads.
+	$thread threadStubber
+		// ilvl from peripherals will need to be stubbed.
+		$in $signal ilvl: $unsigned<4>
+		$variable tvar: $unsigned<4>
+		$variable svar: $unsigned<4>
+	$default
+		tvar  := ilvl	
+		<tS_rst_state> {
+			$goto tS_rst_state
+		}	
+	$now $tick
+
+	// generates signals a missing core/thread was
+	// supposed to generate.
+	$thread threadDummy
+		$out $signal tmode: $unsigned<4>
+		$out $pipe   trace: $unsigned<32>
+	$default
+		$now tmode := ($unsigned<4>) 0
+
+		$now trace$req := ($unsigned<1>) 0
+		$now trace     := ($unsigned<32>) 0
+	
+		<cD_rst_state> {
+			$goto cD_rst_state
+		}
+	$now $tick
+
+	// Just stub out the performance counter update
+	$thread stubProcPerformanceUpdate
+		$in $pipe update_command: $unsigned<10>
+	$default
+		$now update_command$req := ($unsigned<1>) 1
+		<s_i_state> {
+			$goto s_i_state
+		}
+	$now $tick
+
+	$string perfStubber_00: stubProcPerformanceUpdate
+			update_command => CPU_to_PERFORMANCE_COUNTER_UPDATE_0_0
+		
+
+	$string threadStubber_01: threadStubber
+		ilvl => IRL_0_1
+	$string threadDummy_01 :  threadDummy
+		tmode => TMODE_0_1
+		trace => TRACE_0_1
+
+
+
+
+	$string threadStubber_10: threadStubber
+		ilvl => IRL_1_0
+	$string threadDummy_10 :  threadDummy
+		tmode => TMODE_1_0
+		trace => TRACE_1_0
+
+
+
+	$string threadStubber_11: threadStubber
+		ilvl => IRL_1_1
+	$string threadDummy_11 :  threadDummy
+		tmode => TMODE_1_1
+		trace => TRACE_1_1
+
+
+
+	$string threadStubber_20: threadStubber
+		ilvl => IRL_2_0
+	$string threadDummy_20 :  threadDummy
+		tmode => TMODE_2_0
+		trace => TRACE_2_0
+
+	$string threadStubber_21: threadStubber
+		ilvl => IRL_2_1
+	$string threadDummy_21 :  threadDummy
+		tmode => TMODE_2_1
+		trace => TRACE_2_1
+
+
+	$string threadStubber_30: threadStubber
+		ilvl => IRL_3_0
+	$string threadDummy_30 :  threadDummy
+		tmode => TMODE_3_0
+		trace => TRACE_3_0
+
+
+	$string threadStubber_31: threadStubber
+		ilvl => IRL_3_1
+	$string threadDummy_31 :  threadDummy
+		tmode => TMODE_3_1
+		trace => TRACE_3_1
+
+	$thread pmodeGen
+		$in $signal TMODE_0_0: $unsigned<4>
+		$in $signal TMODE_0_1: $unsigned<4>
+		$in $signal TMODE_1_0: $unsigned<4>
+		$in $signal TMODE_1_1: $unsigned<4>
+		$in $signal TMODE_2_0: $unsigned<4>
+		$in $signal TMODE_2_1: $unsigned<4>
+		$in $signal TMODE_3_0: $unsigned<4>
+		$in $signal TMODE_3_1: $unsigned<4>
+
+		$out $signal PROCESSOR_MODE: $unsigned<16>
+	$default
+		$now PROCESSOR_MODE := 
+			(($slice TMODE_3_1 1 0) &&
+				(($slice TMODE_3_0 1 0) &&
+					(($slice TMODE_2_1 1 0) && 
+						(($slice TMODE_2_0 1 0) && 
+							(($slice TMODE_1_1 1 0) && 
+								(($slice TMODE_1_0 1 0) &&
+									(($slice TMODE_0_1 1 0) &&
+										($slice TMODE_0_0 1 0))))))))
+		<pG_rst_state> {
+			$goto pG_rst_state
+		}
+
+	$now $tick
+
+	$string pmodeGenString: pmodeGen
+			TMODE_0_0 => TMODE_0_0
+			TMODE_0_1 => TMODE_0_1
+			TMODE_1_0 => TMODE_1_0
+			TMODE_1_1 => TMODE_1_1
+			TMODE_2_0 => TMODE_2_0
+			TMODE_2_1 => TMODE_2_1
+			TMODE_3_0 => TMODE_3_0
+			TMODE_3_1 => TMODE_3_1
+			PROCESSOR_MODE => PROCESSOR_MODE
+
+
+	$thread traceStubber
+		$in $pipe trace: $unsigned<32>
+	$default
+		$now trace$req := ($unsigned<1>) 0
+		<tS_rst_state> {
+			$goto tS_rst_state
+		}
+	$now $tick 
+
+	$string traceStubber_00: traceStubber
+		trace => TRACE_0_0
+	$string traceStubber_01: traceStubber
+		trace => TRACE_0_1
+	$string traceStubber_10: traceStubber
+		trace => TRACE_1_0
+	$string traceStubber_11: traceStubber
+		trace => TRACE_1_1
+	$string traceStubber_20: traceStubber
+		trace => TRACE_2_0
+	$string traceStubber_21: traceStubber
+		trace => TRACE_2_1
+	$string traceStubber_30: traceStubber
+		trace => TRACE_3_0
+	$string traceStubber_31: traceStubber
+		trace => TRACE_3_1
+}
+
