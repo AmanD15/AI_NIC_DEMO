@@ -554,3 +554,65 @@ $system dcache_fast_interface_mux $library GlueModules
 {
 	
 }
+
+//**************************** FIFO TEMPLATES*******************************//
+
+
+$system DualClockedQueue_ACB_req $library DualClockedQueue_lib
+$in
+	$pipe write_data_in 110 $depth 2
+    $signal read_clk 1 $depth 1
+    $signal write_clk 1 $depth 1
+	
+$out
+	$pipe read_data_out 110 $depth 2
+
+	
+{
+}
+
+
+$system DualClockedQueue_ACB_resp $library DualClockedQueue_lib
+$in
+	$pipe write_data_in 65 $depth 2
+    $signal read_clk 1 $depth 1
+    $signal write_clk 1 $depth 1
+	
+$out
+	$pipe read_data_out 65 $depth 2
+
+	
+{
+}
+
+
+
+
+
+$system DualClockedQueue_AFB_req $library DualClockedQueue_lib
+$in
+	$pipe write_data_in 74 $depth 2
+    $signal read_clk 1 $depth 1
+    $signal write_clk 1 $depth 1
+	
+$out
+	$pipe read_data_out 74 $depth 2
+
+	
+{
+}
+
+
+$system DualClockedQueue_AFB_resp $library DualClockedQueue_lib
+$in
+	$pipe write_data_in 33 $depth 2
+    $signal read_clk 1 $depth 1
+    $signal write_clk 1 $depth 1
+	
+$out
+	$pipe read_data_out 33 $depth 2
+
+	
+{
+}
+//****************************END OF FIFO TEMPLATES*******************************//
