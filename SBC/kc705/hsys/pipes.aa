@@ -51,6 +51,19 @@ $pipe MAIN_MEM_INVALIDATE: $uint<30> $depth 2
 $pipe AFB_FLASH_REQUEST: $uint<74> $depth 2
 $pipe FLASH_AFB_RESPONSE: $uint<33> $depth 2
 
+// FIFO connection pipes
+
+$pipe AFB_NIC_REQUEST_FIFO_IN: $uint<74> $depth 2
+$pipe AFB_NIC_REQUEST_FIFO_OUT: $uint<74> $depth 2
+
+$pipe NIC_AFB_RESPONSE_FIFO_IN: $uint<33> $depth 2
+$pipe NIC_AFB_RESPONSE_FIFO_OUT: $uint<33> $depth 2
+
+$pipe NIC_ACB_REQUEST_FIFO_IN: $uint<110> $depth 2
+$pipe NIC_ACB_REQUEST_FIFO_OUT: $uint<110> $depth 2
+
+$pipe ACB_NIC_RESPONSE_FIFO_IN: $uint<65> $depth 2
+$pipe ACB_NIC_RESPONSE_FIFO_OUT: $uint<65> $depth 2
 
 
 
