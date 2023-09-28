@@ -51,10 +51,10 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	
 
 	//NIC Pipes and Signals
-	$pipe AFB_NIC_REQUEST
-	$pipe NIC_AFB_RESPONSE
-	$pipe NIC_ACB_REQUEST
-	$pipe ACB_NIC_RESPONSE
+	//$pipe AFB_NIC_REQUEST
+	//$pipe NIC_AFB_RESPONSE
+	//$pipe NIC_ACB_REQUEST
+	//$pipe ACB_NIC_RESPONSE
 	$signal NIC_INTERRUPT
 	
 
@@ -73,7 +73,17 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$signal MIN_AFB_TAP_ADDR   36	$depth 1
 	$signal MAX_AFB_TAP_ADDR   36	$depth 1
 
-	
+	//FIFO Pipes connections
+    $pipe AFB_NIC_REQUEST_FIFO_IN
+    $pipe AFB_NIC_REQUEST_FIFO_OUT
+    $pipe NIC_AFB_RESPONSE_FIFO_IN
+    $pipe NIC_AFB_RESPONSE_FIFO_OUT
+
+    $pipe NIC_ACB_REQUEST_FIFO_IN
+    $pipe NIC_ACB_REQUEST_FIFO_OUT
+    $pipe ACB_NIC_RESPONSE_FIFO_IN
+    $pipe ACB_NIC_RESPONSE_FIFO_OUT
+
 
 	$instance processor_inst ajit_processor_lib:processor_1x1x32
 		THREAD_RESET               => THREAD_RESET
@@ -90,12 +100,12 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$instance acb_afb_complex_inst acb_afb_complex_lib: acb_afb_complex
 		ACB_REQUEST_FROM_PROCESSOR => PROCESSOR_ACB_REQUEST
 		ACB_RESPONSE_TO_PROCESSOR  => PROCESSOR_ACB_RESPONSE
-		ACB_REQUEST_FROM_NIC       => NIC_ACB_REQUEST
-		ACB_RESPONSE_TO_NIC        => ACB_NIC_RESPONSE
+		ACB_REQUEST_FROM_NIC       => NIC_ACB_REQUEST_FIFO_OUT
+		ACB_RESPONSE_TO_NIC        => ACB_NIC_RESPONSE_FIFO_IN
 		ACB_REQUEST_TO_DRAM        => ACB_DRAM_REQUEST
 		ACB_RESPONSE_FROM_DRAM     => DRAM_ACB_RESPONSE
-		AFB_REQUEST_TO_NIC         => AFB_NIC_REQUEST
-		AFB_RESPONSE_FROM_NIC      => NIC_AFB_RESPONSE
+		AFB_REQUEST_TO_NIC         => AFB_NIC_REQUEST_FIFO_IN
+		AFB_RESPONSE_FROM_NIC      => NIC_AFB_RESPONSE_FIFO_OUT
 		AFB_REQUEST_TO_FLASH       => AFB_FLASH_REQUEST
 		AFB_RESPONSE_FROM_FLASH    => FLASH_AFB_RESPONSE
 		MIN_ACB_TAP_ADDR           => MIN_ACB_TAP_ADDR
@@ -113,14 +123,48 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		SPI_FLASH_CS_L              => SPI_FLASH_CS_L
 		SPI_FLASH_MOSI              => SPI_FLASH_MOSI
 
+//**********    FIFO CONNECTIONS TO NIC ************************//
+
+	$instance DualClockedQueue_AFB_req_inst DualClockedQueue_lib:DualClockedQueue_AFB_req
+
+		write_data_in               => AFB_NIC_REQUEST_FIFO_IN
+		read_data_out               => AFB_NIC_REQUEST_FIFO_OUT
+		write_clk                   => CLOCK_TO_PROCESSOR
+		read_clk                    => CLOCK_TO_NIC
+		
+	$instance DualClockedQueue_AFB_resp_inst DualClockedQueue_lib:DualClockedQueue_AFB_resp
+
+		write_data_in               => NIC_AFB_RESPONSE_FIFO_IN
+		read_data_out               => NIC_AFB_RESPONSE_FIFO_OUT
+		write_clk                   => CLOCK_TO_NIC
+		read_clk                    => CLOCK_TO_PROCESSOR
+
+
+	$instance DualClockedQueue_ACB_req_inst DualClockedQueue_lib:DualClockedQueue_ACB_req
+	
+		write_data_in              => NIC_ACB_REQUEST_FIFO_IN
+		read_data_out              => NIC_ACB_REQUEST_FIFO_OUT
+		write_clk                  => CLOCK_TO_NIC
+		read_clk                   => CLOCK_TO_PROCESSOR
+
+	$instance DualClockedQueue_ACB_resp_inst DualClockedQueue_lib:DualClockedQueue_ACB_resp
+
+		write_data_in              => ACB_NIC_RESPONSE_FIFO_IN
+		read_data_out              => ACB_NIC_RESPONSE_FIFO_OUT
+		write_clk                  => CLOCK_TO_PROCESSOR
+		read_clk                   => CLOCK_TO_NIC
+
+
+//**********    END OF FIFO CONNECTIONS TO NIC  ************************//
+
 	$instance nic_subsystem_inst nic_subsystem_lib:nic_subsystem
 
 		MAC_TO_NIC_DATA             => MAC_TO_NIC
 		NIC_TO_MAC_DATA             => NIC_TO_MAC
-		AFB_TO_NIC_REQUEST          => AFB_NIC_REQUEST
-		NIC_TO_AFB_RESPONSE         => NIC_AFB_RESPONSE
-		NIC_TO_ACB_REQUEST          => NIC_ACB_REQUEST
-		ACB_TO_NIC_RESPONSE         => ACB_NIC_RESPONSE
+		AFB_TO_NIC_REQUEST          => AFB_NIC_REQUEST_FIFO_OUT
+		NIC_TO_AFB_RESPONSE         => NIC_AFB_RESPONSE_FIFO_IN
+		NIC_TO_ACB_REQUEST          => NIC_ACB_REQUEST_FIFO_IN
+		ACB_TO_NIC_RESPONSE         => ACB_NIC_RESPONSE_FIFO_OUT
 		NIC_INTERRUPT_TO_PROCESSOR  => NIC_INTERRUPT
 		NIC_TO_MAC_RESETN           => NIC_MAC_RESETN
 
