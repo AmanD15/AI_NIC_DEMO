@@ -59,8 +59,8 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	
 
 	//DRAM Pipes
-	$pipe ACB_DRAM_REQUEST
-	$pipe DRAM_ACB_RESPONSE
+	//$pipe ACB_DRAM_REQUEST
+	//$pipe DRAM_ACB_RESPONSE
 
 	//FLASH Ctrl Pipes and Signals
 	$pipe AFB_FLASH_REQUEST
@@ -84,6 +84,11 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
     $pipe ACB_NIC_RESPONSE_FIFO_IN
     $pipe ACB_NIC_RESPONSE_FIFO_OUT
 
+	$pipe ACB_DRAM_REQUEST_FIFO_IN
+	$pipe ACB_DRAM_REQUEST_FIFO_OUT
+	$pipe DRAM_ACB_RESPONSE_FIFO_IN
+	$pipe DRAM_ACB_RESPONSE_FIFO_OUT
+
 
 	$instance processor_inst ajit_processor_lib:processor_1x1x32
 		THREAD_RESET               => THREAD_RESET
@@ -102,8 +107,8 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		ACB_RESPONSE_TO_PROCESSOR  => PROCESSOR_ACB_RESPONSE
 		ACB_REQUEST_FROM_NIC       => NIC_ACB_REQUEST_FIFO_OUT
 		ACB_RESPONSE_TO_NIC        => ACB_NIC_RESPONSE_FIFO_IN
-		ACB_REQUEST_TO_DRAM        => ACB_DRAM_REQUEST
-		ACB_RESPONSE_FROM_DRAM     => DRAM_ACB_RESPONSE
+		ACB_REQUEST_TO_DRAM        => ACB_DRAM_REQUEST_FIFO_IN
+		ACB_RESPONSE_FROM_DRAM     => DRAM_ACB_RESPONSE_FIFO_OUT
 		AFB_REQUEST_TO_NIC         => AFB_NIC_REQUEST_FIFO_IN
 		AFB_RESPONSE_FROM_NIC      => NIC_AFB_RESPONSE_FIFO_OUT
 		AFB_REQUEST_TO_FLASH       => AFB_FLASH_REQUEST
@@ -154,6 +159,20 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		write_clk                  => CLOCK_TO_PROCESSOR
 		read_clk                   => CLOCK_TO_NIC
 
+	$instance DualClockedQueue_ACB_Dram_Bridge_req_inst DualClockedQueue_lib:DualClockedQueue_ACB_req
+	
+		write_data_in              => ACB_DRAM_REQUEST_FIFO_IN
+		read_data_out              => ACB_DRAM_REQUEST_FIFO_OUT
+		write_clk                  => CLOCK_TO_PROCESSOR
+		read_clk                   => CLOCK_TO_DRAM
+
+	$instance DualClockedQueue_Dram_Bridge_ACB_resp_inst DualClockedQueue_lib:DualClockedQueue_ACB_resp
+
+		write_data_in              => DRAM_ACB_RESPONSE_FIFO_IN
+		read_data_out              => DRAM_ACB_RESPONSE_FIFO_OUT
+		write_clk                  => CLOCK_TO_DRAM
+		read_clk                   => CLOCK_TO_PROCESSOR
+
 
 //**********    END OF FIFO CONNECTIONS TO NIC  ************************//
 
@@ -174,8 +193,8 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		ACB_BRIDGE_TO_DRAM_CONTROLLER => ACB_BRIDGE_TO_DRAM_CONTROLLER	
 
 		// acb bus interface (slave)
-		CORE_BUS_REQUEST            => ACB_DRAM_REQUEST
-		CORE_BUS_RESPONSE           => DRAM_ACB_RESPONSE
+		CORE_BUS_REQUEST            => ACB_DRAM_REQUEST_FIFO_OUT
+		CORE_BUS_RESPONSE           => DRAM_ACB_RESPONSE_FIFO_IN
 
 
 //************** STUBBING VARIOUS PORTS *******************//

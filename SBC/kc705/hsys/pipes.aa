@@ -65,5 +65,7 @@ $pipe NIC_ACB_REQUEST_FIFO_OUT: $uint<110> $depth 2
 $pipe ACB_NIC_RESPONSE_FIFO_IN: $uint<65> $depth 2
 $pipe ACB_NIC_RESPONSE_FIFO_OUT: $uint<65> $depth 2
 
-
-
+$pipe ACB_DRAM_REQUEST_FIFO_IN: $uint<110> $depth 2
+$pipe ACB_DRAM_REQUEST_FIFO_OUT: $uint<110> $depth 2
+$pipe DRAM_ACB_RESPONSE_FIFO_IN: $uint<65> $depth 2
+$pipe DRAM_ACB_RESPONSE_FIFO_OUT: $uint<65> $depth 2
