@@ -48,7 +48,6 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$pipe PROCESSOR_ACB_REQUEST
 	$pipe PROCESSOR_ACB_RESPONSE
 	$pipe MAIN_MEM_INVALIDATE
-	
 
 	//NIC Pipes and Signals
 	//$pipe AFB_NIC_REQUEST
@@ -56,7 +55,6 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	//$pipe NIC_ACB_REQUEST
 	//$pipe ACB_NIC_RESPONSE
 	$signal NIC_INTERRUPT
-	
 
 	//DRAM Pipes
 	//$pipe ACB_DRAM_REQUEST
@@ -65,7 +63,6 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	//FLASH Ctrl Pipes and Signals
 	$pipe AFB_FLASH_REQUEST
 	$pipe FLASH_AFB_RESPONSE
-	
 
 	//ACB_AFB_COMPLEX Pipes and Signals
 	$signal MIN_ACB_TAP_ADDR   36	$depth 1
@@ -74,15 +71,15 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$signal MAX_AFB_TAP_ADDR   36	$depth 1
 
 	//FIFO Pipes connections
-    $pipe AFB_NIC_REQUEST_FIFO_IN
-    $pipe AFB_NIC_REQUEST_FIFO_OUT
-    $pipe NIC_AFB_RESPONSE_FIFO_IN
-    $pipe NIC_AFB_RESPONSE_FIFO_OUT
+	$pipe AFB_NIC_REQUEST_FIFO_IN
+	$pipe AFB_NIC_REQUEST_FIFO_OUT
+	$pipe NIC_AFB_RESPONSE_FIFO_IN
+	$pipe NIC_AFB_RESPONSE_FIFO_OUT
 
-    $pipe NIC_ACB_REQUEST_FIFO_IN
-    $pipe NIC_ACB_REQUEST_FIFO_OUT
-    $pipe ACB_NIC_RESPONSE_FIFO_IN
-    $pipe ACB_NIC_RESPONSE_FIFO_OUT
+	$pipe NIC_ACB_REQUEST_FIFO_IN
+	$pipe NIC_ACB_REQUEST_FIFO_OUT
+	$pipe ACB_NIC_RESPONSE_FIFO_IN
+	$pipe ACB_NIC_RESPONSE_FIFO_OUT
 
 	$pipe ACB_DRAM_REQUEST_FIFO_IN
 	$pipe ACB_DRAM_REQUEST_FIFO_OUT
@@ -128,7 +125,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		SPI_FLASH_CS_L              => SPI_FLASH_CS_L
 		SPI_FLASH_MOSI              => SPI_FLASH_MOSI
 
-//**********    FIFO CONNECTIONS TO NIC ************************//
+//**********    FIFO CONNECTIONS TO NIC AND DRAM ************************//
 
 	$instance DualClockedQueue_AFB_req_inst DualClockedQueue_lib:DualClockedQueue_AFB_req
 
@@ -174,7 +171,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		read_clk                   => CLOCK_TO_PROCESSOR
 
 
-//**********    END OF FIFO CONNECTIONS TO NIC  ************************//
+//**********    END OF FIFO CONNECTIONS TO NIC AND DRAM ************************//
 
 	$instance nic_subsystem_inst nic_subsystem_lib:nic_subsystem
 
@@ -190,7 +187,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$instance acb_dram_controller_bridge_inst  acb_dram_controller_bridge_lib:acb_dram_controller_bridge
 		// signals to/from dram controller ip.
 		DRAM_CONTROLLER_TO_ACB_BRIDGE => DRAM_CONTROLLER_TO_ACB_BRIDGE
-		ACB_BRIDGE_TO_DRAM_CONTROLLER => ACB_BRIDGE_TO_DRAM_CONTROLLER	
+		ACB_BRIDGE_TO_DRAM_CONTROLLER => ACB_BRIDGE_TO_DRAM_CONTROLLER
 
 		// acb bus interface (slave)
 		CORE_BUS_REQUEST            => ACB_DRAM_REQUEST_FIFO_OUT
