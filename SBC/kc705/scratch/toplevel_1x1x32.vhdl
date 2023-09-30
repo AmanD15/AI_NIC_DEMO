@@ -628,8 +628,8 @@ mig_7series_0_inst:  mig_7series_0
 
 	clk_wiz_inst: clk_wiz_0 
 	Port map( 
-		clk_sys_320 => clk_sys_320,
-		clk_ref_200 => clk_ref_200,
+		clk_sys_320 => clk_sys_320, -- goes to the DRAM controller
+		clk_ref_200 => clk_ref_200, -- goes to the DRAM controller
 		reset       => clk_rst,
 		clk_in1_p   => sys_clk_p,
 		clk_in1_n   => sys_clk_n);
