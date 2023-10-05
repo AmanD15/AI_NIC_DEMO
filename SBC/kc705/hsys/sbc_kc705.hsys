@@ -45,15 +45,17 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 {
 
 	//Processor Pipes and Signals
-	$pipe PROCESSOR_ACB_REQUEST
-	$pipe PROCESSOR_ACB_RESPONSE
+	$pipe PROCESSOR_ACB_REQUEST_FIFO_IN
+	$pipe PROCESSOR_ACB_RESPONSE_FIFO_IN
+	$pipe PROCESSOR_ACB_REQUEST_FIFO_OUT
+	$pipe PROCESSOR_ACB_RESPONSE_FIFO_OUT
 	$pipe MAIN_MEM_INVALIDATE
 
 	//NIC Pipes and Signals
-	//$pipe AFB_NIC_REQUEST
-	//$pipe NIC_AFB_RESPONSE
-	//$pipe NIC_ACB_REQUEST
-	//$pipe ACB_NIC_RESPONSE
+	$pipe AFB_NIC_REQUEST
+	$pipe NIC_AFB_RESPONSE
+	$pipe NIC_ACB_REQUEST
+	$pipe ACB_NIC_RESPONSE
 	$signal NIC_INTERRUPT
 
 	//DRAM Pipes
@@ -71,21 +73,22 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$signal MAX_AFB_TAP_ADDR   36	$depth 1
 
 	//FIFO Pipes connections
-	$pipe AFB_NIC_REQUEST_FIFO_IN
-	$pipe AFB_NIC_REQUEST_FIFO_OUT
-	$pipe NIC_AFB_RESPONSE_FIFO_IN
-	$pipe NIC_AFB_RESPONSE_FIFO_OUT
+	//$pipe AFB_NIC_REQUEST_FIFO_IN
+	//$pipe AFB_NIC_REQUEST_FIFO_OUT
+	//$pipe NIC_AFB_RESPONSE_FIFO_IN
+	//$pipe NIC_AFB_RESPONSE_FIFO_OUT
 
-	$pipe NIC_ACB_REQUEST_FIFO_IN
-	$pipe NIC_ACB_REQUEST_FIFO_OUT
-	$pipe ACB_NIC_RESPONSE_FIFO_IN
-	$pipe ACB_NIC_RESPONSE_FIFO_OUT
+	//$pipe NIC_ACB_REQUEST_FIFO_IN
+	//$pipe NIC_ACB_REQUEST_FIFO_OUT
+	//$pipe ACB_NIC_RESPONSE_FIFO_IN
+	//$pipe ACB_NIC_RESPONSE_FIFO_OUT
 
 	$pipe ACB_DRAM_REQUEST_FIFO_IN
 	$pipe ACB_DRAM_REQUEST_FIFO_OUT
 	$pipe DRAM_ACB_RESPONSE_FIFO_IN
 	$pipe DRAM_ACB_RESPONSE_FIFO_OUT
 
+//**** 5-SUBSYSTEMS : Processor, acb_afb_complex, spi_flash_xtrl, nic_subsystem, acb_dram_bridge ***** //
 
 	$instance processor_inst ajit_processor_lib:processor_1x1x32
 		THREAD_RESET               => THREAD_RESET
@@ -93,21 +96,21 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		SOC_DEBUG_to_MONITOR       => SOC_DEBUG_to_MONITOR
 		CONSOLE_to_SERIAL_RX       => CONSOLE_to_SERIAL_RX
 		SERIAL_TX_to_CONSOLE       => SERIAL_TX_to_CONSOLE
-		MAIN_MEM_REQUEST           => PROCESSOR_ACB_REQUEST
-		MAIN_MEM_RESPONSE          => PROCESSOR_ACB_RESPONSE
+		MAIN_MEM_REQUEST           => PROCESSOR_ACB_REQUEST_FIFO_IN
+		MAIN_MEM_RESPONSE          => PROCESSOR_ACB_RESPONSE_FIFO_OUT
 		MAIN_MEM_INVALIDATE        => MAIN_MEM_INVALIDATE
 		EXTERNAL_INTERRUPT         => NIC_INTERRUPT
 		PROCESSOR_MODE             => PROCESSOR_MODE
 
 	$instance acb_afb_complex_inst acb_afb_complex_lib: acb_afb_complex
-		ACB_REQUEST_FROM_PROCESSOR => PROCESSOR_ACB_REQUEST
-		ACB_RESPONSE_TO_PROCESSOR  => PROCESSOR_ACB_RESPONSE
-		ACB_REQUEST_FROM_NIC       => NIC_ACB_REQUEST_FIFO_OUT
-		ACB_RESPONSE_TO_NIC        => ACB_NIC_RESPONSE_FIFO_IN
+		ACB_REQUEST_FROM_PROCESSOR => PROCESSOR_ACB_REQUEST_FIFO_OUT
+		ACB_RESPONSE_TO_PROCESSOR  => PROCESSOR_ACB_RESPONSE_FIFO_IN
+		ACB_REQUEST_FROM_NIC       => NIC_ACB_REQUEST
+		ACB_RESPONSE_TO_NIC        => ACB_NIC_RESPONSE
 		ACB_REQUEST_TO_DRAM        => ACB_DRAM_REQUEST_FIFO_IN
 		ACB_RESPONSE_FROM_DRAM     => DRAM_ACB_RESPONSE_FIFO_OUT
-		AFB_REQUEST_TO_NIC         => AFB_NIC_REQUEST_FIFO_IN
-		AFB_RESPONSE_FROM_NIC      => NIC_AFB_RESPONSE_FIFO_OUT
+		AFB_REQUEST_TO_NIC         => AFB_NIC_REQUEST
+		AFB_RESPONSE_FROM_NIC      => NIC_AFB_RESPONSE
 		AFB_REQUEST_TO_FLASH       => AFB_FLASH_REQUEST
 		AFB_RESPONSE_FROM_FLASH    => FLASH_AFB_RESPONSE
 		MIN_ACB_TAP_ADDR           => MIN_ACB_TAP_ADDR
@@ -125,36 +128,43 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		SPI_FLASH_CS_L              => SPI_FLASH_CS_L
 		SPI_FLASH_MOSI              => SPI_FLASH_MOSI
 
-//**********    FIFO CONNECTIONS TO NIC AND DRAM ************************//
 
-	$instance DualClockedQueue_AFB_req_inst DualClockedQueue_lib:DualClockedQueue_AFB_req
+	$instance nic_subsystem_inst nic_subsystem_lib:nic_subsystem
 
-		write_data_in               => AFB_NIC_REQUEST_FIFO_IN
-		read_data_out               => AFB_NIC_REQUEST_FIFO_OUT
-		write_clk                   => CLOCK_TO_PROCESSOR
-		read_clk                    => CLOCK_TO_NIC
-		
-	$instance DualClockedQueue_AFB_resp_inst DualClockedQueue_lib:DualClockedQueue_AFB_resp
+		MAC_TO_NIC_DATA             => MAC_TO_NIC
+		NIC_TO_MAC_DATA             => NIC_TO_MAC
+		AFB_TO_NIC_REQUEST          => AFB_NIC_REQUEST
+		NIC_TO_AFB_RESPONSE         => NIC_AFB_RESPONSE
+		NIC_TO_ACB_REQUEST          => NIC_ACB_REQUEST
+		ACB_TO_NIC_RESPONSE         => ACB_NIC_RESPONSE
+		NIC_INTERRUPT_TO_PROCESSOR  => NIC_INTERRUPT
+		NIC_TO_MAC_RESETN           => NIC_MAC_RESETN
 
-		write_data_in               => NIC_AFB_RESPONSE_FIFO_IN
-		read_data_out               => NIC_AFB_RESPONSE_FIFO_OUT
-		write_clk                   => CLOCK_TO_NIC
-		read_clk                    => CLOCK_TO_PROCESSOR
+	$instance acb_dram_controller_bridge_inst  acb_dram_controller_bridge_lib:acb_dram_controller_bridge
+		// signals to/from dram controller ip.
+		DRAM_CONTROLLER_TO_ACB_BRIDGE => DRAM_CONTROLLER_TO_ACB_BRIDGE
+		ACB_BRIDGE_TO_DRAM_CONTROLLER => ACB_BRIDGE_TO_DRAM_CONTROLLER
+
+		// acb bus interface (slave)
+		CORE_BUS_REQUEST            => ACB_DRAM_REQUEST_FIFO_OUT
+		CORE_BUS_RESPONSE           => DRAM_ACB_RESPONSE_FIFO_IN
 
 
-	$instance DualClockedQueue_ACB_req_inst DualClockedQueue_lib:DualClockedQueue_ACB_req
+//***FIFO CONNECTIONS : Processor <--> ACB_AFB_COMPLEX , ACB_AFB_COMPLEX <--> ACB_DRAM_Bridge ***//
+
+	$instance DualClockedQueue_ACB_Proc_req_inst DualClockedQueue_lib:DualClockedQueue_ACB_req
 	
-		write_data_in              => NIC_ACB_REQUEST_FIFO_IN
-		read_data_out              => NIC_ACB_REQUEST_FIFO_OUT
-		write_clk                  => CLOCK_TO_NIC
-		read_clk                   => CLOCK_TO_PROCESSOR
-
-	$instance DualClockedQueue_ACB_resp_inst DualClockedQueue_lib:DualClockedQueue_ACB_resp
-
-		write_data_in              => ACB_NIC_RESPONSE_FIFO_IN
-		read_data_out              => ACB_NIC_RESPONSE_FIFO_OUT
+		write_data_in              => PROCESSOR_ACB_REQUEST_FIFO_IN
+		read_data_out              => PROCESSOR_ACB_REQUEST_FIFO_OUT
 		write_clk                  => CLOCK_TO_PROCESSOR
 		read_clk                   => CLOCK_TO_NIC
+
+	$instance DualClockedQueue_ACB_Proc_resp_inst DualClockedQueue_lib:DualClockedQueue_ACB_resp
+
+		write_data_in              => PROCESSOR_ACB_RESPONSE_FIFO_IN
+		read_data_out              => PROCESSOR_ACB_RESPONSE_FIFO_OUT
+		write_clk                  => CLOCK_TO_NIC
+		read_clk                   => CLOCK_TO_PROCESSOR
 
 	$instance DualClockedQueue_ACB_Dram_Bridge_req_inst DualClockedQueue_lib:DualClockedQueue_ACB_req
 	
@@ -171,28 +181,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		read_clk                   => CLOCK_TO_PROCESSOR
 
 
-//**********    END OF FIFO CONNECTIONS TO NIC AND DRAM ************************//
-
-	$instance nic_subsystem_inst nic_subsystem_lib:nic_subsystem
-
-		MAC_TO_NIC_DATA             => MAC_TO_NIC
-		NIC_TO_MAC_DATA             => NIC_TO_MAC
-		AFB_TO_NIC_REQUEST          => AFB_NIC_REQUEST_FIFO_OUT
-		NIC_TO_AFB_RESPONSE         => NIC_AFB_RESPONSE_FIFO_IN
-		NIC_TO_ACB_REQUEST          => NIC_ACB_REQUEST_FIFO_IN
-		ACB_TO_NIC_RESPONSE         => ACB_NIC_RESPONSE_FIFO_OUT
-		NIC_INTERRUPT_TO_PROCESSOR  => NIC_INTERRUPT
-		NIC_TO_MAC_RESETN           => NIC_MAC_RESETN
-
-	$instance acb_dram_controller_bridge_inst  acb_dram_controller_bridge_lib:acb_dram_controller_bridge
-		// signals to/from dram controller ip.
-		DRAM_CONTROLLER_TO_ACB_BRIDGE => DRAM_CONTROLLER_TO_ACB_BRIDGE
-		ACB_BRIDGE_TO_DRAM_CONTROLLER => ACB_BRIDGE_TO_DRAM_CONTROLLER
-
-		// acb bus interface (slave)
-		CORE_BUS_REQUEST            => ACB_DRAM_REQUEST_FIFO_OUT
-		CORE_BUS_RESPONSE           => DRAM_ACB_RESPONSE_FIFO_IN
-
+//**********    END OF FIFO CONNECTIONS ************************//
 
 //************** STUBBING VARIOUS PORTS *******************//
 
