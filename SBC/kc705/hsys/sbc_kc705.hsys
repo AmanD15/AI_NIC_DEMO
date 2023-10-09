@@ -18,8 +18,14 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$signal CLOCK_TO_NIC
 		$signal CLOCK_TO_DRAM
 
+		// Resets! (hand-edited later)
+		$signal RESET_TO_PROCESSOR
+		$signal RESET_TO_NIC
+
 		// DRAM controller IP 
 		$signal DRAM_CONTROLLER_TO_ACB_BRIDGE
+
+		// TODO: tap ranges should be put here.
 		
 	$out
 		// processor 
@@ -207,32 +213,50 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		min_acb_tap_addr => MIN_ACB_TAP_ADDR
 		max_acb_tap_addr => MAX_ACB_TAP_ADDR
 
-	// invalidate 
-	$thread invalidateDummy
+	// absorb clocks.. edited out later. 
+	$thread clockResetDummy
 		$in $signal c1: $unsigned<1>
 		$in $signal c2: $unsigned<1>
 		$in $signal c3: $unsigned<1>
+		$in $signal c4: $unsigned<1>
+		$in $signal c5: $unsigned<1>
+		$in $signal c6: $unsigned<1>
 	$in $signal c4: $unsigned<1>
-		$out $signal ei: $unsigned<1>
-		$out $pipe   inval: $unsigned<30>
 		$variable t1: $unsigned<1>
 		$variable t2: $unsigned<1>
 		$variable t3: $unsigned<1>
+		$variable t4: $unsigned<1>
+		$variable t5: $unsigned<1>
+		$variable t6: $unsigned<1>
 	$variable t4: $unsigned<1>
+	$default
+		t1 := c1 t2 := c2 t3 := c3 t4 := c4 t5 := c5 t6 := c6
+		<crt_rst_state> {
+			$goto crt_rst_state
+		}
+	$now $tick
+
+	$string clk_rst_str: clockResetDummy
+		c1 => CLOCK_TO_PROCESSOR
+		c2 => CLOCK_TO_NIC
+		c3 => CLOCK_TO_DRAM
+		c4 => RESET_TO_PROCESSOR
+		c5 => RESET_TO_NIC
+
+	// invalidate 
+	$thread invalidateDummy
+		$out $pipe   inval: $unsigned<30>
+		$out $signal ei: $unsigned<1>
 	$default
 		$now inval$req := ($unsigned<1>) 0
 		$now inval     := ($unsigned<30>) 0
 		$now ei := ($unsigned<1>) 0
-		t1 := c1 t2 := c2 t3 := c3 t4 := c4
 		<inval_rst_state> {
 			$goto inval_rst_state
 		}
 	$now $tick
 
 	$string inval_str: invalidateDummy
-		c1 => CLOCK_TO_PROCESSOR
-		c2 => CLOCK_TO_NIC
-		c3 => CLOCK_TO_DRAM
-		c4 => NIC_INTERRUPT
 		inval => MAIN_MEM_INVALIDATE
+		ei => NIC_INTERRUPT
 }

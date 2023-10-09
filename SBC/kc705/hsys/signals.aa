@@ -4,6 +4,7 @@
 $pipe CLOCK_TO_PROCESSOR: $uint<1>  $signal
 $pipe CLOCK_TO_NIC: $uint<1>  $signal
 $pipe CLOCK_TO_DRAM: $uint<1>  $signal
+$pipe RESET_TO_PROCESSOR RESET_TO_NIC: $uint<1> $signal
 
 
 // Processor signals
