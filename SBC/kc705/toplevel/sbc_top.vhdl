@@ -357,10 +357,9 @@ end component mig_7series_0;
 
 
 ------------------------------------------------------
--- TODO: Signal Declaration for SBC core.
+-- TODO: Signal Declaration for SBC core. (DONE!!)
 ------------------------------------------------------
           
-
    signal CLOCK_TO_DRAM, CLOCK_TO_NIC, CLOCK_TO_PROCESSOR : std_logic;
    signal RESET_TO_NIC, RESET_TO_PROCESSOR : std_logic;
    signal PROCESSOR_MODE : std_logic_vector(15 downto 0);
@@ -398,6 +397,8 @@ end component mig_7series_0;
    signal SPI_FLASH_CLK : std_logic_vector(0 downto 0);
    signal SPI_FLASH_CS_L : std_logic_vector(7 downto 0);
    signal SPI_FLASH_MOSI : std_logic_vector(0 downto 0);
+
+
 
 --------------------OLD SIGNALS --------------------------------------
 
@@ -478,7 +479,7 @@ begin
                                 );
 
 	---------------------------------------------------------
-	-- TODO: TAP VALUES INSIDE THE SBC CORE (DONE!!)
+	-- TODO: TAP VALUES INSIDE THE SBC CORE 
 	---------------------------------------------------------
    	CPU_MODE <= PROCESSOR_MODE(1 downto 0);
 
