@@ -44,11 +44,11 @@ port(
         SERIAL_UART_RX : in std_logic_vector(0 downto 0);
         SERIAL_UART_TX : out std_logic_vector(0 downto 0);
 
-      -- TODO:
-      -- 125 MHz clock from MMCM
+    -----------------------------------------------
+    -- ETH_KC705(MAC) signals.
+    -----------------------------------------------
        glbl_rst : in std_logic;
        gtx_clk_bufg_out : out std_logic;
-        
        phy_resetn : out std_logic;
         
        -- RGMII Interface
@@ -59,14 +59,12 @@ port(
        rgmii_rxd : in std_logic_vector(3 downto 0);
        rgmii_rx_ctl : in std_logic;
        rgmii_rxc : in std_logic;
-        
-             
+              
        -- MDIO Interface
        -----------------
        mdio : inout std_logic;
        mdc : out std_logic;
-        
-        
+         
        -- Serialised statistics vectors
        --------------------------------
        tx_statistics_s : out std_logic;
@@ -93,7 +91,7 @@ port(
       -----------------------------------------------
       -- DRAM signals.
       -----------------------------------------------
-	ddr3_addr :out std_logic_vector(13 downto 0);
+        ddr3_addr :out std_logic_vector(13 downto 0);
     	ddr3_ba:out std_logic_vector(2 downto 0);
     	ddr3_cas_n:out std_logic;
     	ddr3_ck_n:out std_logic_vector(0 downto 0);
@@ -106,7 +104,7 @@ port(
     	ddr3_dqs_n:inout std_logic_vector(7 downto 0);
     	ddr3_dqs_p:inout std_logic_vector(7 downto 0);
     	ddr3_cs_n:out std_logic_vector(0 downto 0);
-	ddr3_dm:out std_logic_vector(7 downto 0);
+        ddr3_dm:out std_logic_vector(7 downto 0);
     	ddr3_odt:out std_logic_vector(0 downto 0);
 
       -----------------------------------------------
@@ -119,12 +117,30 @@ end entity top_level;
 
 architecture structure of top_level is
 
-  ------------------------------------------------------
-  -- TODO: component declaration for SBC core.
-  ------------------------------------------------------
 
-  signal PROCESSOR_MODE: std_logic_vector(15 downto 0);
 
+
+    --------------------------------------------------------------
+    -- TODO: generate 320 and 200 MHz for DRAM
+    --------------------------------------------------------------
+     component clocks_gen is
+       port(
+          -- differential clock inputs
+          clk_in_p : in std_logic;
+          clk_in_n : in std_logic;
+       
+          -- asynchronous control/resets
+          glbl_rst : in std_logic;
+          dcm_locked : out std_logic;
+       
+          -- clock outputs
+          gtx_clk_bufg : out std_logic;
+          
+          refclk_bufg : out std_logic;
+          s_axi_aclk : out std_logic;
+          clock : out std_logic);
+       end component;
+           
 
    
    -- to generate a 80  and 125 Mhz clock
@@ -215,8 +231,8 @@ architecture structure of top_level is
     SOC_DEBUG_to_MONITOR_pipe_read_ack  : out std_logic_vector(0  downto 0);
     SPI_FLASH_CLK : out std_logic_vector(0 downto 0);
     SPI_FLASH_CS_L : out std_logic_vector(7 downto 0);
-    SPI_FLASH_MOSI : out std_logic_vector(0 downto 0);
-    clk, reset: in std_logic 
+    SPI_FLASH_MOSI : out std_logic_vector(0 downto 0)
+
     -- 
   );
   --
@@ -228,14 +244,12 @@ architecture structure of top_level is
       
        --asynchronous reset
        glbl_rst : in std_logic;
-       
        gtx_clk_bufg : in std_logic;
        refclk_bufg : in std_logic;
        s_axi_aclk : in std_logic;
        
        -- 125 MHz clock from MMCM
        gtx_clk_bufg_out : out std_logic;
-  
        phy_resetn : out std_logic;
   
        -- RGMII Interface
@@ -340,43 +354,26 @@ architecture structure of top_level is
 
 end component mig_7series_0;
 
-        --------------------------------------------------------------
-	-- TODO: generate 320 and 200 MHz for DRAM
-	--------------------------------------------------------------
-         component clocks_gen is
-           port(
-              -- differential clock inputs
-              clk_in_p : in std_logic;
-              clk_in_n : in std_logic;
-           
-              -- asynchronous control/resets
-              glbl_rst : in std_logic;
-              dcm_locked : out std_logic;
-           
-              -- clock outputs
-              gtx_clk_bufg : out std_logic;
-              
-              refclk_bufg : out std_logic;
-              s_axi_aclk : out std_logic;
-              clock : out std_logic);
-           end component;
-           
 
-   
-   signal reset1, reset_sync, reset_nic: std_logic;
-   signal reset1_mac,reset2_mac, reset_sync_pre_buf_mac, reset_sync_mac: std_logic;
 
-   signal EXTERNAL_INTERRUPT : std_logic_vector(0 downto 0);
-   signal LOGGER_MODE : std_logic_vector(0 downto 0);
-   signal clock,clock_mac,lock:std_logic;
+------------------------------------------------------
+-- TODO: Signal Declaration for SBC core.
+------------------------------------------------------
+          
 
-   signal MONITOR_to_DEBUG_pipe_write_data : std_logic_vector(7 downto 0);
-   signal MONITOR_to_DEBUG_pipe_write_req  : std_logic_vector(0  downto 0);
-   signal MONITOR_to_DEBUG_pipe_write_ack  : std_logic_vector(0  downto 0);
+   signal CLOCK_TO_DRAM, CLOCK_TO_NIC, CLOCK_TO_PROCESSOR : std_logic;
+   signal RESET_TO_NIC, RESET_TO_PROCESSOR : std_logic;
+   signal PROCESSOR_MODE : std_logic_vector(15 downto 0);
+   signal THREAD_RESET : std_logic_vector(3 downto 0);
+   signal WRITE_PROTECT : std_logic_vector(0 downto 0);
 
-   signal DEBUG_to_MONITOR_pipe_read_data : std_logic_vector(7 downto 0);
-   signal DEBUG_to_MONITOR_pipe_read_req  : std_logic_vector(0  downto 0);
-   signal DEBUG_to_MONITOR_pipe_read_ack  : std_logic_vector(0  downto 0);
+   signal SOC_MONITOR_to_DEBUG_pipe_write_data : std_logic_vector(7 downto 0);
+   signal SOC_MONITOR_to_DEBUG_pipe_write_req  : std_logic_vector(0  downto 0);
+   signal SOC_MONITOR_to_DEBUG_pipe_write_ack  : std_logic_vector(0  downto 0);
+
+   signal SOC_DEBUG_to_MONITOR_pipe_read_data : std_logic_vector(7 downto 0);
+   signal SOC_DEBUG_to_MONITOR_pipe_read_req  : std_logic_vector(0  downto 0);
+   signal SOC_DEBUG_to_MONITOR_pipe_read_ack  : std_logic_vector(0  downto 0);
 
    signal CONSOLE_to_SERIAL_RX_pipe_write_data : std_logic_vector(7 downto 0);
    signal CONSOLE_to_SERIAL_RX_pipe_write_req  : std_logic_vector(0  downto 0);
@@ -385,19 +382,44 @@ end component mig_7series_0;
    signal SERIAL_TX_to_CONSOLE_pipe_read_data : std_logic_vector(7 downto 0);
    signal SERIAL_TX_to_CONSOLE_pipe_read_req  : std_logic_vector(0  downto 0);
    signal SERIAL_TX_to_CONSOLE_pipe_read_ack  : std_logic_vector(0  downto 0);
+   
+   signal ACB_BRIDGE_TO_DRAM_CONTROLLER : std_logic_vector(613 downto 0);
+   signal DRAM_CONTROLLER_TO_ACB_BRIDGE : std_logic_vector(521 downto 0);
+
+   signal MAC_TO_NIC_pipe_write_data : std_logic_vector(9 downto 0);
+   signal MAC_TO_NIC_pipe_write_req  : std_logic_vector(0  downto 0);
+   signal MAC_TO_NIC_pipe_write_ack  : std_logic_vector(0  downto 0);
+   signal NIC_MAC_RESETN : std_logic_vector(0 downto 0);
+   signal NIC_TO_MAC_pipe_read_data : std_logic_vector(9 downto 0);
+   signal NIC_TO_MAC_pipe_read_req  : std_logic_vector(0  downto 0);
+   signal NIC_TO_MAC_pipe_read_ack  : std_logic_vector(0  downto 0);
+
+   signal SPI_FLASH_MISO : std_logic_vector(0 downto 0);
+   signal SPI_FLASH_CLK : std_logic_vector(0 downto 0);
+   signal SPI_FLASH_CS_L : std_logic_vector(7 downto 0);
+   signal SPI_FLASH_MOSI : std_logic_vector(0 downto 0);
+
+--------------------OLD SIGNALS --------------------------------------
+
+   signal reset1, reset_sync, reset_nic: std_logic;
+   signal reset1_mac,reset2_mac, reset_sync_pre_buf_mac, reset_sync_mac: std_logic;
+
+   signal EXTERNAL_INTERRUPT : std_logic_vector(0 downto 0);
+   signal LOGGER_MODE : std_logic_vector(0 downto 0);
+   signal clock,clock_mac,lock:std_logic;
 
    signal CONFIG_UART_BAUD_CONTROL_WORD: std_logic_vector(31 downto 0);
-    
-   signal INVALIDATE_REQUEST_pipe_write_data : std_logic_vector(29 downto 0);
-   signal INVALIDATE_REQUEST_pipe_write_req  : std_logic_vector(0  downto 0);
-   signal INVALIDATE_REQUEST_pipe_write_ack  : std_logic_vector(0  downto 0);
-
     				
    signal MAX_ADDR_TAP : std_logic_vector(35 downto 0);
    signal MIN_ADDR_TAP : std_logic_vector(35 downto 0);
    
 
    signal enable_reset : std_logic_vector (0 downto 0);
+
+
+
+
+
    
 begin
    -- Info: Baudrate 115200 ClkFreq 65000000:  Baud-freq = 1152, Baud-limit= 39473 Baud-control=0x9a310480
@@ -456,7 +478,7 @@ begin
                                 );
 
 	---------------------------------------------------------
-	-- TODO: TAP VALUES INSIDE THE SBC CORE
+	-- TODO: TAP VALUES INSIDE THE SBC CORE (DONE!!)
 	---------------------------------------------------------
    	CPU_MODE <= PROCESSOR_MODE(1 downto 0);
 
@@ -465,37 +487,43 @@ begin
     CLOCK_TO_DRAM => CLOCK_TO_DRAM,
     CLOCK_TO_NIC => CLOCK_TO_NIC,
     CLOCK_TO_PROCESSOR => CLOCK_TO_PROCESSOR,
+    RESET_TO_NIC => RESET_TO_NIC,
+    RESET_TO_PROCESSOR => RESET_TO_PROCESSOR,
+
+    THREAD_RESET => THREAD_RESET,
+    WRITE_PROTECT => WRITE_PROTECT,
+    PROCESSOR_MODE => PROCESSOR_MODE,
+
     CONSOLE_to_SERIAL_RX_pipe_write_data => CONSOLE_to_SERIAL_RX_pipe_write_data,
     CONSOLE_to_SERIAL_RX_pipe_write_req => CONSOLE_to_SERIAL_RX_pipe_write_req,
     CONSOLE_to_SERIAL_RX_pipe_write_ack => CONSOLE_to_SERIAL_RX_pipe_write_ack,
-    DRAM_CONTROLLER_TO_ACB_BRIDGE => DRAM_CONTROLLER_TO_ACB_BRIDGE,
-    MAC_TO_NIC_pipe_write_data => MAC_TO_NIC_pipe_write_data,
-    MAC_TO_NIC_pipe_write_req => MAC_TO_NIC_pipe_write_req,
-    MAC_TO_NIC_pipe_write_ack => MAC_TO_NIC_pipe_write_ack,
-    RESET_TO_NIC => RESET_TO_NIC,
-    RESET_TO_PROCESSOR => RESET_TO_PROCESSOR,
+    SERIAL_TX_to_CONSOLE_pipe_read_data => SERIAL_TX_to_CONSOLE_pipe_read_data,
+    SERIAL_TX_to_CONSOLE_pipe_read_req => SERIAL_TX_to_CONSOLE_pipe_read_req,
+    SERIAL_TX_to_CONSOLE_pipe_read_ack => SERIAL_TX_to_CONSOLE_pipe_read_ack,
+
     SOC_MONITOR_to_DEBUG_pipe_write_data => SOC_MONITOR_to_DEBUG_pipe_write_data,
     SOC_MONITOR_to_DEBUG_pipe_write_req => SOC_MONITOR_to_DEBUG_pipe_write_req,
     SOC_MONITOR_to_DEBUG_pipe_write_ack => SOC_MONITOR_to_DEBUG_pipe_write_ack,
-    SPI_FLASH_MISO => SPI_FLASH_MISO,
-    THREAD_RESET => THREAD_RESET,
-    WRITE_PROTECT => WRITE_PROTECT,
+    SOC_DEBUG_to_MONITOR_pipe_read_data => SOC_DEBUG_to_MONITOR_pipe_read_data,
+    SOC_DEBUG_to_MONITOR_pipe_read_req => SOC_DEBUG_to_MONITOR_pipe_read_req,
+    SOC_DEBUG_to_MONITOR_pipe_read_ack => SOC_DEBUG_to_MONITOR_pipe_read_ack,
+
     ACB_BRIDGE_TO_DRAM_CONTROLLER => ACB_BRIDGE_TO_DRAM_CONTROLLER,
+    DRAM_CONTROLLER_TO_ACB_BRIDGE => DRAM_CONTROLLER_TO_ACB_BRIDGE,
+
+    MAC_TO_NIC_pipe_write_data => MAC_TO_NIC_pipe_write_data,
+    MAC_TO_NIC_pipe_write_req => MAC_TO_NIC_pipe_write_req,
+    MAC_TO_NIC_pipe_write_ack => MAC_TO_NIC_pipe_write_ack, 
     NIC_MAC_RESETN => NIC_MAC_RESETN,
     NIC_TO_MAC_pipe_read_data => NIC_TO_MAC_pipe_read_data,
     NIC_TO_MAC_pipe_read_req => NIC_TO_MAC_pipe_read_req,
     NIC_TO_MAC_pipe_read_ack => NIC_TO_MAC_pipe_read_ack,
-    PROCESSOR_MODE => PROCESSOR_MODE,
-    SERIAL_TX_to_CONSOLE_pipe_read_data => SERIAL_TX_to_CONSOLE_pipe_read_data,
-    SERIAL_TX_to_CONSOLE_pipe_read_req => SERIAL_TX_to_CONSOLE_pipe_read_req,
-    SERIAL_TX_to_CONSOLE_pipe_read_ack => SERIAL_TX_to_CONSOLE_pipe_read_ack,
-    SOC_DEBUG_to_MONITOR_pipe_read_data => SOC_DEBUG_to_MONITOR_pipe_read_data,
-    SOC_DEBUG_to_MONITOR_pipe_read_req => SOC_DEBUG_to_MONITOR_pipe_read_req,
-    SOC_DEBUG_to_MONITOR_pipe_read_ack => SOC_DEBUG_to_MONITOR_pipe_read_ack,
+    
+    
+    SPI_FLASH_MISO => SPI_FLASH_MISO,
     SPI_FLASH_CLK => SPI_FLASH_CLK,
     SPI_FLASH_CS_L => SPI_FLASH_CS_L,
-    SPI_FLASH_MOSI => SPI_FLASH_MOSI,
-    clk => clk, reset => reset 
+    SPI_FLASH_MOSI => SPI_FLASH_MOSI
     ); -- 
   -- 
 
@@ -572,12 +600,12 @@ begin
   debug_uart_inst: configurable_uart
   port map ( --
     CONFIG_UART_BAUD_CONTROL_WORD => CONFIG_UART_BAUD_CONTROL_WORD, -- in
-    CONSOLE_to_RX_pipe_read_data => MONITOR_to_DEBUG_pipe_write_data, -- out
-    CONSOLE_to_RX_pipe_read_req => MONITOR_to_DEBUG_pipe_write_ack, -- in
-    CONSOLE_to_RX_pipe_read_ack => MONITOR_to_DEBUG_pipe_write_req, -- out
-    TX_to_CONSOLE_pipe_write_data => DEBUG_to_MONITOR_pipe_read_data, -- in
-    TX_to_CONSOLE_pipe_write_req => DEBUG_to_MONITOR_pipe_read_ack, -- in
-    TX_to_CONSOLE_pipe_write_ack => DEBUG_to_MONITOR_pipe_read_req, -- out
+    CONSOLE_to_RX_pipe_read_data => SOC_MONITOR_to_DEBUG_pipe_write_data, -- out
+    CONSOLE_to_RX_pipe_read_req => SOC_MONITOR_to_DEBUG_pipe_write_ack, -- in
+    CONSOLE_to_RX_pipe_read_ack => SOC_MONITOR_to_DEBUG_pipe_write_req, -- out
+    TX_to_CONSOLE_pipe_write_data => SOC_DEBUG_to_MONITOR_pipe_read_data, -- in
+    TX_to_CONSOLE_pipe_write_req => SOC_DEBUG_to_MONITOR_pipe_read_ack, -- in
+    TX_to_CONSOLE_pipe_write_ack => SOC_DEBUG_to_MONITOR_pipe_read_req, -- out
     UART_RX => DEBUG_UART_RX, -- in
     UART_TX => DEBUG_UART_TX, -- out
     clk => clock, reset => reset_sync
