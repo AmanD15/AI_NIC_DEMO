@@ -16,12 +16,13 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		// Clocks! (hand-edited later)
 		$signal CLOCK_TO_PROCESSOR
 		$signal CLOCK_TO_NIC
-		$signal CLOCK_TO_DRAM
+		$signal CLOCK_TO_DRAMCTRL_BRIDGE
 
 		// Resets! (hand-edited later)
 		$signal RESET_TO_PROCESSOR
 		$signal RESET_TO_NIC
-
+        $signal RESET_TO_DRAMCTRL_BRIDGE
+     
 		// DRAM controller IP 
 		$signal DRAM_CONTROLLER_TO_ACB_BRIDGE
 
@@ -181,13 +182,13 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		write_data_in              => ACB_DRAM_REQUEST_FIFO_IN
 		read_data_out              => ACB_DRAM_REQUEST_FIFO_OUT
 		write_clk                  => CLOCK_TO_NIC
-		read_clk                   => CLOCK_TO_DRAM
+		read_clk                   => CLOCK_TO_DRAMCTRL_BRIDGE
 
 	$instance DualClockedQueue_Dram_Bridge_ACB_resp_inst DualClockedQueue_lib:DualClockedQueue_ACB_resp
 
 		write_data_in              => DRAM_ACB_RESPONSE_FIFO_IN
 		read_data_out              => DRAM_ACB_RESPONSE_FIFO_OUT
-		write_clk                  => CLOCK_TO_DRAM
+		write_clk                  => CLOCK_TO_DRAMCTRL_BRIDGE
 		read_clk                   => CLOCK_TO_NIC
 
 
@@ -243,9 +244,10 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$string clk_rst_str: clockResetDummy
 		c1 => CLOCK_TO_PROCESSOR
 		c2 => CLOCK_TO_NIC
-		c3 => CLOCK_TO_DRAM
+		c3 => CLOCK_TO_DRAMCTRL_BRIDGE
 		c4 => RESET_TO_PROCESSOR
 		c5 => RESET_TO_NIC
+        c6 => RESET_TO_DRAMCTRL_BRIDGE
 
 	// invalidate 
 	$thread invalidateDummy
