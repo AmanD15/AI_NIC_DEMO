@@ -416,7 +416,7 @@ end component mig_7series_0;
    signal MIN_AFB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
 
    signal CONFIG_UART_BAUD_CONTROL_WORD: std_logic_vector(31 downto 0);
-
+   signal CPU_MODE : std_logic_vector(1 downto 0); 
    -------------------- ADDITIONAL DRAM SIGNAL --------------------------------------
    signal device_temp       :  STD_LOGIC_VECTOR ( 11 downto 0 );
 
@@ -500,7 +500,7 @@ begin
 	---------------------------------------------------------
 	-- TODO: TAP VALUES INSIDE THE SBC CORE (DONE!!)
 	---------------------------------------------------------
-  -- 	CPU_MODE <= PROCESSOR_MODE(1 downto 0);
+   	CPU_MODE <= PROCESSOR_MODE(1 downto 0);
 
    core_inst: sbc_kc705_core
      port map ( --
