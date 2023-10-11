@@ -622,7 +622,7 @@ begin --
     MAX_AFB_TAP_ADDR => MAX_AFB_TAP_ADDR,
     MIN_ACB_TAP_ADDR => MIN_ACB_TAP_ADDR,
     MIN_AFB_TAP_ADDR => MIN_AFB_TAP_ADDR,
-    clk => clk, reset => reset 
+    clk => CLOCK_TO_NIC, reset => RESET_TO_NIC 
     ); -- 
   acb_dram_controller_bridge_inst: acb_dram_controller_bridge
   port map ( --
