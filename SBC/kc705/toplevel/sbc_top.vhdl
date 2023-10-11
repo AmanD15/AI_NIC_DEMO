@@ -398,7 +398,7 @@ end component mig_7series_0;
    signal SPI_FLASH_CS_L : std_logic_vector(7 downto 0);
    signal SPI_FLASH_MOSI : std_logic_vector(0 downto 0);
 
-
+   signal CONFIG_UART_BAUD_CONTROL_WORD: std_logic_vector(31 downto 0);
 
 --------------------OLD SIGNALS --------------------------------------
 
@@ -409,7 +409,6 @@ end component mig_7series_0;
    signal LOGGER_MODE : std_logic_vector(0 downto 0);
    signal clock,clock_mac,lock:std_logic;
 
-   signal CONFIG_UART_BAUD_CONTROL_WORD: std_logic_vector(31 downto 0);
     				
    signal MAX_ADDR_TAP : std_logic_vector(35 downto 0);
    signal MIN_ADDR_TAP : std_logic_vector(35 downto 0);
@@ -561,13 +560,13 @@ begin
      mdc => mdc, --out std_logic;
 
     -- nic side
-    rx_pipe_data => rx_pipe_data, --out std_logic_vector(9 downto 0);
-    rx_pipe_ack => rx_pipe_ack, --out std_logic;
-    rx_pipe_req => rx_pipe_req, --in std_logic;
+    rx_pipe_data => MAC_TO_NIC_pipe_write_data, --out std_logic_vector(9 downto 0);
+    rx_pipe_ack => MAC_TO_NIC_pipe_write_req, --out std_logic;
+    rx_pipe_req => MAC_TO_NIC_pipe_write_ack, --in std_logic;
          
-    tx_pipe_data => tx_pipe_data, --in std_logic_vector(9 downto 0);
-    tx_pipe_ack => tx_pipe_ack, --in std_logic;
-    tx_pipe_req => tx_pipe_req, --out std_logic;
+    tx_pipe_data => NIC_TO_MAC_pipe_read_data, --in std_logic_vector(9 downto 0);
+    tx_pipe_ack => NIC_TO_MAC_pipe_read_ack, --in std_logic;
+    tx_pipe_req => NIC_TO_MAC_pipe_read_req, --out std_logic;
     
     gtx_clk_reset => gtx_clk_reset, -- out std logic;
     dcm_locked => dcm_locked,
