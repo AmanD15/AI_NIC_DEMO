@@ -400,6 +400,9 @@ end component mig_7series_0;
 
    signal CONFIG_UART_BAUD_CONTROL_WORD: std_logic_vector(31 downto 0);
 
+   -------------------- ADDITIONAL DRAM SIGNAL --------------------------------------
+   signal device_temp       :  STD_LOGIC_VECTOR ( 11 downto 0 );
+
 --------------------OLD SIGNALS --------------------------------------
 
    signal reset1, reset_sync, reset_nic: std_logic;
@@ -484,9 +487,9 @@ begin
 
    core_inst: sbc_kc705_core
      port map ( --
-    CLOCK_TO_DRAM => CLOCK_TO_DRAM,
+    CLOCK_TO_DRAM => CLOCK_TO_DRAM, -- DRAM_CONTROLLER_TO_ACB_BRIDGE(521) ui_clk, 80MHz
     CLOCK_TO_NIC => CLOCK_TO_NIC,
-    CLOCK_TO_PROCESSOR => CLOCK_TO_PROCESSOR,
+    CLOCK_TO_PROCESSOR => CLOCK_TO_PROCESSOR, -- DRAM_CONTROLLER_TO_ACB_BRIDGE(521) ui_clk, 80MHz
     RESET_TO_NIC => RESET_TO_NIC,
     RESET_TO_PROCESSOR => RESET_TO_PROCESSOR,
 
@@ -645,31 +648,31 @@ begin
     ddr3_cs_n                  => ddr3_cs_n ,
     ddr3_dm                    => ddr3_dm ,
     ddr3_odt                   => ddr3_odt ,
-    sys_clk_i                  => clk_sys_320 ,
-    clk_ref_i                  => clk_ref_200 ,
-    app_addr                   => app_addr  ,
-    app_cmd                    => app_cmd  ,
-    app_en                     => app_en ,
-    app_wdf_data               => app_wdf_data  ,
-    app_wdf_end                => app_wdf_end ,
-    app_wdf_mask               => app_wdf_mask  ,
-    app_wdf_wren               => app_wdf_wren ,
-    app_rd_data                => app_rd_data ,
-    app_rd_data_end            => app_rd_data_end ,
-    app_rd_data_valid          => app_rd_data_valid,
-    app_rdy                    => app_rdy ,
-    app_wdf_rdy                => app_wdf_rdy ,
-    app_sr_req                 => app_sr_req ,
-    app_ref_req                => app_ref_req ,
-    app_zq_req                 => app_zq_req ,
-    app_sr_active              => app_sr_active ,
-    app_ref_ack                => app_ref_ack ,
-    app_zq_ack                 => app_zq_ack ,
-    ui_clk                     => ui_clk ,
-    ui_clk_sync_rst            => ui_clk_sync_rst ,
-    init_calib_complete        => init_calib_complete ,
+    sys_clk_i                  => clk_sys_320 , -- 320 MHz clock, TODO
+    clk_ref_i                  => clk_ref_200 , -- 200 MHz clock, TODO
+    app_addr                   => ACB_BRIDGE_TO_DRAM_CONTROLLER(613 DOWNTO 585)  ,
+    app_cmd                    => ACB_BRIDGE_TO_DRAM_CONTROLLER(584 DOWNTO 582)  ,
+    app_en                     => ACB_BRIDGE_TO_DRAM_CONTROLLER(581) ,
+    app_wdf_data               => ACB_BRIDGE_TO_DRAM_CONTROLLER(580 DOWNTO 69)  ,
+    app_wdf_end                => ACB_BRIDGE_TO_DRAM_CONTROLLER(68) ,
+    app_wdf_mask               => ACB_BRIDGE_TO_DRAM_CONTROLLER(67 DOWNTO 4)  ,
+    app_wdf_wren               => ACB_BRIDGE_TO_DRAM_CONTROLLER(3) ,
+    app_rd_data                => DRAM_CONTROLLER_TO_ACB_BRIDGE(519 downto 8) ,
+    app_rd_data_end            => DRAM_CONTROLLER_TO_ACB_BRIDGE(7) ,
+    app_rd_data_valid          => DRAM_CONTROLLER_TO_ACB_BRIDGE(6),
+    app_rdy                    => DRAM_CONTROLLER_TO_ACB_BRIDGE(5) ,
+    app_wdf_rdy                => DRAM_CONTROLLER_TO_ACB_BRIDGE(4) ,
+    app_sr_req                 => ACB_BRIDGE_TO_DRAM_CONTROLLER(2) ,
+    app_ref_req                => ACB_BRIDGE_TO_DRAM_CONTROLLER(1) ,
+    app_zq_req                 => ACB_BRIDGE_TO_DRAM_CONTROLLER(0) ,
+    app_sr_active              => DRAM_CONTROLLER_TO_ACB_BRIDGE(3) ,
+    app_ref_ack                => DRAM_CONTROLLER_TO_ACB_BRIDGE(2) ,
+    app_zq_ack                 => DRAM_CONTROLLER_TO_ACB_BRIDGE(1) ,
+    ui_clk                     => DRAM_CONTROLLER_TO_ACB_BRIDGE(521) ,
+    ui_clk_sync_rst            => DRAM_CONTROLLER_TO_ACB_BRIDGE(0) ,
+    init_calib_complete        => DRAM_CONTROLLER_TO_ACB_BRIDGE(520) ,
     device_temp                => device_temp ,
-    sys_rst                    => clk_rst 
+    sys_rst                    => clk_rst -- Reset from clk_wiz
   );
   
 

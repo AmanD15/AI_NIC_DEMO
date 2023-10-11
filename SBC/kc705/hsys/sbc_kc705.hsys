@@ -176,7 +176,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	
 		write_data_in              => ACB_DRAM_REQUEST_FIFO_IN
 		read_data_out              => ACB_DRAM_REQUEST_FIFO_OUT
-		write_clk                  => CLOCK_TO_PROCESSOR
+		write_clk                  => CLOCK_TO_NIC
 		read_clk                   => CLOCK_TO_DRAM
 
 	$instance DualClockedQueue_Dram_Bridge_ACB_resp_inst DualClockedQueue_lib:DualClockedQueue_ACB_resp
@@ -184,7 +184,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		write_data_in              => DRAM_ACB_RESPONSE_FIFO_IN
 		read_data_out              => DRAM_ACB_RESPONSE_FIFO_OUT
 		write_clk                  => CLOCK_TO_DRAM
-		read_clk                   => CLOCK_TO_PROCESSOR
+		read_clk                   => CLOCK_TO_NIC
 
 
 //**********    END OF FIFO CONNECTIONS ************************//
