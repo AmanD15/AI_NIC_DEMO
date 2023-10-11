@@ -252,6 +252,8 @@ architecture structure of top_level is
       
        --asynchronous reset
        glbl_rst : in std_logic;
+
+       -- 3 clocks
        gtx_clk_bufg : in std_logic;
        refclk_bufg : in std_logic;
        s_axi_aclk : in std_logic;
@@ -541,14 +543,14 @@ begin
     
      --asynchronous reset
      glbl_rst => enable_reset(0), --in std_logic;
-     
-     gtx_clk_bufg => clock_mac, --in std_logic;
-     refclk_bufg => refclk_bufg , --in std_logic;
-     s_axi_aclk => s_axi_aclk, --in std_logic;
+
+     -- 3 clocks
+     gtx_clk_bufg => clock_mac, --in std_logic;   //125MHz
+     refclk_bufg => refclk_bufg , --in std_logic; //200MHz
+     s_axi_aclk => s_axi_aclk, --in std_logic;    //100MHz
      
      -- 125 MHz clock from MMCM
      gtx_clk_bufg_out => gtx_clk_bufg_out, --out std_logic;
-
      phy_resetn => phy_resetn, --out std_logic;
 
      -- RGMII Interface
