@@ -108,6 +108,14 @@ port(
     	ddr3_odt:out std_logic_vector(0 downto 0);
 
       -----------------------------------------------
+      -- SPI FLASH signals.
+      -----------------------------------------------
+        
+        SPI_FLASH_CLK  : out std_logic_vector(0 downto 0);
+        SPI_FLASH_CS_L : out std_logic_vector(7 downto 0);
+        SPI_FLASH_MOSI : out std_logic_vector(0 downto 0);
+        SPI_FLASH_MISO : in std_logic_vector(0 downto 0);
+      -----------------------------------------------
       -- 200 MHz clock in.
       -----------------------------------------------
       clk_in_p : in std_logic;
@@ -393,10 +401,6 @@ end component mig_7series_0;
    signal NIC_TO_MAC_pipe_read_req  : std_logic_vector(0  downto 0);
    signal NIC_TO_MAC_pipe_read_ack  : std_logic_vector(0  downto 0);
 
-   signal SPI_FLASH_MISO : std_logic_vector(0 downto 0);
-   signal SPI_FLASH_CLK : std_logic_vector(0 downto 0);
-   signal SPI_FLASH_CS_L : std_logic_vector(7 downto 0);
-   signal SPI_FLASH_MOSI : std_logic_vector(0 downto 0);
 
    signal CONFIG_UART_BAUD_CONTROL_WORD: std_logic_vector(31 downto 0);
 
