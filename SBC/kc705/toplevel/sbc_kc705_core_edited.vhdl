@@ -5,7 +5,6 @@ package sbc_kc705_core_Type_Package is --
   subtype unsigned_29_downto_0 is std_logic_vector(29 downto 0);
   -- 
 end package;
-
 library ahir;
 use ahir.BaseComponents.all;
 use ahir.Utilities.all;
@@ -176,7 +175,7 @@ library spi_flash_controller_lib;
 --<<<<<
 entity sbc_kc705_core is -- 
   port( -- 
-    CLOCK_TO_DRAM : in std_logic_vector(0 downto 0);
+    CLOCK_TO_DRAMCTRL_BRIDGE : in std_logic_vector(0 downto 0);
     CLOCK_TO_NIC : in std_logic_vector(0 downto 0);
     CLOCK_TO_PROCESSOR : in std_logic_vector(0 downto 0);
     CONSOLE_to_SERIAL_RX_pipe_write_data : in std_logic_vector(7 downto 0);
@@ -190,6 +189,7 @@ entity sbc_kc705_core is --
     MAX_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
     MIN_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
     MIN_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
+    RESET_TO_DRAMCTRL_BRIDGE : in std_logic_vector(0 downto 0);
     RESET_TO_NIC : in std_logic_vector(0 downto 0);
     RESET_TO_PROCESSOR : in std_logic_vector(0 downto 0);
     SOC_MONITOR_to_DEBUG_pipe_write_data : in std_logic_vector(7 downto 0);
@@ -212,8 +212,8 @@ entity sbc_kc705_core is --
     SOC_DEBUG_to_MONITOR_pipe_read_ack  : out std_logic_vector(0  downto 0);
     SPI_FLASH_CLK : out std_logic_vector(0 downto 0);
     SPI_FLASH_CS_L : out std_logic_vector(7 downto 0);
-    SPI_FLASH_MOSI : out std_logic_vector(0 downto 0)
-   -- clk, reset: in std_logic 
+    SPI_FLASH_MOSI : out std_logic_vector(0 downto 0);
+    clk, reset: in std_logic 
     -- 
   );
   --
@@ -540,7 +540,7 @@ architecture struct of sbc_kc705_core is --
 begin -- 
   DualClockedQueue_ACB_Dram_Bridge_req_inst: DualClockedQueue_ACB_req
   port map ( --
-    read_clk => CLOCK_TO_DRAM,
+    read_clk => CLOCK_TO_DRAMCTRL_BRIDGE,
     read_data_out_pipe_read_data => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_data,
     read_data_out_pipe_read_req => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_ack,
     read_data_out_pipe_read_ack => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_req,
@@ -580,7 +580,7 @@ begin --
     read_data_out_pipe_read_data => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_data,
     read_data_out_pipe_read_req => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_ack,
     read_data_out_pipe_read_ack => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_req,
-    write_clk => CLOCK_TO_DRAM,
+    write_clk => CLOCK_TO_DRAMCTRL_BRIDGE,
     write_data_in_pipe_write_data => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_data,
     write_data_in_pipe_write_req => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_ack,
     write_data_in_pipe_write_ack => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_req,
@@ -634,7 +634,7 @@ begin --
     CORE_BUS_RESPONSE_pipe_read_req => DRAM_ACB_RESPONSE_FIFO_IN_pipe_write_ack,
     CORE_BUS_RESPONSE_pipe_read_ack => DRAM_ACB_RESPONSE_FIFO_IN_pipe_write_req,
     DRAM_CONTROLLER_TO_ACB_BRIDGE => DRAM_CONTROLLER_TO_ACB_BRIDGE,
-    clk => clk, reset => reset 
+    clk => CLOCK_TO_DRAMCTRL_BRIDGE, reset => RESET_TO_DRAMCTRL_BRIDGE 
     ); -- 
   nic_subsystem_inst: nic_subsystem
   port map ( --
@@ -686,7 +686,7 @@ begin --
     SOC_MONITOR_to_DEBUG_pipe_write_req => SOC_MONITOR_to_DEBUG_pipe_write_req,
     SOC_MONITOR_to_DEBUG_pipe_write_ack => SOC_MONITOR_to_DEBUG_pipe_write_ack,
     THREAD_RESET => THREAD_RESET,
-    clk => CLOCK_TO_PROCESSOR, reset => RESET_TO_PROCESSOR 
+    clk => CLOCK_TO_PROCESSOR, reset => RESET_TO_PROCESSOR  
     ); -- 
   spi_flash_controller_inst: spi_flash_controller
   port map ( --
@@ -707,9 +707,10 @@ begin --
     port map ( -- 
       c1 => CLOCK_TO_PROCESSOR,
       c2 => CLOCK_TO_NIC,
-      c3 => CLOCK_TO_DRAM,
+      c3 => CLOCK_TO_DRAMCTRL_BRIDGE,
       c4 => RESET_TO_PROCESSOR,
       c5 => RESET_TO_NIC,
+      c6 => RESET_TO_DRAMCTRL_BRIDGE,
       clk => clk, reset => reset--
     ); -- 
   inval_str: invalidateDummy -- 

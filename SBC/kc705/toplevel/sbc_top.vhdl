@@ -207,7 +207,7 @@ architecture structure of top_level is
 
   component sbc_kc705_core is -- 
   port( -- 
-    CLOCK_TO_DRAM : in std_logic_vector(0 downto 0);
+    CLOCK_TO_DRAMCTRL_BRIDGE : in std_logic_vector(0 downto 0);
     CLOCK_TO_NIC : in std_logic_vector(0 downto 0);
     CLOCK_TO_PROCESSOR : in std_logic_vector(0 downto 0);
     CONSOLE_to_SERIAL_RX_pipe_write_data : in std_logic_vector(7 downto 0);
@@ -221,6 +221,7 @@ architecture structure of top_level is
     MAX_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
     MIN_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
     MIN_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
+    RESET_TO_DRAMCTRL_BRIDGE : in std_logic_vector(0 downto 0);
     RESET_TO_NIC : in std_logic_vector(0 downto 0);
     RESET_TO_PROCESSOR : in std_logic_vector(0 downto 0);
     SOC_MONITOR_to_DEBUG_pipe_write_data : in std_logic_vector(7 downto 0);
@@ -243,8 +244,8 @@ architecture structure of top_level is
     SOC_DEBUG_to_MONITOR_pipe_read_ack  : out std_logic_vector(0  downto 0);
     SPI_FLASH_CLK : out std_logic_vector(0 downto 0);
     SPI_FLASH_CS_L : out std_logic_vector(7 downto 0);
-    SPI_FLASH_MOSI : out std_logic_vector(0 downto 0);
-    clk, reset: in std_logic 
+    SPI_FLASH_MOSI : out std_logic_vector(0 downto 0)
+    --clk, reset: in std_logic 
 
     -- 
   );
@@ -375,8 +376,9 @@ end component mig_7series_0;
 -- TODO: Signal Declaration for SBC core. (DONE!!)
 ------------------------------------------------------
           
-   signal CLOCK_TO_DRAM, CLOCK_TO_NIC, CLOCK_TO_PROCESSOR : std_logic;
-   signal RESET_TO_NIC, RESET_TO_PROCESSOR : std_logic;
+   signal CLOCK_TO_DRAMCTRL_BRIDGE, CLOCK_TO_NIC, CLOCK_TO_PROCESSOR : std_logic_vector(0 downto 0);
+   signal RESET_TO_DRAMCTRL_BRIDGE, RESET_TO_NIC, RESET_TO_PROCESSOR : std_logic_vector(0 downto 0);
+
    signal PROCESSOR_MODE : std_logic_vector(15 downto 0);
    signal THREAD_RESET : std_logic_vector(3 downto 0);
    signal WRITE_PROTECT : std_logic_vector(0 downto 0);
@@ -502,12 +504,14 @@ begin
 
    core_inst: sbc_kc705_core
      port map ( --
-    CLOCK_TO_DRAM => CLOCK_TO_DRAM, -- DRAM_CONTROLLER_TO_ACB_BRIDGE(521) ui_clk, 80MHz
+    CLOCK_TO_DRAMCTRL_BRIDGE => CLOCK_TO_DRAMCTRL_BRIDGE, -- DRAM_CONTROLLER_TO_ACB_BRIDGE(521) ui_clk, 80MHz
     CLOCK_TO_NIC => CLOCK_TO_NIC,
     CLOCK_TO_PROCESSOR => CLOCK_TO_PROCESSOR, -- DRAM_CONTROLLER_TO_ACB_BRIDGE(521) ui_clk, 80MHz
+
+    RESET_TO_DRAMCTRL_BRIDGE => RESET_TO_DRAMCTRL_BRIDGE,    
     RESET_TO_NIC => RESET_TO_NIC,
     RESET_TO_PROCESSOR => RESET_TO_PROCESSOR,
-
+    
     THREAD_RESET => THREAD_RESET,
     WRITE_PROTECT => WRITE_PROTECT,
     PROCESSOR_MODE => PROCESSOR_MODE,
