@@ -498,9 +498,9 @@ begin
                                 );
 
 	---------------------------------------------------------
-	-- TODO: TAP VALUES INSIDE THE SBC CORE 
+	-- TODO: TAP VALUES INSIDE THE SBC CORE (DONE!!)
 	---------------------------------------------------------
-   	CPU_MODE <= PROCESSOR_MODE(1 downto 0);
+  -- 	CPU_MODE <= PROCESSOR_MODE(1 downto 0);
 
    core_inst: sbc_kc705_core
      port map ( --
