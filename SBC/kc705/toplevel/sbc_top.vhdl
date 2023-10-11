@@ -217,6 +217,10 @@ architecture structure of top_level is
     MAC_TO_NIC_pipe_write_data : in std_logic_vector(9 downto 0);
     MAC_TO_NIC_pipe_write_req  : in std_logic_vector(0  downto 0);
     MAC_TO_NIC_pipe_write_ack  : out std_logic_vector(0  downto 0);
+    MAX_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
+    MAX_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
+    MIN_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
+    MIN_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
     RESET_TO_NIC : in std_logic_vector(0 downto 0);
     RESET_TO_PROCESSOR : in std_logic_vector(0 downto 0);
     SOC_MONITOR_to_DEBUG_pipe_write_data : in std_logic_vector(7 downto 0);
@@ -239,7 +243,8 @@ architecture structure of top_level is
     SOC_DEBUG_to_MONITOR_pipe_read_ack  : out std_logic_vector(0  downto 0);
     SPI_FLASH_CLK : out std_logic_vector(0 downto 0);
     SPI_FLASH_CS_L : out std_logic_vector(7 downto 0);
-    SPI_FLASH_MOSI : out std_logic_vector(0 downto 0)
+    SPI_FLASH_MOSI : out std_logic_vector(0 downto 0);
+    clk, reset: in std_logic 
 
     -- 
   );
@@ -403,6 +408,10 @@ end component mig_7series_0;
    signal NIC_TO_MAC_pipe_read_req  : std_logic_vector(0  downto 0);
    signal NIC_TO_MAC_pipe_read_ack  : std_logic_vector(0  downto 0);
 
+   signal MAX_ACB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MAX_AFB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MIN_ACB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MIN_AFB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
 
    signal CONFIG_UART_BAUD_CONTROL_WORD: std_logic_vector(31 downto 0);
 
@@ -528,7 +537,11 @@ begin
     NIC_TO_MAC_pipe_read_req => NIC_TO_MAC_pipe_read_req,
     NIC_TO_MAC_pipe_read_ack => NIC_TO_MAC_pipe_read_ack,
     
-    
+    MAX_ACB_TAP_ADDR => MAX_ACB_TAP_ADDR,
+    MAX_AFB_TAP_ADDR => MAX_AFB_TAP_ADDR,
+    MIN_ACB_TAP_ADDR => MIN_ACB_TAP_ADDR,
+    MIN_AFB_TAP_ADDR => MIN_AFB_TAP_ADDR,
+
     SPI_FLASH_MISO => SPI_FLASH_MISO,
     SPI_FLASH_CLK => SPI_FLASH_CLK,
     SPI_FLASH_CS_L => SPI_FLASH_CS_L,
