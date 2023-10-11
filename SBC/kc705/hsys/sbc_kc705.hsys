@@ -26,6 +26,10 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$signal DRAM_CONTROLLER_TO_ACB_BRIDGE
 
 		// TODO: tap ranges should be put here.
+        $signal MIN_ACB_TAP_ADDR
+	    $signal MAX_ACB_TAP_ADDR
+	    $signal MIN_AFB_TAP_ADDR
+	    $signal MAX_AFB_TAP_ADDR
 		
 	$out
 		// processor 
@@ -73,10 +77,10 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$pipe FLASH_AFB_RESPONSE
 
 	//ACB_AFB_COMPLEX Pipes and Signals
-	$signal MIN_ACB_TAP_ADDR   36	$depth 1
-	$signal MAX_ACB_TAP_ADDR   36	$depth 1
-	$signal MIN_AFB_TAP_ADDR   36	$depth 1
-	$signal MAX_AFB_TAP_ADDR   36	$depth 1
+	//$signal MIN_ACB_TAP_ADDR   36	$depth 1
+	//$signal MAX_ACB_TAP_ADDR   36	$depth 1
+	//$signal MIN_AFB_TAP_ADDR   36	$depth 1
+	//$signal MAX_AFB_TAP_ADDR   36	$depth 1
 
 	//FIFO Pipes connections
 	//$pipe AFB_NIC_REQUEST_FIFO_IN
@@ -191,27 +195,27 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 
 //************** STUBBING VARIOUS PORTS *******************//
 
-	$thread set_addr_tap
-		$out $signal min_afb_tap_addr: $unsigned<36>
-		$out $signal max_afb_tap_addr: $unsigned<36>
-		$out $signal min_acb_tap_addr: $unsigned<36>
-		$out $signal max_acb_tap_addr: $unsigned<36>
+//	$thread set_addr_tap
+//		$out $signal min_afb_tap_addr: $unsigned<36>
+//		$out $signal max_afb_tap_addr: $unsigned<36>
+//		$out $signal min_acb_tap_addr: $unsigned<36>
+//		$out $signal max_acb_tap_addr: $unsigned<36>
 
-	$default
-		$now min_afb_tap_addr := ($unsigned<36>) 1
-		$now max_afb_tap_addr := ($unsigned<36>) 2
-		$now min_acb_tap_addr := ($unsigned<36>) 3
-		$now max_acb_tap_addr := ($unsigned<36>) 4
+//	$default
+//		$now min_afb_tap_addr := ($unsigned<36>) 1
+//		$now max_afb_tap_addr := ($unsigned<36>) 2
+//		$now min_acb_tap_addr := ($unsigned<36>) 3
+//		$now max_acb_tap_addr := ($unsigned<36>) 4
 
-		<dummy_reset_state> {
-			$goto dummy_reset_state }
-		$now $tick
+//		<dummy_reset_state> {
+//			$goto dummy_reset_state }
+//		$now $tick
 
-	$string i0 : set_addr_tap
-		min_afb_tap_addr => MIN_AFB_TAP_ADDR
-		max_afb_tap_addr => MAX_AFB_TAP_ADDR
-		min_acb_tap_addr => MIN_ACB_TAP_ADDR
-		max_acb_tap_addr => MAX_ACB_TAP_ADDR
+//	$string i0 : set_addr_tap
+//		min_afb_tap_addr => MIN_AFB_TAP_ADDR
+//		max_afb_tap_addr => MAX_AFB_TAP_ADDR
+//		min_acb_tap_addr => MIN_ACB_TAP_ADDR
+//		max_acb_tap_addr => MAX_ACB_TAP_ADDR
 
 	// absorb clocks.. edited out later. 
 	$thread clockResetDummy
