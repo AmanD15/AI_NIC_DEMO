@@ -701,7 +701,7 @@ begin --
     SPI_FLASH_MISO => SPI_FLASH_MISO,
     SPI_FLASH_MOSI => SPI_FLASH_MOSI,
     WRITE_PROTECT => WRITE_PROTECT,
-    clk => clk, reset => reset 
+    clk => CLOCK_TO_NIC, reset => RESET_TO_NIC 
     ); -- 
   clk_rst_str: clockResetDummy -- 
     port map ( -- 
