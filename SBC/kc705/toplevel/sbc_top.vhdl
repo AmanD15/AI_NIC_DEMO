@@ -148,25 +148,36 @@ architecture structure of top_level is
           s_axi_aclk : out std_logic;
           clock : out std_logic);
        end component;
-           
+      
+      -- Clock for DRAM Controller  
+      component clk_wiz_0 is
+      Port ( 
+        clk_sys_320 : out STD_LOGIC;
+        clk_ref_200 : out STD_LOGIC;
+        reset : in STD_LOGIC;
+        locked : out STD_LOGIC; -- Goes to VIO
+        clk_in1_p : in STD_LOGIC;
+        clk_in1_n : in STD_LOGIC
+      );
+    end component;
 
-   
+   -- Obsolete clk_wiz for ETH_KC Clock
    -- to generate a 80  and 125 Mhz clock
-   component clk_wiz_0
-   port
-    (-- Clock in ports
-     -- Clock out ports
-     clk_out1          : out    std_logic; -- 80 Mhz Clock
-     clk_out2	       : out    std_logic; -- 125 MHz clock
-     clk_out3	       : out    std_logic; -- 100 MHz clock
-     clk_out4	       : out    std_logic; -- 200 MHz clock
-     -- Status and control signals
-     reset             : in     std_logic;
-     locked            : out    std_logic;
-     clk_in1_p         : in     std_logic;
-     clk_in1_n         : in     std_logic
-    );
-   end component;
+   --component clk_wiz_0
+   --port
+   -- (-- Clock in ports
+   --  -- Clock out ports
+   --  clk_out1          : out    std_logic; -- 80 Mhz Clock
+   --  clk_out2	       : out    std_logic; -- 125 MHz clock
+   --  clk_out3	       : out    std_logic; -- 100 MHz clock
+   --  clk_out4	       : out    std_logic; -- 200 MHz clock
+   --  -- Status and control signals
+   --  reset             : in     std_logic;
+   --  locked            : out    std_logic;
+   --  clk_in1_p         : in     std_logic;
+   --  clk_in1_n         : in     std_logic
+   -- );
+   --end component;
 
   -- vio for processor reset
   -- on processor clock.
@@ -184,9 +195,8 @@ architecture structure of top_level is
   );
   end component;
   
-
-  -- vio for mig reset
-  --   (on 200 MHz clock)
+ -- vio for nic reset
+  --  on nic clock.
   COMPONENT vio_1
     PORT (
       clk : IN STD_LOGIC;
@@ -195,8 +205,9 @@ architecture structure of top_level is
     );
   END COMPONENT;
 
-  -- vio for nic reset
-  --  on nic clock.
+ 
+  -- vio for mig reset
+  --   (on 200 MHz clock)
   COMPONENT vio_2
     PORT (
       clk : IN STD_LOGIC;
@@ -419,10 +430,11 @@ end component mig_7series_0;
    signal CPU_MODE : std_logic_vector(1 downto 0); 
    -------------------- ADDITIONAL DRAM SIGNAL --------------------------------------
    signal device_temp       :  STD_LOGIC_VECTOR ( 11 downto 0 );
-
+   signal clk_sys_320, clk_ref_200: std_logic:='0';
+   -- signal clk_rst: std_logic:='0';
 --------------------OLD SIGNALS --------------------------------------
 
-   signal reset1, reset_sync, reset_nic: std_logic;
+   signal reset1, reset_sync, reset_nic, reset_mig: std_logic;
    signal reset1_mac,reset2_mac, reset_sync_pre_buf_mac, reset_sync_mac: std_logic;
 
    signal EXTERNAL_INTERRUPT : std_logic_vector(0 downto 0);
@@ -436,6 +448,7 @@ end component mig_7series_0;
 
    signal enable_reset : std_logic_vector (0 downto 0);
 
+    signal mig_vio_locked : std_logic;
 
 
 
@@ -469,7 +482,15 @@ begin
         clock => clock --out std_logic	
         );      
        
-    
+        clk_wiz_inst: clk_wiz_0 
+        Port map( 
+          clk_sys_320 => clk_sys_320, -- goes to the DRAM controller
+          clk_ref_200 => clk_ref_200, -- goes to the DRAM controller
+          reset       => clk_rst, -- Fix This
+          locked      => mig_vio_locked, -- goes to the VIO
+          clk_in1_p   => clk_in_p,
+          clk_in1_n   => clk_in_n);
+
     -- VIO for reset 
     virtual_reset : vio_0
         port map (
@@ -496,6 +517,13 @@ begin
                                         probe_out0 => reset_nic
                                        
                                 );
+    virtual_reset_mig : vio_2
+    port map (
+                    clk => clk_ref_200,
+                    probe_in0 =>  mig_vio_locked,
+                    probe_out0 => reset_mig
+                    
+            );
 
 	---------------------------------------------------------
 	-- TODO: TAP VALUES INSIDE THE SBC CORE (DONE!!)
@@ -671,8 +699,8 @@ begin
     ddr3_cs_n                  => ddr3_cs_n ,
     ddr3_dm                    => ddr3_dm ,
     ddr3_odt                   => ddr3_odt ,
-    sys_clk_i                  => clk_sys_320 , -- 320 MHz clock, TODO
-    clk_ref_i                  => clk_ref_200 , -- 200 MHz clock, TODO
+    sys_clk_i                  => clk_sys_320 , 
+    clk_ref_i                  => clk_ref_200 , 
     app_addr                   => ACB_BRIDGE_TO_DRAM_CONTROLLER(613 DOWNTO 585)  ,
     app_cmd                    => ACB_BRIDGE_TO_DRAM_CONTROLLER(584 DOWNTO 582)  ,
     app_en                     => ACB_BRIDGE_TO_DRAM_CONTROLLER(581) ,
@@ -695,7 +723,7 @@ begin
     ui_clk_sync_rst            => DRAM_CONTROLLER_TO_ACB_BRIDGE(0) ,
     init_calib_complete        => DRAM_CONTROLLER_TO_ACB_BRIDGE(520) ,
     device_temp                => device_temp ,
-    sys_rst                    => clk_rst -- Reset from clk_wiz
+    sys_rst                    => clk_rst -- Fix this
   );
   
 
