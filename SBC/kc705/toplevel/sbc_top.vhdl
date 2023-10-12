@@ -110,11 +110,16 @@ port(
       -----------------------------------------------
       -- SPI FLASH signals.
       -----------------------------------------------
-        
         SPI_FLASH_CLK  : out std_logic_vector(0 downto 0);
         SPI_FLASH_CS_L : out std_logic_vector(7 downto 0);
         SPI_FLASH_MOSI : out std_logic_vector(0 downto 0);
         SPI_FLASH_MISO : in std_logic_vector(0 downto 0);
+
+      -----------------------------------------------
+      -- CPU Mode.
+      -----------------------------------------------
+   	CPU_MODE : out std_logic_vector(1 downto 0); 
+
       -----------------------------------------------
       -- 200 MHz clock in.
       -----------------------------------------------
@@ -131,29 +136,13 @@ architecture structure of top_level is
     --------------------------------------------------------------
     -- TODO: generate 320 and 200 MHz for DRAM
     --------------------------------------------------------------
-     component clocks_gen is
-       port(
-          -- differential clock inputs
-          clk_in_p : in std_logic;
-          clk_in_n : in std_logic;
-       
-          -- asynchronous control/resets
-          glbl_rst : in std_logic;
-          dcm_locked : out std_logic;
-       
-          -- clock outputs
-          gtx_clk_bufg : out std_logic;
-          
-          refclk_bufg : out std_logic;
-          s_axi_aclk : out std_logic;
-          clock : out std_logic);
-       end component;
-      
       -- Clock for DRAM Controller  
       component clk_wiz_0 is
       Port ( 
-        clk_sys_320 : out STD_LOGIC;
-        clk_ref_200 : out STD_LOGIC;
+        clk0 : out STD_LOGIC; -- for the MIG 320 MHz
+        clk1 : out STD_LOGIC; -- for the MIG 200 MHz
+	clk2 : out STD_LOGIC; -- for the NIC+MAC 125 MHz
+	clk3 : out STD_LOGIC; -- for the AXI inside the ETH block. 100 MHz
         reset : in STD_LOGIC;
         locked : out STD_LOGIC; -- Goes to VIO
         clk_in1_p : in STD_LOGIC;
@@ -161,38 +150,13 @@ architecture structure of top_level is
       );
     end component;
 
-   -- Obsolete clk_wiz for ETH_KC Clock
-   -- to generate a 80  and 125 Mhz clock
-   --component clk_wiz_0
-   --port
-   -- (-- Clock in ports
-   --  -- Clock out ports
-   --  clk_out1          : out    std_logic; -- 80 Mhz Clock
-   --  clk_out2	       : out    std_logic; -- 125 MHz clock
-   --  clk_out3	       : out    std_logic; -- 100 MHz clock
-   --  clk_out4	       : out    std_logic; -- 200 MHz clock
-   --  -- Status and control signals
-   --  reset             : in     std_logic;
-   --  locked            : out    std_logic;
-   --  clk_in1_p         : in     std_logic;
-   --  clk_in1_n         : in     std_logic
-   -- );
-   --end component;
-
-  -- vio for processor reset
-  -- on processor clock.
-  component vio_0 is
-  port (
-    clk : in std_logic;
-    probe_in0 : in std_logic;
-    probe_in1 : in std_logic;
-    probe_in2 : in std_logic;
-    probe_out0 : out std_logic;
-    probe_out1 : OUT std_logic;
-    probe_out2 : OUT std_logic;
-    probe_out3 : OUT std_logic;
-    probe_out4 : OUT std_logic
-  );
+   -- to generate synchronous reset to processor.
+   component vio_0 is
+   port (
+      clk : in std_logic;
+      probe_in0 : in std_logic;
+      probe_out0 : OUT std_logic
+    );
   end component;
   
  -- vio for nic reset
@@ -447,8 +411,7 @@ end component mig_7series_0;
    
 
    signal enable_reset : std_logic_vector (0 downto 0);
-
-    signal mig_vio_locked : std_logic;
+   signal mig_vio_locked : std_logic;
 
 
 
@@ -462,81 +425,46 @@ begin
    CONFIG_UART_BAUD_CONTROL_WORD <= X"0bed0048";
    -- CONFIG_UART_BAUD_CONTROL_WORD <= X"3b890180";
 
-
+      
        
-    clock_gen_inst : clocks_gen
-        port map(
-        -- differential clock inputs
-        clk_in_p => clk_in_p,--in std_logic;
-        clk_in_n => clk_in_n,--in_std_logic;
-
-         -- asynchronous control/resets
-        glbl_rst => glbl_rst,--in std_logic;
-        dcm_locked => dcm_locked,--out std_logic;
-
-        -- clock outputs
-        gtx_clk_bufg => clock_mac,--out std_logic;
-   
-        refclk_bufg => refclk_bufg,--out std_logic;
-        s_axi_aclk => s_axi_aclk,--out std_logic;
-        clock => clock --out std_logic	
-        );      
-       
-        clk_wiz_inst: clk_wiz_0 
+     clk_wiz_inst: clk_wiz_0 
         Port map( 
-          clk_sys_320 => clk_sys_320, -- goes to the DRAM controller
-          clk_ref_200 => clk_ref_200, -- goes to the DRAM controller
+          clk0 => clk_sys_320, -- goes to the DRAM controller
+          clk1 => clk_ref_200, -- goes to the DRAM controller
+	  clk2 => clk_ref_125, -- To ethernet mac
+	  clk3 => clk_ref_100, -- To axi (in mac)
           reset       => clk_rst, -- Fix This
           locked      => mig_vio_locked, -- goes to the VIO
           clk_in1_p   => clk_in_p,
           clk_in1_n   => clk_in_n);
 
-    -- VIO for reset 
-    virtual_reset : vio_0
+    -- VIO for processor reset 
+    virtual_reset_processor : vio_0
         port map (
-                        clk => clock,
-			-- these three can be observed
-			-- from the vivado GUI.
-                        probe_in0 =>  dcm_locked,
-                        probe_in1 =>  CPU_MODE(1),
-                        probe_in2 =>  CPU_MODE(0),
-			-- careful, do not assert this
-			-- else the vio itself will be reset.
-                        probe_out1 => reset_clk,
-			-- these four can be controlled 
-			-- by the vivado GUI.
-                        probe_out0 => reset_sync,
-                        probe_out2 => CPU_RESET(0),
-                        probe_out3 => DEBUG_MODE(0),
-                        probe_out4 => SINGLE_STEP_MODE(0)
+                        clk => CLOCK_TO_PROCESSOR,
+                        probe_out1 => RESET_TO_PROCESSOR
                 );
     virtual_reset_nic : vio_1
                         port map (
-                                        clk => clock_mac,
-                                        probe_in0 =>  dcm_locked,
-                                        probe_out0 => reset_nic
-                                       
+                                        clk => clock_ref_125,
+                                        probe_out0 => RESET_TO_NIC
                                 );
     virtual_reset_mig : vio_2
     port map (
                     clk => clk_ref_200,
-                    probe_in0 =>  mig_vio_locked,
-                    probe_out0 => reset_mig
+                    probe_out0 => RESET_TO_MIG,
                     
             );
 
-	---------------------------------------------------------
-	-- TODO: TAP VALUES INSIDE THE SBC CORE (DONE!!)
-	---------------------------------------------------------
-   	CPU_MODE <= PROCESSOR_MODE(1 downto 0);
+   CPU_MODE <= PROCESSOR_MODE(1 downto 0);
 
    core_inst: sbc_kc705_core
      port map ( --
-    CLOCK_TO_DRAMCTRL_BRIDGE => CLOCK_TO_DRAMCTRL_BRIDGE, -- DRAM_CONTROLLER_TO_ACB_BRIDGE(521) ui_clk, 80MHz
+    CLOCK_TO_DRAMCTRL_BRIDGE =>  DRAM_CONTROLLER_TO_ACB_BRIDGE(521), --  ui_clk, 80MHz
     CLOCK_TO_NIC => CLOCK_TO_NIC,
-    CLOCK_TO_PROCESSOR => CLOCK_TO_PROCESSOR, -- DRAM_CONTROLLER_TO_ACB_BRIDGE(521) ui_clk, 80MHz
+    CLOCK_TO_PROCESSOR =>  DRAM_CONTROLLER_TO_ACB_BRIDGE(521)        --  ui_clk, 80MHz
 
-    RESET_TO_DRAMCTRL_BRIDGE => RESET_TO_DRAMCTRL_BRIDGE,    
+    RESET_TO_DRAMCTRL_BRIDGE => RESET_TO_PROCESSOR,    
     RESET_TO_NIC => RESET_TO_NIC,
     RESET_TO_PROCESSOR => RESET_TO_PROCESSOR,
     
@@ -589,7 +517,7 @@ begin
      --asynchronous reset
      glbl_rst => enable_reset(0), --in std_logic;
 
-     -- 3 clocks
+     -- 3 clocks (buffered with bufg's)
      gtx_clk_bufg => clock_mac, --in std_logic;   //125MHz
      refclk_bufg => refclk_bufg , --in std_logic; //200MHz
      s_axi_aclk => s_axi_aclk, --in std_logic;    //100MHz
