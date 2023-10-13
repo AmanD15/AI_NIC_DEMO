@@ -441,7 +441,7 @@ begin
     -- VIO for processor reset 
     virtual_reset_processor : vio_0
         port map (
-                        clk => CLOCK_TO_PROCESSOR,
+                        clk => DRAM_CONTROLLER_TO_ACB_BRIDGE(521), --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
                         probe_out1 => RESET_TO_PROCESSOR
                 );
     virtual_reset_nic : vio_1
@@ -651,7 +651,7 @@ begin
     ui_clk_sync_rst            => DRAM_CONTROLLER_TO_ACB_BRIDGE(0) ,
     init_calib_complete        => DRAM_CONTROLLER_TO_ACB_BRIDGE(520) ,
     device_temp                => device_temp ,
-    sys_rst                    => clk_rst -- Fix this
+    sys_rst                    => RESET_TO_MIG -- Fix this
   );
   
 
