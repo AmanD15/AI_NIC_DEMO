@@ -97,18 +97,21 @@ architecture struct of nic_mac_bridge is --
 
 ----  HAND EDIT PART BEGINS -----------------
 
-    signal NIC_TO_MAC_RESETN : std_logic_vector(0 downto 0);
+    signal NIC_TO_MAC_RESETN_SIG: std_logic_vector(0 downto 0);
+    signal NIC_TO_MAC_RESETNN_SIG : std_logic_vector(0 downto 0);
 
 ----  HAND EDIT PART ENDS -----------------
 
 
 begin -- 
+  NIC_TO_MAC_RESETNN_SIG <= not NIC_TO_MAC_RESETN_SIG;
+
   inst_nic_mac_pipe_reset: nic_mac_pipe_reset
   port map ( --
     ENABLE_MAC_pipe_write_data => ENABLE_MAC_pipe_write_data,
     ENABLE_MAC_pipe_write_req => ENABLE_MAC_pipe_write_req,
     ENABLE_MAC_pipe_write_ack => ENABLE_MAC_pipe_write_ack,
-    nic_to_mac_resetn => NIC_TO_MAC_RESETN,
+    nic_to_mac_resetn => NIC_TO_MAC_RESETN_SIG,
     clk => clk, reset => reset 
     ); -- 
   inst_rx_concat_system: rx_concat_system
@@ -119,7 +122,7 @@ begin --
     rx_out_pipe_pipe_read_data => rx_out_pipe_pipe_read_data,
     rx_out_pipe_pipe_read_req => rx_out_pipe_pipe_read_req,
     rx_out_pipe_pipe_read_ack => rx_out_pipe_pipe_read_ack,
-    clk => clk, reset => NIC_TO_MAC_RESETN
+    clk => clk, reset => NIC_TO_MAC_RESETNN_SIG
     ); -- 
   inst_tx_deconcat_system: tx_deconcat_system
   port map ( --
@@ -129,13 +132,12 @@ begin --
     tx_out_pipe_pipe_read_data => tx_out_pipe_pipe_read_data,
     tx_out_pipe_pipe_read_req => tx_out_pipe_pipe_read_req,
     tx_out_pipe_pipe_read_ack => tx_out_pipe_pipe_read_ack,
-    clk => clk, reset => NIC_TO_MAC_RESETN 
+    clk => clk, reset => NIC_TO_MAC_RESETNN_SIG
     ); -- 
   -- 
 
---OUTPUT ASSIGNMENT
-
-nic_to_mac_resetn <= NIC_TO_MAC_RESETN;
+	--OUTPUT ASSIGNMENT
+	nic_to_mac_resetn <= NIC_TO_MAC_RESETN_SIG;
 
 
 end struct;

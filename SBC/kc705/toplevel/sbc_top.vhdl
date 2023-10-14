@@ -431,7 +431,7 @@ begin
 
       
        
-     clk_wiz_inst: clk_wiz_0 
+    clk_wiz_inst: clk_wiz_0 
         Port map( 
           clk0 => clk_sys_320, -- goes to the DRAM controller
           clk1 => clk_ref_200, -- goes to the DRAM controller
@@ -519,7 +519,7 @@ begin
     (
     
      --asynchronous reset
-     glbl_rst => enable_reset(0), --in std_logic;
+     glbl_rst => NIC_MAC_RESETN(0), --in std_logic;
 
      -- 3 clocks (buffered with bufg's)
      gtx_clk_bufg => clock_mac, --in std_logic;   //125MHz
