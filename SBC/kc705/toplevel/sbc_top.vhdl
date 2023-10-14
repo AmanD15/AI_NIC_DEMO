@@ -121,6 +121,10 @@ port(
    	CPU_MODE : out std_logic_vector(1 downto 0); 
 
       -----------------------------------------------
+      -- Clock wiz reset
+      -----------------------------------------------
+      clk_rst : in std_logic;
+      -----------------------------------------------
       -- 200 MHz clock in.
       -----------------------------------------------
       clk_in_p : in std_logic;
@@ -395,7 +399,7 @@ end component mig_7series_0;
    -------------------- ADDITIONAL DRAM SIGNAL --------------------------------------
    signal device_temp       :  STD_LOGIC_VECTOR ( 11 downto 0 );
    signal clk_sys_320, clk_ref_200: std_logic:='0';
-   -- signal clk_rst: std_logic:='0';
+   signal sys_rst: std_logic;
 --------------------OLD SIGNALS --------------------------------------
 
    signal reset1, reset_sync, reset_nic, reset_mig: std_logic;
@@ -433,7 +437,7 @@ begin
           clk1 => clk_ref_200, -- goes to the DRAM controller
 	  clk2 => clk_ref_125, -- To ethernet mac
 	  clk3 => clk_ref_100, -- To axi (in mac)
-          reset       => clk_rst, -- Fix This
+          reset       => clk_rst, 
           locked      => mig_vio_locked, -- goes to the VIO
           clk_in1_p   => clk_in_p,
           clk_in1_n   => clk_in_n);
@@ -441,7 +445,7 @@ begin
     -- VIO for processor reset 
     virtual_reset_processor : vio_0
         port map (
-                        clk => CLOCK_TO_PROCESSOR,
+                        clk => DRAM_CONTROLLER_TO_ACB_BRIDGE(521), --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
                         probe_out1 => RESET_TO_PROCESSOR
                 );
     virtual_reset_nic : vio_1
@@ -651,8 +655,8 @@ begin
     ui_clk_sync_rst            => DRAM_CONTROLLER_TO_ACB_BRIDGE(0) ,
     init_calib_complete        => DRAM_CONTROLLER_TO_ACB_BRIDGE(520) ,
     device_temp                => device_temp ,
-    sys_rst                    => clk_rst -- Fix this
+    sys_rst                    => sys_rst
   );
-  
+  sys_rst <= (clk_rst or RESET_TO_MIG ); -- RESET_TO_MIG is from VIO
 
 end structure;
