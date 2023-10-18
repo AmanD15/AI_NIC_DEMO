@@ -184,6 +184,54 @@ architecture structure of top_level is
     );
   END COMPONENT;
 
+
+
+--------- NEW CLOCK WIZ AND VIOS ----------------------------------------
+
+    component clk_wiz_0 is
+      Port ( 
+        clk_320 : out STD_LOGIC;
+        clk_200 : out STD_LOGIC;
+        clk_125 : out STD_LOGIC;
+        clk_100 : out STD_LOGIC;
+        reset : in STD_LOGIC;
+        locked : out STD_LOGIC;
+        clk_in1_p : in STD_LOGIC;
+        clk_in1_n : in STD_LOGIC
+      );
+
+    end component;
+
+    component vio_80 is
+      Port ( 
+        clk : in STD_LOGIC;
+        probe_in0 : in STD_LOGIC_VECTOR ( 1 downto 0 );
+        probe_out0 : out STD_LOGIC_VECTOR ( 0 to 0 )
+      );
+
+    end component;
+
+    component vio_125 is
+      Port ( 
+        clk : in STD_LOGIC;
+        probe_in0 : in STD_LOGIC_VECTOR ( 0 to 0 );
+        probe_out0 : out STD_LOGIC_VECTOR ( 0 to 0 )
+      );
+
+    end component;
+
+    component vio_200 is
+      Port ( 
+        clk : in STD_LOGIC;
+        probe_in0 : in STD_LOGIC_VECTOR ( 0 to 0 );
+        probe_out0 : out STD_LOGIC_VECTOR ( 0 to 0 )
+      );
+
+    end component;
+
+
+-------------------------------------------------------------------------
+
   component sbc_kc705_core is -- 
   port( -- 
     CLOCK_TO_DRAMCTRL_BRIDGE : in std_logic_vector(0 downto 0);
@@ -396,6 +444,7 @@ end component mig_7series_0;
 
    signal CONFIG_UART_BAUD_CONTROL_WORD: std_logic_vector(31 downto 0);
    signal CPU_MODE : std_logic_vector(1 downto 0); 
+   signal clk_ref_125, clk_ref_100: std_logic:='0';
    -------------------- ADDITIONAL DRAM SIGNAL --------------------------------------
    signal device_temp       :  STD_LOGIC_VECTOR ( 11 downto 0 );
    signal clk_sys_320, clk_ref_200: std_logic:='0';
@@ -431,41 +480,51 @@ begin
 
       
        
-    clk_wiz_inst: clk_wiz_0 
+    clk_wiz_0_inst: clk_wiz_0 
         Port map( 
-          clk0 => clk_sys_320, -- goes to the DRAM controller
-          clk1 => clk_ref_200, -- goes to the DRAM controller
-	  clk2 => clk_ref_125, -- To ethernet mac
-	  clk3 => clk_ref_100, -- To axi (in mac)
-          reset       => clk_rst, 
-          locked      => mig_vio_locked, -- goes to the VIO
-          clk_in1_p   => clk_in_p,
-          clk_in1_n   => clk_in_n);
+          clk_320       => clk_sys_320, -- goes to the DRAM controller
+          clk_200       => clk_ref_200, -- goes to the DRAM controller
+	  clk_125       => clk_ref_125, -- To ethernet mac
+	  clk_100       => clk_ref_100, -- To axi (in mac)
+          reset         => clk_rst, 
+          locked        => mig_vio_locked, -- goes to the VIO
+          clk_in1_p     => clk_in_p,
+          clk_in1_n     => clk_in_n);
 
     -- VIO for processor reset 
-    virtual_reset_processor : vio_0
+
+    virtual_reset_processor : vio_80
         port map (
-                        clk => DRAM_CONTROLLER_TO_ACB_BRIDGE(521), --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
-                        probe_out1 => RESET_TO_PROCESSOR
+                        clk         => DRAM_CONTROLLER_TO_ACB_BRIDGE(521), --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
+                        probe_in1   => CPU_MODE,
+                        probe_out1  => RESET_TO_PROCESSOR
                 );
-    virtual_reset_nic : vio_1
-                        port map (
-                                        clk => clock_ref_125,
-                                        probe_out0 => RESET_TO_NIC
-                                );
-    virtual_reset_mig : vio_2
-    port map (
-                    clk => clk_ref_200,
-                    probe_out0 => RESET_TO_MIG,
-                    
-            );
+
+    -- VIO for NIC reset 
+
+    virtual_reset_nic       : vio_125
+        port map (
+                        clk         => clock_ref_125,
+                        probe_out0  => RESET_TO_NIC
+          );
+
+    -- VIO for MIG reset 
+
+    virtual_reset_mig       : vio_200
+        port map (
+                        clk         => clk_ref_200,
+                        probe_out0  => RESET_TO_MIG,
+                        
+                );
+
 
    CPU_MODE <= PROCESSOR_MODE(1 downto 0);
+   
 
    core_inst: sbc_kc705_core
      port map ( --
     CLOCK_TO_DRAMCTRL_BRIDGE =>  DRAM_CONTROLLER_TO_ACB_BRIDGE(521), --  ui_clk, 80MHz
-    CLOCK_TO_NIC => CLOCK_TO_NIC,
+    CLOCK_TO_NIC => clk_ref_125,
     CLOCK_TO_PROCESSOR =>  DRAM_CONTROLLER_TO_ACB_BRIDGE(521)        --  ui_clk, 80MHz
 
     RESET_TO_DRAMCTRL_BRIDGE => RESET_TO_PROCESSOR,    
