@@ -643,7 +643,8 @@ begin
 				data_out => qpop_data);
 
 	-- priority
-	process(clk, reset, priority_flag, do_request_transfer, req_0_selected, req_1_selected)
+	process(clk, reset, priority_flag, do_request_transfer, req_0_selected, req_1_selected,
+			req_0_has_lock, req_1_has_lock)
 		variable req_0_has_lock_var, req_1_has_lock_var: boolean;
 		variable priority_flag_var: std_logic;
 	begin
@@ -678,6 +679,7 @@ begin
 
 	-- push side.
 	process(priority_flag, req_0_ready, req_1_ready, push_request,  do_request_transfer,
+				muxed_request_accept, qpush_ack,
 				request_0_pipe_write_data, request_1_pipe_write_data)
 		variable ack_0_var, ack_1_var: std_logic;
 		variable req_data_var: std_logic_vector(request_data_width-1 downto 0);
@@ -701,7 +703,7 @@ begin
 		--    *                              1                     *           0
 		--    1             1                  *                               1
 		--    1             0                 0            0       *           1
-		 --    1             0                 0            *       0           1
+	 	--    1             0                 0            *       0           1
 		if(req_0_ready and 
 			(req_0_has_lock or 
 				((not req_1_has_lock) and

@@ -1,0 +1,6 @@
+commit 0d97534c0d931f73c90574f473829904d08eca01
+Author: Madhav Pandurang Desai <madhav@ee.iitb.ac.in>
+Date:   Wed Oct 4 17:58:20 2023 +0530
+
+    Updated.  afb_multicore_interrupt_controller now includes an ipi
+    capability.

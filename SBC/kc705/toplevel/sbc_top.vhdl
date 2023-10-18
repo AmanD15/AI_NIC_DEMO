@@ -47,7 +47,7 @@ port(
     -----------------------------------------------
     -- ETH_KC705(MAC) signals.
     -----------------------------------------------
-       glbl_rst : in std_logic;
+       -- glbl_rst : in std_logic;
        gtx_clk_bufg_out : out std_logic;
        phy_resetn : out std_logic;
         
@@ -468,6 +468,9 @@ end component mig_7series_0;
 
 
 
+   signal  CPU_RESET, DEBUG_MODE: std_logic;
+
+	
 
    
 begin
@@ -497,7 +500,9 @@ begin
         port map (
                         clk         => DRAM_CONTROLLER_TO_ACB_BRIDGE(521), --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
                         probe_in1   => CPU_MODE,
-                        probe_out1  => RESET_TO_PROCESSOR
+                        probe_out1  => RESET_TO_PROCESSOR,
+			probe_out2  => CPU_RESET, -- TODO: add this to vio_80
+			probe_out3  => DEBUG_MODE -- TODO: add this to vio_80
                 );
 
     -- VIO for NIC reset 
@@ -517,9 +522,19 @@ begin
                         
                 );
 
+   THREAD_RESET(0) <= CPU_RESET;
+   THREAD_RESET(1) <= DEBUG_MODE;
+   THREAD_RESET(2) <= '0';
+   THREAD_RESET(3) <= '0';
 
    CPU_MODE <= PROCESSOR_MODE(1 downto 0);
    
+
+   THREAD_RESET(0) <= CPU_RESET(0);
+   THREAD_RESET(1) <= DEBUG_MODE(0);
+   THREAD_RESET(2) <= '0';
+   THREAD_RESET(3) <= '0';
+
 
    core_inst: sbc_kc705_core
      port map ( --

@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 package uartPackage is
-	function constGcd(x,y: integer) return integer;
+  function constGcd(x,y: integer) return integer;
 
 
   component baudGen
@@ -163,7 +163,60 @@ package uartPackage is
   --  100000000/gcd(100000000,16*115200)  - 288 = 100000000/6400 - 288 = 
   constant uart_baudLimit_115200 : integer := 15337; 
 
+  -- additional units with 32-bit baud limit and baud frequency interfaces..
+  component baudGenExt
+    port (
+      clr       : in  std_logic;
+      clk       : in  std_logic;
+      baudFreq  : in  std_logic_vector(31 downto 0);
+      baudLimit : in  std_logic_vector(31 downto 0);
+      ce16      : out std_logic);
+  end component;
+
+  component uartTopBaseExt
+    port ( clr       : in  std_logic;
+           clk       : in  std_logic;
+           serIn     : in  std_logic;
+           txData    : in  std_logic_vector(7 downto 0);
+           newTxData : in  std_logic;
+           baudFreq  : in  std_logic_vector(31 downto 0);
+           baudLimit : in  std_logic_vector(31 downto 0);
+           serOut    : out std_logic;
+           txBusy    : out std_logic;
+           rxData    : out std_logic_vector(7 downto 0);
+           newRxData : out std_logic;
+           baudClk   : out std_logic);
+  end component;
+
+  component uartTopPortConfigurableExt is
+  port ( -- global signals
+         reset     : in  std_logic;                     -- global reset input
+         clk       : in  std_logic;                     -- global clock input
+         -- software reset.
+         soft_reset: in std_logic;
+         -- uart serial signals
+         serIn     : in  std_logic;                     -- serial data input
+         serOut    : out std_logic;                     -- serial data output
+         -- pipe signals for tx/rx.
+	 uart_rx_pipe_read_data:  out  std_logic_vector (7 downto 0);
+	 uart_rx_pipe_read_req:   in   std_logic_vector (0 downto 0);
+	 uart_rx_pipe_read_ack:   out  std_logic_vector (0 downto 0);
+	 uart_tx_pipe_write_data: in   std_logic_vector (7 downto 0);
+	 uart_tx_pipe_write_req:  in   std_logic_vector (0 downto 0);
+	 uart_tx_pipe_write_ack:  out  std_logic_vector (0 downto 0);
+         -- baudFreq = 16 * baudRate / gcd(clkFreq, 16 * baudRate)
+	 --   For example if clock frequency is 100MHz and 
+	 --   baud-rate is 9600, then gcd(16*9600,10^8) is
+	 --   3200.  So Baud-frequency will be 16*9600/3200 = 48
+         baudFreq  : in std_logic_vector(31 downto 0);
+         -- baudLimit = clkFreq / gcd(clkFreq, 16 * baudRate) - baudFreq
+	 --   For example if clock frequency is 100MHz and
+	 --   baud-rate is 9600, the gcd is 3200.  So 
+	 --   baudLimit = 31202.
+        baudLimit : in std_logic_vector(31 downto 0));
+  end component;
 end uartPackage;
+
 
 package body uartPackage is
  	-- assumption: x,y are > 0
@@ -879,3 +932,203 @@ architecture Behavioral of uartTx is
     ce1 <= '1' when ((count16 = "1111") and (ce16 = '1')) else '0';
     txBusy <= iTxBusy;
   end Behavioral;
+-----------------------------------------------------------------------------------------
+-- baud rate generator for uart 
+--
+-- this module has been changed to receive the baud rate dividing counter from registers.
+-- the two registers should be calculated as follows:
+-- first register:
+--              baud_freq = 16*baud_rate / gcd(global_clock_freq, 16*baud_rate)
+-- second register:
+--              baud_limit = (global_clock_freq / gcd(global_clock_freq, 16*baud_rate)) - baud_freq 
+--
+-----------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity baudGenExt is
+  port ( clr       : in  std_logic;                     -- global reset input
+         clk       : in  std_logic;                     -- global clock input
+         -- baudFreq = 16 * baudRate / gcd(clkFreq, 16 * baudRate)
+         baudFreq  : in  std_logic_vector(31 downto 0); -- baud rate setting registers - see header description
+         -- baudLimit = clkFreq / gcd(clkFreq, 16 * baudRate) - baudFreq
+         baudLimit : in  std_logic_vector(31 downto 0); -- baud rate setting registers - see header description
+         ce16      : out std_logic);                    -- baud rate multiplyed by 16
+end baudGenExt;
+
+architecture Behavioral of baudGenExt is
+  signal counter : std_logic_vector(31 downto 0);
+begin
+    -- baud divider counter
+    -- clock divider output
+    process (clr, clk)
+    begin
+      if (rising_edge(clk)) then
+        if (clr = '1') then
+          counter <= (others => '0');
+          ce16 <= '0';
+	elsif (counter >= baudLimit) then
+            counter <= std_logic_vector(unsigned(counter) - unsigned(baudLimit));
+            ce16 <= '1';
+        else
+            counter <= std_logic_vector(unsigned(counter) + unsigned(baudFreq));
+            ce16 <= '0';
+        end if;
+      end if;
+    end process;
+
+end Behavioral;
+-----------------------------------------------------------------------------------------
+-- uart top level module  
+--
+-----------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+
+library work;
+use work.uartPackage.all;
+
+entity uartTopBaseExt is
+  port ( -- global signals
+         clr       : in  std_logic;                     -- global reset input
+         clk       : in  std_logic;                     -- global clock input
+         -- uart serial signals
+         serIn     : in  std_logic;                     -- serial data input
+         serOut    : out std_logic;                     -- serial data output
+         -- transmit and receive internal interface signals
+         txData    : in  std_logic_vector(7 downto 0);  -- data byte to transmit
+         newTxData : in  std_logic;                     -- asserted to indicate that there is a new data byte for transmission
+         txBusy    : out std_logic;                     -- signs that transmitter is busy
+         rxData    : out std_logic_vector(7 downto 0);  -- data byte received
+         newRxData : out std_logic;                     -- signs that a new byte was received
+         -- baud rate configuration register - see baudGen.vhd for details
+         baudFreq  : in  std_logic_vector(31 downto 0); -- baud rate setting registers - see header description
+         baudLimit : in  std_logic_vector(31 downto 0); -- baud rate setting registers - see header description
+         baudClk   : out std_logic);                    -- 
+end uartTopBaseExt;
+
+architecture Behavioral of uartTopBaseExt is
+
+  signal ce16 : std_logic; -- clock enable at bit rate
+
+  begin
+    -- baud rate generator module
+    bg : baudGenExt
+      port map (
+        clr => clr,
+        clk => clk,
+        baudFreq => baudFreq,
+        baudLimit => baudLimit,
+        ce16 => ce16);
+    -- uart receiver
+    ut : uartTx
+      port map (
+        clr => clr,
+        clk => clk,
+        ce16 => ce16,
+        txData => txData,
+        newTxData => newTxData,
+        serOut => serOut,
+        txBusy => txBusy);
+    -- uart transmitter
+    ur : uartRx
+      port map (
+        clr => clr,
+        clk => clk,
+        ce16 => ce16,
+        serIn => serIn,
+        rxData => rxData,
+        newRxData => newRxData);
+    baudClk <= ce16;
+  end Behavioral;
+-----------------------------------------------------------------------------------------
+-- uart top level module  
+--
+-----------------------------------------------------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library work;
+use work.uartPackage.all;
+
+entity uartTopPortConfigurableExt is
+  port ( -- global signals
+         reset     : in  std_logic;                     -- global reset input
+         clk       : in  std_logic;                     -- global clock input
+	 -- software reset
+         soft_reset: in std_logic;
+         -- uart serial signals
+         serIn     : in  std_logic;                     -- serial data input
+         serOut    : out std_logic;                     -- serial data output
+         -- pipe signals for tx/rx.
+	 uart_rx_pipe_read_data:  out  std_logic_vector (7 downto 0);
+	 uart_rx_pipe_read_req:   in   std_logic_vector (0 downto 0);
+	 uart_rx_pipe_read_ack:   out  std_logic_vector (0 downto 0);
+	 uart_tx_pipe_write_data: in   std_logic_vector (7 downto 0);
+	 uart_tx_pipe_write_req:  in   std_logic_vector (0 downto 0);
+	 uart_tx_pipe_write_ack:  out  std_logic_vector (0 downto 0);
+         -- baudFreq = 16 * baudRate / gcd(clkFreq, 16 * baudRate)
+	 --   For example if clock frequency is 100MHz and 
+	 --   baud-rate is 9600, then gcd(16*9600,10^8) is
+	 --   6400.  So Baud-frequency will be 16*9600/6400 = 24
+         baudFreq  : in std_logic_vector(31 downto 0);
+         -- baudLimit = clkFreq / gcd(clkFreq, 16 * baudRate) - baudFreq
+	 --   For example if clock frequency is 100MHz and
+	 --   baud-rate is 9600, the gcd is 6400.  So 
+	 --   baudLimit = 15601.
+        baudLimit : in std_logic_vector(31 downto 0));
+end uartTopPortConfigurableExt;
+
+architecture Struct of uartTopPortConfigurableExt is
+
+  signal ce16 : std_logic; -- clock enable at bit rate
+  signal baudClk   : std_logic;                    -- 
+        
+  signal txData    : std_logic_vector(7 downto 0);  -- data byte to transmit
+  signal newTxData : std_logic;                     -- asserted to indicate that there is a new data byte for transmission
+  signal txBusy    : std_logic;                     -- signs that transmitter is busy
+  signal rxData    : std_logic_vector(7 downto 0);  -- data byte received
+  signal newRxData : std_logic;                     -- signs that a new byte was received
+
+  signal combined_reset: std_logic;
+begin
+  
+   combined_reset <= reset or soft_reset;
+
+   baseInst: uartTopBaseExt
+      port map ( 
+			clr       => combined_reset,
+           		clk       => clk,
+           		serIn     => serIn,    
+           		txData    => txData,   
+           		newTxData => newTxData,
+           		baudFreq  => baudFreq, 
+           		baudLimit => baudLimit,
+           		serOut    => serOut,   
+           		txBusy    => txBusy,   
+           		rxData    => rxData,   
+           		newRxData => newRxData,
+           		baudClk   => baudClk   
+		);
+
+   bridgeInst: uartBridge
+     port map ( 
+	   reset     => combined_reset,
+           clk       => clk,
+           txData    => txData, 
+           newTxData => newTxData,
+           txBusy    => txBusy,
+           rxData    => rxData,    
+           newRxData => newRxData, 
+	   uart_rx_pipe_read_data=> uart_rx_pipe_read_data,
+	   uart_rx_pipe_read_req=> uart_rx_pipe_read_req,
+	   uart_rx_pipe_read_ack=> uart_rx_pipe_read_ack,
+	   uart_tx_pipe_write_data=> uart_tx_pipe_write_data,
+	   uart_tx_pipe_write_req=> uart_tx_pipe_write_req,
+	   uart_tx_pipe_write_ack=> uart_tx_pipe_write_ack
+           );
+
+end Struct;
+
