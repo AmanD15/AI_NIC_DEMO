@@ -932,3 +932,14 @@ set_property IOSTANDARD LVCMOS25 [get_ports {SERIAL_UART_RX[0]}]
 set_property PACKAGE_PIN AB25 [get_ports {SERIAL_UART_TX[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {SERIAL_UART_TX[0]}]
 
+##################################################################################################
+# 8.  SPI flash connections
+##################################################################################################
+set_property PACKAGE_PIN P24 [get_ports {spi_mosi[0]}]
+set_property IOSTANDARD LVCMOS25 [get_ports {spi_mosi[0]}]
+set_property PACKAGE_PIN R25 [get_ports {spi_miso[0]}]
+set_property IOSTANDARD LVCMOS25 [get_ports {spi_miso[0]}]
+set_property PACKAGE_PIN U19 [get_ports {spi_cs[0]}]
+set_property IOSTANDARD LVCMOS25 [get_ports {spi_cs[0]}]
+set_property PACKAGE_PIN G19 [get_ports {spi_clk[0]}]
+set_property IOSTANDARD LVCMOS25 [get_ports {spi_clk[0]}]
