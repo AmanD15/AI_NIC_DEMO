@@ -56,7 +56,9 @@ COMPONENT vio_80
   PORT (
     clk : IN STD_LOGIC;
     probe_in0 : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-    probe_out0 : OUT STD_LOGIC_VECTOR(0 DOWNTO 0)
+    probe_out0 : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+    probe_out1 : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
+    probe_out2 : OUT STD_LOGIC_VECTOR(0 DOWNTO 0)
   );
 END COMPONENT;
 -- COMP_TAG_END ------ End COMPONENT Declaration ------------
@@ -69,7 +71,9 @@ your_instance_name : vio_80
   PORT MAP (
     clk => clk,
     probe_in0 => probe_in0,
-    probe_out0 => probe_out0
+    probe_out0 => probe_out0,
+    probe_out1 => probe_out1,
+    probe_out2 => probe_out2
   );
 -- INST_TAG_END ------ End INSTANTIATION Template ---------
 
