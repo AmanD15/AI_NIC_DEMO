@@ -135,57 +135,6 @@ end entity top_level;
 architecture structure of top_level is
 
 
-
-
-    --------------------------------------------------------------
-    -- TODO: generate 320 and 200 MHz for DRAM
-    --------------------------------------------------------------
-      -- Clock for DRAM Controller  
-      component clk_wiz_0 is
-      Port ( 
-        clk0 : out STD_LOGIC; -- for the MIG 320 MHz
-        clk1 : out STD_LOGIC; -- for the MIG 200 MHz
-	clk2 : out STD_LOGIC; -- for the NIC+MAC 125 MHz
-	clk3 : out STD_LOGIC; -- for the AXI inside the ETH block. 100 MHz
-        reset : in STD_LOGIC;
-        locked : out STD_LOGIC; -- Goes to VIO
-        clk_in1_p : in STD_LOGIC;
-        clk_in1_n : in STD_LOGIC
-      );
-    end component;
-
-   -- to generate synchronous reset to processor.
-   component vio_0 is
-   port (
-      clk : in std_logic;
-      probe_in0 : in std_logic;
-      probe_out0 : OUT std_logic
-    );
-  end component;
-  
- -- vio for nic reset
-  --  on nic clock.
-  COMPONENT vio_1
-    PORT (
-      clk : IN STD_LOGIC;
-      probe_in0 : IN STD_LOGIC;
-      probe_out0 : OUT STD_LOGIC
-    );
-  END COMPONENT;
-
- 
-  -- vio for mig reset
-  --   (on 200 MHz clock)
-  COMPONENT vio_2
-    PORT (
-      clk : IN STD_LOGIC;
-      probe_in0 : IN STD_LOGIC;
-      probe_out0 : OUT STD_LOGIC
-    );
-  END COMPONENT;
-
-
-
 --------- NEW CLOCK WIZ AND VIOS ----------------------------------------
 
     component clk_wiz_0 is
@@ -202,11 +151,14 @@ architecture structure of top_level is
 
     end component;
 
+-- To generate synchronous reset to processor.
     component vio_80 is
       Port ( 
         clk : in STD_LOGIC;
         probe_in0 : in STD_LOGIC_VECTOR ( 1 downto 0 );
-        probe_out0 : out STD_LOGIC_VECTOR ( 0 to 0 )
+        probe_out0 : out STD_LOGIC_VECTOR ( 0 to 0 );
+        probe_out1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+        probe_out2 : out STD_LOGIC_VECTOR ( 0 to 0 )
       );
 
     end component;
@@ -468,7 +420,7 @@ end component mig_7series_0;
 
 
 
-   signal  CPU_RESET, DEBUG_MODE: std_logic;
+   signal  CPU_RESET, DEBUG_MODE: std_logic_vector (0 downto 0);
 
 	
 
@@ -499,10 +451,10 @@ begin
     virtual_reset_processor : vio_80
         port map (
                         clk         => DRAM_CONTROLLER_TO_ACB_BRIDGE(521), --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
-                        probe_in1   => CPU_MODE,
-                        probe_out1  => RESET_TO_PROCESSOR,
-			probe_out2  => CPU_RESET, -- TODO: add this to vio_80
-			probe_out3  => DEBUG_MODE -- TODO: add this to vio_80
+                        probe_in0   => CPU_MODE,
+                        probe_out0  => RESET_TO_PROCESSOR(0),
+			probe_out1  => CPU_RESET(0), 
+			probe_out2  => DEBUG_MODE(0) 
                 );
 
     -- VIO for NIC reset 
@@ -510,7 +462,8 @@ begin
     virtual_reset_nic       : vio_125
         port map (
                         clk         => clock_ref_125,
-                        probe_out0  => RESET_TO_NIC
+			probe_in0   => NIC_MAC_RESETN,
+                        probe_out0  => RESET_TO_NIC(0)
           );
 
     -- VIO for MIG reset 
@@ -518,14 +471,11 @@ begin
     virtual_reset_mig       : vio_200
         port map (
                         clk         => clk_ref_200,
-                        probe_out0  => RESET_TO_MIG,
+			probe_in0   => sys_rst,				
+                        probe_out0  => RESET_TO_MIG(0)
                         
                 );
 
-   THREAD_RESET(0) <= CPU_RESET;
-   THREAD_RESET(1) <= DEBUG_MODE;
-   THREAD_RESET(2) <= '0';
-   THREAD_RESET(3) <= '0';
 
    CPU_MODE <= PROCESSOR_MODE(1 downto 0);
    
