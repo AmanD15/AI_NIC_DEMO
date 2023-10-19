@@ -16,6 +16,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 library sbc_kc705_core_lib;
 use sbc_kc705_core_lib.sbc_kc705_core_Type_Package.all;
+
 entity clockResetDummy is  -- 
   port (-- 
     c1: in std_logic_vector(0 downto 0);
@@ -149,6 +150,8 @@ begin --
   end process; 
   --
 end rtlThreadArch;
+
+-----------------------------------------SBC Core starts here-------------------------------------------------------------------------------------------------------------
 library ahir;
 use ahir.BaseComponents.all;
 use ahir.Utilities.all;
@@ -163,16 +166,19 @@ library sbc_kc705_core_lib;
 use sbc_kc705_core_lib.sbc_kc705_core_Type_Package.all;
 --<<<<<
 -->>>>>
-library DualClockedQueue_lib;
-library DualClockedQueue_lib;
-library DualClockedQueue_lib;
-library DualClockedQueue_lib;
+library DualClockedQueuelib;
+library DualClockedQueuelib;
+library DualClockedQueuelib;
+library DualClockedQueuelib;
 library acb_afb_complex_lib;
 library acb_dram_controller_bridge_lib;
 library nic_subsystem_lib;
 library ajit_processor_lib;
 library spi_flash_controller_lib;
 --<<<<<
+
+
+
 entity sbc_kc705_core is -- 
   port( -- 
     CLOCK_TO_DRAMCTRL_BRIDGE : in std_logic_vector(0 downto 0);
@@ -310,52 +316,64 @@ architecture struct of sbc_kc705_core is --
   signal PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_read_data: std_logic_vector(64 downto 0);
   signal PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_read_req : std_logic_vector(0  downto 0);
   signal PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_read_ack : std_logic_vector(0  downto 0);
-  component DualClockedQueue_ACB_req is -- 
-    port( -- 
-      read_clk : in std_logic_vector(0 downto 0);
-      write_clk : in std_logic_vector(0 downto 0);
-      write_data_in_pipe_write_data : in std_logic_vector(109 downto 0);
-      write_data_in_pipe_write_req  : in std_logic_vector(0  downto 0);
-      write_data_in_pipe_write_ack  : out std_logic_vector(0  downto 0);
-      read_data_out_pipe_read_data : out std_logic_vector(109 downto 0);
-      read_data_out_pipe_read_req  : in std_logic_vector(0  downto 0);
-      read_data_out_pipe_read_ack  : out std_logic_vector(0  downto 0);
-      clk, reset: in std_logic 
-      -- 
-    );
-    --
-  end component;
+
+------ Component definition for the two request and response FIFOs copied from DualClockedQueuelib.vhdl---------------------
+
+  component DualClockedQueue_ACB_req  is
+		  port ( 
+		    -- read 
+		    read_req_in : in std_logic;
+		    read_data_out : out std_logic_vector(109 DOWNTO 0);
+		    read_ack_out : out std_logic;
+		    -- write 
+		    write_req_out : out std_logic;
+		    write_data_in : in std_logic_vector(109 DOWNTO 0);
+		    write_ack_in : in std_logic;
+		
+		    read_clk : in std_logic;
+		    write_clk : in std_logic;
+		    
+		    reset: in std_logic);	
+	end component DualClockedQueue_ACB_req;
   -->>>>>
   for DualClockedQueue_ACB_Dram_Bridge_req_inst :  DualClockedQueue_ACB_req -- 
-    use entity DualClockedQueue_lib.DualClockedQueue_ACB_req; -- 
+    use entity DualClockedQueuelib.DualClockedQueue_ACB_req; -- 
   --<<<<<
   -->>>>>
   for DualClockedQueue_ACB_Proc_req_inst :  DualClockedQueue_ACB_req -- 
-    use entity DualClockedQueue_lib.DualClockedQueue_ACB_req; -- 
+    use entity DualClockedQueuelib.DualClockedQueue_ACB_req; -- 
   --<<<<<
-  component DualClockedQueue_ACB_resp is -- 
-    port( -- 
-      read_clk : in std_logic_vector(0 downto 0);
-      write_clk : in std_logic_vector(0 downto 0);
-      write_data_in_pipe_write_data : in std_logic_vector(64 downto 0);
-      write_data_in_pipe_write_req  : in std_logic_vector(0  downto 0);
-      write_data_in_pipe_write_ack  : out std_logic_vector(0  downto 0);
-      read_data_out_pipe_read_data : out std_logic_vector(64 downto 0);
-      read_data_out_pipe_read_req  : in std_logic_vector(0  downto 0);
-      read_data_out_pipe_read_ack  : out std_logic_vector(0  downto 0);
-      clk, reset: in std_logic 
-      -- 
-    );
+
+
+  component DualClockedQueue_ACB_resp  is
+		  port ( 
+		    -- read 
+		    read_req_in : in std_logic;
+		    read_data_out : out std_logic_vector(64 DOWNTO 0);
+		    read_ack_out : out std_logic;
+		    -- write 
+		    write_req_out : out std_logic;
+		    write_data_in : in std_logic_vector(64 DOWNTO 0);
+		    write_ack_in : in std_logic;
+		
+		    read_clk : in std_logic;
+		    write_clk : in std_logic;
+		    
+		    reset: in std_logic);	
+	end component DualClockedQueue_ACB_resp;
     --
   end component;
   -->>>>>
   for DualClockedQueue_ACB_Proc_resp_inst :  DualClockedQueue_ACB_resp -- 
-    use entity DualClockedQueue_lib.DualClockedQueue_ACB_resp; -- 
+    use entity DualClockedQueuelib.DualClockedQueue_ACB_resp; -- 
   --<<<<<
   -->>>>>
   for DualClockedQueue_Dram_Bridge_ACB_resp_inst :  DualClockedQueue_ACB_resp -- 
-    use entity DualClockedQueue_lib.DualClockedQueue_ACB_resp; -- 
+    use entity DualClockedQueuelib.DualClockedQueue_ACB_resp; -- 
   --<<<<<
+
+----------------------------------------------------------------------------------------------------------------
+
   component acb_afb_complex is -- 
     port( -- 
       ACB_REQUEST_FROM_NIC_pipe_write_data : in std_logic_vector(109 downto 0);
@@ -536,56 +554,81 @@ architecture struct of sbc_kc705_core is --
   for inval_str :  invalidateDummy -- 
     use entity sbc_kc705_core_lib.invalidateDummy; -- 
   --<<<<<
-  -- 
+  -- Hand edit parts-------------------------------------------------
+
+ signal reset: std_logic;
+
+  -------------------------------------------------------------------
+    
 begin -- 
+
+ -- Hand edit parts-------------------------------------------------
+
   DualClockedQueue_ACB_Dram_Bridge_req_inst: DualClockedQueue_ACB_req
   port map ( --
+    
+    read_data_out => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_data,
+    read_req_in => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_ack,
+    read_ack_out => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_req,
+    
+    write_data_in => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_data,
+    write_req_out => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_ack,
+    write_ack_in => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_req,
+
     read_clk => CLOCK_TO_DRAMCTRL_BRIDGE,
-    read_data_out_pipe_read_data => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_data,
-    read_data_out_pipe_read_req => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_ack,
-    read_data_out_pipe_read_ack => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_req,
     write_clk => CLOCK_TO_NIC,
-    write_data_in_pipe_write_data => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_data,
-    write_data_in_pipe_write_req => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_ack,
-    write_data_in_pipe_write_ack => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_req,
-    clk => clk, reset => reset 
+
+    reset => reset 
     ); -- 
   DualClockedQueue_ACB_Proc_req_inst: DualClockedQueue_ACB_req
   port map ( --
+    
+    read_data_out => PROCESSOR_ACB_REQUEST_FIFO_OUT_pipe_write_data,
+    read_req_in => PROCESSOR_ACB_REQUEST_FIFO_OUT_pipe_write_ack,
+    read_ack_out => PROCESSOR_ACB_REQUEST_FIFO_OUT_pipe_write_req,
+
+    write_data_in => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_data,
+    write_req_out => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_ack,
+    write_ack_in => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_req,
+
     read_clk => CLOCK_TO_NIC,
-    read_data_out_pipe_read_data => PROCESSOR_ACB_REQUEST_FIFO_OUT_pipe_write_data,
-    read_data_out_pipe_read_req => PROCESSOR_ACB_REQUEST_FIFO_OUT_pipe_write_ack,
-    read_data_out_pipe_read_ack => PROCESSOR_ACB_REQUEST_FIFO_OUT_pipe_write_req,
     write_clk => CLOCK_TO_PROCESSOR,
-    write_data_in_pipe_write_data => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_data,
-    write_data_in_pipe_write_req => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_ack,
-    write_data_in_pipe_write_ack => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_req,
-    clk => clk, reset => reset 
+    reset => reset 
     ); -- 
+
+
   DualClockedQueue_ACB_Proc_resp_inst: DualClockedQueue_ACB_resp
   port map ( --
+
+    read_data_out => PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_write_data,
+    read_req_in => PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_write_ack,
+    read_ack_out => PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_write_req,
+ 
+    write_data_in => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_data,
+    write_req_out => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_ack,
+    write_ack_in  => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_req,
+
     read_clk => CLOCK_TO_PROCESSOR,
-    read_data_out_pipe_read_data => PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_write_data,
-    read_data_out_pipe_read_req => PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_write_ack,
-    read_data_out_pipe_read_ack => PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_write_req,
     write_clk => CLOCK_TO_NIC,
-    write_data_in_pipe_write_data => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_data,
-    write_data_in_pipe_write_req => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_ack,
-    write_data_in_pipe_write_ack => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_req,
-    clk => clk, reset => reset 
+
+    reset => reset 
     ); -- 
   DualClockedQueue_Dram_Bridge_ACB_resp_inst: DualClockedQueue_ACB_resp
   port map ( --
+   
+    read_data_out => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_data,
+    read_req_in => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_ack,
+    read_ack_out => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_req,
+  
+    write_data_in => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_data,
+    write_req_out => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_ack,
+    write_ack_in => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_req,
+
     read_clk => CLOCK_TO_NIC,
-    read_data_out_pipe_read_data => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_data,
-    read_data_out_pipe_read_req => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_ack,
-    read_data_out_pipe_read_ack => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_req,
     write_clk => CLOCK_TO_DRAMCTRL_BRIDGE,
-    write_data_in_pipe_write_data => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_data,
-    write_data_in_pipe_write_req => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_ack,
-    write_data_in_pipe_write_ack => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_req,
-    clk => clk, reset => reset 
+    reset => reset 
     ); -- 
+-------------------------------------------------------------------
   acb_afb_complex_inst: acb_afb_complex
   port map ( --
     ACB_REQUEST_FROM_NIC_pipe_write_data => NIC_ACB_REQUEST_pipe_read_data,
@@ -703,6 +746,9 @@ begin --
     WRITE_PROTECT => WRITE_PROTECT,
     clk => CLOCK_TO_NIC, reset => RESET_TO_NIC 
     ); -- 
+
+------------------------ parts to be removed ----------------------------------------------------
+
   clk_rst_str: clockResetDummy -- 
     port map ( -- 
       c1 => CLOCK_TO_PROCESSOR,
@@ -721,6 +767,8 @@ begin --
       inval_pipe_write_ack => MAIN_MEM_INVALIDATE_pipe_write_ack,
       clk => clk, reset => reset--
     ); -- 
+
+--------------------------------------------------------------------------------------------------
   ACB_DRAM_REQUEST_FIFO_IN_inst:  PipeBase -- 
     generic map( -- 
       name => "pipe ACB_DRAM_REQUEST_FIFO_IN",
@@ -740,7 +788,7 @@ begin --
       write_req => ACB_DRAM_REQUEST_FIFO_IN_pipe_write_req,
       write_ack => ACB_DRAM_REQUEST_FIFO_IN_pipe_write_ack,
       write_data => ACB_DRAM_REQUEST_FIFO_IN_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLK_TO_NIC,reset => RESET_TO_NIC -- 
     ); -- 
   ACB_DRAM_REQUEST_FIFO_OUT_inst:  PipeBase -- 
     generic map( -- 
@@ -761,7 +809,7 @@ begin --
       write_req => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_req,
       write_ack => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_ack,
       write_data => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLOCK_TO_DRAMCTRL_BRIDGE,reset => RESET_TO_DRAMCTRL_BRIDGE
     ); -- 
   ACB_NIC_RESPONSE_inst:  PipeBase -- 
     generic map( -- 
@@ -782,7 +830,7 @@ begin --
       write_req => ACB_NIC_RESPONSE_pipe_write_req,
       write_ack => ACB_NIC_RESPONSE_pipe_write_ack,
       write_data => ACB_NIC_RESPONSE_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLK_TO_NIC,reset => RESET_TO_NIC -- 
     ); -- 
   AFB_FLASH_REQUEST_inst:  PipeBase -- 
     generic map( -- 
@@ -803,7 +851,7 @@ begin --
       write_req => AFB_FLASH_REQUEST_pipe_write_req,
       write_ack => AFB_FLASH_REQUEST_pipe_write_ack,
       write_data => AFB_FLASH_REQUEST_pipe_write_data,
-      clk => clk,reset => reset -- 
+      CLK_TO_NIC => clk,reset => RESET_TO_NIC -- 
     ); -- 
   AFB_NIC_REQUEST_inst:  PipeBase -- 
     generic map( -- 
@@ -824,7 +872,7 @@ begin --
       write_req => AFB_NIC_REQUEST_pipe_write_req,
       write_ack => AFB_NIC_REQUEST_pipe_write_ack,
       write_data => AFB_NIC_REQUEST_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLK_TO_NIC,reset => RESET_TO_NIC -- 
     ); -- 
   DRAM_ACB_RESPONSE_FIFO_IN_inst:  PipeBase -- 
     generic map( -- 
@@ -845,7 +893,7 @@ begin --
       write_req => DRAM_ACB_RESPONSE_FIFO_IN_pipe_write_req,
       write_ack => DRAM_ACB_RESPONSE_FIFO_IN_pipe_write_ack,
       write_data => DRAM_ACB_RESPONSE_FIFO_IN_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLOCK_TO_DRAMCTRL_BRIDGE,reset => RESET_TO_DRAMCTRL_BRIDGE -- 
     ); -- 
   DRAM_ACB_RESPONSE_FIFO_OUT_inst:  PipeBase -- 
     generic map( -- 
@@ -866,7 +914,7 @@ begin --
       write_req => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_req,
       write_ack => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_ack,
       write_data => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLK_TO_NIC,reset => RESET_TO_NIC -- 
     ); -- 
   FLASH_AFB_RESPONSE_inst:  PipeBase -- 
     generic map( -- 
@@ -887,7 +935,7 @@ begin --
       write_req => FLASH_AFB_RESPONSE_pipe_write_req,
       write_ack => FLASH_AFB_RESPONSE_pipe_write_ack,
       write_data => FLASH_AFB_RESPONSE_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLK_TO_NIC,reset => RESET_TO_NIC -- 
     ); -- 
   MAIN_MEM_INVALIDATE_inst:  PipeBase -- 
     generic map( -- 
@@ -908,7 +956,7 @@ begin --
       write_req => MAIN_MEM_INVALIDATE_pipe_write_req,
       write_ack => MAIN_MEM_INVALIDATE_pipe_write_ack,
       write_data => MAIN_MEM_INVALIDATE_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLOCK_TO_PROC,reset => RESET_TO_PROC -- 
     ); -- 
   NIC_ACB_REQUEST_inst:  PipeBase -- 
     generic map( -- 
@@ -929,7 +977,7 @@ begin --
       write_req => NIC_ACB_REQUEST_pipe_write_req,
       write_ack => NIC_ACB_REQUEST_pipe_write_ack,
       write_data => NIC_ACB_REQUEST_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLK_TO_NIC,reset => RESET_TO_NIC -- 
     ); -- 
   NIC_AFB_RESPONSE_inst:  PipeBase -- 
     generic map( -- 
@@ -950,7 +998,7 @@ begin --
       write_req => NIC_AFB_RESPONSE_pipe_write_req,
       write_ack => NIC_AFB_RESPONSE_pipe_write_ack,
       write_data => NIC_AFB_RESPONSE_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLK_TO_NIC,reset => RESET_TO_NIC -- 
     ); -- 
   -- pipe PROCESSOR_ACB_REQUEST_FIFO_IN depth set to 0 since it is a P2P pipe.
   PROCESSOR_ACB_REQUEST_FIFO_IN_inst:  PipeBase -- 
@@ -972,7 +1020,7 @@ begin --
       write_req => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_write_req,
       write_ack => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_write_ack,
       write_data => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLOCK_TO_PROC,reset => RESET_TO_PROC -- 
     ); -- 
   -- pipe PROCESSOR_ACB_REQUEST_FIFO_OUT depth set to 0 since it is a P2P pipe.
   PROCESSOR_ACB_REQUEST_FIFO_OUT_inst:  PipeBase -- 
@@ -994,7 +1042,7 @@ begin --
       write_req => PROCESSOR_ACB_REQUEST_FIFO_OUT_pipe_write_req,
       write_ack => PROCESSOR_ACB_REQUEST_FIFO_OUT_pipe_write_ack,
       write_data => PROCESSOR_ACB_REQUEST_FIFO_OUT_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
     ); -- 
   -- pipe PROCESSOR_ACB_RESPONSE_FIFO_IN depth set to 0 since it is a P2P pipe.
   PROCESSOR_ACB_RESPONSE_FIFO_IN_inst:  PipeBase -- 
@@ -1016,7 +1064,7 @@ begin --
       write_req => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_write_req,
       write_ack => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_write_ack,
       write_data => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
     ); -- 
   -- pipe PROCESSOR_ACB_RESPONSE_FIFO_OUT depth set to 0 since it is a P2P pipe.
   PROCESSOR_ACB_RESPONSE_FIFO_OUT_inst:  PipeBase -- 
@@ -1038,7 +1086,7 @@ begin --
       write_req => PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_write_req,
       write_ack => PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_write_ack,
       write_data => PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_write_data,
-      clk => clk,reset => reset -- 
+      clk => CLOCK_TO_PROC,reset => RESET_TO_PROC -- 
     ); -- 
   -- 
 end struct;
