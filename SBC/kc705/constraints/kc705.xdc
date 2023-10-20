@@ -41,38 +41,56 @@ set_property IOSTANDARD DIFF_SSTL15 [get_ports clk_in_p]
 ##################################################################################################
 
 ##
-# TODO: set false paths between all pairs of clocks (12 total).
+# TODO (DONE): set false paths between all pairs of clocks (12 total).
 ## set false paths
-#set_false_path -from [get_clocks -include_generated_clocks clk_out1*] -to [get_clocks -include_generated_clocks clk_out2*]
-#set_false_path -from [get_clocks -include_generated_clocks clk_out2*] -to [get_clocks -include_generated_clocks clk_out1*]
+set_false_path -from [get_clocks -include_generated_clocks clk_ref_100] -to [get_clocks -include_generated_clocks clk_ref_125]
+set_false_path -from [get_clocks -include_generated_clocks clk_ref_125] -to [get_clocks -include_generated_clocks clk_ref_100]
 
 ## set false paths
-set_false_path -from [get_clocks -include_generated_clocks clock] -to [get_clocks -include_generated_clocks clock_mac]
-set_false_path -from [get_clocks -include_generated_clocks clock_mac] -to [get_clocks -include_generated_clocks clock]
+set_false_path -from [get_clocks -include_generated_clocks clk_ref_100] -to [get_clocks -include_generated_clocks clk_ref_200]
+set_false_path -from [get_clocks -include_generated_clocks clk_ref_200] -to [get_clocks -include_generated_clocks clk_ref_100]
 
 ## set false paths
-#set_false_path -from [get_clocks -include_generated_clocks clk_out1*] -to [get_clocks -include_generated_clocks clk_out4*]
-#set_false_path -from [get_clocks -include_generated_clocks clk_out4*] -to [get_clocks -include_generated_clocks clk_out1*]
+set_false_path -from [get_clocks -include_generated_clocks clk_ref_100] -to [get_clocks -include_generated_clocks clk_sys_320]
+set_false_path -from [get_clocks -include_generated_clocks clk_sys_320] -to [get_clocks -include_generated_clocks clk_ref_100]
 
 
 ## set false paths
-#set_false_path -from [get_clocks -include_generated_clocks clk_out2*] -to [get_clocks -include_generated_clocks clk_out3*]
-#set_false_path -from [get_clocks -include_generated_clocks clk_out3*] -to [get_clocks -include_generated_clocks clk_out2*]
+set_false_path -from [get_clocks -include_generated_clocks clk_ref_125] -to [get_clocks -include_generated_clocks clk_ref_200]
+set_false_path -from [get_clocks -include_generated_clocks clk_ref_200] -to [get_clocks -include_generated_clocks clk_ref_125]
 
 ## set false paths
-#set_false_path -from [get_clocks -include_generated_clocks clk_out2*] -to [get_clocks -include_generated_clocks clk_out4*]
-#set_false_path -from [get_clocks -include_generated_clocks clk_out4*] -to [get_clocks -include_generated_clocks clk_out2*]
+set_false_path -from [get_clocks -include_generated_clocks clk_ref_125] -to [get_clocks -include_generated_clocks clk_sys_320]
+set_false_path -from [get_clocks -include_generated_clocks clk_sys_320] -to [get_clocks -include_generated_clocks clk_ref_125]
 
 ## set false paths
-#set_false_path -from [get_clocks -include_generated_clocks clk_out3*] -to [get_clocks -include_generated_clocks clk_out4*]
-#set_false_path -from [get_clocks -include_generated_clocks clk_out4*] -to [get_clocks -include_generated_clocks clk_out3*]
+set_false_path -from [get_clocks -include_generated_clocks clk_ref_200] -to [get_clocks -include_generated_clocks clk_sys_320]
+set_false_path -from [get_clocks -include_generated_clocks clk_sys_320] -to [get_clocks -include_generated_clocks clk_ref_200]
 
 ##################################################################################################
 # 4.   Max delay on clock domain crossing paths.
 ##################################################################################################
 
-##TODO: set max delay of 10ns between all clock pairs.
+##TODO (DONE!): set max delay of 10ns between all clock pairs.
 
+set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_100] -to [get_clocks -include_generated_clocks clk_ref_125]
+set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_125] -to [get_clocks -include_generated_clocks clk_ref_100]
+
+set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_100] -to [get_clocks -include_generated_clocks clk_ref_200]
+set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_200] -to [get_clocks -include_generated_clocks clk_ref_100]
+
+
+set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_100] -to [get_clocks -include_generated_clocks clk_sys_320]
+set_max_delay 10 -from [get_clocks -include_generated_clocks clk_sys_320] -to [get_clocks -include_generated_clocks clk_ref_100]
+
+set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_125] -to [get_clocks -include_generated_clocks clk_ref_200]
+set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_200] -to [get_clocks -include_generated_clocks clk_ref_125]
+
+set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_125] -to [get_clocks -include_generated_clocks clk_sys_320]
+set_max_delay 10 -from [get_clocks -include_generated_clocks clk_sys_320] -to [get_clocks -include_generated_clocks clk_ref_125]
+
+set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_200] -to [get_clocks -include_generated_clocks clk_sys_320]
+set_max_delay 10 -from [get_clocks -include_generated_clocks clk_sys_320] -to [get_clocks -include_generated_clocks clk_ref_200]
 
 ########################################################################################################
 ## 5. ETHERNET related ports.
