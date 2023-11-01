@@ -107,27 +107,39 @@ set_property IOSTANDARD LVCMOS15 [get_ports activity_flash]
 set_property IOSTANDARD LVCMOS15 [get_ports activity_flashn]
 
 #### Module Push_Buttons_4Bit constraints
-set_property PACKAGE_PIN G12 [get_ports update_speed]
+
 # Rev B board
 #set_property PACKAGE_PIN AD7      [get_ports config_board]
 # Rev C or later
-set_property PACKAGE_PIN AC6 [get_ports config_board]
-set_property PACKAGE_PIN AB12 [get_ports pause_req_s]
-set_property PACKAGE_PIN AA12 [get_ports reset_error]
+
+set_property PACKAGE_PIN G12 [get_ports update_speed] ##### Center Push Button (TEMAC : Input to TEMAC, Update link speed)
+set_property PACKAGE_PIN AC6 [get_ports config_board] ##### West  Push Button  (TEMAC : Input to TEMAC, )
+set_property PACKAGE_PIN AB12 [get_ports pause_req_s] ##### South Push Button  (TEMAC : Input to TEMAC, )
+set_property PACKAGE_PIN AA12 [get_ports reset_error] ##### North Push Button  (TEMAC : Input to TEMAC, Reset error count)
+
 set_property IOSTANDARD LVCMOS15 [get_ports update_speed]
 set_property IOSTANDARD LVCMOS15 [get_ports config_board]
 set_property IOSTANDARD LVCMOS15 [get_ports pause_req_s]
 set_property IOSTANDARD LVCMOS15 [get_ports reset_error]
 
 #### Module DIP_Switches_4Bit constraints
+
 set_property PACKAGE_PIN Y28 [get_ports {mac_speed[0]}]
 set_property PACKAGE_PIN AA28 [get_ports {mac_speed[1]}]
 set_property PACKAGE_PIN W29 [get_ports gen_tx_data]
 set_property PACKAGE_PIN Y29 [get_ports chk_tx_data]
+
 set_property IOSTANDARD LVCMOS25 [get_ports {mac_speed[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {mac_speed[1]}]
 set_property IOSTANDARD LVCMOS25 [get_ports gen_tx_data]
 set_property IOSTANDARD LVCMOS25 [get_ports chk_tx_data]
+
+########## MAC SPEED CONFIG ################
+#  ms0 ms1 speed(Mbps)
+#   0   0   10
+#   1   0   100
+#   x   1   1000
+
 
 set_property PACKAGE_PIN L20 [get_ports phy_resetn]
 set_property IOSTANDARD LVCMOS25 [get_ports phy_resetn]
@@ -191,9 +203,8 @@ set_property IOSTANDARD SSTL15 [get_ports gtx_clk_bufg_out]
 ##########
 #############
 #################
+
 #EXAMPLE DESIGN CONSTRAINTS
-
-
 ############################################################
 # 5.1 Clock Period Constraints                             #
 #      TX Clock period Constraints                         #
