@@ -52,6 +52,11 @@ set_property part xcvu37p-fsvh2892-2L-e [current_project]
 set_property board_part xilinx.com:vcu128:part0:1.2 [current_project]
 
 ################### standlone proto core ################
+read_ip ../ip/SBC_IP/vio_125/vio_125.xci
+read_ip ../ip/SBC_IP/vio_80/vio_80.xci
+read_ip ../ip/SBC_IP/vio_200/vio_200.xci
+read_ip ../ip/SBC_IP/clk_wiz_0/clk_wiz_0.xci
+
 #read_ip ../ip/clocking_wizard_100Mhz/clocking_wizard_100Mhz.srcs/sources_1/ip/clk_wiz_0/clk_wiz_0.xci
 read_ip ../ip/gig_ethernet_pcs_pma_0/gig_ethernet_pcs_pma_0.xci
 read_ip ../ip/fifo_generator_acb_resp/fifo_generator_acb_resp.xci
@@ -64,12 +69,7 @@ read_ip ../ip/fifo_generator_2/fifo_generator_2.xci
 read_ip ../ip/fifo_generator_3/fifo_generator_3.xci
 read_ip ../ip/fifo_generator_4/fifo_generator_4.xci
 read_ip ../ip/fifo_generator_5/fifo_generator_5.xci
-read_ip ../ip/vio_0/vio_0.xci
-read_ip ../ip/vio_1/vio_1.xci
-read_ip ../ip/ila_0/ila_0.xci
-read_ip ../ip/ila_2/ila_2.xci
 read_ip ../ip/ddr4_0/ddr4_0.xci
-read_ip ../ip/clk_wiz_0/clk_wiz_0.xci
 
 ## core edif file
 read_edif ./processor_1x1x32.edn
