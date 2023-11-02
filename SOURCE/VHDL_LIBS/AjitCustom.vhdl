@@ -3,7 +3,6 @@ use ieee.std_logic_1164.all;
 package AjitCoreConfigurationPackage is
 -- sleep time for ever-spinning modules.
   constant  CORE_SLEEP_TIME 	: integer :=     100 ;
-
 -------------------------------------------- SPECIAL CONFIGURATION PARAMETERS --------------------------------
 -- These are nominal values.  If modified, they should be modified as a group. See the HOWTO on processor builds.
 --------------------------------------------------------------------------------------------------------------
