@@ -47,18 +47,18 @@ end entity nic_mac_bridge;
 architecture struct of nic_mac_bridge is -- 
   component nic_mac_pipe_reset is -- 
     port( -- 
-      ENABLE_MAC_pipe_write_data : in std_logic_vector(0 downto 0);
-      ENABLE_MAC_pipe_write_req  : in std_logic_vector(0  downto 0);
-      ENABLE_MAC_pipe_write_ack  : out std_logic_vector(0  downto 0);
-      nic_to_mac_resetn : out std_logic_vector(0 downto 0);
-      clk, reset: in std_logic 
+      clk: in std_logic;
+      ENABLE_MAC_pipe_data : in std_logic;
+      ENABLE_MAC_pipe_req  : in std_logic;
+      ENABLE_MAC_pipe_ack  : out std_logic;
+      reset : out std_logic
+      
       -- 
     );
     --
   end component;
   -->>>>>
-  for inst_nic_mac_pipe_reset :  nic_mac_pipe_reset -- 
-    use entity nic_mac_bridge_lib.nic_mac_pipe_reset; -- 
+  
   --<<<<<
   component rx_concat_system is -- 
     port( -- 
@@ -107,11 +107,11 @@ begin --
  
   inst_nic_mac_pipe_reset: nic_mac_pipe_reset
   port map ( --
-    ENABLE_MAC_pipe_write_data => ENABLE_MAC_pipe_write_data,
-    ENABLE_MAC_pipe_write_req => ENABLE_MAC_pipe_write_req,
-    ENABLE_MAC_pipe_write_ack => ENABLE_MAC_pipe_write_ack,
-    nic_to_mac_resetn => NIC_TO_MAC_RESETN_SIG,
-    clk => clk, reset => reset 
+    ENABLE_MAC_pipe_data => ENABLE_MAC_pipe_write_data(0),
+    ENABLE_MAC_pipe_req => ENABLE_MAC_pipe_write_req(0),
+    ENABLE_MAC_pipe_ack => ENABLE_MAC_pipe_write_ack(0),
+    reset => NIC_TO_MAC_RESETN_SIG(0),
+    clk => clk
     ); -- 
   inst_rx_concat_system: rx_concat_system
   port map ( --
@@ -121,7 +121,7 @@ begin --
     rx_out_pipe_pipe_read_data => rx_out_pipe_pipe_read_data,
     rx_out_pipe_pipe_read_req => rx_out_pipe_pipe_read_req,
     rx_out_pipe_pipe_read_ack => rx_out_pipe_pipe_read_ack,
-    clk => clk, reset => NIC_TO_MAC_RESETN_SIG
+    clk => clk, reset => NIC_TO_MAC_RESETN_SIG(0)
     ); -- 
   inst_tx_deconcat_system: tx_deconcat_system
   port map ( --
@@ -131,7 +131,7 @@ begin --
     tx_out_pipe_pipe_read_data => tx_out_pipe_pipe_read_data,
     tx_out_pipe_pipe_read_req => tx_out_pipe_pipe_read_req,
     tx_out_pipe_pipe_read_ack => tx_out_pipe_pipe_read_ack,
-    clk => clk, reset => NIC_TO_MAC_RESETN_SIG
+    clk => clk, reset => NIC_TO_MAC_RESETN_SIG(0)
     ); -- 
   -- 
 

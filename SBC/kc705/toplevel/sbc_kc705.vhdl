@@ -1,38 +1,20 @@
+
+
+
+--------------------------------------------
+library sbc_kc705_core_lib;
+
 library ieee;
 use ieee.std_logic_1164.all;
+
 library std;
 use std.standard.all;
-library aHiR_ieee_proposed;
-use aHiR_ieee_proposed.math_utility_pkg.all;
-use aHiR_ieee_proposed.fixed_pkg.all;
-use aHiR_ieee_proposed.float_pkg.all;
-library ahir;
-use ahir.memory_subsystem_package.all;
-use ahir.types.all;
-use ahir.subprograms.all;
-use ahir.components.all;
-use ahir.basecomponents.all;
-use ahir.operatorpackage.all;
-use ahir.floatoperatorpackage.all;
-use ahir.utilities.all;
-
-library DualClockedQueuelib;
-use DualClockedQueuelib.DualClockedQueuePackage.all;
-
-library GenericCoreAddOnLib;
-use GenericCoreAddOnLib.GenericCoreAddOnPackage.all;
-
-library GlueModules;
-use GlueModules.GlueModulesBaseComponents.all;
-
-library GenericGlueStuff;
-use GenericGlueStuff.GenericGlueStuffComponents.all;
-
-library ahir_system_global_packagelib;
-use ahir_system_global_packagelib.ahir_system_global_package.all;
 
 library UNISIM;
 use UNISIM.vcomponents.all;
+
+library GenericCoreAddOnLib;
+use GenericCoreAddOnLib.GenericCoreAddOnPackage.all;
 
 entity sbc_kc705 is
 port(
@@ -47,7 +29,7 @@ port(
     -----------------------------------------------
     -- ETH_KC705(MAC) signals.
     -----------------------------------------------
-       -- glbl_rst : in std_logic;
+     --  glbl_rst : in std_logic;
        gtx_clk_bufg_out : out std_logic;
        phy_resetn : out std_logic;
         
@@ -130,9 +112,9 @@ port(
       clk_in_p : in std_logic;
       clk_in_n : in std_logic
 	);
-end entity top_level;
+end entity sbc_kc705;
 
-architecture structure of top_level is
+architecture structure of sbc_kc705 is
 
 
 --------- NEW CLOCK WIZ AND VIOS ----------------------------------------
@@ -186,9 +168,9 @@ architecture structure of top_level is
 
   component sbc_kc705_core is -- 
   port( -- 
-    CLOCK_TO_DRAMCTRL_BRIDGE : in std_logic_vector(0 downto 0);
-    CLOCK_TO_NIC : in std_logic_vector(0 downto 0);
-    CLOCK_TO_PROCESSOR : in std_logic_vector(0 downto 0);
+    CLOCK_TO_DRAMCTRL_BRIDGE : in std_logic;
+    CLOCK_TO_NIC : in std_logic;
+    CLOCK_TO_PROCESSOR : in std_logic;
     CONSOLE_to_SERIAL_RX_pipe_write_data : in std_logic_vector(7 downto 0);
     CONSOLE_to_SERIAL_RX_pipe_write_req  : in std_logic_vector(0  downto 0);
     CONSOLE_to_SERIAL_RX_pipe_write_ack  : out std_logic_vector(0  downto 0);
@@ -200,9 +182,9 @@ architecture structure of top_level is
     MAX_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
     MIN_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
     MIN_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-    RESET_TO_DRAMCTRL_BRIDGE : in std_logic_vector(0 downto 0);
-    RESET_TO_NIC : in std_logic_vector(0 downto 0);
-    RESET_TO_PROCESSOR : in std_logic_vector(0 downto 0);
+    RESET_TO_DRAMCTRL_BRIDGE : in std_logic;
+    RESET_TO_NIC : in std_logic;
+    RESET_TO_PROCESSOR : in std_logic;
     SOC_MONITOR_to_DEBUG_pipe_write_data : in std_logic_vector(7 downto 0);
     SOC_MONITOR_to_DEBUG_pipe_write_req  : in std_logic_vector(0  downto 0);
     SOC_MONITOR_to_DEBUG_pipe_write_ack  : out std_logic_vector(0  downto 0);
@@ -230,7 +212,11 @@ architecture structure of top_level is
   );
   --
   end component sbc_kc705_core;
-  
+
+for sbc_kc705_core_inst :  sbc_kc705_core -- 
+    use entity sbc_kc705_core_lib.sbc_kc705_core; -- 
+
+
   component ETH_KC is
   port
   (
@@ -322,7 +308,7 @@ architecture structure of top_level is
     ddr3_odt : out STD_LOGIC_VECTOR ( 0 to 0 );
     sys_clk_i : in STD_LOGIC;
     clk_ref_i : in STD_LOGIC;
-    app_addr : in STD_LOGIC_VECTOR ( 27 downto 0 );
+    app_addr : in STD_LOGIC_VECTOR ( 28 downto 0 );
     app_cmd : in STD_LOGIC_VECTOR ( 2 downto 0 );
     app_en : in STD_LOGIC;
     app_wdf_data : in STD_LOGIC_VECTOR ( 511 downto 0 );
@@ -355,8 +341,8 @@ end component mig_7series_0;
 -- TODO: Signal Declaration for SBC core. (DONE!!)
 ------------------------------------------------------
           
-   signal CLOCK_TO_DRAMCTRL_BRIDGE, CLOCK_TO_NIC, CLOCK_TO_PROCESSOR : std_logic_vector(0 downto 0);
-   signal RESET_TO_DRAMCTRL_BRIDGE, RESET_TO_NIC, RESET_TO_PROCESSOR : std_logic_vector(0 downto 0);
+   signal CLOCK_TO_DRAMCTRL_BRIDGE, CLOCK_TO_NIC, CLOCK_TO_PROCESSOR : std_logic;
+   signal RESET_TO_DRAMCTRL_BRIDGE, RESET_TO_NIC, RESET_TO_PROCESSOR,RESET_TO_MIG : std_logic_vector(0 downto 0);
 
    signal PROCESSOR_MODE : std_logic_vector(15 downto 0);
    signal THREAD_RESET : std_logic_vector(3 downto 0);
@@ -395,12 +381,12 @@ end component mig_7series_0;
    signal MIN_AFB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
 
    signal CONFIG_UART_BAUD_CONTROL_WORD: std_logic_vector(31 downto 0);
-   signal CPU_MODE : std_logic_vector(1 downto 0); 
+   signal CPU_MODE_SIG : std_logic_vector(1 downto 0); 
    signal clk_ref_125, clk_ref_100: std_logic:='0';
    -------------------- ADDITIONAL DRAM SIGNAL --------------------------------------
    signal device_temp       :  STD_LOGIC_VECTOR ( 11 downto 0 );
    signal clk_sys_320, clk_ref_200: std_logic:='0';
-   signal sys_rst: std_logic;
+   signal sys_rst: std_logic_vector(0 downto 0);
 --------------------OLD SIGNALS --------------------------------------
 
    signal reset1, reset_sync, reset_nic, reset_mig: std_logic;
@@ -417,7 +403,7 @@ end component mig_7series_0;
 
    signal enable_reset : std_logic_vector (0 downto 0);
    signal mig_vio_locked : std_logic;
-
+   signal dcm_locked, gtx_clk_reset :std_logic;
 
 
    signal  CPU_RESET, DEBUG_MODE: std_logic_vector (0 downto 0);
@@ -451,19 +437,19 @@ begin
     virtual_reset_processor : vio_80
         port map (
                         clk         => DRAM_CONTROLLER_TO_ACB_BRIDGE(521), --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
-                        probe_in0   => CPU_MODE,
-                        probe_out0  => RESET_TO_PROCESSOR(0),
-			probe_out1  => CPU_RESET(0), 
-			probe_out2  => DEBUG_MODE(0) 
+                        probe_in0   => CPU_MODE_SIG,
+                        probe_out0  => RESET_TO_PROCESSOR,
+			probe_out1  => CPU_RESET, 
+			probe_out2  => DEBUG_MODE 
                 );
 
     -- VIO for NIC reset 
 
     virtual_reset_nic       : vio_125
         port map (
-                        clk         => clock_ref_125,
+                        clk         => clk_ref_125,
 			probe_in0   => NIC_MAC_RESETN,
-                        probe_out0  => RESET_TO_NIC(0)
+                        probe_out0  => RESET_TO_NIC
           );
 
     -- VIO for MIG reset 
@@ -472,13 +458,13 @@ begin
         port map (
                         clk         => clk_ref_200,
 			probe_in0   => sys_rst,				
-                        probe_out0  => RESET_TO_MIG(0)
+                        probe_out0  => RESET_TO_MIG
                         
                 );
 
 
-   CPU_MODE <= PROCESSOR_MODE(1 downto 0);
-   
+   CPU_MODE_SIG <= PROCESSOR_MODE(1 downto 0);
+   CPU_MODE <= CPU_MODE_SIG;
 
    THREAD_RESET(0) <= CPU_RESET(0);
    THREAD_RESET(1) <= DEBUG_MODE(0);
@@ -486,15 +472,15 @@ begin
    THREAD_RESET(3) <= '0';
 
 
-   core_inst: sbc_kc705_core
+   sbc_kc705_core_inst: sbc_kc705_core
      port map ( --
     CLOCK_TO_DRAMCTRL_BRIDGE =>  DRAM_CONTROLLER_TO_ACB_BRIDGE(521), --  ui_clk, 80MHz
     CLOCK_TO_NIC => clk_ref_125,
-    CLOCK_TO_PROCESSOR =>  DRAM_CONTROLLER_TO_ACB_BRIDGE(521)        --  ui_clk, 80MHz
+    CLOCK_TO_PROCESSOR =>  DRAM_CONTROLLER_TO_ACB_BRIDGE(521),        --  ui_clk, 80MHz
 
-    RESET_TO_DRAMCTRL_BRIDGE => RESET_TO_PROCESSOR,    
-    RESET_TO_NIC => RESET_TO_NIC,
-    RESET_TO_PROCESSOR => RESET_TO_PROCESSOR,
+    RESET_TO_DRAMCTRL_BRIDGE => RESET_TO_PROCESSOR(0),    
+    RESET_TO_NIC => RESET_TO_NIC(0),
+    RESET_TO_PROCESSOR => RESET_TO_PROCESSOR(0),
     
     THREAD_RESET => THREAD_RESET,
     WRITE_PROTECT => WRITE_PROTECT,
@@ -546,9 +532,9 @@ begin
      glbl_rst => NIC_MAC_RESETN(0), --in std_logic;
 
      -- 3 clocks (buffered with bufg's)
-     gtx_clk_bufg => clock_mac, --in std_logic;   //125MHz
-     refclk_bufg => refclk_bufg , --in std_logic; //200MHz
-     s_axi_aclk => s_axi_aclk, --in std_logic;    //100MHz
+     gtx_clk_bufg => clk_ref_125 , --in std_logic;   //125MHz
+     refclk_bufg => clk_ref_200 , --in std_logic; //200MHz
+     s_axi_aclk => clk_ref_100, --in std_logic;    //100MHz
      
      -- 125 MHz clock from MMCM
      gtx_clk_bufg_out => gtx_clk_bufg_out, --out std_logic;
@@ -558,7 +544,6 @@ begin
      ------------------
      rgmii_txd => rgmii_txd, --out std_logic_vector(3 downto 0);
      rgmii_tx_ctl => rgmii_tx_ctl, --out std_logic;
-     rgmii_txc => rgmii_txc, --out std_logic;
      rgmii_rxd => rgmii_rxd, --in std_logic_vector(3 downto 0);
      rgmii_rx_ctl => rgmii_rx_ctl, --in std_logic;
      rgmii_rxc => rgmii_rxc, --in std_logic;
@@ -679,8 +664,8 @@ begin
     ui_clk_sync_rst            => DRAM_CONTROLLER_TO_ACB_BRIDGE(0) ,
     init_calib_complete        => DRAM_CONTROLLER_TO_ACB_BRIDGE(520) ,
     device_temp                => device_temp ,
-    sys_rst                    => sys_rst
+    sys_rst                    => sys_rst(0)
   );
-  sys_rst <= (clk_rst or RESET_TO_MIG ); -- RESET_TO_MIG is from VIO
+  sys_rst(0) <= (clk_rst or RESET_TO_MIG(0) ); -- RESET_TO_MIG is from VIO
 
 end structure;
