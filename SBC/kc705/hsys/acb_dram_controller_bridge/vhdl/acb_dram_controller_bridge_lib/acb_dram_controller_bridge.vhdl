@@ -87,7 +87,7 @@ architecture struct of acb_dram_controller_bridge is --
   signal fatal_error                                  : STD_LOGIC_VECTOR(0 downto 0);
   signal cdebug                                       : STD_LOGIC_VECTOR(3 DOWNTO 0);
   signal ddebug                                       : STD_LOGIC_VECTOR(3 DOWNTO 0);
-  signal rdebug                                       : STD_LOGIC_VECTOR(4 DOWNTO 0)  
+  signal rdebug                                       : STD_LOGIC_VECTOR(4 DOWNTO 0);  
 
 begin  
 	ACB_to_UI_Inst: ACB_to_UI_EA
@@ -124,7 +124,7 @@ begin
 		DRAM_RESPONSE_pipe_read_ack                  => CORE_BUS_RESPONSE_pipe_read_ack,
 		DRAM_RESPONSE_pipe_read_data                 => CORE_BUS_RESPONSE_pipe_read_data,
 		-- unused signals.
-		fatal_error                                  => fatal_error(0),                        
+		fatal_error                                  => fatal_error,                        
 		cdebug                                       => cdebug,      
 		ddebug                                       => ddebug,
 		rdebug                                       => rdebug                              
