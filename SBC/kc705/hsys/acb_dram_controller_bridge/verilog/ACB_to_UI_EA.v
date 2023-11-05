@@ -4,7 +4,7 @@
   input ui_clk,
   input sys_rst,
   input init_calib_complete,
-  output [28:0]       app_addr,
+  output [27:0]       app_addr,
   output [2:0]       app_cmd,
   output             app_en,
   output  reg [511:0]        app_wdf_data,
@@ -29,8 +29,11 @@
   input [109:0]   DRAM_REQUEST_pipe_write_data,
   input           DRAM_RESPONSE_pipe_read_req,
   output          DRAM_RESPONSE_pipe_read_ack,
-  output [64:0]   DRAM_RESPONSE_pipe_read_data
-//  output reg      fatal_error,
+  output [64:0]   DRAM_RESPONSE_pipe_read_data,
+  output reg      fatal_error,
+  output [3:0]    cdebug,
+  output [3:0]    ddebug,
+  output [4:0]    rdebug
     );
     
 
@@ -60,7 +63,7 @@ end
     
 wire block_in;
 wire read_resf_deq,read_resf_full,read_resf_empty,read_resf_pfull;
-reg [63:0] read_resf_dout;
+wire [63:0] read_resf_dout;
 wire [1:0] tagf_dout;
 reg [1:0] tagf_din;
 reg tagf_enq,tagf_deq;
@@ -73,7 +76,7 @@ wire C_enq,C_deq,C_full,C_empty;
 wire [28:0] C_din,C_dout;
 assign C_din[28]=DRAM_REQUEST_pipe_write_data[108]; //1=read cmd=001 0=write cmd=000
 assign C_din[27:0]=DRAM_REQUEST_pipe_write_data[94:67];
-assign app_addr={1'b0,C_dout[27:0]};
+assign app_addr=C_dout[27:0];
 assign app_cmd=C_dout[28]? 3'b001: 3'b000;
 
 //D CHANNEL
@@ -84,8 +87,7 @@ assign D_din[71:64]=DRAM_REQUEST_pipe_write_data[107:100]; //datamask
 assign D_din[74:72]=DRAM_REQUEST_pipe_write_data[69:67];
 
 //Response channel
-wire resp_enq,resp_deq,resp_full,resp_empty;
-wire [28:0] resp_din,resp_dout;
+
 
 
 //assign app_wdf_mask={56'd0,D_dout[71:64]};
@@ -140,22 +142,20 @@ end
         
 
 //CONTROL SIGNALS
-assign DRAM_REQUEST_pipe_write_ack=(~C_full) & (~D_full) & (~resp_full) & (~block_in) & ready ; //Accept pipe data if both pipe have space
+assign DRAM_REQUEST_pipe_write_ack=(~C_full) & (~D_full) & (~block_in) & ready ; //Accept pipe data if both pipe have space
 
 assign app_en=(~C_empty);
-assign C_deq=app_rdy & (~C_empty); //changed
-assign C_enq=DRAM_REQUEST_pipe_write_ack & DRAM_REQUEST_pipe_write_req & ready & (~C_full);
+assign C_deq=app_rdy ; //changed
+assign C_enq=DRAM_REQUEST_pipe_write_ack & DRAM_REQUEST_pipe_write_req & ready;
 
 assign app_wdf_wren=(~D_empty);
-assign D_deq=app_wdf_rdy & (~D_empty) ;  //changed
-assign D_enq=DRAM_REQUEST_pipe_write_ack & DRAM_REQUEST_pipe_write_req & (~DRAM_REQUEST_pipe_write_data[108]) & ready & (~D_full);
+assign D_deq=app_wdf_rdy ;  //changed
+assign D_enq=DRAM_REQUEST_pipe_write_ack & DRAM_REQUEST_pipe_write_req & (~DRAM_REQUEST_pipe_write_data[108]) & ready;
 
 
 
-assign resp_din = C_din;
-assign resp_enq = DRAM_REQUEST_pipe_write_ack & DRAM_REQUEST_pipe_write_req & (DRAM_REQUEST_pipe_write_data[108]) & ready & (~C_full) & (~resp_full);
-
-
+assign cdebug={C_full,C_empty,C_enq,C_deq};
+assign ddebug={D_full,D_empty,D_enq,D_deq};
 fifo_generator_1 fifo_c_channel (
               .clk (ui_clk),
               .srst (sys_rst),
@@ -213,7 +213,7 @@ always@(*) begin
     else
         tagf_deq=1'b0;
 end
-assign read_resf_deq=read_res_type & (~read_resf_empty) & DRAM_RESPONSE_pipe_read_req & (~resp_empty);
+assign read_resf_deq=read_res_type & (~read_resf_empty) & DRAM_RESPONSE_pipe_read_req;
 //assign DRAM_RESPONSE_pipe_read_req=tagf_deq; 
 //assign DRAM_RESPONSE_pipe_read_ack= 
 reg read_ack;
@@ -225,69 +225,19 @@ always@(*) begin
     else
         read_ack=1'b0;
 end
-
-wire read_resf_enq;
-assign read_resf_enq = app_rd_data_valid & ready & (~read_resf_full);
-
 assign DRAM_RESPONSE_pipe_read_ack=read_ack;
-fifo_generator_5 fifo_read_res_channel(
+fifo_generator_3 fifo_read_res_channel(
                           .clk(ui_clk),        // input wire clk
                           .srst(sys_rst),    // input wire srst
-                          .din(app_rd_data),              // input wire [511 : 0] din
-                          .wr_en(read_resf_enq),          // input wire wr_en
+                          .din(app_rd_data[63:0]),              // input wire [63 : 0] din
+                          .wr_en(app_rd_data_valid),          // input wire wr_en
                           .rd_en(read_resf_deq),          // input wire rd_en
-                          .dout(read_data_to_forward),            // output wire [511 : 0] dout
+                          .dout(read_resf_dout),            // output wire [63 : 0] dout
                           .full(read_resf_full),            // output wire full
                           .empty(read_resf_empty),          // output wire empty
                           .prog_full(read_resf_pfull)  // output wire prog_full
                         );
 
-assign resp_deq = read_resf_deq;
-wire [511:0] read_data_to_forward;
-wire [2:0] rd_offset;
-assign rd_offset = resp_dout [2:0];
-always@(*) begin
-    case(rd_offset) 
-        3'b000: begin
-            read_resf_dout=read_data_to_forward[63:0];
-        end
-        3'b001: begin
-            read_resf_dout=read_data_to_forward[127:64];
-        end
-        3'b010: begin
-            read_resf_dout=read_data_to_forward[191:128];
-        end
-        3'b011: begin
-            read_resf_dout=read_data_to_forward[255:192];
-        end
-        3'b100: begin
-            read_resf_dout=read_data_to_forward[319:256];
-        end
-        3'b101: begin
-            read_resf_dout=read_data_to_forward[383:320];
-        end
-        3'b110: begin
-            read_resf_dout=read_data_to_forward[447:384];
-        end
-        3'b111: begin
-            read_resf_dout=read_data_to_forward[511:448];
-        end
-        default: begin
-            read_resf_dout=read_data_to_forward[63:0];
-        end
-     endcase
-end     
- 
-fifo_generator_1 fifo_resp_channel (
-              .clk (ui_clk),
-              .srst (sys_rst),
-              .din (resp_din),
-              .wr_en (resp_enq),
-              .rd_en (resp_deq),
-              .dout (resp_dout),
-              .full (resp_full),
-              .empty (resp_empty)
-            );  
                        
 fifo_generator_4 fifo_tag_channel (
                           .clk(ui_clk),              // input wire clk
@@ -301,7 +251,11 @@ fifo_generator_4 fifo_tag_channel (
                           .prog_full(tagf_pfull)  // output wire prog_full
                         );
                         
-/*
+
+assign rdebug= {read_resf_full,read_resf_empty,app_rd_data_valid,DRAM_RESPONSE_pipe_read_req,read_resf_pfull};
+assign cdebug={C_full,C_empty,C_enq,C_deq};
+assign ddebug={D_full,D_empty,D_enq,D_deq};                      
+
 always@(posedge ui_clk) begin
     if(sys_rst) begin
         fatal_error<=1'b0;
@@ -312,7 +266,7 @@ always@(posedge ui_clk) begin
         end
     end
 end
-*/
+
 
 
 endmodule
