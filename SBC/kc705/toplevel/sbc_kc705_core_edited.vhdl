@@ -208,7 +208,7 @@ entity sbc_kc705_core is --
     SPI_FLASH_MISO : in std_logic_vector(0 downto 0);
     THREAD_RESET : in std_logic_vector(3 downto 0);
     WRITE_PROTECT : in std_logic_vector(0 downto 0);
-    ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(613 downto 0);
+    ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(612 downto 0);
     NIC_MAC_RESETN : out std_logic_vector(0 downto 0);
     NIC_TO_MAC_pipe_read_data : out std_logic_vector(9 downto 0);
     NIC_TO_MAC_pipe_read_req  : in std_logic_vector(0  downto 0);
@@ -429,7 +429,7 @@ architecture struct of sbc_kc705_core is --
       CORE_BUS_REQUEST_pipe_write_req  : in std_logic_vector(0  downto 0);
       CORE_BUS_REQUEST_pipe_write_ack  : out std_logic_vector(0  downto 0);
       DRAM_CONTROLLER_TO_ACB_BRIDGE : in std_logic_vector(521 downto 0);
-      ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(613 downto 0);
+      ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(612 downto 0);
       CORE_BUS_RESPONSE_pipe_read_data : out std_logic_vector(64 downto 0);
       CORE_BUS_RESPONSE_pipe_read_req  : in std_logic_vector(0  downto 0);
       CORE_BUS_RESPONSE_pipe_read_ack  : out std_logic_vector(0  downto 0);
