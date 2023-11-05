@@ -191,7 +191,7 @@ architecture structure of sbc_kc705 is
     SPI_FLASH_MISO : in std_logic_vector(0 downto 0);
     THREAD_RESET : in std_logic_vector(3 downto 0);
     WRITE_PROTECT : in std_logic_vector(0 downto 0);
-    ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(613 downto 0);
+    ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(612 downto 0);
     NIC_MAC_RESETN : out std_logic_vector(0 downto 0);
     NIC_TO_MAC_pipe_read_data : out std_logic_vector(9 downto 0);
     NIC_TO_MAC_pipe_read_req  : in std_logic_vector(0  downto 0);
@@ -308,7 +308,7 @@ for sbc_kc705_core_inst :  sbc_kc705_core --
     ddr3_odt : out STD_LOGIC_VECTOR ( 0 to 0 );
     sys_clk_i : in STD_LOGIC;
     clk_ref_i : in STD_LOGIC;
-    app_addr : in STD_LOGIC_VECTOR ( 28 downto 0 );
+    app_addr : in STD_LOGIC_VECTOR ( 27 downto 0 );
     app_cmd : in STD_LOGIC_VECTOR ( 2 downto 0 );
     app_en : in STD_LOGIC;
     app_wdf_data : in STD_LOGIC_VECTOR ( 511 downto 0 );
@@ -364,7 +364,7 @@ end component mig_7series_0;
    signal SERIAL_TX_to_CONSOLE_pipe_read_req  : std_logic_vector(0  downto 0);
    signal SERIAL_TX_to_CONSOLE_pipe_read_ack  : std_logic_vector(0  downto 0);
    
-   signal ACB_BRIDGE_TO_DRAM_CONTROLLER : std_logic_vector(613 downto 0);
+   signal ACB_BRIDGE_TO_DRAM_CONTROLLER : std_logic_vector(612 downto 0);
    signal DRAM_CONTROLLER_TO_ACB_BRIDGE : std_logic_vector(521 downto 0);
 
    signal MAC_TO_NIC_pipe_write_data : std_logic_vector(9 downto 0);
@@ -642,7 +642,7 @@ begin
     ddr3_odt                   => ddr3_odt ,
     sys_clk_i                  => clk_sys_320 , 
     clk_ref_i                  => clk_ref_200 , 
-    app_addr                   => ACB_BRIDGE_TO_DRAM_CONTROLLER(613 DOWNTO 585)  ,
+    app_addr                   => ACB_BRIDGE_TO_DRAM_CONTROLLER(612 DOWNTO 585)  ,
     app_cmd                    => ACB_BRIDGE_TO_DRAM_CONTROLLER(584 DOWNTO 582)  ,
     app_en                     => ACB_BRIDGE_TO_DRAM_CONTROLLER(581) ,
     app_wdf_data               => ACB_BRIDGE_TO_DRAM_CONTROLLER(580 DOWNTO 69)  ,
