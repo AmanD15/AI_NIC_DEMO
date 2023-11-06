@@ -22,7 +22,7 @@ set_property CONFIG_MODE BPI16 [current_design]
 set_property CFGBVS VCCO [current_design]
 set_property CONFIG_VOLTAGE 2.5 [current_design]
 #set clk dedicated
-set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_nets clk_wiz_inst/inst/clk_in1_clk_wiz_0]
+set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_nets clk_wiz_0_inst/inst/clk_in1_clk_wiz_0]
 # Set DCI_CASCADE
 set_property DCI_CASCADE {32 34} [get_iobanks 33]
 
