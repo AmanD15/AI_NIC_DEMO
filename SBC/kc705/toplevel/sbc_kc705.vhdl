@@ -92,10 +92,10 @@ port(
       -----------------------------------------------
       -- SPI FLASH signals.
       -----------------------------------------------
-        SPI_FLASH_CLK  : out std_logic_vector(0 downto 0);
-        SPI_FLASH_CS_L : out std_logic_vector(7 downto 0);
-        SPI_FLASH_MOSI : out std_logic_vector(0 downto 0);
-        SPI_FLASH_MISO : in std_logic_vector(0 downto 0);
+        SPI_FLASH_CLK    : out std_logic_vector(0 downto 0);
+        SPI_FLASH_CS_TOP : out std_logic_vector(0 downto 0);
+        SPI_FLASH_MOSI   : out std_logic_vector(0 downto 0);
+        SPI_FLASH_MISO   : in std_logic_vector(0 downto 0);
 
       -----------------------------------------------
       -- CPU Mode.
@@ -212,6 +212,7 @@ architecture structure of sbc_kc705 is
   );
   --
   end component sbc_kc705_core;
+  signal SPI_FLASH_CS_L: std_logic_vector(7 downto 0);
 
 for sbc_kc705_core_inst :  sbc_kc705_core -- 
     use entity sbc_kc705_core_lib.sbc_kc705_core; -- 
@@ -409,6 +410,8 @@ end component mig_7series_0;
    signal  CPU_RESET, DEBUG_MODE: std_logic_vector (0 downto 0);
 
 	
+    signal SPI_CLK_HACK : std_logic;
+    signal SPI_FLASH_CLK_SIG: std_logic_vector(0 downto 0);
 
    
 begin
@@ -517,11 +520,13 @@ begin
     MIN_AFB_TAP_ADDR => MIN_AFB_TAP_ADDR,
 
     SPI_FLASH_MISO => SPI_FLASH_MISO,
-    SPI_FLASH_CLK => SPI_FLASH_CLK,
+    SPI_FLASH_CLK => SPI_FLASH_CLK_SIG,
     SPI_FLASH_CS_L => SPI_FLASH_CS_L,
     SPI_FLASH_MOSI => SPI_FLASH_MOSI
     ); -- 
   -- 
+    SPI_FLASH_CS_TOP(0) <= SPI_FLASH_CS_L(0);
+    SPI_FLASH_CLK <= SPI_FLASH_CLK_SIG;
 
 
     ETH_KC_inst : ETH_KC
@@ -668,4 +673,24 @@ begin
   );
   sys_rst(0) <= (clk_rst or RESET_TO_MIG(0) ); -- RESET_TO_MIG is from VIO
 
+  -- HACK needed to make SPI_CLK controllable on the board.
+  spi_connect: STARTUPE2
+    		generic map(      PROG_USR => "FALSE", 
+                 		SIM_CCLK_FREQ => 0.0)
+    		port map (    CFGCLK => open,
+                 		CFGMCLK => open,
+                     		EOS => open,
+                    		PREQ => open,
+                     		CLK => '0',
+                     		GSR => '0',
+                     		GTS => '0',
+               			KEYCLEARB => '0',
+                    		PACK => '0',
+                		USRCCLKO => spi_clk_hack,   -- Provide signal to output on CCLK pin 
+               			USRCCLKTS => '0',       -- Enable CCLK pin  
+                		USRDONEO => '1',       -- Drive DONE pin High even though tri-state
+               			USRDONETS => '1' );     -- Maintain tri-state of DONE pin
+
+    SPI_CLK_HACK <= SPI_FLASH_CLK_SIG(0);
+		
 end structure;
