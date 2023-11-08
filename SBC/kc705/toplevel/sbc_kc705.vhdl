@@ -423,6 +423,13 @@ begin
    -- CONFIG_UART_BAUD_CONTROL_WORD <= X"3b890180";
 
       
+     -- TODO: 0x0_4000_0000 to 0xF_FFFF_FFFFF
+     MIN_ACB_TAP_ADDR <= X"0_0000_0000";
+     MAX_ACB_TAP_ADDR <= X"0_0000_0000";
+
+     -- TODO: 0x0 to 0x7F_FFFF (16 MB total)
+     MIN_AFB_TAP_ADDR <= X"0_0000_0000";
+     MAX_AFB_TAP_ADDR <= X"0_0000_0000";
        
     clk_wiz_0_inst: clk_wiz_0 
         Port map( 
@@ -686,7 +693,7 @@ begin
                      		GTS => '0',
                			KEYCLEARB => '0',
                     		PACK => '0',
-                		USRCCLKO => spi_clk_hack,   -- Provide signal to output on CCLK pin 
+                		USRCCLKO => SPI_CLK_HACK,   -- Provide signal to output on CCLK pin 
                			USRCCLKTS => '0',       -- Enable CCLK pin  
                 		USRDONEO => '1',       -- Drive DONE pin High even though tri-state
                			USRDONETS => '1' );     -- Maintain tri-state of DONE pin

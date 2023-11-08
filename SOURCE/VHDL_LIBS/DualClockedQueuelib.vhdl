@@ -435,8 +435,8 @@ architecture Behavioral  of DualClockedQueue_AFB_req is
       rd_en : IN STD_LOGIC;
       dout : OUT STD_LOGIC_VECTOR(73 DOWNTO 0);
       full : OUT STD_LOGIC;
-      empty : OUT STD_LOGIC;
       wr_ack : OUT STD_LOGIC;
+      empty : OUT STD_LOGIC;
       valid : OUT STD_LOGIC
       );
   end component;
@@ -591,8 +591,8 @@ architecture Behavioral  of DualClockedQueue_AFB_resp is
       rd_en : IN STD_LOGIC;
       dout : OUT STD_LOGIC_VECTOR(32 DOWNTO 0);
       full : OUT STD_LOGIC;
-      empty : OUT STD_LOGIC;
       wr_ack : OUT STD_LOGIC;
+      empty : OUT STD_LOGIC;
       valid : OUT STD_LOGIC
       );
   end component;

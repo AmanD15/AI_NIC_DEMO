@@ -62,10 +62,13 @@ read_ip ../ip_consolidated/kc705_dram_ip/fifo_generator_3/fifo_generator_3.xci
 
 ################### Networking IPs ##################################################33
 read_ip ../ip_consolidated/kc705_networking_ip/tri_mode_ethernet_mac_0/tri_mode_ethernet_mac_0.xci
-read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_resp/fifo_generator_afb_resp.xci
 read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_acb_resp/fifo_generator_acb_resp.xci
-read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_req/fifo_generator_afb_req.xci
 read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_acb_req/fifo_generator_acb_req.xci
+
+# afb dual-clocked fifos are not used.
+#read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_resp/fifo_generator_afb_resp.xci
+#read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_req/fifo_generator_afb_req.xci
+#
 read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_0/fifo_generator_0.xci
 
 read_ip ../ip_consolidated/kc705_networking_ip/vio_80/vio_80.xci

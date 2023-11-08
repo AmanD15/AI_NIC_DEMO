@@ -43,29 +43,29 @@ set_property IOSTANDARD DIFF_SSTL15 [get_ports clk_in_p]
 ##
 # TODO (DONE): set false paths between all pairs of clocks (12 total).
 ## set false paths
-set_false_path -from [get_clocks -include_generated_clocks clk_ref_100] -to [get_clocks -include_generated_clocks clk_ref_125]
-set_false_path -from [get_clocks -include_generated_clocks clk_ref_125] -to [get_clocks -include_generated_clocks clk_ref_100]
+set_false_path -from [get_clocks -include_generated_clocks *clk_ref_100] -to [get_clocks -include_generated_clocks *clk_ref_125]
+set_false_path -from [get_clocks -include_generated_clocks *clk_ref_125] -to [get_clocks -include_generated_clocks *clk_ref_100]
 
 ## set false paths
-set_false_path -from [get_clocks -include_generated_clocks clk_ref_100] -to [get_clocks -include_generated_clocks clk_ref_200]
-set_false_path -from [get_clocks -include_generated_clocks clk_ref_200] -to [get_clocks -include_generated_clocks clk_ref_100]
+set_false_path -from [get_clocks -include_generated_clocks *clk_ref_100] -to [get_clocks -include_generated_clocks *clk_ref_200]
+set_false_path -from [get_clocks -include_generated_clocks *clk_ref_200] -to [get_clocks -include_generated_clocks *clk_ref_100]
 
 ## set false paths
-set_false_path -from [get_clocks -include_generated_clocks clk_ref_100] -to [get_clocks -include_generated_clocks clk_sys_320]
-set_false_path -from [get_clocks -include_generated_clocks clk_sys_320] -to [get_clocks -include_generated_clocks clk_ref_100]
+set_false_path -from [get_clocks -include_generated_clocks *clk_ref_100] -to [get_clocks -include_generated_clocks *clk_sys_320]
+set_false_path -from [get_clocks -include_generated_clocks *clk_sys_320] -to [get_clocks -include_generated_clocks *clk_ref_100]
 
 
 ## set false paths
-set_false_path -from [get_clocks -include_generated_clocks clk_ref_125] -to [get_clocks -include_generated_clocks clk_ref_200]
-set_false_path -from [get_clocks -include_generated_clocks clk_ref_200] -to [get_clocks -include_generated_clocks clk_ref_125]
+set_false_path -from [get_clocks -include_generated_clocks *clk_ref_125] -to [get_clocks -include_generated_clocks *clk_ref_200]
+set_false_path -from [get_clocks -include_generated_clocks *clk_ref_200] -to [get_clocks -include_generated_clocks *clk_ref_125]
 
 ## set false paths
-set_false_path -from [get_clocks -include_generated_clocks clk_ref_125] -to [get_clocks -include_generated_clocks clk_sys_320]
-set_false_path -from [get_clocks -include_generated_clocks clk_sys_320] -to [get_clocks -include_generated_clocks clk_ref_125]
+set_false_path -from [get_clocks -include_generated_clocks *clk_ref_125] -to [get_clocks -include_generated_clocks *clk_sys_320]
+set_false_path -from [get_clocks -include_generated_clocks *clk_sys_320] -to [get_clocks -include_generated_clocks *clk_ref_125]
 
 ## set false paths
-set_false_path -from [get_clocks -include_generated_clocks clk_ref_200] -to [get_clocks -include_generated_clocks clk_sys_320]
-set_false_path -from [get_clocks -include_generated_clocks clk_sys_320] -to [get_clocks -include_generated_clocks clk_ref_200]
+set_false_path -from [get_clocks -include_generated_clocks *clk_ref_200] -to [get_clocks -include_generated_clocks *clk_sys_320]
+set_false_path -from [get_clocks -include_generated_clocks *clk_sys_320] -to [get_clocks -include_generated_clocks *clk_ref_200]
 
 ##################################################################################################
 # 4.   Max delay on clock domain crossing paths.
@@ -73,24 +73,24 @@ set_false_path -from [get_clocks -include_generated_clocks clk_sys_320] -to [get
 
 ##TODO (DONE!): set max delay of 10ns between all clock pairs.
 
-set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_100] -to [get_clocks -include_generated_clocks clk_ref_125]
-set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_125] -to [get_clocks -include_generated_clocks clk_ref_100]
+set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_ref_100] -to [get_clocks -include_generated_clocks *clk_ref_125]
+set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_ref_125] -to [get_clocks -include_generated_clocks *clk_ref_100]
 
-set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_100] -to [get_clocks -include_generated_clocks clk_ref_200]
-set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_200] -to [get_clocks -include_generated_clocks clk_ref_100]
+set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_ref_100] -to [get_clocks -include_generated_clocks *clk_ref_200]
+set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_ref_200] -to [get_clocks -include_generated_clocks *clk_ref_100]
 
 
-set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_100] -to [get_clocks -include_generated_clocks clk_sys_320]
-set_max_delay 10 -from [get_clocks -include_generated_clocks clk_sys_320] -to [get_clocks -include_generated_clocks clk_ref_100]
+set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_ref_100] -to [get_clocks -include_generated_clocks *clk_sys_320]
+set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_sys_320] -to [get_clocks -include_generated_clocks *clk_ref_100]
 
-set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_125] -to [get_clocks -include_generated_clocks clk_ref_200]
-set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_200] -to [get_clocks -include_generated_clocks clk_ref_125]
+set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_ref_125] -to [get_clocks -include_generated_clocks *clk_ref_200]
+set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_ref_200] -to [get_clocks -include_generated_clocks *clk_ref_125]
 
-set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_125] -to [get_clocks -include_generated_clocks clk_sys_320]
-set_max_delay 10 -from [get_clocks -include_generated_clocks clk_sys_320] -to [get_clocks -include_generated_clocks clk_ref_125]
+set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_ref_125] -to [get_clocks -include_generated_clocks *clk_sys_320]
+set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_sys_320] -to [get_clocks -include_generated_clocks *clk_ref_125]
 
-set_max_delay 10 -from [get_clocks -include_generated_clocks clk_ref_200] -to [get_clocks -include_generated_clocks clk_sys_320]
-set_max_delay 10 -from [get_clocks -include_generated_clocks clk_sys_320] -to [get_clocks -include_generated_clocks clk_ref_200]
+set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_ref_200] -to [get_clocks -include_generated_clocks *clk_sys_320]
+set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_sys_320] -to [get_clocks -include_generated_clocks *clk_ref_200]
 
 ########################################################################################################
 ## 5. ETHERNET related ports.
@@ -111,13 +111,16 @@ set_property IOSTANDARD LVCMOS15 [get_ports activity_flashn]
 # Rev B board
 #set_property PACKAGE_PIN AD7      [get_ports config_board]
 # Rev C or later
+##### Center Push Button (TEMAC : Input to TEMAC, Update link speed)
+set_property PACKAGE_PIN G12 [get_ports update_speed]
+##### West  Push Button  (TEMAC : Input to TEMAC, )
+set_property PACKAGE_PIN AC6 [get_ports config_board] 
+##### South Push Button  (TEMAC : Input to TEMAC, )
+set_property PACKAGE_PIN AB12 [get_ports pause_req_s]
+##### North Push Button  (TEMAC : Input to TEMAC, Reset error count)
+set_property PACKAGE_PIN AA12 [get_ports reset_error] 
 
-set_property PACKAGE_PIN G12 [get_ports update_speed] ##### Center Push Button (TEMAC : Input to TEMAC, Update link speed)
-set_property PACKAGE_PIN AC6 [get_ports config_board] ##### West  Push Button  (TEMAC : Input to TEMAC, )
-set_property PACKAGE_PIN AB12 [get_ports pause_req_s] ##### South Push Button  (TEMAC : Input to TEMAC, )
-set_property PACKAGE_PIN AA12 [get_ports reset_error] ##### North Push Button  (TEMAC : Input to TEMAC, Reset error count)
-
-set_property IOSTANDARD LVCMOS15 [get_ports update_speed]
+set_property IOSTANDARD LVCMOS25 [get_ports update_speed]
 set_property IOSTANDARD LVCMOS15 [get_ports config_board]
 set_property IOSTANDARD LVCMOS15 [get_ports pause_req_s]
 set_property IOSTANDARD LVCMOS15 [get_ports reset_error]
@@ -796,13 +799,13 @@ set_property IOSTANDARD SSTL15 [get_ports {ddr3_dm[7]}]
 set_property PACKAGE_PIN AC7 [get_ports {ddr3_dm[7]}]
 
 # PadFunction: IO_L12P_T1_MRCC_33
-set_property VCCAUX_IO DONTCARE [get_ports sys_clk_p]
-set_property IOSTANDARD DIFF_SSTL15 [get_ports sys_clk_p]
+set_property VCCAUX_IO DONTCARE [get_ports clk_in_p]
+set_property IOSTANDARD DIFF_SSTL15 [get_ports clk_in_p]
 
 # PadFunction: IO_L12N_T1_MRCC_33
-set_property IOSTANDARD DIFF_SSTL15 [get_ports sys_clk_n]
-set_property PACKAGE_PIN AD12 [get_ports sys_clk_p]
-set_property PACKAGE_PIN AD11 [get_ports sys_clk_n]
+set_property IOSTANDARD DIFF_SSTL15 [get_ports clk_in_n]
+set_property PACKAGE_PIN AD12 [get_ports clk_in_p]
+set_property PACKAGE_PIN AD11 [get_ports clk_in_n]
 
 #set_property PACKAGE_PIN U8 [get_ports { pcie_clk_p }]
 #set_property IOSTANDARD DIFF_SSTL15 [get_ports {pcie_clk_p}]
@@ -899,15 +902,6 @@ set_property IOSTANDARD DIFF_SSTL15 [get_ports {ddr3_ck_n[0]}]
 set_property PACKAGE_PIN AG10 [get_ports {ddr3_ck_p[0]}]
 set_property PACKAGE_PIN AH10 [get_ports {ddr3_ck_n[0]}]
 
-set_property PACKAGE_PIN P24 [get_ports {spi_mosi[0]}]
-set_property IOSTANDARD LVCMOS25 [get_ports {spi_mosi[0]}]
-set_property PACKAGE_PIN R25 [get_ports {spi_miso[0]}]
-set_property IOSTANDARD LVCMOS25 [get_ports {spi_miso[0]}]
-set_property PACKAGE_PIN U19 [get_ports {spi_cs[0]}]
-set_property IOSTANDARD LVCMOS25 [get_ports {spi_cs[0]}]
-set_property PACKAGE_PIN G19 [get_ports {spi_clk[0]}]
-set_property IOSTANDARD LVCMOS25 [get_ports {spi_clk[0]}]
-
 set_false_path -through [get_pins -filter {NAME =~ */DQSFOUND} -of [get_cells -hier -filter {REF_NAME == PHASER_IN_PHY}]]
 
 set_multicycle_path -setup -start -through [get_pins -filter {NAME =~ */OSERDESRST} -of [get_cells -hier -filter {REF_NAME == PHASER_OUT_PHY}]] 2
@@ -936,7 +930,9 @@ connect_debug_port dbg_hub/clk [get_nets clk]
 # Bank: 33 - GPIO_SW_N (CLK_RESET)
 set_property VCCAUX_IO DONTCARE [get_ports clk_rst]
 set_property IOSTANDARD LVCMOS15 [get_ports clk_rst]
-set_property PACKAGE_PIN AG5 [get_ports clk_rst] # East push-button.
+
+# East push-button.
+set_property PACKAGE_PIN AG5 [get_ports clk_rst] 
 
 # At the top.
 set_property PACKAGE_PIN K24 [get_ports {DEBUG_UART_TX[0]}]
