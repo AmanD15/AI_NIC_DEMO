@@ -424,12 +424,12 @@ begin
 
       
      -- TODO: 0x0_4000_0000 to 0xF_FFFF_FFFFF
-     MIN_ACB_TAP_ADDR <= X"0_0000_0000";
-     MAX_ACB_TAP_ADDR <= X"0_0000_0000";
+     MIN_ACB_TAP_ADDR <= X"0_4000_0000";
+     MAX_ACB_TAP_ADDR <= X"F_FFFF_FFFF";
 
-     -- TODO: 0x0 to 0x7F_FFFF (16 MB total)
+     -- TODO: 0x0 to 0x7F_FFFF (16 MB = 0x1000000 total)
      MIN_AFB_TAP_ADDR <= X"0_0000_0000";
-     MAX_AFB_TAP_ADDR <= X"0_0000_0000";
+     MAX_AFB_TAP_ADDR <= X"0_00FF_FFFF";
        
     clk_wiz_0_inst: clk_wiz_0 
         Port map( 
