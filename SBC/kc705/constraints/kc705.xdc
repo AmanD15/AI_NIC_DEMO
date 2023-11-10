@@ -41,31 +41,27 @@ set_property IOSTANDARD DIFF_SSTL15 [get_ports clk_in_p]
 ##################################################################################################
 
 ##
-# TODO (DONE): set false paths between all pairs of clocks (12 total).
+#  TODO: Set false paths between all distinct clocks.
 ## set false paths
-set_false_path -from [get_pins -hierarchical .*clk_100.*] -to [get_pins -hierarchical  .*clk_125.*]
-set_false_path -from [get_pins -hierarchical .*clk_125.*] -to [get_pins -hierarchical  .*clk_100.*]
 
-## set false paths
-set_false_path -from [get_pins -hierarchical  .*clk_100.*] -to [get_pins -hierarchical  .*clk_200.*]
-set_false_path -from [get_pins -hierarchical  .*clk_200.*] -to [get_pins -hierarchical  .*clk_100.*]
+set_false_path -from [get_clocks -include_generated_clocks clk_100_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
+set_false_path -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_100_clk_wiz_0]
 
-## set false paths
-set_false_path -from [get_pins -hierarchical  .*clk_100.*] -to [get_pins -hierarchical  .*clk_320.*]
-set_false_path -from [get_pins -hierarchical  .*clk_320.*] -to [get_pins -hierarchical  .*clk_100.*]
+set_false_path -from [get_clocks -include_generated_clocks clk_100_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_200_clk_wiz_0]
+set_false_path -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_100_clk_wiz_0]
 
 
-## set false paths
-set_false_path -from [get_pins -hierarchical  .*clk_125.*] -to [get_pins -hierarchical  .*clk_200.*]
-set_false_path -from [get_pins -hierarchical  .*clk_200.*] -to [get_pins -hierarchical  .*clk_125.*]
+set_false_path -from [get_clocks -include_generated_clocks clk_100_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_320_clk_wiz_0]
+set_false_path -from [get_clocks -include_generated_clocks clk_320_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_100_clk_wiz_0]
 
-## set false paths
-set_false_path -from [get_pins -hierarchical  .*clk_125.*] -to [get_pins -hierarchical  .*clk_320.*]
-set_false_path -from [get_pins -hierarchical  .*clk_320.*] -to [get_pins -hierarchical  .*clk_125.*]
+set_false_path -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_200_clk_wiz_0]
+set_false_path -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
 
-## set false paths
-set_false_path -from [get_pins -hierarchical  .*clk_200.*] -to [get_pins -hierarchical  .*clk_320.*]
-set_false_path -from [get_pins -hierarchical  .*clk_320.*] -to [get_pins -hierarchical  .*clk_200.*]
+set_false_path -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_320_clk_wiz_0]
+set_false_path -from [get_clocks -include_generated_clocks clk_320_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
+
+set_false_path -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_320_clk_wiz_0]
+set_false_path -from [get_clocks -include_generated_clocks clk_320_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_200_clk_wiz_0]
 
 ##################################################################################################
 # 4.   Max delay on clock domain crossing paths.
@@ -73,24 +69,24 @@ set_false_path -from [get_pins -hierarchical  .*clk_320.*] -to [get_pins -hierar
 
 ##TODO (DONE!): set max delay of 10ns between all clock pairs.
 
-set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_100] -to [get_clocks -include_generated_clocks *clk_125]
-set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_125] -to [get_clocks -include_generated_clocks *clk_100]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_100_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_100_clk_wiz_0]
 
-set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_100] -to [get_clocks -include_generated_clocks *clk_200]
-set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_200] -to [get_clocks -include_generated_clocks *clk_100]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_100_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_200_clk_wiz_0]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_100_clk_wiz_0]
 
 
-set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_100] -to [get_clocks -include_generated_clocks *clk_320]
-set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_320] -to [get_clocks -include_generated_clocks *clk_100]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_100_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_320_clk_wiz_0]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_320_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_100_clk_wiz_0]
 
-set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_125] -to [get_clocks -include_generated_clocks *clk_200]
-set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_200] -to [get_clocks -include_generated_clocks *clk_125]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_200_clk_wiz_0]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
 
-set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_125] -to [get_clocks -include_generated_clocks *clk_320]
-set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_320] -to [get_clocks -include_generated_clocks *clk_125]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_320_clk_wiz_0]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_320_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
 
-set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_200] -to [get_clocks -include_generated_clocks *clk_320]
-set_max_delay 10 -from [get_clocks -include_generated_clocks *clk_320] -to [get_clocks -include_generated_clocks *clk_200]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_320_clk_wiz_0]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_320_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_200_clk_wiz_0]
 
 ########################################################################################################
 ## 5. ETHERNET related ports.
