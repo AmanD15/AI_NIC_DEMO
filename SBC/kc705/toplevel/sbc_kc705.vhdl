@@ -390,12 +390,9 @@ end component mig_7series_0;
    signal sys_rst: std_logic_vector(0 downto 0);
 --------------------OLD SIGNALS --------------------------------------
 
-   signal reset1, reset_sync, reset_nic, reset_mig: std_logic;
-   signal reset1_mac,reset2_mac, reset_sync_pre_buf_mac, reset_sync_mac: std_logic;
-
    signal EXTERNAL_INTERRUPT : std_logic_vector(0 downto 0);
    signal LOGGER_MODE : std_logic_vector(0 downto 0);
-   signal clock,clock_mac,lock:std_logic;
+   signal clock:std_logic;
 
     				
    signal MAX_ADDR_TAP : std_logic_vector(35 downto 0);
@@ -403,7 +400,7 @@ end component mig_7series_0;
    
 
    signal enable_reset : std_logic_vector (0 downto 0);
-   signal mig_vio_locked : std_logic;
+   signal clk_wizard_locked : std_logic;
    signal dcm_locked, gtx_clk_reset :std_logic;
 
 
@@ -413,6 +410,8 @@ end component mig_7series_0;
     signal SPI_CLK_HACK : std_logic;
     signal SPI_FLASH_CLK_SIG: std_logic_vector(0 downto 0);
 
+
+    signal MIG7_UI_CLOCK;
    
 begin
    -- Info: Baudrate 115200 ClkFreq 65000000:  Baud-freq = 1152, Baud-limit= 39473 Baud-control=0x9a310480
@@ -438,7 +437,7 @@ begin
 	  clk_125       => clk_ref_125, -- To ethernet mac
 	  clk_100       => clk_ref_100, -- To axi (in mac)
           reset         => clk_rst, 
-          locked        => mig_vio_locked, -- goes to the VIO
+          locked        => clk_wizard_locked, -- goes to the VIO
           clk_in1_p     => clk_in_p,
           clk_in1_n     => clk_in_n);
 
@@ -446,7 +445,7 @@ begin
 
     virtual_reset_processor : vio_80
         port map (
-                        clk         => DRAM_CONTROLLER_TO_ACB_BRIDGE(521), --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
+                        clk         => MIG7_UI_CLOCK, --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
                         probe_in0   => CPU_MODE_SIG,
                         probe_out0  => RESET_TO_PROCESSOR,
 			probe_out1  => CPU_RESET, 
@@ -458,7 +457,7 @@ begin
     virtual_reset_nic       : vio_125
         port map (
                         clk         => clk_ref_125,
-			probe_in0   => NIC_MAC_RESETN,
+			probe_in0   => clk_wizard_locked,
                         probe_out0  => RESET_TO_NIC
           );
 
@@ -482,11 +481,13 @@ begin
    THREAD_RESET(3) <= '0';
 
 
+   MIG7_UI_CLOCK <= DRAM_CONTROLLER_TO_ACB_BRIDGE(521);
+
    sbc_kc705_core_inst: sbc_kc705_core
      port map ( --
-    CLOCK_TO_DRAMCTRL_BRIDGE =>  DRAM_CONTROLLER_TO_ACB_BRIDGE(521), --  ui_clk, 80MHz
+    CLOCK_TO_DRAMCTRL_BRIDGE =>  MIG7_UI_CLOCK, --  ui_clk, 80MHz
     CLOCK_TO_NIC => clk_ref_125,
-    CLOCK_TO_PROCESSOR =>  DRAM_CONTROLLER_TO_ACB_BRIDGE(521),        --  ui_clk, 80MHz
+    CLOCK_TO_PROCESSOR => MIG7_UI_CLOCK,        --  ui_clk, 80MHz
 
     RESET_TO_DRAMCTRL_BRIDGE => RESET_TO_PROCESSOR(0),    
     RESET_TO_NIC => RESET_TO_NIC(0),
@@ -615,7 +616,7 @@ begin
     TX_to_CONSOLE_pipe_write_ack => SOC_DEBUG_to_MONITOR_pipe_read_req, -- out
     UART_RX => DEBUG_UART_RX, -- in
     UART_TX => DEBUG_UART_TX, -- out
-    clk => clock, reset => reset_sync
+    clk => MIG7_UI_CLOCK, reset => RESET_TO_PROCESSOR
     ); -- 
 
   serial_uart_inst: configurable_uart
@@ -629,7 +630,7 @@ begin
     TX_to_CONSOLE_pipe_write_ack => SERIAL_TX_to_CONSOLE_pipe_read_req, -- out
     UART_RX => SERIAL_UART_RX, -- in
     UART_TX => SERIAL_UART_TX, -- out
-    clk => clock, reset => reset_sync
+    clk => MIG7_UI_CLOCK, reset => RESET_TO_PROCESSOR
     ); -- 
 
    -----------------------------------------------------------------------------
