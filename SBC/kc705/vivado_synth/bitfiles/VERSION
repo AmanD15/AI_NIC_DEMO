@@ -1,5 +1,5 @@
-commit 6f5144c0b5be9dbf644bff15b2e520a7d6f91d79
+commit eb2dca861b74376f0b97838a01e8608eada18d53
 Author: Siddhant_120 <siddhant23tomar@gmail.com>
-Date:   Mon Nov 13 11:00:12 2023 +0530
+Date:   Mon Nov 13 13:06:00 2023 +0530
 
-    Another try to build SBC on KC705
+    DualClockedFIFO resets corrected
