@@ -107,3 +107,4 @@ report_timing_summary -file timing.rpt -nworst 10 -verbose
 report_utilization -file utilization_post_place_and_route.rpt
 report_utilization -hierarchical -file utilization_post_place_and_route.hierarchical.rpt
 write_bitstream -force processor_1x1x32.sbc.kc705.bit
+write_debug_probes -force processor_1x1x32.sbc.kc705.ltx 

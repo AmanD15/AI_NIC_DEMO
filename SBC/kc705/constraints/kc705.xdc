@@ -923,7 +923,7 @@ connect_debug_port dbg_hub/clk [get_nets clk]
 #set_property VCCAUX_IO DONTCARE [get_ports sys_rst]
 #set_property IOSTANDARD LVCMOS15 [get_ports sys_rst]
 #set_property PACKAGE_PIN AG5 [get_ports sys_rst]
-# Bank: 33 - GPIO_SW_N (CLK_RESET)
+# Bank: 33 - GPIO_SW_E (CLK_RESET)
 set_property VCCAUX_IO DONTCARE [get_ports clk_rst]
 set_property IOSTANDARD LVCMOS15 [get_ports clk_rst]
 

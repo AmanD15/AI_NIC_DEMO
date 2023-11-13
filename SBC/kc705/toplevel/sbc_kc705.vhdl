@@ -400,7 +400,7 @@ end component mig_7series_0;
    
 
    signal enable_reset : std_logic_vector (0 downto 0);
-   signal clk_wizard_locked : std_logic;
+   signal clk_wizard_locked : STD_LOGIC_VECTOR ( 0 to 0 );
    signal dcm_locked, gtx_clk_reset :std_logic;
 
 
@@ -411,7 +411,7 @@ end component mig_7series_0;
     signal SPI_FLASH_CLK_SIG: std_logic_vector(0 downto 0);
 
 
-    signal MIG7_UI_CLOCK;
+    signal MIG7_UI_CLOCK: std_logic;
    
 begin
    -- Info: Baudrate 115200 ClkFreq 65000000:  Baud-freq = 1152, Baud-limit= 39473 Baud-control=0x9a310480
@@ -422,7 +422,7 @@ begin
    -- CONFIG_UART_BAUD_CONTROL_WORD <= X"3b890180";
 
       
-     -- Tap goes to NIC + FLASH
+     -- Tap goes to NIC + FLASH (0x0000_0000 - 0x3000_0000)
      MIN_ACB_TAP_ADDR <= X"0_0000_0000";
      MAX_ACB_TAP_ADDR <= X"0_2FFF_FFFF";
 
@@ -437,7 +437,7 @@ begin
 	  clk_125       => clk_ref_125, -- To ethernet mac
 	  clk_100       => clk_ref_100, -- To axi (in mac)
           reset         => clk_rst, 
-          locked        => clk_wizard_locked, -- goes to the VIO
+          locked        => clk_wizard_locked(0), -- goes to the VIO
           clk_in1_p     => clk_in_p,
           clk_in1_n     => clk_in_n);
 
@@ -481,7 +481,7 @@ begin
    THREAD_RESET(3) <= '0';
 
 
-   MIG7_UI_CLOCK <= DRAM_CONTROLLER_TO_ACB_BRIDGE(521);
+   MIG7_UI_CLOCK <= DRAM_CONTROLLER_TO_ACB_BRIDGE(521); -- 80MHz
 
    sbc_kc705_core_inst: sbc_kc705_core
      port map ( --
@@ -616,7 +616,7 @@ begin
     TX_to_CONSOLE_pipe_write_ack => SOC_DEBUG_to_MONITOR_pipe_read_req, -- out
     UART_RX => DEBUG_UART_RX, -- in
     UART_TX => DEBUG_UART_TX, -- out
-    clk => MIG7_UI_CLOCK, reset => RESET_TO_PROCESSOR
+    clk => MIG7_UI_CLOCK, reset => RESET_TO_PROCESSOR(0)
     ); -- 
 
   serial_uart_inst: configurable_uart
@@ -630,7 +630,7 @@ begin
     TX_to_CONSOLE_pipe_write_ack => SERIAL_TX_to_CONSOLE_pipe_read_req, -- out
     UART_RX => SERIAL_UART_RX, -- in
     UART_TX => SERIAL_UART_TX, -- out
-    clk => MIG7_UI_CLOCK, reset => RESET_TO_PROCESSOR
+    clk => MIG7_UI_CLOCK, reset => RESET_TO_PROCESSOR(0)
     ); -- 
 
    -----------------------------------------------------------------------------
@@ -660,7 +660,7 @@ begin
     app_en                     => ACB_BRIDGE_TO_DRAM_CONTROLLER(581) ,
     app_wdf_data               => ACB_BRIDGE_TO_DRAM_CONTROLLER(580 DOWNTO 69)  ,
     app_wdf_end                => ACB_BRIDGE_TO_DRAM_CONTROLLER(68) ,
-    app_wdf_mask               => ACB_BRIDGE_TO_DRAM_CONTROLLER(67 DOWNTO 4)  ,
+    app_wdf_mask               => ACB_BRIDGE_TO_DRAM_CONTROLLER(67 DOWNTO 4),
     app_wdf_wren               => ACB_BRIDGE_TO_DRAM_CONTROLLER(3) ,
     app_rd_data                => DRAM_CONTROLLER_TO_ACB_BRIDGE(519 downto 8) ,
     app_rd_data_end            => DRAM_CONTROLLER_TO_ACB_BRIDGE(7) ,
