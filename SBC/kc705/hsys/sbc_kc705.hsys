@@ -161,7 +161,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		CORE_BUS_RESPONSE           => DRAM_ACB_RESPONSE_FIFO_IN
 
 
-//***FIFO CONNECTIONS : Processor <--> ACB_AFB_COMPLEX , ACB_AFB_COMPLEX <--> ACB_DRAM_Bridge ***//
+		//***FIFO CONNECTIONS : Processor <--> ACB_AFB_COMPLEX , ACB_AFB_COMPLEX <--> ACB_DRAM_Bridge ***//
 
 	$instance DualClockedQueue_ACB_Proc_req_inst DualClockedQueue_lib:DualClockedQueue_ACB_req
 	

@@ -549,22 +549,36 @@ architecture struct of sbc_kc705_core is --
 
  signal reset: std_logic;
 
-  -------------------------------------------------------------------
     
 begin -- 
 
- -- Hand edit parts-------------------------------------------------
+ -------------------------------------------------------------------
+ -- Hand edited code
+ -------------------------------------------------------------------
 
   DualClockedQueue_ACB_Dram_Bridge_req_inst: DualClockedQueue_ACB_req
   port map ( --
     
     read_data_out => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_data,
+
     read_req_in => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_ack(0),
     read_ack_out => ACB_DRAM_REQUEST_FIFO_OUT_pipe_write_req(0),
     
     write_data_in => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_data,
-    write_req_out => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_ack(0),
-    write_ack_in => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_req(0),
+   
+    ----------------------------------------------------------------------- 
+    -- ERROR: output - output connection.
+    -- write_req_out => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_ack(0),
+    
+    -- Corrected
+    write_req_out => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_req(0),
+
+    -- ERROR: input - input connection...
+    -- write_ack_in => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_req(0),
+
+    -- Corrected.
+    write_ack_in => ACB_DRAM_REQUEST_FIFO_IN_pipe_read_ack(0),
+    ----------------------------------------------------------------------- 
 
     read_clk => CLOCK_TO_DRAMCTRL_BRIDGE,
     write_clk => CLOCK_TO_NIC,
@@ -579,8 +593,20 @@ begin --
     read_ack_out => PROCESSOR_ACB_REQUEST_FIFO_OUT_pipe_write_req(0),
 
     write_data_in => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_data,
-    write_req_out => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_ack(0),
-    write_ack_in => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_req(0),
+
+    ------------------------------------------------------------------
+    -- ERROR: out-out connection
+    -- write_req_out => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_ack(0),
+    
+    -- Corrected
+    write_req_out => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_req(0),
+
+    -- ERROR: in-in correction
+    -- write_ack_in => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_req(0),
+
+    -- Corrected
+    write_ack_in => PROCESSOR_ACB_REQUEST_FIFO_IN_pipe_read_ack(0),
+    ------------------------------------------------------------------
 
     read_clk => CLOCK_TO_NIC,
     write_clk => CLOCK_TO_PROCESSOR,
@@ -596,8 +622,14 @@ begin --
     read_ack_out => PROCESSOR_ACB_RESPONSE_FIFO_OUT_pipe_write_req(0),
  
     write_data_in => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_data,
-    write_req_out => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_ack(0),
-    write_ack_in  => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_req(0),
+    ----------------------------------------------------------------
+    -- ERROR in-in and out-out connections!
+    -- write_req_out => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_ack(0),
+    -- write_ack_in  => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_req(0),
+
+    write_req_out => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_req(0),
+    write_ack_in  => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_read_ack(0),
+    ----------------------------------------------------------------
 
     read_clk => CLOCK_TO_PROCESSOR,
     write_clk => CLOCK_TO_NIC,
@@ -612,13 +644,22 @@ begin --
     read_ack_out => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_write_req(0),
   
     write_data_in => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_data,
-    write_req_out => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_ack(0),
-    write_ack_in => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_req(0),
+    ----------------------------------------------------------------
+    -- ERROR in-in and out-out connections!
+    -- write_req_out => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_ack(0),
+    -- write_ack_in => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_req(0),
+  
+    -- Corrected
+    write_req_out => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_req(0),
+    write_ack_in => DRAM_ACB_RESPONSE_FIFO_IN_pipe_read_ack(0),
+    ----------------------------------------------------------------
 
     read_clk => CLOCK_TO_NIC,
     write_clk => CLOCK_TO_DRAMCTRL_BRIDGE,
     reset => RESET_TO_DRAMCTRL_BRIDGE 
     ); -- 
+-------------------------------------------------------------------
+-- End: Hand edited code.
 -------------------------------------------------------------------
   acb_afb_complex_inst: acb_afb_complex
   port map ( --
