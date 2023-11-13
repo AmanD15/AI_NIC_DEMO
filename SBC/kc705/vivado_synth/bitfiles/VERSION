@@ -1,5 +1,5 @@
-commit 76d21a4a1069f74482185d6ecb4ad8c45feaa7b1
+commit 6f5144c0b5be9dbf644bff15b2e520a7d6f91d79
 Author: Siddhant_120 <siddhant23tomar@gmail.com>
-Date:   Fri Nov 10 12:45:30 2023 +0530
+Date:   Mon Nov 13 11:00:12 2023 +0530
 
-    Rebuilt bitfile with corrected tap ranges
+    Another try to build SBC on KC705
