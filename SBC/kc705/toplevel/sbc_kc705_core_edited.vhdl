@@ -584,7 +584,7 @@ begin --
 
     read_clk => CLOCK_TO_NIC,
     write_clk => CLOCK_TO_PROCESSOR,
-    reset => reset 
+    reset => RESET_TO_PROCESSOR 
     ); -- 
 
 
