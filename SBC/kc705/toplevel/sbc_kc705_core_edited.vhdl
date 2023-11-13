@@ -569,7 +569,7 @@ begin --
     read_clk => CLOCK_TO_DRAMCTRL_BRIDGE,
     write_clk => CLOCK_TO_NIC,
 
-    reset => reset 
+    reset => RESET_TO_NIC 
     ); -- 
   DualClockedQueue_ACB_Proc_req_inst: DualClockedQueue_ACB_req
   port map ( --
@@ -602,7 +602,7 @@ begin --
     read_clk => CLOCK_TO_PROCESSOR,
     write_clk => CLOCK_TO_NIC,
 
-    reset => reset 
+    reset => RESET_TO_NIC 
     ); -- 
   DualClockedQueue_Dram_Bridge_ACB_resp_inst: DualClockedQueue_ACB_resp
   port map ( --
@@ -617,7 +617,7 @@ begin --
 
     read_clk => CLOCK_TO_NIC,
     write_clk => CLOCK_TO_DRAMCTRL_BRIDGE,
-    reset => reset 
+    reset => RESET_TO_DRAMCTRL_BRIDGE 
     ); -- 
 -------------------------------------------------------------------
   acb_afb_complex_inst: acb_afb_complex

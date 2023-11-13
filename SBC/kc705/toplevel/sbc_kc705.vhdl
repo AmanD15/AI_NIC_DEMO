@@ -343,7 +343,7 @@ end component mig_7series_0;
 ------------------------------------------------------
           
    signal CLOCK_TO_DRAMCTRL_BRIDGE, CLOCK_TO_NIC, CLOCK_TO_PROCESSOR : std_logic;
-   signal RESET_TO_DRAMCTRL_BRIDGE, RESET_TO_NIC, RESET_TO_PROCESSOR,RESET_TO_MIG : std_logic_vector(0 downto 0);
+   signal RESET_TO_DRAMCTRL_BRIDGE, RESET_TO_NIC, RESET_TO_PROCESSOR,RESET_TO_MIG_DO_NOT_USE : std_logic_vector(0 downto 0);
 
    signal PROCESSOR_MODE : std_logic_vector(15 downto 0);
    signal THREAD_RESET : std_logic_vector(3 downto 0);
@@ -441,6 +441,9 @@ begin
           clk_in1_p     => clk_in_p,
           clk_in1_n     => clk_in_n);
 
+    -- used by ETH	
+    dcm_locked <= clk_wizard_locked(0);
+
     -- VIO for processor reset 
 
     virtual_reset_processor : vio_80
@@ -463,11 +466,15 @@ begin
 
     -- VIO for MIG reset 
 
+
+    -- Since clk_reset is going to MIG, there is no 
+    -- need of RESET_TO_MIG_DO_NOT_USE.  In fact, asserting it
+    -- causes the clk_wizard_locked signal to go to 0! ^%#&!Q
     virtual_reset_mig       : vio_200
         port map (
                         clk         => clk_ref_200,
 			probe_in0   => sys_rst,				
-                        probe_out0  => RESET_TO_MIG
+                        probe_out0  => RESET_TO_MIG_DO_NOT_USE
                         
                 );
 
@@ -535,6 +542,7 @@ begin
   -- 
     SPI_FLASH_CS_TOP(0) <= SPI_FLASH_CS_L(0);
     SPI_FLASH_CLK <= SPI_FLASH_CLK_SIG;
+    WRITE_PROTECT(0) <= '0';
 
 
     ETH_KC_inst : ETH_KC
@@ -679,7 +687,7 @@ begin
     device_temp                => device_temp ,
     sys_rst                    => sys_rst(0)
   );
-  sys_rst(0) <= (clk_rst or RESET_TO_MIG(0) ); -- RESET_TO_MIG is from VIO
+  sys_rst(0) <= clk_rst; -- MIG is at same level as clock generator.
 
   -- HACK needed to make SPI_CLK controllable on the board.
   spi_connect: STARTUPE2
