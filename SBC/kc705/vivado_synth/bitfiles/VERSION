@@ -1,5 +1,5 @@
-commit eb2dca861b74376f0b97838a01e8608eada18d53
+commit 1d33f43489e557bd4d71c1845fae3f46de3c51d5
 Author: Siddhant_120 <siddhant23tomar@gmail.com>
-Date:   Mon Nov 13 13:06:00 2023 +0530
+Date:   Mon Nov 13 13:26:33 2023 +0530
 
-    DualClockedFIFO resets corrected
+    Updated bit file after Dual Clocked Buffer reset fix.
