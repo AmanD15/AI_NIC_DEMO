@@ -67,10 +67,11 @@ int main_00 ()
 	cortos_printf("Non-cacheable marches in DRAM... done.\n");
 
 	cortos_printf("Non-cacheable march  in NIC registers 1 to 63\n");
-	runMarch (((uint32_t) (NCRAM_BASE + 4)), 63, 1, &t);
+	runMarch (((uint32_t) (NCRAM_BASE + 4)), 63, 1024, &t);
 		
-	cortos_printf ("R  %d  %f\n", size, t/NREPS);
+	cortos_printf ("R  %d  %f\n", 63, t/NREPS);
 
+	cortos_printf("Done.\n");
 	return(0);
 }
 
