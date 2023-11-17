@@ -21,6 +21,7 @@ void writeNicReg(uint32_t, uint32_t);
 void readMemory(uint64_t);
 void printMemory(void);
 
+
 void nicRegConfig(CortosQueueHeader* Free_Queue, 
 			CortosQueueHeader* Rx_Queue,
 			CortosQueueHeader* Tx_Queue)
@@ -53,6 +54,8 @@ void readNicRegs()
 		cortos_printf("NIC_REG[%d] = 0x%x\n",i,readNicReg(i));
 	}
 }
+
+
 
 int main()
 {
@@ -96,12 +99,40 @@ int main()
 	int message_counter = 0;
 	while(1)
 	{
-		uint32_t data[1];
-		readNicRegs();
+		uint32_t data[1],count;
+		
+	//	readNicRegs();
+		
+		
 		if(cortos_readMessages(rx_queue, (uint8_t*)data, 1)){
-			// move buffer from rx to tx queue
+
+		
+
+			// To print contents of the recieved frame.
+
+			/*count=0;
+			while(count<20)
+			{
+			cortos_printf("content of *(data[0]+%d):%x",count,*((uint32_t*)data[0]+count));
+			cortos_printf("\n");
+			count++;
+			}
+
+			*/
+
+			// To check no. of messages in TxQ
+
+			cortos_printf("total msgs in TxQ(BEFORE):%d\n",tx_queue->totalMsgs);
 			msgs_written = cortos_writeMessages(tx_queue, (uint8_t*)data, 1);
+			cortos_printf("total msgs in TxQ(AFTER):%d\n",tx_queue->totalMsgs);
 			message_counter++;
+			cortos_printf("message_counter:%d\n",message_counter);
+			cortos_printf("No.of Messages Written:%d\n",msgs_written);
+			
+				
+			
+		
+
 		}	
 		else
 		{
@@ -109,12 +140,12 @@ int main()
 			__ajit_sleep__ (1024);
 		}
 
-		if(message_counter == 1024)
-			break;
+		if(message_counter == 10)break;
 
 	}
-
+	//readNicRegs();
 	// Disable the NIC.
+	//printMemory();
 	writeNicReg(0,0);
 
 	// free queue
@@ -127,8 +158,8 @@ int main()
 	{
 		cortos_brel(Buffers[i]);
 	}
-	readNicRegs();
-	printMemory();	
+	//readNicRegs();
+	//printMemory();	
 
 	return(0);
 }
@@ -167,3 +198,5 @@ void printMemory()
 		//readMemory((uint64_t)(MEM+i));
 	}
 }
+
+
