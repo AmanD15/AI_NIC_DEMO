@@ -1,11 +1,45 @@
+This README guides you through the process of testing the Ethernet interface on the KC705 FPGA board.
 
-Setting up and running the Ethernet test
+    TEST SUMMARY:
+
+    On the FPGA card, SBC (1x1x32 AJIT Processor with NIC subsystem) is configured.
+    During this test, raw Ethernet frames are transmitted from the host-side driver code (running on a PC/laptop) to the KC705 card. 
+    The AJIT Processor, with the help of NIC subsystem, receives these frames and sends them back to the host side without any modifications. 
+    To monitor the packets received at the host side, Wireshark is used.
 
 
-1. Hardware side
+    STEPS:
+    
+    1. Host side (PC/laptop).
+        This step has two substeps, one is configuring wired connection setting and second is running the driver code.
+
+        A)Configuring wired connection settings.
+
+            One needs to ensure the host side is properly set up to send raw ethernet frames and is not sending extra/unwanted packets e.g ARP packets etc.
+            To do this go to wired settings and ensure the following settings for your ethernet connection.
+                -In the Details section  : Untick checkboxes "Connect automatically", tick "Make available to other users".
+                -In the Security section : Disable 802.1x security
+                -In the IPv4 and IPv6 section: Disable IPv4 and IPv6.
+            Only after ensuring above, run the driver code.
+
+        B)Running the driver code.
+            
+
+        
 
 
-2. Host side
+
+    2. Hardware side (SBC on FPGA).
+        
+        
 
 
-3. Reference results.
+
+
+    3. Reference results.(Wireshark observations)
+
+
+
+
+
+
