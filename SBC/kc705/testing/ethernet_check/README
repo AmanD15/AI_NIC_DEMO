@@ -1,17 +1,17 @@
-		The Ethernet check test
+	The Ethernet check test
 
-			Authors
+			Authors: Siddhant Singh Tomar and Indrahas Reddy.
 
 1. Overview
 -------------------------
 
 	This document describes
-		- the example used to confirm correct Ethernet Rx/Tx
-	 	  between the kc705 card and the host computer.
-		- the setup of the host computer (to enable the connection 
-			for the test)
-		- the application running on the host computer.
-		- the setup of the KC705 card
+	- the example used to confirm correct Ethernet Rx/Tx
+	  between the kc705 card and the host computer.
+	- the setup of the host computer (to enable the connection 
+	  for the test)
+	- the application running on the host computer.
+	- the setup of the KC705 card
 		
 2. The example
 -------------------------
@@ -24,58 +24,67 @@
     To monitor the packets received at the host side, the Wireshark packet-sniffer
     is used.   Some information is also extracted from the NIC.
 
+3. KC705 setup 
+-------------------------------
+    Configuration: 
+    Apply SBC bitfile to KC705 card, then dump main.remapped via Debug monitor.
 
-3. Host setup and application
+    Ethernet Link Activation: 
+    Check active status via LEDs near ethernet port. Configure speed (10/100/1000) 
+    using SW11 GPIO DIP switches. Update speed by pressing SW5 center push button.
+
+    SW11 DIP switch : 1 2 3 4
+                      0 0 0 0 --> 10Mbps
+                      1 0 0 0 --> 100Mbps
+                      0 1 0 0 --> 1000Mbps
+    
+
+
+4. Host setup and application
 -------------------------------
 
+    Driver Application: 
+    Launch only after configuring Ethernet link as per Step 3 and after
+    setting Wireshark to filter packets for the specified interface.
+    
+    Promiscuous Mode Settings: 
+    Enable promiscuous mode for the Ethernet interface (enp2s0) and Wireshark to 
+    capture packets despite incorrect destination MAC addresses.
+        - set Ethernet interface to promiscuous mode : sudo ifconfig enp2s0 promisc
+        - set Wireshark setup to promiscuous mode : Refer to the official website.
 
-4. KC705 setup 
--------------------------------
+    Host Configuration: 
+    On Ubuntu 16.04/20.04, modify wired settings for the ethernet connection:
+        - Details Section: Uncheck "Connect automatically", check "Make available to other users".
+        - Security Section: Disable 802.1x security.
+        - IPv4/IPv6 Section: Disable both protocols.
+          NOTE: If above settings, don't work one can simply click "disconnect" ethernet 
+                connection settings. 
 
 
+    Application Execution: 
+    Run "run.sh" and provide the ethernet interface name as the first argument (e.g., "enp2s0"). 
+    Two modes to send frames:
+        - 1. Send fixed-sized frames, e.g., ./run.sh 1 64 (mode, number of packets)
+        - 2. Send frames of increasing size, e.g., ./run.sh 2 64 (mode, number of packets)
+
+  
 5. Observations
 -------------------------------
-
+    Wireshark displays double the number of sent packets on the ethernet interface with 
+    identical source and destination MAC addresses.
 
 
 6. TODO
 -------------------------------
+    - Investigate processor sometimes jumps to error state during testing.
+    - Refine README content.
+    - Cleanup driver code and SBC side code.
 
 
 
 
 
-
-
-    STEPS:
-    
-    1. Host side (PC/laptop).
-        This step has two substeps, one is configuring wired connection setting and second is running the driver code.
-
-        A)Configuring wired connection settings.
-
-            One needs to ensure the host side is properly set up to send raw ethernet frames and is not sending extra/unwanted packets e.g ARP packets etc.
-            To do this go to wired settings and ensure the following settings for your ethernet connection.
-                -In the Details section  : Untick checkboxes "Connect automatically", tick "Make available to other users".
-                -In the Security section : Disable 802.1x security
-                -In the IPv4 and IPv6 section: Disable IPv4 and IPv6.
-            Only after ensuring above, run the driver code.
-
-        B)Running the driver code.
-            
-
-        
-
-
-
-    2. Hardware side (SBC on FPGA).
-        
-        
-
-
-
-
-    3. Reference results.(Wireshark observations)
 
 
 
