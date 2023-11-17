@@ -9,7 +9,6 @@
 #set_property BOARD_PIN {PHY_RXD2} [get_ports rgmii_rxd[2]]
 
 #set_property BOARD_PIN {PHY_RXD3} [get_ports rgmii_rxd[3]]
-
 #set_property BOARD_PIN {PHY_TXC_GTXCLK} [get_ports rgmii_txc]
 #set_property BOARD_PIN {PHY_TXCTL_TXEN} [get_ports rgmii_tx_ctl]
 #set_property BOARD_PIN {PHY_TXD0} [get_ports rgmii_txd[0]]
