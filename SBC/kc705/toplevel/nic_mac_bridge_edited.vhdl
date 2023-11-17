@@ -107,6 +107,7 @@ begin --
  
   inst_nic_mac_pipe_reset: nic_mac_pipe_reset
   port map ( --
+  
     ENABLE_MAC_pipe_data => ENABLE_MAC_pipe_write_data(0),
     ENABLE_MAC_pipe_req => ENABLE_MAC_pipe_write_req(0),
     ENABLE_MAC_pipe_ack => ENABLE_MAC_pipe_write_ack(0),

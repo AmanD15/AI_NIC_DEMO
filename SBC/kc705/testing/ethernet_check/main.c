@@ -144,16 +144,22 @@ int main()
 			__ajit_sleep__ (1024);
 		}
 
-		uint32_t tx_packet_count = readNicReg(21);
+		/*uint32_t tx_packet_count = readNicReg(21);
 		if(tx_packet_count > last_tx_packet_count)
 		{
 			cortos_printf("Info: NIC has transmitted %d packets.\n", tx_packet_count);
 			last_tx_packet_count = tx_packet_count;
 		}
-
+		*/
 		if(message_counter == 10)break;
+		
 
 	}
+	
+	
+	uint32_t tx_packet_count = readNicReg(21);	
+	cortos_printf("Info: NIC has transmitted %d packets.\n", tx_packet_count);
+	
 	//readNicRegs();
 	// Disable the NIC.
 	//printMemory();

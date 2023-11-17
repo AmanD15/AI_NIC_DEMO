@@ -563,8 +563,10 @@ begin
 
      -- RGMII Interface
      ------------------
+     rgmii_txc => rgmii_txc,
      rgmii_txd => rgmii_txd, --out std_logic_vector(3 downto 0);
      rgmii_tx_ctl => rgmii_tx_ctl, --out std_logic;
+     
      rgmii_rxd => rgmii_rxd, --in std_logic_vector(3 downto 0);
      rgmii_rx_ctl => rgmii_rx_ctl, --in std_logic;
      rgmii_rxc => rgmii_rxc, --in std_logic;
