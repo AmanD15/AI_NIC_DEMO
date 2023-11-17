@@ -68,7 +68,7 @@
 //				(0 -> no control, 1-> got control)
 //
 //.
-//63		  0xfc		--
+//63		  0xfc		-- not used as yet.
 //
 // Register file (depth = 64) (width = 32)
 

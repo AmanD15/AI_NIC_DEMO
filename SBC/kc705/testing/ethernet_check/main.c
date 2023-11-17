@@ -33,6 +33,8 @@ void nicRegConfig(CortosQueueHeader* Free_Queue,
 	writeNicReg(10,(uint32_t)Tx_Queue);	//NIC_REG[10] = Tx_Queue;
 	writeNicReg(18,(uint32_t)Free_Queue);	//NIC_REG[18] = Free_Queue;
 
+	writeNicReg (21, 0); // number of transmmitted packets = 0.
+
 	// Enable NIC.
 	writeNicReg(0,1); 			//NIC_REG[0] = 1;
 	cortos_printf("NIC_regs: [1]=0x%x,[2]=0x%x,[10]=0x%x,[18]=0x%x,[0]=0x%x,"
@@ -45,6 +47,7 @@ void nicRegConfig(CortosQueueHeader* Free_Queue,
 			readNicReg(21),
 			readNicReg(22));
 }	
+
 
 void readNicRegs()
 {
@@ -97,6 +100,7 @@ int main()
 	int I = 0;
 	uint32_t buffer_with_packet = 0;
 	int message_counter = 0;
+	uint32_t last_tx_packet_count = 0;
 	while(1)
 	{
 		uint32_t data[1],count;
@@ -138,6 +142,13 @@ int main()
 		{
 			// Spin for 1024 clock cycles.
 			__ajit_sleep__ (1024);
+		}
+
+		uint32_t tx_packet_count = readNicReg(21);
+		if(tx_packet_count > last_tx_packet_count)
+		{
+			cortos_printf("Info: NIC has transmitted %d packets.\n", tx_packet_count);
+			last_tx_packet_count = tx_packet_count;
 		}
 
 		if(message_counter == 10)break;

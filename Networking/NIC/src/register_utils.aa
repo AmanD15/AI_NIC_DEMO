@@ -16,6 +16,15 @@
 //		Response[31:0] = response-data
 
 
+// register 21 holds the packet count.
+$module [incrementNumberOfPacketsTransmitted]
+	$in () $out () $is
+{
+	$call AccessRegister ($one<1> 15 21 $zero<32>) (r)
+        $volatile nr := (r + 1)
+	$call AccessRegister ($zero<1> 15 21 nr) (ignore)
+}
+
 
 $module [AccessRegister] 
 $in (rwbar : $uint<1> bmask : $uint<4> register_index : $uint<6> wdata : $uint<32>)

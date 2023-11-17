@@ -42,6 +42,9 @@ $module [transmitEngineDaemon] $in () $out () $is
 			$guard (~tx_flag) $rreport(transmitEngineDaemon packet_transmitted transmitted_flag )
 			// packet transmitted successfully
 			$volatile push_pointer_back_to_free_Q := ((~tx_flag) & transmitted_flag)
+
+			$guard (push_pointer_back_to_free_Q)
+				$call incrementNumberOfPacketsTransmitted () ()
 			
 			$rreport(transmitEngineDaemon pushing_back_to_free_queue push_pointer_back_to_free_Q pkt_pointer)
 			
