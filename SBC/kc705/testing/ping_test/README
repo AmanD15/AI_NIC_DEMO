@@ -1,4 +1,4 @@
-	The Ethernet check test
+	The Ping test
 
 			Authors: Siddhant Singh Tomar and Indrahas Reddy.
 
@@ -6,8 +6,8 @@
 -------------------------
 
 	This document describes
-	- the example used to confirm correct Ethernet Rx/Tx
-	  between the kc705 card and the host computer.
+	- the example used to measure packet ping speed/round trip time
+	  between the kc705 card and the host computer via Ethernet.
 	- the setup of the host computer (to enable the connection 
 	  for the test)
 	- the application running on the host computer.
@@ -19,10 +19,10 @@
     During this test, raw Ethernet frames are transmitted from the host-side driver 
     code (running on a PC/laptop) to the KC705 card.  The SBC on the KC705 card, 
     with the help of NIC subsystem, receives these frames and sends them back to 
-    the host side without any modifications. 
-
-    To monitor the packets received at the host side, the Wireshark packet-sniffer
-    is used.   Some information is also extracted from the NIC.
+    the host side by swapping the source and destination MAC addresses. 
+    (The Wireshark packet-sniffer can be used to observe the swapped source and
+    MAC addresses)
+    
 
 3. KC705 setup 
 -------------------------------
@@ -46,12 +46,6 @@
     Driver Application: 
     Launch only after configuring Ethernet link as per Step 3 and after
     setting Wireshark to filter packets for the specified interface.
-    
-    Promiscuous Mode Settings: 
-    Enable promiscuous mode for the Ethernet interface (enp2s0) and Wireshark to 
-    capture packets despite incorrect destination MAC addresses.
-        - set Ethernet interface to promiscuous mode : sudo ifconfig enp2s0 promisc
-        - set Wireshark setup to promiscuous mode : Refer to the official website.
 
     Host Configuration: 
     On Ubuntu 16.04/20.04, modify wired settings for the ethernet connection:
@@ -72,14 +66,25 @@
 5. Observations
 -------------------------------
     Wireshark displays double the number of sent packets on the ethernet interface with 
-    identical source and destination MAC addresses.
+    source and destination MAC addresses, swapped.
 
 
 6. TODO
 -------------------------------
-    - Investigate processor sometimes jumps to error state during testing.
-    - Refine README content.
-    - Cleanup driver code and SBC side code.
+    - Write a C code or python code to measure RTT.
+    - general plan:
+
+        while(1)
+            {
+            if(sendto(...)) //sends packet
+                {
+                    start_timer
+                    while(recv());
+                    end_timer;
+                    Calculate and Print RTT;
+                }
+            }
+    
 
 
 
