@@ -47,6 +47,9 @@
     Launch only after configuring Ethernet link as per Step 3 and after
     setting Wireshark to filter packets for the specified interface.
 
+    Promiscuous Mode Settings: 
+    Enable promiscuous mode for Wireshark.
+
     Host Configuration: 
     On Ubuntu 16.04/20.04, modify wired settings for the ethernet connection:
         - Details Section: Uncheck "Connect automatically", check "Make available to other users".
@@ -65,25 +68,16 @@
   
 5. Observations
 -------------------------------
-    Wireshark displays double the number of sent packets on the ethernet interface with 
-    source and destination MAC addresses, swapped.
+    - Wireshark displays double the number of sent packets on the ethernet interface with 
+      source and destination MAC addresses, swapped.
+    - RTT time can be observed in Wireshark.
+    - for 10 Mbps  link avg RTT : 0.3ms
+    - for 100 Mbps link avg RTT : 0.1ms
 
 
 6. TODO
 -------------------------------
-    - Write a C code or python code to measure RTT.
-    - general plan:
-
-        while(1)
-            {
-            if(sendto(...)) //sends packet
-                {
-                    start_timer
-                    while(recv());
-                    end_timer;
-                    Calculate and Print RTT;
-                }
-            }
+    - ??
     
 
 
