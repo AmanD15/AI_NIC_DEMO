@@ -15,3 +15,16 @@ timer.aa - Code for timer module (currently commented in Makefile)
 lib, vhdl, build.sh - Code and utilities to generate dualPort memories
 
 registers_info.txt - Description of various registers used
+accelerator_processor_interface.aa
+acc_proc_test
+build.sh
+ConvAll
+decl.aa
+lib
+NIC
+prog.c
+README
+readWriteModules.aa
+registers_info.txt
+timer.aa
+vhdl
