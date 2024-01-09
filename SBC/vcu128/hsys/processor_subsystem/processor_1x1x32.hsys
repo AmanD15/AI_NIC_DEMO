@@ -1,0 +1,33 @@
+$system processor_1x1x32 $library ajit_processor_lib
+	$in
+		// common thread reset to all cores...
+		$signal  THREAD_RESET 4 $depth 1
+
+		$pipe SOC_MONITOR_to_DEBUG 8 $depth 2
+		$pipe CONSOLE_to_SERIAL_RX
+
+		$pipe MAIN_MEM_RESPONSE 65 $depth   2 $p2p
+		$pipe MAIN_MEM_INVALIDATE 30 $depth 4 $p2p
+
+
+		$signal EXTERNAL_INTERRUPT 1 $depth 1
+
+	$out
+		$pipe SOC_DEBUG_to_MONITOR 8 $depth 2
+		$pipe SERIAL_TX_to_CONSOLE 
+
+		//
+		// 2-bits per core..
+		//
+		$signal PROCESSOR_MODE 16 $depth 1
+
+		//
+		// Traces will be suppressed in the vanilla processor
+		//
+
+		$pipe MAIN_MEM_REQUEST  110 $depth 2 
+
+{
+	// will use EDIF file of the processor...
+}
+

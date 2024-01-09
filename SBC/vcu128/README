@@ -1,0 +1,42 @@
+AI ML Accelerator on VCU128
+
+1. Overview
+-------------------------
+
+	This document describes
+	- the example used to measure packet ping speed/round trip time
+	  between the kc705 card and the host computer via Ethernet.
+	- the setup of the host computer (to enable the connection 
+	  for the test)
+	- the application running on the host computer.
+	- the setup of the KC705 card
+		
+  
+1. Observations
+-------------------------------
+    - Wireshark displays double the number of sent packets on the ethernet interface with 
+      source and destination MAC addresses, swapped.
+    - RTT time can be observed in Wireshark.
+    - for 10 Mbps  link avg RTT : 0.3ms
+    - for 100 Mbps link avg RTT : 0.1ms
+
+
+6. TODO
+-------------------------------
+    - Understand the top level design of the Aman's Accelerator code
+    - Modify the current code to include the Amans Accelerator code
+    - Modify the constraints file
+    - Modify the bitstream generation script and successfully generate the bitstream
+    - Complete the march test and accelerator test
+    
+
+
+
+
+
+
+
+
+
+
+

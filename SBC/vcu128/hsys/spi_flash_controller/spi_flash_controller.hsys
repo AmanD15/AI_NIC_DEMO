@@ -1,0 +1,50 @@
+$system spi_master_stub $library SpiMasterLib
+$in
+	$pipe master_in_data 16 $depth 2
+	$signal spi_miso 1 $depth 1
+
+
+$out
+	$pipe master_out_data 8 $depth 2
+
+	$signal spi_clk  1 $depth 1
+	$signal spi_cs_n 8 $depth 1
+	$signal spi_mosi 1 $depth 1
+{
+}
+
+
+$system spi_flash_controller $library spi_flash_controller_lib
+$in
+	$pipe AFB_REQUEST_TO_FLASH
+	$signal SPI_FLASH_MISO
+
+	$signal WRITE_PROTECT 1 $depth 1
+$out
+	$pipe AFB_RESPONSE_FROM_FLASH
+
+	$signal SPI_FLASH_CLK
+	$signal SPI_FLASH_CS_L
+	$signal SPI_FLASH_MOSI
+{
+	$pipe SPI_MASTER_COMMAND 16 $depth 2
+	$pipe SPI_MASTER_RESPONSE 8 $depth 2
+
+
+	$instance afb_flash_rw_ctrl_inst  GlueModules:afb_flash_rw_controller
+		AFB_BUS_REQUEST => AFB_REQUEST_TO_FLASH
+		AFB_BUS_RESPONSE => AFB_RESPONSE_FROM_FLASH
+		SPI_MASTER_COMMAND => SPI_MASTER_COMMAND
+		SPI_MASTER_RESPONSE => SPI_MASTER_RESPONSE
+		WRITE_PROTECT => WRITE_PROTECT
+
+	$instance spi_adapter_inst  SpiMasterLib:spi_master_stub
+		master_in_data => SPI_MASTER_COMMAND
+		master_out_data => SPI_MASTER_RESPONSE
+		spi_miso => SPI_FLASH_MISO
+		spi_mosi => SPI_FLASH_MOSI
+		spi_clk  => SPI_FLASH_CLK
+		spi_cs_n => SPI_FLASH_CS_L	
+
+}
+
