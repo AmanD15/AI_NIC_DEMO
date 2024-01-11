@@ -23,8 +23,11 @@ AI ML Accelerator on VCU128
 
 6. TODO
 -------------------------------
-    - Understand the top level design of the Aman's Accelerator code
-    - Modify the current code to include the Amans Accelerator code
+    - Understand the top level design of the Aman's Accelerator code - DONE
+    - Modify the current code to include the Amans Accelerator code - DONE  
+      - Modify ACB AFB Complex for 4 engines - DONE
+      - Modify SBC Core to include ai ml engine - DONE 
+    - Modify the top level design to include ETH_VCU from Networking/vcu128/NicMac - PENDING
     - Modify the constraints file
     - Modify the bitstream generation script and successfully generate the bitstream
     - Complete the march test and accelerator test

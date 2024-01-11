@@ -27,7 +27,7 @@ $pipe SWITCHES: $uint<4> $signal
 $pipe LEDS: $uint<4> $signal
 
 // DRAM signals
-$pipe ACB_BRIDGE_TO_DRAM_CONTROLLER: $uint<613> $depth 1 $signal
+$pipe ACB_BRIDGE_TO_DRAM_CONTROLLER: $uint<614> $depth 1 $signal
 $pipe DRAM_CONTROLLER_TO_ACB_BRIDGE: $uint<522>  $depth 1 $signal
 
 

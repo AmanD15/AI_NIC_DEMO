@@ -25,7 +25,7 @@ entity acb_dram_controller_bridge is --
     CORE_BUS_REQUEST_pipe_write_req  : in std_logic_vector(0  downto 0);
     CORE_BUS_REQUEST_pipe_write_ack  : out std_logic_vector(0  downto 0);
     DRAM_CONTROLLER_TO_ACB_BRIDGE : in std_logic_vector(521 downto 0);
-    ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(612 downto 0);
+    ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(613 downto 0);
     CORE_BUS_RESPONSE_pipe_read_data : out std_logic_vector(64 downto 0);
     CORE_BUS_RESPONSE_pipe_read_req  : in std_logic_vector(0  downto 0);
     CORE_BUS_RESPONSE_pipe_read_ack  : out std_logic_vector(0  downto 0);
@@ -41,7 +41,7 @@ architecture struct of acb_dram_controller_bridge is --
   		sys_rst                                       : IN STD_LOGIC;
   		init_calib_complete                           : IN STD_LOGIC;
 
-  		app_addr                                      : OUT STD_LOGIC_VECTOR(27 DOWNTO 0);
+  		app_addr                                      : OUT STD_LOGIC_VECTOR(28 DOWNTO 0);
   		app_cmd                                       : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
   		app_en                                        : OUT STD_LOGIC;
 	
@@ -106,7 +106,7 @@ begin
 		app_zq_ack                                   => DRAM_CONTROLLER_TO_ACB_BRIDGE(1), -- app_zq_ack,
 		ui_clk_sync_rst                              => DRAM_CONTROLLER_TO_ACB_BRIDGE(0), -- ui_clk_sync_rst,                           
 			-- Output signals to Dram Controller (614 bits)
-		app_addr                                     => ACB_BRIDGE_TO_DRAM_CONTROLLER(612 DOWNTO 585), -- app_addr,
+		app_addr                                     => ACB_BRIDGE_TO_DRAM_CONTROLLER(613 DOWNTO 585), -- app_addr,
 		app_cmd                                      => ACB_BRIDGE_TO_DRAM_CONTROLLER(584 DOWNTO 582), -- app_cmd,
 		app_en                                       => ACB_BRIDGE_TO_DRAM_CONTROLLER(581), -- app_en,
 		app_wdf_data                                 => ACB_BRIDGE_TO_DRAM_CONTROLLER(580 DOWNTO 69), -- app_wdf_data, 

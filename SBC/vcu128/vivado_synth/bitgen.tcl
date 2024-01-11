@@ -29,52 +29,88 @@ read_vhdl -library acb_dram_controller_bridge_lib ../hsys/acb_dram_controller_br
 read_vhdl -library spi_flash_controller_lib ../hsys/spi_flash_controller/vhdl/spi_flash_controller_lib/spi_flash_controller.vhdl
 
 #read_vhdl -library sbc_kc705_core_lib ../hsys/vhdl/sbc_kc705_core_lib/sbc_kc705_core.vhdl
-read_vhdl -library sbc_kc705_core_lib ../toplevel/sbc_kc705_core_edited.vhdl
+read_vhdl -library sbc_kc705_core_lib ../toplevel/sbc_kc705_core_new.vhdl
 read_vhdl ../vhdl/DualClockedQueue.vhd
+read_vhdl ../vhdl/ai_ml_engine_global_package.vhdl
+read_vhdl ../vhdl/ai_ml_engine.vhdl
 ############ ADDING TOP LEVEL VHDL #########################
 read_vhdl ../toplevel/sbc_kc705.vhdl
 
 ###########################################################
 # verilog files..
-read_verilog ../verilog/axi_lite_controller.v
-read_verilog ../verilog/nic_mac_pipe_reset.v
-read_verilog ../verilog/ETH_KC.v
-read_verilog ../verilog/queueMac.v
-read_verilog ../verilog/reset_gen.v
-read_verilog ../verilog/tri_mode_ethernet_mac_0_clk_wiz.v
-read_verilog ../verilog/tri_mode_ethernet_mac_0_reset_sync.v
-read_verilog ../verilog/tri_mode_ethernet_mac_0_sync_block.v
-read_verilog ../hsys/acb_dram_controller_bridge/verilog/ACB_to_UI_EA.v
+#read_verilog ../verilog/axi_lite_controller.v
+#read_verilog ../verilog/nic_mac_pipe_reset.v
+#read_verilog ../verilog/ETH_KC.v
+#read_verilog ../verilog/queueMac.v
+#read_verilog ../verilog/reset_gen.v
+#read_verilog ../verilog/tri_mode_ethernet_mac_0_clk_wiz.v
+#read_verilog ../verilog/tri_mode_ethernet_mac_0_reset_sync.v
+#read_verilog ../verilog/tri_mode_ethernet_mac_0_sync_block.v
+#read_verilog ../hsys/acb_dram_controller_bridge/verilog/ACB_to_UI_EA.v
 
+read_verilog ../verilog/nic_mac_pipe_reset.v
+#read_verilog ../verilog/clocks_and_reset_gen.v
+#read_verilog ../verilog/reset_sync.v
+read_verilog ../verilog/axis_gmii_rx.v
+read_verilog ../verilog/axis_gmii_tx.v
+read_verilog ../verilog/debounce_switch.v
+read_verilog ../verilog/ethernet_axis_vcu.v
+read_verilog ../verilog/eth_mac_1g_fifo.v
+read_verilog ../verilog/eth_mac_1g.v
+read_verilog ../verilog/ETH_VCU.v
+read_verilog ../verilog/fpga_core.v
+read_verilog ../verilog/lfsr.v
+read_verilog ../verilog/mdio_master.v
+read_verilog ../verilog/sync_reset.v
+read_verilog ../verilog/queueMac.v
+read_verilog ../verilog/axis_async_fifo.v
+read_verilog ../verilog/axis_async_fifo_adapter.v
+read_verilog ../verilog/ACB_to_UI_EA.v
 ############# CONSTRAINT FILE ###########
 read_xdc ../constraints/kc705.xdc
 
 ############# IP CORE FILES #############
-set_property part xc7k325tffg900-2 [current_project]
-set_property board_part xilinx.com:kc705:part0:1.1 [current_project]
+#set_property part xc7k325tffg900-2 [current_project]
+#set_property board_part xilinx.com:kc705:part0:1.1 [current_project]
+set_property part xcvu37p-fsvh2892-2L-e [current_project]
+set_property board_part xilinx.com:vcu128:part0:1.2 [current_project]
 
 ################### DRAM IPs ##################################################33
-read_ip ../ip_consolidated/kc705_dram_ip/fifo_generator_1/fifo_generator_1.xci
-read_ip ../ip_consolidated/kc705_dram_ip/fifo_generator_2/fifo_generator_2.xci
-read_ip ../ip_consolidated/kc705_dram_ip/mig_7series_0/mig_7series_0.xci
-read_ip ../ip_consolidated/kc705_dram_ip/fifo_generator_4/fifo_generator_4.xci
-read_ip ../ip_consolidated/kc705_dram_ip/fifo_generator_3/fifo_generator_3.xci
+#read_ip ../ip_consolidated/kc705_dram_ip/fifo_generator_1/fifo_generator_1.xci
+#read_ip ../ip_consolidated/kc705_dram_ip/fifo_generator_2/fifo_generator_2.xci
+#read_ip ../ip_consolidated/kc705_dram_ip/mig_7series_0/mig_7series_0.xci
+#read_ip ../ip_consolidated/kc705_dram_ip/fifo_generator_4/fifo_generator_4.xci
+#read_ip ../ip_consolidated/kc705_dram_ip/fifo_generator_3/fifo_generator_3.xci
+
+read_ip ../ip_consolidated/kc705_networking_ip/ddr4_0/ddr4_0.xci
+read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_0/fifo_generator_0.xci
+read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_1/fifo_generator_1.xci
+read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_2/fifo_generator_2.xci
+read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_3/fifo_generator_3.xci
+read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_4/fifo_generator_4.xci
+read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_5/fifo_generator_5.xci
 
 ################### Networking IPs ##################################################33
-read_ip ../ip_consolidated/kc705_networking_ip/tri_mode_ethernet_mac_0/tri_mode_ethernet_mac_0.xci
+#read_ip ../ip_consolidated/kc705_networking_ip/tri_mode_ethernet_mac_0/tri_mode_ethernet_mac_0.xci
+#read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_acb_resp/fifo_generator_acb_resp.xci
+#read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_acb_req/fifo_generator_acb_req.xci
+#
+## afb dual-clocked fifos are not used.
+##read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_resp/fifo_generator_afb_resp.xci
+##read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_req/fifo_generator_afb_req.xci
+##
+#read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_0/fifo_generator_0.xci
+#TODO: Add VIO Files
+#read_ip ../ip_consolidated/kc705_networking_ip/vio_80/vio_80.xci
+#read_ip ../ip_consolidated/kc705_networking_ip/vio_125/vio_125.xci
+#read_ip ../ip_consolidated/kc705_networking_ip/vio_200/vio_200.xci
+#read_ip ../ip_consolidated/kc705_networking_ip/clk_wiz_0/clk_wiz_0.xci
+read_ip ../ip_consolidated/kc705_networking_ip/gig_ethernet_pcs_pma_0/gig_ethernet_pcs_pma_0.xci
 read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_acb_resp/fifo_generator_acb_resp.xci
 read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_acb_req/fifo_generator_acb_req.xci
+read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_req/fifo_generator_afb_req.xci
+read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_resp/fifo_generator_afb_resp.xci
 
-# afb dual-clocked fifos are not used.
-#read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_resp/fifo_generator_afb_resp.xci
-#read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_req/fifo_generator_afb_req.xci
-#
-read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_0/fifo_generator_0.xci
-
-read_ip ../ip_consolidated/kc705_networking_ip/vio_80/vio_80.xci
-read_ip ../ip_consolidated/kc705_networking_ip/vio_125/vio_125.xci
-read_ip ../ip_consolidated/kc705_networking_ip/vio_200/vio_200.xci
-read_ip ../ip_consolidated/kc705_networking_ip/clk_wiz_0/clk_wiz_0.xci
 
 ## core edif file ####################################################################
 read_edif ../../../SOURCE/EDIF/processor_1x1x32.edn
