@@ -76,18 +76,18 @@ architecture struct of acb_dram_controller_bridge is --
 
 
   		DRAM_RESPONSE_pipe_read_ack                  : OUT STD_LOGIC_VECTOR(0 downto 0);
-  		DRAM_RESPONSE_pipe_read_data                 : OUT STD_LOGIC_VECTOR(64 DOWNTO 0);
-  		fatal_error                                  : OUT STD_LOGIC_VECTOR(0 downto 0);
-  		cdebug                                       : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-  		ddebug                                       : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-  		rdebug                                       : OUT STD_LOGIC_VECTOR(4 DOWNTO 0)  
+  		DRAM_RESPONSE_pipe_read_data                 : OUT STD_LOGIC_VECTOR(64 DOWNTO 0)
+  		-- fatal_error                                  : OUT STD_LOGIC_VECTOR(0 downto 0)
+  		-- cdebug                                       : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+  		-- ddebug                                       : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+  		-- rdebug                                       : OUT STD_LOGIC_VECTOR(4 DOWNTO 0)  
     );
 
   END  COMPONENT;
-  signal fatal_error                                  : STD_LOGIC_VECTOR(0 downto 0);
-  signal cdebug                                       : STD_LOGIC_VECTOR(3 DOWNTO 0);
-  signal ddebug                                       : STD_LOGIC_VECTOR(3 DOWNTO 0);
-  signal rdebug                                       : STD_LOGIC_VECTOR(4 DOWNTO 0);  
+--   signal fatal_error                                  : STD_LOGIC_VECTOR(0 downto 0);
+--   signal cdebug                                       : STD_LOGIC_VECTOR(3 DOWNTO 0);
+--   signal ddebug                                       : STD_LOGIC_VECTOR(3 DOWNTO 0);
+--   signal rdebug                                       : STD_LOGIC_VECTOR(4 DOWNTO 0);  
 
 begin  
 	ACB_to_UI_Inst: ACB_to_UI_EA
@@ -122,12 +122,12 @@ begin
 		DRAM_REQUEST_pipe_write_data                 => CORE_BUS_REQUEST_pipe_write_data,
 		DRAM_RESPONSE_pipe_read_req                  => CORE_BUS_RESPONSE_pipe_read_req,
 		DRAM_RESPONSE_pipe_read_ack                  => CORE_BUS_RESPONSE_pipe_read_ack,
-		DRAM_RESPONSE_pipe_read_data                 => CORE_BUS_RESPONSE_pipe_read_data,
+		DRAM_RESPONSE_pipe_read_data                 => CORE_BUS_RESPONSE_pipe_read_data
 		-- unused signals.
-		fatal_error                                  => fatal_error,                        
-		cdebug                                       => cdebug,      
-		ddebug                                       => ddebug,
-		rdebug                                       => rdebug                              
+		-- fatal_error                                  => fatal_error,                        
+		-- cdebug                                       => cdebug,      
+		-- ddebug                                       => ddebug,
+		-- rdebug                                       => rdebug                              
     );
     
 end struct;

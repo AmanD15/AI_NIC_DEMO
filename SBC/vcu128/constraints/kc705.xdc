@@ -7,7 +7,8 @@ set_property CONFIG_MODE SPIx4 [current_design]
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
 set_property BITSTREAM.CONFIG.UNUSEDPIN Pulldown [current_design]
 set_property CONFIG_VOLTAGE 1.8 [current_design]
-
+#set clk dedicated
+set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_nets clk_wiz_0_inst/inst/clk_in1_clk_wiz_0]
 # CLK_100
 set_property PACKAGE_PIN BH51 [get_ports {c0_sys_clk_p }]
 set_property IOSTANDARD DIFF_SSTL12 [get_ports {c0_sys_clk_p}]
@@ -20,8 +21,14 @@ set_property IOSTANDARD DIFF_SSTL12 [get_ports {CLKREF_P}]
 set_property PACKAGE_PIN BK3 [get_ports {CLKREF_N}]
 set_property IOSTANDARD DIFF_SSTL12 [get_ports {CLKREF_N}]
 
+set_property PACKAGE_PIN F35 [get_ports {clk_in1_p}]
+set_property IOSTANDARD DIFF_SSTL12 [get_ports {clk_in1_p}]
+set_property PACKAGE_PIN F36 [get_ports {clk_in1_n}]
+set_property IOSTANDARD DIFF_SSTL12 [get_ports {clk_in1_n}]
+
 
 create_clock -period 10.000 -name clk_100mhz [get_ports CLKREF_P]
+create_clock -period 10.000 -name clk_100mhz_1 [get_ports clk_in1_p]
 create_generated_clock -name clk_125mhz [get_pins clk_mmcm_inst/CLKOUT0] 
 
 
@@ -300,13 +307,13 @@ set_max_delay 15 -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] 
 ##################################################################################################
 ## P24 - DQ0 in KC705 Check for IOSTANDARD in VCU 128 constraint file
 set_property PACKAGE_PIN AW15 [get_ports {SPI_FLASH_MOSI[0]}]
-set_property IOSTANDARD LVCMOS25 [get_ports {SPI_FLASH_MOSI[0]}]
+#set_property IOSTANDARD LVCMOS25 [get_ports {SPI_FLASH_MOSI[0]}]
 ## R25 - DQ1 in KC705 
 set_property PACKAGE_PIN AY15 [get_ports {SPI_FLASH_MISO[0]}]
-set_property IOSTANDARD LVCMOS25 [get_ports {SPI_FLASH_MISO[0]}]
+#set_property IOSTANDARD LVCMOS25 [get_ports {SPI_FLASH_MISO[0]}]
 ## U19 - CS_B in KC705 
 set_property PACKAGE_PIN BC15 [get_ports {SPI_FLASH_CS_TOP[0]}]
-set_property IOSTANDARD LVCMOS25 [get_ports {SPI_FLASH_CS_TOP[0]}]
+#set_property IOSTANDARD LVCMOS25 [get_ports {SPI_FLASH_CS_TOP[0]}]
 ## G19 - GPIO LED 5 in KC705 (check B10)
 set_property PACKAGE_PIN BD14 [get_ports {SPI_FLASH_CLK[0]}]
-set_property IOSTANDARD LVCMOS25 [get_ports {SPI_FLASH_CLK[0]}]
+#set_property IOSTANDARD LVCMOS25 [get_ports {SPI_FLASH_CLK[0]}]

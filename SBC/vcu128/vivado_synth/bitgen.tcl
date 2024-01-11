@@ -31,8 +31,8 @@ read_vhdl -library spi_flash_controller_lib ../hsys/spi_flash_controller/vhdl/sp
 #read_vhdl -library sbc_kc705_core_lib ../hsys/vhdl/sbc_kc705_core_lib/sbc_kc705_core.vhdl
 read_vhdl -library sbc_kc705_core_lib ../toplevel/sbc_kc705_core_new.vhdl
 read_vhdl ../vhdl/DualClockedQueue.vhd
-read_vhdl ../vhdl/ai_ml_engine_global_package.vhdl
-read_vhdl ../vhdl/ai_ml_engine.vhdl
+read_vhdl ../../../Networking/vcu128/NicMac/vhdl/ai_ml_engine_global_package.vhdl
+read_vhdl ../../../Networking/vcu128/NicMac/vhdl/ai_ml_engine.vhdl
 ############ ADDING TOP LEVEL VHDL #########################
 read_vhdl ../toplevel/sbc_kc705.vhdl
 
@@ -108,16 +108,18 @@ read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_5/fifo_generator_5
 read_ip ../ip_consolidated/kc705_networking_ip/gig_ethernet_pcs_pma_0/gig_ethernet_pcs_pma_0.xci
 read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_acb_resp/fifo_generator_acb_resp.xci
 read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_acb_req/fifo_generator_acb_req.xci
-read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_req/fifo_generator_afb_req.xci
-read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_resp/fifo_generator_afb_resp.xci
+#read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_req/fifo_generator_afb_req.xci
+#read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_resp/fifo_generator_afb_resp.xci
+read_ip ../ip_consolidated/kc705_networking_ip/ila_0/ila_0.xci
+read_ip ../ip_consolidated/kc705_networking_ip/ila_2/ila_2.xci
 
 
 ## core edif file ####################################################################
-read_edif ../../../SOURCE/EDIF/processor_1x1x32.edn
+read_edif ../../../SOURCE/EDIF/processor_1x1x32.vanilla.with_sgi_fix.edn
 #########################################
 #write_checkpoint -force fread_done.dcp
 ############### SYNTHESIZE ##############
-synth_design -fsm_extraction off  -top sbc_kc705 -part xc7k325tffg900-2
+synth_design -fsm_extraction off  -top sbc_kc705 -part xcvu37p-fsvh2892-2L-e
 write_checkpoint -force PostSynthCheckpoint.dcp
 report_timing_summary -file timing.postsynth.rpt -nworst 4
 

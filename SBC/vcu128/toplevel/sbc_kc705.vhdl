@@ -145,9 +145,9 @@ port(
       -- 100 MHz clock in.
       -----------------------------------------------
       CLKREF_P : in std_logic;
-      CLKREF_N : in std_logic
-      -- clk_in_p : in std_logic;
-      -- clk_in_n : in std_logic
+      CLKREF_N : in std_logic;
+      clk_in1_p : in std_logic;
+      clk_in1_n : in std_logic
 	);
 end entity sbc_kc705;
 
@@ -206,9 +206,9 @@ architecture structure of sbc_kc705 is
 
   component sbc_kc705_core is -- 
     port( -- 
-      CLOCK_TO_DRAMCTRL_BRIDGE : in std_logic_vector;
-      CLOCK_TO_NIC : in std_logic_vector;
-      CLOCK_TO_PROCESSOR : in std_logic_vector;
+      CLOCK_TO_DRAMCTRL_BRIDGE : in std_logic;
+      CLOCK_TO_NIC : in std_logic;
+      CLOCK_TO_PROCESSOR : in std_logic;
       CONSOLE_to_SERIAL_RX_pipe_write_data : in std_logic_vector(7 downto 0);
       CONSOLE_to_SERIAL_RX_pipe_write_req  : in std_logic_vector(0  downto 0);
       CONSOLE_to_SERIAL_RX_pipe_write_ack  : out std_logic_vector(0  downto 0);
@@ -228,9 +228,9 @@ architecture structure of sbc_kc705 is
       MIN_ACC_3_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
       MIN_FLASH_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
       MIN_NIC_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      RESET_TO_DRAMCTRL_BRIDGE : in std_logic_vector;
-      RESET_TO_NIC : in std_logic_vector;
-      RESET_TO_PROCESSOR : in std_logic_vector;
+      RESET_TO_DRAMCTRL_BRIDGE : in std_logic;
+      RESET_TO_NIC : in std_logic;
+      RESET_TO_PROCESSOR : in std_logic;
       SOC_MONITOR_to_DEBUG_pipe_write_data : in std_logic_vector(7 downto 0);
       SOC_MONITOR_to_DEBUG_pipe_write_req  : in std_logic_vector(0  downto 0);
       SOC_MONITOR_to_DEBUG_pipe_write_ack  : out std_logic_vector(0  downto 0);
@@ -251,7 +251,7 @@ architecture structure of sbc_kc705 is
       SOC_DEBUG_to_MONITOR_pipe_read_ack  : out std_logic_vector(0  downto 0);
       SPI_FLASH_CLK : out std_logic_vector(0 downto 0);
       SPI_FLASH_CS_L : out std_logic_vector(7 downto 0);
-      SPI_FLASH_MOSI : out std_logic_vector(0 downto 0);
+      SPI_FLASH_MOSI : out std_logic_vector(0 downto 0)
       --clk, reset: in std_logic 
       -- 
     );
@@ -520,11 +520,14 @@ component ddr4_0 is
    signal MIN_ACC_1_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
    signal MIN_ACC_3_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
    signal MIN_FLASH_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+   signal MIN_NIC_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+   
 
 
    signal CONFIG_UART_BAUD_CONTROL_WORD: std_logic_vector(31 downto 0);
    signal CPU_MODE_SIG : std_logic_vector(1 downto 0); 
    signal clk_ref_125, clk_ref_100: std_logic:='0';
+   --signal clk_in1_p, clk_in1_n: std_logic:='0';
    -------------------- ADDITIONAL DRAM SIGNAL --------------------------------------
    signal device_temp       :  STD_LOGIC_VECTOR ( 11 downto 0 );
    signal clk_sys_320, clk_ref_200: std_logic:='0';
@@ -595,7 +598,8 @@ begin
      MIN_ACC_3_AFB_TAP_ADDR <= X"0_1FF3_0000";
      MAX_ACC_3_AFB_TAP_ADDR <= X"0_1FF3_FFFF";
 
-
+    --  clk_in1_p <= CLKREF_P;
+    --  clk_in1_n <= CLKREF_N;
 
 
     -- New Clock Wizard with 125MHz, 80MHz and 200MHz clocks. Input is 100 MHz   
@@ -609,8 +613,8 @@ begin
 	        
           reset         => clk_rst, 
           locked        => clk_wizard_locked(0), -- goes to the VIO
-          clk_in1_p     => CLKREF_P,
-          clk_in1_n     => CLKREF_N);
+          clk_in1_p     => clk_in1_p,
+          clk_in1_n     => clk_in1_n);
 
     -- used by ETH	
     --dcm_locked <= clk_wizard_locked(0);
@@ -704,18 +708,18 @@ begin
     -- MAX_AFB_TAP_ADDR => MAX_AFB_TAP_ADDR,
     -- MIN_ACB_TAP_ADDR => MIN_ACB_TAP_ADDR,
     -- MIN_AFB_TAP_ADDR => MIN_AFB_TAP_ADDR,
-      MAX_ACB_TAP_ADDR => MAX_ACB_TAP_ADDR;
-      MAX_ACC_1_2_AFB_TAP_ADDR => MAX_ACC_1_2_AFB_TAP_ADDR;
-      MAX_ACC_1_AFB_TAP_ADDR => MAX_ACC_1_AFB_TAP_ADDR;
-      MAX_ACC_3_AFB_TAP_ADDR => MAX_ACC_3_AFB_TAP_ADDR;
-      MAX_FLASH_AFB_TAP_ADDR => MAX_FLASH_AFB_TAP_ADDR;
-      MAX_NIC_AFB_TAP_ADDR => MAX_NIC_AFB_TAP_ADDR;
-      MIN_ACB_TAP_ADDR => MIN_ACB_TAP_ADDR;
-      MIN_ACC_1_2_AFB_TAP_ADDR => MIN_ACC_1_2_AFB_TAP_ADDR;
-      MIN_ACC_1_AFB_TAP_ADDR => MIN_ACC_1_AFB_TAP_ADDR;
-      MIN_ACC_3_AFB_TAP_ADDR => MIN_ACC_3_AFB_TAP_ADDR;
-      MIN_FLASH_AFB_TAP_ADDR => MIN_FLASH_AFB_TAP_ADDR;
-      MIN_NIC_AFB_TAP_ADDR => MIN_NIC_AFB_TAP_ADDR;
+      MAX_ACB_TAP_ADDR => MAX_ACB_TAP_ADDR,
+      MAX_ACC_1_2_AFB_TAP_ADDR => MAX_ACC_1_2_AFB_TAP_ADDR,
+      MAX_ACC_1_AFB_TAP_ADDR => MAX_ACC_1_AFB_TAP_ADDR,
+      MAX_ACC_3_AFB_TAP_ADDR => MAX_ACC_3_AFB_TAP_ADDR,
+      MAX_FLASH_AFB_TAP_ADDR => MAX_FLASH_AFB_TAP_ADDR,
+      MAX_NIC_AFB_TAP_ADDR => MAX_NIC_AFB_TAP_ADDR,
+      MIN_ACB_TAP_ADDR => MIN_ACB_TAP_ADDR,
+      MIN_ACC_1_2_AFB_TAP_ADDR => MIN_ACC_1_2_AFB_TAP_ADDR,
+      MIN_ACC_1_AFB_TAP_ADDR => MIN_ACC_1_AFB_TAP_ADDR,
+      MIN_ACC_3_AFB_TAP_ADDR => MIN_ACC_3_AFB_TAP_ADDR,
+      MIN_FLASH_AFB_TAP_ADDR => MIN_FLASH_AFB_TAP_ADDR,
+      MIN_NIC_AFB_TAP_ADDR => MIN_NIC_AFB_TAP_ADDR,
 
     SPI_FLASH_MISO => SPI_FLASH_MISO,
     SPI_FLASH_CLK => SPI_FLASH_CLK_SIG,
@@ -802,8 +806,8 @@ ETH_TOP_inst : ETH_TOP
 	    -- Clock: 125MHz LVDS
 	    -- Reset: Push button, active low
 	    --------------------------------------
-	    CLKREF_P => CLKREF_P,-- in std_logic;
-	    CLKREF_N => CLKREF_N,-- in std_logic;
+        CLKREF_P => CLKREF_P,-- in std_logic;
+        CLKREF_N => CLKREF_N,-- in std_logic;
       -- Check if we can use clk_rst insad(TODO)
 	    reset => NIC_MAC_RESETN(0),-- in std_logic;
 
