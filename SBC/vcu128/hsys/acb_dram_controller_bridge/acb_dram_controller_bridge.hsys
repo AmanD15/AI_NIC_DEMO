@@ -1,0 +1,23 @@
+$system fake $library dram_controller_bridge_lib  
+    $in 
+        $signal DRAM_CONTROLLER_TO_ACB_BRIDGE 
+        $pipe CORE_BUS_REQUEST
+
+    $out
+        $signal ACB_BRIDGE_TO_DRAM_CONTROLLER
+	$pipe CORE_BUS_RESPONSE
+{
+}
+
+	
+$system acb_dram_controller_bridge $library acb_dram_controller_bridge_lib
+    $in 
+        $signal DRAM_CONTROLLER_TO_ACB_BRIDGE
+        $pipe CORE_BUS_REQUEST
+
+    $out
+        $signal ACB_BRIDGE_TO_DRAM_CONTROLLER
+	$pipe CORE_BUS_RESPONSE
+{
+	$instance fake_inst dram_controller_bridge_lib:fake
+}

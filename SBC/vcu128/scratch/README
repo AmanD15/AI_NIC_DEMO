@@ -1,0 +1,5 @@
+kc705_eth_top_level.vhdl
+		top-level with processor, ethernet (nic + mac), sram.
+
+toplevel_1x1x32.vhdl
+		top-level with processor, dram.

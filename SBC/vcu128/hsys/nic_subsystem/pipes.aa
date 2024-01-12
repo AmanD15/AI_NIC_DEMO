@@ -1,0 +1,33 @@
+$pipe AFB_TO_NIC_REQUEST: $uint<74> $depth 2
+$pipe NIC_TO_AFB_RESPONSE : $uint<33> $depth 2
+
+$pipe NIC_TO_ACB_REQUEST: $uint<110> $depth 2
+$pipe ACB_TO_NIC_RESPONSE: $uint<65> $depth 2
+
+$pipe MAC_TO_NIC_DATA: $uint<10> $depth 2  
+$pipe NIC_TO_MAC_DATA: $uint<10> $depth 2  
+
+
+// nic_mac_bridge
+
+$pipe rx_in_pipe: $uint<10> $depth 2  
+$pipe rx_out_pipe: $uint<73> $depth 2  
+
+$pipe tx_in_pipe: $uint<73> $depth 2  
+$pipe tx_out_pipe: $uint<10> $depth 2 
+$pipe ENABLE_MAC: $uint<1> $depth 2
+
+
+// nic pipes
+
+$pipe AFB_NIC_REQUEST: $uint<74> $depth 2
+$pipe AFB_NIC_RESPONSE: $uint<33> $depth 2
+
+$pipe NIC_TO_MEMORY_REQUEST: $uint<110> $depth 2
+$pipe MEMORY_TO_NIC_RESPONSE: $uint<65> $depth 2
+
+$pipe  mac_to_nic_data: $uint<10> $depth 2
+$pipe nic_to_mac_transmit_pipe: $uint<10> $depth 2
+
+$pipe enable_mac: $uint<1> $depth 2 
+
