@@ -1,35 +1,20 @@
 AI ML Accelerator on VCU128
 
-1. Overview
--------------------------
+constraints/ - xdc file which contains the constraints for vcu128 board
+docs/ - Folder contains figures for explanation of the architecture
+hsys/ - source files for subsystems
+toplevel/ - Contains SBC core(hand edited) and toplevel vhdl file
+vivado_synth/ - Script to generate bitstream files
 
-	This document describes
-	- the example used to measure packet ping speed/round trip time
-	  between the kc705 card and the host computer via Ethernet.
-	- the setup of the host computer (to enable the connection 
-	  for the test)
-	- the application running on the host computer.
-	- the setup of the KC705 card
-		
-  
-1. Observations
+
+TODO
 -------------------------------
-    - Wireshark displays double the number of sent packets on the ethernet interface with 
-      source and destination MAC addresses, swapped.
-    - RTT time can be observed in Wireshark.
-    - for 10 Mbps  link avg RTT : 0.3ms
-    - for 100 Mbps link avg RTT : 0.1ms
-
-
-6. TODO
--------------------------------
-    - Understand the top level design of the Aman's Accelerator code - DONE
     - Modify the current code to include the Amans Accelerator code - DONE  
       - Modify ACB AFB Complex for 4 engines - DONE
       - Modify SBC Core to include ai ml engine - DONE 
-    - Modify the top level design to include ETH_VCU from Networking/vcu128/NicMac - PENDING
-    - Modify the constraints file
-    - Modify the bitstream generation script and successfully generate the bitstream
+    - Modify the top level design to include ETH_VCU from Networking/vcu128/NicMac - Done
+    - Modify the constraints file - Done
+    - Modify the bitstream generation script and successfully generate the bitstream - Pending
     - Complete the march test and accelerator test
     
 
