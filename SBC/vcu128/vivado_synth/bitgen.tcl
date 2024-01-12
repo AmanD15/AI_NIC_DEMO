@@ -101,10 +101,10 @@ read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_5/fifo_generator_5
 ##
 #read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_0/fifo_generator_0.xci
 #TODO: Add VIO Files
-#read_ip ../ip_consolidated/kc705_networking_ip/vio_80/vio_80.xci
-#read_ip ../ip_consolidated/kc705_networking_ip/vio_125/vio_125.xci
-#read_ip ../ip_consolidated/kc705_networking_ip/vio_200/vio_200.xci
-#read_ip ../ip_consolidated/kc705_networking_ip/clk_wiz_0/clk_wiz_0.xci
+read_ip ../ip_consolidated/kc705_networking_ip/vio_80/vio_80.xci
+read_ip ../ip_consolidated/kc705_networking_ip/vio_125/vio_125.xci
+read_ip ../ip_consolidated/kc705_networking_ip/vio_200/vio_200.xci
+read_ip ../ip_consolidated/kc705_networking_ip/clk_wiz_0/clk_wiz_0.xci
 read_ip ../ip_consolidated/kc705_networking_ip/gig_ethernet_pcs_pma_0/gig_ethernet_pcs_pma_0.xci
 read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_acb_resp/fifo_generator_acb_resp.xci
 read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_acb_req/fifo_generator_acb_req.xci
@@ -115,7 +115,7 @@ read_ip ../ip_consolidated/kc705_networking_ip/ila_2/ila_2.xci
 
 
 ## core edif file ####################################################################
-read_edif ../../../SOURCE/EDIF/processor_1x1x32.vanilla.with_sgi_fix.edn
+read_edif ../../../SOURCE/EDIF/processor_1x1x32.edn
 #########################################
 #write_checkpoint -force fread_done.dcp
 ############### SYNTHESIZE ##############
