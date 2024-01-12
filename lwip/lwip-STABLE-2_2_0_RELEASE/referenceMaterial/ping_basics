@@ -1,0 +1,56 @@
+Author: Siddhant Singh Tomar 
+Date  : 9/1/2024
+
+Ping:
+
+    When a PC receives a ping request from a server, it operates according to the ICMP (Internet Control Message Protocol) 
+    to manage network communication. Here's a breakdown of what happens:
+
+    1. Receiving the Ping Request: The PC's network stack intercepts the incoming ICMP echo request (ping) packet.
+
+    2. Checking the Packet: The PC's network stack checks the packet to ensure it's valid and meant for the PC. 
+
+    3. Generating a Reply: If the packet is intended for the PC and it's reachable, the PC's network stack prepares 
+       a response, an ICMP echo reply packet.
+
+    4. Creating the Echo Reply: The PC constructs an ICMP echo reply packet with the appropriate details, including 
+       the same sequence number as the incoming ping request. It usually copies the data payload from the incoming 
+       request to the reply.
+
+    5. Sending the Reply: The PC then sends the ICMP echo reply packet back to the server that initiated the ping request.
+
+    6. Routing and Delivery: The network infrastructure (routers, switches, etc.) facilitates the routing of the ICMP echo
+       reply packet back to the originating server.
+
+    7. Confirmation at the Server: The server receives the ICMP echo reply packet and, based on the sequence number and 
+       other details, confirms the successful round-trip communication.
+
+
+ICMP and Ping:
+
+ICMP (Internet Control Message Protocol) is a fundamental part of how the internet functions. When you use the ping command, 
+your computer sends an ICMP echo request packet to a specific destination (usually an IP address). 
+Here's a basic breakdown of how it works:
+
+Sending an ICMP Echo Request:
+
+When you ping a destination, your computer creates an ICMP packet with an echo request message.
+This packet contains various information, including the sender's IP address, a unique identifier, a sequence number, and some 
+data (often a series of zeros). The ICMP packet is then sent to the destination IP address.
+
+Receiving an ICMP Echo Reply:
+
+When the destination receives the ICMP echo request packet, it processes it and generates an ICMP echo reply packet.
+The reply packet contains the same unique identifier and sequence number as the original request, allowing the sender 
+to match the request with the corresponding reply. The destination sends this reply packet back to the source IP address.
+
+Interpreting Results:
+
+When your computer receives the ICMP echo reply packet, it calculates the round-trip time (RTT) between sending the request 
+and receiving the reply. This measurement helps determine the latency or delay between the two points.
+If the destination is reachable and responsive, you'll see a response indicating successful communication. 
+If there's no response or a timeout occurs, it could indicate network issues, such as packet loss or the destination 
+being unreachable.
+
+
+
