@@ -1,0 +1,11 @@
+Title : Porting LwIP for AJIT.
+Author : Siddhant Singh Tomar
+Date   : 12/1/2024
+
+    1. include folder
+        contains various configuration file for LwIP
+            cc.h :
+            sys_arch.h:
+            lwipopts.h:
+    2. src folder
+        contains mainloop code for baremetal use of LwIP.

@@ -1,0 +1,75 @@
+
+// main SBC signals
+
+$pipe CLOCK_TO_PROCESSOR: $uint<1>  $signal
+$pipe CLOCK_TO_NIC: $uint<1>  $signal
+$pipe CLOCK_TO_DRAMCTRL_BRIDGE: $uint<1>  $signal
+$pipe RESET_TO_PROCESSOR RESET_TO_NIC RESET_TO_DRAMCTRL_BRIDGE: $uint<1> $signal
+
+
+// Processor signals
+$pipe THREAD_RESET         : $uint<4>  $signal 
+$pipe PROCESSOR_MODE       : $uint<16> $signal 
+$pipe EXTERNAL_INTERRUPT   : $uint<1>  $signal
+
+
+// SPI FLASH signals
+$pipe SPI_FLASH_MISO: $uint<1>  $signal
+$pipe SPI_FLASH_MOSI: $uint<1>  $signal
+$pipe SPI_FLASH_CLK: $uint<1>  $signal
+$pipe SPI_FLASH_CS_L: $uint<8>  $signal
+$pipe WRITE_PROTECT: $uint<1> $signal
+
+// NIC signals
+$pipe NIC_INTERRUPT: $uint<1>  $signal
+$pipe NIC_MAC_RESETN: $uint<1>  $signal
+$pipe SWITCHES: $uint<4> $signal
+$pipe LEDS: $uint<4> $signal
+
+// DRAM signals
+$pipe ACB_BRIDGE_TO_DRAM_CONTROLLER: $uint<614> $depth 1 $signal
+$pipe DRAM_CONTROLLER_TO_ACB_BRIDGE: $uint<522>  $depth 1 $signal
+
+
+// ACB_AFB_COMPLEX SIGNALS
+$pipe MIN_ACB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MAX_ACB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MIN_NIC_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MAX_NIC_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+
+$pipe MIN_FLASH_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MAX_FLASH_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MIN_ACC_1_2_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MAX_ACC_1_2_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+
+$pipe MIN_ACC_1_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MAX_ACC_1_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MIN_ACC_3_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MAX_ACC_3_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+
+// STUFF
+$pipe SWITCHES: $uint<4> $signal
+$pipe LEDS: $uint<4> $signal
+
+// Input 522 bits
+//   1                1
+// ui_clk         init_calib_complete
+//   512              1                 1             
+// app_rd_data    app_rd_data_end   app_rd_data_valid 
+//   1                1                 1 
+//app_rdy         app_wdf_rdy       app_sr_active
+//   1                1                 1
+// app_ref_ack    app_zq_ack        ui_clk_sync_rst
+
+
+// Output 614 bits
+//     29            3              1       
+// app_addr       app_cmd        app_en 
+//    512            1              64              1
+// app_wdf_data   app_wdf_end    app_wdf_mask   app_wdf_wren
+//     1             1              1 
+// app_sr_req     app_ref_req    app_zq_req
+
+// TODO
+//$pipe ETHERNET_PHY_TO_SBC: $uint<??> $signal
+//$pipe SBC_TO_ETHERNET_PHY: $uint<??> $signal

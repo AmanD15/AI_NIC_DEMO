@@ -1,0 +1,30 @@
+AI ML Accelerator on VCU128
+
+constraints/ - xdc file which contains the constraints for vcu128 board
+docs/ - Folder contains figures for explanation of the architecture
+hsys/ - source files for subsystems
+toplevel/ - Contains SBC core(hand edited) and toplevel vhdl file
+vivado_synth/ - Script to generate bitstream files
+
+
+TODO
+-------------------------------
+    - Modify the current code to include the Amans Accelerator code - DONE  
+      - Modify ACB AFB Complex for 4 engines - DONE
+      - Modify SBC Core to include ai ml engine - DONE 
+    - Modify the top level design to include ETH_VCU from Networking/vcu128/NicMac - Done
+    - Modify the constraints file - Done
+    - Modify the bitstream generation script and successfully generate the bitstream - Pending
+    - Complete the march test and accelerator test
+    
+
+
+
+
+
+
+
+
+
+
+
