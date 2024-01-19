@@ -126,10 +126,10 @@ port(
       -----------------------------------------------
       -- SPI FLASH signals.
       -----------------------------------------------
-        SPI_FLASH_CLK    : out std_logic_vector(0 downto 0);
-        SPI_FLASH_CS_TOP : out std_logic_vector(0 downto 0);
-        SPI_FLASH_MOSI   : out std_logic_vector(0 downto 0);
-        SPI_FLASH_MISO   : in std_logic_vector(0 downto 0);
+        -- SPI_FLASH_CLK    : out std_logic_vector(0 downto 0);
+        -- SPI_FLASH_CS_TOP : out std_logic_vector(0 downto 0);
+        -- SPI_FLASH_MOSI   : out std_logic_vector(0 downto 0);
+        -- SPI_FLASH_MISO   : in std_logic_vector(0 downto 0);
 
       -----------------------------------------------
       -- CPU Mode.
@@ -146,8 +146,8 @@ port(
       -----------------------------------------------
       CLKREF_P : in std_logic;
       CLKREF_N : in std_logic;
-      clk_in1_p : in std_logic;
-      clk_in1_n : in std_logic
+      clk_in_p : in std_logic;
+      clk_in_n : in std_logic
 	);
 end entity sbc_kc705;
 
@@ -567,36 +567,41 @@ begin
 
       
      -- Tap goes to NIC + FLASH (0x0000_0000 - 0x3000_0000)
-     MIN_ACB_TAP_ADDR <= X"0_0000_0000";
-     MAX_ACB_TAP_ADDR <= X"0_2FFF_FFFF";
-
-     -- TAP goes to NIC (0x20000000 to 0x30000000)
-    --  MIN_AFB_TAP_ADDR <= X"0_2000_0000";
-    --  MAX_AFB_TAP_ADDR <= X"0_2FFF_FFFF";
+    --  MIN_ACB_TAP_ADDR <= X"0_0000_0000";
+    --  MAX_ACB_TAP_ADDR <= X"0_2FFF_FFFF";
+    MIN_ACB_TAP_ADDR <= X"0_1000_0000";
+    MAX_ACB_TAP_ADDR <= X"0_1FFF_FFFF";
 
       -- TAP goes to NIC (0x2000 0000 to 0x3000 0000)
-     MIN_NIC_AFB_TAP_ADDR <= X"0_2000_0000";
-     MAX_NIC_AFB_TAP_ADDR <= X"0_2FFF_FFFF"; 
+    --  MIN_NIC_AFB_TAP_ADDR <= X"0_2000_0000";
+    --  MAX_NIC_AFB_TAP_ADDR <= X"0_2FFF_FFFF"; 
+
+    MIN_NIC_AFB_TAP_ADDR <= X"0_1000_0000";
+    MAX_NIC_AFB_TAP_ADDR <= X"0_1000_FFFF"; 
 
     -- TAP goes to FLASH (0x0000 0000 to 0x1FF0 FFFF)
     -- Through Accelerator 1-4 Address (0x1FF1 0000 to 0x1FFF FFFF)
-     MIN_FLASH_AFB_TAP_ADDR <= X"0_0000_0000";
-     MAX_FLASH_AFB_TAP_ADDR <= X"0_1FF0_FFFF";
+    --  MIN_FLASH_AFB_TAP_ADDR <= X"0_0000_0000";
+    --  MAX_FLASH_AFB_TAP_ADDR <= X"0_1FF0_FFFF";
+    MIN_FLASH_AFB_TAP_ADDR <= X"0_0000_0000";
+     MAX_FLASH_AFB_TAP_ADDR <= X"0_0000_0001";
 
     -- TAP goes to Accelerator 1-2 (0x1FF1 0000 to 0x1FF2 FFFF)
     -- Through Accelerator 3-4 Address (0x1FF3 0000 to 0x1FFF FFFF)
-     MIN_ACC_1_2_AFB_TAP_ADDR <= X"0_1FF1_0000";
-     MAX_ACC_1_2_AFB_TAP_ADDR <= X"0_1FF2_FFFF";
+    --  MIN_ACC_1_2_AFB_TAP_ADDR <= X"0_1FF1_0000";
+    --  MAX_ACC_1_2_AFB_TAP_ADDR <= X"0_1FF2_FFFF";
+    MIN_ACC_1_2_AFB_TAP_ADDR <= X"0_1001_0000";
+     MAX_ACC_1_2_AFB_TAP_ADDR <= X"0_1002_FFFF";
 
     -- TAP goes to Accelerator 1 (0x1FF1 0000 to 0x1FF1 FFFF)
     -- Through Accelerator 2 Address (0x1FF2 0000 to 0x1FF2 FFFF)
-     MIN_ACC_1_AFB_TAP_ADDR <= X"0_1FF1_0000";
-     MAX_ACC_1_AFB_TAP_ADDR<= X"0_1FF1_FFFF";
+    MIN_ACC_1_AFB_TAP_ADDR <= X"0_1001_0000";
+    MAX_ACC_1_AFB_TAP_ADDR <= X"0_1001_FFFF";
 
     -- TAP goes to Accelerator 3 (0x1FF3 0000 to 0x1FF3 FFFF)
     -- Through Accelerator 4 Address (0x1FF4 0000 to 0x1FFF FFFF)
-     MIN_ACC_3_AFB_TAP_ADDR <= X"0_1FF3_0000";
-     MAX_ACC_3_AFB_TAP_ADDR <= X"0_1FF3_FFFF";
+    MIN_ACC_3_AFB_TAP_ADDR <= X"0_1003_0000";
+    MAX_ACC_3_AFB_TAP_ADDR <= X"0_1003_FFFF";
 
     --  clk_in1_p <= CLKREF_P;
     --  clk_in1_n <= CLKREF_N;
@@ -607,14 +612,14 @@ begin
         Port map( 
           --clk_320       => clk_sys_320, -- goes to the DRAM controller
           clk_125       => clk_ref_125, -- To ethernet mac
-          clk_80       => MIG7_UI_CLOCK, -- To Processor and dram bridge
+          clk_80       => CLOCK_TO_PROCESSOR, -- To Processor and dram bridge
           clk_200       => clk_ref_200, -- goes to the DRAM controller
 	        
 	        
           reset         => clk_rst, 
           locked        => clk_wizard_locked(0), -- goes to the VIO
-          clk_in1_p     => clk_in1_p,
-          clk_in1_n     => clk_in1_n);
+          clk_in1_p     => clk_in_p,
+          clk_in1_n     => clk_in_n);
 
     -- used by ETH	
     --dcm_locked <= clk_wizard_locked(0);
@@ -623,7 +628,7 @@ begin
 
     virtual_reset_processor : vio_80
         port map (
-                  clk         => MIG7_UI_CLOCK, --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
+                  clk         => CLOCK_TO_PROCESSOR,--MIG7_UI_CLOCK, --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
                   probe_in0   => CPU_MODE_SIG,
                   probe_out0  => RESET_TO_PROCESSOR,
 			            probe_out1  => CPU_RESET, 
@@ -663,13 +668,13 @@ begin
    THREAD_RESET(3) <= '0';
 
 
-   --MIG7_UI_CLOCK <= DRAM_CONTROLLER_TO_ACB_BRIDGE(521); -- 80MHz
+   MIG7_UI_CLOCK <= DRAM_CONTROLLER_TO_ACB_BRIDGE(521); -- 80MHz
 
    sbc_kc705_core_inst: sbc_kc705_core
      port map ( --
     CLOCK_TO_DRAMCTRL_BRIDGE =>  MIG7_UI_CLOCK, --  ui_clk, 80MHz
     CLOCK_TO_NIC => clk_ref_125,
-    CLOCK_TO_PROCESSOR => MIG7_UI_CLOCK,        --  ui_clk, 80MHz
+    CLOCK_TO_PROCESSOR => CLOCK_TO_PROCESSOR,        --  ui_clk, 80MHz
 
     RESET_TO_DRAMCTRL_BRIDGE => RESET_TO_PROCESSOR(0),    
     RESET_TO_NIC => RESET_TO_NIC(0),
@@ -721,14 +726,14 @@ begin
       MIN_FLASH_AFB_TAP_ADDR => MIN_FLASH_AFB_TAP_ADDR,
       MIN_NIC_AFB_TAP_ADDR => MIN_NIC_AFB_TAP_ADDR,
 
-    SPI_FLASH_MISO => SPI_FLASH_MISO,
-    SPI_FLASH_CLK => SPI_FLASH_CLK_SIG,
-    SPI_FLASH_CS_L => SPI_FLASH_CS_L,
-    SPI_FLASH_MOSI => SPI_FLASH_MOSI
+      SPI_FLASH_MISO => "0",
+      SPI_FLASH_CLK => open,
+      SPI_FLASH_CS_L => open,
+      SPI_FLASH_MOSI => open
     ); -- 
   -- 
-    SPI_FLASH_CS_TOP(0) <= SPI_FLASH_CS_L(0);
-    SPI_FLASH_CLK <= SPI_FLASH_CLK_SIG;
+    -- SPI_FLASH_CS_TOP(0) <= SPI_FLASH_CS_L(0);
+    -- SPI_FLASH_CLK <= SPI_FLASH_CLK_SIG;
     WRITE_PROTECT(0) <= '0';
 
 
@@ -809,8 +814,8 @@ ETH_TOP_inst : ETH_TOP
         CLKREF_P => CLKREF_P,-- in std_logic;
         CLKREF_N => CLKREF_N,-- in std_logic;
       -- Check if we can use clk_rst insad(TODO)
-	    reset => NIC_MAC_RESETN(0),-- in std_logic;
-
+	    --reset => NIC_MAC_RESETN(0),-- in std_logic;
+      reset => clk_rst,
     	    ------- Leds -------
 	    led => led,-- out std_logic_vector(7 downto 0);
 	    dummy_port_in => dummy_port_in,-- in std_logic;
@@ -858,7 +863,7 @@ ETH_TOP_inst : ETH_TOP
     TX_to_CONSOLE_pipe_write_ack => SOC_DEBUG_to_MONITOR_pipe_read_req, -- out
     UART_RX => DEBUG_UART_RX, -- in
     UART_TX => DEBUG_UART_TX, -- out
-    clk => MIG7_UI_CLOCK, reset => RESET_TO_PROCESSOR(0)
+    clk => CLOCK_TO_PROCESSOR, reset => RESET_TO_PROCESSOR(0)
     ); -- 
 
   serial_uart_inst: configurable_uart
@@ -872,7 +877,7 @@ ETH_TOP_inst : ETH_TOP
     TX_to_CONSOLE_pipe_write_ack => SERIAL_TX_to_CONSOLE_pipe_read_req, -- out
     UART_RX => SERIAL_UART_RX, -- in
     UART_TX => SERIAL_UART_TX, -- out
-    clk => MIG7_UI_CLOCK, reset => RESET_TO_PROCESSOR(0)
+    clk => CLOCK_TO_PROCESSOR, reset => RESET_TO_PROCESSOR(0)
     ); -- 
 
    -----------------------------------------------------------------------------
@@ -965,23 +970,23 @@ ETH_TOP_inst : ETH_TOP
   sys_rst(0) <= clk_rst; -- MIG is at same level as clock generator.
 
   -- HACK needed to make SPI_CLK controllable on the board.
-  spi_connect: STARTUPE2
-    		generic map(      PROG_USR => "FALSE", 
-                 		SIM_CCLK_FREQ => 0.0)
-    		port map (    CFGCLK => open,
-                 		CFGMCLK => open,
-                     		EOS => open,
-                    		PREQ => open,
-                     		CLK => '0',
-                     		GSR => '0',
-                     		GTS => '0',
-               			KEYCLEARB => '0',
-                    		PACK => '0',
-                		USRCCLKO => SPI_CLK_HACK,   -- Provide signal to output on CCLK pin 
-               			USRCCLKTS => '0',       -- Enable CCLK pin  
-                		USRDONEO => '1',       -- Drive DONE pin High even though tri-state
-               			USRDONETS => '1' );     -- Maintain tri-state of DONE pin
+  -- spi_connect: STARTUPE2
+  --   		generic map(      PROG_USR => "FALSE", 
+  --                		SIM_CCLK_FREQ => 0.0)
+  --   		port map (    CFGCLK => open,
+  --                		CFGMCLK => open,
+  --                    		EOS => open,
+  --                   		PREQ => open,
+  --                    		CLK => '0',
+  --                    		GSR => '0',
+  --                    		GTS => '0',
+  --              			KEYCLEARB => '0',
+  --                   		PACK => '0',
+  --               		USRCCLKO => SPI_CLK_HACK,   -- Provide signal to output on CCLK pin 
+  --              			USRCCLKTS => '0',       -- Enable CCLK pin  
+  --               		USRDONEO => '1',       -- Drive DONE pin High even though tri-state
+  --              			USRDONETS => '1' );     -- Maintain tri-state of DONE pin
 
-    SPI_CLK_HACK <= SPI_FLASH_CLK_SIG(0);
+  --   SPI_CLK_HACK <= SPI_FLASH_CLK_SIG(0);
 		
 end structure;

@@ -1055,18 +1055,18 @@ begin --
 
   acb_afb_complex_inst: acb_afb_complex
   port map ( --
-    ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_data => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_read_data,
-    ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_req => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_read_ack,
-    ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_ack => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_read_req,
-    ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_data => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_read_data,
-    ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_req => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_read_ack,
-    ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_ack => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_read_req,
-    ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_data => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_read_data,
-    ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_req => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_read_ack,
-    ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_ack => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_read_req,
-    ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_data => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_read_data,
-    ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_req => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_read_ack,
-    ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_ack => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_read_req,
+    ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_data => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_data,
+    ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_req => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_req,
+    ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_ack => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_ack,
+    ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_data => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_data,
+    ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_req => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_req,
+    ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_ack => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_ack,
+    ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_data => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_data,
+    ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_req => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_req,
+    ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_ack => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_ack,
+    ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_data => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_data,
+    ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_req => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_req,
+    ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_ack => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_ack,
     ACB_REQUEST_FROM_NIC_pipe_write_data => NIC_ACB_REQUEST_pipe_read_data,
     ACB_REQUEST_FROM_NIC_pipe_write_req => NIC_ACB_REQUEST_pipe_read_ack,
     ACB_REQUEST_FROM_NIC_pipe_write_ack => NIC_ACB_REQUEST_pipe_read_req,
@@ -1079,54 +1079,54 @@ begin --
     ACB_RESPONSE_FROM_DRAM_pipe_write_data => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_read_data,
     ACB_RESPONSE_FROM_DRAM_pipe_write_req => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_read_ack,
     ACB_RESPONSE_FROM_DRAM_pipe_write_ack => DRAM_ACB_RESPONSE_FIFO_OUT_pipe_read_req,
-    ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_data => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_write_data,
-    ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_req => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_write_ack,
-    ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_ack => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_write_req,
-    ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_data => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_write_data,
-    ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_req => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_write_ack,
-    ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_ack => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_write_req,
-    ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_data => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_write_data,
-    ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_req => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_write_ack,
-    ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_ack => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_write_req,
-    ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_data => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_write_data,
-    ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_req => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_write_ack,
-    ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_ack => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_write_req,
+    ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_data => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_data,
+    ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_req => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_req,
+    ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_ack => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_ack,
+    ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_data => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_data,
+    ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_req => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_req,
+    ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_ack => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_ack,
+    ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_data => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_data,
+    ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_req => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_req,
+    ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_ack => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_ack,
+    ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_data => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_data,
+    ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_req => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_req,
+    ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_ack => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_ack,
     ACB_RESPONSE_TO_NIC_pipe_read_data => ACB_NIC_RESPONSE_pipe_write_data,
     ACB_RESPONSE_TO_NIC_pipe_read_req => ACB_NIC_RESPONSE_pipe_write_ack,
     ACB_RESPONSE_TO_NIC_pipe_read_ack => ACB_NIC_RESPONSE_pipe_write_req,
     ACB_RESPONSE_TO_PROCESSOR_pipe_read_data => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_write_data,
     ACB_RESPONSE_TO_PROCESSOR_pipe_read_req => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_write_ack,
     ACB_RESPONSE_TO_PROCESSOR_pipe_read_ack => PROCESSOR_ACB_RESPONSE_FIFO_IN_pipe_write_req,
-    AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_data => AFB_REQUEST_TO_ACCELERATOR_1_pipe_write_data,
-    AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_req => AFB_REQUEST_TO_ACCELERATOR_1_pipe_write_ack,
-    AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_ack => AFB_REQUEST_TO_ACCELERATOR_1_pipe_write_req,
-    AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_data => AFB_REQUEST_TO_ACCELERATOR_2_pipe_write_data,
-    AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_req => AFB_REQUEST_TO_ACCELERATOR_2_pipe_write_ack,
-    AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_ack => AFB_REQUEST_TO_ACCELERATOR_2_pipe_write_req,
-    AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_data => AFB_REQUEST_TO_ACCELERATOR_3_pipe_write_data,
-    AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_req => AFB_REQUEST_TO_ACCELERATOR_3_pipe_write_ack,
-    AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_ack => AFB_REQUEST_TO_ACCELERATOR_3_pipe_write_req,
-    AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_data => AFB_REQUEST_TO_ACCELERATOR_4_pipe_write_data,
-    AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_req => AFB_REQUEST_TO_ACCELERATOR_4_pipe_write_ack,
-    AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_ack => AFB_REQUEST_TO_ACCELERATOR_4_pipe_write_req,
+    AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_data => AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_data,
+    AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_req => AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_req,
+    AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_ack => AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_ack,
+    AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_data => AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_data,
+    AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_req => AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_req,
+    AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_ack => AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_ack,
+    AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_data => AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_data,
+    AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_req => AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_req,
+    AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_ack => AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_ack,
+    AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_data => AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_data,
+    AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_req => AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_req,
+    AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_ack => AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_ack,
     AFB_REQUEST_TO_FLASH_pipe_read_data => AFB_FLASH_REQUEST_pipe_write_data,
     AFB_REQUEST_TO_FLASH_pipe_read_req => AFB_FLASH_REQUEST_pipe_write_ack,
     AFB_REQUEST_TO_FLASH_pipe_read_ack => AFB_FLASH_REQUEST_pipe_write_req,
     AFB_REQUEST_TO_NIC_pipe_read_data => AFB_NIC_REQUEST_pipe_write_data,
     AFB_REQUEST_TO_NIC_pipe_read_req => AFB_NIC_REQUEST_pipe_write_ack,
     AFB_REQUEST_TO_NIC_pipe_read_ack => AFB_NIC_REQUEST_pipe_write_req,
-    AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_data => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_read_data,
-    AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_req => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_read_ack,
-    AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_ack => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_read_req,
-    AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_data => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_read_data,
-    AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_req => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_read_ack,
-    AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_ack => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_read_req,
-    AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_data => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_read_data,
-    AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_req => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_read_ack,
-    AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_ack => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_read_req,
-    AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_data => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_read_data,
-    AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_req => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_read_ack,
-    AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_ack => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_read_req,
+    AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_data => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_data,
+    AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_req => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_req,
+    AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_ack => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_ack,
+    AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_data => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_data,
+    AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_req => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_req,
+    AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_ack => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_ack,
+    AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_data => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_data,
+    AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_req => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_req,
+    AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_ack => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_ack,
+    AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_data => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_data,
+    AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_req => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_req,
+    AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_ack => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_ack,
     AFB_RESPONSE_FROM_FLASH_pipe_write_data => FLASH_AFB_RESPONSE_pipe_read_data,
     AFB_RESPONSE_FROM_FLASH_pipe_write_req => FLASH_AFB_RESPONSE_pipe_read_ack,
     AFB_RESPONSE_FROM_FLASH_pipe_write_ack => FLASH_AFB_RESPONSE_pipe_read_req,
@@ -1437,174 +1437,174 @@ begin --
       write_data => ACB_NIC_RESPONSE_pipe_write_data,
       clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
     ); -- 
-  ACB_REQUEST_FROM_ACCELERATOR_1_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe ACB_REQUEST_FROM_ACCELERATOR_1",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 110,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_read_req,
-      read_ack => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_read_ack,
-      read_data => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_read_data,
-      write_req => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_req,
-      write_ack => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_ack,
-      write_data => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  ACB_REQUEST_FROM_ACCELERATOR_2_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe ACB_REQUEST_FROM_ACCELERATOR_2",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 110,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_read_req,
-      read_ack => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_read_ack,
-      read_data => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_read_data,
-      write_req => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_req,
-      write_ack => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_ack,
-      write_data => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  ACB_REQUEST_FROM_ACCELERATOR_3_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe ACB_REQUEST_FROM_ACCELERATOR_3",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 110,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_read_req,
-      read_ack => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_read_ack,
-      read_data => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_read_data,
-      write_req => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_req,
-      write_ack => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_ack,
-      write_data => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  ACB_REQUEST_FROM_ACCELERATOR_4_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe ACB_REQUEST_FROM_ACCELERATOR_4",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 110,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_read_req,
-      read_ack => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_read_ack,
-      read_data => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_read_data,
-      write_req => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_req,
-      write_ack => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_ack,
-      write_data => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  ACB_RESPONSE_TO_ACCELERATOR_1_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe ACB_RESPONSE_TO_ACCELERATOR_1",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 65,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_req,
-      read_ack => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_ack,
-      read_data => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_data,
-      write_req => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_write_req,
-      write_ack => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_write_ack,
-      write_data => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  ACB_RESPONSE_TO_ACCELERATOR_2_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe ACB_RESPONSE_TO_ACCELERATOR_2",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 65,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_req,
-      read_ack => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_ack,
-      read_data => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_data,
-      write_req => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_write_req,
-      write_ack => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_write_ack,
-      write_data => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  ACB_RESPONSE_TO_ACCELERATOR_3_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe ACB_RESPONSE_TO_ACCELERATOR_3",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 65,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_req,
-      read_ack => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_ack,
-      read_data => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_data,
-      write_req => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_write_req,
-      write_ack => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_write_ack,
-      write_data => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  ACB_RESPONSE_TO_ACCELERATOR_4_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe ACB_RESPONSE_TO_ACCELERATOR_4",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 65,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_req,
-      read_ack => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_ack,
-      read_data => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_data,
-      write_req => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_write_req,
-      write_ack => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_write_ack,
-      write_data => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
+  -- ACB_REQUEST_FROM_ACCELERATOR_1_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe ACB_REQUEST_FROM_ACCELERATOR_1",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 110,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_read_req,
+  --     read_ack => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_read_ack,
+  --     read_data => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_read_data,
+  --     write_req => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_req,
+  --     write_ack => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_ack,
+  --     write_data => ACB_REQUEST_FROM_ACCELERATOR_1_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- ACB_REQUEST_FROM_ACCELERATOR_2_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe ACB_REQUEST_FROM_ACCELERATOR_2",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 110,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_read_req,
+  --     read_ack => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_read_ack,
+  --     read_data => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_read_data,
+  --     write_req => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_req,
+  --     write_ack => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_ack,
+  --     write_data => ACB_REQUEST_FROM_ACCELERATOR_2_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- ACB_REQUEST_FROM_ACCELERATOR_3_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe ACB_REQUEST_FROM_ACCELERATOR_3",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 110,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_read_req,
+  --     read_ack => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_read_ack,
+  --     read_data => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_read_data,
+  --     write_req => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_req,
+  --     write_ack => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_ack,
+  --     write_data => ACB_REQUEST_FROM_ACCELERATOR_3_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- ACB_REQUEST_FROM_ACCELERATOR_4_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe ACB_REQUEST_FROM_ACCELERATOR_4",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 110,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_read_req,
+  --     read_ack => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_read_ack,
+  --     read_data => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_read_data,
+  --     write_req => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_req,
+  --     write_ack => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_ack,
+  --     write_data => ACB_REQUEST_FROM_ACCELERATOR_4_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- ACB_RESPONSE_TO_ACCELERATOR_1_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe ACB_RESPONSE_TO_ACCELERATOR_1",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 65,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_req,
+  --     read_ack => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_ack,
+  --     read_data => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_read_data,
+  --     write_req => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_write_req,
+  --     write_ack => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_write_ack,
+  --     write_data => ACB_RESPONSE_TO_ACCELERATOR_1_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- ACB_RESPONSE_TO_ACCELERATOR_2_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe ACB_RESPONSE_TO_ACCELERATOR_2",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 65,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_req,
+  --     read_ack => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_ack,
+  --     read_data => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_read_data,
+  --     write_req => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_write_req,
+  --     write_ack => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_write_ack,
+  --     write_data => ACB_RESPONSE_TO_ACCELERATOR_2_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- ACB_RESPONSE_TO_ACCELERATOR_3_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe ACB_RESPONSE_TO_ACCELERATOR_3",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 65,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_req,
+  --     read_ack => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_ack,
+  --     read_data => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_read_data,
+  --     write_req => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_write_req,
+  --     write_ack => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_write_ack,
+  --     write_data => ACB_RESPONSE_TO_ACCELERATOR_3_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- ACB_RESPONSE_TO_ACCELERATOR_4_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe ACB_RESPONSE_TO_ACCELERATOR_4",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 65,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_req,
+  --     read_ack => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_ack,
+  --     read_data => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_read_data,
+  --     write_req => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_write_req,
+  --     write_ack => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_write_ack,
+  --     write_data => ACB_RESPONSE_TO_ACCELERATOR_4_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
   AFB_FLASH_REQUEST_inst:  PipeBase -- 
     generic map( -- 
       name => "pipe AFB_FLASH_REQUEST",
@@ -1647,174 +1647,174 @@ begin --
       write_data => AFB_NIC_REQUEST_pipe_write_data,
       clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
     ); -- 
-  AFB_REQUEST_TO_ACCELERATOR_1_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe AFB_REQUEST_TO_ACCELERATOR_1",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 74,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_req,
-      read_ack => AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_ack,
-      read_data => AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_data,
-      write_req => AFB_REQUEST_TO_ACCELERATOR_1_pipe_write_req,
-      write_ack => AFB_REQUEST_TO_ACCELERATOR_1_pipe_write_ack,
-      write_data => AFB_REQUEST_TO_ACCELERATOR_1_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  AFB_REQUEST_TO_ACCELERATOR_2_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe AFB_REQUEST_TO_ACCELERATOR_2",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 74,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_req,
-      read_ack => AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_ack,
-      read_data => AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_data,
-      write_req => AFB_REQUEST_TO_ACCELERATOR_2_pipe_write_req,
-      write_ack => AFB_REQUEST_TO_ACCELERATOR_2_pipe_write_ack,
-      write_data => AFB_REQUEST_TO_ACCELERATOR_2_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC --  
-    ); -- 
-  AFB_REQUEST_TO_ACCELERATOR_3_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe AFB_REQUEST_TO_ACCELERATOR_3",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 74,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_req,
-      read_ack => AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_ack,
-      read_data => AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_data,
-      write_req => AFB_REQUEST_TO_ACCELERATOR_3_pipe_write_req,
-      write_ack => AFB_REQUEST_TO_ACCELERATOR_3_pipe_write_ack,
-      write_data => AFB_REQUEST_TO_ACCELERATOR_3_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  AFB_REQUEST_TO_ACCELERATOR_4_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe AFB_REQUEST_TO_ACCELERATOR_4",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 74,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_req,
-      read_ack => AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_ack,
-      read_data => AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_data,
-      write_req => AFB_REQUEST_TO_ACCELERATOR_4_pipe_write_req,
-      write_ack => AFB_REQUEST_TO_ACCELERATOR_4_pipe_write_ack,
-      write_data => AFB_REQUEST_TO_ACCELERATOR_4_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  AFB_RESPONSE_FROM_ACCELERATOR_1_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe AFB_RESPONSE_FROM_ACCELERATOR_1",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 33,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_read_req,
-      read_ack => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_read_ack,
-      read_data => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_read_data,
-      write_req => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_req,
-      write_ack => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_ack,
-      write_data => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  AFB_RESPONSE_FROM_ACCELERATOR_2_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe AFB_RESPONSE_FROM_ACCELERATOR_2",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 33,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_read_req,
-      read_ack => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_read_ack,
-      read_data => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_read_data,
-      write_req => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_req,
-      write_ack => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_ack,
-      write_data => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  AFB_RESPONSE_FROM_ACCELERATOR_3_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe AFB_RESPONSE_FROM_ACCELERATOR_3",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 33,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_read_req,
-      read_ack => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_read_ack,
-      read_data => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_read_data,
-      write_req => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_req,
-      write_ack => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_ack,
-      write_data => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
-  AFB_RESPONSE_FROM_ACCELERATOR_4_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe AFB_RESPONSE_FROM_ACCELERATOR_4",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 33,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 2 --
-    )
-    port map( -- 
-      read_req => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_read_req,
-      read_ack => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_read_ack,
-      read_data => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_read_data,
-      write_req => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_req,
-      write_ack => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_ack,
-      write_data => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_data,
-      clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
-    ); -- 
+  -- AFB_REQUEST_TO_ACCELERATOR_1_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe AFB_REQUEST_TO_ACCELERATOR_1",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 74,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_req,
+  --     read_ack => AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_ack,
+  --     read_data => AFB_REQUEST_TO_ACCELERATOR_1_pipe_read_data,
+  --     write_req => AFB_REQUEST_TO_ACCELERATOR_1_pipe_write_req,
+  --     write_ack => AFB_REQUEST_TO_ACCELERATOR_1_pipe_write_ack,
+  --     write_data => AFB_REQUEST_TO_ACCELERATOR_1_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- AFB_REQUEST_TO_ACCELERATOR_2_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe AFB_REQUEST_TO_ACCELERATOR_2",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 74,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_req,
+  --     read_ack => AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_ack,
+  --     read_data => AFB_REQUEST_TO_ACCELERATOR_2_pipe_read_data,
+  --     write_req => AFB_REQUEST_TO_ACCELERATOR_2_pipe_write_req,
+  --     write_ack => AFB_REQUEST_TO_ACCELERATOR_2_pipe_write_ack,
+  --     write_data => AFB_REQUEST_TO_ACCELERATOR_2_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC --  
+  --   ); -- 
+  -- AFB_REQUEST_TO_ACCELERATOR_3_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe AFB_REQUEST_TO_ACCELERATOR_3",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 74,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_req,
+  --     read_ack => AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_ack,
+  --     read_data => AFB_REQUEST_TO_ACCELERATOR_3_pipe_read_data,
+  --     write_req => AFB_REQUEST_TO_ACCELERATOR_3_pipe_write_req,
+  --     write_ack => AFB_REQUEST_TO_ACCELERATOR_3_pipe_write_ack,
+  --     write_data => AFB_REQUEST_TO_ACCELERATOR_3_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- AFB_REQUEST_TO_ACCELERATOR_4_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe AFB_REQUEST_TO_ACCELERATOR_4",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 74,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_req,
+  --     read_ack => AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_ack,
+  --     read_data => AFB_REQUEST_TO_ACCELERATOR_4_pipe_read_data,
+  --     write_req => AFB_REQUEST_TO_ACCELERATOR_4_pipe_write_req,
+  --     write_ack => AFB_REQUEST_TO_ACCELERATOR_4_pipe_write_ack,
+  --     write_data => AFB_REQUEST_TO_ACCELERATOR_4_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- AFB_RESPONSE_FROM_ACCELERATOR_1_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe AFB_RESPONSE_FROM_ACCELERATOR_1",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 33,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_read_req,
+  --     read_ack => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_read_ack,
+  --     read_data => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_read_data,
+  --     write_req => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_req,
+  --     write_ack => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_ack,
+  --     write_data => AFB_RESPONSE_FROM_ACCELERATOR_1_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- AFB_RESPONSE_FROM_ACCELERATOR_2_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe AFB_RESPONSE_FROM_ACCELERATOR_2",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 33,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_read_req,
+  --     read_ack => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_read_ack,
+  --     read_data => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_read_data,
+  --     write_req => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_req,
+  --     write_ack => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_ack,
+  --     write_data => AFB_RESPONSE_FROM_ACCELERATOR_2_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- AFB_RESPONSE_FROM_ACCELERATOR_3_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe AFB_RESPONSE_FROM_ACCELERATOR_3",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 33,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_read_req,
+  --     read_ack => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_read_ack,
+  --     read_data => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_read_data,
+  --     write_req => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_req,
+  --     write_ack => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_ack,
+  --     write_data => AFB_RESPONSE_FROM_ACCELERATOR_3_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
+  -- AFB_RESPONSE_FROM_ACCELERATOR_4_inst:  PipeBase -- 
+  --   generic map( -- 
+  --     name => "pipe AFB_RESPONSE_FROM_ACCELERATOR_4",
+  --     num_reads => 1,
+  --     num_writes => 1,
+  --     data_width => 33,
+  --     lifo_mode => false,
+  --     signal_mode => false,
+  --     shift_register_mode => false,
+  --     bypass => false,
+  --     depth => 2 --
+  --   )
+  --   port map( -- 
+  --     read_req => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_read_req,
+  --     read_ack => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_read_ack,
+  --     read_data => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_read_data,
+  --     write_req => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_req,
+  --     write_ack => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_ack,
+  --     write_data => AFB_RESPONSE_FROM_ACCELERATOR_4_pipe_write_data,
+  --     clk => CLOCK_TO_NIC,reset => RESET_TO_NIC -- 
+  --   ); -- 
   DRAM_ACB_RESPONSE_FIFO_IN_inst:  PipeBase -- 
     generic map( -- 
       name => "pipe DRAM_ACB_RESPONSE_FIFO_IN",
