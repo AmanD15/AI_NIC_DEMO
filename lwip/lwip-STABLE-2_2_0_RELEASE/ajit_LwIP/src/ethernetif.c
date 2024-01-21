@@ -45,7 +45,7 @@
 
 #include "lwip/opt.h"
 
-#if 0 /* don't build, this is only a skeleton, see previous comment */
+#if 1 /* don't build, this is only a skeleton, see previous comment */
 
 #include "lwip/def.h"
 #include "lwip/mem.h"
@@ -55,6 +55,19 @@
 #include "lwip/ethip6.h"
 #include "lwip/etharp.h"
 #include "netif/ppp/pppoe.h"
+
+/* AJIT SPECIFIC HEADERS */
+#include "ajit_access_routines.h"
+#include <cortos.h>
+// queue related constants
+#define NUMBER_OF_BUFFERS 8
+#define BUFFER_SIZE_IN_BYTES 180 // 80
+#define QUEUE_LENGTH 16 + 4 * NUMBER_OF_BUFFERS
+#define MEM_START_ADDR 0x51800 //0x3FFC00 // 3ffff8 - 3ffe00 = 1f8 
+#define NIC_START_ADDR NCRAM_BASE_ADDRESS
+#define NIC_END_ADDR   (NCRAM_BASE_ADDRESS + 255)
+
+
 
 /* Define those to better describe your network interface. */
 #define IFNAME0 'e'
@@ -69,10 +82,38 @@
 struct ethernetif {
   struct eth_addr *ethaddr;
   /* Add whatever per-interface state that is needed here. */
+
+
+
+
+
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
 
 /* Forward declarations. */
 static void  ethernetif_input(struct netif *netif);
+
+
+uint32_t readNicReg(uint32_t index)
+{
+	uint32_t data;
+	//data = __ajit_load_word_mmu_bypass__(&NIC_REG[index]);
+	data = __ajit_load_word_from_physical_address__(&NIC_REG[index]);
+	return data;
+}
+
+
+void writeNicReg(uint32_t index, uint32_t value)
+{
+	//__ajit_store_word_mmu_bypass__(value,&NIC_REG[index]);
+	__ajit_store_word_to_physical_address__(value,(uint64_t) &NIC_REG[index]);
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * In this function, the hardware should be initialized.
@@ -84,22 +125,25 @@ static void  ethernetif_input(struct netif *netif);
 static void
 low_level_init(struct netif *netif)
 {
-  struct ethernetif *ethernetif = netif->state;
+  struct ethernetif *ethernetif = netif->state; // void *state declared in netif.h struct definition of netif. 
 
   /* set MAC hardware address length */
   netif->hwaddr_len = ETHARP_HWADDR_LEN;
 
   /* set MAC hardware address */
-  netif->hwaddr[0] = ;
-  ...
-  netif->hwaddr[5] = ;
+  netif->hwaddr[0] = 0x00;
+  netif->hwaddr[1] = 0x0a;
+  netif->hwaddr[2] = 0x35;
+  netif->hwaddr[3] = 0x05;
+  netif->hwaddr[4] = 0x76;
+  netif->hwaddr[5] = 0xa0;
 
   /* maximum transfer unit */
   netif->mtu = 1500;
 
   /* device capabilities */
   /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
-  netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP;
+  netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP | NETIF_FLAG_ETHERNET | NETIF_FLAG_IGMP;
 
 #if LWIP_IPV6 && LWIP_IPV6_MLD
   /*
@@ -115,7 +159,58 @@ low_level_init(struct netif *netif)
 #endif /* LWIP_IPV6 && LWIP_IPV6_MLD */
 
   /* Do whatever else is needed to initialize interface. */
+
+  /***************** AJIT-NIC Specific Cn onfiguration********************/
+
+	// Get queues.
+	CortosQueueHeader* free_queue = cortos_reserveQueue(msgSizeInBytes, length, 1);
+	CortosQueueHeader* rx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
+	CortosQueueHeader* tx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
+
+	cortos_printf("Reserved queues: free=0x%lx, rx=0x%lx, tx=0x%lx\n",
+				(uint32_t) free_queue,
+				(uint32_t) rx_queue,
+				(uint32_t) tx_queue);
+
+				
+	// allocate buffers
+	uint8_t* Buffers[8];
+	int i;
+	for(i = 0; i < 8; i++)
+	{
+		Buffers[i] = (uint8_t*)cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
+		cortos_printf("Allocated Buffer[%d] = 0x%lx\n", i, (uint32_t) Buffers[i]);
+	}
+
+
+	// Put the four buffers onto the free-queue.
+	msgs_written = cortos_writeMessages(free_queue, (uint32_t) Buffers, 4);
+	
+	// set the queues in nicRegs and enable the NIC.
+
+	writeNicReg(1,1);			            //NIC_REG[1]  = 1;//NUMBER_OF_SERVERS;
+	writeNicReg(2,(uint32_t)Rx_Queue);	    //NIC_REG[2]  = Rx_Queue;
+	writeNicReg(10,(uint32_t)Tx_Queue);	    //NIC_REG[10] = Tx_Queue;
+	writeNicReg(18,(uint32_t)Free_Queue);	//NIC_REG[18] = Free_Queue;
+	writeNicReg(21, 0);                     // number of transmmitted packets = 0.
+
+	// Enable NIC.
+	writeNicReg(0,1); 			            //NIC_REG[0] = 1;
+
+	cortos_printf("NIC_regs: [1]=0x%x,[2]=0x%x,[10]=0x%x,[18]=0x%x,[0]=0x%x,"
+			"[21]=0x%x,[22]=0x%x\n",
+			readNicReg(1),
+			readNicReg(2),
+			readNicReg(10),
+			readNicReg(18),
+			readNicReg(0),
+			readNicReg(21),
+			readNicReg(22));
+
+	cortos_printf ("Configuration Done. NIC has started\n");
+
 }
+////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * This function should do the actual transmission of the packet. The packet is
@@ -172,6 +267,9 @@ low_level_output(struct netif *netif, struct pbuf *p)
 
   return ERR_OK;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
 
 /**
  * Should allocate a pbuf and transfer the bytes of the incoming
@@ -243,6 +341,8 @@ low_level_input(struct netif *netif)
   return p;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+
 /**
  * This function should be called when a packet is ready to be read
  * from the interface. It uses the function low_level_input() that
@@ -273,6 +373,8 @@ ethernetif_input(struct netif *netif)
     }
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Should be called at the beginning of the program to set up the

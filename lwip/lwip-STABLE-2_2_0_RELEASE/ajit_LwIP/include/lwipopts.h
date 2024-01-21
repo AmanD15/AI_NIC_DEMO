@@ -37,9 +37,9 @@
 #else /* LWIP_OPTTEST_FILE */
 
 #define LWIP_IPV4                  1
-#define LWIP_IPV6                  1
+#define LWIP_IPV6                  0
 
-#define NO_SYS                     0
+#define NO_SYS                     1
 #define LWIP_SOCKET                (NO_SYS==0)
 #define LWIP_NETCONN               (NO_SYS==0)
 #define LWIP_NETIF_API             (NO_SYS==0)
