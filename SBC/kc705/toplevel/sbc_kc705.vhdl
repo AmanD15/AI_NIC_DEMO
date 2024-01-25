@@ -422,13 +422,13 @@ begin
    -- CONFIG_UART_BAUD_CONTROL_WORD <= X"3b890180";
 
       
-     -- Tap goes to NIC + FLASH (0x0000_0000 - 0x3000_0000)
-     MIN_ACB_TAP_ADDR <= X"0_0000_0000";
-     MAX_ACB_TAP_ADDR <= X"0_2FFF_FFFF";
+     -- For first ACB Tap goes to only NIC.
+     MIN_ACB_TAP_ADDR <= X"0_FF00_0000";
+     MAX_ACB_TAP_ADDR <= X"0_FFFF_FFFF";
 
-     -- TAP goes to NIC (0x20000000 to 0x30000000)
-     MIN_AFB_TAP_ADDR <= X"0_2000_0000";
-     MAX_AFB_TAP_ADDR <= X"0_2FFF_FFFF";
+     -- For second ACB TAP goes to RAM.
+     MIN_AFB_TAP_ADDR <= X"0_3000_0000";
+     MAX_AFB_TAP_ADDR <= X"0_FEFF_FFFF"; -- 0_FEFF_FFFF + 1 = 0_FF00_0000
        
     clk_wiz_0_inst: clk_wiz_0 
         Port map( 
