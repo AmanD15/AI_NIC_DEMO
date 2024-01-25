@@ -174,7 +174,9 @@ int main()
 uint32_t readNicReg(uint32_t index)
 {
 	uint32_t data;
-	//data = __ajit_load_word_mmu_bypass__(&NIC_REG[index]);
+
+	// Note: this routine uses the alternate space load instruction
+	//       and does not use the page tables!
 	data = __ajit_load_word_from_physical_address__(&NIC_REG[index]);
 	return data;
 }
@@ -182,8 +184,11 @@ uint32_t readNicReg(uint32_t index)
 
 void writeNicReg(uint32_t index, uint32_t value)
 {
-	//__ajit_store_word_mmu_bypass__(value,&NIC_REG[index]);
+	//
+	// Note: this routine uses the alternate space store instruction
+	//       and does not use the page tables!
 	__ajit_store_word_to_physical_address__(value,(uint64_t) &NIC_REG[index]);
+
 }
 
 
