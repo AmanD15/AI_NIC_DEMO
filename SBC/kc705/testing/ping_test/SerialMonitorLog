@@ -1,0 +1,100 @@
+11:02:02.477 -> Started
+11:02:02.492 -> Reserved queues: free=0x5fffffa0, rx=0x5fffff50, tx=0x5ffffef0
+11:02:02.492 -> Allocated Buffer[0] = 0x5ffffe20
+11:02:02.492 -> Allocated Buffer[1] = 0x5ffffd58
+11:02:02.492 -> Allocated Buffer[2] = 0x5ffffc90
+11:02:02.492 -> Allocated Buffer[3] = 0x5ffffbc8
+11:02:02.492 -> Allocated Buffer[4] = 0x5ffffb00
+11:02:02.492 -> Allocated Buffer[5] = 0x5ffffa38
+11:02:02.492 -> Allocated Buffer[6] = 0x5ffff970
+11:02:02.492 -> Allocated Buffer[7] = 0x5ffff8a8
+11:02:02.492 -> Stored Buffer[0] in free-queue = 0x5ffffe20
+11:02:02.492 -> Stored Buffer[1] in free-queue = 0x5ffffd58
+11:02:02.492 -> Stored Buffer[2] in free-queue = 0x5ffffc90
+11:02:02.492 -> Stored Buffer[3] in free-queue = 0x5ffffbc8
+11:02:02.492 -> NIC_REG[22]=0x0
+11:02:02.492 -> NIC_regs: [1]=0x1,[2]=0x5fffff50,[10]=0x5ffffef0,[18]=0x5fffffa0,[0]=0x1,[21]=0x0,[22]=0x1
+11:02:02.492 -> Configuration Done. NIC has started
+11:02:09.347 -> main:  received data in rx_queuemessage_counter:1
+11:02:09.347 -> main:  received data in rx_queuemessage_counter:2
+11:02:09.347 -> main:  received data in rx_queuemessage_counter:3
+11:02:09.347 -> main:  received data in rx_queuemessage_counter:4
+11:02:09.347 -> main:  received data in rx_queuemessage_counter:5
+11:02:09.347 -> main:  received data in rx_queuemessage_counter:6
+11:02:09.347 -> main:  received data in rx_queuemessage_counter:7
+11:02:09.398 -> main:  received data in rx_queuemessage_counter:8
+11:02:09.398 -> main:  received data in rx_queuemessage_counter:9
+11:02:09.398 -> main:  received data in rx_queuemessage_counter:10
+11:02:09.678 -> main:  received data in rx_queuemessage_counter:11
+11:02:10.606 -> main:  received data in rx_queuemessage_counter:12
+11:02:10.672 -> main:  received data in rx_queuemessage_counter:13
+11:02:10.870 -> main:  received data in rx_queuemessage_counter:14
+11:02:11.366 -> main:  received data in rx_queuemessage_counter:15
+11:02:11.598 -> main:  received data in rx_queuemessage_counter:16
+11:02:11.598 -> main:  received data in rx_queuemessage_counter:17
+11:02:11.664 -> main:  received data in rx_queuemessage_counter:18
+11:02:12.425 -> main:  received data in rx_queuemessage_counter:19
+11:02:12.690 -> main:  received data in rx_queuemessage_counter:20
+11:02:12.690 -> main:  received data in rx_queuemessage_counter:21
+11:02:12.690 -> main:  received data in rx_queuemessage_counter:22
+11:02:13.098 -> main:  received data in rx_queuemessage_counter:23
+11:02:16.675 -> main:  received data in rx_queuemessage_counter:24
+11:02:21.576 -> main:  received data in rx_queuemessage_counter:25
+11:02:21.675 -> main:  received data in rx_queuemessage_counter:26
+11:02:22.570 -> main:  received data in rx_queuemessage_counter:27
+11:02:23.569 -> main:  received data in rx_queuemessage_counter:28
+11:02:24.562 -> main:  received data in rx_queuemessage_counter:29
+11:02:25.569 -> main:  received data in rx_queuemessage_counter:30
+11:02:26.598 -> main:  received data in rx_queuemessage_counter:31
+11:02:27.592 -> main:  received data in rx_queuemessage_counter:32
+11:02:28.588 -> main:  received data in rx_queuemessage_counter:33
+11:02:29.585 -> main:  received data in rx_queuemessage_counter:34
+11:02:30.577 -> main:  received data in rx_queuemessage_counter:35
+11:02:30.614 -> main:  received data in rx_queuemessage_counter:36
+11:02:31.573 -> main:  received data in rx_queuemessage_counter:37
+11:02:32.601 -> main:  received data in rx_queuemessage_counter:38
+11:02:33.595 -> main:  received data in rx_queuemessage_counter:39
+11:02:34.587 -> main:  received data in rx_queuemessage_counter:40
+11:02:35.585 -> main:  received data in rx_queuemessage_counter:41
+11:02:36.588 -> main:  received data in rx_queuemessage_counter:42
+11:02:37.614 -> main:  received data in rx_queuemessage_counter:43
+11:02:38.609 -> main:  received data in rx_queuemessage_counter:44
+11:02:39.601 -> main:  received data in rx_queuemessage_counter:45
+11:02:40.595 -> main:  received data in rx_queuemessage_counter:46
+11:02:41.593 -> main:  received data in rx_queuemessage_counter:47
+11:02:42.588 -> main:  received data in rx_queuemessage_counter:48
+11:02:43.616 -> main:  received data in rx_queuemessage_counter:49
+11:02:44.608 -> main:  received data in rx_queuemessage_counter:50
+11:02:45.604 -> main:  received data in rx_queuemessage_counter:51
+11:02:46.603 -> main:  received data in rx_queuemessage_counter:52
+11:02:47.235 -> main:  received data in rx_queuemessage_counter:53
+11:02:47.598 -> main:  received data in rx_queuemessage_counter:54
+11:02:48.594 -> main:  received data in rx_queuemessage_counter:55
+11:02:49.621 -> main:  received data in rx_queuemessage_counter:56
+11:02:50.613 -> main:  received data in rx_queuemessage_counter:57
+11:02:51.607 -> main:  received data in rx_queuemessage_counter:58
+11:02:52.603 -> main:  received data in rx_queuemessage_counter:59
+11:02:53.596 -> main:  received data in rx_queuemessage_counter:60
+11:02:54.621 -> main:  received data in rx_queuemessage_counter:61
+11:02:55.613 -> main:  received data in rx_queuemessage_counter:62
+11:02:56.612 -> main:  received data in rx_queuemessage_counter:63
+11:02:57.606 -> main:  received data in rx_queuemessage_counter:64
+11:02:58.631 -> main:  received data in rx_queuemessage_counter:65
+11:02:58.631 -> Info: NIC has transmitted 65 packets.
+11:02:58.631 -> Releasing buffer[0] 0x5ffffe20
+11:02:58.631 -> Released buffer[0] 0x5ffffe20
+11:02:58.631 -> Releasing buffer[1] 0x5ffffd58
+11:02:58.631 -> Released buffer[1] 0x5ffffd58
+11:02:58.631 -> Releasing buffer[2] 0x5ffffc90
+11:02:58.631 -> Released buffer[2] 0x5ffffc90
+11:02:58.631 -> Releasing buffer[3] 0x5ffffbc8
+11:02:58.631 -> Released buffer[3] 0x5ffffbc8
+11:02:58.631 -> Releasing buffer[4] 0x5ffffb00
+11:02:58.664 -> Released buffer[4] 0x5ffffb00
+11:02:58.664 -> Releasing buffer[5] 0x5ffffa38
+11:02:58.664 -> Released buffer[5] 0x5ffffa38
+11:02:58.664 -> Releasing buffer[6] 0x5ffff970
+11:02:58.664 -> Released buffer[6] 0x5ffff970
+11:02:58.664 -> Releasing buffer[7] 0x5ffff8a8
+11:02:58.664 -> Released buffer[7] 0x5ffff8a8
+

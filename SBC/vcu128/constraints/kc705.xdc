@@ -21,15 +21,15 @@ set_property IOSTANDARD DIFF_SSTL12 [get_ports {CLKREF_P}]
 set_property PACKAGE_PIN BK3 [get_ports {CLKREF_N}]
 set_property IOSTANDARD DIFF_SSTL12 [get_ports {CLKREF_N}]
 
-set_property PACKAGE_PIN F35 [get_ports {clk_in1_p}]
-set_property IOSTANDARD DIFF_SSTL12 [get_ports {clk_in1_p}]
-set_property PACKAGE_PIN F36 [get_ports {clk_in1_n}]
-set_property IOSTANDARD DIFF_SSTL12 [get_ports {clk_in1_n}]
+set_property PACKAGE_PIN F35 [get_ports {clk_in_p}]
+set_property IOSTANDARD DIFF_SSTL12 [get_ports {clk_in_p}]
+set_property PACKAGE_PIN F36 [get_ports {clk_in_n}]
+set_property IOSTANDARD DIFF_SSTL12 [get_ports {clk_in_n}]
 
 
 create_clock -period 10.000 -name clk_100mhz [get_ports CLKREF_P]
-create_clock -period 10.000 -name clk_100mhz_1 [get_ports clk_in1_p]
-create_generated_clock -name clk_125mhz [get_pins clk_mmcm_inst/CLKOUT0] 
+create_clock -period 10.000 -name clk_in_p [get_ports clk_in_p]
+create_generated_clock -name clk_125mhz [get_pins clk_mmcm_inst/CLKOUT1] 
 
 
 
@@ -69,10 +69,10 @@ set_property IOSTANDARD  LVCMOS18 [get_ports "SERIAL_UART_TX"] ;# Bank  67 VCCO 
 
 
 
-set_false_path -to [get_ports {uart_txd uart_rts}]
-set_output_delay 0 [get_ports {uart_txd uart_rts}]
-set_false_path -from [get_ports {uart_rxd uart_cts}]
-set_input_delay 0 [get_ports {uart_rxd uart_cts}]
+#set_false_path -to [get_ports {uart_txd uart_rts}]
+#set_output_delay 0 [get_ports {uart_txd uart_rts}]
+#set_false_path -from [get_ports {uart_rxd uart_cts}]
+#set_input_delay 0 [get_ports {uart_rxd uart_cts}]
 
 
 ########################################################################################################
@@ -265,25 +265,50 @@ set_property -quiet IOSTANDARD DIFF_SSTL12_DCI [get_ports {c0_ddr4_ck_t}]
 ##
 #  TODO: Set false paths between all distinct clocks.
 ## set false paths
+                                                                                    
+#set_false_path -from [get_clocks -include_generated_clocks clk_125mhz_mmcm_out] -to [get_clocks -include_generated_clocks mmcm_clkout0]
+#set_false_path -from [get_clocks -include_generated_clocks mmcm_clkout0] -to [get_clocks -include_generated_clocks clk_125mhz_mmcm_out]
 
-set_false_path -from [get_clocks -include_generated_clocks clk_80_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
 set_false_path -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_80_clk_wiz_0]
+set_false_path -from [get_clocks -include_generated_clocks clk_80_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
 
+
+#
 set_false_path -from [get_clocks -include_generated_clocks clk_80_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_200_clk_wiz_0]
 set_false_path -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_80_clk_wiz_0]
 
 set_false_path -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_200_clk_wiz_0]
 set_false_path -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
 
+set_false_path -from [get_clocks -include_generated_clocks mmcm_clkout0] -to [get_clocks -include_generated_clocks mmcm_clkout0]
+set_false_path -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
 
-##################################################################################################
-# 4.   Max delay on clock domain crossing paths.
-##################################################################################################
+set_false_path -from [get_clocks -include_generated_clocks clk_80_clk_wiz_0] -to [get_clocks -include_generated_clocks mmcm_clkout0]
+set_false_path -from [get_clocks -include_generated_clocks mmcm_clkout0] -to [get_clocks -include_generated_clocks clk_80_clk_wiz_0]
 
-##TODO (DONE!): set max delay of 10ns between all clock pairs.
+set_false_path -from [get_clocks -include_generated_clocks clk_125mhz_mmcm_out] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
+set_false_path -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125mhz_mmcm_out]
+
+set_false_path -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks mmcm_clkout0]
+
+
+
+
+#
+#
+###################################################################################################
+## 4.   Max delay on clock domain crossing paths.
+###################################################################################################
+#
+###TODO (DONE!): set max delay of 10ns between all clock pairs.
+#
+#set_max_delay 15 -from [get_clocks -include_generated_clocks clk_125mhz_mmcm_out] -to [get_clocks -include_generated_clocks mmcm_clkout0]
+#set_max_delay 15 -from [get_clocks -include_generated_clocks mmcm_clkout0] -to [get_clocks -include_generated_clocks clk_125mhz_mmcm_out]
+#
 
 set_max_delay 15 -from [get_clocks -include_generated_clocks clk_80_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
 set_max_delay 15 -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_80_clk_wiz_0]
+
 
 set_max_delay 15 -from [get_clocks -include_generated_clocks clk_80_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_200_clk_wiz_0]
 set_max_delay 15 -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_80_clk_wiz_0]
@@ -292,6 +317,13 @@ set_max_delay 15 -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] 
 set_max_delay 15 -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_200_clk_wiz_0]
 set_max_delay 15 -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
 
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_80_clk_wiz_0] -to [get_clocks -include_generated_clocks mmcm_clkout0]
+set_max_delay 15 -from [get_clocks -include_generated_clocks mmcm_clkout0] -to [get_clocks -include_generated_clocks clk_80_clk_wiz_0]
+
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125mhz_mmcm_out]
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_125mhz_mmcm_out] -to [get_clocks -include_generated_clocks clk_125_clk_wiz_0]
+
+set_max_delay 15 -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks mmcm_clkout0]
 
 
 #LEDs - Check for available LEDs
@@ -306,14 +338,14 @@ set_max_delay 15 -from [get_clocks -include_generated_clocks clk_200_clk_wiz_0] 
 # 5.  SPI flash connections
 ##################################################################################################
 ## P24 - DQ0 in KC705 Check for IOSTANDARD in VCU 128 constraint file
-set_property PACKAGE_PIN AW15 [get_ports {SPI_FLASH_MOSI[0]}]
-#set_property IOSTANDARD LVCMOS25 [get_ports {SPI_FLASH_MOSI[0]}]
+#set_property PACKAGE_PIN AW15 [get_ports {SPI_FLASH_MOSI[0]}]
+#set_property IOSTANDARD CONFIG [get_ports {SPI_FLASH_MOSI[0]}]
 ## R25 - DQ1 in KC705 
-set_property PACKAGE_PIN AY15 [get_ports {SPI_FLASH_MISO[0]}]
-#set_property IOSTANDARD LVCMOS25 [get_ports {SPI_FLASH_MISO[0]}]
+#set_property PACKAGE_PIN AY15 [get_ports {SPI_FLASH_MISO[0]}]
+#set_property IOSTANDARD CONFIG [get_ports {SPI_FLASH_MISO[0]}]
 ## U19 - CS_B in KC705 
-set_property PACKAGE_PIN BC15 [get_ports {SPI_FLASH_CS_TOP[0]}]
-#set_property IOSTANDARD LVCMOS25 [get_ports {SPI_FLASH_CS_TOP[0]}]
+#set_property PACKAGE_PIN BC15 [get_ports {SPI_FLASH_CS_TOP[0]}]
+#set_property IOSTANDARD CONFIG [get_ports {SPI_FLASH_CS_TOP[0]}]
 ## G19 - GPIO LED 5 in KC705 (check B10)
-set_property PACKAGE_PIN BD14 [get_ports {SPI_FLASH_CLK[0]}]
-#set_property IOSTANDARD LVCMOS25 [get_ports {SPI_FLASH_CLK[0]}]
+#set_property PACKAGE_PIN BD14 [get_ports {SPI_FLASH_CLK[0]}]
+#set_property IOSTANDARD CONFIG [get_ports {SPI_FLASH_CLK[0]}]

@@ -10,8 +10,8 @@
 
 #define MEM_START_ADDR 0x51800 //0x3FFC00 // 3ffff8 - 3ffe00 = 1f8 = 
 
-#define NIC_START_ADDR NCRAM_BASE_ADDRESS
-#define NIC_END_ADDR   (NCRAM_BASE_ADDRESS + 255)
+#define NIC_START_ADDR 0x20000000
+#define NIC_END_ADDR   (NIC_START_ADDR + 255)
 
 uint32_t* MEM = MEM_START_ADDR;
 uint32_t* NIC_REG = NIC_START_ADDR;
@@ -92,8 +92,17 @@ int main()
 	}
 
 
-	// Put the four buffers onto the free-queue.
-	msgs_written = cortos_writeMessages(free_queue, (uint32_t) Buffers, 4);
+	// Put the four buffers onto the free-queue, so free queue has space, if Tx Q wants to push after transmission.
+
+	for(i = 0; i < 4; i++)
+	{
+		msgs_written = cortos_writeMessages(free_queue, (uint8_t*)Buffers[i], 1);
+		cortos_printf("Stored Buffer[%d] in free-queue = 0x%lx\n", i, (uint32_t) Buffers[i]);
+	}
+
+	
+	//msgs_written = cortos_writeMessages(free_queue, (uint32_t) Buffers, 4);
+	//msgs_written = cortos_writeMessages(free_queue,  Buffers[0], 8);
 	
 	// set the queues in nicRegs and enable the NIC.
 	nicRegConfig(free_queue,rx_queue,tx_queue);
@@ -103,19 +112,21 @@ int main()
 	uint32_t buffer_with_packet = 0;
 	int message_counter = 0;
 	
-
-
+	
+	uint8_t* ptrToData = (uint8_t*)cortos_bget(4);
+	//uint32_t data[1];
+	//uint8_t* ptrToData=&data[0];
 	while(1)
 	{
-		uint32_t data[1];
+		
 
-		if(cortos_readMessages(rx_queue, (uint8_t*)data, 1)){
-
+		if(cortos_readMessages(rx_queue, ptrToData, 1)){
+			cortos_printf("main:  received data in rx_queue");
 
 			//printFrame(data);
-			swapMacAddress(data);
+			//swapMacAddress(data);
 			//printFrame(data);
-			msgs_written = cortos_writeMessages(tx_queue, (uint8_t*)data, 1);
+			msgs_written = cortos_writeMessages(tx_queue, ptrToData, 1);
 			message_counter++;
 			cortos_printf("message_counter:%d\n",message_counter);
 	
@@ -124,22 +135,20 @@ int main()
 		else
 		{
 			// Spin for 1024 clock cycles.
+			
 			__ajit_sleep__ (1024);
 		}
 
 		
-		if(message_counter == 20)break;
+		if(message_counter == 65)break;
 		
 
 	}
-	
+	cortos_brel(ptrToData);
 	
 	uint32_t tx_packet_count = readNicReg(21);	
 	cortos_printf("Info: NIC has transmitted %d packets.\n", tx_packet_count);
 	
-	//readNicRegs();
-	// Disable the NIC.
-	//printMemory();
 	writeNicReg(0,0);
 
 	// free queue
@@ -150,18 +159,24 @@ int main()
 	// release buffers
 	for(i = 0; i < 8; i++)
 	{
-		cortos_brel(Buffers[i]);
+		cortos_printf("Releasing buffer[%d] 0x%x\n",
+					i,(uint32_t) Buffers[i]);
+		cortos_brel_ncram(Buffers[i]);
+		cortos_printf("Released buffer[%d] 0x%x\n",
+					i,(uint32_t) Buffers[i]);
+		
 	}
-	//readNicRegs();
-	//printMemory();	
+		
 
-	return(0);
+	return 0;
 }
 
 uint32_t readNicReg(uint32_t index)
 {
 	uint32_t data;
-	//data = __ajit_load_word_mmu_bypass__(&NIC_REG[index]);
+
+	// Note: this routine uses the alternate space load instruction
+	//       and does not use the page tables!
 	data = __ajit_load_word_from_physical_address__(&NIC_REG[index]);
 	return data;
 }
@@ -169,8 +184,11 @@ uint32_t readNicReg(uint32_t index)
 
 void writeNicReg(uint32_t index, uint32_t value)
 {
-	//__ajit_store_word_mmu_bypass__(value,&NIC_REG[index]);
+	//
+	// Note: this routine uses the alternate space store instruction
+	//       and does not use the page tables!
 	__ajit_store_word_to_physical_address__(value,(uint64_t) &NIC_REG[index]);
+
 }
 
 
