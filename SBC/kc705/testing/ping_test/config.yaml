@@ -22,12 +22,12 @@ Hardware:
       StartAddr: 0x40000000
       # EndAddr: ...
       # SizeInBytes: ...
-      SizeInMegaBytes: 512
+      SizeInMegaBytes: 256
       Permissions: RWXC
     NCRAM:
-      StartAddr: 0x20000000  # physical address
+      StartAddr: 0x50000000  # physical address move to 0x5000
       # SizeInBytes: ...
-      SizeInMegaBytes: 512
+      SizeInMegaBytes: 256
       Permissions: RW
     MMIO: # Memory Mapped IO
       StartAddr: 0xFF000000  # physical address
