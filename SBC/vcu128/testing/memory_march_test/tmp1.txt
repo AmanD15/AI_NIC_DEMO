@@ -1,0 +1,181 @@
+void *bget(requested_size)
+  bufsize requested_size;
+{
+    bufsize size = requested_size;
+    struct bfhead *b;
+#ifdef BestFit
+    struct bfhead *best;
+#endif
+    void *buf;
+#ifdef BECtl
+    int compactseq = 0;
+#endif
+
+    //AD assert(size > 0);
+
+    if (size < SizeQ) { 	      /* Need at least room for the */
+	size = SizeQ;		      /*    queue links.  */
+    }
+#ifdef SizeQuant
+#if SizeQuant > 1
+    size = (size + (SizeQuant - 1)) & (~(SizeQuant - 1));
+#endif
+#endif
+
+    size += sizeof(struct bhead);     /* Add overhead in allocated buffer
+					 to size required. */
+
+#ifdef BECtl
+    /* If a compact function was provided in the call to bectl(), wrap
+       a loop around the allocation process  to  allow	compaction  to
+       intervene in case we don't find a suitable buffer in the chain. */
+
+    while (1) {
+#endif
+	b = freelist.ql.flink;
+#ifdef BestFit
+	best = &freelist;
+#endif
+
+
+	/* Scan the free list searching for the first buffer big enough
+	   to hold the requested size buffer. */
+
+#ifdef BestFit
+	while (b != &freelist) {
+	    if (b->bh.bsize >= size) {
+		if ((best == &freelist) || (b->bh.bsize < best->bh.bsize)) {
+		    best = b;
+		}
+	    }
+	    b = b->ql.flink;		  /* Link to next buffer */
+	}
+	b = best;
+#endif /* BestFit */
+
+	while (b != &freelist) {
+	    if ((bufsize) b->bh.bsize >= size) {
+
+		/* Buffer  is big enough to satisfy  the request.  Allocate it
+		   to the caller.  We must decide whether the buffer is  large
+		   enough  to  split  into  the part given to the caller and a
+		   free buffer that remains on the free list, or  whether  the
+		   entire  buffer  should  be  removed	from the free list and
+		   given to the caller in its entirety.   We  only  split  the
+		   buffer if enough room remains for a header plus the minimum
+		   quantum of allocation. */
+
+		if ((b->bh.bsize - size) > (SizeQ + (sizeof(struct bhead)))) {
+		    struct bhead *ba, *bn;
+
+		    ba = BH(((char *) b) + (b->bh.bsize - size));
+		    bn = BH(((char *) ba) + size);
+		    //AD assert(bn->prevfree == b->bh.bsize);
+		    /* Subtract size from length of free block. */
+		    b->bh.bsize -= size;
+		    /* Link allocated buffer to the previous free buffer. */
+		    ba->prevfree = b->bh.bsize;
+		    /* Plug negative size into user buffer. */
+		    ba->bsize = -(bufsize) size;
+		    /* Mark buffer after this one not preceded by free block. */
+		    bn->prevfree = 0;
+
+#ifdef BufStats
+		    totalloc += size;
+		    numget++;		  /* Increment number of bget() calls */
+#endif
+		    buf = (void *) ((((char *) ba) + sizeof(struct bhead)));
+		    return buf;
+		} else {
+		    struct bhead *ba;
+
+		    ba = BH(((char *) b) + b->bh.bsize);
+		    //AD assert(ba->prevfree == b->bh.bsize);
+
+                    /* The buffer isn't big enough to split.  Give  the  whole
+		       shebang to the caller and remove it from the free list. */
+
+		    //AD assert(b->ql.blink->ql.flink == b);
+		    //AD assert(b->ql.flink->ql.blink == b);
+		    b->ql.blink->ql.flink = b->ql.flink;
+		    b->ql.flink->ql.blink = b->ql.blink;
+
+#ifdef BufStats
+		    totalloc += b->bh.bsize;
+		    numget++;		  /* Increment number of bget() calls */
+#endif
+		    /* Negate size to mark buffer allocated. */
+		    b->bh.bsize = -(b->bh.bsize);
+
+		    /* Zero the back pointer in the next buffer in memory
+		       to indicate that this buffer is allocated. */
+		    ba->prevfree = 0;
+
+		    /* Give user buffer starting at queue links. */
+		    buf =  (void *) &(b->ql);
+		    return buf;
+		}
+	    }
+	    b = b->ql.flink;		  /* Link to next buffer */
+	}
+#ifdef BECtl
+
+        /* We failed to find a buffer.  If there's a compact  function
+	   defined,  notify  it  of the size requested.  If it returns
+	   TRUE, try the allocation again. */
+
+	if ((compfcn == NULL) || (!(*compfcn)(size, ++compactseq))) {
+	    break;
+	}
+    }
+
+    /* No buffer available with requested size free. */
+
+    /* Don't give up yet -- look in the reserve supply. */
+
+    if (acqfcn != NULL) {
+	if (size > exp_incr - sizeof(struct bhead)) {
+
+	    /* Request	is  too  large	to  fit in a single expansion
+	       block.  Try to satisy it by a direct buffer acquisition. */
+
+	    struct bdhead *bdh;
+
+	    size += sizeof(struct bdhead) - sizeof(struct bhead);
+	    if ((bdh = BDH((*acqfcn)((bufsize) size))) != NULL) {
+
+		/*  Mark the buffer special by setting the size field
+		    of its header to zero.  */
+		bdh->bh.bsize = 0;
+		bdh->bh.prevfree = 0;
+		bdh->tsize = size;
+#ifdef BufStats
+		totalloc += size;
+		numget++;	      /* Increment number of bget() calls */
+		numdget++;	      /* Direct bget() call count */
+#endif
+		buf =  (void *) (bdh + 1);
+		return buf;
+	    }
+
+	} else {
+
+	    /*	Try to obtain a new expansion block */
+
+	    void *newpool;
+
+	    if ((newpool = (*acqfcn)((bufsize) exp_incr)) != NULL) {
+		bpool(newpool, exp_incr);
+                buf =  bget(requested_size);  /* This can't, I say, can't
+						 get into a loop. */
+		return buf;
+	    }
+	}
+    }
+
+    /*	Still no buffer available */
+
+#endif /* BECtl */
+
+    return NULL;
+}

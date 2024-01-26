@@ -1,0 +1,26 @@
+#include <stdlib.h>
+#include <stdint.h>
+#include "ajit_access_routines.h"
+#include "core_portme.h"
+
+//#define NIC_ADDR 0x400000
+
+
+int main () 
+{
+	// enable the serial device.
+	//   from ajit_access_routines...
+	__ajit_write_serial_control_register__ ( TX_ENABLE | RX_ENABLE);
+
+	//
+	// in core_portme...
+	//
+	ee_printf("Hello World!!!\n");
+
+	uint32_t * NIC_REG = 0x000400000;
+	*NIC_REG = 110;
+	ee_printf("NIC_REG = %u\n", NIC_REG[0]);
+
+	return(0);
+}
+

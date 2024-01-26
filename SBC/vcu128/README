@@ -3,20 +3,22 @@ AI ML Accelerator on VCU128
 constraints/ - xdc file which contains the constraints for vcu128 board
 docs/ - Folder contains figures for explanation of the architecture
 hsys/ - source files for subsystems
+testing/ - Files for testing memory march, NIC march and Accelerator
 toplevel/ - Contains SBC core(hand edited) and toplevel vhdl file
 vivado_synth/ - Script to generate bitstream files
 
 
 TODO
 -------------------------------
-    - Modify the current code to include the Amans Accelerator code - DONE  
-      - Modify ACB AFB Complex for 4 engines - DONE
-      - Modify SBC Core to include ai ml engine - DONE 
-    - Modify the top level design to include ETH_VCU from Networking/vcu128/NicMac - Done
-    - Modify the constraints file - Done
-    - Modify the bitstream generation script and successfully generate the bitstream - Pending
-    - Complete the march test and accelerator test
-    
+    - Memory March Test - DONE
+    - NIC March Test - DONE
+    - Ethernet Test - Pending
+        - Receiver Test - Failed
+            - Processor goes to halt in cortos_readMessages
+        - Transmitter Test - Done
+            - Process: Received messages are sent 64 times and 
+                        they are captured in the wireshark
+    - Accelerator Test - Yet to start
 
 
 

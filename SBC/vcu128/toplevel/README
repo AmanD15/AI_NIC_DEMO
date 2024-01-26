@@ -1,0 +1,9 @@
+AI ML Accelerator on VCU128
+
+sbc_vcu128.vhdl - Toplevel vhdl file
+    - sbc_vcu128_core_edited.vhdl - Hand edited core file(unedited file is generated in ../hsys/vhdl/ folder)
+
+    - nic_mac_bridge_edited.vhdl - Hand edited vhdl file of nic_mac_bridge
+        - nic_mac_pipe_reset
+        - rx_concat_system
+        - tx_deconcat_system

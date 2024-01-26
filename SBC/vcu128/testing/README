@@ -1,0 +1,14 @@
+accl_demo
+    - Test for accelerator 
+    - Receives kernels and input data through ethernet 
+        and send the output through the ethernet 
+
+memory_march_test
+    - Test for accessing DRAM( RAM + NCRAM)
+
+nic_march_test
+    - Test for accessing the NIC Registers
+
+test_programmer
+    - Test for ethernet
+    - Send and receive a file via ethernet
