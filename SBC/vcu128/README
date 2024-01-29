@@ -12,14 +12,18 @@ TODO
 -------------------------------
     - Memory March Test - DONE
     - NIC March Test - DONE
-    - Ethernet Test - Pending
-        - Receiver Test - Failed
-            - Processor goes to halt in cortos_readMessages
-        - Transmitter Test - Done
-            - Process: Received messages are sent 64 times and 
-                        they are captured in the wireshark
-    - Accelerator Test - Yet to start
-
+    - Ethernet Test - Done 
+        - Ping Test and Send + Receive of Weights & Input modules
+    - Accelerator Test - Pending
+        - Processor is in run state and did not go to halt mode
+        - Struck in while loop of accl_demo/main.c
+        - Reason: Register 0 of accelerators is not updated from 0x00111 to 0x11111
+        - Register 0 is returning 0x00011
+        - Data in other registers is correct
+        - [accelerator_worker_daemon] in accelerator_processor_interface.aa
+           3rd bit is assigned 0 -> then calls convolutionAll() function -> then sets register 0 to 0x11111
+        - Need to read convolutionAll() function
+        - Same error in bitfile of Integration folder but it is working correctly in Networking folder
 
 
 
