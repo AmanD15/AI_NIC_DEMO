@@ -16,7 +16,7 @@ TODO
         - Ping Test and Send + Receive of Weights & Input modules
     - Accelerator Test - Pending
         - Processor is in run state and did not go to halt mode
-        - Struck in while loop of accl_demo/main.c
+        - Struck in while loop of testing/accl_demo/main.c
         - Reason: Register 0 of accelerators is not updated from 0x00111 to 0x11111
         - Register 0 is returning 0x00011
         - Data in other registers is correct
