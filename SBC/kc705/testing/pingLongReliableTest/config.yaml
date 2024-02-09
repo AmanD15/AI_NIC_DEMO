@@ -22,12 +22,12 @@ Hardware:
       StartAddr: 0x30000000
       # EndAddr: ...
       # SizeInBytes: ...
-      SizeInMegaBytes: 512
+      SizeInMegaBytes: 16
       Permissions: RWXC
     NCRAM:
-      StartAddr: 0x50000000  # physical address
+      StartAddr: 0x31000000  # physical address
       # SizeInBytes: ...
-      SizeInMegaBytes: 256
+      SizeInMegaBytes: 16
       Permissions: RW
     MMIO: # Memory Mapped IO
       StartAddr: 0xFF000000  # physical address
@@ -82,7 +82,7 @@ Software:
     EnableSerial: Yes # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
-    BuildArgs: "-D HAS_FLOAT -D NCRAM_BASE_ADDRESS=0x50000000"
+    BuildArgs: "-D HAS_FLOAT "
 
 
   # Required: Which functions execute on each ajit thread.

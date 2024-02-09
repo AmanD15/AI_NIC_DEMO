@@ -64,6 +64,8 @@ int main(int argc, char *argv[])
 	int saddr_len = sizeof socket_address;
 	char ifName[IFNAMSIZ];
 
+	char str[58] = "This is a dummy message for someone just check it..!";
+
 	/* Get interface name */
 	if (argc > 1)
 		strcpy(ifName, argv[1]);
@@ -133,33 +135,29 @@ int main(int argc, char *argv[])
 	socket_address.sll_addr[5] = MY_DEST_MAC5;
 
 	int pkt_cnt = 0;
+
 	int i = 0;
 
-    char str[58] = "This is a dummy message no. ";
-    char tempBuf[58];
-    char seqBuf[10];
-
+	for(i = 0; i < 55; i++) // 53
+		sendbuf[tx_len++] = str[i];
+	//printf("Contents of sendbuf are: %s\n",sendbuf[tx_len]); 
+	//exit(0);
 	/* Send packet */
 	int tot_pkt = atoi(argv[3]);
 	int dummy = 0;
-
 	if(atoi(argv[2]) == 1)
 	{
 		while(pkt_cnt < tot_pkt)
 		{
-           
-			//sendbuf[tx_len++] = pkt_cnt;
-
-             memset(sendbuf,0,strlen(sendbuf));  // Clear sendBuf
-             strcpy(tempBuf,str);                // copy original data to temporary buffer :"tempBuf"
-             sprintf(seqBuf,"%d",pkt_cnt);       // converting pkt_count to char array sequence buffer: "seqBuf"
-             strncat(tempBuf,seqBuf,10);         // attaching pkt_count to packet data.
-             strncat(sendbuf,tempBuf,58);        // put everything to sendBuf
-            
-
+			sendbuf[tx_len++] = pkt_cnt;
 			// send packet
 			if (sendto(sockfd, sendbuf, tx_len, 0, (struct sockaddr *) &socket_address, sizeof(struct sockaddr_ll)) < 0)
 			{
+				//start timer
+				//while(recv);
+				// end timer
+				// measure RTT and print
+				//send again
 				printf("Send failed\n");
 			}
 			// sent successfully..!
