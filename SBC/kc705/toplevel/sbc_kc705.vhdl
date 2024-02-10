@@ -178,10 +178,10 @@ architecture structure of sbc_kc705 is
     MAC_TO_NIC_pipe_write_data : in std_logic_vector(9 downto 0);
     MAC_TO_NIC_pipe_write_req  : in std_logic_vector(0  downto 0);
     MAC_TO_NIC_pipe_write_ack  : out std_logic_vector(0  downto 0);
-    MAX_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
-    MAX_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-    MIN_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
-    MIN_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
+    MAX_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
+    MAX_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
+    MIN_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
+    MIN_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
     RESET_TO_DRAMCTRL_BRIDGE : in std_logic;
     RESET_TO_NIC : in std_logic;
     RESET_TO_PROCESSOR : in std_logic;
@@ -376,10 +376,10 @@ end component mig_7series_0;
    signal NIC_TO_MAC_pipe_read_req  : std_logic_vector(0  downto 0);
    signal NIC_TO_MAC_pipe_read_ack  : std_logic_vector(0  downto 0);
 
-   signal MAX_ACB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
-   signal MAX_AFB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
-   signal MIN_ACB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
-   signal MIN_AFB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MAX_ACB_TAP1_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MAX_ACB_TAP2_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MIN_ACB_TAP1_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MIN_ACB_TAP2_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
 
    signal CONFIG_UART_BAUD_CONTROL_WORD: std_logic_vector(31 downto 0);
    signal CPU_MODE_SIG : std_logic_vector(1 downto 0); 
@@ -423,12 +423,12 @@ begin
 
       
      -- For first ACB Tap goes to only NIC.
-     MIN_ACB_TAP_ADDR <= X"0_FF00_0000";
-     MAX_ACB_TAP_ADDR <= X"0_FFFF_FFFF";
+     MIN_ACB_TAP1_ADDR <= X"0_FF00_0000";
+     MAX_ACB_TAP1_ADDR <= X"0_FFFF_FFFF";
 
      -- For second ACB TAP goes to RAM.
-     MIN_AFB_TAP_ADDR <= X"0_3000_0000";
-     MAX_AFB_TAP_ADDR <= X"0_FEFF_FFFF"; -- 0_FEFF_FFFF + 1 = 0_FF00_0000
+     MIN_ACB_TAP2_ADDR <= X"0_3000_0000";
+     MAX_ACB_TAP2_ADDR <= X"0_FEFF_FFFF"; -- 0_FEFF_FFFF + 1 = 0_FF00_0000
        
     clk_wiz_0_inst: clk_wiz_0 
         Port map( 
@@ -529,10 +529,10 @@ begin
     NIC_TO_MAC_pipe_read_req => NIC_TO_MAC_pipe_read_req,
     NIC_TO_MAC_pipe_read_ack => NIC_TO_MAC_pipe_read_ack,
     
-    MAX_ACB_TAP_ADDR => MAX_ACB_TAP_ADDR,
-    MAX_AFB_TAP_ADDR => MAX_AFB_TAP_ADDR,
-    MIN_ACB_TAP_ADDR => MIN_ACB_TAP_ADDR,
-    MIN_AFB_TAP_ADDR => MIN_AFB_TAP_ADDR,
+    MAX_ACB_TAP1_ADDR => MAX_ACB_TAP1_ADDR,
+    MAX_ACB_TAP2_ADDR => MAX_ACB_TAP2_ADDR,
+    MIN_ACB_TAP1_ADDR => MIN_ACB_TAP1_ADDR,
+    MIN_ACB_TAP2_ADDR => MIN_ACB_TAP2_ADDR,
 
     SPI_FLASH_MISO => SPI_FLASH_MISO,
     SPI_FLASH_CLK => SPI_FLASH_CLK_SIG,
