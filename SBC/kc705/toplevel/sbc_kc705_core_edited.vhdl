@@ -195,10 +195,10 @@ entity sbc_kc705_core is --
     MAC_TO_NIC_pipe_write_data : in std_logic_vector(9 downto 0);
     MAC_TO_NIC_pipe_write_req  : in std_logic_vector(0  downto 0);
     MAC_TO_NIC_pipe_write_ack  : out std_logic_vector(0  downto 0);
-    MAX_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
-    MAX_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-    MIN_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
-    MIN_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
+    MAX_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
+    MAX_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
+    MIN_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
+    MIN_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
     RESET_TO_DRAMCTRL_BRIDGE : in std_logic;
     RESET_TO_NIC : in std_logic;
     RESET_TO_PROCESSOR : in std_logic;
@@ -395,10 +395,10 @@ architecture struct of sbc_kc705_core is --
       AFB_RESPONSE_FROM_NIC_pipe_write_data : in std_logic_vector(32 downto 0);
       AFB_RESPONSE_FROM_NIC_pipe_write_req  : in std_logic_vector(0  downto 0);
       AFB_RESPONSE_FROM_NIC_pipe_write_ack  : out std_logic_vector(0  downto 0);
-      MAX_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MAX_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MIN_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MIN_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
+      MAX_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
+      MAX_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
+      MIN_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
+      MIN_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
       ACB_REQUEST_TO_DRAM_pipe_read_data : out std_logic_vector(109 downto 0);
       ACB_REQUEST_TO_DRAM_pipe_read_req  : in std_logic_vector(0  downto 0);
       ACB_REQUEST_TO_DRAM_pipe_read_ack  : out std_logic_vector(0  downto 0);
@@ -693,10 +693,10 @@ begin --
     AFB_RESPONSE_FROM_NIC_pipe_write_data => NIC_AFB_RESPONSE_pipe_read_data,
     AFB_RESPONSE_FROM_NIC_pipe_write_req => NIC_AFB_RESPONSE_pipe_read_ack,
     AFB_RESPONSE_FROM_NIC_pipe_write_ack => NIC_AFB_RESPONSE_pipe_read_req,
-    MAX_ACB_TAP_ADDR => MAX_ACB_TAP_ADDR,
-    MAX_AFB_TAP_ADDR => MAX_AFB_TAP_ADDR,
-    MIN_ACB_TAP_ADDR => MIN_ACB_TAP_ADDR,
-    MIN_AFB_TAP_ADDR => MIN_AFB_TAP_ADDR,
+    MAX_ACB_TAP1_ADDR => MAX_ACB_TAP1_ADDR,
+    MAX_ACB_TAP2_ADDR => MAX_ACB_TAP2_ADDR,
+    MIN_ACB_TAP1_ADDR => MIN_ACB_TAP1_ADDR,
+    MIN_ACB_TAP2_ADDR => MIN_ACB_TAP2_ADDR,
     clk => CLOCK_TO_NIC, reset => RESET_TO_NIC
     ); -- 
   acb_dram_controller_bridge_inst: acb_dram_controller_bridge

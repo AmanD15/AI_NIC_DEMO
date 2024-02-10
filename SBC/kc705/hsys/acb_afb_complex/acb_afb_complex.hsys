@@ -11,11 +11,11 @@ $system acb_afb_complex $library acb_afb_complex_lib
 		// tap ranges could be made inputs
 		// so that we can delay the decision
 		// of which address ranges are used
-		$signal MIN_ACB_TAP_ADDR   36	$depth 1
-		$signal MAX_ACB_TAP_ADDR   36	$depth 1
+		$signal MIN_ACB_TAP1_ADDR   36	$depth 1
+		$signal MAX_ACB_TAP1_ADDR   36	$depth 1
 
-		$signal MIN_AFB_TAP_ADDR   36	$depth 1
-		$signal MAX_AFB_TAP_ADDR   36	$depth 1
+		$signal MIN_ACB_TAP2_ADDR   36	$depth 1
+		$signal MAX_ACB_TAP2_ADDR   36	$depth 1
 
 	$out
 		$pipe ACB_RESPONSE_TO_PROCESSOR
@@ -57,8 +57,8 @@ $system acb_afb_complex $library acb_afb_complex_lib
 		CORE_BUS_RESPONSE_THROUGH  => ACB_THROUGH_RESPONSE_FROM_FLASH_DRAM
 
 		// address range for tap
-		MIN_ADDR_TAP            => MIN_ACB_TAP_ADDR
-		MAX_ADDR_TAP            => MAX_ACB_TAP_ADDR
+		MIN_ADDR_TAP            => MIN_ACB_TAP1_ADDR
+		MAX_ADDR_TAP            => MAX_ACB_TAP1_ADDR
 		
 	$instance acb_afb_bridge_inst_1  GlueModules:acb_afb_bridge
 		CORE_BUS_REQUEST    => ACB_TAP_REQUEST_TO_NIC
@@ -85,8 +85,8 @@ $system acb_afb_complex $library acb_afb_complex_lib
 		// its actually acb tap address only, just to keep interfaces 
 		// compatible with prev design "MIN_AFB_TAP_ADDR" is not changed 
 		// to "MIN_ACB_TAP_ADDR_Second_ACB_TAP" 
-		MIN_ADDR_TAP            => MIN_AFB_TAP_ADDR 
-		MAX_ADDR_TAP            => MAX_AFB_TAP_ADDR 
+		MIN_ADDR_TAP            => MIN_ACB_TAP2_ADDR 
+		MAX_ADDR_TAP            => MAX_ACB_TAP2_ADDR 
 
 		
 	$instance acb_afb_bridge_inst_2  GlueModules:acb_afb_bridge

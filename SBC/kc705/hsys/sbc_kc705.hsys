@@ -27,10 +27,10 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$signal DRAM_CONTROLLER_TO_ACB_BRIDGE
 
 		// TODO: tap ranges should be put here.
-        $signal MIN_ACB_TAP_ADDR
-	    $signal MAX_ACB_TAP_ADDR
-	    $signal MIN_AFB_TAP_ADDR
-	    $signal MAX_AFB_TAP_ADDR
+        $signal MIN_ACB_TAP1_ADDR
+	    $signal MAX_ACB_TAP1_ADDR
+	    $signal MIN_ACB_TAP2_ADDR
+	    $signal MAX_ACB_TAP2_ADDR
 		
 	$out
 		// processor 
@@ -124,10 +124,10 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		AFB_RESPONSE_FROM_NIC      => NIC_AFB_RESPONSE
 		AFB_REQUEST_TO_FLASH       => AFB_FLASH_REQUEST
 		AFB_RESPONSE_FROM_FLASH    => FLASH_AFB_RESPONSE
-		MIN_ACB_TAP_ADDR           => MIN_ACB_TAP_ADDR
-		MAX_ACB_TAP_ADDR           => MAX_ACB_TAP_ADDR
-		MIN_AFB_TAP_ADDR           => MIN_AFB_TAP_ADDR
-		MAX_AFB_TAP_ADDR           => MAX_AFB_TAP_ADDR
+		MIN_ACB_TAP1_ADDR           => MIN_ACB_TAP1_ADDR
+		MAX_ACB_TAP1_ADDR           => MAX_ACB_TAP1_ADDR
+		MIN_ACB_TAP2_ADDR           => MIN_ACB_TAP2_ADDR
+		MAX_ACB_TAP2_ADDR           => MAX_ACB_TAP2_ADDR
 		
 	$instance spi_flash_controller_inst spi_flash_controller_lib:spi_flash_controller
 
