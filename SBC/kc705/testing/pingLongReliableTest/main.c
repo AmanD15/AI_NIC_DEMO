@@ -20,11 +20,11 @@ void nicRegConfig(CortosQueueHeader*, CortosQueueHeader*, CortosQueueHeader*);
 void swapMacAddress(uint32_t*);
 void printFrame(uint32_t*);
 
-struct CortosQueueHeader* volatile free_queue;
-struct CortosQueueHeader* volatile rx_queue;
-struct CortosQueueHeader* volatile tx_queue;
+volatile struct CortosQueueHeader* volatile free_queue;
+volatile struct CortosQueueHeader* volatile rx_queue;
+volatile struct CortosQueueHeader* volatile tx_queue;
 
-uint32_t * volatile Buffers[8];
+volatile uint32_t* volatile Buffers[8];
 
 int main()
 {
@@ -84,19 +84,33 @@ int main()
 	
 	
 	while(1)
+	// spin this loop
+	// while this loop is running, the interrupt handler
+	// will be invoked by a timer interrupt (every 1ms or 10ms etc.)
+	//   1. the interrupt handler will pop a packet from the tx-queue
+	//      and if available, check the packet data if it is as expected.
+	//   2. the interrupt handler will pop a buffer from the free queue
+	//       and if available, fill it and push it to the rx-queue.
 	{
 		
-
-		if(cortos_readMessages(rx_queue, (uint8_t*)data, 1)){
+		// disable timer interrupt and confirm that it is
+		// disabled, by reading back the interrupt control register.
+		__TURN_OFF_INTERRUPTS__;
+		int read_ok = cortos_readMessages(rx_queue, (uint8_t*)data, 1);
+		// just enable the interrupt by writing to the interrupt control register..
+		__TURN_ON_INTERRUPTS;
+	
+		if(read_ok) {
 
 			printFrame(data);
 			swapMacAddress(data);
+
 			//printFrame(data);
+			__TURN_OFF_INTERRUPTS;
 			msgs_written = cortos_writeMessages(tx_queue, (uint8_t*)data, 1);
 			message_counter++;
 			cortos_printf("message_counter:%d\n",message_counter);
-	
-
+			__TURN_ON_INTERRUPTS;
 		}	
 		else
 		{
@@ -104,11 +118,6 @@ int main()
 			
 			__ajit_sleep__ (1024);
 		}
-
-		
-		
-		
-
 	}
 	
 	
@@ -143,10 +152,11 @@ void nicRegConfig(CortosQueueHeader* Free_Queue,
 {
 	cortos_printf("NIC_REG[22]=0x%x\n",readNicReg(22));
 	
-	writeNicReg(1,1);			//NIC_REG[1] = 1;//NUMBER_OF_SERVERS;
-	writeNicReg(2,(uint32_t)Rx_Queue);	//NIC_REG[2] = Rx_Queue;
-	writeNicReg(10,(uint32_t)Tx_Queue);	//NIC_REG[10] = Tx_Queue;
-	writeNicReg(18,(uint32_t)Free_Queue);	//NIC_REG[18] = Free_Queue;
+	writeNicReg(1,1);				//NIC_REG[1] = 1;//NUMBER_OF_SERVERS;
+	// Note: NIC keeps only bits 35:4 of the queue pointers.
+	writeNicReg(2, ((uint32_t) Rx_Queue)   >> 4);	//NIC_REG[2] = Rx_Queue;
+	writeNicReg(10,((uint32_t) Tx_Queue)   >> 4);	//NIC_REG[10] = Tx_Queue;
+	writeNicReg(18,((uint32_t) Free_Queue) >> 4);	//NIC_REG[18] = Free_Queue;
 
 	writeNicReg (21, 0); // number of transmmitted packets = 0.
 
@@ -185,9 +195,6 @@ void writeNicReg(uint32_t index, uint32_t value)
 	//__ajit_store_word_mmu_bypass__(value,&NIC_REG[index]);
 	//__ajit_store_word_to_physical_address__(value,(uint64_t) &NIC_REG[index]);
 	NIC_REG[index] = value;
-
-
-
 }
 
 

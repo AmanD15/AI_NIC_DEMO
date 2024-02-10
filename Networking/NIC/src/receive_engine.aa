@@ -22,7 +22,6 @@ $is
 		// loop around until enabled by Software
 		$rreport(ReceiveEngineDaemon waiting_for_control)
 		$merge $entry not_enabled_yet_loopback disable_loopback $endmerge
-		
 			// If not enabled yet -> Loopback
 			$if (~(CONTROL_REGISTER [] 0)) $then
 				$place [not_enabled_yet_loopback]

@@ -92,3 +92,4 @@
 
 
 
+For interrupt examples, look at AjitToolChain/validation_ladder/cortos2_tests/interrupts/timer and serial

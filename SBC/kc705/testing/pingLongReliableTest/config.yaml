@@ -115,8 +115,8 @@ Software:
 #       MessageSizeInBytes: 8
 #       TotalMessageCapacity: 256 # num. of messages
 #
-#   InterruptHandler:
-#     - TypeCode: 0x4
-#       Function: functionName4
-#     - TypeCode: 0x5
-#       Function: functionName5
+     # interrupt handler for timer.
+   Interrupts: # hardware interrupts
+    - Index: 10 # timer
+      Function: my_timer_interrupt_handler
+
