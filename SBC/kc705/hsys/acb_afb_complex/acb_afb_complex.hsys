@@ -82,9 +82,6 @@ $system acb_afb_complex $library acb_afb_complex_lib
 		CORE_BUS_RESPONSE_THROUGH  => ACB_THROUGH_RESPONSE_FROM_FLASH
 
 		// address range for tap
-		// its actually acb tap address only, just to keep interfaces 
-		// compatible with prev design "MIN_AFB_TAP_ADDR" is not changed 
-		// to "MIN_ACB_TAP_ADDR_Second_ACB_TAP" 
 		MIN_ADDR_TAP            => MIN_ACB_TAP2_ADDR 
 		MAX_ADDR_TAP            => MAX_ACB_TAP2_ADDR 
 
