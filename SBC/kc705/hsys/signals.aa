@@ -32,10 +32,10 @@ $pipe DRAM_CONTROLLER_TO_ACB_BRIDGE: $uint<522>  $depth 1 $signal
 
 
 // ACB_AFB_COMPLEX SIGNALS
-$pipe MIN_ACB_TAP_ADDR:   $uint<36>	$depth 1 $signal
-$pipe MAX_ACB_TAP_ADDR:   $uint<36>	$depth 1 $signal
-$pipe MIN_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
-$pipe MAX_AFB_TAP_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MIN_ACB_TAP1_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MAX_ACB_TAP1_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MIN_ACB_TAP2_ADDR:   $uint<36>	$depth 1 $signal
+$pipe MAX_ACB_TAP2_ADDR:   $uint<36>	$depth 1 $signal
 
 // STUFF
 $pipe SWITCHES: $uint<4> $signal
