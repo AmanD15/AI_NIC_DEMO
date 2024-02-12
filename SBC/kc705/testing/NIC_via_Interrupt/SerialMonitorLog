@@ -1,0 +1,2574 @@
+Started
+19:00:56.569 -> Reserved queues: free=0x41ffffa0, rx=0x41ffff50, tx=0x41fffef0
+19:00:56.569 -> Allocated Buffer[0] = 0x41fffec0
+19:00:56.569 -> Allocated Buffer[1] = 0x41fffe98
+19:00:56.569 -> Allocated Buffer[2] = 0x41fffe70
+19:00:56.569 -> Allocated Buffer[3] = 0x41fffe48
+19:00:56.602 -> Allocated Buffer[4] = 0x41fffe20
+19:00:56.602 -> Allocated Buffer[5] = 0x41fffdf8
+19:00:56.602 -> Allocated Buffer[6] = 0x41fffdd0
+19:00:56.602 -> Allocated Buffer[7] = 0x41fffda8
+19:00:56.602 -> Stored Buffer[0] in free-queue = 0x41fffec0
+19:00:56.602 -> Stored Buffer[1] in free-queue = 0x41fffe98
+19:00:56.602 -> Stored Buffer[2] in free-queue = 0x41fffe70
+19:00:56.602 -> Stored Buffer[3] in free-queue = 0x41fffe48
+19:00:56.602 -> no. of messages forwarded by main(): 0
+19:00:56.602 -> NIC has no packet to transmit!
+19:00:56.636 -> free buffer obtained by NIC
+19:00:56.636 -> NIC received a packet
+19:00:56.636 -> no. of messages forwarded by main(): 1
+19:00:56.636 -> NIC transmitted a packet
+19:00:56.636 -> FreeQ replenished back
+19:00:56.636 -> free buffer obtained by NIC
+19:00:56.636 -> NIC received a packet
+19:00:56.636 -> no. of messages forwarded by main(): 2
+19:00:56.636 -> NIC transmitted a packet
+19:00:56.636 -> FreeQ replenished back
+19:00:56.636 -> free buffer obtained by NIC
+19:00:56.669 -> NIC received a packet
+19:00:56.669 -> no. of messages forwarded by main(): 3
+19:00:56.669 -> NIC transmitted a packet
+19:00:56.669 -> FreeQ replenished back
+19:00:56.669 -> free buffer obtained by NIC
+19:00:56.669 -> NIC received a packet
+19:00:56.669 -> no. of messages forwarded by main(): 4
+19:00:56.669 -> NIC transmitted a packet
+19:00:56.669 -> FreeQ replenished back
+19:00:56.669 -> free buffer obtained by NIC
+19:00:56.669 -> NIC received a packet
+19:00:56.669 -> no. of messages forwarded by main(): 5
+19:00:56.669 -> NIC transmitted a packet
+19:00:56.669 -> FreeQ replenished back
+19:00:56.669 -> free buffer obtained by NIC
+19:00:56.702 -> NIC received a packet
+19:00:56.702 -> no. of messages forwarded by main(): 6
+19:00:56.702 -> NIC transmitted a packet
+19:00:56.702 -> FreeQ replenished back
+19:00:56.702 -> free buffer obtained by NIC
+19:00:56.702 -> NIC received a packet
+19:00:56.702 -> no. of messages forwarded by main(): 7
+19:00:56.702 -> NIC transmitted a packet
+19:00:56.702 -> FreeQ replenished back
+19:00:56.702 -> free buffer obtained by NIC
+19:00:56.702 -> NIC received a packet
+19:00:56.702 -> no. of messages forwarded by main(): 8
+19:00:56.735 -> NIC transmitted a packet
+19:00:56.735 -> FreeQ replenished back
+19:00:56.735 -> free buffer obtained by NIC
+19:00:56.735 -> NIC received a packet
+19:00:56.735 -> no. of messages forwarded by main(): 9
+19:00:56.735 -> NIC transmitted a packet
+19:00:56.735 -> FreeQ replenished back
+19:00:56.735 -> free buffer obtained by NIC
+19:00:56.735 -> NIC received a packet
+19:00:56.735 -> no. of messages forwarded by main(): 10
+19:00:56.735 -> NIC transmitted a packet
+19:00:56.735 -> FreeQ replenished back
+19:00:56.735 -> free buffer obtained by NIC
+19:00:56.768 -> NIC received a packet
+19:00:56.768 -> no. of messages forwarded by main(): 11
+19:00:56.768 -> NIC transmitted a packet
+19:00:56.768 -> FreeQ replenished back
+19:00:56.768 -> free buffer obtained by NIC
+19:00:56.768 -> NIC received a packet
+19:00:56.768 -> no. of messages forwarded by main(): 12
+19:00:56.768 -> NIC transmitted a packet
+19:00:56.768 -> FreeQ replenished back
+19:00:56.768 -> free buffer obtained by NIC
+19:00:56.768 -> NIC received a packet
+19:00:56.768 -> no. of messages forwarded by main(): 13
+19:00:56.804 -> NIC transmitted a packet
+19:00:56.804 -> FreeQ replenished back
+19:00:56.804 -> free buffer obtained by NIC
+19:00:56.804 -> NIC received a packet
+19:00:56.804 -> no. of messages forwarded by main(): 14
+19:00:56.804 -> NIC transmitted a packet
+19:00:56.804 -> FreeQ replenished back
+19:00:56.804 -> free buffer obtained by NIC
+19:00:56.804 -> NIC received a packet
+19:00:56.804 -> no. of messages forwarded by main(): 15
+19:00:56.804 -> NIC transmitted a packet
+19:00:56.804 -> FreeQ replenished back
+19:00:56.837 -> free buffer obtained by NIC
+19:00:56.837 -> NIC received a packet
+19:00:56.837 -> no. of messages forwarded by main(): 16
+19:00:56.837 -> NIC transmitted a packet
+19:00:56.837 -> FreeQ replenished back
+19:00:56.837 -> free buffer obtained by NIC
+19:00:56.837 -> NIC received a packet
+19:00:56.837 -> no. of messages forwarded by main(): 17
+19:00:56.837 -> NIC transmitted a packet
+19:00:56.837 -> FreeQ replenished back
+19:00:56.837 -> free buffer obtained by NIC
+19:00:56.837 -> NIC received a packet
+19:00:56.837 -> no. of messages forwarded by main(): 18
+19:00:56.837 -> NIC transmitted a packet
+19:00:56.837 -> FreeQ replenished back
+19:00:56.871 -> free buffer obtained by NIC
+19:00:56.871 -> NIC received a packet
+19:00:56.871 -> no. of messages forwarded by main(): 19
+19:00:56.871 -> NIC transmitted a packet
+19:00:56.871 -> FreeQ replenished back
+19:00:56.871 -> free buffer obtained by NIC
+19:00:56.871 -> NIC received a packet
+19:00:56.871 -> no. of messages forwarded by main(): 20
+19:00:56.871 -> NIC transmitted a packet
+19:00:56.871 -> FreeQ replenished back
+19:00:56.871 -> free buffer obtained by NIC
+19:00:56.871 -> NIC received a packet
+19:00:56.904 -> no. of messages forwarded by main(): 21
+19:00:56.904 -> NIC transmitted a packet
+19:00:56.904 -> FreeQ replenished back
+19:00:56.904 -> free buffer obtained by NIC
+19:00:56.904 -> NIC received a packet
+19:00:56.904 -> no. of messages forwarded by main(): 22
+19:00:56.904 -> NIC transmitted a packet
+19:00:56.904 -> FreeQ replenished back
+19:00:56.904 -> free buffer obtained by NIC
+19:00:56.904 -> NIC received a packet
+19:00:56.904 -> no. of messages forwarded by main(): 23
+19:00:56.904 -> NIC transmitted a packet
+19:00:56.904 -> FreeQ replenished back
+19:00:56.937 -> free buffer obtained by NIC
+19:00:56.937 -> NIC received a packet
+19:00:56.937 -> no. of messages forwarded by main(): 24
+19:00:56.937 -> NIC transmitted a packet
+19:00:56.937 -> FreeQ replenished back
+19:00:56.937 -> free buffer obtained by NIC
+19:00:56.937 -> NIC received a packet
+19:00:56.937 -> no. of messages forwarded by main(): 25
+19:00:56.937 -> NIC transmitted a packet
+19:00:56.937 -> FreeQ replenished back
+19:00:56.937 -> free buffer obtained by NIC
+19:00:56.937 -> NIC received a packet
+19:00:56.937 -> no. of messages forwarded by main(): 26
+19:00:56.970 -> NIC transmitted a packet
+19:00:56.970 -> FreeQ replenished back
+19:00:56.970 -> free buffer obtained by NIC
+19:00:56.970 -> NIC received a packet
+19:00:56.970 -> no. of messages forwarded by main(): 27
+19:00:56.970 -> NIC transmitted a packet
+19:00:56.970 -> FreeQ replenished back
+19:00:56.970 -> free buffer obtained by NIC
+19:00:56.970 -> NIC received a packet
+19:00:56.970 -> no. of messages forwarded by main(): 28
+19:00:56.970 -> NIC transmitted a packet
+19:00:56.970 -> FreeQ replenished back
+19:00:57.003 -> free buffer obtained by NIC
+19:00:57.003 -> NIC received a packet
+19:00:57.003 -> no. of messages forwarded by main(): 29
+19:00:57.003 -> NIC transmitted a packet
+19:00:57.003 -> FreeQ replenished back
+19:00:57.003 -> free buffer obtained by NIC
+19:00:57.003 -> NIC received a packet
+19:00:57.003 -> no. of messages forwarded by main(): 30
+19:00:57.003 -> NIC transmitted a packet
+19:00:57.003 -> FreeQ replenished back
+19:00:57.003 -> free buffer obtained by NIC
+19:00:57.003 -> NIC received a packet
+19:00:57.003 -> no. of messages forwarded by main(): 31
+19:00:57.038 -> NIC transmitted a packet
+19:00:57.038 -> FreeQ replenished back
+19:00:57.038 -> free buffer obtained by NIC
+19:00:57.038 -> NIC received a packet
+19:00:57.038 -> no. of messages forwarded by main(): 32
+19:00:57.038 -> NIC transmitted a packet
+19:00:57.038 -> FreeQ replenished back
+19:00:57.038 -> free buffer obtained by NIC
+19:00:57.038 -> NIC received a packet
+19:00:57.038 -> no. of messages forwarded by main(): 33
+19:00:57.038 -> NIC transmitted a packet
+19:00:57.038 -> FreeQ replenished back
+19:00:57.038 -> free buffer obtained by NIC
+19:00:57.038 -> NIC received a packet
+19:00:57.071 -> no. of messages forwarded by main(): 34
+19:00:57.071 -> NIC transmitted a packet
+19:00:57.071 -> FreeQ replenished back
+19:00:57.071 -> free buffer obtained by NIC
+19:00:57.071 -> NIC received a packet
+19:00:57.071 -> no. of messages forwarded by main(): 35
+19:00:57.071 -> NIC transmitted a packet
+19:00:57.071 -> FreeQ replenished back
+19:00:57.071 -> free buffer obtained by NIC
+19:00:57.071 -> NIC received a packet
+19:00:57.071 -> no. of messages forwarded by main(): 36
+19:00:57.104 -> NIC transmitted a packet
+19:00:57.104 -> FreeQ replenished back
+19:00:57.104 -> free buffer obtained by NIC
+19:00:57.104 -> NIC received a packet
+19:00:57.104 -> no. of messages forwarded by main(): 37
+19:00:57.104 -> NIC transmitted a packet
+19:00:57.104 -> FreeQ replenished back
+19:00:57.104 -> free buffer obtained by NIC
+19:00:57.104 -> NIC received a packet
+19:00:57.104 -> no. of messages forwarded by main(): 38
+19:00:57.104 -> NIC transmitted a packet
+19:00:57.104 -> FreeQ replenished back
+19:00:57.104 -> free buffer obtained by NIC
+19:00:57.137 -> NIC received a packet
+19:00:57.137 -> no. of messages forwarded by main(): 39
+19:00:57.137 -> NIC transmitted a packet
+19:00:57.137 -> FreeQ replenished back
+19:00:57.137 -> free buffer obtained by NIC
+19:00:57.137 -> NIC received a packet
+19:00:57.137 -> no. of messages forwarded by main(): 40
+19:00:57.137 -> NIC transmitted a packet
+19:00:57.137 -> FreeQ replenished back
+19:00:57.137 -> free buffer obtained by NIC
+19:00:57.137 -> NIC received a packet
+19:00:57.137 -> no. of messages forwarded by main(): 41
+19:00:57.137 -> NIC transmitted a packet
+19:00:57.170 -> FreeQ replenished back
+19:00:57.170 -> free buffer obtained by NIC
+19:00:57.170 -> NIC received a packet
+19:00:57.170 -> no. of messages forwarded by main(): 42
+19:00:57.170 -> NIC transmitted a packet
+19:00:57.170 -> FreeQ replenished back
+19:00:57.170 -> free buffer obtained by NIC
+19:00:57.170 -> NIC received a packet
+19:00:57.170 -> no. of messages forwarded by main(): 43
+19:00:57.170 -> NIC transmitted a packet
+19:00:57.170 -> FreeQ replenished back
+19:00:57.170 -> free buffer obtained by NIC
+19:00:57.170 -> NIC received a packet
+19:00:57.203 -> no. of messages forwarded by main(): 44
+19:00:57.203 -> NIC transmitted a packet
+19:00:57.203 -> FreeQ replenished back
+19:00:57.203 -> free buffer obtained by NIC
+19:00:57.203 -> NIC received a packet
+19:00:57.203 -> no. of messages forwarded by main(): 45
+19:00:57.203 -> NIC transmitted a packet
+19:00:57.203 -> FreeQ replenished back
+19:00:57.203 -> free buffer obtained by NIC
+19:00:57.203 -> NIC received a packet
+19:00:57.203 -> no. of messages forwarded by main(): 46
+19:00:57.203 -> NIC transmitted a packet
+19:00:57.237 -> FreeQ replenished back
+19:00:57.237 -> free buffer obtained by NIC
+19:00:57.237 -> NIC received a packet
+19:00:57.237 -> no. of messages forwarded by main(): 47
+19:00:57.237 -> NIC transmitted a packet
+19:00:57.237 -> FreeQ replenished back
+19:00:57.237 -> free buffer obtained by NIC
+19:00:57.237 -> NIC received a packet
+19:00:57.237 -> no. of messages forwarded by main(): 48
+19:00:57.237 -> NIC transmitted a packet
+19:00:57.237 -> FreeQ replenished back
+19:00:57.237 -> free buffer obtained by NIC
+19:00:57.237 -> NIC received a packet
+19:00:57.270 -> no. of messages forwarded by main(): 49
+19:00:57.270 -> NIC transmitted a packet
+19:00:57.270 -> FreeQ replenished back
+19:00:57.270 -> free buffer obtained by NIC
+19:00:57.270 -> NIC received a packet
+19:00:57.270 -> no. of messages forwarded by main(): 50
+19:00:57.270 -> NIC transmitted a packet
+19:00:57.270 -> FreeQ replenished back
+19:00:57.270 -> free buffer obtained by NIC
+19:00:57.270 -> NIC received a packet
+19:00:57.270 -> no. of messages forwarded by main(): 51
+19:00:57.270 -> NIC transmitted a packet
+19:00:57.270 -> FreeQ replenished back
+19:00:57.303 -> free buffer obtained by NIC
+19:00:57.303 -> NIC received a packet
+19:00:57.303 -> no. of messages forwarded by main(): 52
+19:00:57.303 -> NIC transmitted a packet
+19:00:57.303 -> FreeQ replenished back
+19:00:57.303 -> free buffer obtained by NIC
+19:00:57.303 -> NIC received a packet
+19:00:57.303 -> no. of messages forwarded by main(): 53
+19:00:57.303 -> NIC transmitted a packet
+19:00:57.303 -> FreeQ replenished back
+19:00:57.303 -> free buffer obtained by NIC
+19:00:57.303 -> NIC received a packet
+19:00:57.303 -> no. of messages forwarded by main(): 54
+19:00:57.336 -> NIC transmitted a packet
+19:00:57.336 -> FreeQ replenished back
+19:00:57.336 -> free buffer obtained by NIC
+19:00:57.336 -> NIC received a packet
+19:00:57.336 -> no. of messages forwarded by main(): 55
+19:00:57.336 -> NIC transmitted a packet
+19:00:57.336 -> FreeQ replenished back
+19:00:57.336 -> free buffer obtained by NIC
+19:00:57.336 -> NIC received a packet
+19:00:57.336 -> no. of messages forwarded by main(): 56
+19:00:57.336 -> NIC transmitted a packet
+19:00:57.336 -> FreeQ replenished back
+19:00:57.369 -> free buffer obtained by NIC
+19:00:57.369 -> NIC received a packet
+19:00:57.369 -> no. of messages forwarded by main(): 57
+19:00:57.369 -> NIC transmitted a packet
+19:00:57.369 -> FreeQ replenished back
+19:00:57.369 -> free buffer obtained by NIC
+19:00:57.369 -> NIC received a packet
+19:00:57.369 -> no. of messages forwarded by main(): 58
+19:00:57.369 -> NIC transmitted a packet
+19:00:57.369 -> FreeQ replenished back
+19:00:57.369 -> free buffer obtained by NIC
+19:00:57.369 -> NIC received a packet
+19:00:57.369 -> no. of messages forwarded by main(): 59
+19:00:57.403 -> NIC transmitted a packet
+19:00:57.403 -> FreeQ replenished back
+19:00:57.403 -> free buffer obtained by NIC
+19:00:57.403 -> NIC received a packet
+19:00:57.403 -> no. of messages forwarded by main(): 60
+19:00:57.403 -> NIC transmitted a packet
+19:00:57.403 -> FreeQ replenished back
+19:00:57.403 -> free buffer obtained by NIC
+19:00:57.403 -> NIC received a packet
+19:00:57.403 -> no. of messages forwarded by main(): 61
+19:00:57.403 -> NIC transmitted a packet
+19:00:57.403 -> FreeQ replenished back
+19:00:57.436 -> free buffer obtained by NIC
+19:00:57.436 -> NIC received a packet
+19:00:57.436 -> no. of messages forwarded by main(): 62
+19:00:57.436 -> NIC transmitted a packet
+19:00:57.436 -> FreeQ replenished back
+19:00:57.436 -> free buffer obtained by NIC
+19:00:57.436 -> NIC received a packet
+19:00:57.436 -> no. of messages forwarded by main(): 63
+19:00:57.436 -> NIC transmitted a packet
+19:00:57.436 -> FreeQ replenished back
+19:00:57.436 -> free buffer obtained by NIC
+19:00:57.436 -> NIC received a packet
+19:00:57.469 -> no. of messages forwarded by main(): 64
+19:00:57.469 -> NIC transmitted a packet
+19:00:57.469 -> FreeQ replenished back
+19:00:57.469 -> free buffer obtained by NIC
+19:00:57.469 -> NIC received a packet
+19:00:57.469 -> no. of messages forwarded by main(): 65
+19:00:57.469 -> NIC transmitted a packet
+19:00:57.469 -> FreeQ replenished back
+19:00:57.469 -> free buffer obtained by NIC
+19:00:57.469 -> NIC received a packet
+19:00:57.469 -> no. of messages forwarded by main(): 66
+19:00:57.469 -> NIC transmitted a packet
+19:00:57.469 -> FreeQ replenished back
+19:00:57.469 -> free buffer obtained by NIC
+19:00:57.502 -> NIC received a packet
+19:00:57.502 -> no. of messages forwarded by main(): 67
+19:00:57.502 -> NIC transmitted a packet
+19:00:57.502 -> FreeQ replenished back
+19:00:57.502 -> free buffer obtained by NIC
+19:00:57.502 -> NIC received a packet
+19:00:57.502 -> no. of messages forwarded by main(): 68
+19:00:57.502 -> NIC transmitted a packet
+19:00:57.502 -> FreeQ replenished back
+19:00:57.502 -> free buffer obtained by NIC
+19:00:57.502 -> NIC received a packet
+19:00:57.502 -> no. of messages forwarded by main(): 69
+19:00:57.535 -> NIC transmitted a packet
+19:00:57.535 -> FreeQ replenished back
+19:00:57.535 -> free buffer obtained by NIC
+19:00:57.535 -> NIC received a packet
+19:00:57.535 -> no. of messages forwarded by main(): 70
+19:00:57.535 -> NIC transmitted a packet
+19:00:57.535 -> FreeQ replenished back
+19:00:57.535 -> free buffer obtained by NIC
+19:00:57.535 -> NIC received a packet
+19:00:57.535 -> no. of messages forwarded by main(): 71
+19:00:57.535 -> NIC transmitted a packet
+19:00:57.535 -> FreeQ replenished back
+19:00:57.535 -> free buffer obtained by NIC
+19:00:57.568 -> NIC received a packet
+19:00:57.568 -> no. of messages forwarded by main(): 72
+19:00:57.568 -> NIC transmitted a packet
+19:00:57.568 -> FreeQ replenished back
+19:00:57.568 -> free buffer obtained by NIC
+19:00:57.568 -> NIC received a packet
+19:00:57.568 -> no. of messages forwarded by main(): 73
+19:00:57.568 -> NIC transmitted a packet
+19:00:57.568 -> FreeQ replenished back
+19:00:57.568 -> free buffer obtained by NIC
+19:00:57.568 -> NIC received a packet
+19:00:57.601 -> no. of messages forwarded by main(): 74
+19:00:57.601 -> NIC transmitted a packet
+19:00:57.601 -> FreeQ replenished back
+19:00:57.601 -> free buffer obtained by NIC
+19:00:57.601 -> NIC received a packet
+19:00:57.601 -> no. of messages forwarded by main(): 75
+19:00:57.601 -> NIC transmitted a packet
+19:00:57.601 -> FreeQ replenished back
+19:00:57.601 -> free buffer obtained by NIC
+19:00:57.601 -> NIC received a packet
+19:00:57.601 -> no. of messages forwarded by main(): 76
+19:00:57.601 -> NIC transmitted a packet
+19:00:57.601 -> FreeQ replenished back
+19:00:57.601 -> free buffer obtained by NIC
+19:00:57.634 -> NIC received a packet
+19:00:57.634 -> no. of messages forwarded by main(): 77
+19:00:57.634 -> NIC transmitted a packet
+19:00:57.634 -> FreeQ replenished back
+19:00:57.634 -> free buffer obtained by NIC
+19:00:57.634 -> NIC received a packet
+19:00:57.634 -> no. of messages forwarded by main(): 78
+19:00:57.634 -> NIC transmitted a packet
+19:00:57.634 -> FreeQ replenished back
+19:00:57.634 -> free buffer obtained by NIC
+19:00:57.634 -> NIC received a packet
+19:00:57.634 -> no. of messages forwarded by main(): 79
+19:00:57.634 -> NIC transmitted a packet
+19:00:57.667 -> FreeQ replenished back
+19:00:57.667 -> free buffer obtained by NIC
+19:00:57.667 -> NIC received a packet
+19:00:57.667 -> no. of messages forwarded by main(): 80
+19:00:57.667 -> NIC transmitted a packet
+19:00:57.667 -> FreeQ replenished back
+19:00:57.667 -> free buffer obtained by NIC
+19:00:57.667 -> NIC received a packet
+19:00:57.667 -> no. of messages forwarded by main(): 81
+19:00:57.667 -> NIC transmitted a packet
+19:00:57.667 -> FreeQ replenished back
+19:00:57.667 -> free buffer obtained by NIC
+19:00:57.667 -> NIC received a packet
+19:00:57.701 -> no. of messages forwarded by main(): 82
+19:00:57.701 -> NIC transmitted a packet
+19:00:57.701 -> FreeQ replenished back
+19:00:57.701 -> free buffer obtained by NIC
+19:00:57.701 -> NIC received a packet
+19:00:57.701 -> no. of messages forwarded by main(): 83
+19:00:57.701 -> NIC transmitted a packet
+19:00:57.701 -> FreeQ replenished back
+19:00:57.701 -> free buffer obtained by NIC
+19:00:57.701 -> NIC received a packet
+19:00:57.701 -> no. of messages forwarded by main(): 84
+19:00:57.701 -> NIC transmitted a packet
+19:00:57.734 -> FreeQ replenished back
+19:00:57.734 -> free buffer obtained by NIC
+19:00:57.734 -> NIC received a packet
+19:00:57.734 -> no. of messages forwarded by main(): 85
+19:00:57.734 -> NIC transmitted a packet
+19:00:57.734 -> FreeQ replenished back
+19:00:57.734 -> free buffer obtained by NIC
+19:00:57.734 -> NIC received a packet
+19:00:57.734 -> no. of messages forwarded by main(): 86
+19:00:57.734 -> NIC transmitted a packet
+19:00:57.734 -> FreeQ replenished back
+19:00:57.734 -> free buffer obtained by NIC
+19:00:57.734 -> NIC received a packet
+19:00:57.768 -> no. of messages forwarded by main(): 87
+19:00:57.768 -> NIC transmitted a packet
+19:00:57.768 -> FreeQ replenished back
+19:00:57.768 -> free buffer obtained by NIC
+19:00:57.768 -> NIC received a packet
+19:00:57.768 -> no. of messages forwarded by main(): 88
+19:00:57.768 -> NIC transmitted a packet
+19:00:57.768 -> FreeQ replenished back
+19:00:57.768 -> free buffer obtained by NIC
+19:00:57.768 -> NIC received a packet
+19:00:57.768 -> no. of messages forwarded by main(): 89
+19:00:57.768 -> NIC transmitted a packet
+19:00:57.768 -> FreeQ replenished back
+19:00:57.802 -> free buffer obtained by NIC
+19:00:57.802 -> NIC received a packet
+19:00:57.802 -> no. of messages forwarded by main(): 90
+19:00:57.802 -> NIC transmitted a packet
+19:00:57.802 -> FreeQ replenished back
+19:00:57.802 -> free buffer obtained by NIC
+19:00:57.802 -> NIC received a packet
+19:00:57.802 -> no. of messages forwarded by main(): 91
+19:00:57.802 -> NIC transmitted a packet
+19:00:57.802 -> FreeQ replenished back
+19:00:57.802 -> free buffer obtained by NIC
+19:00:57.802 -> NIC received a packet
+19:00:57.802 -> no. of messages forwarded by main(): 92
+19:00:57.835 -> NIC transmitted a packet
+19:00:57.835 -> FreeQ replenished back
+19:00:57.835 -> free buffer obtained by NIC
+19:00:57.835 -> NIC received a packet
+19:00:57.835 -> no. of messages forwarded by main(): 93
+19:00:57.835 -> NIC transmitted a packet
+19:00:57.835 -> FreeQ replenished back
+19:00:57.835 -> free buffer obtained by NIC
+19:00:57.835 -> NIC received a packet
+19:00:57.835 -> no. of messages forwarded by main(): 94
+19:00:57.835 -> NIC transmitted a packet
+19:00:57.835 -> FreeQ replenished back
+19:00:57.870 -> free buffer obtained by NIC
+19:00:57.870 -> NIC received a packet
+19:00:57.870 -> no. of messages forwarded by main(): 95
+19:00:57.870 -> NIC transmitted a packet
+19:00:57.870 -> FreeQ replenished back
+19:00:57.870 -> free buffer obtained by NIC
+19:00:57.870 -> NIC received a packet
+19:00:57.870 -> no. of messages forwarded by main(): 96
+19:00:57.870 -> NIC transmitted a packet
+19:00:57.870 -> FreeQ replenished back
+19:00:57.870 -> free buffer obtained by NIC
+19:00:57.870 -> NIC received a packet
+19:00:57.870 -> no. of messages forwarded by main(): 97
+19:00:57.901 -> NIC transmitted a packet
+19:00:57.901 -> FreeQ replenished back
+19:00:57.901 -> free buffer obtained by NIC
+19:00:57.901 -> NIC received a packet
+19:00:57.901 -> no. of messages forwarded by main(): 98
+19:00:57.901 -> NIC transmitted a packet
+19:00:57.901 -> FreeQ replenished back
+19:00:57.901 -> free buffer obtained by NIC
+19:00:57.901 -> NIC received a packet
+19:00:57.901 -> no. of messages forwarded by main(): 99
+19:00:57.901 -> NIC transmitted a packet
+19:00:57.901 -> FreeQ replenished back
+19:00:57.901 -> free buffer obtained by NIC
+19:00:57.934 -> NIC received a packet
+19:00:57.934 -> no. of messages forwarded by main(): 100
+19:00:57.934 -> NIC transmitted a packet
+19:00:57.934 -> FreeQ replenished back
+19:00:57.934 -> free buffer obtained by NIC
+19:00:57.934 -> NIC received a packet
+19:00:57.934 -> no. of messages forwarded by main(): 101
+19:00:57.934 -> NIC transmitted a packet
+19:00:57.934 -> FreeQ replenished back
+19:00:57.934 -> free buffer obtained by NIC
+19:00:57.934 -> NIC received a packet
+19:00:57.934 -> no. of messages forwarded by main(): 102
+19:00:57.967 -> NIC transmitted a packet
+19:00:57.967 -> FreeQ replenished back
+19:00:57.967 -> free buffer obtained by NIC
+19:00:57.967 -> NIC received a packet
+19:00:57.967 -> no. of messages forwarded by main(): 103
+19:00:57.967 -> NIC transmitted a packet
+19:00:57.967 -> FreeQ replenished back
+19:00:57.967 -> free buffer obtained by NIC
+19:00:57.967 -> NIC received a packet
+19:00:57.967 -> no. of messages forwarded by main(): 104
+19:00:57.967 -> NIC transmitted a packet
+19:00:57.967 -> FreeQ replenished back
+19:00:57.967 -> free buffer obtained by NIC
+19:00:58.002 -> NIC received a packet
+19:00:58.002 -> no. of messages forwarded by main(): 105
+19:00:58.002 -> NIC transmitted a packet
+19:00:58.002 -> FreeQ replenished back
+19:00:58.002 -> free buffer obtained by NIC
+19:00:58.002 -> NIC received a packet
+19:00:58.002 -> no. of messages forwarded by main(): 106
+19:00:58.002 -> NIC transmitted a packet
+19:00:58.002 -> FreeQ replenished back
+19:00:58.002 -> free buffer obtained by NIC
+19:00:58.002 -> NIC received a packet
+19:00:58.002 -> no. of messages forwarded by main(): 107
+19:00:58.056 -> NIC transmitted a packet
+19:00:58.056 -> FreeQ replenished back
+19:00:58.056 -> free buffer obtained by NIC
+19:00:58.056 -> NIC received a packet
+19:00:58.056 -> no. of messages forwarded by main(): 108
+19:00:58.056 -> NIC transmitted a packet
+19:00:58.056 -> FreeQ replenished back
+19:00:58.056 -> free buffer obtained by NIC
+19:00:58.056 -> NIC received a packet
+19:00:58.056 -> no. of messages forwarded by main(): 109
+19:00:58.056 -> NIC transmitted a packet
+19:00:58.056 -> FreeQ replenished back
+19:00:58.056 -> free buffer obtained by NIC
+19:00:58.056 -> NIC received a packet
+19:00:58.056 -> no. of messages forwarded by main(): 110
+19:00:58.056 -> NIC transmitted a packet
+19:00:58.056 -> FreeQ replenished back
+19:00:58.056 -> free buffer obtained by NIC
+19:00:58.056 -> NIC received a packet
+19:00:58.056 -> no. of messages forwarded by main(): 111
+19:00:58.056 -> NIC transmitted a packet
+19:00:58.072 -> FreeQ replenished back
+19:00:58.072 -> free buffer obtained by NIC
+19:00:58.072 -> NIC received a packet
+19:00:58.072 -> no. of messages forwarded by main(): 112
+19:00:58.072 -> NIC transmitted a packet
+19:00:58.072 -> FreeQ replenished back
+19:00:58.072 -> free buffer obtained by NIC
+19:00:58.100 -> NIC received a packet
+19:00:58.100 -> no. of messages forwarded by main(): 113
+19:00:58.100 -> NIC transmitted a packet
+19:00:58.100 -> FreeQ replenished back
+19:00:58.100 -> free buffer obtained by NIC
+19:00:58.100 -> NIC received a packet
+19:00:58.100 -> no. of messages forwarded by main(): 114
+19:00:58.100 -> NIC transmitted a packet
+19:00:58.100 -> FreeQ replenished back
+19:00:58.100 -> free buffer obtained by NIC
+19:00:58.132 -> NIC received a packet
+19:00:58.132 -> no. of messages forwarded by main(): 115
+19:00:58.132 -> NIC transmitted a packet
+19:00:58.132 -> FreeQ replenished back
+19:00:58.132 -> free buffer obtained by NIC
+19:00:58.132 -> NIC received a packet
+19:00:58.132 -> no. of messages forwarded by main(): 116
+19:00:58.132 -> NIC transmitted a packet
+19:00:58.132 -> FreeQ replenished back
+19:00:58.132 -> free buffer obtained by NIC
+19:00:58.132 -> NIC received a packet
+19:00:58.132 -> no. of messages forwarded by main(): 117
+19:00:58.167 -> NIC transmitted a packet
+19:00:58.167 -> FreeQ replenished back
+19:00:58.167 -> free buffer obtained by NIC
+19:00:58.167 -> NIC received a packet
+19:00:58.167 -> no. of messages forwarded by main(): 118
+19:00:58.167 -> NIC transmitted a packet
+19:00:58.167 -> FreeQ replenished back
+19:00:58.167 -> free buffer obtained by NIC
+19:00:58.167 -> NIC received a packet
+19:00:58.167 -> no. of messages forwarded by main(): 119
+19:00:58.167 -> NIC transmitted a packet
+19:00:58.167 -> FreeQ replenished back
+19:00:58.167 -> free buffer obtained by NIC
+19:00:58.200 -> NIC received a packet
+19:00:58.200 -> no. of messages forwarded by main(): 120
+19:00:58.200 -> NIC transmitted a packet
+19:00:58.200 -> FreeQ replenished back
+19:00:58.200 -> free buffer obtained by NIC
+19:00:58.200 -> NIC received a packet
+19:00:58.200 -> no. of messages forwarded by main(): 121
+19:00:58.200 -> NIC transmitted a packet
+19:00:58.200 -> FreeQ replenished back
+19:00:58.200 -> free buffer obtained by NIC
+19:00:58.200 -> NIC received a packet
+19:00:58.200 -> no. of messages forwarded by main(): 122
+19:00:58.200 -> NIC transmitted a packet
+19:00:58.234 -> FreeQ replenished back
+19:00:58.234 -> free buffer obtained by NIC
+19:00:58.234 -> NIC received a packet
+19:00:58.234 -> no. of messages forwarded by main(): 123
+19:00:58.234 -> NIC transmitted a packet
+19:00:58.234 -> FreeQ replenished back
+19:00:58.234 -> free buffer obtained by NIC
+19:00:58.234 -> NIC received a packet
+19:00:58.234 -> no. of messages forwarded by main(): 124
+19:00:58.234 -> NIC transmitted a packet
+19:00:58.234 -> FreeQ replenished back
+19:00:58.234 -> free buffer obtained by NIC
+19:00:58.388 -> NIC received a packet
+19:00:58.388 -> no. of messages forwarded by main(): 125
+19:00:58.388 -> NIC transmitted a packet
+19:00:58.388 -> FreeQ replenished back
+19:00:58.388 -> free buffer obtained by NIC
+19:00:58.388 -> NIC received a packet
+19:00:58.388 -> no. of messages forwarded by main(): 126
+19:00:58.388 -> NIC transmitted a packet
+19:00:58.388 -> FreeQ replenished back
+19:00:58.388 -> free buffer obtained by NIC
+19:00:58.388 -> NIC received a packet
+19:00:58.388 -> no. of messages forwarded by main(): 127
+19:00:58.388 -> NIC transmitted a packet
+19:00:58.388 -> FreeQ replenished back
+19:00:58.388 -> free buffer obtained by NIC
+19:00:58.388 -> NIC received a packet
+19:00:58.388 -> no. of messages forwarded by main(): 128
+19:00:58.388 -> NIC transmitted a packet
+19:00:58.388 -> FreeQ replenished back
+19:00:58.388 -> free buffer obtained by NIC
+19:00:58.388 -> NIC received a packet
+19:00:58.388 -> no. of messages forwarded by main(): 129
+19:00:58.388 -> NIC transmitted a packet
+19:00:58.388 -> FreeQ replenished back
+19:00:58.388 -> free buffer obtained by NIC
+19:00:58.388 -> NIC received a packet
+19:00:58.388 -> no. of messages forwarded by main(): 130
+19:00:58.388 -> NIC transmitted a packet
+19:00:58.388 -> FreeQ replenished back
+19:00:58.388 -> free buffer obtained by NIC
+19:00:58.388 -> NIC received a packet
+19:00:58.388 -> no. of messages forwarded by main(): 131
+19:00:58.388 -> NIC transmitted a packet
+19:00:58.388 -> FreeQ replenished back
+19:00:58.388 -> free buffer obtained by NIC
+19:00:58.388 -> NIC received a packet
+19:00:58.388 -> no. of messages forwarded by main(): 132
+19:00:58.388 -> NIC transmitted a packet
+19:00:58.388 -> FreeQ replenished back
+19:00:58.388 -> free buffer obtained by NIC
+19:00:58.388 -> NIC received a packet
+19:00:58.388 -> no. of messages forwarded by main(): 133
+19:00:58.388 -> NIC transmitted a packet
+19:00:58.388 -> FreeQ replenished back
+19:00:58.388 -> free buffer obtained by NIC
+19:00:58.388 -> NIC received a packet
+19:00:58.388 -> no. of messages forwarded by main(): 134
+19:00:58.388 -> NIC transmitted a packet
+19:00:58.388 -> FreeQ replenished back
+19:00:58.388 -> free buffer obtained by NIC
+19:00:58.388 -> NIC received a packet
+19:00:58.388 -> no. of messages forwarded by main(): 135
+19:00:58.388 -> NIC transmitted a packet
+19:00:58.388 -> FreeQ replenished back
+19:00:58.388 -> free buffer obtained by NIC
+19:00:58.388 -> NIC received a packet
+19:00:58.388 -> no. of messages forwarded by main(): 136
+19:00:58.388 -> NIC transmitted a packet
+19:00:58.388 -> FreeQ replenished back
+19:00:58.388 -> free buffer obtained by NIC
+19:00:58.405 -> NIC received a packet
+19:00:58.405 -> no. of messages forwarded by main(): 137
+19:00:58.405 -> NIC transmitted a packet
+19:00:58.405 -> FreeQ replenished back
+19:00:58.405 -> free buffer obtained by NIC
+19:00:58.405 -> NIC received a packet
+19:00:58.436 -> no. of messages forwarded by main(): 138
+19:00:58.436 -> NIC transmitted a packet
+19:00:58.436 -> FreeQ replenished back
+19:00:58.436 -> free buffer obtained by NIC
+19:00:58.436 -> NIC received a packet
+19:00:58.436 -> no. of messages forwarded by main(): 139
+19:00:58.436 -> NIC transmitted a packet
+19:00:58.436 -> FreeQ replenished back
+19:00:58.436 -> free buffer obtained by NIC
+19:00:58.436 -> NIC received a packet
+19:00:58.436 -> no. of messages forwarded by main(): 140
+19:00:58.470 -> NIC transmitted a packet
+19:00:58.470 -> FreeQ replenished back
+19:00:58.470 -> free buffer obtained by NIC
+19:00:58.470 -> NIC received a packet
+19:00:58.470 -> no. of messages forwarded by main(): 141
+19:00:58.470 -> NIC transmitted a packet
+19:00:58.470 -> FreeQ replenished back
+19:00:58.470 -> free buffer obtained by NIC
+19:00:58.470 -> NIC received a packet
+19:00:58.470 -> no. of messages forwarded by main(): 142
+19:00:58.470 -> NIC transmitted a packet
+19:00:58.470 -> FreeQ replenished back
+19:00:58.470 -> free buffer obtained by NIC
+19:00:58.504 -> NIC received a packet
+19:00:58.504 -> no. of messages forwarded by main(): 143
+19:00:58.504 -> NIC transmitted a packet
+19:00:58.504 -> FreeQ replenished back
+19:00:58.504 -> free buffer obtained by NIC
+19:00:58.504 -> NIC received a packet
+19:00:58.504 -> no. of messages forwarded by main(): 144
+19:00:58.504 -> NIC transmitted a packet
+19:00:58.504 -> FreeQ replenished back
+19:00:58.504 -> free buffer obtained by NIC
+19:00:58.504 -> NIC received a packet
+19:00:58.504 -> no. of messages forwarded by main(): 145
+19:00:58.504 -> NIC transmitted a packet
+19:00:58.540 -> FreeQ replenished back
+19:00:58.540 -> free buffer obtained by NIC
+19:00:58.540 -> NIC received a packet
+19:00:58.540 -> no. of messages forwarded by main(): 146
+19:00:58.540 -> NIC transmitted a packet
+19:00:58.540 -> FreeQ replenished back
+19:00:58.540 -> free buffer obtained by NIC
+19:00:58.540 -> NIC received a packet
+19:00:58.540 -> no. of messages forwarded by main(): 147
+19:00:58.540 -> NIC transmitted a packet
+19:00:58.540 -> FreeQ replenished back
+19:00:58.540 -> free buffer obtained by NIC
+19:00:58.569 -> NIC received a packet
+19:00:58.569 -> no. of messages forwarded by main(): 148
+19:00:58.569 -> NIC transmitted a packet
+19:00:58.569 -> FreeQ replenished back
+19:00:58.569 -> free buffer obtained by NIC
+19:00:58.569 -> NIC received a packet
+19:00:58.569 -> no. of messages forwarded by main(): 149
+19:00:58.569 -> NIC transmitted a packet
+19:00:58.569 -> FreeQ replenished back
+19:00:58.569 -> free buffer obtained by NIC
+19:00:58.569 -> NIC received a packet
+19:00:58.569 -> no. of messages forwarded by main(): 150
+19:00:58.569 -> NIC transmitted a packet
+19:00:58.608 -> FreeQ replenished back
+19:00:58.608 -> free buffer obtained by NIC
+19:00:58.608 -> NIC received a packet
+19:00:58.608 -> no. of messages forwarded by main(): 151
+19:00:58.608 -> NIC transmitted a packet
+19:00:58.608 -> FreeQ replenished back
+19:00:58.608 -> free buffer obtained by NIC
+19:00:58.608 -> NIC received a packet
+19:00:58.608 -> no. of messages forwarded by main(): 152
+19:00:58.608 -> NIC transmitted a packet
+19:00:58.608 -> FreeQ replenished back
+19:00:58.608 -> free buffer obtained by NIC
+19:00:58.608 -> NIC received a packet
+19:00:58.608 -> no. of messages forwarded by main(): 153
+19:00:58.653 -> NIC transmitted a packet
+19:00:58.653 -> FreeQ replenished back
+19:00:58.653 -> free buffer obtained by NIC
+19:00:58.653 -> NIC received a packet
+19:00:58.653 -> no. of messages forwarded by main(): 154
+19:00:58.653 -> NIC transmitted a packet
+19:00:58.653 -> FreeQ replenished back
+19:00:58.653 -> free buffer obtained by NIC
+19:00:58.653 -> NIC received a packet
+19:00:58.653 -> no. of messages forwarded by main(): 155
+19:00:58.653 -> NIC transmitted a packet
+19:00:58.653 -> FreeQ replenished back
+19:00:58.653 -> free buffer obtained by NIC
+19:00:58.653 -> NIC received a packet
+19:00:58.653 -> no. of messages forwarded by main(): 156
+19:00:58.653 -> NIC transmitted a packet
+19:00:58.653 -> FreeQ replenished back
+19:00:58.653 -> free buffer obtained by NIC
+19:00:58.676 -> NIC received a packet
+19:00:58.676 -> no. of messages forwarded by main(): 157
+19:00:58.676 -> NIC transmitted a packet
+19:00:58.676 -> FreeQ replenished back
+19:00:58.676 -> free buffer obtained by NIC
+19:00:58.676 -> NIC received a packet
+19:00:58.676 -> no. of messages forwarded by main(): 158
+19:00:58.708 -> NIC transmitted a packet
+19:00:58.708 -> FreeQ replenished back
+19:00:58.708 -> free buffer obtained by NIC
+19:00:58.708 -> NIC received a packet
+19:00:58.708 -> no. of messages forwarded by main(): 159
+19:00:58.708 -> NIC transmitted a packet
+19:00:58.708 -> FreeQ replenished back
+19:00:58.708 -> free buffer obtained by NIC
+19:00:58.708 -> NIC received a packet
+19:00:58.708 -> no. of messages forwarded by main(): 160
+19:00:58.708 -> NIC transmitted a packet
+19:00:58.708 -> FreeQ replenished back
+19:00:58.708 -> free buffer obtained by NIC
+19:00:58.742 -> NIC received a packet
+19:00:58.742 -> no. of messages forwarded by main(): 161
+19:00:58.742 -> NIC transmitted a packet
+19:00:58.742 -> FreeQ replenished back
+19:00:58.742 -> free buffer obtained by NIC
+19:00:58.742 -> NIC received a packet
+19:00:58.742 -> no. of messages forwarded by main(): 162
+19:00:58.742 -> NIC transmitted a packet
+19:00:58.742 -> FreeQ replenished back
+19:00:58.742 -> free buffer obtained by NIC
+19:00:58.742 -> NIC received a packet
+19:00:58.742 -> no. of messages forwarded by main(): 163
+19:00:58.775 -> NIC transmitted a packet
+19:00:58.775 -> FreeQ replenished back
+19:00:58.775 -> free buffer obtained by NIC
+19:00:58.775 -> NIC received a packet
+19:00:58.775 -> no. of messages forwarded by main(): 164
+19:00:58.775 -> NIC transmitted a packet
+19:00:58.775 -> FreeQ replenished back
+19:00:58.775 -> free buffer obtained by NIC
+19:00:58.775 -> NIC received a packet
+19:00:58.775 -> no. of messages forwarded by main(): 165
+19:00:58.775 -> NIC transmitted a packet
+19:00:58.775 -> FreeQ replenished back
+19:00:58.775 -> free buffer obtained by NIC
+19:00:58.775 -> NIC received a packet
+19:00:58.808 -> no. of messages forwarded by main(): 166
+19:00:58.808 -> NIC transmitted a packet
+19:00:58.808 -> FreeQ replenished back
+19:00:58.808 -> free buffer obtained by NIC
+19:00:58.808 -> NIC received a packet
+19:00:58.808 -> no. of messages forwarded by main(): 167
+19:00:58.808 -> NIC transmitted a packet
+19:00:58.808 -> FreeQ replenished back
+19:00:58.808 -> free buffer obtained by NIC
+19:00:58.808 -> NIC received a packet
+19:00:58.808 -> no. of messages forwarded by main(): 168
+19:00:58.808 -> NIC transmitted a packet
+19:00:58.841 -> FreeQ replenished back
+19:00:58.841 -> free buffer obtained by NIC
+19:00:58.841 -> NIC received a packet
+19:00:58.841 -> no. of messages forwarded by main(): 169
+19:00:58.841 -> NIC transmitted a packet
+19:00:58.841 -> FreeQ replenished back
+19:00:58.841 -> free buffer obtained by NIC
+19:00:58.841 -> NIC received a packet
+19:00:58.841 -> no. of messages forwarded by main(): 170
+19:00:58.841 -> NIC transmitted a packet
+19:00:58.841 -> FreeQ replenished back
+19:00:58.841 -> free buffer obtained by NIC
+19:00:58.841 -> NIC received a packet
+19:00:58.874 -> no. of messages forwarded by main(): 171
+19:00:58.874 -> NIC transmitted a packet
+19:00:58.874 -> FreeQ replenished back
+19:00:58.874 -> free buffer obtained by NIC
+19:00:58.874 -> NIC received a packet
+19:00:58.874 -> no. of messages forwarded by main(): 172
+19:00:58.874 -> NIC transmitted a packet
+19:00:58.874 -> FreeQ replenished back
+19:00:58.874 -> free buffer obtained by NIC
+19:00:58.874 -> NIC received a packet
+19:00:58.874 -> no. of messages forwarded by main(): 173
+19:00:58.874 -> NIC transmitted a packet
+19:00:58.910 -> FreeQ replenished back
+19:00:58.910 -> free buffer obtained by NIC
+19:00:58.910 -> NIC received a packet
+19:00:58.910 -> no. of messages forwarded by main(): 174
+19:00:58.910 -> NIC transmitted a packet
+19:00:58.910 -> FreeQ replenished back
+19:00:58.910 -> free buffer obtained by NIC
+19:00:58.910 -> NIC received a packet
+19:00:58.910 -> no. of messages forwarded by main(): 175
+19:00:58.940 -> NIC transmitted a packet
+19:00:58.940 -> FreeQ replenished back
+19:00:58.940 -> free buffer obtained by NIC
+19:00:58.940 -> NIC received a packet
+19:00:58.940 -> no. of messages forwarded by main(): 176
+19:00:58.940 -> NIC transmitted a packet
+19:00:58.940 -> FreeQ replenished back
+19:00:58.940 -> free buffer obtained by NIC
+19:00:58.940 -> NIC received a packet
+19:00:58.940 -> no. of messages forwarded by main(): 177
+19:00:58.940 -> NIC transmitted a packet
+19:00:58.940 -> FreeQ replenished back
+19:00:58.940 -> free buffer obtained by NIC
+19:00:58.940 -> NIC received a packet
+19:00:58.940 -> no. of messages forwarded by main(): 178
+19:00:58.940 -> NIC transmitted a packet
+19:00:58.978 -> FreeQ replenished back
+19:00:58.978 -> free buffer obtained by NIC
+19:00:58.978 -> NIC received a packet
+19:00:58.978 -> no. of messages forwarded by main(): 179
+19:00:58.978 -> NIC transmitted a packet
+19:00:58.978 -> FreeQ replenished back
+19:00:58.978 -> free buffer obtained by NIC
+19:00:58.978 -> NIC received a packet
+19:00:58.978 -> no. of messages forwarded by main(): 180
+19:00:58.978 -> NIC transmitted a packet
+19:00:58.978 -> FreeQ replenished back
+19:00:58.978 -> free buffer obtained by NIC
+19:00:58.978 -> NIC received a packet
+19:00:58.978 -> no. of messages forwarded by main(): 181
+19:00:59.011 -> NIC transmitted a packet
+19:00:59.011 -> FreeQ replenished back
+19:00:59.011 -> free buffer obtained by NIC
+19:00:59.011 -> NIC received a packet
+19:00:59.011 -> no. of messages forwarded by main(): 182
+19:00:59.011 -> NIC transmitted a packet
+19:00:59.011 -> FreeQ replenished back
+19:00:59.011 -> free buffer obtained by NIC
+19:00:59.011 -> NIC received a packet
+19:00:59.011 -> no. of messages forwarded by main(): 183
+19:00:59.011 -> NIC transmitted a packet
+19:00:59.011 -> FreeQ replenished back
+19:00:59.011 -> free buffer obtained by NIC
+19:00:59.011 -> NIC received a packet
+19:00:59.046 -> no. of messages forwarded by main(): 184
+19:00:59.046 -> NIC transmitted a packet
+19:00:59.046 -> FreeQ replenished back
+19:00:59.046 -> free buffer obtained by NIC
+19:00:59.046 -> NIC received a packet
+19:00:59.046 -> no. of messages forwarded by main(): 185
+19:00:59.046 -> NIC transmitted a packet
+19:00:59.046 -> FreeQ replenished back
+19:00:59.046 -> free buffer obtained by NIC
+19:00:59.046 -> NIC received a packet
+19:00:59.046 -> no. of messages forwarded by main(): 186
+19:00:59.046 -> NIC transmitted a packet
+19:00:59.046 -> FreeQ replenished back
+19:00:59.079 -> free buffer obtained by NIC
+19:00:59.079 -> NIC received a packet
+19:00:59.079 -> no. of messages forwarded by main(): 187
+19:00:59.079 -> NIC transmitted a packet
+19:00:59.079 -> FreeQ replenished back
+19:00:59.079 -> free buffer obtained by NIC
+19:00:59.079 -> NIC received a packet
+19:00:59.079 -> no. of messages forwarded by main(): 188
+19:00:59.079 -> NIC transmitted a packet
+19:00:59.079 -> FreeQ replenished back
+19:00:59.079 -> free buffer obtained by NIC
+19:00:59.079 -> NIC received a packet
+19:00:59.124 -> no. of messages forwarded by main(): 189
+19:00:59.124 -> NIC transmitted a packet
+19:00:59.124 -> FreeQ replenished back
+19:00:59.124 -> free buffer obtained by NIC
+19:00:59.124 -> NIC received a packet
+19:00:59.124 -> no. of messages forwarded by main(): 190
+19:00:59.124 -> NIC transmitted a packet
+19:00:59.124 -> FreeQ replenished back
+19:00:59.124 -> free buffer obtained by NIC
+19:00:59.124 -> NIC received a packet
+19:00:59.124 -> no. of messages forwarded by main(): 191
+19:00:59.124 -> NIC transmitted a packet
+19:00:59.124 -> FreeQ replenished back
+19:00:59.124 -> free buffer obtained by NIC
+19:00:59.124 -> NIC received a packet
+19:00:59.124 -> no. of messages forwarded by main(): 192
+19:00:59.124 -> NIC transmitted a packet
+19:00:59.157 -> FreeQ replenished back
+19:00:59.157 -> free buffer obtained by NIC
+19:00:59.157 -> NIC received a packet
+19:00:59.157 -> no. of messages forwarded by main(): 193
+19:00:59.157 -> NIC transmitted a packet
+19:00:59.157 -> FreeQ replenished back
+19:00:59.157 -> free buffer obtained by NIC
+19:00:59.157 -> NIC received a packet
+19:00:59.157 -> no. of messages forwarded by main(): 194
+19:00:59.157 -> NIC transmitted a packet
+19:00:59.157 -> FreeQ replenished back
+19:00:59.157 -> free buffer obtained by NIC
+19:00:59.157 -> NIC received a packet
+19:00:59.191 -> no. of messages forwarded by main(): 195
+19:00:59.191 -> NIC transmitted a packet
+19:00:59.191 -> FreeQ replenished back
+19:00:59.191 -> free buffer obtained by NIC
+19:00:59.191 -> NIC received a packet
+19:00:59.191 -> no. of messages forwarded by main(): 196
+19:00:59.191 -> NIC transmitted a packet
+19:00:59.191 -> FreeQ replenished back
+19:00:59.191 -> free buffer obtained by NIC
+19:00:59.191 -> NIC received a packet
+19:00:59.191 -> no. of messages forwarded by main(): 197
+19:00:59.191 -> NIC transmitted a packet
+19:00:59.224 -> FreeQ replenished back
+19:00:59.224 -> free buffer obtained by NIC
+19:00:59.224 -> NIC received a packet
+19:00:59.224 -> no. of messages forwarded by main(): 198
+19:00:59.224 -> NIC transmitted a packet
+19:00:59.224 -> FreeQ replenished back
+19:00:59.224 -> free buffer obtained by NIC
+19:00:59.224 -> NIC received a packet
+19:00:59.224 -> no. of messages forwarded by main(): 199
+19:00:59.224 -> NIC transmitted a packet
+19:00:59.224 -> FreeQ replenished back
+19:00:59.224 -> free buffer obtained by NIC
+19:00:59.224 -> NIC received a packet
+19:00:59.257 -> no. of messages forwarded by main(): 200
+19:00:59.257 -> NIC transmitted a packet
+19:00:59.257 -> FreeQ replenished back
+19:00:59.257 -> free buffer obtained by NIC
+19:00:59.257 -> NIC received a packet
+19:00:59.257 -> no. of messages forwarded by main(): 201
+19:00:59.257 -> NIC transmitted a packet
+19:00:59.257 -> FreeQ replenished back
+19:00:59.257 -> free buffer obtained by NIC
+19:00:59.257 -> NIC received a packet
+19:00:59.257 -> no. of messages forwarded by main(): 202
+19:00:59.257 -> NIC transmitted a packet
+19:00:59.290 -> FreeQ replenished back
+19:00:59.290 -> free buffer obtained by NIC
+19:00:59.290 -> NIC received a packet
+19:00:59.290 -> no. of messages forwarded by main(): 203
+19:00:59.290 -> NIC transmitted a packet
+19:00:59.290 -> FreeQ replenished back
+19:00:59.290 -> free buffer obtained by NIC
+19:00:59.290 -> NIC received a packet
+19:00:59.290 -> no. of messages forwarded by main(): 204
+19:00:59.290 -> NIC transmitted a packet
+19:00:59.290 -> FreeQ replenished back
+19:00:59.290 -> free buffer obtained by NIC
+19:00:59.290 -> NIC received a packet
+19:00:59.324 -> no. of messages forwarded by main(): 205
+19:00:59.324 -> NIC transmitted a packet
+19:00:59.324 -> FreeQ replenished back
+19:00:59.324 -> free buffer obtained by NIC
+19:00:59.324 -> NIC received a packet
+19:00:59.324 -> no. of messages forwarded by main(): 206
+19:00:59.324 -> NIC transmitted a packet
+19:00:59.324 -> FreeQ replenished back
+19:00:59.324 -> free buffer obtained by NIC
+19:00:59.324 -> NIC received a packet
+19:00:59.324 -> no. of messages forwarded by main(): 207
+19:00:59.356 -> NIC transmitted a packet
+19:00:59.356 -> FreeQ replenished back
+19:00:59.356 -> free buffer obtained by NIC
+19:00:59.356 -> NIC received a packet
+19:00:59.356 -> no. of messages forwarded by main(): 208
+19:00:59.356 -> NIC transmitted a packet
+19:00:59.356 -> FreeQ replenished back
+19:00:59.356 -> free buffer obtained by NIC
+19:00:59.356 -> NIC received a packet
+19:00:59.356 -> no. of messages forwarded by main(): 209
+19:00:59.356 -> NIC transmitted a packet
+19:00:59.356 -> FreeQ replenished back
+19:00:59.356 -> free buffer obtained by NIC
+19:00:59.356 -> NIC received a packet
+19:00:59.356 -> no. of messages forwarded by main(): 210
+19:00:59.389 -> NIC transmitted a packet
+19:00:59.389 -> FreeQ replenished back
+19:00:59.389 -> free buffer obtained by NIC
+19:00:59.389 -> NIC received a packet
+19:00:59.389 -> no. of messages forwarded by main(): 211
+19:00:59.389 -> NIC transmitted a packet
+19:00:59.389 -> FreeQ replenished back
+19:00:59.389 -> free buffer obtained by NIC
+19:00:59.389 -> NIC received a packet
+19:00:59.389 -> no. of messages forwarded by main(): 212
+19:00:59.389 -> NIC transmitted a packet
+19:00:59.422 -> FreeQ replenished back
+19:00:59.422 -> free buffer obtained by NIC
+19:00:59.422 -> NIC received a packet
+19:00:59.422 -> no. of messages forwarded by main(): 213
+19:00:59.422 -> NIC transmitted a packet
+19:00:59.422 -> FreeQ replenished back
+19:00:59.422 -> free buffer obtained by NIC
+19:00:59.422 -> NIC received a packet
+19:00:59.422 -> no. of messages forwarded by main(): 214
+19:00:59.422 -> NIC transmitted a packet
+19:00:59.422 -> FreeQ replenished back
+19:00:59.422 -> free buffer obtained by NIC
+19:00:59.422 -> NIC received a packet
+19:00:59.455 -> no. of messages forwarded by main(): 215
+19:00:59.455 -> NIC transmitted a packet
+19:00:59.455 -> FreeQ replenished back
+19:00:59.455 -> free buffer obtained by NIC
+19:00:59.455 -> NIC received a packet
+19:00:59.455 -> no. of messages forwarded by main(): 216
+19:00:59.455 -> NIC transmitted a packet
+19:00:59.455 -> FreeQ replenished back
+19:00:59.455 -> free buffer obtained by NIC
+19:00:59.455 -> NIC received a packet
+19:00:59.455 -> no. of messages forwarded by main(): 217
+19:00:59.455 -> NIC transmitted a packet
+19:00:59.455 -> FreeQ replenished back
+19:00:59.489 -> free buffer obtained by NIC
+19:00:59.489 -> NIC received a packet
+19:00:59.489 -> no. of messages forwarded by main(): 218
+19:00:59.489 -> NIC transmitted a packet
+19:00:59.489 -> FreeQ replenished back
+19:00:59.489 -> free buffer obtained by NIC
+19:00:59.489 -> NIC received a packet
+19:00:59.489 -> no. of messages forwarded by main(): 219
+19:00:59.489 -> NIC transmitted a packet
+19:00:59.489 -> FreeQ replenished back
+19:00:59.489 -> free buffer obtained by NIC
+19:00:59.489 -> NIC received a packet
+19:00:59.489 -> no. of messages forwarded by main(): 220
+19:00:59.523 -> NIC transmitted a packet
+19:00:59.523 -> FreeQ replenished back
+19:00:59.523 -> free buffer obtained by NIC
+19:00:59.523 -> NIC received a packet
+19:00:59.523 -> no. of messages forwarded by main(): 221
+19:00:59.523 -> NIC transmitted a packet
+19:00:59.523 -> FreeQ replenished back
+19:00:59.523 -> free buffer obtained by NIC
+19:00:59.523 -> NIC received a packet
+19:00:59.523 -> no. of messages forwarded by main(): 222
+19:00:59.523 -> NIC transmitted a packet
+19:00:59.523 -> FreeQ replenished back
+19:00:59.523 -> free buffer obtained by NIC
+19:00:59.555 -> NIC received a packet
+19:00:59.555 -> no. of messages forwarded by main(): 223
+19:00:59.555 -> NIC transmitted a packet
+19:00:59.555 -> FreeQ replenished back
+19:00:59.555 -> free buffer obtained by NIC
+19:00:59.555 -> NIC received a packet
+19:00:59.555 -> no. of messages forwarded by main(): 224
+19:00:59.555 -> NIC transmitted a packet
+19:00:59.555 -> FreeQ replenished back
+19:00:59.555 -> free buffer obtained by NIC
+19:00:59.555 -> NIC received a packet
+19:00:59.588 -> no. of messages forwarded by main(): 225
+19:00:59.588 -> NIC transmitted a packet
+19:00:59.588 -> FreeQ replenished back
+19:00:59.588 -> free buffer obtained by NIC
+19:00:59.588 -> NIC received a packet
+19:00:59.588 -> no. of messages forwarded by main(): 226
+19:00:59.588 -> NIC transmitted a packet
+19:00:59.588 -> FreeQ replenished back
+19:00:59.588 -> free buffer obtained by NIC
+19:00:59.588 -> NIC received a packet
+19:00:59.588 -> no. of messages forwarded by main(): 227
+19:00:59.588 -> NIC transmitted a packet
+19:00:59.588 -> FreeQ replenished back
+19:00:59.621 -> free buffer obtained by NIC
+19:00:59.621 -> NIC received a packet
+19:00:59.621 -> no. of messages forwarded by main(): 228
+19:00:59.621 -> NIC transmitted a packet
+19:00:59.621 -> FreeQ replenished back
+19:00:59.621 -> free buffer obtained by NIC
+19:00:59.621 -> NIC received a packet
+19:00:59.621 -> no. of messages forwarded by main(): 229
+19:00:59.621 -> NIC transmitted a packet
+19:00:59.621 -> FreeQ replenished back
+19:00:59.621 -> free buffer obtained by NIC
+19:00:59.621 -> NIC received a packet
+19:00:59.621 -> no. of messages forwarded by main(): 230
+19:00:59.654 -> NIC transmitted a packet
+19:00:59.654 -> FreeQ replenished back
+19:00:59.654 -> free buffer obtained by NIC
+19:00:59.654 -> NIC received a packet
+19:00:59.654 -> no. of messages forwarded by main(): 231
+19:00:59.654 -> NIC transmitted a packet
+19:00:59.654 -> FreeQ replenished back
+19:00:59.654 -> free buffer obtained by NIC
+19:00:59.654 -> NIC received a packet
+19:00:59.654 -> no. of messages forwarded by main(): 232
+19:00:59.654 -> NIC transmitted a packet
+19:00:59.654 -> FreeQ replenished back
+19:00:59.687 -> free buffer obtained by NIC
+19:00:59.687 -> NIC received a packet
+19:00:59.687 -> no. of messages forwarded by main(): 233
+19:00:59.687 -> NIC transmitted a packet
+19:00:59.687 -> FreeQ replenished back
+19:00:59.687 -> free buffer obtained by NIC
+19:00:59.687 -> NIC received a packet
+19:00:59.687 -> no. of messages forwarded by main(): 234
+19:00:59.687 -> NIC transmitted a packet
+19:00:59.687 -> FreeQ replenished back
+19:00:59.687 -> free buffer obtained by NIC
+19:00:59.687 -> NIC received a packet
+19:00:59.687 -> no. of messages forwarded by main(): 235
+19:00:59.720 -> NIC transmitted a packet
+19:00:59.720 -> FreeQ replenished back
+19:00:59.720 -> free buffer obtained by NIC
+19:00:59.720 -> NIC received a packet
+19:00:59.720 -> no. of messages forwarded by main(): 236
+19:00:59.720 -> NIC transmitted a packet
+19:00:59.720 -> FreeQ replenished back
+19:00:59.720 -> free buffer obtained by NIC
+19:00:59.720 -> NIC received a packet
+19:00:59.720 -> no. of messages forwarded by main(): 237
+19:00:59.720 -> NIC transmitted a packet
+19:00:59.754 -> FreeQ replenished back
+19:00:59.754 -> free buffer obtained by NIC
+19:00:59.754 -> NIC received a packet
+19:00:59.754 -> no. of messages forwarded by main(): 238
+19:00:59.754 -> NIC transmitted a packet
+19:00:59.754 -> FreeQ replenished back
+19:00:59.754 -> free buffer obtained by NIC
+19:00:59.754 -> NIC received a packet
+19:00:59.754 -> no. of messages forwarded by main(): 239
+19:00:59.754 -> NIC transmitted a packet
+19:00:59.754 -> FreeQ replenished back
+19:00:59.754 -> free buffer obtained by NIC
+19:00:59.754 -> NIC received a packet
+19:00:59.754 -> no. of messages forwarded by main(): 240
+19:00:59.789 -> NIC transmitted a packet
+19:00:59.789 -> FreeQ replenished back
+19:00:59.789 -> free buffer obtained by NIC
+19:00:59.789 -> NIC received a packet
+19:00:59.789 -> no. of messages forwarded by main(): 241
+19:00:59.789 -> NIC transmitted a packet
+19:00:59.789 -> FreeQ replenished back
+19:00:59.789 -> free buffer obtained by NIC
+19:00:59.789 -> NIC received a packet
+19:00:59.789 -> no. of messages forwarded by main(): 242
+19:00:59.789 -> NIC transmitted a packet
+19:00:59.789 -> FreeQ replenished back
+19:00:59.789 -> free buffer obtained by NIC
+19:00:59.820 -> NIC received a packet
+19:00:59.820 -> no. of messages forwarded by main(): 243
+19:00:59.820 -> NIC transmitted a packet
+19:00:59.820 -> FreeQ replenished back
+19:00:59.820 -> free buffer obtained by NIC
+19:00:59.820 -> NIC received a packet
+19:00:59.820 -> no. of messages forwarded by main(): 244
+19:00:59.820 -> NIC transmitted a packet
+19:00:59.820 -> FreeQ replenished back
+19:00:59.820 -> free buffer obtained by NIC
+19:00:59.820 -> NIC received a packet
+19:00:59.820 -> no. of messages forwarded by main(): 245
+19:00:59.853 -> NIC transmitted a packet
+19:00:59.853 -> FreeQ replenished back
+19:00:59.853 -> free buffer obtained by NIC
+19:00:59.853 -> NIC received a packet
+19:00:59.853 -> no. of messages forwarded by main(): 246
+19:00:59.853 -> NIC transmitted a packet
+19:00:59.853 -> FreeQ replenished back
+19:00:59.853 -> free buffer obtained by NIC
+19:00:59.853 -> NIC received a packet
+19:00:59.853 -> no. of messages forwarded by main(): 247
+19:00:59.853 -> NIC transmitted a packet
+19:00:59.853 -> FreeQ replenished back
+19:00:59.886 -> free buffer obtained by NIC
+19:00:59.886 -> NIC received a packet
+19:00:59.886 -> no. of messages forwarded by main(): 248
+19:00:59.886 -> NIC transmitted a packet
+19:00:59.886 -> FreeQ replenished back
+19:00:59.886 -> free buffer obtained by NIC
+19:00:59.886 -> NIC received a packet
+19:00:59.886 -> no. of messages forwarded by main(): 249
+19:00:59.886 -> NIC transmitted a packet
+19:00:59.886 -> FreeQ replenished back
+19:00:59.886 -> free buffer obtained by NIC
+19:00:59.886 -> NIC received a packet
+19:00:59.886 -> no. of messages forwarded by main(): 250
+19:00:59.919 -> NIC transmitted a packet
+19:00:59.919 -> FreeQ replenished back
+19:00:59.919 -> free buffer obtained by NIC
+19:00:59.919 -> NIC received a packet
+19:00:59.919 -> no. of messages forwarded by main(): 251
+19:00:59.919 -> NIC transmitted a packet
+19:00:59.919 -> FreeQ replenished back
+19:00:59.919 -> free buffer obtained by NIC
+19:00:59.919 -> NIC received a packet
+19:00:59.919 -> no. of messages forwarded by main(): 252
+19:00:59.919 -> NIC transmitted a packet
+19:00:59.919 -> FreeQ replenished back
+19:00:59.952 -> free buffer obtained by NIC
+19:00:59.952 -> NIC received a packet
+19:00:59.952 -> no. of messages forwarded by main(): 253
+19:00:59.952 -> NIC transmitted a packet
+19:00:59.952 -> FreeQ replenished back
+19:00:59.952 -> free buffer obtained by NIC
+19:00:59.952 -> NIC received a packet
+19:00:59.952 -> no. of messages forwarded by main(): 254
+19:00:59.952 -> NIC transmitted a packet
+19:00:59.952 -> FreeQ replenished back
+19:00:59.952 -> free buffer obtained by NIC
+19:00:59.952 -> NIC received a packet
+19:00:59.952 -> no. of messages forwarded by main(): 255
+19:00:59.985 -> NIC transmitted a packet
+19:00:59.985 -> FreeQ replenished back
+19:00:59.985 -> free buffer obtained by NIC
+19:00:59.985 -> NIC received a packet
+19:00:59.985 -> no. of messages forwarded by main(): 256
+19:00:59.985 -> NIC transmitted a packet
+19:00:59.985 -> FreeQ replenished back
+19:00:59.985 -> free buffer obtained by NIC
+19:00:59.985 -> NIC received a packet
+19:00:59.985 -> no. of messages forwarded by main(): 257
+19:00:59.985 -> NIC transmitted a packet
+19:00:59.985 -> FreeQ replenished back
+19:00:59.985 -> free buffer obtained by NIC
+19:01:00.018 -> NIC received a packet
+19:01:00.018 -> no. of messages forwarded by main(): 258
+19:01:00.018 -> NIC transmitted a packet
+19:01:00.018 -> FreeQ replenished back
+19:01:00.018 -> free buffer obtained by NIC
+19:01:00.018 -> NIC received a packet
+19:01:00.018 -> no. of messages forwarded by main(): 259
+19:01:00.018 -> NIC transmitted a packet
+19:01:00.018 -> FreeQ replenished back
+19:01:00.018 -> free buffer obtained by NIC
+19:01:00.018 -> NIC received a packet
+19:01:00.018 -> no. of messages forwarded by main(): 260
+19:01:00.051 -> NIC transmitted a packet
+19:01:00.051 -> FreeQ replenished back
+19:01:00.051 -> free buffer obtained by NIC
+19:01:00.051 -> NIC received a packet
+19:01:00.051 -> no. of messages forwarded by main(): 261
+19:01:00.051 -> NIC transmitted a packet
+19:01:00.051 -> FreeQ replenished back
+19:01:00.051 -> free buffer obtained by NIC
+19:01:00.051 -> NIC received a packet
+19:01:00.051 -> no. of messages forwarded by main(): 262
+19:01:00.051 -> NIC transmitted a packet
+19:01:00.051 -> FreeQ replenished back
+19:01:00.051 -> free buffer obtained by NIC
+19:01:00.086 -> NIC received a packet
+19:01:00.086 -> no. of messages forwarded by main(): 263
+19:01:00.086 -> NIC transmitted a packet
+19:01:00.086 -> FreeQ replenished back
+19:01:00.086 -> free buffer obtained by NIC
+19:01:00.086 -> NIC received a packet
+19:01:00.086 -> no. of messages forwarded by main(): 264
+19:01:00.086 -> NIC transmitted a packet
+19:01:00.086 -> FreeQ replenished back
+19:01:00.086 -> free buffer obtained by NIC
+19:01:00.086 -> NIC received a packet
+19:01:00.086 -> no. of messages forwarded by main(): 265
+19:01:00.086 -> NIC transmitted a packet
+19:01:00.119 -> FreeQ replenished back
+19:01:00.119 -> free buffer obtained by NIC
+19:01:00.119 -> NIC received a packet
+19:01:00.119 -> no. of messages forwarded by main(): 266
+19:01:00.119 -> NIC transmitted a packet
+19:01:00.119 -> FreeQ replenished back
+19:01:00.119 -> free buffer obtained by NIC
+19:01:00.119 -> NIC received a packet
+19:01:00.119 -> no. of messages forwarded by main(): 267
+19:01:00.119 -> NIC transmitted a packet
+19:01:00.119 -> FreeQ replenished back
+19:01:00.119 -> free buffer obtained by NIC
+19:01:00.119 -> NIC received a packet
+19:01:00.153 -> no. of messages forwarded by main(): 268
+19:01:00.153 -> NIC transmitted a packet
+19:01:00.153 -> FreeQ replenished back
+19:01:00.153 -> free buffer obtained by NIC
+19:01:00.153 -> NIC received a packet
+19:01:00.153 -> no. of messages forwarded by main(): 269
+19:01:00.153 -> NIC transmitted a packet
+19:01:00.153 -> FreeQ replenished back
+19:01:00.153 -> free buffer obtained by NIC
+19:01:00.153 -> NIC received a packet
+19:01:00.153 -> no. of messages forwarded by main(): 270
+19:01:00.153 -> NIC transmitted a packet
+19:01:00.186 -> FreeQ replenished back
+19:01:00.186 -> free buffer obtained by NIC
+19:01:00.186 -> NIC received a packet
+19:01:00.186 -> no. of messages forwarded by main(): 271
+19:01:00.186 -> NIC transmitted a packet
+19:01:00.186 -> FreeQ replenished back
+19:01:00.186 -> free buffer obtained by NIC
+19:01:00.186 -> NIC received a packet
+19:01:00.186 -> no. of messages forwarded by main(): 272
+19:01:00.186 -> NIC transmitted a packet
+19:01:00.186 -> FreeQ replenished back
+19:01:00.186 -> free buffer obtained by NIC
+19:01:00.186 -> NIC received a packet
+19:01:00.219 -> no. of messages forwarded by main(): 273
+19:01:00.219 -> NIC transmitted a packet
+19:01:00.219 -> FreeQ replenished back
+19:01:00.219 -> free buffer obtained by NIC
+19:01:00.219 -> NIC received a packet
+19:01:00.219 -> no. of messages forwarded by main(): 274
+19:01:00.219 -> NIC transmitted a packet
+19:01:00.219 -> FreeQ replenished back
+19:01:00.219 -> free buffer obtained by NIC
+19:01:00.219 -> NIC received a packet
+19:01:00.219 -> no. of messages forwarded by main(): 275
+19:01:00.219 -> NIC transmitted a packet
+19:01:00.252 -> FreeQ replenished back
+19:01:00.252 -> free buffer obtained by NIC
+19:01:00.252 -> NIC received a packet
+19:01:00.252 -> no. of messages forwarded by main(): 276
+19:01:00.252 -> NIC transmitted a packet
+19:01:00.252 -> FreeQ replenished back
+19:01:00.252 -> free buffer obtained by NIC
+19:01:00.252 -> NIC received a packet
+19:01:00.252 -> no. of messages forwarded by main(): 277
+19:01:00.252 -> NIC transmitted a packet
+19:01:00.252 -> FreeQ replenished back
+19:01:00.252 -> free buffer obtained by NIC
+19:01:00.252 -> NIC received a packet
+19:01:00.285 -> no. of messages forwarded by main(): 278
+19:01:00.285 -> NIC transmitted a packet
+19:01:00.285 -> FreeQ replenished back
+19:01:00.285 -> free buffer obtained by NIC
+19:01:00.285 -> NIC received a packet
+19:01:00.285 -> no. of messages forwarded by main(): 279
+19:01:00.285 -> NIC transmitted a packet
+19:01:00.285 -> FreeQ replenished back
+19:01:00.285 -> free buffer obtained by NIC
+19:01:00.285 -> NIC received a packet
+19:01:00.285 -> no. of messages forwarded by main(): 280
+19:01:00.285 -> NIC transmitted a packet
+19:01:00.319 -> FreeQ replenished back
+19:01:00.319 -> free buffer obtained by NIC
+19:01:00.319 -> NIC received a packet
+19:01:00.319 -> no. of messages forwarded by main(): 281
+19:01:00.319 -> NIC transmitted a packet
+19:01:00.319 -> FreeQ replenished back
+19:01:00.319 -> free buffer obtained by NIC
+19:01:00.319 -> NIC received a packet
+19:01:00.319 -> no. of messages forwarded by main(): 282
+19:01:00.319 -> NIC transmitted a packet
+19:01:00.319 -> FreeQ replenished back
+19:01:00.319 -> free buffer obtained by NIC
+19:01:00.319 -> NIC received a packet
+19:01:00.352 -> no. of messages forwarded by main(): 283
+19:01:00.352 -> NIC transmitted a packet
+19:01:00.352 -> FreeQ replenished back
+19:01:00.352 -> free buffer obtained by NIC
+19:01:00.352 -> NIC received a packet
+19:01:00.352 -> no. of messages forwarded by main(): 284
+19:01:00.352 -> NIC transmitted a packet
+19:01:00.352 -> FreeQ replenished back
+19:01:00.352 -> free buffer obtained by NIC
+19:01:00.352 -> NIC received a packet
+19:01:00.352 -> no. of messages forwarded by main(): 285
+19:01:00.352 -> NIC transmitted a packet
+19:01:00.385 -> FreeQ replenished back
+19:01:00.385 -> free buffer obtained by NIC
+19:01:00.385 -> NIC received a packet
+19:01:00.385 -> no. of messages forwarded by main(): 286
+19:01:00.385 -> NIC transmitted a packet
+19:01:00.385 -> FreeQ replenished back
+19:01:00.385 -> free buffer obtained by NIC
+19:01:00.385 -> NIC received a packet
+19:01:00.385 -> no. of messages forwarded by main(): 287
+19:01:00.385 -> NIC transmitted a packet
+19:01:00.385 -> FreeQ replenished back
+19:01:00.385 -> free buffer obtained by NIC
+19:01:00.385 -> NIC received a packet
+19:01:00.418 -> no. of messages forwarded by main(): 288
+19:01:00.418 -> NIC transmitted a packet
+19:01:00.418 -> FreeQ replenished back
+19:01:00.418 -> free buffer obtained by NIC
+19:01:00.418 -> NIC received a packet
+19:01:00.418 -> no. of messages forwarded by main(): 289
+19:01:00.418 -> NIC transmitted a packet
+19:01:00.418 -> FreeQ replenished back
+19:01:00.418 -> free buffer obtained by NIC
+19:01:00.418 -> NIC received a packet
+19:01:00.418 -> no. of messages forwarded by main(): 290
+19:01:00.418 -> NIC transmitted a packet
+19:01:00.451 -> FreeQ replenished back
+19:01:00.451 -> free buffer obtained by NIC
+19:01:00.451 -> NIC received a packet
+19:01:00.451 -> no. of messages forwarded by main(): 291
+19:01:00.451 -> NIC transmitted a packet
+19:01:00.451 -> FreeQ replenished back
+19:01:00.451 -> free buffer obtained by NIC
+19:01:00.451 -> NIC received a packet
+19:01:00.451 -> no. of messages forwarded by main(): 292
+19:01:00.451 -> NIC transmitted a packet
+19:01:00.451 -> FreeQ replenished back
+19:01:00.451 -> free buffer obtained by NIC
+19:01:00.451 -> NIC received a packet
+19:01:00.484 -> no. of messages forwarded by main(): 293
+19:01:00.484 -> NIC transmitted a packet
+19:01:00.484 -> FreeQ replenished back
+19:01:00.484 -> free buffer obtained by NIC
+19:01:00.484 -> NIC received a packet
+19:01:00.484 -> no. of messages forwarded by main(): 294
+19:01:00.484 -> NIC transmitted a packet
+19:01:00.484 -> FreeQ replenished back
+19:01:00.484 -> free buffer obtained by NIC
+19:01:00.484 -> NIC received a packet
+19:01:00.484 -> no. of messages forwarded by main(): 295
+19:01:00.484 -> NIC transmitted a packet
+19:01:00.484 -> FreeQ replenished back
+19:01:00.518 -> free buffer obtained by NIC
+19:01:00.518 -> NIC received a packet
+19:01:00.518 -> no. of messages forwarded by main(): 296
+19:01:00.518 -> NIC transmitted a packet
+19:01:00.518 -> FreeQ replenished back
+19:01:00.518 -> free buffer obtained by NIC
+19:01:00.518 -> NIC received a packet
+19:01:00.518 -> no. of messages forwarded by main(): 297
+19:01:00.518 -> NIC transmitted a packet
+19:01:00.518 -> FreeQ replenished back
+19:01:00.518 -> free buffer obtained by NIC
+19:01:00.518 -> NIC received a packet
+19:01:00.518 -> no. of messages forwarded by main(): 298
+19:01:00.551 -> NIC transmitted a packet
+19:01:00.551 -> FreeQ replenished back
+19:01:00.551 -> free buffer obtained by NIC
+19:01:00.551 -> NIC received a packet
+19:01:00.551 -> no. of messages forwarded by main(): 299
+19:01:00.551 -> NIC transmitted a packet
+19:01:00.551 -> FreeQ replenished back
+19:01:00.551 -> free buffer obtained by NIC
+19:01:00.551 -> NIC received a packet
+19:01:00.551 -> no. of messages forwarded by main(): 300
+19:01:00.551 -> NIC transmitted a packet
+19:01:00.551 -> FreeQ replenished back
+19:01:00.586 -> free buffer obtained by NIC
+19:01:00.586 -> NIC received a packet
+19:01:00.586 -> no. of messages forwarded by main(): 301
+19:01:00.586 -> NIC transmitted a packet
+19:01:00.586 -> FreeQ replenished back
+19:01:00.586 -> free buffer obtained by NIC
+19:01:00.586 -> NIC received a packet
+19:01:00.586 -> no. of messages forwarded by main(): 302
+19:01:00.586 -> NIC transmitted a packet
+19:01:00.586 -> FreeQ replenished back
+19:01:00.586 -> free buffer obtained by NIC
+19:01:00.586 -> NIC received a packet
+19:01:00.586 -> no. of messages forwarded by main(): 303
+19:01:00.617 -> NIC transmitted a packet
+19:01:00.617 -> FreeQ replenished back
+19:01:00.617 -> free buffer obtained by NIC
+19:01:00.617 -> NIC received a packet
+19:01:00.617 -> no. of messages forwarded by main(): 304
+19:01:00.617 -> NIC transmitted a packet
+19:01:00.617 -> FreeQ replenished back
+19:01:00.617 -> free buffer obtained by NIC
+19:01:00.617 -> NIC received a packet
+19:01:00.617 -> no. of messages forwarded by main(): 305
+19:01:00.617 -> NIC transmitted a packet
+19:01:00.617 -> FreeQ replenished back
+19:01:00.651 -> free buffer obtained by NIC
+19:01:00.651 -> NIC received a packet
+19:01:00.651 -> no. of messages forwarded by main(): 306
+19:01:00.651 -> NIC transmitted a packet
+19:01:00.651 -> FreeQ replenished back
+19:01:00.651 -> free buffer obtained by NIC
+19:01:00.651 -> NIC received a packet
+19:01:00.651 -> no. of messages forwarded by main(): 307
+19:01:00.651 -> NIC transmitted a packet
+19:01:00.651 -> FreeQ replenished back
+19:01:00.651 -> free buffer obtained by NIC
+19:01:00.651 -> NIC received a packet
+19:01:00.651 -> no. of messages forwarded by main(): 308
+19:01:00.684 -> NIC transmitted a packet
+19:01:00.684 -> FreeQ replenished back
+19:01:00.684 -> free buffer obtained by NIC
+19:01:00.684 -> NIC received a packet
+19:01:00.684 -> no. of messages forwarded by main(): 309
+19:01:00.684 -> NIC transmitted a packet
+19:01:00.684 -> FreeQ replenished back
+19:01:00.684 -> free buffer obtained by NIC
+19:01:00.684 -> NIC received a packet
+19:01:00.684 -> no. of messages forwarded by main(): 310
+19:01:00.684 -> NIC transmitted a packet
+19:01:00.684 -> FreeQ replenished back
+19:01:00.719 -> free buffer obtained by NIC
+19:01:00.719 -> NIC received a packet
+19:01:00.719 -> no. of messages forwarded by main(): 311
+19:01:00.719 -> NIC transmitted a packet
+19:01:00.719 -> FreeQ replenished back
+19:01:00.719 -> free buffer obtained by NIC
+19:01:00.719 -> NIC received a packet
+19:01:00.719 -> no. of messages forwarded by main(): 312
+19:01:00.719 -> NIC transmitted a packet
+19:01:00.719 -> FreeQ replenished back
+19:01:00.719 -> free buffer obtained by NIC
+19:01:00.719 -> NIC received a packet
+19:01:00.753 -> no. of messages forwarded by main(): 313
+19:01:00.753 -> NIC transmitted a packet
+19:01:00.753 -> FreeQ replenished back
+19:01:00.753 -> free buffer obtained by NIC
+19:01:00.753 -> NIC received a packet
+19:01:00.753 -> no. of messages forwarded by main(): 314
+19:01:00.753 -> NIC transmitted a packet
+19:01:00.753 -> FreeQ replenished back
+19:01:00.753 -> free buffer obtained by NIC
+19:01:00.753 -> NIC received a packet
+19:01:00.753 -> no. of messages forwarded by main(): 315
+19:01:00.753 -> NIC transmitted a packet
+19:01:00.753 -> FreeQ replenished back
+19:01:00.753 -> free buffer obtained by NIC
+19:01:00.753 -> NIC received a packet
+19:01:00.786 -> no. of messages forwarded by main(): 316
+19:01:00.786 -> NIC transmitted a packet
+19:01:00.786 -> FreeQ replenished back
+19:01:00.786 -> free buffer obtained by NIC
+19:01:00.786 -> NIC received a packet
+19:01:00.786 -> no. of messages forwarded by main(): 317
+19:01:00.786 -> NIC transmitted a packet
+19:01:00.786 -> FreeQ replenished back
+19:01:00.786 -> free buffer obtained by NIC
+19:01:00.786 -> NIC received a packet
+19:01:00.786 -> no. of messages forwarded by main(): 318
+19:01:00.786 -> NIC transmitted a packet
+19:01:00.819 -> FreeQ replenished back
+19:01:00.819 -> free buffer obtained by NIC
+19:01:00.819 -> NIC received a packet
+19:01:00.819 -> no. of messages forwarded by main(): 319
+19:01:00.819 -> NIC transmitted a packet
+19:01:00.819 -> FreeQ replenished back
+19:01:00.819 -> free buffer obtained by NIC
+19:01:00.819 -> NIC received a packet
+19:01:00.819 -> no. of messages forwarded by main(): 320
+19:01:00.819 -> NIC transmitted a packet
+19:01:00.819 -> FreeQ replenished back
+19:01:00.819 -> free buffer obtained by NIC
+19:01:00.819 -> NIC received a packet
+19:01:00.852 -> no. of messages forwarded by main(): 321
+19:01:00.852 -> NIC transmitted a packet
+19:01:00.852 -> FreeQ replenished back
+19:01:00.852 -> free buffer obtained by NIC
+19:01:00.852 -> NIC received a packet
+19:01:00.852 -> no. of messages forwarded by main(): 322
+19:01:00.852 -> NIC transmitted a packet
+19:01:00.852 -> FreeQ replenished back
+19:01:00.852 -> free buffer obtained by NIC
+19:01:00.852 -> NIC received a packet
+19:01:00.852 -> no. of messages forwarded by main(): 323
+19:01:00.852 -> NIC transmitted a packet
+19:01:00.885 -> FreeQ replenished back
+19:01:00.885 -> free buffer obtained by NIC
+19:01:00.885 -> NIC received a packet
+19:01:00.885 -> no. of messages forwarded by main(): 324
+19:01:00.885 -> NIC transmitted a packet
+19:01:00.885 -> FreeQ replenished back
+19:01:00.885 -> free buffer obtained by NIC
+19:01:00.885 -> NIC received a packet
+19:01:00.885 -> no. of messages forwarded by main(): 325
+19:01:00.885 -> NIC transmitted a packet
+19:01:00.885 -> FreeQ replenished back
+19:01:00.885 -> free buffer obtained by NIC
+19:01:00.885 -> NIC received a packet
+19:01:00.918 -> no. of messages forwarded by main(): 326
+19:01:00.918 -> NIC transmitted a packet
+19:01:00.918 -> FreeQ replenished back
+19:01:00.918 -> free buffer obtained by NIC
+19:01:00.918 -> NIC received a packet
+19:01:00.918 -> no. of messages forwarded by main(): 327
+19:01:00.918 -> NIC transmitted a packet
+19:01:00.918 -> FreeQ replenished back
+19:01:00.918 -> free buffer obtained by NIC
+19:01:00.918 -> NIC received a packet
+19:01:00.918 -> no. of messages forwarded by main(): 328
+19:01:00.918 -> NIC transmitted a packet
+19:01:00.951 -> FreeQ replenished back
+19:01:00.951 -> free buffer obtained by NIC
+19:01:00.951 -> NIC received a packet
+19:01:00.951 -> no. of messages forwarded by main(): 329
+19:01:00.951 -> NIC transmitted a packet
+19:01:00.951 -> FreeQ replenished back
+19:01:00.951 -> free buffer obtained by NIC
+19:01:00.951 -> NIC received a packet
+19:01:00.951 -> no. of messages forwarded by main(): 330
+19:01:00.951 -> NIC transmitted a packet
+19:01:00.951 -> FreeQ replenished back
+19:01:00.951 -> free buffer obtained by NIC
+19:01:00.951 -> NIC received a packet
+19:01:00.984 -> no. of messages forwarded by main(): 331
+19:01:00.984 -> NIC transmitted a packet
+19:01:00.984 -> FreeQ replenished back
+19:01:00.984 -> free buffer obtained by NIC
+19:01:00.984 -> NIC received a packet
+19:01:00.984 -> no. of messages forwarded by main(): 332
+19:01:00.984 -> NIC transmitted a packet
+19:01:00.984 -> FreeQ replenished back
+19:01:00.984 -> free buffer obtained by NIC
+19:01:00.984 -> NIC received a packet
+19:01:00.984 -> no. of messages forwarded by main(): 333
+19:01:00.984 -> NIC transmitted a packet
+19:01:01.017 -> FreeQ replenished back
+19:01:01.017 -> free buffer obtained by NIC
+19:01:01.017 -> NIC received a packet
+19:01:01.017 -> no. of messages forwarded by main(): 334
+19:01:01.017 -> NIC transmitted a packet
+19:01:01.017 -> FreeQ replenished back
+19:01:01.017 -> free buffer obtained by NIC
+19:01:01.017 -> NIC received a packet
+19:01:01.017 -> no. of messages forwarded by main(): 335
+19:01:01.017 -> NIC transmitted a packet
+19:01:01.017 -> FreeQ replenished back
+19:01:01.017 -> free buffer obtained by NIC
+19:01:01.017 -> NIC received a packet
+19:01:01.051 -> no. of messages forwarded by main(): 336
+19:01:01.051 -> NIC transmitted a packet
+19:01:01.051 -> FreeQ replenished back
+19:01:01.051 -> free buffer obtained by NIC
+19:01:01.051 -> NIC received a packet
+19:01:01.051 -> no. of messages forwarded by main(): 337
+19:01:01.051 -> NIC transmitted a packet
+19:01:01.051 -> FreeQ replenished back
+19:01:01.051 -> free buffer obtained by NIC
+19:01:01.051 -> NIC received a packet
+19:01:01.051 -> no. of messages forwarded by main(): 338
+19:01:01.051 -> NIC transmitted a packet
+19:01:01.084 -> FreeQ replenished back
+19:01:01.084 -> free buffer obtained by NIC
+19:01:01.084 -> NIC received a packet
+19:01:01.084 -> no. of messages forwarded by main(): 339
+19:01:01.084 -> NIC transmitted a packet
+19:01:01.084 -> FreeQ replenished back
+19:01:01.084 -> free buffer obtained by NIC
+19:01:01.084 -> NIC received a packet
+19:01:01.084 -> no. of messages forwarded by main(): 340
+19:01:01.084 -> NIC transmitted a packet
+19:01:01.084 -> FreeQ replenished back
+19:01:01.084 -> free buffer obtained by NIC
+19:01:01.084 -> NIC received a packet
+19:01:01.120 -> no. of messages forwarded by main(): 341
+19:01:01.120 -> NIC transmitted a packet
+19:01:01.120 -> FreeQ replenished back
+19:01:01.120 -> free buffer obtained by NIC
+19:01:01.120 -> NIC received a packet
+19:01:01.120 -> no. of messages forwarded by main(): 342
+19:01:01.120 -> NIC transmitted a packet
+19:01:01.120 -> FreeQ replenished back
+19:01:01.120 -> free buffer obtained by NIC
+19:01:01.120 -> NIC received a packet
+19:01:01.120 -> no. of messages forwarded by main(): 343
+19:01:01.120 -> NIC transmitted a packet
+19:01:01.120 -> FreeQ replenished back
+19:01:01.120 -> free buffer obtained by NIC
+19:01:01.150 -> NIC received a packet
+19:01:01.150 -> no. of messages forwarded by main(): 344
+19:01:01.150 -> NIC transmitted a packet
+19:01:01.150 -> FreeQ replenished back
+19:01:01.150 -> free buffer obtained by NIC
+19:01:01.150 -> NIC received a packet
+19:01:01.150 -> no. of messages forwarded by main(): 345
+19:01:01.150 -> NIC transmitted a packet
+19:01:01.150 -> FreeQ replenished back
+19:01:01.150 -> free buffer obtained by NIC
+19:01:01.150 -> NIC received a packet
+19:01:01.183 -> no. of messages forwarded by main(): 346
+19:01:01.183 -> NIC transmitted a packet
+19:01:01.183 -> FreeQ replenished back
+19:01:01.183 -> free buffer obtained by NIC
+19:01:01.183 -> NIC received a packet
+19:01:01.183 -> no. of messages forwarded by main(): 347
+19:01:01.183 -> NIC transmitted a packet
+19:01:01.183 -> FreeQ replenished back
+19:01:01.183 -> free buffer obtained by NIC
+19:01:01.183 -> NIC received a packet
+19:01:01.183 -> no. of messages forwarded by main(): 348
+19:01:01.183 -> NIC transmitted a packet
+19:01:01.216 -> FreeQ replenished back
+19:01:01.216 -> free buffer obtained by NIC
+19:01:01.216 -> NIC received a packet
+19:01:01.216 -> no. of messages forwarded by main(): 349
+19:01:01.216 -> NIC transmitted a packet
+19:01:01.216 -> FreeQ replenished back
+19:01:01.216 -> free buffer obtained by NIC
+19:01:01.216 -> NIC received a packet
+19:01:01.216 -> no. of messages forwarded by main(): 350
+19:01:01.216 -> NIC transmitted a packet
+19:01:01.216 -> FreeQ replenished back
+19:01:01.216 -> free buffer obtained by NIC
+19:01:01.216 -> NIC received a packet
+19:01:01.253 -> no. of messages forwarded by main(): 351
+19:01:01.253 -> NIC transmitted a packet
+19:01:01.253 -> FreeQ replenished back
+19:01:01.253 -> free buffer obtained by NIC
+19:01:01.253 -> NIC received a packet
+19:01:01.253 -> no. of messages forwarded by main(): 352
+19:01:01.253 -> NIC transmitted a packet
+19:01:01.253 -> FreeQ replenished back
+19:01:01.253 -> free buffer obtained by NIC
+19:01:01.253 -> NIC received a packet
+19:01:01.253 -> no. of messages forwarded by main(): 353
+19:01:01.253 -> NIC transmitted a packet
+19:01:01.253 -> FreeQ replenished back
+19:01:01.253 -> free buffer obtained by NIC
+19:01:01.253 -> NIC received a packet
+19:01:01.285 -> no. of messages forwarded by main(): 354
+19:01:01.285 -> NIC transmitted a packet
+19:01:01.285 -> FreeQ replenished back
+19:01:01.285 -> free buffer obtained by NIC
+19:01:01.285 -> NIC received a packet
+19:01:01.285 -> no. of messages forwarded by main(): 355
+19:01:01.285 -> NIC transmitted a packet
+19:01:01.285 -> FreeQ replenished back
+19:01:01.285 -> free buffer obtained by NIC
+19:01:01.285 -> NIC received a packet
+19:01:01.285 -> no. of messages forwarded by main(): 356
+19:01:01.316 -> NIC transmitted a packet
+19:01:01.316 -> FreeQ replenished back
+19:01:01.316 -> free buffer obtained by NIC
+19:01:01.316 -> NIC received a packet
+19:01:01.316 -> no. of messages forwarded by main(): 357
+19:01:01.316 -> NIC transmitted a packet
+19:01:01.316 -> FreeQ replenished back
+19:01:01.316 -> free buffer obtained by NIC
+19:01:01.316 -> NIC received a packet
+19:01:01.316 -> no. of messages forwarded by main(): 358
+19:01:01.316 -> NIC transmitted a packet
+19:01:01.316 -> FreeQ replenished back
+19:01:01.349 -> free buffer obtained by NIC
+19:01:01.349 -> NIC received a packet
+19:01:01.349 -> no. of messages forwarded by main(): 359
+19:01:01.349 -> NIC transmitted a packet
+19:01:01.349 -> FreeQ replenished back
+19:01:01.349 -> free buffer obtained by NIC
+19:01:01.349 -> NIC received a packet
+19:01:01.349 -> no. of messages forwarded by main(): 360
+19:01:01.349 -> NIC transmitted a packet
+19:01:01.349 -> FreeQ replenished back
+19:01:01.349 -> free buffer obtained by NIC
+19:01:01.349 -> NIC received a packet
+19:01:01.382 -> no. of messages forwarded by main(): 361
+19:01:01.382 -> NIC transmitted a packet
+19:01:01.382 -> FreeQ replenished back
+19:01:01.382 -> free buffer obtained by NIC
+19:01:01.382 -> NIC received a packet
+19:01:01.382 -> no. of messages forwarded by main(): 362
+19:01:01.382 -> NIC transmitted a packet
+19:01:01.382 -> FreeQ replenished back
+19:01:01.382 -> free buffer obtained by NIC
+19:01:01.382 -> NIC received a packet
+19:01:01.382 -> no. of messages forwarded by main(): 363
+19:01:01.382 -> NIC transmitted a packet
+19:01:01.382 -> FreeQ replenished back
+19:01:01.416 -> free buffer obtained by NIC
+19:01:01.416 -> NIC received a packet
+19:01:01.416 -> no. of messages forwarded by main(): 364
+19:01:01.416 -> NIC transmitted a packet
+19:01:01.416 -> FreeQ replenished back
+19:01:01.416 -> free buffer obtained by NIC
+19:01:01.416 -> NIC received a packet
+19:01:01.416 -> no. of messages forwarded by main(): 365
+19:01:01.416 -> NIC transmitted a packet
+19:01:01.416 -> FreeQ replenished back
+19:01:01.416 -> free buffer obtained by NIC
+19:01:01.416 -> NIC received a packet
+19:01:01.449 -> no. of messages forwarded by main(): 366
+19:01:01.449 -> NIC transmitted a packet
+19:01:01.449 -> FreeQ replenished back
+19:01:01.449 -> free buffer obtained by NIC
+19:01:01.449 -> NIC received a packet
+19:01:01.449 -> no. of messages forwarded by main(): 367
+19:01:01.449 -> NIC transmitted a packet
+19:01:01.449 -> FreeQ replenished back
+19:01:01.449 -> free buffer obtained by NIC
+19:01:01.449 -> NIC received a packet
+19:01:01.449 -> no. of messages forwarded by main(): 368
+19:01:01.449 -> NIC transmitted a packet
+19:01:01.449 -> FreeQ replenished back
+19:01:01.488 -> free buffer obtained by NIC
+19:01:01.488 -> NIC received a packet
+19:01:01.488 -> no. of messages forwarded by main(): 369
+19:01:01.488 -> NIC transmitted a packet
+19:01:01.488 -> FreeQ replenished back
+19:01:01.488 -> free buffer obtained by NIC
+19:01:01.488 -> NIC received a packet
+19:01:01.488 -> no. of messages forwarded by main(): 370
+19:01:01.488 -> NIC transmitted a packet
+19:01:01.488 -> FreeQ replenished back
+19:01:01.488 -> free buffer obtained by NIC
+19:01:01.488 -> NIC received a packet
+19:01:01.488 -> no. of messages forwarded by main(): 371
+19:01:01.488 -> NIC transmitted a packet
+19:01:01.488 -> FreeQ replenished back
+19:01:01.515 -> free buffer obtained by NIC
+19:01:01.515 -> NIC received a packet
+19:01:01.515 -> no. of messages forwarded by main(): 372
+19:01:01.515 -> NIC transmitted a packet
+19:01:01.515 -> FreeQ replenished back
+19:01:01.515 -> free buffer obtained by NIC
+19:01:01.515 -> NIC received a packet
+19:01:01.515 -> no. of messages forwarded by main(): 373
+19:01:01.515 -> NIC transmitted a packet
+19:01:01.515 -> FreeQ replenished back
+19:01:01.548 -> free buffer obtained by NIC
+19:01:01.548 -> NIC received a packet
+19:01:01.548 -> no. of messages forwarded by main(): 374
+19:01:01.548 -> NIC transmitted a packet
+19:01:01.548 -> FreeQ replenished back
+19:01:01.548 -> free buffer obtained by NIC
+19:01:01.548 -> NIC received a packet
+19:01:01.548 -> no. of messages forwarded by main(): 375
+19:01:01.548 -> NIC transmitted a packet
+19:01:01.548 -> FreeQ replenished back
+19:01:01.548 -> free buffer obtained by NIC
+19:01:01.548 -> NIC received a packet
+19:01:01.548 -> no. of messages forwarded by main(): 376
+19:01:01.581 -> NIC transmitted a packet
+19:01:01.581 -> FreeQ replenished back
+19:01:01.581 -> free buffer obtained by NIC
+19:01:01.581 -> NIC received a packet
+19:01:01.581 -> no. of messages forwarded by main(): 377
+19:01:01.581 -> NIC transmitted a packet
+19:01:01.581 -> FreeQ replenished back
+19:01:01.581 -> free buffer obtained by NIC
+19:01:01.581 -> NIC received a packet
+19:01:01.581 -> no. of messages forwarded by main(): 378
+19:01:01.581 -> NIC transmitted a packet
+19:01:01.581 -> FreeQ replenished back
+19:01:01.581 -> free buffer obtained by NIC
+19:01:01.614 -> NIC received a packet
+19:01:01.614 -> no. of messages forwarded by main(): 379
+19:01:01.614 -> NIC transmitted a packet
+19:01:01.614 -> FreeQ replenished back
+19:01:01.614 -> free buffer obtained by NIC
+19:01:01.614 -> NIC received a packet
+19:01:01.614 -> no. of messages forwarded by main(): 380
+19:01:01.614 -> NIC transmitted a packet
+19:01:01.614 -> FreeQ replenished back
+19:01:01.614 -> free buffer obtained by NIC
+19:01:01.614 -> NIC received a packet
+19:01:01.614 -> no. of messages forwarded by main(): 381
+19:01:01.649 -> NIC transmitted a packet
+19:01:01.649 -> FreeQ replenished back
+19:01:01.649 -> free buffer obtained by NIC
+19:01:01.649 -> NIC received a packet
+19:01:01.649 -> no. of messages forwarded by main(): 382
+19:01:01.649 -> NIC transmitted a packet
+19:01:01.649 -> FreeQ replenished back
+19:01:01.649 -> free buffer obtained by NIC
+19:01:01.649 -> NIC received a packet
+19:01:01.649 -> no. of messages forwarded by main(): 383
+19:01:01.649 -> NIC transmitted a packet
+19:01:01.649 -> FreeQ replenished back
+19:01:01.649 -> free buffer obtained by NIC
+19:01:01.681 -> NIC received a packet
+19:01:01.681 -> no. of messages forwarded by main(): 384
+19:01:01.681 -> NIC transmitted a packet
+19:01:01.681 -> FreeQ replenished back
+19:01:01.681 -> free buffer obtained by NIC
+19:01:01.681 -> NIC received a packet
+19:01:01.681 -> no. of messages forwarded by main(): 385
+19:01:01.681 -> NIC transmitted a packet
+19:01:01.681 -> FreeQ replenished back
+19:01:01.681 -> free buffer obtained by NIC
+19:01:01.681 -> NIC received a packet
+19:01:01.681 -> no. of messages forwarded by main(): 386
+19:01:01.714 -> NIC transmitted a packet
+19:01:01.714 -> FreeQ replenished back
+19:01:01.714 -> free buffer obtained by NIC
+19:01:01.714 -> NIC received a packet
+19:01:01.714 -> no. of messages forwarded by main(): 387
+19:01:01.714 -> NIC transmitted a packet
+19:01:01.714 -> FreeQ replenished back
+19:01:01.714 -> free buffer obtained by NIC
+19:01:01.714 -> NIC received a packet
+19:01:01.714 -> no. of messages forwarded by main(): 388
+19:01:01.714 -> NIC transmitted a packet
+19:01:01.714 -> FreeQ replenished back
+19:01:01.747 -> free buffer obtained by NIC
+19:01:01.747 -> NIC received a packet
+19:01:01.747 -> no. of messages forwarded by main(): 389
+19:01:01.747 -> NIC transmitted a packet
+19:01:01.747 -> FreeQ replenished back
+19:01:01.747 -> free buffer obtained by NIC
+19:01:01.747 -> NIC received a packet
+19:01:01.747 -> no. of messages forwarded by main(): 390
+19:01:01.747 -> NIC transmitted a packet
+19:01:01.747 -> FreeQ replenished back
+19:01:01.747 -> free buffer obtained by NIC
+19:01:01.747 -> NIC received a packet
+19:01:01.747 -> no. of messages forwarded by main(): 391
+19:01:01.780 -> NIC transmitted a packet
+19:01:01.780 -> FreeQ replenished back
+19:01:01.780 -> free buffer obtained by NIC
+19:01:01.780 -> NIC received a packet
+19:01:01.780 -> no. of messages forwarded by main(): 392
+19:01:01.780 -> NIC transmitted a packet
+19:01:01.780 -> FreeQ replenished back
+19:01:01.780 -> free buffer obtained by NIC
+19:01:01.780 -> NIC received a packet
+19:01:01.780 -> no. of messages forwarded by main(): 393
+19:01:01.780 -> NIC transmitted a packet
+19:01:01.780 -> FreeQ replenished back
+19:01:01.780 -> free buffer obtained by NIC
+19:01:01.814 -> NIC received a packet
+19:01:01.814 -> no. of messages forwarded by main(): 394
+19:01:01.814 -> NIC transmitted a packet
+19:01:01.814 -> FreeQ replenished back
+19:01:01.814 -> free buffer obtained by NIC
+19:01:01.814 -> NIC received a packet
+19:01:01.814 -> no. of messages forwarded by main(): 395
+19:01:01.814 -> NIC transmitted a packet
+19:01:01.814 -> FreeQ replenished back
+19:01:01.814 -> free buffer obtained by NIC
+19:01:01.814 -> NIC received a packet
+19:01:01.814 -> no. of messages forwarded by main(): 396
+19:01:01.847 -> NIC transmitted a packet
+19:01:01.847 -> FreeQ replenished back
+19:01:01.847 -> free buffer obtained by NIC
+19:01:01.847 -> NIC received a packet
+19:01:01.847 -> no. of messages forwarded by main(): 397
+19:01:01.847 -> NIC transmitted a packet
+19:01:01.847 -> FreeQ replenished back
+19:01:01.847 -> free buffer obtained by NIC
+19:01:01.847 -> NIC received a packet
+19:01:01.847 -> no. of messages forwarded by main(): 398
+19:01:01.847 -> NIC transmitted a packet
+19:01:01.847 -> FreeQ replenished back
+19:01:01.847 -> free buffer obtained by NIC
+19:01:01.880 -> NIC received a packet
+19:01:01.880 -> no. of messages forwarded by main(): 399
+19:01:01.880 -> NIC transmitted a packet
+19:01:01.880 -> FreeQ replenished back
+19:01:01.880 -> free buffer obtained by NIC
+19:01:01.880 -> NIC received a packet
+19:01:01.880 -> no. of messages forwarded by main(): 400
+19:01:01.880 -> NIC transmitted a packet
+19:01:01.880 -> FreeQ replenished back
+19:01:01.880 -> free buffer obtained by NIC
+19:01:01.880 -> NIC received a packet
+19:01:01.880 -> no. of messages forwarded by main(): 401
+19:01:01.913 -> NIC transmitted a packet
+19:01:01.913 -> FreeQ replenished back
+19:01:01.913 -> free buffer obtained by NIC
+19:01:01.913 -> NIC received a packet
+19:01:01.913 -> no. of messages forwarded by main(): 402
+19:01:01.913 -> NIC transmitted a packet
+19:01:01.913 -> FreeQ replenished back
+19:01:01.913 -> free buffer obtained by NIC
+19:01:01.913 -> NIC received a packet
+19:01:01.913 -> no. of messages forwarded by main(): 403
+19:01:01.913 -> NIC transmitted a packet
+19:01:01.913 -> FreeQ replenished back
+19:01:01.913 -> free buffer obtained by NIC
+19:01:01.946 -> NIC received a packet
+19:01:01.946 -> no. of messages forwarded by main(): 404
+19:01:01.946 -> NIC transmitted a packet
+19:01:01.946 -> FreeQ replenished back
+19:01:01.946 -> free buffer obtained by NIC
+19:01:01.946 -> NIC received a packet
+19:01:01.946 -> no. of messages forwarded by main(): 405
+19:01:01.946 -> NIC transmitted a packet
+19:01:01.946 -> FreeQ replenished back
+19:01:01.946 -> free buffer obtained by NIC
+19:01:01.946 -> NIC received a packet
+19:01:01.946 -> no. of messages forwarded by main(): 406
+19:01:01.979 -> NIC transmitted a packet
+19:01:01.979 -> FreeQ replenished back
+19:01:01.979 -> free buffer obtained by NIC
+19:01:01.979 -> NIC received a packet
+19:01:01.979 -> no. of messages forwarded by main(): 407
+19:01:01.979 -> NIC transmitted a packet
+19:01:01.979 -> FreeQ replenished back
+19:01:01.979 -> free buffer obtained by NIC
+19:01:01.979 -> NIC received a packet
+19:01:01.979 -> no. of messages forwarded by main(): 408
+19:01:01.979 -> NIC transmitted a packet
+19:01:01.979 -> FreeQ replenished back
+19:01:01.979 -> free buffer obtained by NIC
+19:01:02.013 -> NIC received a packet
+19:01:02.013 -> no. of messages forwarded by main(): 409
+19:01:02.013 -> NIC transmitted a packet
+19:01:02.013 -> FreeQ replenished back
+19:01:02.013 -> free buffer obtained by NIC
+19:01:02.013 -> NIC received a packet
+19:01:02.013 -> no. of messages forwarded by main(): 410
+19:01:02.013 -> NIC transmitted a packet
+19:01:02.013 -> FreeQ replenished back
+19:01:02.013 -> free buffer obtained by NIC
+19:01:02.013 -> NIC received a packet
+19:01:02.013 -> no. of messages forwarded by main(): 411
+19:01:02.046 -> NIC transmitted a packet
+19:01:02.046 -> FreeQ replenished back
+19:01:02.046 -> free buffer obtained by NIC
+19:01:02.046 -> NIC received a packet
+19:01:02.046 -> no. of messages forwarded by main(): 412
+19:01:02.046 -> NIC transmitted a packet
+19:01:02.046 -> FreeQ replenished back
+19:01:02.046 -> free buffer obtained by NIC
+19:01:02.046 -> NIC received a packet
+19:01:02.046 -> no. of messages forwarded by main(): 413
+19:01:02.046 -> NIC transmitted a packet
+19:01:02.046 -> FreeQ replenished back
+19:01:02.046 -> free buffer obtained by NIC
+19:01:02.079 -> NIC received a packet
+19:01:02.079 -> no. of messages forwarded by main(): 414
+19:01:02.079 -> NIC transmitted a packet
+19:01:02.079 -> FreeQ replenished back
+19:01:02.079 -> free buffer obtained by NIC
+19:01:02.079 -> NIC received a packet
+19:01:02.079 -> no. of messages forwarded by main(): 415
+19:01:02.079 -> NIC transmitted a packet
+19:01:02.079 -> FreeQ replenished back
+19:01:02.079 -> free buffer obtained by NIC
+19:01:02.079 -> NIC received a packet
+19:01:02.079 -> no. of messages forwarded by main(): 416
+19:01:02.079 -> NIC transmitted a packet
+19:01:02.112 -> FreeQ replenished back
+19:01:02.112 -> free buffer obtained by NIC
+19:01:02.112 -> NIC received a packet
+19:01:02.112 -> no. of messages forwarded by main(): 417
+19:01:02.112 -> NIC transmitted a packet
+19:01:02.112 -> FreeQ replenished back
+19:01:02.112 -> free buffer obtained by NIC
+19:01:02.112 -> NIC received a packet
+19:01:02.112 -> no. of messages forwarded by main(): 418
+19:01:02.112 -> NIC transmitted a packet
+19:01:02.112 -> FreeQ replenished back
+19:01:02.112 -> free buffer obtained by NIC
+19:01:02.145 -> NIC received a packet
+19:01:02.145 -> no. of messages forwarded by main(): 419
+19:01:02.145 -> NIC transmitted a packet
+19:01:02.145 -> FreeQ replenished back
+19:01:02.145 -> free buffer obtained by NIC
+19:01:02.145 -> NIC received a packet
+19:01:02.145 -> no. of messages forwarded by main(): 420
+19:01:02.145 -> NIC transmitted a packet
+19:01:02.145 -> FreeQ replenished back
+19:01:02.145 -> free buffer obtained by NIC
+19:01:02.145 -> NIC received a packet
+19:01:02.145 -> no. of messages forwarded by main(): 421
+19:01:02.145 -> NIC transmitted a packet
+19:01:02.178 -> FreeQ replenished back
+19:01:02.178 -> free buffer obtained by NIC
+19:01:02.178 -> NIC received a packet
+19:01:02.178 -> no. of messages forwarded by main(): 422
+19:01:02.178 -> NIC transmitted a packet
+19:01:02.178 -> FreeQ replenished back
+19:01:02.178 -> free buffer obtained by NIC
+19:01:02.178 -> NIC received a packet
+19:01:02.178 -> no. of messages forwarded by main(): 423
+19:01:02.178 -> NIC transmitted a packet
+19:01:02.178 -> FreeQ replenished back
+19:01:02.178 -> free buffer obtained by NIC
+19:01:02.211 -> NIC received a packet
+19:01:02.211 -> no. of messages forwarded by main(): 424
+19:01:02.211 -> NIC transmitted a packet
+19:01:02.211 -> FreeQ replenished back
+19:01:02.211 -> free buffer obtained by NIC
+19:01:02.211 -> NIC received a packet
+19:01:02.211 -> no. of messages forwarded by main(): 425
+19:01:02.211 -> NIC transmitted a packet
+19:01:02.211 -> FreeQ replenished back
+19:01:02.211 -> free buffer obtained by NIC
+19:01:02.211 -> NIC received a packet
+19:01:02.211 -> no. of messages forwarded by main(): 426
+19:01:02.211 -> NIC transmitted a packet
+19:01:02.244 -> FreeQ replenished back
+19:01:02.244 -> free buffer obtained by NIC
+19:01:02.244 -> NIC received a packet
+19:01:02.244 -> no. of messages forwarded by main(): 427
+19:01:02.244 -> NIC transmitted a packet
+19:01:02.244 -> FreeQ replenished back
+19:01:02.244 -> free buffer obtained by NIC
+19:01:02.244 -> NIC received a packet
+19:01:02.244 -> no. of messages forwarded by main(): 428
+19:01:02.244 -> NIC transmitted a packet
+19:01:02.244 -> FreeQ replenished back
+19:01:02.244 -> free buffer obtained by NIC
+19:01:02.244 -> NIC received a packet
+19:01:02.277 -> no. of messages forwarded by main(): 429
+19:01:02.277 -> NIC transmitted a packet
+19:01:02.277 -> FreeQ replenished back
+19:01:02.277 -> free buffer obtained by NIC
+19:01:02.277 -> NIC received a packet
+19:01:02.277 -> no. of messages forwarded by main(): 430
+19:01:02.277 -> NIC transmitted a packet
+19:01:02.277 -> FreeQ replenished back
+19:01:02.277 -> free buffer obtained by NIC
+19:01:02.277 -> NIC received a packet
+19:01:02.277 -> no. of messages forwarded by main(): 431
+19:01:02.277 -> NIC transmitted a packet
+19:01:02.311 -> FreeQ replenished back
+19:01:02.311 -> free buffer obtained by NIC
+19:01:02.311 -> NIC received a packet
+19:01:02.311 -> no. of messages forwarded by main(): 432
+19:01:02.311 -> NIC transmitted a packet
+19:01:02.311 -> FreeQ replenished back
+19:01:02.311 -> free buffer obtained by NIC
+19:01:02.311 -> NIC received a packet
+19:01:02.311 -> no. of messages forwarded by main(): 433
+19:01:02.311 -> NIC transmitted a packet
+19:01:02.311 -> FreeQ replenished back
+19:01:02.311 -> free buffer obtained by NIC
+19:01:02.311 -> NIC received a packet
+19:01:02.344 -> no. of messages forwarded by main(): 434
+19:01:02.344 -> NIC transmitted a packet
+19:01:02.344 -> FreeQ replenished back
+19:01:02.344 -> free buffer obtained by NIC
+19:01:02.344 -> NIC received a packet
+19:01:02.344 -> no. of messages forwarded by main(): 435
+19:01:02.344 -> NIC transmitted a packet
+19:01:02.344 -> FreeQ replenished back
+19:01:02.344 -> free buffer obtained by NIC
+19:01:02.344 -> NIC received a packet
+19:01:02.344 -> no. of messages forwarded by main(): 436
+19:01:02.344 -> NIC transmitted a packet
+19:01:02.381 -> FreeQ replenished back
+19:01:02.381 -> free buffer obtained by NIC
+19:01:02.381 -> NIC received a packet
+19:01:02.381 -> no. of messages forwarded by main(): 437
+19:01:02.381 -> NIC transmitted a packet
+19:01:02.381 -> FreeQ replenished back
+19:01:02.381 -> free buffer obtained by NIC
+19:01:02.381 -> NIC received a packet
+19:01:02.381 -> no. of messages forwarded by main(): 438
+19:01:02.381 -> NIC transmitted a packet
+19:01:02.381 -> FreeQ replenished back
+19:01:02.381 -> free buffer obtained by NIC
+19:01:02.381 -> NIC received a packet
+19:01:02.381 -> no. of messages forwarded by main(): 439
+19:01:02.416 -> NIC transmitted a packet
+19:01:02.416 -> FreeQ replenished back
+19:01:02.416 -> free buffer obtained by NIC
+19:01:02.416 -> NIC received a packet
+19:01:02.416 -> no. of messages forwarded by main(): 440
+19:01:02.416 -> NIC transmitted a packet
+19:01:02.416 -> FreeQ replenished back
+19:01:02.416 -> free buffer obtained by NIC
+19:01:02.416 -> NIC received a packet
+19:01:02.416 -> no. of messages forwarded by main(): 441
+19:01:02.416 -> NIC transmitted a packet
+19:01:02.416 -> FreeQ replenished back
+19:01:02.449 -> free buffer obtained by NIC
+19:01:02.449 -> NIC received a packet
+19:01:02.449 -> no. of messages forwarded by main(): 442
+19:01:02.449 -> NIC transmitted a packet
+19:01:02.449 -> FreeQ replenished back
+19:01:02.449 -> free buffer obtained by NIC
+19:01:02.449 -> NIC received a packet
+19:01:02.449 -> no. of messages forwarded by main(): 443
+19:01:02.449 -> NIC transmitted a packet
+19:01:02.449 -> FreeQ replenished back
+19:01:02.449 -> free buffer obtained by NIC
+19:01:02.449 -> NIC received a packet
+19:01:02.449 -> no. of messages forwarded by main(): 444
+19:01:02.449 -> NIC transmitted a packet
+19:01:02.449 -> FreeQ replenished back
+19:01:02.483 -> free buffer obtained by NIC
+19:01:02.483 -> NIC received a packet
+19:01:02.483 -> no. of messages forwarded by main(): 445
+19:01:02.483 -> NIC transmitted a packet
+19:01:02.483 -> FreeQ replenished back
+19:01:02.483 -> free buffer obtained by NIC
+19:01:02.483 -> NIC received a packet
+19:01:02.483 -> no. of messages forwarded by main(): 446
+19:01:02.483 -> NIC transmitted a packet
+19:01:02.483 -> FreeQ replenished back
+19:01:02.483 -> free buffer obtained by NIC
+19:01:02.483 -> NIC received a packet
+19:01:02.516 -> no. of messages forwarded by main(): 447
+19:01:02.516 -> NIC transmitted a packet
+19:01:02.516 -> FreeQ replenished back
+19:01:02.516 -> free buffer obtained by NIC
+19:01:02.516 -> NIC received a packet
+19:01:02.516 -> no. of messages forwarded by main(): 448
+19:01:02.516 -> NIC transmitted a packet
+19:01:02.516 -> FreeQ replenished back
+19:01:02.516 -> free buffer obtained by NIC
+19:01:02.516 -> NIC received a packet
+19:01:02.516 -> no. of messages forwarded by main(): 449
+19:01:02.516 -> NIC transmitted a packet
+19:01:02.549 -> FreeQ replenished back
+19:01:02.549 -> free buffer obtained by NIC
+19:01:02.549 -> NIC received a packet
+19:01:02.549 -> no. of messages forwarded by main(): 450
+19:01:02.549 -> NIC transmitted a packet
+19:01:02.549 -> FreeQ replenished back
+19:01:02.549 -> free buffer obtained by NIC
+19:01:02.549 -> NIC received a packet
+19:01:02.549 -> no. of messages forwarded by main(): 451
+19:01:02.549 -> NIC transmitted a packet
+19:01:02.549 -> FreeQ replenished back
+19:01:02.549 -> free buffer obtained by NIC
+19:01:02.549 -> NIC received a packet
+19:01:02.582 -> no. of messages forwarded by main(): 452
+19:01:02.582 -> NIC transmitted a packet
+19:01:02.582 -> FreeQ replenished back
+19:01:02.582 -> free buffer obtained by NIC
+19:01:02.582 -> NIC received a packet
+19:01:02.582 -> no. of messages forwarded by main(): 453
+19:01:02.582 -> NIC transmitted a packet
+19:01:02.582 -> FreeQ replenished back
+19:01:02.582 -> free buffer obtained by NIC
+19:01:02.582 -> NIC received a packet
+19:01:02.582 -> no. of messages forwarded by main(): 454
+19:01:02.582 -> NIC transmitted a packet
+19:01:02.615 -> FreeQ replenished back
+19:01:02.615 -> free buffer obtained by NIC
+19:01:02.615 -> NIC received a packet
+19:01:02.615 -> no. of messages forwarded by main(): 455
+19:01:02.615 -> NIC transmitted a packet
+19:01:02.615 -> FreeQ replenished back
+19:01:02.615 -> free buffer obtained by NIC
+19:01:02.615 -> NIC received a packet
+19:01:02.615 -> no. of messages forwarded by main(): 456
+19:01:02.615 -> NIC transmitted a packet
+19:01:02.615 -> FreeQ replenished back
+19:01:02.615 -> free buffer obtained by NIC
+19:01:02.615 -> NIC received a packet
+19:01:02.652 -> no. of messages forwarded by main(): 457
+19:01:02.652 -> NIC transmitted a packet
+19:01:02.652 -> FreeQ replenished back
+19:01:02.652 -> free buffer obtained by NIC
+19:01:02.652 -> NIC received a packet
+19:01:02.652 -> no. of messages forwarded by main(): 458
+19:01:02.652 -> NIC transmitted a packet
+19:01:02.652 -> FreeQ replenished back
+19:01:02.652 -> free buffer obtained by NIC
+19:01:02.652 -> NIC received a packet
+19:01:02.652 -> no. of messages forwarded by main(): 459
+19:01:02.652 -> NIC transmitted a packet
+19:01:02.652 -> FreeQ replenished back
+19:01:02.652 -> free buffer obtained by NIC
+19:01:02.681 -> NIC received a packet
+19:01:02.681 -> no. of messages forwarded by main(): 460
+19:01:02.681 -> NIC transmitted a packet
+19:01:02.681 -> FreeQ replenished back
+19:01:02.681 -> free buffer obtained by NIC
+19:01:02.681 -> NIC received a packet
+19:01:02.681 -> no. of messages forwarded by main(): 461
+19:01:02.681 -> NIC transmitted a packet
+19:01:02.681 -> FreeQ replenished back
+19:01:02.681 -> free buffer obtained by NIC
+19:01:02.681 -> NIC received a packet
+19:01:02.720 -> no. of messages forwarded by main(): 462
+19:01:02.720 -> NIC transmitted a packet
+19:01:02.720 -> FreeQ replenished back
+19:01:02.720 -> free buffer obtained by NIC
+19:01:02.720 -> NIC received a packet
+19:01:02.720 -> no. of messages forwarded by main(): 463
+19:01:02.720 -> NIC transmitted a packet
+19:01:02.720 -> FreeQ replenished back
+19:01:02.720 -> free buffer obtained by NIC
+19:01:02.720 -> NIC received a packet
+19:01:02.720 -> no. of messages forwarded by main(): 464
+19:01:02.720 -> NIC transmitted a packet
+19:01:02.720 -> FreeQ replenished back
+19:01:02.720 -> free buffer obtained by NIC
+19:01:02.720 -> NIC received a packet
+19:01:02.748 -> no. of messages forwarded by main(): 465
+19:01:02.748 -> NIC transmitted a packet
+19:01:02.748 -> FreeQ replenished back
+19:01:02.748 -> free buffer obtained by NIC
+19:01:02.748 -> NIC received a packet
+19:01:02.748 -> no. of messages forwarded by main(): 466
+19:01:02.748 -> NIC transmitted a packet
+19:01:02.748 -> FreeQ replenished back
+19:01:02.748 -> free buffer obtained by NIC
+19:01:02.748 -> NIC received a packet
+19:01:02.748 -> no. of messages forwarded by main(): 467
+19:01:02.781 -> NIC transmitted a packet
+19:01:02.781 -> FreeQ replenished back
+19:01:02.781 -> free buffer obtained by NIC
+19:01:02.781 -> NIC received a packet
+19:01:02.781 -> no. of messages forwarded by main(): 468
+19:01:02.781 -> NIC transmitted a packet
+19:01:02.781 -> FreeQ replenished back
+19:01:02.781 -> free buffer obtained by NIC
+19:01:02.781 -> NIC received a packet
+19:01:02.781 -> no. of messages forwarded by main(): 469
+19:01:02.781 -> NIC transmitted a packet
+19:01:02.781 -> FreeQ replenished back
+19:01:02.814 -> free buffer obtained by NIC
+19:01:02.814 -> NIC received a packet
+19:01:02.814 -> no. of messages forwarded by main(): 470
+19:01:02.814 -> NIC transmitted a packet
+19:01:02.814 -> FreeQ replenished back
+19:01:02.814 -> free buffer obtained by NIC
+19:01:02.814 -> NIC received a packet
+19:01:02.814 -> no. of messages forwarded by main(): 471
+19:01:02.814 -> NIC transmitted a packet
+19:01:02.814 -> FreeQ replenished back
+19:01:02.814 -> free buffer obtained by NIC
+19:01:02.814 -> NIC received a packet
+19:01:02.814 -> no. of messages forwarded by main(): 472
+19:01:02.853 -> NIC transmitted a packet
+19:01:02.853 -> FreeQ replenished back
+19:01:02.853 -> free buffer obtained by NIC
+19:01:02.853 -> NIC received a packet
+19:01:02.853 -> no. of messages forwarded by main(): 473
+19:01:02.853 -> NIC transmitted a packet
+19:01:02.853 -> FreeQ replenished back
+19:01:02.853 -> free buffer obtained by NIC
+19:01:02.853 -> NIC received a packet
+19:01:02.853 -> no. of messages forwarded by main(): 474
+19:01:02.853 -> NIC transmitted a packet
+19:01:02.853 -> FreeQ replenished back
+19:01:02.853 -> free buffer obtained by NIC
+19:01:02.853 -> NIC received a packet
+19:01:02.886 -> no. of messages forwarded by main(): 475
+19:01:02.886 -> NIC transmitted a packet
+19:01:02.886 -> FreeQ replenished back
+19:01:02.886 -> free buffer obtained by NIC
+19:01:02.886 -> NIC received a packet
+19:01:02.886 -> no. of messages forwarded by main(): 476
+19:01:02.886 -> NIC transmitted a packet
+19:01:02.886 -> FreeQ replenished back
+19:01:02.886 -> free buffer obtained by NIC
+19:01:02.886 -> NIC received a packet
+19:01:02.886 -> no. of messages forwarded by main(): 477
+19:01:02.886 -> NIC transmitted a packet
+19:01:02.920 -> FreeQ replenished back
+19:01:02.920 -> free buffer obtained by NIC
+19:01:02.920 -> NIC received a packet
+19:01:02.920 -> no. of messages forwarded by main(): 478
+19:01:02.920 -> NIC transmitted a packet
+19:01:02.920 -> FreeQ replenished back
+19:01:02.920 -> free buffer obtained by NIC
+19:01:02.920 -> NIC received a packet
+19:01:02.920 -> no. of messages forwarded by main(): 479
+19:01:02.920 -> NIC transmitted a packet
+19:01:02.920 -> FreeQ replenished back
+19:01:02.920 -> free buffer obtained by NIC
+19:01:02.920 -> NIC received a packet
+19:01:02.920 -> no. of messages forwarded by main(): 480
+19:01:02.952 -> NIC transmitted a packet
+19:01:02.952 -> FreeQ replenished back
+19:01:02.952 -> free buffer obtained by NIC
+19:01:02.952 -> NIC received a packet
+19:01:02.952 -> no. of messages forwarded by main(): 481
+19:01:02.952 -> NIC transmitted a packet
+19:01:02.952 -> FreeQ replenished back
+19:01:02.952 -> free buffer obtained by NIC
+19:01:02.952 -> NIC received a packet
+19:01:02.952 -> no. of messages forwarded by main(): 482
+19:01:02.952 -> NIC transmitted a packet
+19:01:02.952 -> FreeQ replenished back
+19:01:02.985 -> free buffer obtained by NIC
+19:01:02.985 -> NIC received a packet
+19:01:02.985 -> no. of messages forwarded by main(): 483
+19:01:02.985 -> NIC transmitted a packet
+19:01:02.985 -> FreeQ replenished back
+19:01:02.985 -> free buffer obtained by NIC
+19:01:02.985 -> NIC received a packet
+19:01:02.985 -> no. of messages forwarded by main(): 484
+19:01:02.985 -> NIC transmitted a packet
+19:01:02.985 -> FreeQ replenished back
+19:01:02.985 -> free buffer obtained by NIC
+19:01:02.985 -> NIC received a packet
+19:01:02.985 -> no. of messages forwarded by main(): 485
+19:01:03.021 -> NIC transmitted a packet
+19:01:03.021 -> FreeQ replenished back
+19:01:03.021 -> free buffer obtained by NIC
+19:01:03.021 -> NIC received a packet
+19:01:03.021 -> no. of messages forwarded by main(): 486
+19:01:03.021 -> NIC transmitted a packet
+19:01:03.021 -> FreeQ replenished back
+19:01:03.021 -> free buffer obtained by NIC
+19:01:03.021 -> NIC received a packet
+19:01:03.021 -> no. of messages forwarded by main(): 487
+19:01:03.021 -> NIC transmitted a packet
+19:01:03.021 -> FreeQ replenished back
+19:01:03.021 -> free buffer obtained by NIC
+19:01:03.054 -> NIC received a packet
+19:01:03.054 -> no. of messages forwarded by main(): 488
+19:01:03.054 -> NIC transmitted a packet
+19:01:03.054 -> FreeQ replenished back
+19:01:03.054 -> free buffer obtained by NIC
+19:01:03.054 -> NIC received a packet
+19:01:03.054 -> no. of messages forwarded by main(): 489
+19:01:03.054 -> NIC transmitted a packet
+19:01:03.054 -> FreeQ replenished back
+19:01:03.054 -> free buffer obtained by NIC
+19:01:03.054 -> NIC received a packet
+19:01:03.054 -> no. of messages forwarded by main(): 490
+19:01:03.087 -> NIC transmitted a packet
+19:01:03.087 -> FreeQ replenished back
+19:01:03.087 -> free buffer obtained by NIC
+19:01:03.087 -> NIC received a packet
+19:01:03.087 -> no. of messages forwarded by main(): 491
+19:01:03.087 -> NIC transmitted a packet
+19:01:03.087 -> FreeQ replenished back
+19:01:03.087 -> free buffer obtained by NIC
+19:01:03.087 -> NIC received a packet
+19:01:03.087 -> no. of messages forwarded by main(): 492
+19:01:03.087 -> NIC transmitted a packet
+19:01:03.087 -> FreeQ replenished back
+19:01:03.087 -> free buffer obtained by NIC
+19:01:03.124 -> NIC received a packet
+19:01:03.124 -> no. of messages forwarded by main(): 493
+19:01:03.124 -> NIC transmitted a packet
+19:01:03.124 -> FreeQ replenished back
+19:01:03.124 -> free buffer obtained by NIC
+19:01:03.124 -> NIC received a packet
+19:01:03.124 -> no. of messages forwarded by main(): 494
+19:01:03.124 -> NIC transmitted a packet
+19:01:03.124 -> FreeQ replenished back
+19:01:03.124 -> free buffer obtained by NIC
+19:01:03.124 -> NIC received a packet
+19:01:03.124 -> no. of messages forwarded by main(): 495
+19:01:03.124 -> NIC transmitted a packet
+19:01:03.124 -> FreeQ replenished back
+19:01:03.157 -> free buffer obtained by NIC
+19:01:03.157 -> NIC received a packet
+19:01:03.157 -> no. of messages forwarded by main(): 496
+19:01:03.157 -> NIC transmitted a packet
+19:01:03.157 -> FreeQ replenished back
+19:01:03.157 -> free buffer obtained by NIC
+19:01:03.157 -> NIC received a packet
+19:01:03.157 -> no. of messages forwarded by main(): 497
+19:01:03.157 -> NIC transmitted a packet
+19:01:03.157 -> FreeQ replenished back
+19:01:03.157 -> free buffer obtained by NIC
+19:01:03.157 -> NIC received a packet
+19:01:03.190 -> no. of messages forwarded by main(): 498
+19:01:03.190 -> NIC transmitted a packet
+19:01:03.190 -> FreeQ replenished back
+19:01:03.190 -> free buffer obtained by NIC
+19:01:03.190 -> NIC received a packet
+19:01:03.190 -> no. of messages forwarded by main(): 499
+19:01:03.190 -> NIC transmitted a packet
+19:01:03.190 -> FreeQ replenished back
+19:01:03.190 -> free buffer obtained by NIC
+19:01:03.190 -> NIC received a packet
+19:01:03.190 -> no. of messages forwarded by main(): 500
+19:01:03.190 -> NIC transmitted a packet
+19:01:03.190 -> FreeQ replenished back
+19:01:03.223 -> free buffer obtained by NIC
+19:01:03.223 -> NIC received a packet
+19:01:03.223 -> no. of messages forwarded by main(): 501
+19:01:03.223 -> NIC transmitted a packet
+19:01:03.223 -> FreeQ replenished back
+19:01:03.223 -> free buffer obtained by NIC
+19:01:03.223 -> NIC received a packet
+19:01:03.223 -> no. of messages forwarded by main(): 502
+19:01:03.223 -> NIC transmitted a packet
+19:01:03.223 -> FreeQ replenished back
+19:01:03.223 -> free buffer obtained by NIC
+19:01:03.223 -> NIC received a packet
+19:01:03.223 -> no. of messages forwarded by main(): 503
+19:01:03.256 -> NIC transmitted a packet
+19:01:03.256 -> FreeQ replenished back
+19:01:03.256 -> free buffer obtained by NIC
+19:01:03.256 -> NIC received a packet
+19:01:03.256 -> no. of messages forwarded by main(): 504
+19:01:03.256 -> NIC transmitted a packet
+19:01:03.256 -> FreeQ replenished back
+19:01:03.256 -> free buffer obtained by NIC
+19:01:03.256 -> NIC received a packet
+19:01:03.256 -> no. of messages forwarded by main(): 505
+19:01:03.256 -> NIC transmitted a packet
+19:01:03.256 -> FreeQ replenished back
+19:01:03.289 -> free buffer obtained by NIC
+19:01:03.289 -> NIC received a packet
+19:01:03.289 -> no. of messages forwarded by main(): 506
+19:01:03.289 -> NIC transmitted a packet
+19:01:03.289 -> FreeQ replenished back
+19:01:03.289 -> free buffer obtained by NIC
+19:01:03.289 -> NIC received a packet
+19:01:03.289 -> no. of messages forwarded by main(): 507
+19:01:03.289 -> NIC transmitted a packet
+19:01:03.289 -> FreeQ replenished back
+19:01:03.289 -> free buffer obtained by NIC
+19:01:03.289 -> NIC received a packet
+19:01:03.322 -> no. of messages forwarded by main(): 508
+19:01:03.322 -> NIC transmitted a packet
+19:01:03.322 -> FreeQ replenished back
+19:01:03.322 -> free buffer obtained by NIC
+19:01:03.322 -> NIC received a packet
+19:01:03.322 -> no. of messages forwarded by main(): 509
+19:01:03.322 -> NIC transmitted a packet
+19:01:03.322 -> FreeQ replenished back
+19:01:03.322 -> free buffer obtained by NIC
+19:01:03.322 -> NIC received a packet
+19:01:03.322 -> no. of messages forwarded by main(): 510
+19:01:03.322 -> NIC transmitted a packet
+19:01:03.322 -> FreeQ replenished back
+19:01:03.356 -> free buffer obtained by NIC
+19:01:03.356 -> NIC received a packet
+19:01:03.356 -> no. of messages forwarded by main(): 511
+19:01:03.356 -> NIC transmitted a packet
+19:01:03.356 -> FreeQ replenished back
+19:01:03.356 -> free buffer obtained by NIC
+19:01:03.356 -> NIC received a packet
+19:01:03.356 -> Releasing buff
