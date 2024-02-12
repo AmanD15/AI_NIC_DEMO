@@ -22,9 +22,10 @@ $is
 		// loop around until enabled by Software
 		$rreport(ReceiveEngineDaemon waiting_for_control)
 		$merge $entry not_enabled_yet_loopback disable_loopback $endmerge
-			// If not enabled yet -> Loopback
-			$if (~(CONTROL_REGISTER [] 0)) $then
-				$place [not_enabled_yet_loopback]
+
+		// If not enabled yet -> Loopback
+		$if (~(CONTROL_REGISTER [] 0)) $then
+			$place [not_enabled_yet_loopback]
 		$endif
 
 		$rreport(ReceiveEngineDaemon got_the__control )
@@ -37,21 +38,23 @@ $is
 		$endmerge
 
 		// Step 1 : Pop From Free Queue -> If not empty (Success indicated by status) 
-		$rreport(ReceiveEngineDaemon called_pop_From_queue )
+		$rreport(ReceiveEngineDaemon calling )
 		$call popFromQueue ($one<1> FREE_Q) (rx_buffer_pointer_32 status)
 		$rreport(ReceiveEngineDaemon rx_buffer rx_buffer_pointer_32) 
 
-				// DEBUG purpose
-				$guard(~status)
-					$call AccessRegister ($zero<1> (~$zero<4>) 24 rx_buffer_pointer_32) (ignore_resp0)
+		// DEBUG purpose
+		$guard(~status)
+			$call accessRegister ($zero<1> (~$zero<4>) 24 rx_buffer_pointer_32) (ignore_resp0)
 
 		// convert 32 bit 16-byte aligned address to 36 bit physical address.
-		$volatile rx_buffer_pointer_36 :=  ($concat $zero<4> rx_buffer_pointer_32)
+		//  by appending four zero bits (buffer is aligned to quad-word)
+		$volatile rx_buffer_pointer_36 :=  ($concat rx_buffer_pointer_32 4)
 		$rreport(ReceiveEngineDaemon rx_buffer_val rx_buffer_pointer_36)
 		
 		// Step 2 : If pop was successful then start loading the buffer
 		$rreport(ReceiveEngineDaemon calling_loadBuffer status rx_buffer_pointer_36 rx_buffer_pointer_32)
 		$barrier
+
 		$guard (~status)// 0 = success
 			$call loadBuffer (rx_buffer_pointer_36) (bad_packet_identifier)
 
@@ -63,10 +66,10 @@ $is
 		$volatile cond := (ok_flag == 1)
 		
 		
-				// for Debug
-				$guard(ok_flag)
-					$call AccessRegister ($zero<1> (~$zero<4>) 25 pkt_cnt) (ignore_resp1)
-					$volatile npkt_cnt := ($mux ok_flag (pkt_cnt + $one<32>)  pkt_cnt) 
+		// for Debug
+		$guard(ok_flag)
+			$call accessRegister ($zero<1> (~$zero<4>) 25 pkt_cnt) (ignore_resp1)
+		$volatile npkt_cnt := ($mux ok_flag (pkt_cnt + $one<32>)  pkt_cnt) 
 
 		$rreport(ReceiveEngineDaemon populating_rx_queue ok_flag cond)		
 		$rreport(ReceiveEngineDaemon running_ok_flag)
@@ -99,21 +102,29 @@ $is
 	{
 
 		$merge $entry loopback 
-			$phi q_index := ((LAST_WRITTEN_RX_QUEUE_INDEX+1)& ($bitcast ($uint<6>) (NUMBER_OF_SERVERS - 1))) $on $entry 
-					n_q_index $on loopback
+			$phi q_index := 
+				((LAST_WRITTEN_RX_QUEUE_INDEX+1) & ($bitcast ($uint<6>) (NUMBER_OF_SERVERS - 1))) 
+					$on $entry 
+				n_q_index $on loopback
 		$endmerge
 		$rreport(populateRxQueue in_loop q_index)
+
 		// Rx Queues Index in the Register File start from Index 2
 		$volatile register_index := ($bitcast ($uint<6>) (q_index + RX_QUEUES_REG_START_OFFSET))
 		$rreport(populateRxQueue will_be_Accessing_register register_index)
 		// Request for Rx Queue Pointer of Server ID : q_index Regsiter ID : q_index + 2
 			    	// rwbar bmask       index	     wdata        
-		$call AccessRegister ($one<1> (~$zero<4>) register_index $zero<32>) (rx_queue_pointer_32)
+		$call accessRegister ($one<1> (~$zero<4>) register_index $zero<32>) (rx_queue_pointer_32)
 	
 	
 
-		$volatile rx_queue_pointer_36 :=  ($concat $zero<4> rx_queue_pointer_32)	
-		$rreport(populateRxQueue got_rx_queue_pointer_pushing_to_rx_queue rx_queue_pointer_32 rx_queue_pointer_36 NUMBER_OF_SERVERS)	
+		// Note: queue pointer is aligned to 16 bytes.
+		$volatile rx_queue_pointer_36 :=  ($concat rx_queue_pointer_32 $zero<4>)	
+		$rreport(populateRxQueue 
+				got_rx_queue_pointer_pushing_to_rx_queue 
+				rx_queue_pointer_32 
+				rx_queue_pointer_36 
+				NUMBER_OF_SERVERS)	
 		
 		$call pushIntoQueue ($one<1> rx_queue_pointer_36 ($slice rx_buffer_pointer 31 0)) (push_status)
 
