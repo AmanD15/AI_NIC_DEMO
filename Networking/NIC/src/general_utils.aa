@@ -16,24 +16,23 @@ $operator $module [delay_time]
 	}
 }
 
-/ If the packet is a bad packet then, repurpose the buffer by pushing it back to Free Queue
+// If the packet is a bad packet then, repurpose the buffer by pushing it back to Free Queue
 $module [pushPointerBackToFreeQ]
-$in(queue_base_address : $uint<36> pointer_to_push : $uint<36>)
+	$in(queue_base_address : $uint<36> pointer_to_push : $uint<36>)
 $out()
 $is
 {
 		$merge $entry unsuccessful_push_loopback
-		// On Entry No waiting
-		// If push is unsuccessful because of full Queue then wait for WAIT_TIME
-		// and then retry
-		$phi wait_req := $one<1> $on $entry
+
+			// On Entry No waiting
+			// If push is unsuccessful because of full Queue then wait for WAIT_TIME
+			// and then retry
+			$phi wait_req := $one<1> $on $entry
 			    	($call delay_time (WAIT_TIME)) $on unsuccessful_push_loopback
 		$endmerge
 
 		// If wait period is over, then push data into the Queue
-		$guard(wait_req)
-			$call pushIntoQueue (queue_base_address pointer_to_push) (push_status)
-					// Queue to push into	// Data to push   
+		$call pushIntoQueue (queue_base_address pointer_to_push) (push_status)
 		
 		// IF push is unsuccessful then wait for WAIT_TIME and retry
 		$if(~push_status) $then

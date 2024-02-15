@@ -1,0 +1,30 @@
+	The NIC Emulation via interrupts for Software testing.
+
+			Authors: Siddhant Singh Tomar.
+
+ Overview:
+-------------------------
+
+	This document emulates the NIC behavior via interrupts to test 
+        the software for packet Rx and Tx, running on AJIT.
+
+	interrupt_handler() : Emulates the NIC behaviour.
+
+				            Transmission:
+				                  - pops a pointer to buffer from TransmitQ.
+                                  - pushes the pointer to FreeQ.
+
+				            Reception:
+				                  - pops a pointer to a free buffer from freeQ.
+				                  - constructs/stores a packet in the free buffer. 
+				                  - pushes the pointer to the buffer to ReceiveQ. 	
+			     
+	main()              : Software under test.	
+
+				      - pops a pointer to a buffer from ReceiveQ.  
+				      - pushes the pointer to the buffer to TransmitQ.	
+	
+
+
+For interrupt examples, 
+look at AjitToolChain/validation_ladder/cortos2_tests/interrupts/timer and serial

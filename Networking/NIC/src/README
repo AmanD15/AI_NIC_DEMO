@@ -1,5 +1,6 @@
-NIC desing with cortos queue Interfaces.
------------------------------------------
+---------------------------------------------------------
+NIC design with cortos queue Interfaces.
+---------------------------------------------------------
 
 	1. Cortos queue structure is availble in file ../InterfaceDataStructures.h
 	2. This design assumes that the msgSizeInBytes for all queue is 4.
@@ -18,3 +19,22 @@ register_utils.aa - Module for NIC to access registers
 rx_from_mac.aa - Parser separates header 
 signals.aa - all signal declerations
 transmit_engine.aa - Daemon to send Tx packet out
+
+
+
+---------------------------------------------------------
+Cortos queue data structure.
+---------------------------------------------------------
+typedef struct _CortosQueueHeader {
+  uint32_t totalMsgs; // current total messages     +0
+  uint32_t readIndex;				    +4
+  uint32_t writeIndex;				    +8
+  uint32_t length;				    +12
+  uint32_t msgSizeInBytes;			    +16
+  uint8_t *lock;				    +20
+  uint8_t *bget_addr;				    +24
+  // if misc == 1, then assume single writer and single reader and don't use locks
+  uint32_t misc;				    +28
+} CortosQueueHeader;
+
+   

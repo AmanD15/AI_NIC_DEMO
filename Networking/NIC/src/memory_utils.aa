@@ -1,24 +1,30 @@
 //
-// Memory Access Module
+// Access the main memory shared with the processor.
+// The NIC is a master here.
 //
-//$pipeline $depth 15 $fullrate
-$module [accessMemory]
+$pipeline $depth 15 $fullrate $module [accessMemory]
 	$in (lock rwbar: $uint<1> bmask: $uint<8> addr: $uint<36> wdata : $uint<64>)
 	$out (rdata : $uint<64>)
 $is
 {
-	$branchblock[loop]
-	{
-		$dopipeline $depth 15 $fullrate
-		$merge $entry $loopback $endmerge
-		$volatile request :=  ($concat lock rwbar bmask addr wdata)
-		NIC_TO_MEMORY_REQUEST := request
-	
-		response := MEMORY_TO_NIC_RESPONSE
-		$volatile $split (response 1 64) (err rdata)
-		$rreport(accessMemory byte_mask bmask rwbar addr wdata err)
-		
-		$while(err == 1)
-	}
+	$volatile request :=  ($concat lock rwbar bmask addr wdata)
+	NIC_TO_MEMORY_REQUEST := request
+	response := MEMORY_TO_NIC_RESPONSE
+
+	$volatile $split (response 1 64) (err rdata)
+	$rreport(accessMemory byte_mask bmask rwbar addr wdata err)
 }
 
+$pipeline $depth 15 $fullrate $module [accessMemoryByte] 
+	$in (lock rwbar: $uint<1> byte_addr : $uint<36> wbyte: $uint<8>)
+	$out (rbyte) $is
+{
+	// TODO
+}
+
+$pipeline $depth 15 $fullrate $module [accessMemoryWord] 
+	$in (lock rwbar: $uint<1> word_addr : $uint<36> wword: $uint<8>)
+	$out (rword) $is
+{
+	// TODO
+}
