@@ -10,24 +10,30 @@ vivado_synth/ - Script to generate bitstream files
 
 TODO
 -------------------------------
-    - Memory March Test - DONE
-    - NIC March Test - DONE
-    - Ethernet Test - Done 
-        - Ping Test and Send + Receive of Weights & Input modules
-    - Accelerator Test - Pending
-        - Processor is in run state and did not go to halt mode
-        - Struck in while loop of testing/accl_demo/main.c
-        - Reason: Register 0 of accelerators is not updated from 0x00111 to 0x11111
-        - Register 0 is returning 0x00011
-        - Data in other registers is correct
-        - [accelerator_worker_daemon] in accelerator_processor_interface.aa
-           3rd bit is assigned 0 -> then calls convolutionAll() function -> then sets register 0 to 0x11111
-        - Need to read convolutionAll() function
-        - Same error in bitfile of Integration folder but it is working correctly in Networking folder
-
-
-
-
+    - Unet image segmentation using the pretrained model gave a dice score of 98%
+       [github: https://github.com/Project-MONAI/tutorials/tree/main/2d_segmentation/torch]
+    - ML algorithms using convolution of quantized 8-bit input
+        [github: https://github.com/eladhoffer/quantized.pytorch, https://github.com/eladhoffer/convNet.pytorch]
+        - Quantized Resnet - for image classification
+            Dataset: cifar10 - 60,000 images of 32 x 32, across 10 classes
+            Quantization: input and weights are quantized to 8 bits before each convolution 
+                            but the output of the convolution is float
+            Accuracy: 80%
+        - Quantized Unet - [github: https://github.com/hossein1387/U-Net-Fixed-Point-Quantization-for-Medical-Image-Segmentation/tree/master]
+                           [paper: https://arxiv.org/pdf/1908.01073v2.pdf]
+            Dice Score:
+                        EM Dataset: Full Precision - 94%, fixed point - 92%
+                        GM Dataset: Full Precision - 56.32%, fixed point - 56.1%
+                        NIH Dataset: Full Precision - 75.69%, fixed point - 73.06%
+        - Read more about Quantization Aware Training
+            - ResNet50, and MobileNet V1,2
+    
+Plan
+---------------------------------
+    - Quantization of convolution output
+        1) Use the scale values calculated for each channel during the training and use the same in inference engine
+        2) Send the 32 bit output of accumulator to a temporary memory location until all the rows, columns & channels
+            are calculated and then apply quantization on each channel to convert into 8-bit data and store back in correct location
 
 
 
