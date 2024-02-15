@@ -1,6 +1,12 @@
 $pipe tb_to_mac_data: $uint<64> $depth 2
 $pipe mac_to_tb_data: $uint<64> $depth 2
 
+$pipe MERGED_ACB_REQUEST : $uint<110> $depth 2 
+$pipe MERGED_ACB_RESPONSE: $uint<65> $depth 2 
+
+$pipe tb_to_nic_slave_request : $uint<73> $depth 2
+$pipe nic_slave_response_to_tb : $uint<32> $depth 2
+
 // unused last   bmask
 //  7       1     8
 $pipe mac_to_tb_ctrl: $uint<16> $depth 2
@@ -72,8 +78,34 @@ $module [tbAfbDaemon]
 			//    rwbar, addr, wdata
 			//      1     8     32
 			tb_req := tb_to_nic_slave_request
+			afb_req := ($concat $zero<1> rwbar (~$zero<4>) 
+					($concat $zero<28> addr) wdata)				
+			AFB_NIC_REQUEST := afb_req
+			afb_resp := AFB_NIC_RESPONSE
+			$volatile $split (afb_resp 1 32) (error rdata)
 
+			nic_slave_response_to_tb := rdata
 
+		$place [loopback]
+	}
+}
+
+$module [tbMemDaemon] $in () $out () $is
+{
+	$branchblock[loop] {
+		$merge $entry loopback $endmerge
+		
+		req := MERGED_ACB_REQUEST
+		$volatile $split (req 1 1 8 36 64)
+					(lock rwbar bmask addr wdata)
+
+		$volatile ctrl_word := ($concat $zero<19> rwbar bmask addr)
+		TB_TO_MEM := ctrl_word
+		TB_TO_MEM := wdata
+
+		rdata := MEM_TO_TB
+		resp := ($concat $one<1> rdata)
+		MERGED_ACB_RESPONSE := resp
 
 		$place [loopback]
 	}

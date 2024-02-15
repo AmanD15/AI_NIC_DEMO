@@ -10,10 +10,6 @@ $pipe MEMORY_TO_NIC_RESPONSE : $uint<65> $depth 2//16
 $pipe AFB_NIC_REQUEST  : $uint<74> $depth 2
 $pipe AFB_NIC_RESPONSE : $uint<33> $depth 2
 
-// NIC Register Data Access Pipe
-$pipe NIC_REQUEST_REGISTER_ACCESS_PIPE  : $uint<43> $depth 2
-$pipe NIC_RESPONSE_REGISTER_ACCESS_PIPE : $uint<33> $depth 2
-
 
 // MAC to NIC Pipe 
 //  contents...

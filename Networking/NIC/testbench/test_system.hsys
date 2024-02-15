@@ -1,0 +1,15 @@
+$system test_system $library test_lib
+$in
+	// acb_response from mem
+	// mem response from tb memory model.
+	// muxed acb request
+$out
+
+	// mem request to tb memory model.
+	// acb request to mem
+	// muxed acb response
+{
+	// tester instance
+	// nic instance
+	// acb mux instance
+}
