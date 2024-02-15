@@ -1,0 +1,81 @@
+$pipe tb_to_mac_data: $uint<64> $depth 2
+$pipe mac_to_tb_data: $uint<64> $depth 2
+
+// unused last   bmask
+//  7       1     8
+$pipe mac_to_tb_ctrl: $uint<16> $depth 2
+
+// will get a packet from the tb
+//     first 64-bits will specify the
+//     number of 64-bit words to be
+//     read from tb and then sent on
+//     to the nic rx side.
+$module [tbMacRxDaemon] 
+	$in () $out () $is
+{
+	$branchblock[loop] {
+		$merge $entry at_the_top $endmerge 
+
+		$dopipeline $depth 7 $fullrate
+			$merge $entry $loopback
+				$phi pkt_data   := tb_to_mac_data $on $entry, $loopback
+				$phi first_time := $one<1> $on $entry $zero<1> $on $loopback
+				$phi residual_length := $zero<16> $on $entry 
+								n_residual_length $on $loopback
+			$endmerge
+			$volatile pkt_length_in_dwords := ($slice pkt_data 15 0)
+			$guard (first_time)
+				bmask := ($slice pkt_data 23 16)
+
+			$volatile n_residual_length := (($mux first_time pkt_length_in_words residual_length)	 - 1)
+			$volatile continue_flag     := (n_residual_length > 0)
+
+			$volatile send_to_nic := (~first_time)
+			$volatile is_last_word := (~continue_flag)
+			$volatile data_to_nic := ($concat is_last_word pkt_data bmask)
+		
+			$guard (send_to_nic)
+				mac_to_nic_data := data_to_nic
+
+		$while continue_flag
+	
+		$place [at_the_top]
+	}
+}
+
+
+// forward data on nic -> mac pipe to testbench
+$module [tbMacTxDaemon] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 
+		$merge $entry $loopback $endmerge
+			from_nic := nic_to_mac_transmit_pipe
+			$volatile $split (from_nic 1 64 8) (last dword bmask)
+
+			mac_to_tb_data := dword
+			mac_to_tb_ctrl := ($concat $zero<7> last bmask)	
+
+		$while 1
+		
+	}
+}
+
+
+$module [tbAfbDaemon]
+	$in () $out () $is
+{
+	$branchblock[loop] {
+		$merge $entry loopback $endmerge
+			// 64-bit tb -> tester request
+			//
+			//    rwbar, addr, wdata
+			//      1     8     32
+			tb_req := tb_to_nic_slave_request
+
+
+
+		$place [loopback]
+	}
+}
+

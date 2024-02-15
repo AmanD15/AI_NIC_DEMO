@@ -9,28 +9,33 @@ $pipe MEMORY_TO_NIC_RESPONSE : $uint<65> $depth 2//16
 // AFB Pipes
 $pipe AFB_NIC_REQUEST  : $uint<74> $depth 2
 $pipe AFB_NIC_RESPONSE : $uint<33> $depth 2
-///////////////////////////////////////////////////////////////
 
 // NIC Register Data Access Pipe
 $pipe NIC_REQUEST_REGISTER_ACCESS_PIPE  : $uint<43> $depth 2
 $pipe NIC_RESPONSE_REGISTER_ACCESS_PIPE : $uint<33> $depth 2
 
-//////////////////////////////////////////////////////////////
 
 // MAC to NIC Pipe 
 //  contents...
 
+// format
+//   last-dword  dword  bmask
+//    1           64     8
 $pipe mac_to_nic_data : $uint<73> $depth 2//16
-///////////////////////////////////////////////////////////////
 
-// Parser Pipes
+
+// format
+//   last-dword  dword  bmask
+//    1           64     8
 $pipe nic_rx_to_header: $uint<73> $depth 2//16
+
+// format
+//   last-dword  dword  bmask
+//    1           64     8
 $pipe nic_rx_to_packet: $uint<73> $depth 2//16
 
 
-
-///////////////////////////////////////////////////////////////
-
-// Transmit Pipe
+// format
+//   last-dword  dword  bmask
+//    1           64     8
 $pipe nic_to_mac_transmit_pipe : $uint<73> $depth 2//16
-//////////////////////////////////////////////////////////////

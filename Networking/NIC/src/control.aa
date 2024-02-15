@@ -1,83 +1,12 @@
-//  BASE ADDRESS OF MEMORY ALLOCATED TO NIC IS A 36-BIT VALUE.
 //
-//  LET BA[35:0]  BE THE BASE ADDRESS
-//  WE WILL ASSUME THAT BA IS ALIGNED TO 16-byte BOUNDARY.
+// Register file (depth = 256) (width = 32)
 //
-//  ie. BA[3:0] = 0
-//
-//  ALL ADDRESSES FOR RX Q, TX Q, FREE Q, ARE 36-bit PHYSICAL
-//  ADDRESSES ALIGNED TO 16-byte BOUNDARY.  
-// 
-//  HENCE: WE STORE ONLY [35:4] bits OF ALL ADDRESSES IN THE
-//  REGISTERS BELOW
-//
-//------------------------------------------------------------
-//Register     address         		Description
-//  Id	       offset	
-//------------------------------------------------------------
-//  0	  	  0x00		        control register
-//					 bit [0] is nic enable
-//--------------------------------------------------------------
-//  1		  0x04		        number of servers  (we can make this a mask...)
-//         Note: specify the servers to be polled..
-//--------------------------------------------------------------
-//      Rx queues to servers (8 registers)
-//2               0x08            Rx Q for server 0  [physical address, but we keep only [35:4] aligned to 16-byte]
-//3               0x0C            Rx Q for server 1
-//4               0x10            Rx Q for server 2
-//5               0x14            Rx Q for server 3
-//6               0x18            Rx Q for server 4
-//7               0x1C            Rx Q for server 5
-//8               0x20            Rx Q for server 6
-//9               0x24            Rx Q for server 7
-//
-// .... could be extended to 256 ...
-//
-//	Note: policy to be used to write packet pointer into 
-//		server queue?
-//
-//------------------------------------------------------------
-//      Tx queues to servers (8 registers)
-//10              0x28            Tx Q for server 0
-//11              0x2C            Tx Q for server 1
-//12              0x30            Tx Q for server 2
-//13              0x34            Tx Q for server 3
-//14              0x38            Tx Q for server 4
-//15              0x3C            Tx Q for server 5
-//16              0x40            Tx Q for server 6
-//17              0x44            Tx Q for server 7
-//
-//.... could be extended to 256 ...
-//
-//	Note:  these queues will be polled by the NIC to
-//             determine packets to be forwarded.
-//-------------------------------------------------------------
-//      Address of Free Q (1 register)
-//-------------------------------------------------------------
-//18              0x48            Base address of
-//                                free Queue
-//-------------------------------------------------------------
-//      MAC address 48 bits (ie, two registers)
-//-------------------------------------------------------------
-//19              0x4C            MAC_ADDR[31:0]
-//20              0x50            {unused,MAC_ADDR[47:32]}
-//---------------------------------------------------
-//21		  0x54		Count of packets transmitted
-//				by NIC
-//22		  0x58		NIC got the control
-//				(0 -> no control, 1-> got control)
-//
-//.
-//63		  0xfc		-- not used as yet.
-//
-// Register file (depth = 64) (width = 32)
-//
-$storage nic_registers: $array [64] $of $uint<32>
+$storage nic_registers: $array [255] $of $uint<32>
 
 
 // read modify write.
 $module [accessRegister] 
-	$in (rwbar: $uint<1> bmask: $uint<4> index: $uint<6> wdata: $uint<32>)
+	$in (rwbar: $uint<1> bmask: $uint<4> index: $uint<8> wdata: $uint<32>)
 	$out (rdata : $uint<32>) 
 $is
 {
@@ -99,26 +28,48 @@ $is
 }
 
 
+$module [setGlobalSignals]
+	$in () $out () $is
+{
+	// set the free-q
+	$call accessRegister (READMEM _hF P_FREE_QUEUE_REGISTER_BASE_INDEX 0) (free_q_h)
+	$call accessRegister (READMEM _hF {P_FREE_QUEUE_REGISTER_BASE_INDEX + 1} 0) (free_q_l)
+	S_FREE_Q := ($concat ($slice free_q_h 3 0) free_q_l)
+
+	$barrier
+	$call accessRegister (READMEM _hF P_N_SERVERS_REGISTER_INDEX 0) (n_servers)
+	S_NUMBER_OF_SERVERS  := n_servers
+
+	$barrier
+	$call accessRegister (READMEM _hF P_NIC_CONTROL_REGISTER_INDEX 0) (ctrl_reg)
+	S_CONTROL_REGISTER := ctrl_reg
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+
+
 
 $module [controlDaemon] $in () $out () $is
 {
-	CONTROL_REGISTER := 0
 	MAC_ENABLE := 0
-	FREE_Q := 0
-	NUMBER_OF_SERVERS := 0
+	S_CONTROL_REGISTER := 0
+	S_FREE_Q := 0
+	S_NUMBER_OF_SERVERS := 0
 	
 
 	// initialize all registers
 	$branchblock[loop1]{
 		$merge $entry loopback
-			$phi I := $zero<6> $on $entry nI $on loopback
+			$phi I := $zero<8> $on $entry nI $on loopback
 		$endmerge
 		nI := (I + 1)
 
 		$call accessRegister (0 15 I 0) (ign)
 		
 		
-		$if(I < 63) $then
+		$if(I < 255) $then
 			$place [loopback]
 		$endif
 	}
@@ -131,7 +82,7 @@ $module [controlDaemon] $in () $out () $is
 	$branchblock[loop] {
 
 		// SPIN forever.
-		$dopipeline $depth 7 $fullrate 
+		$dopipeline $depth 3 $fullrate 
 		$merge $entry $loopback $endmerge
 
 			req := AFB_NIC_REQUEST
@@ -143,32 +94,23 @@ $module [controlDaemon] $in () $out () $is
 			$rreport(controlDaemon read_afb_request lock rwbar bmask addr wdata)
 		
 			// register_index.
-			$volatile index := ($slice addr 7 2)
+			$volatile index := ($slice addr 9 2)
 
-
-			$volatile update_control_register := ((~rwbar) & (index == 0))
-			$guard (update_control_register_pipe)
-				CONTROL_REGISTER := wdata
 				
-			// Free-Q address is 36-bits.
-			$volatile update_free_q_register := ((~rwbar) & (index == 18))
-			$guard (update_free_q_register)
-				FREE_Q := ($concat wdata $zero<4>) 
-
-
-			// Number of servers.
-			$volatile update_n_servers := ((~rwbar) & (index == 1))
-			$guard(update_server_num)
-				NUMBER_OF_SERVERS := wdata
-
 			// access the register.
 			$call accessRegister (rwbar bmask index wdata) (rdata)
-			$volatile resp  := ($concat $zero<1> rdata) // zero<1> -> No error
 			
+			$barrier 
+
+			$volatile update_control_register := ((~rwbar) & (index == 0))
+			$volatile set_globals := (update_control_register & (wdata [] 0))
+			$guard (set_globals)
+				$call setGlobalSignals () ()
+
 			// Send response
+			$volatile resp  := ($concat $zero<1> rdata) // zero<1> -> No error
 			AFB_NIC_RESPONSE := resp
 	
-			//$place[loopback]
-			$while 1
+		$while 1
 	}
 }

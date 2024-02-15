@@ -1,7 +1,7 @@
 //Delay Block
 // Adds T number of clock cycles of delay
 $operator $module [delay_time]
-	$in (T: $uint<32>) $out (delay_done : $uint<1>) $is
+	$in (T: $uint<10>) $out (delay_done : $uint<1>) $is
 {
 	$branchblock[loop] {
 	    $dopipeline $depth 7 $fullrate
@@ -11,19 +11,17 @@ $operator $module [delay_time]
 
 		$volatile nR := (R - 1)
 	   $while (R > 0)
-
-	   delay_done := 1
 	}
+	delay_done := 1
 }
 
 // If the packet is a bad packet then, repurpose the buffer by pushing it back to Free Queue
 $module [pushPointerBackToFreeQ]
-	$in(queue_base_address : $uint<36> pointer_to_push : $uint<36>)
-$out()
+	$in(pointer_to_push : $uint<36>) $out()
 $is
 {
+	$branchblock[body] {
 		$merge $entry unsuccessful_push_loopback
-
 			// On Entry No waiting
 			// If push is unsuccessful because of full Queue then wait for WAIT_TIME
 			// and then retry
@@ -31,11 +29,15 @@ $is
 			    	($call delay_time (WAIT_TIME)) $on unsuccessful_push_loopback
 		$endmerge
 
+		// top 32 bits only..  pointer is quad-word aligned.
+		$volatile q_w_data := ($slice pointer_to_push 35 4)
+
 		// If wait period is over, then push data into the Queue
-		$call pushIntoQueue (queue_base_address pointer_to_push) (push_status)
+		$call pushIntoQueue (FREEQUEUE 0 ($slice pointer_to_push 35 4)) (push_status)
 		
 		// IF push is unsuccessful then wait for WAIT_TIME and retry
 		$if(~push_status) $then
 			$place [unsuccessful_push_loopback]
 		$endif
+	}
 }

@@ -8,8 +8,8 @@ $pipeline $depth 15 $fullrate $module [accessMemory]
 $is
 {
 	$volatile request :=  ($concat lock rwbar bmask addr wdata)
-	NIC_TO_MEMORY_REQUEST := request
-	response := MEMORY_TO_NIC_RESPONSE
+	NIC_TO_MEMORY_REQUEST := request $mark MSTART 
+	response := MEMORY_TO_NIC_RESPONSE $delay (MSTART 8)
 
 	$volatile $split (response 1 64) (err rdata)
 	$rreport(accessMemory byte_mask bmask rwbar addr wdata err)
@@ -17,14 +17,46 @@ $is
 
 $pipeline $depth 15 $fullrate $module [accessMemoryByte] 
 	$in (lock rwbar: $uint<1> byte_addr : $uint<36> wbyte: $uint<8>)
-	$out (rbyte) $is
+	$out (rbyte: $uint<8>) $is
 {
-	// TODO
+	$volatile bb := ($slice byte_addr 2 0)
+	$volatile addr_dw := ($concat ($slice byte_addr 35 3) $zero<3>)
+	$volatile bmask :=  (_b10000000 >> ($bitcast ($uint<8>) byte_addr))
+	$volatile wdata := 
+		(($concat wbyte $zero<56>)  >>
+				($bitcast ($uint<64>) ($concat bb $zero<3>)))
+
+	$volatile request :=  ($concat lock rwbar bmask addr_dw wdata) 
+	NIC_TO_MEMORY_REQUEST := request   $mark MSTART
+	response := MEMORY_TO_NIC_RESPONSE  $delay (MSTART 8)
+
+	$volatile $split (response 1
+				8 8 8 8 8 8 8 8)
+				(err b0 b1 b2 b3 b4 b5 b6 b7)
+	rbyte := ($excmux
+			(bb == 0) b0
+			(bb == 1) b1
+			(bb == 2) b2
+			(bb == 3) b3
+			(bb == 4) b4
+			(bb == 5) b5
+			(bb == 6) b6
+			(bb == 7) b7)
 }
 
 $pipeline $depth 15 $fullrate $module [accessMemoryWord] 
-	$in (lock rwbar: $uint<1> word_addr : $uint<36> wword: $uint<8>)
-	$out (rword) $is
+	$in (lock rwbar: $uint<1> word_addr : $uint<36> wword: $uint<32>)
+	$out (rword: $uint<32>) $is
 {
-	// TODO
+	$volatile lw := (word_addr [] 1)
+	$volatile bmask := ($mux lw ($bitcast ($uint<8>) _h0F) _hF0)
+	$volatile wdata := ($mux lw ($concat $zero<32> wword) ($concat wword $zero<32>))
+	$volatile addr_dw := ($concat ($slice word_addr 35 3) $zero<3>)
+
+	$volatile request :=  ($concat lock rwbar bmask addr_dw wdata) 
+	NIC_TO_MEMORY_REQUEST := request $mark MSTART
+	response := MEMORY_TO_NIC_RESPONSE  $delay (MSTART 8)
+
+	$volatile $split (response 1 32 32) (err rhw rlw)
+	rword := ($mux lw rlw rhw)
 }

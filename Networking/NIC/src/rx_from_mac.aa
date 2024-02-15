@@ -1,5 +1,4 @@
-//
-//states :
+// //states :
 //	S0 ->	RX := pipe
 //		send to header pipe
 //		send to payload pipe
@@ -31,21 +30,19 @@ $module [nicRxFromMacDaemon] $in () $out () $is
 		$merge $entry not_enabled_yet_loopback disable_loopback $endmerge
 		
 			// for Debug
-			$call AccessRegister ($zero<1> (~$zero<4>) 22 $zero<32>) (ignore_resp0)
+			$call accessRegister ($zero<1> (~$zero<4>) 22 $zero<32>) (ignore_resp0)
 		
 			
 		// If not enabled yet -> Loopback
-		$if (~(CONTROL_REGISTER [] 0)) $then
+		$if (~(S_CONTROL_REGISTER [] 0)) $then
 			$place [not_enabled_yet_loopback]
 		$endif
 
-		//enable_mac := 1
 
 		$rreport(nicRxFromMacDaemon got_the__control )
-			// for Debug
-			$call AccessRegister ($zero<1> (~$zero<4>) 22 $one<32>) (ignore_resp1)
+		$call accessRegister ($zero<1> (~$zero<4>) P_STATUS_REGISTER_INDEX $one<32>) (ignore_resp1)
 			
-			$dopipeline $depth 7 $fullrate
+		$dopipeline $depth 7 $fullrate
 			$merge $entry $loopback
 				// where are we in the packet
 				// S0	S1	S2
@@ -77,10 +74,10 @@ $module [nicRxFromMacDaemon] $in () $out () $is
 				$volatile pkt_complete := (nLSTATE == S0)
 				$volatile npkt_cnt := ($mux pkt_complete (pkt_cnt + $one<32>) pkt_cnt)			
 				$guard(pkt_complete)
-					$call AccessRegister ($zero<1> (~$zero<4>) 23 pkt_cnt) (ignore_resp2)
+					$call accessRegister ($zero<1> (~$zero<4>) 23 pkt_cnt) (ignore_resp2)
 					
 			$rreport(nicRxFromMacDaemon data_written_is RX nLSTATE)
-			$while (CONTROL_REGISTER [] 0)
+			$while (S_CONTROL_REGISTER [] 0)
 			
 			$place [disable_loopback]
 	}

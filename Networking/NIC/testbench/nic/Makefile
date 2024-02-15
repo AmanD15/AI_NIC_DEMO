@@ -4,8 +4,7 @@ AHIR_LIB=$(AHIR_RELEASE)/lib
 VHDL_LIB=$(AHIR_RELEASE)/vhdl
 VHDL_VHPI_LIB=$(AHIR_RELEASE)/CtestBench/vhdl
 FUNCTIONLIB=$(AHIR_RELEASE)/functionLibrary/
-SRC=../src
-#SRC=../../../code/NicWithMacIf/Nic/src
+SRC=../../src
 TESTBENCH=$(SRC)/../testbench
 all: HW SW 
 TOVC:aalink aa2vc 
