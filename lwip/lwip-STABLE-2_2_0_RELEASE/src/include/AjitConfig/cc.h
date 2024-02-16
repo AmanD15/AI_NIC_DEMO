@@ -7,14 +7,8 @@
 #include <string.h>
 #include <sys/time.h>
 
-/********* Cortos Specific Headers ********/
-#include "ajit_access_routines.h"
-#include <cortos.h>
-
-/******************************************/
-
 // Includes definition of mch_printf macro to do printf
-//#include "mch.h"
+#include "mch.h"
 
 #define BYTE_ORDER  BIG_ENDIAN
 
@@ -37,28 +31,22 @@ typedef uintptr_t   mem_ptr_t;
 #define S32_F "d"
 #define X32_F "x"
 
-
-/* Compiler hints for packing structures 
-
+/* Compiler hints for packing structures */
 #define PACK_STRUCT_FIELD(x)    x
 #define PACK_STRUCT_STRUCT  __attribute__((packed))
 #define PACK_STRUCT_BEGIN
 #define PACK_STRUCT_END
 
-*/
-
-
 /* Plaform specific diagnostic output */
 #define LWIP_PLATFORM_DIAG(x)   do {                \
-        cortos_printf(x);                   \
+        mch_printf x;                   \
     } while (0)
-    
-/*
+
 #define LWIP_PLATFORM_ASSERT(x) do {                \
-        cortos_printf("Assert \"%s\" failed at line %d in %s\n",   \
+        mch_printf("Assert \"%s\" failed at line %d in %s\n",   \
                 x, __LINE__, __FILE__);             \
         mch_abort();                        \
     } while (0)
-*/
+
 #endif /* __ARCH_CC_H__ */
 

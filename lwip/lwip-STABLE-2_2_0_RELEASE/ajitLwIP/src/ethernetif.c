@@ -57,15 +57,9 @@
 #include "netif/ppp/pppoe.h"
 
 /* AJIT SPECIFIC HEADERS */
-#include "ajit_access_routines.h"
+#include <ajit_access_routines.h>
 #include <cortos.h>
-// queue related constants
-#define NUMBER_OF_BUFFERS 8
-#define BUFFER_SIZE_IN_BYTES 180 // 80
-#define QUEUE_LENGTH 16 + 4 * NUMBER_OF_BUFFERS
-#define MEM_START_ADDR 0x51800 //0x3FFC00 // 3ffff8 - 3ffe00 = 1f8 
-#define NIC_START_ADDR NCRAM_BASE_ADDRESS
-#define NIC_END_ADDR   (NCRAM_BASE_ADDRESS + 255)
+
 
 
 
@@ -89,31 +83,18 @@ struct ethernetif {
 
 };
 
-////////////////////////////////////////////////////////////////////////////////////////////
+/* Following functions are for initialisation of LwIP data structures 
 
+general idea:
 
-/* Forward declarations. */
-static void  ethernetif_input(struct netif *netif);
-
-
-uint32_t readNicReg(uint32_t index)
-{
-	uint32_t data;
-	//data = __ajit_load_word_mmu_bypass__(&NIC_REG[index]);
-	data = __ajit_load_word_from_physical_address__(&NIC_REG[index]);
-	return data;
+ethernetif_init(){
+  .....
+  low_level_init();
+  ....
 }
 
+*/
 
-void writeNicReg(uint32_t index, uint32_t value)
-{
-	//__ajit_store_word_mmu_bypass__(value,&NIC_REG[index]);
-	__ajit_store_word_to_physical_address__(value,(uint64_t) &NIC_REG[index]);
-}
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * In this function, the hardware should be initialized.
@@ -145,72 +126,200 @@ low_level_init(struct netif *netif)
   /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
   netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP | NETIF_FLAG_ETHERNET | NETIF_FLAG_IGMP;
 
-#if LWIP_IPV6 && LWIP_IPV6_MLD
-  /*
-   * For hardware/netifs that implement MAC filtering.
-   * All-nodes link-local is handled by default, so we must let the hardware know
-   * to allow multicast packets in.
-   * Should set mld_mac_filter previously. */
-  if (netif->mld_mac_filter != NULL) {
-    ip6_addr_t ip6_allnodes_ll;
-    ip6_addr_set_allnodes_linklocal(&ip6_allnodes_ll);
-    netif->mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
-  }
-#endif /* LWIP_IPV6 && LWIP_IPV6_MLD */
 
   /* Do whatever else is needed to initialize interface. */
 
-  /***************** AJIT-NIC Specific Cn onfiguration********************/
-
-	// Get queues.
-	CortosQueueHeader* free_queue = cortos_reserveQueue(msgSizeInBytes, length, 1);
-	CortosQueueHeader* rx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
-	CortosQueueHeader* tx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
-
-	cortos_printf("Reserved queues: free=0x%lx, rx=0x%lx, tx=0x%lx\n",
-				(uint32_t) free_queue,
-				(uint32_t) rx_queue,
-				(uint32_t) tx_queue);
-
-				
-	// allocate buffers
-	uint8_t* Buffers[8];
-	int i;
-	for(i = 0; i < 8; i++)
-	{
-		Buffers[i] = (uint8_t*)cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
-		cortos_printf("Allocated Buffer[%d] = 0x%lx\n", i, (uint32_t) Buffers[i]);
-	}
-
-
-	// Put the four buffers onto the free-queue.
-	msgs_written = cortos_writeMessages(free_queue, (uint32_t) Buffers, 4);
-	
-	// set the queues in nicRegs and enable the NIC.
-
-	writeNicReg(1,1);			            //NIC_REG[1]  = 1;//NUMBER_OF_SERVERS;
-	writeNicReg(2,(uint32_t)Rx_Queue);	    //NIC_REG[2]  = Rx_Queue;
-	writeNicReg(10,(uint32_t)Tx_Queue);	    //NIC_REG[10] = Tx_Queue;
-	writeNicReg(18,(uint32_t)Free_Queue);	//NIC_REG[18] = Free_Queue;
-	writeNicReg(21, 0);                     // number of transmmitted packets = 0.
-
-	// Enable NIC.
-	writeNicReg(0,1); 			            //NIC_REG[0] = 1;
-
-	cortos_printf("NIC_regs: [1]=0x%x,[2]=0x%x,[10]=0x%x,[18]=0x%x,[0]=0x%x,"
-			"[21]=0x%x,[22]=0x%x\n",
-			readNicReg(1),
-			readNicReg(2),
-			readNicReg(10),
-			readNicReg(18),
-			readNicReg(0),
-			readNicReg(21),
-			readNicReg(22));
+  /*AJIT-NIC Specific Configuration*/
 
 	cortos_printf ("Configuration Done. NIC has started\n");
 
 }
+
+
+
+/**
+ * Should be called at the beginning of the program to set up the
+ * network interface. It calls the function low_level_init() to do the
+ * actual setup of the hardware.
+ *
+ * This function should be passed as a parameter to netif_add().
+ *
+ * @param netif the lwip network interface structure for this ethernetif
+ * @return ERR_OK if the loopif is initialized
+ *         ERR_MEM if private data couldn't be allocated
+ *         any other err_t on error
+ */
+err_t
+ethernetif_init(struct netif *netif)
+{
+  struct ethernetif *ethernetif;
+
+  LWIP_ASSERT("netif != NULL", (netif != NULL));
+
+  ethernetif = mem_malloc(sizeof(struct ethernetif));
+  if (ethernetif == NULL) {
+    LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_init: out of memory\n"));
+    return ERR_MEM;
+  }
+
+#if LWIP_NETIF_HOSTNAME
+  /* Initialize interface hostname */
+  netif->hostname = "lwip";
+#endif /* LWIP_NETIF_HOSTNAME */
+
+  /*
+   * Initialize the snmp variables and counters inside the struct netif.
+   * The last argument should be replaced with your link speed, in units
+   * of bits per second.
+   */
+  MIB2_INIT_NETIF(netif, snmp_ifType_ethernet_csmacd, LINK_SPEED_OF_YOUR_NETIF_IN_BPS);
+
+  netif->state = ethernetif;
+  netif->name[0] = IFNAME0;
+  netif->name[1] = IFNAME1;
+  /* We directly use etharp_output() here to save a function call.
+   * You can instead declare your own function an call etharp_output()
+   * from it if you have to do some checks before sending (e.g. if link
+   * is available...) */
+#if LWIP_IPV4
+  netif->output = etharp_output;
+#endif /* LWIP_IPV4 */
+
+  netif->linkoutput = low_level_output;
+  
+  ethernetif->ethaddr = (struct eth_addr *) & (netif->hwaddr[0]);
+
+
+  /* Modifiied part */
+  netif->input = ethernet_input;
+
+  /* initialize the hardware */
+  low_level_init(netif);
+
+  return ERR_OK;
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+/* Following functions are for reception of ethernet frame 
+
+general idea:
+
+ethernetif_input(){
+  .....
+  low_level_input();
+  ....
+}
+
+*/
+
+/**
+ * Should allocate a pbuf and transfer the bytes of the incoming
+ * packet from the interface into the pbuf.
+ *
+ * @param netif the lwip network interface structure for this ethernetif
+ * @return a pbuf filled with the received packet (including MAC header)
+ *         NULL on memory error
+ */
+static struct pbuf *
+low_level_input(struct netif *netif)
+{
+  struct ethernetif *ethernetif = netif->state;
+  struct pbuf *p, *q;
+  u16_t len;
+
+  /* Obtain the size of the packet and put it into the "len"
+     variable. */
+  len = 30; // 14 byte header + 16 bytes data
+
+#if ETH_PAD_SIZE
+  len += ETH_PAD_SIZE; /* allow room for Ethernet padding */
+#endif
+
+  /* We allocate a pbuf chain of pbufs from the pool. */
+  p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
+
+  if (p != NULL) {
+
+#if ETH_PAD_SIZE
+    pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
+#endif
+
+    /* We iterate over the pbuf chain until we have read the entire
+     * packet into the pbuf. */
+    for (q = p; q != NULL; q = q->next) {
+      /* Read enough bytes to fill this pbuf in the chain. The
+       * available data in the pbuf is given by the q->len
+       * variable.
+       * This does not necessarily have to be a memcpy, you can also preallocate
+       * pbufs for a DMA-enabled MAC and after receiving truncate it to the
+       * actually received size. In this case, ensure the tot_len member of the
+       * pbuf is the sum of the chained pbuf len members.
+       */
+      read data into(q->payload, q->len);
+    }
+    acknowledge that packet has been read();
+
+    MIB2_STATS_NETIF_ADD(netif, ifinoctets, p->tot_len);
+    if (((u8_t *)p->payload)[0] & 1) {
+      /* broadcast or multicast packet*/
+      MIB2_STATS_NETIF_INC(netif, ifinnucastpkts);
+    } else {
+      /* unicast packet*/
+      MIB2_STATS_NETIF_INC(netif, ifinucastpkts);
+    }
+#if ETH_PAD_SIZE
+    pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
+#endif
+
+    LINK_STATS_INC(link.recv);
+  } else {
+    drop packet();
+    LINK_STATS_INC(link.memerr);
+    LINK_STATS_INC(link.drop);
+    MIB2_STATS_NETIF_INC(netif, ifindiscards);
+  }
+
+  return p;
+}
+
+
+/**
+ * This function should be called when a packet is ready to be read
+ * from the interface. It uses the function low_level_input() that
+ * should handle the actual reception of bytes from the network
+ * interface. Then the type of the received packet is determined and
+ * the appropriate input function is called.
+ *
+ * @param netif the lwip network interface structure for this ethernetif
+ */
+static void
+ethernetif_input(struct netif *netif)
+{
+  struct ethernetif *ethernetif;
+  struct eth_hdr *ethhdr;
+  struct pbuf *p;
+
+  ethernetif = netif->state;
+
+  /* move received packet into a new pbuf */
+  p = low_level_input(netif);
+  /* if no packet could be read, silently ignore this */
+  if (p != NULL) {
+    /* pass all packets to ethernet_input, which decides what packets it supports */
+    if (netif->input(p, netif) != ERR_OK) {
+      LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
+      pbuf_free(p);
+      p = NULL;
+    }
+  }
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////
+
 
 /**
  * This function should do the actual transmission of the packet. The packet is
@@ -268,172 +377,5 @@ low_level_output(struct netif *netif, struct pbuf *p)
   return ERR_OK;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////
-
-
-/**
- * Should allocate a pbuf and transfer the bytes of the incoming
- * packet from the interface into the pbuf.
- *
- * @param netif the lwip network interface structure for this ethernetif
- * @return a pbuf filled with the received packet (including MAC header)
- *         NULL on memory error
- */
-static struct pbuf *
-low_level_input(struct netif *netif)
-{
-  struct ethernetif *ethernetif = netif->state;
-  struct pbuf *p, *q;
-  u16_t len;
-
-  /* Obtain the size of the packet and put it into the "len"
-     variable. */
-  len = ;
-
-#if ETH_PAD_SIZE
-  len += ETH_PAD_SIZE; /* allow room for Ethernet padding */
-#endif
-
-  /* We allocate a pbuf chain of pbufs from the pool. */
-  p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
-
-  if (p != NULL) {
-
-#if ETH_PAD_SIZE
-    pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
-#endif
-
-    /* We iterate over the pbuf chain until we have read the entire
-     * packet into the pbuf. */
-    for (q = p; q != NULL; q = q->next) {
-      /* Read enough bytes to fill this pbuf in the chain. The
-       * available data in the pbuf is given by the q->len
-       * variable.
-       * This does not necessarily have to be a memcpy, you can also preallocate
-       * pbufs for a DMA-enabled MAC and after receiving truncate it to the
-       * actually received size. In this case, ensure the tot_len member of the
-       * pbuf is the sum of the chained pbuf len members.
-       */
-      read data into(q->payload, q->len);
-    }
-    acknowledge that packet has been read();
-
-    MIB2_STATS_NETIF_ADD(netif, ifinoctets, p->tot_len);
-    if (((u8_t *)p->payload)[0] & 1) {
-      /* broadcast or multicast packet*/
-      MIB2_STATS_NETIF_INC(netif, ifinnucastpkts);
-    } else {
-      /* unicast packet*/
-      MIB2_STATS_NETIF_INC(netif, ifinucastpkts);
-    }
-#if ETH_PAD_SIZE
-    pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
-#endif
-
-    LINK_STATS_INC(link.recv);
-  } else {
-    drop packet();
-    LINK_STATS_INC(link.memerr);
-    LINK_STATS_INC(link.drop);
-    MIB2_STATS_NETIF_INC(netif, ifindiscards);
-  }
-
-  return p;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * This function should be called when a packet is ready to be read
- * from the interface. It uses the function low_level_input() that
- * should handle the actual reception of bytes from the network
- * interface. Then the type of the received packet is determined and
- * the appropriate input function is called.
- *
- * @param netif the lwip network interface structure for this ethernetif
- */
-static void
-ethernetif_input(struct netif *netif)
-{
-  struct ethernetif *ethernetif;
-  struct eth_hdr *ethhdr;
-  struct pbuf *p;
-
-  ethernetif = netif->state;
-
-  /* move received packet into a new pbuf */
-  p = low_level_input(netif);
-  /* if no packet could be read, silently ignore this */
-  if (p != NULL) {
-    /* pass all packets to ethernet_input, which decides what packets it supports */
-    if (netif->input(p, netif) != ERR_OK) {
-      LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
-      pbuf_free(p);
-      p = NULL;
-    }
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Should be called at the beginning of the program to set up the
- * network interface. It calls the function low_level_init() to do the
- * actual setup of the hardware.
- *
- * This function should be passed as a parameter to netif_add().
- *
- * @param netif the lwip network interface structure for this ethernetif
- * @return ERR_OK if the loopif is initialized
- *         ERR_MEM if private data couldn't be allocated
- *         any other err_t on error
- */
-err_t
-ethernetif_init(struct netif *netif)
-{
-  struct ethernetif *ethernetif;
-
-  LWIP_ASSERT("netif != NULL", (netif != NULL));
-
-  ethernetif = mem_malloc(sizeof(struct ethernetif));
-  if (ethernetif == NULL) {
-    LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_init: out of memory\n"));
-    return ERR_MEM;
-  }
-
-#if LWIP_NETIF_HOSTNAME
-  /* Initialize interface hostname */
-  netif->hostname = "lwip";
-#endif /* LWIP_NETIF_HOSTNAME */
-
-  /*
-   * Initialize the snmp variables and counters inside the struct netif.
-   * The last argument should be replaced with your link speed, in units
-   * of bits per second.
-   */
-  MIB2_INIT_NETIF(netif, snmp_ifType_ethernet_csmacd, LINK_SPEED_OF_YOUR_NETIF_IN_BPS);
-
-  netif->state = ethernetif;
-  netif->name[0] = IFNAME0;
-  netif->name[1] = IFNAME1;
-  /* We directly use etharp_output() here to save a function call.
-   * You can instead declare your own function an call etharp_output()
-   * from it if you have to do some checks before sending (e.g. if link
-   * is available...) */
-#if LWIP_IPV4
-  netif->output = etharp_output;
-#endif /* LWIP_IPV4 */
-#if LWIP_IPV6
-  netif->output_ip6 = ethip6_output;
-#endif /* LWIP_IPV6 */
-  netif->linkoutput = low_level_output;
-
-  ethernetif->ethaddr = (struct eth_addr *) & (netif->hwaddr[0]);
-
-  /* initialize the hardware */
-  low_level_init(netif);
-
-  return ERR_OK;
-}
 
 #endif /* 0 */
