@@ -27,7 +27,7 @@ $module [transmitEngineDaemon] $in () $out () $is
 				$phi tx_q_index := 
 					((LAST_READ_TX_QUEUE_INDEX+1) & ($bitcast ($uint<8>) (S_NUMBER_OF_SERVERS - 1)))
 					$on $entry,$loopback
-				$phi count := $one<32> $on $entry ncount $on $loopback
+				$phi init_flag := $one<1> $on $entry $zero<1> $on $loopback
 			$endmerge
 			
 			$rreport(transmitEngineDaemon trying_to_get_pointer_from_tx_queue tx_q_index)
@@ -51,10 +51,13 @@ $module [transmitEngineDaemon] $in () $out () $is
 			$guard (push_pointer_back_to_free_Q)
 				$call pushIntoQueue (FREEQUEUE 0 pkt_pointer) (push_status)
 
-			$guard (push_pointer_back_to_free_Q)
-				$call accessRegister ($zero<1> (~$zero<4>) P_TX_PKT_COUNT_REGISTER_INDEX  count) (ignore_resp)
+			count := ($mux (tx_flag & transmitted_flag)  
+						($mux init_flag $zero<32> (count + 1))
+						count) $buffering 2
 				
-			$volatile ncount := ($mux push_pointer_back_to_free_Q (count + 1) count)
+			$guard (push_pointer_back_to_free_Q)
+				$call accessRegister ($zero<1> (~$zero<4>) 
+						P_TX_PKT_COUNT_REGISTER_INDEX  count) (ignore_resp)
 
 			$rreport(transmitEngineDaemon pushed_back_to_free_queue push_status)
 			// move to next tx queue
@@ -94,7 +97,7 @@ $module [transmitPacket]
 	$volatile control_data_addr := ($concat packet_pointer $zero<4>) 
 
 	$rreport(transmitPacket control_data_addr_is packet_pointer control_data_addr)	
-	$call accessMemory ($zero<1> $one<1> FULL_BYTE_MASK control_data_addr $zero<64>) (control_data)
+	$call accessMemoryDword ($zero<1> $one<1> FULL_BYTE_MASK control_data_addr $zero<64>) (control_data)
 	
 	
 	// get packet_size and tkeep(bytemask) of last word
@@ -112,7 +115,7 @@ $module [transmitPacket]
 		$endmerge
 
 		// read packet data
-		$call accessMemory ($zero<1> $one<1> FULL_BYTE_MASK mem_addr $zero<64>) (data)
+		$call accessMemoryDword ($zero<1> $one<1> FULL_BYTE_MASK mem_addr $zero<64>) (data)
 		
 		// TODO: will need to calculate IP-header checksum in future
  
@@ -136,7 +139,7 @@ $module [transmitPacket]
 	
 		//last word
 		$rreport(transmitPacket accessing_last_word nmem_addr)
-		$call accessMemory ($zero<1> $one<1> FULL_BYTE_MASK nmem_addr $zero<64>) (last_word)
+		$call accessMemoryDword ($zero<1> $one<1> FULL_BYTE_MASK nmem_addr $zero<64>) (last_word)
 		
 		// transmit last word
 		$rreport(transmitPacket sending_last_word last_word)

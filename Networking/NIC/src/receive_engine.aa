@@ -32,6 +32,7 @@
 
 // Main Daemon that repeatedly executes Steps 1-3 above
 
+
 $module [ReceiveEngineDaemon] 
 $in ()
 $out()
@@ -56,10 +57,9 @@ $is
 		$rreport(ReceiveEngineDaemon got_the__control )
 
 		// Once enabled start processing
-		$dopipeline $depth 31 $fullrate
+		$dopipeline $depth 3 
 		$merge $entry $loopback 
-				// for Debug
-				$phi pkt_cnt := $zero<32> $on $entry npkt_cnt $on $loopback
+			$phi init_flag := $one<1> $on $entry $zero<1> $on $loopback
 		$endmerge
 
 			// get a buffer from free queue.
@@ -89,12 +89,13 @@ $is
 			$volatile free_flag := ((~status) & bad_packet_identifier)
 			$volatile cond := (ok_flag == 1)
 		
+			// save the packet count 
+			pkt_cnt := ($mux init_flag $one<32>
+					($mux ok_flag (pkt_cnt + $one<32>)  pkt_cnt)) $buffering 2
 		
-			// for Debug: packet count is in debug register.
 			$guard(ok_flag)
 				$call accessRegister ($zero<1> (~$zero<4>) P_DEBUG_REGISTER_1 pkt_cnt) (ignore_resp1)
 
-			$volatile npkt_cnt := ($mux ok_flag (pkt_cnt + $one<32>)  pkt_cnt) 
 
 			$rreport(ReceiveEngineDaemon populating_rx_queue ok_flag cond)		
 			$rreport(ReceiveEngineDaemon running_ok_flag)
@@ -187,6 +188,8 @@ $is
 	// for the next packet 
 	$guard(~bad_packet_identifier)
 		$call writeControlInformationToMem (rx_buffer_pointer packet_size  last_keep) ()
+
+	$attribute delay 1
 }
 
 // Write Ethernet Header to Buffer.. up to 16 bytes.
@@ -216,7 +219,7 @@ $is
 		$volatile $split (ethernet_header 1 64 8)(last_bit wdata wkeep)
 	
 		// Write the data to memory with bmask->wkeep at location buf_position
-		$call accessMemory (UNLOCKMEM WRITEMEM wkeep buf_position wdata)  (ignore_return) 
+		$call accessMemoryDword (UNLOCKMEM WRITEMEM wkeep buf_position wdata)  (ignore_return) 
 
 		$volatile nI := (I + 1)
 		$volatile nbuf_position := (buf_position + 8)
@@ -255,7 +258,7 @@ $is
 			$volatile $split (payload_data 1 64 8)(last_bit wdata wkeep)
 			
 			// Load wdata to memory with wkeep = bmask
-			$call accessMemory (UNLOCKMEM WRITEMEM wkeep buf_position wdata) (ignore_return) 
+			$call accessMemoryDword (UNLOCKMEM WRITEMEM wkeep buf_position wdata) (ignore_return) 
 
 			$volatile nbuf_position := (buf_position + 8)
 
@@ -291,7 +294,7 @@ $is
 	$volatile control_data := ($bitcast ($uint<64>) ($concat packet_size last_keep))
 
 	// Write this control data with bmask set to all 1s to base_buffer_pointer location
-	$call accessMemory (UNLOCKMEM READMEM FULL_BYTE_MASK base_buffer_pointer control_data) (ignore_return)
+	$call accessMemoryDword (UNLOCKMEM READMEM FULL_BYTE_MASK base_buffer_pointer control_data) (ignore_return)
 }
 
 

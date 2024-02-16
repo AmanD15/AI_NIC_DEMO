@@ -31,12 +31,7 @@ $is
 $module [setGlobalSignals]
 	$in () $out () $is
 {
-	// set the free-q
-	$call accessRegister (READMEM _hF P_FREE_QUEUE_REGISTER_BASE_INDEX 0) (free_q_h)
-	$call accessRegister (READMEM _hF {P_FREE_QUEUE_REGISTER_BASE_INDEX + 1} 0) (free_q_l)
-	S_FREE_Q := ($concat ($slice free_q_h 3 0) free_q_l)
 
-	$barrier
 	$call accessRegister (READMEM _hF P_N_SERVERS_REGISTER_INDEX 0) (n_servers)
 	S_NUMBER_OF_SERVERS  := n_servers
 
@@ -55,7 +50,6 @@ $module [controlDaemon] $in () $out () $is
 {
 	MAC_ENABLE := 0
 	S_CONTROL_REGISTER := 0
-	S_FREE_Q := 0
 	S_NUMBER_OF_SERVERS := 0
 	
 

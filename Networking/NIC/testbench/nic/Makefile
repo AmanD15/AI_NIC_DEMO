@@ -22,8 +22,8 @@ SW: aalink aa2c aa2vc
 AA2VHDL: aa2vc vc2vhdl 
 
 # Aa to vC
-aalink: $(SRC)/*.aa $(TESTBENCH)/tester.aa 
-	AaLinkExtMem $(SRC)/parameters.aa $(SRC)/decls.aa $(SRC)/pipes.aa $(SRC)/signals.aa $(SRC)/control.aa $(SRC)/general_utils.aa $(SRC)/memory_utils.aa $(SRC)/queue_utils.aa $(SRC)/register_utils.aa $(SRC)/rx_from_mac.aa $(SRC)/receive_engine.aa $(SRC)/transmit_engine.aa $(TESTBENCH)/tester.aa| vcFormat > nic.linked.aa
+aalink: $(SRC)/*.aa 
+	AaLinkExtMem $(SRC)/parameters.aa $(SRC)/decls.aa $(SRC)/pipes.aa $(SRC)/signals.aa $(SRC)/control.aa $(SRC)/general_utils.aa $(SRC)/memory_utils.aa $(SRC)/queue_utils.aa $(SRC)/register_utils.aa $(SRC)/rx_from_mac.aa $(SRC)/receive_engine.aa $(SRC)/transmit_engine.aa | vcFormat > nic.linked.aa
 	AaOpt -B nic.linked.aa | vcFormat > nic.linked.opt.aa
 
 aa2c : nic.linked.opt.aa
@@ -34,11 +34,14 @@ aa2vc: nic.linked.opt.aa
 
 # vC to VHDL
 vc2vhdl: nic.vc
+	rm -rf vhdl
+	mkdir vhdl
+	mkdir vhdl/nic_lib
 	#-D -O -S 4 -I 2 -v -a -C -e
-	vc2vhdl -U  -O -v -a -C -e nic -w -s ghdl $(TOPMODULES) -f nic.vc -L $(FUNCTIONLIB)/fpu.list
-	vhdlFormat < nic_global_package.unformatted_vhdl > nic_global_package.vhdl
-	vhdlFormat < nic.unformatted_vhdl > nic.vhdl
-	vhdlFormat < nic_test_bench.unformatted_vhdl > nic_test_bench.vhdl
+	vc2vhdl -H -U  -O -a -C -e nic -W nic_lib -w -s ghdl $(TOPMODULES) -f nic.vc -L $(FUNCTIONLIB)/fpu.list
+	vhdlFormat < nic_global_package.unformatted_vhdl > vhdl/nic_lib/nic_global_package.vhdl
+	vhdlFormat < nic.unformatted_vhdl > vhdl/nic_lib/nic.vhdl
+	vhdlFormat < nic_test_bench.unformatted_vhdl > vhdl/nic_lib/nic_test_bench.vhdl
 
 # make clean and then make ahir_system
 ahir_system: 
@@ -51,6 +54,6 @@ ahir_system:
 	vhdlFormat < ahir_system.unformatted_vhdl > nic.vhdl
 
 clean:
-	rm -rf *.o* *.cf *.*vhdl vhdlCStubs.* *.vcd in_data* out_data* testbench_sw testbench_hw ahir_system_test_bench vhpi.log *.aa *.vc *.lso xst *.ngc *_xmsgs *.xrpt pipeHandler.log *.srp *.ghw *.dot ahir_system.s *.log aa_c_model.c  aa_c_model.h  aa_c_model_internal.h PREFIX *.trace .gsi.aa
+	rm -rf *.o* *.cf *.*vhdl vhdlCStubs.* *.vcd in_data* out_data* testbench_sw testbench_hw ahir_system_test_bench vhpi.log *.aa *.vc *.lso xst *.ngc *_xmsgs *.xrpt pipeHandler.log *.srp *.ghw *.dot ahir_system.s *.log aa_c_model.c  aa_c_model.h  aa_c_model_internal.h PREFIX *.trace .gsi.aa *.hsys vhdl
 
 PHONY: all clean	

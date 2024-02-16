@@ -1,16 +1,3 @@
-$pipe tb_to_mac_data: $uint<64> $depth 2
-$pipe mac_to_tb_data: $uint<64> $depth 2
-
-$pipe MERGED_ACB_REQUEST : $uint<110> $depth 2 
-$pipe MERGED_ACB_RESPONSE: $uint<65> $depth 2 
-
-$pipe tb_to_nic_slave_request : $uint<73> $depth 2
-$pipe nic_slave_response_to_tb : $uint<32> $depth 2
-
-// unused last   bmask
-//  7       1     8
-$pipe mac_to_tb_ctrl: $uint<16> $depth 2
-
 // will get a packet from the tb
 //     first 64-bits will specify the
 //     number of 64-bit words to be
@@ -20,32 +7,17 @@ $module [tbMacRxDaemon]
 	$in () $out () $is
 {
 	$branchblock[loop] {
-		$merge $entry at_the_top $endmerge 
 
 		$dopipeline $depth 7 $fullrate
-			$merge $entry $loopback
-				$phi pkt_data   := tb_to_mac_data $on $entry, $loopback
-				$phi first_time := $one<1> $on $entry $zero<1> $on $loopback
-				$phi residual_length := $zero<16> $on $entry 
-								n_residual_length $on $loopback
-			$endmerge
-			$volatile pkt_length_in_dwords := ($slice pkt_data 15 0)
-			$guard (first_time)
-				bmask := ($slice pkt_data 23 16)
+			$merge $entry $loopback $endmerge
+			pkt_ctrl   := tb_to_mac_ctrl 
+			pkt_data   := tb_to_mac_data 
+			$volatile $split (pkt_ctrl 7 1 8) (u7 last keep)
 
-			$volatile n_residual_length := (($mux first_time pkt_length_in_words residual_length)	 - 1)
-			$volatile continue_flag     := (n_residual_length > 0)
+			$volatile data_to_nic := ($concat last pkt_data keep)
+			mac_to_nic_data := data_to_nic
 
-			$volatile send_to_nic := (~first_time)
-			$volatile is_last_word := (~continue_flag)
-			$volatile data_to_nic := ($concat is_last_word pkt_data bmask)
-		
-			$guard (send_to_nic)
-				mac_to_nic_data := data_to_nic
-
-		$while continue_flag
-	
-		$place [at_the_top]
+		$while 1
 	}
 }
 
@@ -54,7 +26,7 @@ $module [tbMacRxDaemon]
 $module [tbMacTxDaemon] $in () $out () $is
 {
 	$branchblock[loop] {
-		$dopipeline $depth 
+		$dopipeline $depth  7
 		$merge $entry $loopback $endmerge
 			from_nic := nic_to_mac_transmit_pipe
 			$volatile $split (from_nic 1 64 8) (last dword bmask)
@@ -75,13 +47,17 @@ $module [tbAfbDaemon]
 		$merge $entry loopback $endmerge
 			// 64-bit tb -> tester request
 			//
-			//    rwbar, addr, wdata
-			//      1     8     32
+			//    rwbar, regindex, wdata
+			//      1     8         32
 			tb_req := tb_to_nic_slave_request
+			$volatile $split (tb_req 23 1 8 32) (u23 rwbar rindex wdata)
+
 			afb_req := ($concat $zero<1> rwbar (~$zero<4>) 
-					($concat $zero<28> addr) wdata)				
+					($concat $zero<26> rindex $zero<2>) wdata)				
+
 			AFB_NIC_REQUEST := afb_req
 			afb_resp := AFB_NIC_RESPONSE
+
 			$volatile $split (afb_resp 1 32) (error rdata)
 
 			nic_slave_response_to_tb := rdata
@@ -100,14 +76,44 @@ $module [tbMemDaemon] $in () $out () $is
 					(lock rwbar bmask addr wdata)
 
 		$volatile ctrl_word := ($concat $zero<19> rwbar bmask addr)
-		TB_TO_MEM := ctrl_word
-		TB_TO_MEM := wdata
+		TEST_SYSTEM_TO_TB_MEM := ctrl_word
+		TEST_SYSTEM_TO_TB_MEM := wdata
 
-		rdata := MEM_TO_TB
+		rdata := TB_MEM_TO_TEST_SYSTEM
 		resp := ($concat $one<1> rdata)
 		MERGED_ACB_RESPONSE := resp
 
 		$place [loopback]
 	}
+}
+
+$module [tbProcessorMemDaemon] $in () $out () $is
+{
+	$branchblock[loop] {
+		$merge $entry loopback $endmerge
+		
+		// 64-bit
+		// unused lock rwbar bmask addr
+		//   18    1   1     8     36
+		req0 := TB_PROCESSOR_TO_MEM
+		req1 := TB_PROCESSOR_TO_MEM
+
+		PROCESSOR_ACB_MEM_REQUEST :=
+				($concat ($slice req0 45 0) req1)
+		resp := PROCESSOR_ACB_MEM_RESPONSE
+		$volatile $split (resp 1 64) (err rdata)
+		MEM_TO_TB_PROCESSOR := rdata 
+
+		$place [loopback]
+	}
+}
+
+$module [tbEnableMacDaemon] $in () $out () $is
+{
+	$branchblock[loop] {
+		$merge $entry loopback $endmerge
+			MAC_ENABLE_8 := ($concat $zero<7> MAC_ENABLE)
+		$place [loopback]
+	}	
 }
 

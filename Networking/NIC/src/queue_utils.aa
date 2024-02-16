@@ -79,7 +79,7 @@ $module [getQueueBufPointer] $in (queue_type: $uint<2> server_id: $uint<8>) $out
 $module [accessQueueTotalMsgs] 
 	$in (rwbar: $uint<1> qptr: $uint<36> wdata: $uint<32>) $out (rdata: $uint<32>) $is
 {
-	$call accessMemory (UNLOCKMEM rwbar _hF0 qptr ($concat wdata $zero<32>)) (dword)
+	$call accessMemoryDword (UNLOCKMEM rwbar _hF0 qptr ($concat wdata $zero<32>)) (dword)
 	$volatile rdata := ($slice  dword 63 32)
 
 	$attribute input_buffering 0
@@ -88,7 +88,7 @@ $module [accessQueueTotalMsgs]
 $module [accessQueueReadIndex] 
 	$in (rwbar: $uint<1> qptr: $uint<36> wdata: $uint<32>) $out (rdata: $uint<32>) $is
 {
-	$call accessMemory (UNLOCKMEM rwbar _h0F qptr ($concat $zero<32> wdata)) (dword)
+	$call accessMemoryDword (UNLOCKMEM rwbar _h0F qptr ($concat $zero<32> wdata)) (dword)
 	$volatile rdata := ($slice  dword 31 0)
 
 	$attribute input_buffering 0
@@ -97,7 +97,7 @@ $module [accessQueueReadIndex]
 $module [accessQueueWriteIndex] 
 	$in (rwbar: $uint<1> qptr: $uint<36> wdata: $uint<32>) $out (rdata: $uint<32>) $is
 {
-	$call accessMemory (UNLOCKMEM rwbar _hF0 (qptr + 8) ($concat wdata $zero<32>)) (dword)
+	$call accessMemoryDword (UNLOCKMEM rwbar _hF0 (qptr + 8) ($concat wdata $zero<32>)) (dword)
 	$volatile rdata := ($slice  dword 63 32)
 
 	$attribute input_buffering 0
@@ -106,7 +106,7 @@ $module [accessQueueWriteIndex]
 $module [accessQueueLength] 
 	$in (rwbar: $uint<1> qptr: $uint<36> wdata: $uint<32>) $out (rdata: $uint<32>) $is
 {
-	$call accessMemory (UNLOCKMEM rwbar _h0F (qptr + 8) ($concat $zero<32> wdata)) (dword)
+	$call accessMemoryDword (UNLOCKMEM rwbar _h0F (qptr + 8) ($concat $zero<32> wdata)) (dword)
 	$volatile rdata := ($slice  dword 31 0)
 
 	$attribute input_buffering 0
@@ -115,7 +115,7 @@ $module [accessQueueLength]
 $module [accessQueueMsgSizeInBytes] 
 	$in (rwbar: $uint<1> qptr: $uint<36> wdata: $uint<32>) $out (rdata: $uint<32>) $is
 {
-	$call accessMemory (UNLOCKMEM rwbar _hF0 (qptr + 16) ($concat wdata $zero<32>)) (dword)
+	$call accessMemoryDword (UNLOCKMEM rwbar _hF0 (qptr + 16) ($concat wdata $zero<32>)) (dword)
 	$volatile rdata := ($slice  dword 63 32)
 
 	$attribute input_buffering 0
@@ -125,7 +125,7 @@ $module [accessQueueMisc]
 	$in (rwbar: $uint<1> qptr: $uint<36> wdata: $uint<32>) $out (rdata: $uint<32>) $is
 {
 	$volatile addr := (qptr + ($bitcast ($uint<36>) 24))
-	$call accessMemory (UNLOCKMEM rwbar _h0F addr ($concat $zero<32> wdata)) (dword)
+	$call accessMemoryDword (UNLOCKMEM rwbar _h0F addr ($concat $zero<32> wdata)) (dword)
 	$volatile rdata := ($slice  dword 31 0)
 
 	$attribute input_buffering 0
@@ -145,7 +145,7 @@ $module [accessQueueElement]
 	$volatile bmask    := ($mux low_word ($bitcast ($uint<8>) _h0F) ($bitcast ($uint<8>) _hF0))
 	$volatile wdata64  := ($mux low_word ($concat $zero<32> wdata) ($concat wdata $zero<32>))
 
-	$call accessMemory (UNLOCKMEM rwbar bmask addr_u64 wdata64) (dword)
+	$call accessMemoryDword (UNLOCKMEM rwbar bmask addr_u64 wdata64) (dword)
 	$volatile rdata := ($mux low_word  ($slice dword 31 0) ($slice dword 63 32))
 
 	$attribute input_buffering 0
@@ -254,7 +254,7 @@ $is
 	// get the physical address of the queue in memory.
 	$call getQueuePointer (queue_type server_id) (q_base_address)
 
-	$call accessMemory (UNLOCKMEM READMEM  (~$zero<8>) (q_base_address + 24 ) $zero<64>) (ba_and_misc)
+	$call accessMemoryDword (UNLOCKMEM READMEM  (~$zero<8>) (q_base_address + 24 ) $zero<64>) (ba_and_misc)
 	$volatile misc := ($slice ba_and_misc 31 0)
 
 	// if misc is 0, then acquire lock
