@@ -38,6 +38,7 @@ $module [setGlobalSignals]
 	$barrier
 	$call accessRegister (READMEM _hF P_NIC_CONTROL_REGISTER_INDEX 0) (ctrl_reg)
 	S_CONTROL_REGISTER := ctrl_reg
+	MAC_ENABLE := (ctrl_reg [] 1)
 
 	$attribute input_buffering 0
 	$attribute output_buffering 0
@@ -48,28 +49,13 @@ $module [setGlobalSignals]
 
 $module [controlDaemon] $in () $out () $is
 {
+		
+	// control-register set to 0.
+	$call accessRegister (0 0 0 0) (ign)
+
 	MAC_ENABLE := 0
 	S_CONTROL_REGISTER := 0
 	S_NUMBER_OF_SERVERS := 0
-	
-
-	// initialize all registers
-	$branchblock[loop1]{
-		$merge $entry loopback
-			$phi I := $zero<8> $on $entry nI $on loopback
-		$endmerge
-		nI := (I + 1)
-
-		$call accessRegister (0 15 I 0) (ign)
-		
-		
-		$if(I < 255) $then
-			$place [loopback]
-		$endif
-	}
-
-	// enable the MAC
-	MAC_ENABLE := $one<1>
 	
 	
 	$rreport(controlDaemon started_controlDaemon)

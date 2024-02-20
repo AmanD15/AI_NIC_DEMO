@@ -1,10 +1,8 @@
 $system test_system $library test_lib
 $in
+	// Packet interface
+	$pipe tb_to_nic_mac_bridge 	16 
 
-
-	// to mac.
-	$pipe tb_to_mac_data 		64 
-	$pipe tb_to_mac_ctrl		16
 
 	// This is the response from the 
 	// memory modeled in the tb 
@@ -19,9 +17,8 @@ $in
 
 	
 $out
-	// from mac.
-	$pipe mac_to_tb_data  		64
-	$pipe mac_to_tb_ctrl 		64
+	// Packet interface
+	$pipe nic_mac_bridge_to_tb	16
 
 	// request from the muxed memory
 	// request to the tb memory model.
@@ -38,26 +35,48 @@ $out
 	
 	// tester instance
 	$instance tester_inst tester_lib: tester
-		AFB_NIC_REQUEST => AFB_NIC_REQUEST
-		AFB_NIC_RESPONSE => AFB_NIC_RESPONSE
-		nic_to_mac_transmit_pipe => nic_to_mac_transmit_pipe
-		mac_to_nic_data => mac_to_nic_data
-		MAC_ENABLE => MAC_ENABLE
-		MAC_ENABLE_8 => MAC_ENABLE_8
-		tb_to_mac_ctrl => tb_to_mac_ctrl
-		tb_to_mac_data => tb_to_mac_data
+		// This is the slave interface between nic and "processor, ie tb"
 		tb_to_nic_slave_request => tb_to_nic_slave_request
 		nic_slave_response_to_tb => nic_slave_response_to_tb
-		mac_to_tb_ctrl => mac_to_tb_ctrl
-		mac_to_tb_data => mac_to_tb_data
+
+		// in the test_system
+		AFB_NIC_REQUEST => AFB_NIC_REQUEST
+		AFB_NIC_RESPONSE => AFB_NIC_RESPONSE
+
+		// The data interface between mac (tb)  <-> nic
+		// 16-bit data from tb, bridged to 10-bit data to nic-mac-bridge
+		tb_to_nic_mac_bridge => tb_to_nic_mac_bridge  // 16 bit in.
+		rx_in_pipe => rx_in_pipe		      // 10 bit out.
+
+		//
+		// 10 bit tx-out-data to mac, bridged to 16-bit data to tb.
+		tx_out_pipe => tx_out_pipe 		      // 10 bit in.
+		nic_mac_bridge_to_tb => nic_mac_bridge_to_tb  // 16-bit out.
+
+		// MAC enable to tb.
+		MAC_ENABLE => MAC_ENABLE
+		MAC_ENABLE_8 => MAC_ENABLE_8
+
+		// The ACB request from the processor, which is muxed
+		// with the NIC ACB interface.
+
+		// unused lock rwbar bmask addr
+		//   18    1   1     8     36
+		TB_PROCESSOR_TO_MEM => TB_PROCESSOR_TO_MEM    // 64-bit 
+		// data
+		MEM_TO_TB_PROCESSOR => MEM_TO_TB_PROCESSOR    // 64-bit
 		PROCESSOR_ACB_MEM_REQUEST => PROCESSOR_ACB_MEM_REQUEST
 		PROCESSOR_ACB_MEM_RESPONSE => PROCESSOR_ACB_MEM_RESPONSE
+
+		// The muxed ACB interface.
 		MERGED_ACB_REQUEST  => MERGED_ACB_REQUEST
 		MERGED_ACB_RESPONSE => MERGED_ACB_RESPONSE
+
+		// The final muxed interface connection to
+		// the TB, in which the memory is modeled.
 		TB_MEM_TO_TEST_SYSTEM => TB_MEM_TO_TEST_SYSTEM
 		TEST_SYSTEM_TO_TB_MEM => TEST_SYSTEM_TO_TB_MEM
-		TB_PROCESSOR_TO_MEM => TB_PROCESSOR_TO_MEM
-		MEM_TO_TB_PROCESSOR => MEM_TO_TB_PROCESSOR
+
 	
 
 	// nic instance
@@ -69,6 +88,13 @@ $out
 		nic_to_mac_transmit_pipe => nic_to_mac_transmit_pipe
 		mac_to_nic_data => mac_to_nic_data
 		MAC_ENABLE => MAC_ENABLE
+
+	// nic-mac-bridge instance
+	$instance nic_mac_bridge_inst  nic_mac_bridge_lib: nic_mac_bridge
+		rx_in_pipe => rx_in_pipe                 // 10-bit (from MAC)
+		tx_out_pipe => tx_out_pipe               // 10-bit (to MAC)
+		rx_out_pipe => mac_to_nic_data           // 73-bit (to NIC)
+		tx_in_pipe => nic_to_mac_transmit_pipe   // 73-bit (from NIC)
 		
 		
 

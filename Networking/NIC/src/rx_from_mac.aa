@@ -18,9 +18,16 @@ $constant S0: $uint<2> := 0
 $constant S1: $uint<2> := 1
 $constant S2: $uint<2> := 2
 $constant S3: $uint<2> := 3
-// upper two bytes of last word of header are unused.
-//	so modify tkeep of last word.
-$constant HEADER_TKEEP : $uint<8> := _b00111111
+
+// The Ethernet frame received from the MAC is
+//   dest-addr source-addr length data pad  flow-control
+//      6          6         2    64+  0-46  4             Bytes!
+// Of these, the first 14 bytes constitute the header.
+//
+// Bottom 2 bytes of the second dword are not part of the header.
+//   This should be handled by software!
+//
+$constant HEADER_TKEEP : $uint<8> := _b11111100
 
 $module [nicRxFromMacDaemon] $in () $out () $is
 {

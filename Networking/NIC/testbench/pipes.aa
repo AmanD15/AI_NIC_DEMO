@@ -37,3 +37,29 @@ $pipe AFB_NIC_RESPONSE : $uint<33> $depth 2
 //    1           64     8
 $pipe nic_to_mac_transmit_pipe : $uint<73> $depth 2//16
 $pipe mac_to_nic_data : $uint<73> $depth 2//16
+
+//
+// What are these 10 f*g bits?
+// rx[9]   seems to be the last-byte indicator
+// rx[8:1] seems to be the data.
+//
+// What the f*k is rx[0]?  It is set to '1'
+// in the ***f**'s code.
+//
+$pipe rx_in_pipe : $uint<10> $depth 2
+$pipe tx_out_pipe : $uint<10> $depth 2
+
+$pipe tb_to_nic_mac_bridge: $uint<16> $depth 2
+$pipe nic_mac_bridge_to_tb: $uint<16> $depth 2
+
+
+
+// once again, no f*g comments.
+// 
+//  last  dword  byte-mask
+//   1    64     8
+$pipe rx_out_pipe : $uint<73> $depth 2
+$pipe tx_in_pipe : $uint<73> $depth 2
+
+
+

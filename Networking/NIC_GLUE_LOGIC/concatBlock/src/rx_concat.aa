@@ -1,14 +1,15 @@
 //
-//	Read pipe
-//	if(tlast or 8bytesrecv)
-//		send on out pipE
-//	else
-//		collect next byte
+//	Data from the MAC comes in 10-bit chunks
+//      with each chunk having the format
+//         last   byte   ignore
+//          1      8       1
+//      
+//      Collect the incoming bytes into 8-byte
+//      dwords (careful with the last dword)
+//      and send onwards.
 //
-
-$constant Eight : $uint<32> := 8
-//$storage data: $array [8] $of $uint<8>
-
+//  Rewritten by MPD, due to crap unreadable implementation.
+//
 $module [rx_concat] $in () $out () $is
 {
 	$branchblock[loop]{
@@ -16,28 +17,49 @@ $module [rx_concat] $in () $out () $is
 		$dopipeline $depth 7 $fullrate
 	
 		$merge $entry $loopback 
+			// last data ignore
+			//  1    8    1
 			$phi RX := rx_in_pipe $on $entry, $loopback
-			//$phi lstate := start $on $entry nlstate $on $loopback	
-			$phi count := $zero<4> $on $entry ncount $on $loopback
-			$phi prevSendData := $zero<64> $on $entry sendData $on $loopback
-			$phi prev_tkeep := $zero<8> $on $entry tkeep $on $loopback
+
+			$phi CIRCULANT := $zero<76> $on $entry next_CIRCULANT $on $loopback
+			
+
 		$endmerge
+			$volatile $split (CIRCULANT 64 4 8) (collected_dword running_byte_count running_byte_mask)
 
-			//$volatile $call nextState (RX lstate) (nlstate)
-			$volatile sendtopipe := ((count == 7) | ((RX [] 9) == 1))
-			$volatile ncount := ($mux ((count == 7) | sendtopipe)
-						$zero<4>
-						(count + 1))
+			$volatile $split (RX 1 8 1) (rx_last rx_data rx_ignore)
 
-			//data[count] := ($slice RX 8 1)
-			$volatile tkeep := ($mux (count == 0) _h01 (prev_tkeep | ($one<8> << ($bitcast ($uint<8>) count))))
+			$volatile send_to_pipe := (rx_last | (running_byte_count == 8))
 
-			$volatile shift_data := (($bitcast ($uint<32>) count) * Eight)
-			$volatile sendData := ($mux (count == 0) ($concat $zero<56> ($slice RX 8 1)) (prevSendData | (($bitcast ($uint<64>) ($slice RX 8 1)) << ($bitcast ($uint<64>)shift_data)) ))
+			$volatile next_collected_dword := 
+					($mux send_to_pipe $zero<64>
+							($concat ($slice collected_dword 55 0) rx_data))
+			$volatile next_running_byte_count := 
+					($mux send_to_pipe $one<4> (running_byte_count + 1))
 
-			$rreport (rx_concat data RX count sendData prevSendData prev_tkeep shift_data sendtopipe)
-			$guard (sendtopipe)
-				rx_out_pipe := ($concat (RX [] 9) sendData tkeep)
+			$volatile next_running_byte_mask := 
+					($mux send_to_pipe $one<8> ($concat ($slice running_byte_mask 6 0) $one<1>))
+
+			$volatile left_shift_amount :=
+					($bitcast ($uint<64>) ($concat (8 - running_byte_count) $zero<3>))
+
+			$volatile data_to_pipe :=
+				($mux (send_to_pipe & (~rx_last))
+						next_collected_dword
+						(next_collected_dword << left_shift_amount))
+
+			$volatile byte_mask_to_pipe :=
+				($mux (send_to_pipe & (~rx_last)) (~$zero<8>)
+						(next_running_byte_mask << ($bitcast ($uint<8>) (8 - next_running_byte_count))))
+
+			// next..
+			$volatile next_CIRCULANT :=  ($concat next_collected_dword next_running_byte_count next_running_byte_mask)
+
+			$volatile to_pipe := ($concat rx_last 
+							data_to_pipe 
+							byte_mask_to_pipe)
+			$guard (send_to_pipe)
+				rx_out_pipe := to_pipe
 
 		$while 1
 

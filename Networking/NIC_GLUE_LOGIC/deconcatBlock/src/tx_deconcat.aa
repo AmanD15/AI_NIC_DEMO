@@ -1,48 +1,56 @@
-
-
+//  Input is from  the NIC, a 73-bit pipe.
+//  coded as
+//      last   dword  bmask
+//       1      64     8
 //
-//	read pipe
-//		send 8 - 8 byte till tlast = 1
+//  Output is to the MAC, a 10-bit pipe.
+//  coded as 
+//       last byte unused
+//         1    8    1
 //
 
 $module [tx_deconcat] $in () $out () $is
 {
 	$branchblock[loop]{
 
-		//$dopipeline $depth 7 $fullrate
-		
-		$merge $entry outer_loopback
-			$phi RX := tx_in_pipe $on $entry tx_in_pipe $on outer_loopback
-		$endmerge	
-			$volatile data := ($slice RX 71 8)
-			$volatile tkeep := ($slice RX 7 0)
-			$volatile tlast := (RX [] 72)
-			
-			$rreport(tx_deconcat data RX data tkeep tlast)
-		
-				$dopipeline $depth 7 $fullrate
-				$merge $entry $loopback
-					$phi count := $zero<4> $on $entry ncount $on $loopback 
-					$phi senddata := data $on $entry nsenddata $on $loopback
-				$endmerge
-					$volatile send := (tkeep [] count)		//(count == (bytes_to_send-1)) 
-					$volatile sendtlast := ((count == 7) | ((tkeep [] (count+1)) == 0))
-					$volatile nsenddata := (senddata >> ($bitcast ($uint<64>) 8))
-					$volatile data_to_send := ($concat ($mux sendtlast tlast $zero<1>)  ($slice senddata 7 0) $zero<1>)
-					$volatile ncount := ($mux sendtlast $zero<4> (count + 1))
+		$dopipeline $depth 7 
+		$merge $entry $loopback $endmerge	
 
-					tx_out_pipe := data_to_send		
-					
-					$rreport(tx_deconcat datainside send sendtlast nsenddata senddata ncount count data_to_send)	
+			RX := tx_in_pipe 
+			$volatile $split (RX 1 
+						8 8 8 8 8 8 8 8 
+						1 1 1 1 1 1 1 1) 
+				(tlast 
+					d0 d1 d2 d3 d4 d5 d6 d7
+					b0 b1 b2 b3 b4 b5 b6 b7)
 
-					//$if (~sendtlast) $then
-					//	$place [inner_loopback]
-					//$endif
-					
-					$while (~sendtlast)
-		$if (tkeep [] 0) $then
-			$place [outer_loopback]
-		$endif
-		//$while 1
+			$volatile s0 := ($concat (tlast & (b0 & (~b1))) d0 $one<1>)
+			$volatile s1 := ($concat (tlast & (b1 & (~b2))) d1 $one<1>)
+			$volatile s2 := ($concat (tlast & (b2 & (~b3))) d2 $one<1>)
+			$volatile s3 := ($concat (tlast & (b3 & (~b4))) d3 $one<1>)
+
+			$volatile s4 := ($concat (tlast & (b4 & (~b5))) d4 $one<1>)
+			$volatile s5 := ($concat (tlast & (b5 & (~b6))) d5 $one<1>)
+			$volatile s6 := ($concat (tlast & (b6 & (~b7))) d6 $one<1>)
+			$volatile s7 := ($concat (tlast & b7) d7 $one<1>)
+
+			$guard (b0)
+				tx_out_pipe := s0
+			$guard (b1)
+				tx_out_pipe := s1
+			$guard (b2)
+				tx_out_pipe := s2
+			$guard (b3)
+				tx_out_pipe := s3
+			$guard (b4)
+				tx_out_pipe := s4
+			$guard (b5)
+				tx_out_pipe := s5
+			$guard (b6)
+				tx_out_pipe := s6
+			$guard (b7)
+				tx_out_pipe := s7
+
+		$while 1
 	}
 }

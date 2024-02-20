@@ -26,6 +26,12 @@ Info: adding pipe AFB_NIC_REQUEST width = 74, depth = 2 to global map
 Info: adding pipe AFB_NIC_RESPONSE width = 33, depth = 2 to global map 
 Info: adding pipe nic_to_mac_transmit_pipe width = 73, depth = 2 to global map 
 Info: adding pipe mac_to_nic_data width = 73, depth = 2 to global map 
+Info: adding pipe rx_in_pipe width = 10, depth = 2 to global map 
+Info: adding pipe tx_out_pipe width = 10, depth = 2 to global map 
+Info: adding pipe tb_to_nic_mac_bridge width = 16, depth = 2 to global map 
+Info: adding pipe nic_mac_bridge_to_tb width = 16, depth = 2 to global map 
+Info: adding pipe rx_out_pipe width = 73, depth = 2 to global map 
+Info: adding pipe tx_in_pipe width = 73, depth = 2 to global map 
 Info: setting library for acb_null_stub to GlueModules
 Info: setting library for acb_fast_tap to GlueModules
 Info: setting library for coherent_memory_controller_two_core to GlueModules
@@ -55,8 +61,8 @@ Info: setting library for tester to tester_lib
 Info: setting library for test_system to test_lib
 Warning: Added internal pipe AFB_NIC_REQUEST to test_system
 Warning: Added internal pipe AFB_NIC_RESPONSE to test_system
-Warning: Added internal pipe nic_to_mac_transmit_pipe to test_system
-Warning: Added internal pipe mac_to_nic_data to test_system
+Warning: Added internal pipe rx_in_pipe to test_system
+Warning: Added internal pipe tx_out_pipe to test_system
 Warning: Added internal signal MAC_ENABLE to test_system
 Warning: Added internal pipe PROCESSOR_ACB_MEM_REQUEST to test_system
 Warning: Added internal pipe PROCESSOR_ACB_MEM_RESPONSE to test_system
@@ -64,6 +70,10 @@ Warning: Added internal pipe MERGED_ACB_REQUEST to test_system
 Warning: Added internal pipe MERGED_ACB_RESPONSE to test_system
 Warning: Added internal pipe NIC_TO_MEMORY_REQUEST to test_system
 Warning: Added internal pipe MEMORY_TO_NIC_RESPONSE to test_system
+Warning: Added internal pipe nic_to_mac_transmit_pipe to test_system
+Warning: Added internal pipe mac_to_nic_data to test_system
+Error: Error: could not find base system nic_mac_bridge in library nic_mac_bridge_lib
+Error: null subsystem instance 
 
 $system acb_null_stub
 $library GlueModules
@@ -545,10 +555,9 @@ $in
  $pipe PROCESSOR_ACB_MEM_RESPONSE 65 $depth 2 
  $pipe TB_MEM_TO_TEST_SYSTEM 64 $depth 2 
  $pipe TB_PROCESSOR_TO_MEM 64 $depth 2 
- $pipe nic_to_mac_transmit_pipe 73 $depth 2 
- $pipe tb_to_mac_ctrl 16 $depth 2 
- $pipe tb_to_mac_data 64 $depth 2 
+ $pipe tb_to_nic_mac_bridge 16 $depth 2 
  $pipe tb_to_nic_slave_request 64 $depth 1 
+ $pipe tx_out_pipe 10 $depth 2 
 
 $out 
  $pipe AFB_NIC_REQUEST 74 $depth 2 
@@ -557,84 +566,11 @@ $out
  $pipe MERGED_ACB_RESPONSE 65 $depth 2 
  $pipe PROCESSOR_ACB_MEM_REQUEST 110 $depth 2 
  $pipe TEST_SYSTEM_TO_TB_MEM 64 $depth 2 
- $pipe mac_to_nic_data 73 $depth 2 
- $pipe mac_to_tb_ctrl 16 $depth 2 
- $pipe mac_to_tb_data 64 $depth 2 
+ $pipe nic_mac_bridge_to_tb 16 $depth 2 
  $pipe nic_slave_response_to_tb 32 $depth 1 
+ $pipe rx_in_pipe 10 $depth 2 
 
 {
 }
-
-$system test_system
-$library test_lib
-$in 
- $pipe TB_MEM_TO_TEST_SYSTEM 64 $depth 2 
- $pipe TB_PROCESSOR_TO_MEM 64 $depth 2 
- $pipe tb_to_mac_ctrl 16 $depth 2 
- $pipe tb_to_mac_data 64 $depth 2 
- $pipe tb_to_nic_slave_request 64 $depth 1 
-
-$out 
- $signal MAC_ENABLE_8 8 $depth 1 
- $pipe MEM_TO_TB_PROCESSOR 64 $depth 2 
- $pipe TEST_SYSTEM_TO_TB_MEM 64 $depth 2 
- $pipe mac_to_tb_ctrl 16 $depth 2 
- $pipe mac_to_tb_data 64 $depth 2 
- $pipe nic_slave_response_to_tb 32 $depth 1 
-
-{
- $pipe AFB_NIC_REQUEST 74 $depth 2 
- $pipe AFB_NIC_RESPONSE 33 $depth 2 
- $signal MAC_ENABLE 1 $depth 1 
- $pipe MEMORY_TO_NIC_RESPONSE 65 $depth 2 
- $pipe MERGED_ACB_REQUEST 110 $depth 2 
- $pipe MERGED_ACB_RESPONSE 65 $depth 2 
- $pipe NIC_TO_MEMORY_REQUEST 110 $depth 2 
- $pipe PROCESSOR_ACB_MEM_REQUEST 110 $depth 2 
- $pipe PROCESSOR_ACB_MEM_RESPONSE 65 $depth 2 
- $pipe mac_to_nic_data 73 $depth 2 
- $pipe nic_to_mac_transmit_pipe 73 $depth 2 
-
-// global instance id = 3
-$instance acb_mux_inst GlueModules : acb_fast_mux 
-   CORE_BUS_REQUEST => MERGED_ACB_REQUEST 
-   CORE_BUS_REQUEST_HIGH => NIC_TO_MEMORY_REQUEST 
-   CORE_BUS_REQUEST_LOW => PROCESSOR_ACB_MEM_REQUEST 
-   CORE_BUS_RESPONSE => MERGED_ACB_RESPONSE 
-   CORE_BUS_RESPONSE_HIGH => MEMORY_TO_NIC_RESPONSE 
-   CORE_BUS_RESPONSE_LOW => PROCESSOR_ACB_MEM_RESPONSE 
-
-// global instance id = 2
-$instance nic_inst nic_lib : nic 
-   AFB_NIC_REQUEST => AFB_NIC_REQUEST 
-   AFB_NIC_RESPONSE => AFB_NIC_RESPONSE 
-   MAC_ENABLE => MAC_ENABLE 
-   MEMORY_TO_NIC_RESPONSE => MEMORY_TO_NIC_RESPONSE 
-   NIC_TO_MEMORY_REQUEST => NIC_TO_MEMORY_REQUEST 
-   mac_to_nic_data => mac_to_nic_data 
-   nic_to_mac_transmit_pipe => nic_to_mac_transmit_pipe 
-
-// global instance id = 1
-$instance tester_inst tester_lib : tester 
-   AFB_NIC_REQUEST => AFB_NIC_REQUEST 
-   AFB_NIC_RESPONSE => AFB_NIC_RESPONSE 
-   MAC_ENABLE => MAC_ENABLE 
-   MAC_ENABLE_8 => MAC_ENABLE_8 
-   MEM_TO_TB_PROCESSOR => MEM_TO_TB_PROCESSOR 
-   MERGED_ACB_REQUEST => MERGED_ACB_REQUEST 
-   MERGED_ACB_RESPONSE => MERGED_ACB_RESPONSE 
-   PROCESSOR_ACB_MEM_REQUEST => PROCESSOR_ACB_MEM_REQUEST 
-   PROCESSOR_ACB_MEM_RESPONSE => PROCESSOR_ACB_MEM_RESPONSE 
-   TB_MEM_TO_TEST_SYSTEM => TB_MEM_TO_TEST_SYSTEM 
-   TB_PROCESSOR_TO_MEM => TB_PROCESSOR_TO_MEM 
-   TEST_SYSTEM_TO_TB_MEM => TEST_SYSTEM_TO_TB_MEM 
-   mac_to_nic_data => mac_to_nic_data 
-   mac_to_tb_ctrl => mac_to_tb_ctrl 
-   mac_to_tb_data => mac_to_tb_data 
-   nic_slave_response_to_tb => nic_slave_response_to_tb 
-   nic_to_mac_transmit_pipe => nic_to_mac_transmit_pipe 
-   tb_to_mac_ctrl => tb_to_mac_ctrl 
-   tb_to_mac_data => tb_to_mac_data 
-   tb_to_nic_slave_request => tb_to_nic_slave_request 
-
-}
+Error: in building system test_system
+Error: there were 2 errors.
