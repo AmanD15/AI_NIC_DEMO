@@ -4,12 +4,14 @@ Date   : 12/1/2024
 
     1. include folder
         contains various configuration file for LwIP
-            cc.h :
-            sys_arch.h:
-            lwipopts.h:
+            - cc.h :
+            - sys_arch.h:
+            - lwipopts.h:
     2. src folder
-        contains mainloop code for baremetal use of LwIP.
-
+            - contains mainloop code for baremetal use of LwIP.
+            - ethernetif.c contanis low level drivers
+            - sys_arch.c mainly contains sys_now() function
+                needed for internal timers of TCP/IP stack.
 
 
 
@@ -247,7 +249,47 @@ Date   : 12/1/2024
                 #endif /* ENABLE_LOOPBACK */
             };
 
+            - The following contains information about netif_flags.
+                /**
+                 * @defgroup netif_flags Flags
+                 * @ingroup netif
+                 * @{
+                 */
 
+                /** Whether the network interface is 'up'. This is
+                 * a software flag used to control whether this network
+                 * interface is enabled and processes traffic.
+                 * It must be set by the startup code before this netif can be used
+                 * (also for dhcp/autoip).
+                 */
+                #define NETIF_FLAG_UP           0x01U
+                /** If set, the netif has broadcast capability.
+                 * Set by the netif driver in its init function. */
+                #define NETIF_FLAG_BROADCAST    0x02U
+                /** If set, the interface has an active link
+                 *  (set by the network interface driver).
+                 * Either set by the netif driver in its init function (if the link
+                 * is up at that time) or at a later point once the link comes up
+                 * (if link detection is supported by the hardware). */
+                #define NETIF_FLAG_LINK_UP      0x04U
+                /** If set, the netif is an ethernet device using ARP.
+                 * Set by the netif driver in its init function.
+                 * Used to check input packet types and use of DHCP. */
+                #define NETIF_FLAG_ETHARP       0x08U
+                /** If set, the netif is an ethernet device. It might not use
+                 * ARP or TCP/IP if it is used for PPPoE only.
+                 */
+                #define NETIF_FLAG_ETHERNET     0x10U
+                /** If set, the netif has IGMP capability.
+                 * Set by the netif driver in its init function. */
+                #define NETIF_FLAG_IGMP         0x20U
+                /** If set, the netif has MLD6 capability.
+                 * Set by the netif driver in its init function. */
+                #define NETIF_FLAG_MLD6         0x40U
+
+                /**
+                 * @}
+                 */
 
     2.  eth_addr and eth_hdr (as given in ethernet.h)
 
@@ -277,3 +319,38 @@ and files in which they are changed */
 Options         Value   File    
 
 ETH_PAD_SIZE    2       opt.h
+
+/* Constructing the main function */
+    - initialize the LwIP
+    - initialize the timer
+    - install your driver into LwIP using netif_add
+        - physical network hardware are represented by 
+          a network interface structure.
+
+          Step One: Add the interface
+
+            use the following function:
+            struct netif *netif_add(struct netif *netif, void *state, netif_init_fn init, netif_input_fn input);
+
+            The "state" parameter is a driver-specific structure 
+            that defines any other "state" information necessary 
+            for the driver to function. Some drivers may require 
+            the state variable to be set prior to calling netif_add,
+            but many require this argument to be NULL.Check your 
+            driver for more information.
+
+            The "init" parameter specifies a driver-initialization
+            function that should be called once the netif structure
+            has been prepared by netif_add. This parameter may
+            be NULL if the driver has already been initialized
+            in your code elsewhere.
+
+
+        
+        Step Two: Bring the interface up
+
+            An interface that is "up" is available to your application
+            for input and output, and "down" is the opposite state. 
+            Therefore, before you can use the interface, you must bring it up.
+
+            use netif_set_up(&netif) and netif_set_down(&netif) 

@@ -36,7 +36,7 @@
 #include "lwipopts_test.h"
 #else /* LWIP_OPTTEST_FILE */
 
-#define LWIP_IPV4                  1
+#define LWIP_IPV4                  0
 #define LWIP_IPV6                  0
 
 #define NO_SYS                     1

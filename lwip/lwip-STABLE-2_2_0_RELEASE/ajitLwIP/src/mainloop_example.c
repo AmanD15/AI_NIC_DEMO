@@ -1,3 +1,10 @@
+
+/* Define those to better describe your network interface. */
+#define IFNAME0 'e'
+#define IFNAME1 'n'
+#define ETHERNET_MTU 1500
+#define ETHARP_HWADDR_LEN 6
+
 void
 eth_mac_irq()
 {
@@ -14,54 +21,51 @@ eth_mac_irq()
     }
   }
 }
-static err_t 
-netif_output(struct netif *netif, struct pbuf *p)
-{
-  LINK_STATS_INC(link.xmit);
-  /* Update SNMP stats (only if you use SNMP) */
-  MIB2_STATS_NETIF_ADD(netif, ifoutoctets, p->tot_len);
-  int unicast = ((p->payload[0] & 0x01) == 0);
-  if (unicast) {
-    MIB2_STATS_NETIF_INC(netif, ifoutucastpkts);
-  } else {
-    MIB2_STATS_NETIF_INC(netif, ifoutnucastpkts);
-  }
-  lock_interrupts();
-  pbuf_copy_partial(p, mac_send_buffer, p->tot_len, 0);
-  /* Start MAC transmit here */
-  unlock_interrupts();
-  return ERR_OK;
-}
-static void 
-netif_status_callback(struct netif *netif)
-{
-  printf("netif status changed %s\n", ip4addr_ntoa(netif_ip4_addr(netif)));
-}
-static err_t 
+
+
+err_t 
 netif_init(struct netif *netif)
 {
-  netif->linkoutput = netif_output;
-  netif->output     = etharp_output;
-  netif->output_ip6 = ethip6_output;
-  netif->mtu        = ETHERNET_MTU;
-  netif->flags      = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET | NETIF_FLAG_IGMP | NETIF_FLAG_MLD6;
-  MIB2_INIT_NETIF(netif, snmp_ifType_ethernet_csmacd, 100000000);
-  SMEMCPY(netif->hwaddr, your_mac_address_goes_here, ETH_HWADDR_LEN);
-  netif->hwaddr_len = ETH_HWADDR_LEN;
+
+  /* set MAC hardware address */
+  netif->hwaddr_len = ETHARP_HWADDR_LEN;
+  netif->hwaddr[0] = 0x00;
+  netif->hwaddr[1] = 0x0a;
+  netif->hwaddr[2] = 0x35;
+  netif->hwaddr[3] = 0x05;
+  netif->hwaddr[4] = 0x76;
+  netif->hwaddr[5] = 0xa0;
+
+  /* maximum transfer unit */
+  netif->mtu = ETHERNET_MTU; // 1500
+
+  /* device capabilities */
+  /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
+  netif->flags =  NETIF_FLAG_ETHERNET ;
+
+
+  netif->state = NULL;
+  netif->name[0] = IFNAME0;
+  netif->name[1] = IFNAME1;
+
+  netif->output    = NULL; //etharp_output;
+  netif->linkoutput = low_level_output;
+
+  cortos_printf ("Configuration Done. NIC has started\n");
   return ERR_OK;
+
 }
 void 
 main(void)
 {
   struct netif netif;
   lwip_init();
-  netif_add(&netif, IP4_ADDR_ANY, IP4_ADDR_ANY, IP4_ADDR_ANY, NULL, netif_init, netif_input);
-  netif.name[0] = 'e';
-  netif.name[1] = '0';
-  netif_create_ip6_linklocal_address(&netif, 1);
-  netif.ip6_autoconfig_enabled = 1;
-  netif_set_status_callback(&netif, netif_status_callback);
-  netif_set_default(&netif);
+  netif_add(&netif, NULL, netif_init, netif_input);
+
+  //netif_create_ip6_linklocal_address(&netif, 1);
+  //netif.ip6_autoconfig_enabled = 1;
+  //netif_set_status_callback(&netif, netif_status_callback);
+  //netif_set_default(&netif);
   netif_set_up(&netif);
   
   /* Start DHCP and HTTPD */
