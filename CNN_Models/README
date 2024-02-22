@@ -1,0 +1,28 @@
+
+models/ 
+    - qresnet.py - Code for ResNet 18 architecture
+                    [Reference: https://github.com/pytorch/vision/blob/main/torchvision/models/resnet.py]
+    - quantize.py - Code for implementing forward and backward pass of 
+                    Quantized Convolution Neural Network and also 
+                    quantizing input data of convolution and weights
+                    to 8 bits
+
+utils/ - folder contains helper code for finding accuracy and logging 
+
+preprocess.py - code for preprocessing the input data
+
+resnet_8bit.ipynb - Jupyter Notebook containing code for training and testing ResNet-18 architecture
+                    with quantized 8-bit input and weights
+
+resnet_original.ipynb - Actual ResNet-18 architecture using float data type 
+
+References
+    - https://github.com/soon-yau/QNN/tree/master - Tutorial for understanding Quantized Neural Network
+
+TODO
+
+                                        Dataset     Training Accuracy     Testing Accuracy
+
+ResNet-18 with 8-bit quantization       CIFAR-10          88 %                  82%
+
+ResNet-18 with float data type          CIFAR-10          92 %                  86%
