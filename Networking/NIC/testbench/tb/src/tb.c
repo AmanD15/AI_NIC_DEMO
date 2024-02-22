@@ -25,9 +25,9 @@ int number_of_packets = 4;
 uint64_t  mem_array [16*4096];
 int 	  err_flag = 0;
 
-uint32_t  free_queue_base_address = 0;      // includes 16-bytes for buffer.
-uint32_t  rx_queue_base_address   = 256;    // includes 16-bytes for buffer.
-uint32_t  tx_queue_base_address   = 512;    // includes 16-bytes for buffer.
+uint32_t  free_queue_base_address = 0;      // includes 128-bytes for buffer.
+uint32_t  rx_queue_base_address   = 256;    // includes 128-bytes for buffer.
+uint32_t  tx_queue_base_address   = 512;    // includes 128-bytes for buffer.
 
 uint32_t  free_queue_bget_address = 128;  
 uint32_t  rx_queue_bget_address   = 256 + 128;    
@@ -133,6 +133,25 @@ void setNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 	setPhysicalAddressInNicRegPair (nic_id, base_index+4, queue_buffer_addr); 
 }
 
+void getNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
+		uint32_t queue_type,  uint64_t *queue_addr, 
+		uint64_t *queue_lock_addr, uint64_t *queue_buffer_addr)
+{
+
+	uint32_t base_index = ((queue_type == FREEQUEUE) ? P_FREE_QUEUE_REGISTER_BASE_INDEX :
+			((queue_type  == RXQUEUE) ?
+			 (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)) :
+			 (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)) ));
+	*queue_addr = getPhysicalAddressInNicRegPair (nic_id, base_index);
+	*queue_lock_addr = getPhysicalAddressInNicRegPair (nic_id, base_index+2);
+	*queue_buffer_addr = getPhysicalAddressInNicRegPair (nic_id, base_index+4);
+
+	fprintf(stderr,"Info:  getNicQueuePhysicalAddresses nic_id=%d, server=%d, queue_type=%d, queue_addr=0x%x, queue_lock_addr=0x%x, queue_buffer_addr=0x%x\n",
+				nic_id, server_id,
+				queue_type,  *queue_addr, 
+				*queue_lock_addr, *queue_buffer_addr);
+}
+
 
 
 void packetTxDaemon () {
@@ -145,7 +164,7 @@ void packetTxDaemon () {
 		while (length > 0)
 		{
 			uint16_t last = (length == 1);
-			uint16_t tx_val = (last << 8) | current_byte;
+			uint16_t tx_val = (last << 9) | (current_byte << 1);
 
 			write_uint16 ("tb_to_nic_mac_bridge", tx_val);
 
@@ -175,9 +194,11 @@ void packetRxDaemon () {
 		int rx_byte_index = 0;
 		while (length > 0)
 		{
+			// last byte unused
+			// 1     8   1
 			uint16_t rx_val = read_uint16 ("nic_mac_bridge_to_tb");
 
-			uint16_t last = (rx_val  >> 8) | 0x1;
+			uint16_t last = (rx_val  >> 9) | 0x1;
 
 			fprintf(stderr,"Info: packetRxDaemon: received 0x%x %s\n", rx_val, last ? "last" : "");
 			uint16_t expected_rx_last = (length == 1);
@@ -189,7 +210,7 @@ void packetRxDaemon () {
 				err_flag = 1;
 			}
 
-			uint8_t rx_byte = rx_val & 0xff;
+			uint8_t rx_byte = (rx_val >> 1) & 0xff;
 			if(rx_byte != expected_current_byte)
 			{
 				fprintf(stderr,"Error: mismatched byte: expected = 0x%x, received = 0x%x, packet %d (length=%d), rx_byte_index=%d.\n", 
@@ -297,7 +318,7 @@ void memoryDaemon ()
 
 //#ifdef DEBUGPRINT
 		fprintf(stderr,"Info: memoryDaemon: completed  rwbar=%d bmask=0x%x addr = 0x%lx, wdata = 0x%llx, rdata = 0x%llx\n",
-				rwbar, bmask, addr, wdata);
+				rwbar, bmask, addr, wdata, rdata);
 //#endif
 	}
 }
@@ -308,11 +329,14 @@ DEFINE_THREAD(memoryDaemon);
 void forwardDaemon () {
 	while(1)
 	{
-		uint32_t buf_addr;
+		uint64_t buf_addr;
 		while (popFromQueue (rx_queue_base_address, &buf_addr))
 		{
 			sleep (1000);
 		}
+		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
+		fprintf(stderr,"forwardDaemon: popped from rxqueue addr=0x%x\n", buf_addr);
+		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
 
 		sleep(1000);
 
@@ -320,6 +344,9 @@ void forwardDaemon () {
 		{
 			sleep (1000);
 		}
+		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
+		fprintf(stderr,"forwardDaemon: pushed to txqueue addr=0x%x\n", buf_addr);
+		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
 
 		sleep(1000);
 	}
@@ -421,20 +448,26 @@ int main(int argc, char* argv[])
 	for(i = 0; i < NBUFFERS; i++)
 	{
 		//
-		// Note: buf_address is shifted-right by 4 before storing in queue.
+		// Note: physical addresses of buffers are pushed into free queue.
 		// 
-		pushIntoQueue (free_queue_base_address, buffer_addresses[i] >> 4);
+		pushIntoQueue (free_queue_base_address, buffer_addresses[i]);
 	}
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	fprintf (stderr,"Info: pushed %d buffers to free queue\n", NBUFFERS);
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 
 	
-	// TODO: check this out next.
+	// confirm
+	uint64_t b,l,g;
 	// Set up the queues in the NIC
 	setNicQueuePhysicalAddresses (0,0, FREEQUEUE,  free_queue_base_address, free_queue_lock_address, free_queue_bget_address);
+	getNicQueuePhysicalAddresses (0,0, FREEQUEUE,  &b, &l, &g);
+
 	setNicQueuePhysicalAddresses (0,0, RXQUEUE,  rx_queue_base_address, rx_queue_lock_address, rx_queue_bget_address);
+	getNicQueuePhysicalAddresses (0,0, RXQUEUE,  &b, &l, &g);
+
 	setNicQueuePhysicalAddresses (0,0, TXQUEUE,  tx_queue_base_address, tx_queue_lock_address, tx_queue_bget_address);
+	getNicQueuePhysicalAddresses (0,0, TXQUEUE,  &b, &l, &g);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	fprintf (stderr,"Info: set physical addresses of queues into NIC \n", NBUFFERS);
@@ -442,17 +475,19 @@ int main(int argc, char* argv[])
 
 	
 	// start the forwarding engine
-	// PTHREAD_DECL(forwardDaemon);
-	// PTHREAD_CREATE(forwardDaemon);
+	PTHREAD_DECL(forwardDaemon);
+	PTHREAD_CREATE(forwardDaemon);
 	
+	// set the number of servers in the nic
+	setNumberOfServersInNic(0,1);
+
 	// Enable NIC, MAC
+	//   start the receive and transmit daemons!
 	writeNicControlRegister(0, 3);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	fprintf (stderr,"Info: SPIN!\n", NBUFFERS);
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-
-	while(1);
 
 	// start the RX, TX daemons.
 	PTHREAD_DECL(packetTxDaemon);

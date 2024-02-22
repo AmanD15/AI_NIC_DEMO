@@ -6,7 +6,7 @@ VHDL_VHPI_LIB=$(AHIR_RELEASE)/CtestBench/vhdl
 FUNCTIONLIB=$(AHIR_RELEASE)/functionLibrary/
 SRC=../src
 #SRC=../../../code/NicWithMacIf/Nic/src
-TESTBENCH=$(SRC)/../testbench
+TESTBENCH=../old_testbench
 all: HW SW 
 TOVC:aalink aa2vc 
 VC2VHDL: vc2vhdl  vhdlsim
@@ -23,8 +23,8 @@ SW: aalink aa2c aa2vc
 AA2VHDL: aa2vc vc2vhdl 
 
 # Aa to vC
-aalink: $(SRC)/*.aa $(TESTBENCH)/tester.aa 
-	AaLinkExtMem $(SRC)/parameters.aa $(SRC)/decls.aa $(SRC)/pipes.aa $(SRC)/signals.aa $(SRC)/control.aa $(SRC)/general_utils.aa $(SRC)/memory_utils.aa $(SRC)/queue_utils.aa $(SRC)/register_utils.aa $(SRC)/rx_from_mac.aa $(SRC)/receive_engine.aa $(SRC)/transmit_engine.aa $(TESTBENCH)/tester.aa| vcFormat > nic.linked.aa
+aalink: $(SRC)/*.aa 
+	AaLinkExtMem $(SRC)/parameters.aa $(SRC)/decls.aa $(SRC)/pipes.aa $(SRC)/signals.aa $(SRC)/control.aa $(SRC)/general_utils.aa $(SRC)/memory_utils.aa $(SRC)/queue_utils.aa $(SRC)/register_utils.aa $(SRC)/rx_from_mac.aa $(SRC)/receive_engine.aa $(SRC)/transmit_engine.aa | vcFormat > nic.linked.aa
 	AaOpt -B nic.linked.aa | vcFormat > nic.linked.opt.aa
 
 aa2c : nic.linked.opt.aa

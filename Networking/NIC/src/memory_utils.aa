@@ -1,3 +1,9 @@
+$pipeline $depth 3 $fullrate  $module [calculateAddress36] $in (addr_base offset: $uint<64>) $out (addr: $uint<36>) $is
+{
+	addr := (($slice addr_base 35 0) + ($slice offset 35 0))
+	$attribute input_buffering 0
+}
+
 $pipeline $depth 7 $fullrate $module [accessMemoryBase]
 	$in (request: $uint<110>) $out (response: $uint<65>) $is
 {
@@ -10,10 +16,11 @@ $pipeline $depth 7 $fullrate $module [accessMemoryBase]
 // The NIC is a master here.
 //
 $pipeline $depth 15 $fullrate $module [accessMemoryDword]
-	$in (lock rwbar: $uint<1> bmask: $uint<8> addr: $uint<36> wdata : $uint<64>)
+	$in (lock rwbar: $uint<1> bmask: $uint<8> base_addr: $uint<64> offset: $uint<64> wdata : $uint<64>)
 	$out (rdata : $uint<64>)
 $is
 {
+	addr := ($call calculateAddress36 (base_addr offset))
 	$volatile request :=  ($concat lock rwbar bmask addr wdata)
 	$call accessMemoryBase (request) (response)
 
@@ -22,9 +29,11 @@ $is
 }
 
 $pipeline $depth 15 $fullrate $module [accessMemoryByte] 
-	$in (lock rwbar: $uint<1> byte_addr : $uint<36> wbyte: $uint<8>)
+	$in (lock rwbar: $uint<1> byte_addr_base : $uint<64> offset: $uint<64> wbyte: $uint<8>)
 	$out (rbyte: $uint<8>) $is
 {
+	byte_addr := ($call calculateAddress36 (byte_addr_base offset))
+
 	$volatile bb := ($slice byte_addr 2 0)
 	$volatile addr_dw := ($concat ($slice byte_addr 35 3) $zero<3>)
 	$volatile bmask :=  (_b10000000 >> ($bitcast ($uint<8>) byte_addr))
@@ -50,9 +59,11 @@ $pipeline $depth 15 $fullrate $module [accessMemoryByte]
 }
 
 $pipeline $depth 15 $fullrate $module [accessMemoryWord] 
-	$in (lock rwbar: $uint<1> word_addr : $uint<36> wword: $uint<32>)
+	$in (lock rwbar: $uint<1> word_addr_base : $uint<64> offset: $uint<64>  wword: $uint<32>)
 	$out (rword: $uint<32>) $is
 {
+	word_addr := ($call calculateAddress36 (word_addr_base offset))
+
 	$volatile lw := (word_addr [] 1)
 	$volatile bmask := ($mux lw ($bitcast ($uint<8>) _h0F) _hF0)
 	$volatile wdata := ($mux lw ($concat $zero<32> wword) ($concat wword $zero<32>))

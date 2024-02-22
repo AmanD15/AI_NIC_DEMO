@@ -16,3 +16,6 @@ cd $CWD
 cd tb
 ./compile.sh
 cd $CWD
+cd ghdl
+. ghdl.do
+cd $CWD
