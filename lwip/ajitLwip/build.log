@@ -1,0 +1,1754 @@
+CoRTOS: Started.
+CoRTOS: Config not found: 'Hardware.Devices.[3].NamedRegisters' Default value {}. 
+CoRTOS: Config not found: 'Hardware.Devices.[4].NamedRegisters' Default value {}. 
+CoRTOS: Config not found: 'Software.BuildAndExecute.EnableSerialInterrupt' Default value False. 
+CoRTOS: Config not found: 'Software.ProgramThreads.[0].CortosLoopCalls' Default value []. 
+CoRTOS: Config not found: 'Software.Traps.Traps' Default value []. 
+CoRTOS: Config not found: 'Software.StartupFuncName' Default value . 
+Region: TextSection, Size: 7MB + 1020KB, Paged: 8MB, Extra: 4KB, First: 0x40000000, Last: 0x407fffff.
+Region: DataSection, Size: 29MB + 1020KB, Paged: 30MB, Extra: 4KB, First: 0x40800000, Last: 0x425fffff.
+Region: BssSection, Size: 14MB + 1020KB, Paged: 15MB, Extra: 4KB, First: 0x42600000, Last: 0x434fffff.
+Region: CacheableLocks, Size: 256B, Paged: 4KB, Extra: 3KB + 768B, First: 0x43500000, Last: 0x43500fff.
+Region: NonCacheableLocks, Size: 256B, Paged: 4KB, Extra: 3KB + 768B, First: 0x43501000, Last: 0x43501fff.
+Region: MemoryAllocArea, Size: 100KB, Paged: 100KB, Extra: 0B, First: 0x43502000, Last: 0x4351afff.
+Region: StackGuard, Size: 4KB, Paged: 4KB, Extra: 0B, First: 0x4351b000, Last: 0x4351bfff.
+Region: ProgramStack_0, Size: 64KB, Paged: 64KB, Extra: 0B, First: 0x4351c000, Last: 0x4352bfff.
+Region: StackGuard_0, Size: 4KB, Paged: 4KB, Extra: 0B, First: 0x4352c000, Last: 0x4352cfff.
+Region: NCRAM, Size: 32MB, Paged: 32MB, Extra: 0B, First: 0x50000000, Last: 0x51ffffff.
+Region: MMIO, Size: 16MB, Paged: 16MB, Extra: 0B, First: 0xff000000, Last: 0xffffffff.
+CoRTOS: Initialized user configuration details.
+CoRTOS: build process started...
+
+CoRTOS: START: cortos_build.
+CoRTOS: command: chmod +x build.sh
+CoRTOS: OK: command return code 0
+CoRTOS: command: chmod +x run_cmodel.sh
+CoRTOS: OK: command return code 0
+CoRTOS: command: chmod +x clean.sh
+CoRTOS: OK: command return code 0
+CoRTOS: CWD: /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/cortos_build
+CoRTOS: command: bash build.sh
+Info: optimization level = 2
+Info: vmap_file  = cortos_src/vmap.txt.
+Info: optimization level = 2
+Info: added include-directory = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include.
+Info: optimization level = 2
+Info: added include-directory = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include.
+Info: optimization level = 2
+Info: added include-directory = ..
+Info: optimization level = 2
+Info: added include-directory = ...
+Info: optimization level = 2
+Info: added include-directory = cortos_src.
+Info: optimization level = 2
+Info: added include-directory = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include.
+Info: optimization level = 2
+Info: added include-directory = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include.
+Info: optimization level = 2
+Info: added assembly-directory = ...
+Info: optimization level = 2
+Info: added assembly-directory = cortos_src.
+Info: optimization level = 2
+Info: added assembly-file = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/asm/clear_stack_pointers.s.
+Info: optimization level = 2
+Info: added assembly-file = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/asm/generic_isr_mt.s.
+Info: optimization level = 2
+Info: added assembly-file = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/asm/generic_sw_trap_mt.s.
+Info: optimization level = 2
+Info: added assembly-file = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/asm/generic_sys_calls.s.
+Info: optimization level = 2
+Info: added src-directory = ...
+Info: optimization level = 2
+Info: added src-directory = cortos_src.
+Info: optimization level = 2
+Info: added src-directory = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/src.
+Info: optimization level = 2
+Info: application name  = main.
+Info: optimization level = 2
+Info: linker_script_file  = cortos_src/LinkerScript.txt.
+Info: optimization level = 2
+Info: added define_string = AJIT.
+Info: optimization level = 2
+Info: uclibc_flag enabled.
+Info: optimization level = 2
+Info: added define_string = USE_CORTOS.
+Info: optimization level = 2
+Info: added define_string = USE_VMAP.
+Info: optimization level = 2
+Info: added define_string = CLK_FREQUENCY=80000000.
+Info: optimization level = 2
+Info: added include-directory = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include.
+Info: optimization level = 2
+Info: added include-directory = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include.
+Info: optimization level = 2
+Info: added src-directory = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core.
+Info: optimization level = 2
+Info: added src-directory = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/ipv4.
+Info: optimization level = 2
+Info: added src-file = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/netif/ethernet.c.
+Info: optimization level = 2
+Info: added src-directory = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/src.
+Info: optimization level = 2
+Info: added src-file = /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/main.c.
+Info: optimization level = 2
+Info: Executing:
+	rm -rf .//sparc-assembly
+Info: Executing:
+	mkdir .//sparc-assembly
+Info: Executing:
+	rm -rf .//sparc-obj
+Info: Executing:
+	mkdir .//sparc-obj
+Info: Executing:
+	genVmapAsm cortos_src/vmap.txt .//__genvmap_setup_page_tables.s
+Info: context=0x0, vaddr=0x40000000, paddr=0x40000000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=0, context=0, level=2, index=0x0, is_ptd=0, ppnr=0x40000000, cacheable=0x1, acc=0x2
+Info: new pdte: id=1, context=0, level=0, index=0x0, is_ptd=1, ppnr=0x40000000, cacheable=0x1, acc=0x2
+Info: new pdte: id=2, context=0, level=1, index=0x40, is_ptd=1, ppnr=0x40000000, cacheable=0x1, acc=0x2
+Info: added child:  2 (level=1)-> 1 (level=0)
+Info: added child:  0 (level=2)-> 2 (level=1)
+Info: context=0x0, vaddr=0x40040000, paddr=0x40040000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=3, context=0, level=2, index=0x1, is_ptd=0, ppnr=0x40040000, cacheable=0x1, acc=0x2
+Info: added sibling: 3 (level 2) to 0 (level 2) 
+Info: context=0x0, vaddr=0x40080000, paddr=0x40080000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=4, context=0, level=2, index=0x2, is_ptd=0, ppnr=0x40080000, cacheable=0x1, acc=0x2
+Info: added sibling: 4 (level 2) to 3 (level 2) 
+Info: context=0x0, vaddr=0x400c0000, paddr=0x400c0000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=5, context=0, level=2, index=0x3, is_ptd=0, ppnr=0x400c0000, cacheable=0x1, acc=0x2
+Info: added sibling: 5 (level 2) to 4 (level 2) 
+Info: context=0x0, vaddr=0x40100000, paddr=0x40100000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=6, context=0, level=2, index=0x4, is_ptd=0, ppnr=0x40100000, cacheable=0x1, acc=0x2
+Info: added sibling: 6 (level 2) to 5 (level 2) 
+Info: context=0x0, vaddr=0x40140000, paddr=0x40140000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=7, context=0, level=2, index=0x5, is_ptd=0, ppnr=0x40140000, cacheable=0x1, acc=0x2
+Info: added sibling: 7 (level 2) to 6 (level 2) 
+Info: context=0x0, vaddr=0x40180000, paddr=0x40180000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=8, context=0, level=2, index=0x6, is_ptd=0, ppnr=0x40180000, cacheable=0x1, acc=0x2
+Info: added sibling: 8 (level 2) to 7 (level 2) 
+Info: context=0x0, vaddr=0x401c0000, paddr=0x401c0000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=9, context=0, level=2, index=0x7, is_ptd=0, ppnr=0x401c0000, cacheable=0x1, acc=0x2
+Info: added sibling: 9 (level 2) to 8 (level 2) 
+Info: context=0x0, vaddr=0x40200000, paddr=0x40200000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=10, context=0, level=2, index=0x8, is_ptd=0, ppnr=0x40200000, cacheable=0x1, acc=0x2
+Info: added sibling: 10 (level 2) to 9 (level 2) 
+Info: context=0x0, vaddr=0x40240000, paddr=0x40240000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=11, context=0, level=2, index=0x9, is_ptd=0, ppnr=0x40240000, cacheable=0x1, acc=0x2
+Info: added sibling: 11 (level 2) to 10 (level 2) 
+Info: context=0x0, vaddr=0x40280000, paddr=0x40280000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=12, context=0, level=2, index=0xa, is_ptd=0, ppnr=0x40280000, cacheable=0x1, acc=0x2
+Info: added sibling: 12 (level 2) to 11 (level 2) 
+Info: context=0x0, vaddr=0x402c0000, paddr=0x402c0000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=13, context=0, level=2, index=0xb, is_ptd=0, ppnr=0x402c0000, cacheable=0x1, acc=0x2
+Info: added sibling: 13 (level 2) to 12 (level 2) 
+Info: context=0x0, vaddr=0x40300000, paddr=0x40300000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=14, context=0, level=2, index=0xc, is_ptd=0, ppnr=0x40300000, cacheable=0x1, acc=0x2
+Info: added sibling: 14 (level 2) to 13 (level 2) 
+Info: context=0x0, vaddr=0x40340000, paddr=0x40340000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=15, context=0, level=2, index=0xd, is_ptd=0, ppnr=0x40340000, cacheable=0x1, acc=0x2
+Info: added sibling: 15 (level 2) to 14 (level 2) 
+Info: context=0x0, vaddr=0x40380000, paddr=0x40380000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=16, context=0, level=2, index=0xe, is_ptd=0, ppnr=0x40380000, cacheable=0x1, acc=0x2
+Info: added sibling: 16 (level 2) to 15 (level 2) 
+Info: context=0x0, vaddr=0x403c0000, paddr=0x403c0000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=17, context=0, level=2, index=0xf, is_ptd=0, ppnr=0x403c0000, cacheable=0x1, acc=0x2
+Info: added sibling: 17 (level 2) to 16 (level 2) 
+Info: context=0x0, vaddr=0x40400000, paddr=0x40400000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=18, context=0, level=2, index=0x10, is_ptd=0, ppnr=0x40400000, cacheable=0x1, acc=0x2
+Info: added sibling: 18 (level 2) to 17 (level 2) 
+Info: context=0x0, vaddr=0x40440000, paddr=0x40440000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=19, context=0, level=2, index=0x11, is_ptd=0, ppnr=0x40440000, cacheable=0x1, acc=0x2
+Info: added sibling: 19 (level 2) to 18 (level 2) 
+Info: context=0x0, vaddr=0x40480000, paddr=0x40480000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=20, context=0, level=2, index=0x12, is_ptd=0, ppnr=0x40480000, cacheable=0x1, acc=0x2
+Info: added sibling: 20 (level 2) to 19 (level 2) 
+Info: context=0x0, vaddr=0x404c0000, paddr=0x404c0000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=21, context=0, level=2, index=0x13, is_ptd=0, ppnr=0x404c0000, cacheable=0x1, acc=0x2
+Info: added sibling: 21 (level 2) to 20 (level 2) 
+Info: context=0x0, vaddr=0x40500000, paddr=0x40500000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=22, context=0, level=2, index=0x14, is_ptd=0, ppnr=0x40500000, cacheable=0x1, acc=0x2
+Info: added sibling: 22 (level 2) to 21 (level 2) 
+Info: context=0x0, vaddr=0x40540000, paddr=0x40540000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=23, context=0, level=2, index=0x15, is_ptd=0, ppnr=0x40540000, cacheable=0x1, acc=0x2
+Info: added sibling: 23 (level 2) to 22 (level 2) 
+Info: context=0x0, vaddr=0x40580000, paddr=0x40580000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=24, context=0, level=2, index=0x16, is_ptd=0, ppnr=0x40580000, cacheable=0x1, acc=0x2
+Info: added sibling: 24 (level 2) to 23 (level 2) 
+Info: context=0x0, vaddr=0x405c0000, paddr=0x405c0000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=25, context=0, level=2, index=0x17, is_ptd=0, ppnr=0x405c0000, cacheable=0x1, acc=0x2
+Info: added sibling: 25 (level 2) to 24 (level 2) 
+Info: context=0x0, vaddr=0x40600000, paddr=0x40600000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=26, context=0, level=2, index=0x18, is_ptd=0, ppnr=0x40600000, cacheable=0x1, acc=0x2
+Info: added sibling: 26 (level 2) to 25 (level 2) 
+Info: context=0x0, vaddr=0x40640000, paddr=0x40640000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=27, context=0, level=2, index=0x19, is_ptd=0, ppnr=0x40640000, cacheable=0x1, acc=0x2
+Info: added sibling: 27 (level 2) to 26 (level 2) 
+Info: context=0x0, vaddr=0x40680000, paddr=0x40680000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=28, context=0, level=2, index=0x1a, is_ptd=0, ppnr=0x40680000, cacheable=0x1, acc=0x2
+Info: added sibling: 28 (level 2) to 27 (level 2) 
+Info: context=0x0, vaddr=0x406c0000, paddr=0x406c0000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=29, context=0, level=2, index=0x1b, is_ptd=0, ppnr=0x406c0000, cacheable=0x1, acc=0x2
+Info: added sibling: 29 (level 2) to 28 (level 2) 
+Info: context=0x0, vaddr=0x40700000, paddr=0x40700000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=30, context=0, level=2, index=0x1c, is_ptd=0, ppnr=0x40700000, cacheable=0x1, acc=0x2
+Info: added sibling: 30 (level 2) to 29 (level 2) 
+Info: context=0x0, vaddr=0x40740000, paddr=0x40740000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=31, context=0, level=2, index=0x1d, is_ptd=0, ppnr=0x40740000, cacheable=0x1, acc=0x2
+Info: added sibling: 31 (level 2) to 30 (level 2) 
+Info: context=0x0, vaddr=0x40780000, paddr=0x40780000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=32, context=0, level=2, index=0x1e, is_ptd=0, ppnr=0x40780000, cacheable=0x1, acc=0x2
+Info: added sibling: 32 (level 2) to 31 (level 2) 
+Info: context=0x0, vaddr=0x407c0000, paddr=0x407c0000, level=0x2, cacheable=0x1, acc=0x2
+Info: new pdte: id=33, context=0, level=2, index=0x1f, is_ptd=0, ppnr=0x407c0000, cacheable=0x1, acc=0x2
+Info: added sibling: 33 (level 2) to 32 (level 2) 
+Info: context=0x0, vaddr=0x40800000, paddr=0x40800000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=34, context=0, level=2, index=0x20, is_ptd=0, ppnr=0x40800000, cacheable=0x1, acc=0x3
+Info: added sibling: 34 (level 2) to 33 (level 2) 
+Info: context=0x0, vaddr=0x40840000, paddr=0x40840000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=35, context=0, level=2, index=0x21, is_ptd=0, ppnr=0x40840000, cacheable=0x1, acc=0x3
+Info: added sibling: 35 (level 2) to 34 (level 2) 
+Info: context=0x0, vaddr=0x40880000, paddr=0x40880000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=36, context=0, level=2, index=0x22, is_ptd=0, ppnr=0x40880000, cacheable=0x1, acc=0x3
+Info: added sibling: 36 (level 2) to 35 (level 2) 
+Info: context=0x0, vaddr=0x408c0000, paddr=0x408c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=37, context=0, level=2, index=0x23, is_ptd=0, ppnr=0x408c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 37 (level 2) to 36 (level 2) 
+Info: context=0x0, vaddr=0x40900000, paddr=0x40900000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=38, context=0, level=2, index=0x24, is_ptd=0, ppnr=0x40900000, cacheable=0x1, acc=0x3
+Info: added sibling: 38 (level 2) to 37 (level 2) 
+Info: context=0x0, vaddr=0x40940000, paddr=0x40940000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=39, context=0, level=2, index=0x25, is_ptd=0, ppnr=0x40940000, cacheable=0x1, acc=0x3
+Info: added sibling: 39 (level 2) to 38 (level 2) 
+Info: context=0x0, vaddr=0x40980000, paddr=0x40980000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=40, context=0, level=2, index=0x26, is_ptd=0, ppnr=0x40980000, cacheable=0x1, acc=0x3
+Info: added sibling: 40 (level 2) to 39 (level 2) 
+Info: context=0x0, vaddr=0x409c0000, paddr=0x409c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=41, context=0, level=2, index=0x27, is_ptd=0, ppnr=0x409c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 41 (level 2) to 40 (level 2) 
+Info: context=0x0, vaddr=0x40a00000, paddr=0x40a00000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=42, context=0, level=2, index=0x28, is_ptd=0, ppnr=0x40a00000, cacheable=0x1, acc=0x3
+Info: added sibling: 42 (level 2) to 41 (level 2) 
+Info: context=0x0, vaddr=0x40a40000, paddr=0x40a40000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=43, context=0, level=2, index=0x29, is_ptd=0, ppnr=0x40a40000, cacheable=0x1, acc=0x3
+Info: added sibling: 43 (level 2) to 42 (level 2) 
+Info: context=0x0, vaddr=0x40a80000, paddr=0x40a80000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=44, context=0, level=2, index=0x2a, is_ptd=0, ppnr=0x40a80000, cacheable=0x1, acc=0x3
+Info: added sibling: 44 (level 2) to 43 (level 2) 
+Info: context=0x0, vaddr=0x40ac0000, paddr=0x40ac0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=45, context=0, level=2, index=0x2b, is_ptd=0, ppnr=0x40ac0000, cacheable=0x1, acc=0x3
+Info: added sibling: 45 (level 2) to 44 (level 2) 
+Info: context=0x0, vaddr=0x40b00000, paddr=0x40b00000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=46, context=0, level=2, index=0x2c, is_ptd=0, ppnr=0x40b00000, cacheable=0x1, acc=0x3
+Info: added sibling: 46 (level 2) to 45 (level 2) 
+Info: context=0x0, vaddr=0x40b40000, paddr=0x40b40000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=47, context=0, level=2, index=0x2d, is_ptd=0, ppnr=0x40b40000, cacheable=0x1, acc=0x3
+Info: added sibling: 47 (level 2) to 46 (level 2) 
+Info: context=0x0, vaddr=0x40b80000, paddr=0x40b80000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=48, context=0, level=2, index=0x2e, is_ptd=0, ppnr=0x40b80000, cacheable=0x1, acc=0x3
+Info: added sibling: 48 (level 2) to 47 (level 2) 
+Info: context=0x0, vaddr=0x40bc0000, paddr=0x40bc0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=49, context=0, level=2, index=0x2f, is_ptd=0, ppnr=0x40bc0000, cacheable=0x1, acc=0x3
+Info: added sibling: 49 (level 2) to 48 (level 2) 
+Info: context=0x0, vaddr=0x40c00000, paddr=0x40c00000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=50, context=0, level=2, index=0x30, is_ptd=0, ppnr=0x40c00000, cacheable=0x1, acc=0x3
+Info: added sibling: 50 (level 2) to 49 (level 2) 
+Info: context=0x0, vaddr=0x40c40000, paddr=0x40c40000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=51, context=0, level=2, index=0x31, is_ptd=0, ppnr=0x40c40000, cacheable=0x1, acc=0x3
+Info: added sibling: 51 (level 2) to 50 (level 2) 
+Info: context=0x0, vaddr=0x40c80000, paddr=0x40c80000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=52, context=0, level=2, index=0x32, is_ptd=0, ppnr=0x40c80000, cacheable=0x1, acc=0x3
+Info: added sibling: 52 (level 2) to 51 (level 2) 
+Info: context=0x0, vaddr=0x40cc0000, paddr=0x40cc0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=53, context=0, level=2, index=0x33, is_ptd=0, ppnr=0x40cc0000, cacheable=0x1, acc=0x3
+Info: added sibling: 53 (level 2) to 52 (level 2) 
+Info: context=0x0, vaddr=0x40d00000, paddr=0x40d00000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=54, context=0, level=2, index=0x34, is_ptd=0, ppnr=0x40d00000, cacheable=0x1, acc=0x3
+Info: added sibling: 54 (level 2) to 53 (level 2) 
+Info: context=0x0, vaddr=0x40d40000, paddr=0x40d40000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=55, context=0, level=2, index=0x35, is_ptd=0, ppnr=0x40d40000, cacheable=0x1, acc=0x3
+Info: added sibling: 55 (level 2) to 54 (level 2) 
+Info: context=0x0, vaddr=0x40d80000, paddr=0x40d80000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=56, context=0, level=2, index=0x36, is_ptd=0, ppnr=0x40d80000, cacheable=0x1, acc=0x3
+Info: added sibling: 56 (level 2) to 55 (level 2) 
+Info: context=0x0, vaddr=0x40dc0000, paddr=0x40dc0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=57, context=0, level=2, index=0x37, is_ptd=0, ppnr=0x40dc0000, cacheable=0x1, acc=0x3
+Info: added sibling: 57 (level 2) to 56 (level 2) 
+Info: context=0x0, vaddr=0x40e00000, paddr=0x40e00000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=58, context=0, level=2, index=0x38, is_ptd=0, ppnr=0x40e00000, cacheable=0x1, acc=0x3
+Info: added sibling: 58 (level 2) to 57 (level 2) 
+Info: context=0x0, vaddr=0x40e40000, paddr=0x40e40000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=59, context=0, level=2, index=0x39, is_ptd=0, ppnr=0x40e40000, cacheable=0x1, acc=0x3
+Info: added sibling: 59 (level 2) to 58 (level 2) 
+Info: context=0x0, vaddr=0x40e80000, paddr=0x40e80000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=60, context=0, level=2, index=0x3a, is_ptd=0, ppnr=0x40e80000, cacheable=0x1, acc=0x3
+Info: added sibling: 60 (level 2) to 59 (level 2) 
+Info: context=0x0, vaddr=0x40ec0000, paddr=0x40ec0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=61, context=0, level=2, index=0x3b, is_ptd=0, ppnr=0x40ec0000, cacheable=0x1, acc=0x3
+Info: added sibling: 61 (level 2) to 60 (level 2) 
+Info: context=0x0, vaddr=0x40f00000, paddr=0x40f00000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=62, context=0, level=2, index=0x3c, is_ptd=0, ppnr=0x40f00000, cacheable=0x1, acc=0x3
+Info: added sibling: 62 (level 2) to 61 (level 2) 
+Info: context=0x0, vaddr=0x40f40000, paddr=0x40f40000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=63, context=0, level=2, index=0x3d, is_ptd=0, ppnr=0x40f40000, cacheable=0x1, acc=0x3
+Info: added sibling: 63 (level 2) to 62 (level 2) 
+Info: context=0x0, vaddr=0x40f80000, paddr=0x40f80000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=64, context=0, level=2, index=0x3e, is_ptd=0, ppnr=0x40f80000, cacheable=0x1, acc=0x3
+Info: added sibling: 64 (level 2) to 63 (level 2) 
+Info: context=0x0, vaddr=0x40fc0000, paddr=0x40fc0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=65, context=0, level=2, index=0x3f, is_ptd=0, ppnr=0x40fc0000, cacheable=0x1, acc=0x3
+Info: added sibling: 65 (level 2) to 64 (level 2) 
+Info: context=0x0, vaddr=0x41000000, paddr=0x41000000, level=0x1, cacheable=0x1, acc=0x3
+Info: new pdte: id=66, context=0, level=1, index=0x41, is_ptd=0, ppnr=0x41000000, cacheable=0x1, acc=0x3
+Info: added sibling: 66 (level 1) to 2 (level 1) 
+Info: context=0x0, vaddr=0x42000000, paddr=0x42000000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=67, context=0, level=2, index=0x0, is_ptd=0, ppnr=0x42000000, cacheable=0x1, acc=0x3
+Info: new pdte: id=68, context=0, level=1, index=0x42, is_ptd=1, ppnr=0x42000000, cacheable=0x1, acc=0x3
+Info: added sibling: 68 (level 1) to 66 (level 1) 
+Info: added child:  67 (level=2)-> 68 (level=1)
+Info: context=0x0, vaddr=0x42040000, paddr=0x42040000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=69, context=0, level=2, index=0x1, is_ptd=0, ppnr=0x42040000, cacheable=0x1, acc=0x3
+Info: added sibling: 69 (level 2) to 67 (level 2) 
+Info: context=0x0, vaddr=0x42080000, paddr=0x42080000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=70, context=0, level=2, index=0x2, is_ptd=0, ppnr=0x42080000, cacheable=0x1, acc=0x3
+Info: added sibling: 70 (level 2) to 69 (level 2) 
+Info: context=0x0, vaddr=0x420c0000, paddr=0x420c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=71, context=0, level=2, index=0x3, is_ptd=0, ppnr=0x420c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 71 (level 2) to 70 (level 2) 
+Info: context=0x0, vaddr=0x42100000, paddr=0x42100000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=72, context=0, level=2, index=0x4, is_ptd=0, ppnr=0x42100000, cacheable=0x1, acc=0x3
+Info: added sibling: 72 (level 2) to 71 (level 2) 
+Info: context=0x0, vaddr=0x42140000, paddr=0x42140000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=73, context=0, level=2, index=0x5, is_ptd=0, ppnr=0x42140000, cacheable=0x1, acc=0x3
+Info: added sibling: 73 (level 2) to 72 (level 2) 
+Info: context=0x0, vaddr=0x42180000, paddr=0x42180000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=74, context=0, level=2, index=0x6, is_ptd=0, ppnr=0x42180000, cacheable=0x1, acc=0x3
+Info: added sibling: 74 (level 2) to 73 (level 2) 
+Info: context=0x0, vaddr=0x421c0000, paddr=0x421c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=75, context=0, level=2, index=0x7, is_ptd=0, ppnr=0x421c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 75 (level 2) to 74 (level 2) 
+Info: context=0x0, vaddr=0x42200000, paddr=0x42200000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=76, context=0, level=2, index=0x8, is_ptd=0, ppnr=0x42200000, cacheable=0x1, acc=0x3
+Info: added sibling: 76 (level 2) to 75 (level 2) 
+Info: context=0x0, vaddr=0x42240000, paddr=0x42240000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=77, context=0, level=2, index=0x9, is_ptd=0, ppnr=0x42240000, cacheable=0x1, acc=0x3
+Info: added sibling: 77 (level 2) to 76 (level 2) 
+Info: context=0x0, vaddr=0x42280000, paddr=0x42280000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=78, context=0, level=2, index=0xa, is_ptd=0, ppnr=0x42280000, cacheable=0x1, acc=0x3
+Info: added sibling: 78 (level 2) to 77 (level 2) 
+Info: context=0x0, vaddr=0x422c0000, paddr=0x422c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=79, context=0, level=2, index=0xb, is_ptd=0, ppnr=0x422c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 79 (level 2) to 78 (level 2) 
+Info: context=0x0, vaddr=0x42300000, paddr=0x42300000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=80, context=0, level=2, index=0xc, is_ptd=0, ppnr=0x42300000, cacheable=0x1, acc=0x3
+Info: added sibling: 80 (level 2) to 79 (level 2) 
+Info: context=0x0, vaddr=0x42340000, paddr=0x42340000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=81, context=0, level=2, index=0xd, is_ptd=0, ppnr=0x42340000, cacheable=0x1, acc=0x3
+Info: added sibling: 81 (level 2) to 80 (level 2) 
+Info: context=0x0, vaddr=0x42380000, paddr=0x42380000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=82, context=0, level=2, index=0xe, is_ptd=0, ppnr=0x42380000, cacheable=0x1, acc=0x3
+Info: added sibling: 82 (level 2) to 81 (level 2) 
+Info: context=0x0, vaddr=0x423c0000, paddr=0x423c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=83, context=0, level=2, index=0xf, is_ptd=0, ppnr=0x423c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 83 (level 2) to 82 (level 2) 
+Info: context=0x0, vaddr=0x42400000, paddr=0x42400000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=84, context=0, level=2, index=0x10, is_ptd=0, ppnr=0x42400000, cacheable=0x1, acc=0x3
+Info: added sibling: 84 (level 2) to 83 (level 2) 
+Info: context=0x0, vaddr=0x42440000, paddr=0x42440000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=85, context=0, level=2, index=0x11, is_ptd=0, ppnr=0x42440000, cacheable=0x1, acc=0x3
+Info: added sibling: 85 (level 2) to 84 (level 2) 
+Info: context=0x0, vaddr=0x42480000, paddr=0x42480000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=86, context=0, level=2, index=0x12, is_ptd=0, ppnr=0x42480000, cacheable=0x1, acc=0x3
+Info: added sibling: 86 (level 2) to 85 (level 2) 
+Info: context=0x0, vaddr=0x424c0000, paddr=0x424c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=87, context=0, level=2, index=0x13, is_ptd=0, ppnr=0x424c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 87 (level 2) to 86 (level 2) 
+Info: context=0x0, vaddr=0x42500000, paddr=0x42500000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=88, context=0, level=2, index=0x14, is_ptd=0, ppnr=0x42500000, cacheable=0x1, acc=0x3
+Info: added sibling: 88 (level 2) to 87 (level 2) 
+Info: context=0x0, vaddr=0x42540000, paddr=0x42540000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=89, context=0, level=2, index=0x15, is_ptd=0, ppnr=0x42540000, cacheable=0x1, acc=0x3
+Info: added sibling: 89 (level 2) to 88 (level 2) 
+Info: context=0x0, vaddr=0x42580000, paddr=0x42580000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=90, context=0, level=2, index=0x16, is_ptd=0, ppnr=0x42580000, cacheable=0x1, acc=0x3
+Info: added sibling: 90 (level 2) to 89 (level 2) 
+Info: context=0x0, vaddr=0x425c0000, paddr=0x425c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=91, context=0, level=2, index=0x17, is_ptd=0, ppnr=0x425c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 91 (level 2) to 90 (level 2) 
+Info: context=0x0, vaddr=0x42600000, paddr=0x42600000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=92, context=0, level=2, index=0x18, is_ptd=0, ppnr=0x42600000, cacheable=0x1, acc=0x3
+Info: added sibling: 92 (level 2) to 91 (level 2) 
+Info: context=0x0, vaddr=0x42640000, paddr=0x42640000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=93, context=0, level=2, index=0x19, is_ptd=0, ppnr=0x42640000, cacheable=0x1, acc=0x3
+Info: added sibling: 93 (level 2) to 92 (level 2) 
+Info: context=0x0, vaddr=0x42680000, paddr=0x42680000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=94, context=0, level=2, index=0x1a, is_ptd=0, ppnr=0x42680000, cacheable=0x1, acc=0x3
+Info: added sibling: 94 (level 2) to 93 (level 2) 
+Info: context=0x0, vaddr=0x426c0000, paddr=0x426c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=95, context=0, level=2, index=0x1b, is_ptd=0, ppnr=0x426c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 95 (level 2) to 94 (level 2) 
+Info: context=0x0, vaddr=0x42700000, paddr=0x42700000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=96, context=0, level=2, index=0x1c, is_ptd=0, ppnr=0x42700000, cacheable=0x1, acc=0x3
+Info: added sibling: 96 (level 2) to 95 (level 2) 
+Info: context=0x0, vaddr=0x42740000, paddr=0x42740000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=97, context=0, level=2, index=0x1d, is_ptd=0, ppnr=0x42740000, cacheable=0x1, acc=0x3
+Info: added sibling: 97 (level 2) to 96 (level 2) 
+Info: context=0x0, vaddr=0x42780000, paddr=0x42780000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=98, context=0, level=2, index=0x1e, is_ptd=0, ppnr=0x42780000, cacheable=0x1, acc=0x3
+Info: added sibling: 98 (level 2) to 97 (level 2) 
+Info: context=0x0, vaddr=0x427c0000, paddr=0x427c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=99, context=0, level=2, index=0x1f, is_ptd=0, ppnr=0x427c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 99 (level 2) to 98 (level 2) 
+Info: context=0x0, vaddr=0x42800000, paddr=0x42800000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=100, context=0, level=2, index=0x20, is_ptd=0, ppnr=0x42800000, cacheable=0x1, acc=0x3
+Info: added sibling: 100 (level 2) to 99 (level 2) 
+Info: context=0x0, vaddr=0x42840000, paddr=0x42840000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=101, context=0, level=2, index=0x21, is_ptd=0, ppnr=0x42840000, cacheable=0x1, acc=0x3
+Info: added sibling: 101 (level 2) to 100 (level 2) 
+Info: context=0x0, vaddr=0x42880000, paddr=0x42880000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=102, context=0, level=2, index=0x22, is_ptd=0, ppnr=0x42880000, cacheable=0x1, acc=0x3
+Info: added sibling: 102 (level 2) to 101 (level 2) 
+Info: context=0x0, vaddr=0x428c0000, paddr=0x428c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=103, context=0, level=2, index=0x23, is_ptd=0, ppnr=0x428c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 103 (level 2) to 102 (level 2) 
+Info: context=0x0, vaddr=0x42900000, paddr=0x42900000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=104, context=0, level=2, index=0x24, is_ptd=0, ppnr=0x42900000, cacheable=0x1, acc=0x3
+Info: added sibling: 104 (level 2) to 103 (level 2) 
+Info: context=0x0, vaddr=0x42940000, paddr=0x42940000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=105, context=0, level=2, index=0x25, is_ptd=0, ppnr=0x42940000, cacheable=0x1, acc=0x3
+Info: added sibling: 105 (level 2) to 104 (level 2) 
+Info: context=0x0, vaddr=0x42980000, paddr=0x42980000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=106, context=0, level=2, index=0x26, is_ptd=0, ppnr=0x42980000, cacheable=0x1, acc=0x3
+Info: added sibling: 106 (level 2) to 105 (level 2) 
+Info: context=0x0, vaddr=0x429c0000, paddr=0x429c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=107, context=0, level=2, index=0x27, is_ptd=0, ppnr=0x429c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 107 (level 2) to 106 (level 2) 
+Info: context=0x0, vaddr=0x42a00000, paddr=0x42a00000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=108, context=0, level=2, index=0x28, is_ptd=0, ppnr=0x42a00000, cacheable=0x1, acc=0x3
+Info: added sibling: 108 (level 2) to 107 (level 2) 
+Info: context=0x0, vaddr=0x42a40000, paddr=0x42a40000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=109, context=0, level=2, index=0x29, is_ptd=0, ppnr=0x42a40000, cacheable=0x1, acc=0x3
+Info: added sibling: 109 (level 2) to 108 (level 2) 
+Info: context=0x0, vaddr=0x42a80000, paddr=0x42a80000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=110, context=0, level=2, index=0x2a, is_ptd=0, ppnr=0x42a80000, cacheable=0x1, acc=0x3
+Info: added sibling: 110 (level 2) to 109 (level 2) 
+Info: context=0x0, vaddr=0x42ac0000, paddr=0x42ac0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=111, context=0, level=2, index=0x2b, is_ptd=0, ppnr=0x42ac0000, cacheable=0x1, acc=0x3
+Info: added sibling: 111 (level 2) to 110 (level 2) 
+Info: context=0x0, vaddr=0x42b00000, paddr=0x42b00000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=112, context=0, level=2, index=0x2c, is_ptd=0, ppnr=0x42b00000, cacheable=0x1, acc=0x3
+Info: added sibling: 112 (level 2) to 111 (level 2) 
+Info: context=0x0, vaddr=0x42b40000, paddr=0x42b40000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=113, context=0, level=2, index=0x2d, is_ptd=0, ppnr=0x42b40000, cacheable=0x1, acc=0x3
+Info: added sibling: 113 (level 2) to 112 (level 2) 
+Info: context=0x0, vaddr=0x42b80000, paddr=0x42b80000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=114, context=0, level=2, index=0x2e, is_ptd=0, ppnr=0x42b80000, cacheable=0x1, acc=0x3
+Info: added sibling: 114 (level 2) to 113 (level 2) 
+Info: context=0x0, vaddr=0x42bc0000, paddr=0x42bc0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=115, context=0, level=2, index=0x2f, is_ptd=0, ppnr=0x42bc0000, cacheable=0x1, acc=0x3
+Info: added sibling: 115 (level 2) to 114 (level 2) 
+Info: context=0x0, vaddr=0x42c00000, paddr=0x42c00000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=116, context=0, level=2, index=0x30, is_ptd=0, ppnr=0x42c00000, cacheable=0x1, acc=0x3
+Info: added sibling: 116 (level 2) to 115 (level 2) 
+Info: context=0x0, vaddr=0x42c40000, paddr=0x42c40000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=117, context=0, level=2, index=0x31, is_ptd=0, ppnr=0x42c40000, cacheable=0x1, acc=0x3
+Info: added sibling: 117 (level 2) to 116 (level 2) 
+Info: context=0x0, vaddr=0x42c80000, paddr=0x42c80000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=118, context=0, level=2, index=0x32, is_ptd=0, ppnr=0x42c80000, cacheable=0x1, acc=0x3
+Info: added sibling: 118 (level 2) to 117 (level 2) 
+Info: context=0x0, vaddr=0x42cc0000, paddr=0x42cc0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=119, context=0, level=2, index=0x33, is_ptd=0, ppnr=0x42cc0000, cacheable=0x1, acc=0x3
+Info: added sibling: 119 (level 2) to 118 (level 2) 
+Info: context=0x0, vaddr=0x42d00000, paddr=0x42d00000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=120, context=0, level=2, index=0x34, is_ptd=0, ppnr=0x42d00000, cacheable=0x1, acc=0x3
+Info: added sibling: 120 (level 2) to 119 (level 2) 
+Info: context=0x0, vaddr=0x42d40000, paddr=0x42d40000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=121, context=0, level=2, index=0x35, is_ptd=0, ppnr=0x42d40000, cacheable=0x1, acc=0x3
+Info: added sibling: 121 (level 2) to 120 (level 2) 
+Info: context=0x0, vaddr=0x42d80000, paddr=0x42d80000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=122, context=0, level=2, index=0x36, is_ptd=0, ppnr=0x42d80000, cacheable=0x1, acc=0x3
+Info: added sibling: 122 (level 2) to 121 (level 2) 
+Info: context=0x0, vaddr=0x42dc0000, paddr=0x42dc0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=123, context=0, level=2, index=0x37, is_ptd=0, ppnr=0x42dc0000, cacheable=0x1, acc=0x3
+Info: added sibling: 123 (level 2) to 122 (level 2) 
+Info: context=0x0, vaddr=0x42e00000, paddr=0x42e00000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=124, context=0, level=2, index=0x38, is_ptd=0, ppnr=0x42e00000, cacheable=0x1, acc=0x3
+Info: added sibling: 124 (level 2) to 123 (level 2) 
+Info: context=0x0, vaddr=0x42e40000, paddr=0x42e40000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=125, context=0, level=2, index=0x39, is_ptd=0, ppnr=0x42e40000, cacheable=0x1, acc=0x3
+Info: added sibling: 125 (level 2) to 124 (level 2) 
+Info: context=0x0, vaddr=0x42e80000, paddr=0x42e80000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=126, context=0, level=2, index=0x3a, is_ptd=0, ppnr=0x42e80000, cacheable=0x1, acc=0x3
+Info: added sibling: 126 (level 2) to 125 (level 2) 
+Info: context=0x0, vaddr=0x42ec0000, paddr=0x42ec0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=127, context=0, level=2, index=0x3b, is_ptd=0, ppnr=0x42ec0000, cacheable=0x1, acc=0x3
+Info: added sibling: 127 (level 2) to 126 (level 2) 
+Info: context=0x0, vaddr=0x42f00000, paddr=0x42f00000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=128, context=0, level=2, index=0x3c, is_ptd=0, ppnr=0x42f00000, cacheable=0x1, acc=0x3
+Info: added sibling: 128 (level 2) to 127 (level 2) 
+Info: context=0x0, vaddr=0x42f40000, paddr=0x42f40000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=129, context=0, level=2, index=0x3d, is_ptd=0, ppnr=0x42f40000, cacheable=0x1, acc=0x3
+Info: added sibling: 129 (level 2) to 128 (level 2) 
+Info: context=0x0, vaddr=0x42f80000, paddr=0x42f80000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=130, context=0, level=2, index=0x3e, is_ptd=0, ppnr=0x42f80000, cacheable=0x1, acc=0x3
+Info: added sibling: 130 (level 2) to 129 (level 2) 
+Info: context=0x0, vaddr=0x42fc0000, paddr=0x42fc0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=131, context=0, level=2, index=0x3f, is_ptd=0, ppnr=0x42fc0000, cacheable=0x1, acc=0x3
+Info: added sibling: 131 (level 2) to 130 (level 2) 
+Info: context=0x0, vaddr=0x43000000, paddr=0x43000000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=132, context=0, level=2, index=0x0, is_ptd=0, ppnr=0x43000000, cacheable=0x1, acc=0x3
+Info: new pdte: id=133, context=0, level=1, index=0x43, is_ptd=1, ppnr=0x43000000, cacheable=0x1, acc=0x3
+Info: added sibling: 133 (level 1) to 68 (level 1) 
+Info: added child:  132 (level=2)-> 133 (level=1)
+Info: context=0x0, vaddr=0x43040000, paddr=0x43040000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=134, context=0, level=2, index=0x1, is_ptd=0, ppnr=0x43040000, cacheable=0x1, acc=0x3
+Info: added sibling: 134 (level 2) to 132 (level 2) 
+Info: context=0x0, vaddr=0x43080000, paddr=0x43080000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=135, context=0, level=2, index=0x2, is_ptd=0, ppnr=0x43080000, cacheable=0x1, acc=0x3
+Info: added sibling: 135 (level 2) to 134 (level 2) 
+Info: context=0x0, vaddr=0x430c0000, paddr=0x430c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=136, context=0, level=2, index=0x3, is_ptd=0, ppnr=0x430c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 136 (level 2) to 135 (level 2) 
+Info: context=0x0, vaddr=0x43100000, paddr=0x43100000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=137, context=0, level=2, index=0x4, is_ptd=0, ppnr=0x43100000, cacheable=0x1, acc=0x3
+Info: added sibling: 137 (level 2) to 136 (level 2) 
+Info: context=0x0, vaddr=0x43140000, paddr=0x43140000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=138, context=0, level=2, index=0x5, is_ptd=0, ppnr=0x43140000, cacheable=0x1, acc=0x3
+Info: added sibling: 138 (level 2) to 137 (level 2) 
+Info: context=0x0, vaddr=0x43180000, paddr=0x43180000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=139, context=0, level=2, index=0x6, is_ptd=0, ppnr=0x43180000, cacheable=0x1, acc=0x3
+Info: added sibling: 139 (level 2) to 138 (level 2) 
+Info: context=0x0, vaddr=0x431c0000, paddr=0x431c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=140, context=0, level=2, index=0x7, is_ptd=0, ppnr=0x431c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 140 (level 2) to 139 (level 2) 
+Info: context=0x0, vaddr=0x43200000, paddr=0x43200000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=141, context=0, level=2, index=0x8, is_ptd=0, ppnr=0x43200000, cacheable=0x1, acc=0x3
+Info: added sibling: 141 (level 2) to 140 (level 2) 
+Info: context=0x0, vaddr=0x43240000, paddr=0x43240000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=142, context=0, level=2, index=0x9, is_ptd=0, ppnr=0x43240000, cacheable=0x1, acc=0x3
+Info: added sibling: 142 (level 2) to 141 (level 2) 
+Info: context=0x0, vaddr=0x43280000, paddr=0x43280000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=143, context=0, level=2, index=0xa, is_ptd=0, ppnr=0x43280000, cacheable=0x1, acc=0x3
+Info: added sibling: 143 (level 2) to 142 (level 2) 
+Info: context=0x0, vaddr=0x432c0000, paddr=0x432c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=144, context=0, level=2, index=0xb, is_ptd=0, ppnr=0x432c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 144 (level 2) to 143 (level 2) 
+Info: context=0x0, vaddr=0x43300000, paddr=0x43300000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=145, context=0, level=2, index=0xc, is_ptd=0, ppnr=0x43300000, cacheable=0x1, acc=0x3
+Info: added sibling: 145 (level 2) to 144 (level 2) 
+Info: context=0x0, vaddr=0x43340000, paddr=0x43340000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=146, context=0, level=2, index=0xd, is_ptd=0, ppnr=0x43340000, cacheable=0x1, acc=0x3
+Info: added sibling: 146 (level 2) to 145 (level 2) 
+Info: context=0x0, vaddr=0x43380000, paddr=0x43380000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=147, context=0, level=2, index=0xe, is_ptd=0, ppnr=0x43380000, cacheable=0x1, acc=0x3
+Info: added sibling: 147 (level 2) to 146 (level 2) 
+Info: context=0x0, vaddr=0x433c0000, paddr=0x433c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=148, context=0, level=2, index=0xf, is_ptd=0, ppnr=0x433c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 148 (level 2) to 147 (level 2) 
+Info: context=0x0, vaddr=0x43400000, paddr=0x43400000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=149, context=0, level=2, index=0x10, is_ptd=0, ppnr=0x43400000, cacheable=0x1, acc=0x3
+Info: added sibling: 149 (level 2) to 148 (level 2) 
+Info: context=0x0, vaddr=0x43440000, paddr=0x43440000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=150, context=0, level=2, index=0x11, is_ptd=0, ppnr=0x43440000, cacheable=0x1, acc=0x3
+Info: added sibling: 150 (level 2) to 149 (level 2) 
+Info: context=0x0, vaddr=0x43480000, paddr=0x43480000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=151, context=0, level=2, index=0x12, is_ptd=0, ppnr=0x43480000, cacheable=0x1, acc=0x3
+Info: added sibling: 151 (level 2) to 150 (level 2) 
+Info: context=0x0, vaddr=0x434c0000, paddr=0x434c0000, level=0x2, cacheable=0x1, acc=0x3
+Info: new pdte: id=152, context=0, level=2, index=0x13, is_ptd=0, ppnr=0x434c0000, cacheable=0x1, acc=0x3
+Info: added sibling: 152 (level 2) to 151 (level 2) 
+Info: context=0x0, vaddr=0x43500000, paddr=0x43500000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=153, context=0, level=3, index=0x0, is_ptd=0, ppnr=0x43500000, cacheable=0x1, acc=0x3
+Info: new pdte: id=154, context=0, level=2, index=0x14, is_ptd=1, ppnr=0x43500000, cacheable=0x1, acc=0x3
+Info: added sibling: 154 (level 2) to 152 (level 2) 
+Info: added child:  153 (level=3)-> 154 (level=2)
+Info: context=0x0, vaddr=0x43501000, paddr=0x43501000, level=0x3, cacheable=0x0, acc=0x3
+Info: new pdte: id=155, context=0, level=3, index=0x1, is_ptd=0, ppnr=0x43501000, cacheable=0x0, acc=0x3
+Info: added sibling: 155 (level 3) to 153 (level 3) 
+Info: context=0x0, vaddr=0x43502000, paddr=0x43502000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=156, context=0, level=3, index=0x2, is_ptd=0, ppnr=0x43502000, cacheable=0x1, acc=0x3
+Info: added sibling: 156 (level 3) to 155 (level 3) 
+Info: context=0x0, vaddr=0x43503000, paddr=0x43503000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=157, context=0, level=3, index=0x3, is_ptd=0, ppnr=0x43503000, cacheable=0x1, acc=0x3
+Info: added sibling: 157 (level 3) to 156 (level 3) 
+Info: context=0x0, vaddr=0x43504000, paddr=0x43504000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=158, context=0, level=3, index=0x4, is_ptd=0, ppnr=0x43504000, cacheable=0x1, acc=0x3
+Info: added sibling: 158 (level 3) to 157 (level 3) 
+Info: context=0x0, vaddr=0x43505000, paddr=0x43505000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=159, context=0, level=3, index=0x5, is_ptd=0, ppnr=0x43505000, cacheable=0x1, acc=0x3
+Info: added sibling: 159 (level 3) to 158 (level 3) 
+Info: context=0x0, vaddr=0x43506000, paddr=0x43506000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=160, context=0, level=3, index=0x6, is_ptd=0, ppnr=0x43506000, cacheable=0x1, acc=0x3
+Info: added sibling: 160 (level 3) to 159 (level 3) 
+Info: context=0x0, vaddr=0x43507000, paddr=0x43507000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=161, context=0, level=3, index=0x7, is_ptd=0, ppnr=0x43507000, cacheable=0x1, acc=0x3
+Info: added sibling: 161 (level 3) to 160 (level 3) 
+Info: context=0x0, vaddr=0x43508000, paddr=0x43508000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=162, context=0, level=3, index=0x8, is_ptd=0, ppnr=0x43508000, cacheable=0x1, acc=0x3
+Info: added sibling: 162 (level 3) to 161 (level 3) 
+Info: context=0x0, vaddr=0x43509000, paddr=0x43509000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=163, context=0, level=3, index=0x9, is_ptd=0, ppnr=0x43509000, cacheable=0x1, acc=0x3
+Info: added sibling: 163 (level 3) to 162 (level 3) 
+Info: context=0x0, vaddr=0x4350a000, paddr=0x4350a000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=164, context=0, level=3, index=0xa, is_ptd=0, ppnr=0x4350a000, cacheable=0x1, acc=0x3
+Info: added sibling: 164 (level 3) to 163 (level 3) 
+Info: context=0x0, vaddr=0x4350b000, paddr=0x4350b000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=165, context=0, level=3, index=0xb, is_ptd=0, ppnr=0x4350b000, cacheable=0x1, acc=0x3
+Info: added sibling: 165 (level 3) to 164 (level 3) 
+Info: context=0x0, vaddr=0x4350c000, paddr=0x4350c000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=166, context=0, level=3, index=0xc, is_ptd=0, ppnr=0x4350c000, cacheable=0x1, acc=0x3
+Info: added sibling: 166 (level 3) to 165 (level 3) 
+Info: context=0x0, vaddr=0x4350d000, paddr=0x4350d000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=167, context=0, level=3, index=0xd, is_ptd=0, ppnr=0x4350d000, cacheable=0x1, acc=0x3
+Info: added sibling: 167 (level 3) to 166 (level 3) 
+Info: context=0x0, vaddr=0x4350e000, paddr=0x4350e000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=168, context=0, level=3, index=0xe, is_ptd=0, ppnr=0x4350e000, cacheable=0x1, acc=0x3
+Info: added sibling: 168 (level 3) to 167 (level 3) 
+Info: context=0x0, vaddr=0x4350f000, paddr=0x4350f000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=169, context=0, level=3, index=0xf, is_ptd=0, ppnr=0x4350f000, cacheable=0x1, acc=0x3
+Info: added sibling: 169 (level 3) to 168 (level 3) 
+Info: context=0x0, vaddr=0x43510000, paddr=0x43510000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=170, context=0, level=3, index=0x10, is_ptd=0, ppnr=0x43510000, cacheable=0x1, acc=0x3
+Info: added sibling: 170 (level 3) to 169 (level 3) 
+Info: context=0x0, vaddr=0x43511000, paddr=0x43511000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=171, context=0, level=3, index=0x11, is_ptd=0, ppnr=0x43511000, cacheable=0x1, acc=0x3
+Info: added sibling: 171 (level 3) to 170 (level 3) 
+Info: context=0x0, vaddr=0x43512000, paddr=0x43512000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=172, context=0, level=3, index=0x12, is_ptd=0, ppnr=0x43512000, cacheable=0x1, acc=0x3
+Info: added sibling: 172 (level 3) to 171 (level 3) 
+Info: context=0x0, vaddr=0x43513000, paddr=0x43513000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=173, context=0, level=3, index=0x13, is_ptd=0, ppnr=0x43513000, cacheable=0x1, acc=0x3
+Info: added sibling: 173 (level 3) to 172 (level 3) 
+Info: context=0x0, vaddr=0x43514000, paddr=0x43514000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=174, context=0, level=3, index=0x14, is_ptd=0, ppnr=0x43514000, cacheable=0x1, acc=0x3
+Info: added sibling: 174 (level 3) to 173 (level 3) 
+Info: context=0x0, vaddr=0x43515000, paddr=0x43515000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=175, context=0, level=3, index=0x15, is_ptd=0, ppnr=0x43515000, cacheable=0x1, acc=0x3
+Info: added sibling: 175 (level 3) to 174 (level 3) 
+Info: context=0x0, vaddr=0x43516000, paddr=0x43516000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=176, context=0, level=3, index=0x16, is_ptd=0, ppnr=0x43516000, cacheable=0x1, acc=0x3
+Info: added sibling: 176 (level 3) to 175 (level 3) 
+Info: context=0x0, vaddr=0x43517000, paddr=0x43517000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=177, context=0, level=3, index=0x17, is_ptd=0, ppnr=0x43517000, cacheable=0x1, acc=0x3
+Info: added sibling: 177 (level 3) to 176 (level 3) 
+Info: context=0x0, vaddr=0x43518000, paddr=0x43518000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=178, context=0, level=3, index=0x18, is_ptd=0, ppnr=0x43518000, cacheable=0x1, acc=0x3
+Info: added sibling: 178 (level 3) to 177 (level 3) 
+Info: context=0x0, vaddr=0x43519000, paddr=0x43519000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=179, context=0, level=3, index=0x19, is_ptd=0, ppnr=0x43519000, cacheable=0x1, acc=0x3
+Info: added sibling: 179 (level 3) to 178 (level 3) 
+Info: context=0x0, vaddr=0x4351a000, paddr=0x4351a000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=180, context=0, level=3, index=0x1a, is_ptd=0, ppnr=0x4351a000, cacheable=0x1, acc=0x3
+Info: added sibling: 180 (level 3) to 179 (level 3) 
+Info: context=0x0, vaddr=0x4351b000, paddr=0x4351b000, level=0x3, cacheable=0x1, acc=0x4
+Info: new pdte: id=181, context=0, level=3, index=0x1b, is_ptd=0, ppnr=0x4351b000, cacheable=0x1, acc=0x4
+Info: added sibling: 181 (level 3) to 180 (level 3) 
+Info: context=0x0, vaddr=0x4351c000, paddr=0x4351c000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=182, context=0, level=3, index=0x1c, is_ptd=0, ppnr=0x4351c000, cacheable=0x1, acc=0x3
+Info: added sibling: 182 (level 3) to 181 (level 3) 
+Info: context=0x0, vaddr=0x4351d000, paddr=0x4351d000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=183, context=0, level=3, index=0x1d, is_ptd=0, ppnr=0x4351d000, cacheable=0x1, acc=0x3
+Info: added sibling: 183 (level 3) to 182 (level 3) 
+Info: context=0x0, vaddr=0x4351e000, paddr=0x4351e000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=184, context=0, level=3, index=0x1e, is_ptd=0, ppnr=0x4351e000, cacheable=0x1, acc=0x3
+Info: added sibling: 184 (level 3) to 183 (level 3) 
+Info: context=0x0, vaddr=0x4351f000, paddr=0x4351f000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=185, context=0, level=3, index=0x1f, is_ptd=0, ppnr=0x4351f000, cacheable=0x1, acc=0x3
+Info: added sibling: 185 (level 3) to 184 (level 3) 
+Info: context=0x0, vaddr=0x43520000, paddr=0x43520000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=186, context=0, level=3, index=0x20, is_ptd=0, ppnr=0x43520000, cacheable=0x1, acc=0x3
+Info: added sibling: 186 (level 3) to 185 (level 3) 
+Info: context=0x0, vaddr=0x43521000, paddr=0x43521000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=187, context=0, level=3, index=0x21, is_ptd=0, ppnr=0x43521000, cacheable=0x1, acc=0x3
+Info: added sibling: 187 (level 3) to 186 (level 3) 
+Info: context=0x0, vaddr=0x43522000, paddr=0x43522000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=188, context=0, level=3, index=0x22, is_ptd=0, ppnr=0x43522000, cacheable=0x1, acc=0x3
+Info: added sibling: 188 (level 3) to 187 (level 3) 
+Info: context=0x0, vaddr=0x43523000, paddr=0x43523000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=189, context=0, level=3, index=0x23, is_ptd=0, ppnr=0x43523000, cacheable=0x1, acc=0x3
+Info: added sibling: 189 (level 3) to 188 (level 3) 
+Info: context=0x0, vaddr=0x43524000, paddr=0x43524000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=190, context=0, level=3, index=0x24, is_ptd=0, ppnr=0x43524000, cacheable=0x1, acc=0x3
+Info: added sibling: 190 (level 3) to 189 (level 3) 
+Info: context=0x0, vaddr=0x43525000, paddr=0x43525000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=191, context=0, level=3, index=0x25, is_ptd=0, ppnr=0x43525000, cacheable=0x1, acc=0x3
+Info: added sibling: 191 (level 3) to 190 (level 3) 
+Info: context=0x0, vaddr=0x43526000, paddr=0x43526000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=192, context=0, level=3, index=0x26, is_ptd=0, ppnr=0x43526000, cacheable=0x1, acc=0x3
+Info: added sibling: 192 (level 3) to 191 (level 3) 
+Info: context=0x0, vaddr=0x43527000, paddr=0x43527000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=193, context=0, level=3, index=0x27, is_ptd=0, ppnr=0x43527000, cacheable=0x1, acc=0x3
+Info: added sibling: 193 (level 3) to 192 (level 3) 
+Info: context=0x0, vaddr=0x43528000, paddr=0x43528000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=194, context=0, level=3, index=0x28, is_ptd=0, ppnr=0x43528000, cacheable=0x1, acc=0x3
+Info: added sibling: 194 (level 3) to 193 (level 3) 
+Info: context=0x0, vaddr=0x43529000, paddr=0x43529000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=195, context=0, level=3, index=0x29, is_ptd=0, ppnr=0x43529000, cacheable=0x1, acc=0x3
+Info: added sibling: 195 (level 3) to 194 (level 3) 
+Info: context=0x0, vaddr=0x4352a000, paddr=0x4352a000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=196, context=0, level=3, index=0x2a, is_ptd=0, ppnr=0x4352a000, cacheable=0x1, acc=0x3
+Info: added sibling: 196 (level 3) to 195 (level 3) 
+Info: context=0x0, vaddr=0x4352b000, paddr=0x4352b000, level=0x3, cacheable=0x1, acc=0x3
+Info: new pdte: id=197, context=0, level=3, index=0x2b, is_ptd=0, ppnr=0x4352b000, cacheable=0x1, acc=0x3
+Info: added sibling: 197 (level 3) to 196 (level 3) 
+Info: context=0x0, vaddr=0x4352c000, paddr=0x4352c000, level=0x3, cacheable=0x1, acc=0x4
+Info: new pdte: id=198, context=0, level=3, index=0x2c, is_ptd=0, ppnr=0x4352c000, cacheable=0x1, acc=0x4
+Info: added sibling: 198 (level 3) to 197 (level 3) 
+Info: context=0x0, vaddr=0x50000000, paddr=0x50000000, level=0x1, cacheable=0x0, acc=0x5
+Info: new pdte: id=199, context=0, level=1, index=0x50, is_ptd=0, ppnr=0x50000000, cacheable=0x0, acc=0x5
+Info: added sibling: 199 (level 1) to 133 (level 1) 
+Info: context=0x0, vaddr=0x51000000, paddr=0x51000000, level=0x1, cacheable=0x0, acc=0x5
+Info: new pdte: id=200, context=0, level=1, index=0x51, is_ptd=0, ppnr=0x51000000, cacheable=0x0, acc=0x5
+Info: added sibling: 200 (level 1) to 199 (level 1) 
+Info: context=0x0, vaddr=0xff000000, paddr=0xff000000, level=0x1, cacheable=0x0, acc=0x5
+Info: new pdte: id=201, context=0, level=1, index=0xff, is_ptd=0, ppnr=0xff000000, cacheable=0x0, acc=0x5
+Info: added sibling: 201 (level 1) to 200 (level 1) 
+Level-2 page-table starting at offset 0x0
+Level-2 page-table starting at offset 0x100
+Level-3 page-table starting at offset 0x200
+Level-2 page-table starting at offset 0x300
+Level-1 page-table starting at offset 0x400
+Level-0 page-table starting at offset 0x800
+Info: table memory used=0xc00
+ PTD: context=0, index=0, level=0, child_p_addr=0x500, p_addr=0x800
+   PTD: context=0, index=64, level=1, child_p_addr=0x0, p_addr=0x500
+     PTE: context=0, index=0, level=2,  ppnr=0x40000000, p_addr=0x0, cacheable=0x1, acc=0x2
+     PTE: context=0, index=1, level=2,  ppnr=0x40040000, p_addr=0x4, cacheable=0x1, acc=0x2
+     PTE: context=0, index=2, level=2,  ppnr=0x40080000, p_addr=0x8, cacheable=0x1, acc=0x2
+     PTE: context=0, index=3, level=2,  ppnr=0x400c0000, p_addr=0xc, cacheable=0x1, acc=0x2
+     PTE: context=0, index=4, level=2,  ppnr=0x40100000, p_addr=0x10, cacheable=0x1, acc=0x2
+     PTE: context=0, index=5, level=2,  ppnr=0x40140000, p_addr=0x14, cacheable=0x1, acc=0x2
+     PTE: context=0, index=6, level=2,  ppnr=0x40180000, p_addr=0x18, cacheable=0x1, acc=0x2
+     PTE: context=0, index=7, level=2,  ppnr=0x401c0000, p_addr=0x1c, cacheable=0x1, acc=0x2
+     PTE: context=0, index=8, level=2,  ppnr=0x40200000, p_addr=0x20, cacheable=0x1, acc=0x2
+     PTE: context=0, index=9, level=2,  ppnr=0x40240000, p_addr=0x24, cacheable=0x1, acc=0x2
+     PTE: context=0, index=10, level=2,  ppnr=0x40280000, p_addr=0x28, cacheable=0x1, acc=0x2
+     PTE: context=0, index=11, level=2,  ppnr=0x402c0000, p_addr=0x2c, cacheable=0x1, acc=0x2
+     PTE: context=0, index=12, level=2,  ppnr=0x40300000, p_addr=0x30, cacheable=0x1, acc=0x2
+     PTE: context=0, index=13, level=2,  ppnr=0x40340000, p_addr=0x34, cacheable=0x1, acc=0x2
+     PTE: context=0, index=14, level=2,  ppnr=0x40380000, p_addr=0x38, cacheable=0x1, acc=0x2
+     PTE: context=0, index=15, level=2,  ppnr=0x403c0000, p_addr=0x3c, cacheable=0x1, acc=0x2
+     PTE: context=0, index=16, level=2,  ppnr=0x40400000, p_addr=0x40, cacheable=0x1, acc=0x2
+     PTE: context=0, index=17, level=2,  ppnr=0x40440000, p_addr=0x44, cacheable=0x1, acc=0x2
+     PTE: context=0, index=18, level=2,  ppnr=0x40480000, p_addr=0x48, cacheable=0x1, acc=0x2
+     PTE: context=0, index=19, level=2,  ppnr=0x404c0000, p_addr=0x4c, cacheable=0x1, acc=0x2
+     PTE: context=0, index=20, level=2,  ppnr=0x40500000, p_addr=0x50, cacheable=0x1, acc=0x2
+     PTE: context=0, index=21, level=2,  ppnr=0x40540000, p_addr=0x54, cacheable=0x1, acc=0x2
+     PTE: context=0, index=22, level=2,  ppnr=0x40580000, p_addr=0x58, cacheable=0x1, acc=0x2
+     PTE: context=0, index=23, level=2,  ppnr=0x405c0000, p_addr=0x5c, cacheable=0x1, acc=0x2
+     PTE: context=0, index=24, level=2,  ppnr=0x40600000, p_addr=0x60, cacheable=0x1, acc=0x2
+     PTE: context=0, index=25, level=2,  ppnr=0x40640000, p_addr=0x64, cacheable=0x1, acc=0x2
+     PTE: context=0, index=26, level=2,  ppnr=0x40680000, p_addr=0x68, cacheable=0x1, acc=0x2
+     PTE: context=0, index=27, level=2,  ppnr=0x406c0000, p_addr=0x6c, cacheable=0x1, acc=0x2
+     PTE: context=0, index=28, level=2,  ppnr=0x40700000, p_addr=0x70, cacheable=0x1, acc=0x2
+     PTE: context=0, index=29, level=2,  ppnr=0x40740000, p_addr=0x74, cacheable=0x1, acc=0x2
+     PTE: context=0, index=30, level=2,  ppnr=0x40780000, p_addr=0x78, cacheable=0x1, acc=0x2
+     PTE: context=0, index=31, level=2,  ppnr=0x407c0000, p_addr=0x7c, cacheable=0x1, acc=0x2
+     PTE: context=0, index=32, level=2,  ppnr=0x40800000, p_addr=0x80, cacheable=0x1, acc=0x3
+     PTE: context=0, index=33, level=2,  ppnr=0x40840000, p_addr=0x84, cacheable=0x1, acc=0x3
+     PTE: context=0, index=34, level=2,  ppnr=0x40880000, p_addr=0x88, cacheable=0x1, acc=0x3
+     PTE: context=0, index=35, level=2,  ppnr=0x408c0000, p_addr=0x8c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=36, level=2,  ppnr=0x40900000, p_addr=0x90, cacheable=0x1, acc=0x3
+     PTE: context=0, index=37, level=2,  ppnr=0x40940000, p_addr=0x94, cacheable=0x1, acc=0x3
+     PTE: context=0, index=38, level=2,  ppnr=0x40980000, p_addr=0x98, cacheable=0x1, acc=0x3
+     PTE: context=0, index=39, level=2,  ppnr=0x409c0000, p_addr=0x9c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=40, level=2,  ppnr=0x40a00000, p_addr=0xa0, cacheable=0x1, acc=0x3
+     PTE: context=0, index=41, level=2,  ppnr=0x40a40000, p_addr=0xa4, cacheable=0x1, acc=0x3
+     PTE: context=0, index=42, level=2,  ppnr=0x40a80000, p_addr=0xa8, cacheable=0x1, acc=0x3
+     PTE: context=0, index=43, level=2,  ppnr=0x40ac0000, p_addr=0xac, cacheable=0x1, acc=0x3
+     PTE: context=0, index=44, level=2,  ppnr=0x40b00000, p_addr=0xb0, cacheable=0x1, acc=0x3
+     PTE: context=0, index=45, level=2,  ppnr=0x40b40000, p_addr=0xb4, cacheable=0x1, acc=0x3
+     PTE: context=0, index=46, level=2,  ppnr=0x40b80000, p_addr=0xb8, cacheable=0x1, acc=0x3
+     PTE: context=0, index=47, level=2,  ppnr=0x40bc0000, p_addr=0xbc, cacheable=0x1, acc=0x3
+     PTE: context=0, index=48, level=2,  ppnr=0x40c00000, p_addr=0xc0, cacheable=0x1, acc=0x3
+     PTE: context=0, index=49, level=2,  ppnr=0x40c40000, p_addr=0xc4, cacheable=0x1, acc=0x3
+     PTE: context=0, index=50, level=2,  ppnr=0x40c80000, p_addr=0xc8, cacheable=0x1, acc=0x3
+     PTE: context=0, index=51, level=2,  ppnr=0x40cc0000, p_addr=0xcc, cacheable=0x1, acc=0x3
+     PTE: context=0, index=52, level=2,  ppnr=0x40d00000, p_addr=0xd0, cacheable=0x1, acc=0x3
+     PTE: context=0, index=53, level=2,  ppnr=0x40d40000, p_addr=0xd4, cacheable=0x1, acc=0x3
+     PTE: context=0, index=54, level=2,  ppnr=0x40d80000, p_addr=0xd8, cacheable=0x1, acc=0x3
+     PTE: context=0, index=55, level=2,  ppnr=0x40dc0000, p_addr=0xdc, cacheable=0x1, acc=0x3
+     PTE: context=0, index=56, level=2,  ppnr=0x40e00000, p_addr=0xe0, cacheable=0x1, acc=0x3
+     PTE: context=0, index=57, level=2,  ppnr=0x40e40000, p_addr=0xe4, cacheable=0x1, acc=0x3
+     PTE: context=0, index=58, level=2,  ppnr=0x40e80000, p_addr=0xe8, cacheable=0x1, acc=0x3
+     PTE: context=0, index=59, level=2,  ppnr=0x40ec0000, p_addr=0xec, cacheable=0x1, acc=0x3
+     PTE: context=0, index=60, level=2,  ppnr=0x40f00000, p_addr=0xf0, cacheable=0x1, acc=0x3
+     PTE: context=0, index=61, level=2,  ppnr=0x40f40000, p_addr=0xf4, cacheable=0x1, acc=0x3
+     PTE: context=0, index=62, level=2,  ppnr=0x40f80000, p_addr=0xf8, cacheable=0x1, acc=0x3
+     PTE: context=0, index=63, level=2,  ppnr=0x40fc0000, p_addr=0xfc, cacheable=0x1, acc=0x3
+   PTE: context=0, index=65, level=1,  ppnr=0x41000000, p_addr=0x504, cacheable=0x1, acc=0x3
+   PTD: context=0, index=66, level=1, child_p_addr=0x100, p_addr=0x508
+     PTE: context=0, index=0, level=2,  ppnr=0x42000000, p_addr=0x100, cacheable=0x1, acc=0x3
+     PTE: context=0, index=1, level=2,  ppnr=0x42040000, p_addr=0x104, cacheable=0x1, acc=0x3
+     PTE: context=0, index=2, level=2,  ppnr=0x42080000, p_addr=0x108, cacheable=0x1, acc=0x3
+     PTE: context=0, index=3, level=2,  ppnr=0x420c0000, p_addr=0x10c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=4, level=2,  ppnr=0x42100000, p_addr=0x110, cacheable=0x1, acc=0x3
+     PTE: context=0, index=5, level=2,  ppnr=0x42140000, p_addr=0x114, cacheable=0x1, acc=0x3
+     PTE: context=0, index=6, level=2,  ppnr=0x42180000, p_addr=0x118, cacheable=0x1, acc=0x3
+     PTE: context=0, index=7, level=2,  ppnr=0x421c0000, p_addr=0x11c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=8, level=2,  ppnr=0x42200000, p_addr=0x120, cacheable=0x1, acc=0x3
+     PTE: context=0, index=9, level=2,  ppnr=0x42240000, p_addr=0x124, cacheable=0x1, acc=0x3
+     PTE: context=0, index=10, level=2,  ppnr=0x42280000, p_addr=0x128, cacheable=0x1, acc=0x3
+     PTE: context=0, index=11, level=2,  ppnr=0x422c0000, p_addr=0x12c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=12, level=2,  ppnr=0x42300000, p_addr=0x130, cacheable=0x1, acc=0x3
+     PTE: context=0, index=13, level=2,  ppnr=0x42340000, p_addr=0x134, cacheable=0x1, acc=0x3
+     PTE: context=0, index=14, level=2,  ppnr=0x42380000, p_addr=0x138, cacheable=0x1, acc=0x3
+     PTE: context=0, index=15, level=2,  ppnr=0x423c0000, p_addr=0x13c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=16, level=2,  ppnr=0x42400000, p_addr=0x140, cacheable=0x1, acc=0x3
+     PTE: context=0, index=17, level=2,  ppnr=0x42440000, p_addr=0x144, cacheable=0x1, acc=0x3
+     PTE: context=0, index=18, level=2,  ppnr=0x42480000, p_addr=0x148, cacheable=0x1, acc=0x3
+     PTE: context=0, index=19, level=2,  ppnr=0x424c0000, p_addr=0x14c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=20, level=2,  ppnr=0x42500000, p_addr=0x150, cacheable=0x1, acc=0x3
+     PTE: context=0, index=21, level=2,  ppnr=0x42540000, p_addr=0x154, cacheable=0x1, acc=0x3
+     PTE: context=0, index=22, level=2,  ppnr=0x42580000, p_addr=0x158, cacheable=0x1, acc=0x3
+     PTE: context=0, index=23, level=2,  ppnr=0x425c0000, p_addr=0x15c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=24, level=2,  ppnr=0x42600000, p_addr=0x160, cacheable=0x1, acc=0x3
+     PTE: context=0, index=25, level=2,  ppnr=0x42640000, p_addr=0x164, cacheable=0x1, acc=0x3
+     PTE: context=0, index=26, level=2,  ppnr=0x42680000, p_addr=0x168, cacheable=0x1, acc=0x3
+     PTE: context=0, index=27, level=2,  ppnr=0x426c0000, p_addr=0x16c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=28, level=2,  ppnr=0x42700000, p_addr=0x170, cacheable=0x1, acc=0x3
+     PTE: context=0, index=29, level=2,  ppnr=0x42740000, p_addr=0x174, cacheable=0x1, acc=0x3
+     PTE: context=0, index=30, level=2,  ppnr=0x42780000, p_addr=0x178, cacheable=0x1, acc=0x3
+     PTE: context=0, index=31, level=2,  ppnr=0x427c0000, p_addr=0x17c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=32, level=2,  ppnr=0x42800000, p_addr=0x180, cacheable=0x1, acc=0x3
+     PTE: context=0, index=33, level=2,  ppnr=0x42840000, p_addr=0x184, cacheable=0x1, acc=0x3
+     PTE: context=0, index=34, level=2,  ppnr=0x42880000, p_addr=0x188, cacheable=0x1, acc=0x3
+     PTE: context=0, index=35, level=2,  ppnr=0x428c0000, p_addr=0x18c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=36, level=2,  ppnr=0x42900000, p_addr=0x190, cacheable=0x1, acc=0x3
+     PTE: context=0, index=37, level=2,  ppnr=0x42940000, p_addr=0x194, cacheable=0x1, acc=0x3
+     PTE: context=0, index=38, level=2,  ppnr=0x42980000, p_addr=0x198, cacheable=0x1, acc=0x3
+     PTE: context=0, index=39, level=2,  ppnr=0x429c0000, p_addr=0x19c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=40, level=2,  ppnr=0x42a00000, p_addr=0x1a0, cacheable=0x1, acc=0x3
+     PTE: context=0, index=41, level=2,  ppnr=0x42a40000, p_addr=0x1a4, cacheable=0x1, acc=0x3
+     PTE: context=0, index=42, level=2,  ppnr=0x42a80000, p_addr=0x1a8, cacheable=0x1, acc=0x3
+     PTE: context=0, index=43, level=2,  ppnr=0x42ac0000, p_addr=0x1ac, cacheable=0x1, acc=0x3
+     PTE: context=0, index=44, level=2,  ppnr=0x42b00000, p_addr=0x1b0, cacheable=0x1, acc=0x3
+     PTE: context=0, index=45, level=2,  ppnr=0x42b40000, p_addr=0x1b4, cacheable=0x1, acc=0x3
+     PTE: context=0, index=46, level=2,  ppnr=0x42b80000, p_addr=0x1b8, cacheable=0x1, acc=0x3
+     PTE: context=0, index=47, level=2,  ppnr=0x42bc0000, p_addr=0x1bc, cacheable=0x1, acc=0x3
+     PTE: context=0, index=48, level=2,  ppnr=0x42c00000, p_addr=0x1c0, cacheable=0x1, acc=0x3
+     PTE: context=0, index=49, level=2,  ppnr=0x42c40000, p_addr=0x1c4, cacheable=0x1, acc=0x3
+     PTE: context=0, index=50, level=2,  ppnr=0x42c80000, p_addr=0x1c8, cacheable=0x1, acc=0x3
+     PTE: context=0, index=51, level=2,  ppnr=0x42cc0000, p_addr=0x1cc, cacheable=0x1, acc=0x3
+     PTE: context=0, index=52, level=2,  ppnr=0x42d00000, p_addr=0x1d0, cacheable=0x1, acc=0x3
+     PTE: context=0, index=53, level=2,  ppnr=0x42d40000, p_addr=0x1d4, cacheable=0x1, acc=0x3
+     PTE: context=0, index=54, level=2,  ppnr=0x42d80000, p_addr=0x1d8, cacheable=0x1, acc=0x3
+     PTE: context=0, index=55, level=2,  ppnr=0x42dc0000, p_addr=0x1dc, cacheable=0x1, acc=0x3
+     PTE: context=0, index=56, level=2,  ppnr=0x42e00000, p_addr=0x1e0, cacheable=0x1, acc=0x3
+     PTE: context=0, index=57, level=2,  ppnr=0x42e40000, p_addr=0x1e4, cacheable=0x1, acc=0x3
+     PTE: context=0, index=58, level=2,  ppnr=0x42e80000, p_addr=0x1e8, cacheable=0x1, acc=0x3
+     PTE: context=0, index=59, level=2,  ppnr=0x42ec0000, p_addr=0x1ec, cacheable=0x1, acc=0x3
+     PTE: context=0, index=60, level=2,  ppnr=0x42f00000, p_addr=0x1f0, cacheable=0x1, acc=0x3
+     PTE: context=0, index=61, level=2,  ppnr=0x42f40000, p_addr=0x1f4, cacheable=0x1, acc=0x3
+     PTE: context=0, index=62, level=2,  ppnr=0x42f80000, p_addr=0x1f8, cacheable=0x1, acc=0x3
+     PTE: context=0, index=63, level=2,  ppnr=0x42fc0000, p_addr=0x1fc, cacheable=0x1, acc=0x3
+   PTD: context=0, index=67, level=1, child_p_addr=0x300, p_addr=0x50c
+     PTE: context=0, index=0, level=2,  ppnr=0x43000000, p_addr=0x300, cacheable=0x1, acc=0x3
+     PTE: context=0, index=1, level=2,  ppnr=0x43040000, p_addr=0x304, cacheable=0x1, acc=0x3
+     PTE: context=0, index=2, level=2,  ppnr=0x43080000, p_addr=0x308, cacheable=0x1, acc=0x3
+     PTE: context=0, index=3, level=2,  ppnr=0x430c0000, p_addr=0x30c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=4, level=2,  ppnr=0x43100000, p_addr=0x310, cacheable=0x1, acc=0x3
+     PTE: context=0, index=5, level=2,  ppnr=0x43140000, p_addr=0x314, cacheable=0x1, acc=0x3
+     PTE: context=0, index=6, level=2,  ppnr=0x43180000, p_addr=0x318, cacheable=0x1, acc=0x3
+     PTE: context=0, index=7, level=2,  ppnr=0x431c0000, p_addr=0x31c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=8, level=2,  ppnr=0x43200000, p_addr=0x320, cacheable=0x1, acc=0x3
+     PTE: context=0, index=9, level=2,  ppnr=0x43240000, p_addr=0x324, cacheable=0x1, acc=0x3
+     PTE: context=0, index=10, level=2,  ppnr=0x43280000, p_addr=0x328, cacheable=0x1, acc=0x3
+     PTE: context=0, index=11, level=2,  ppnr=0x432c0000, p_addr=0x32c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=12, level=2,  ppnr=0x43300000, p_addr=0x330, cacheable=0x1, acc=0x3
+     PTE: context=0, index=13, level=2,  ppnr=0x43340000, p_addr=0x334, cacheable=0x1, acc=0x3
+     PTE: context=0, index=14, level=2,  ppnr=0x43380000, p_addr=0x338, cacheable=0x1, acc=0x3
+     PTE: context=0, index=15, level=2,  ppnr=0x433c0000, p_addr=0x33c, cacheable=0x1, acc=0x3
+     PTE: context=0, index=16, level=2,  ppnr=0x43400000, p_addr=0x340, cacheable=0x1, acc=0x3
+     PTE: context=0, index=17, level=2,  ppnr=0x43440000, p_addr=0x344, cacheable=0x1, acc=0x3
+     PTE: context=0, index=18, level=2,  ppnr=0x43480000, p_addr=0x348, cacheable=0x1, acc=0x3
+     PTE: context=0, index=19, level=2,  ppnr=0x434c0000, p_addr=0x34c, cacheable=0x1, acc=0x3
+     PTD: context=0, index=20, level=2, child_p_addr=0x200, p_addr=0x350
+       PTE: context=0, index=0, level=3,  ppnr=0x43500000, p_addr=0x200, cacheable=0x1, acc=0x3
+       PTE: context=0, index=1, level=3,  ppnr=0x43501000, p_addr=0x204, cacheable=0x0, acc=0x3
+       PTE: context=0, index=2, level=3,  ppnr=0x43502000, p_addr=0x208, cacheable=0x1, acc=0x3
+       PTE: context=0, index=3, level=3,  ppnr=0x43503000, p_addr=0x20c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=4, level=3,  ppnr=0x43504000, p_addr=0x210, cacheable=0x1, acc=0x3
+       PTE: context=0, index=5, level=3,  ppnr=0x43505000, p_addr=0x214, cacheable=0x1, acc=0x3
+       PTE: context=0, index=6, level=3,  ppnr=0x43506000, p_addr=0x218, cacheable=0x1, acc=0x3
+       PTE: context=0, index=7, level=3,  ppnr=0x43507000, p_addr=0x21c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=8, level=3,  ppnr=0x43508000, p_addr=0x220, cacheable=0x1, acc=0x3
+       PTE: context=0, index=9, level=3,  ppnr=0x43509000, p_addr=0x224, cacheable=0x1, acc=0x3
+       PTE: context=0, index=10, level=3,  ppnr=0x4350a000, p_addr=0x228, cacheable=0x1, acc=0x3
+       PTE: context=0, index=11, level=3,  ppnr=0x4350b000, p_addr=0x22c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=12, level=3,  ppnr=0x4350c000, p_addr=0x230, cacheable=0x1, acc=0x3
+       PTE: context=0, index=13, level=3,  ppnr=0x4350d000, p_addr=0x234, cacheable=0x1, acc=0x3
+       PTE: context=0, index=14, level=3,  ppnr=0x4350e000, p_addr=0x238, cacheable=0x1, acc=0x3
+       PTE: context=0, index=15, level=3,  ppnr=0x4350f000, p_addr=0x23c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=16, level=3,  ppnr=0x43510000, p_addr=0x240, cacheable=0x1, acc=0x3
+       PTE: context=0, index=17, level=3,  ppnr=0x43511000, p_addr=0x244, cacheable=0x1, acc=0x3
+       PTE: context=0, index=18, level=3,  ppnr=0x43512000, p_addr=0x248, cacheable=0x1, acc=0x3
+       PTE: context=0, index=19, level=3,  ppnr=0x43513000, p_addr=0x24c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=20, level=3,  ppnr=0x43514000, p_addr=0x250, cacheable=0x1, acc=0x3
+       PTE: context=0, index=21, level=3,  ppnr=0x43515000, p_addr=0x254, cacheable=0x1, acc=0x3
+       PTE: context=0, index=22, level=3,  ppnr=0x43516000, p_addr=0x258, cacheable=0x1, acc=0x3
+       PTE: context=0, index=23, level=3,  ppnr=0x43517000, p_addr=0x25c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=24, level=3,  ppnr=0x43518000, p_addr=0x260, cacheable=0x1, acc=0x3
+       PTE: context=0, index=25, level=3,  ppnr=0x43519000, p_addr=0x264, cacheable=0x1, acc=0x3
+       PTE: context=0, index=26, level=3,  ppnr=0x4351a000, p_addr=0x268, cacheable=0x1, acc=0x3
+       PTE: context=0, index=27, level=3,  ppnr=0x4351b000, p_addr=0x26c, cacheable=0x1, acc=0x4
+       PTE: context=0, index=28, level=3,  ppnr=0x4351c000, p_addr=0x270, cacheable=0x1, acc=0x3
+       PTE: context=0, index=29, level=3,  ppnr=0x4351d000, p_addr=0x274, cacheable=0x1, acc=0x3
+       PTE: context=0, index=30, level=3,  ppnr=0x4351e000, p_addr=0x278, cacheable=0x1, acc=0x3
+       PTE: context=0, index=31, level=3,  ppnr=0x4351f000, p_addr=0x27c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=32, level=3,  ppnr=0x43520000, p_addr=0x280, cacheable=0x1, acc=0x3
+       PTE: context=0, index=33, level=3,  ppnr=0x43521000, p_addr=0x284, cacheable=0x1, acc=0x3
+       PTE: context=0, index=34, level=3,  ppnr=0x43522000, p_addr=0x288, cacheable=0x1, acc=0x3
+       PTE: context=0, index=35, level=3,  ppnr=0x43523000, p_addr=0x28c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=36, level=3,  ppnr=0x43524000, p_addr=0x290, cacheable=0x1, acc=0x3
+       PTE: context=0, index=37, level=3,  ppnr=0x43525000, p_addr=0x294, cacheable=0x1, acc=0x3
+       PTE: context=0, index=38, level=3,  ppnr=0x43526000, p_addr=0x298, cacheable=0x1, acc=0x3
+       PTE: context=0, index=39, level=3,  ppnr=0x43527000, p_addr=0x29c, cacheable=0x1, acc=0x3
+       PTE: context=0, index=40, level=3,  ppnr=0x43528000, p_addr=0x2a0, cacheable=0x1, acc=0x3
+       PTE: context=0, index=41, level=3,  ppnr=0x43529000, p_addr=0x2a4, cacheable=0x1, acc=0x3
+       PTE: context=0, index=42, level=3,  ppnr=0x4352a000, p_addr=0x2a8, cacheable=0x1, acc=0x3
+       PTE: context=0, index=43, level=3,  ppnr=0x4352b000, p_addr=0x2ac, cacheable=0x1, acc=0x3
+       PTE: context=0, index=44, level=3,  ppnr=0x4352c000, p_addr=0x2b0, cacheable=0x1, acc=0x4
+   PTE: context=0, index=80, level=1,  ppnr=0x50000000, p_addr=0x540, cacheable=0x0, acc=0x5
+   PTE: context=0, index=81, level=1,  ppnr=0x51000000, p_addr=0x544, cacheable=0x0, acc=0x5
+   PTE: context=0, index=255, level=1,  ppnr=0xff000000, p_addr=0x7fc, cacheable=0x0, acc=0x5
+Info:dump_asm: entering id=1
+Info:dump_asm: entering id=2
+Info:dump_asm: entering id=0
+Info:dump_asm: entering id=3
+Info:dump_asm: entering id=4
+Info:dump_asm: entering id=5
+Info:dump_asm: entering id=6
+Info:dump_asm: entering id=7
+Info:dump_asm: entering id=8
+Info:dump_asm: entering id=9
+Info:dump_asm: entering id=10
+Info:dump_asm: entering id=11
+Info:dump_asm: entering id=12
+Info:dump_asm: entering id=13
+Info:dump_asm: entering id=14
+Info:dump_asm: entering id=15
+Info:dump_asm: entering id=16
+Info:dump_asm: entering id=17
+Info:dump_asm: entering id=18
+Info:dump_asm: entering id=19
+Info:dump_asm: entering id=20
+Info:dump_asm: entering id=21
+Info:dump_asm: entering id=22
+Info:dump_asm: entering id=23
+Info:dump_asm: entering id=24
+Info:dump_asm: entering id=25
+Info:dump_asm: entering id=26
+Info:dump_asm: entering id=27
+Info:dump_asm: entering id=28
+Info:dump_asm: entering id=29
+Info:dump_asm: entering id=30
+Info:dump_asm: entering id=31
+Info:dump_asm: entering id=32
+Info:dump_asm: entering id=33
+Info:dump_asm: entering id=34
+Info:dump_asm: entering id=35
+Info:dump_asm: entering id=36
+Info:dump_asm: entering id=37
+Info:dump_asm: entering id=38
+Info:dump_asm: entering id=39
+Info:dump_asm: entering id=40
+Info:dump_asm: entering id=41
+Info:dump_asm: entering id=42
+Info:dump_asm: entering id=43
+Info:dump_asm: entering id=44
+Info:dump_asm: entering id=45
+Info:dump_asm: entering id=46
+Info:dump_asm: entering id=47
+Info:dump_asm: entering id=48
+Info:dump_asm: entering id=49
+Info:dump_asm: entering id=50
+Info:dump_asm: entering id=51
+Info:dump_asm: entering id=52
+Info:dump_asm: entering id=53
+Info:dump_asm: entering id=54
+Info:dump_asm: entering id=55
+Info:dump_asm: entering id=56
+Info:dump_asm: entering id=57
+Info:dump_asm: entering id=58
+Info:dump_asm: entering id=59
+Info:dump_asm: entering id=60
+Info:dump_asm: entering id=61
+Info:dump_asm: entering id=62
+Info:dump_asm: entering id=63
+Info:dump_asm: entering id=64
+Info:dump_asm: entering id=65
+Info:dump_asm: entering id=66
+Info:dump_asm: entering id=68
+Info:dump_asm: entering id=67
+Info:dump_asm: entering id=69
+Info:dump_asm: entering id=70
+Info:dump_asm: entering id=71
+Info:dump_asm: entering id=72
+Info:dump_asm: entering id=73
+Info:dump_asm: entering id=74
+Info:dump_asm: entering id=75
+Info:dump_asm: entering id=76
+Info:dump_asm: entering id=77
+Info:dump_asm: entering id=78
+Info:dump_asm: entering id=79
+Info:dump_asm: entering id=80
+Info:dump_asm: entering id=81
+Info:dump_asm: entering id=82
+Info:dump_asm: entering id=83
+Info:dump_asm: entering id=84
+Info:dump_asm: entering id=85
+Info:dump_asm: entering id=86
+Info:dump_asm: entering id=87
+Info:dump_asm: entering id=88
+Info:dump_asm: entering id=89
+Info:dump_asm: entering id=90
+Info:dump_asm: entering id=91
+Info:dump_asm: entering id=92
+Info:dump_asm: entering id=93
+Info:dump_asm: entering id=94
+Info:dump_asm: entering id=95
+Info:dump_asm: entering id=96
+Info:dump_asm: entering id=97
+Info:dump_asm: entering id=98
+Info:dump_asm: entering id=99
+Info:dump_asm: entering id=100
+Info:dump_asm: entering id=101
+Info:dump_asm: entering id=102
+Info:dump_asm: entering id=103
+Info:dump_asm: entering id=104
+Info:dump_asm: entering id=105
+Info:dump_asm: entering id=106
+Info:dump_asm: entering id=107
+Info:dump_asm: entering id=108
+Info:dump_asm: entering id=109
+Info:dump_asm: entering id=110
+Info:dump_asm: entering id=111
+Info:dump_asm: entering id=112
+Info:dump_asm: entering id=113
+Info:dump_asm: entering id=114
+Info:dump_asm: entering id=115
+Info:dump_asm: entering id=116
+Info:dump_asm: entering id=117
+Info:dump_asm: entering id=118
+Info:dump_asm: entering id=119
+Info:dump_asm: entering id=120
+Info:dump_asm: entering id=121
+Info:dump_asm: entering id=122
+Info:dump_asm: entering id=123
+Info:dump_asm: entering id=124
+Info:dump_asm: entering id=125
+Info:dump_asm: entering id=126
+Info:dump_asm: entering id=127
+Info:dump_asm: entering id=128
+Info:dump_asm: entering id=129
+Info:dump_asm: entering id=130
+Info:dump_asm: entering id=131
+Info:dump_asm: entering id=133
+Info:dump_asm: entering id=132
+Info:dump_asm: entering id=134
+Info:dump_asm: entering id=135
+Info:dump_asm: entering id=136
+Info:dump_asm: entering id=137
+Info:dump_asm: entering id=138
+Info:dump_asm: entering id=139
+Info:dump_asm: entering id=140
+Info:dump_asm: entering id=141
+Info:dump_asm: entering id=142
+Info:dump_asm: entering id=143
+Info:dump_asm: entering id=144
+Info:dump_asm: entering id=145
+Info:dump_asm: entering id=146
+Info:dump_asm: entering id=147
+Info:dump_asm: entering id=148
+Info:dump_asm: entering id=149
+Info:dump_asm: entering id=150
+Info:dump_asm: entering id=151
+Info:dump_asm: entering id=152
+Info:dump_asm: entering id=154
+Info:dump_asm: entering id=153
+Info:dump_asm: entering id=155
+Info:dump_asm: entering id=156
+Info:dump_asm: entering id=157
+Info:dump_asm: entering id=158
+Info:dump_asm: entering id=159
+Info:dump_asm: entering id=160
+Info:dump_asm: entering id=161
+Info:dump_asm: entering id=162
+Info:dump_asm: entering id=163
+Info:dump_asm: entering id=164
+Info:dump_asm: entering id=165
+Info:dump_asm: entering id=166
+Info:dump_asm: entering id=167
+Info:dump_asm: entering id=168
+Info:dump_asm: entering id=169
+Info:dump_asm: entering id=170
+Info:dump_asm: entering id=171
+Info:dump_asm: entering id=172
+Info:dump_asm: entering id=173
+Info:dump_asm: entering id=174
+Info:dump_asm: entering id=175
+Info:dump_asm: entering id=176
+Info:dump_asm: entering id=177
+Info:dump_asm: entering id=178
+Info:dump_asm: entering id=179
+Info:dump_asm: entering id=180
+Info:dump_asm: entering id=181
+Info:dump_asm: entering id=182
+Info:dump_asm: entering id=183
+Info:dump_asm: entering id=184
+Info:dump_asm: entering id=185
+Info:dump_asm: entering id=186
+Info:dump_asm: entering id=187
+Info:dump_asm: entering id=188
+Info:dump_asm: entering id=189
+Info:dump_asm: entering id=190
+Info:dump_asm: entering id=191
+Info:dump_asm: entering id=192
+Info:dump_asm: entering id=193
+Info:dump_asm: entering id=194
+Info:dump_asm: entering id=195
+Info:dump_asm: entering id=196
+Info:dump_asm: entering id=197
+Info:dump_asm: entering id=198
+Info:dump_asm: entering id=199
+Info:dump_asm: entering id=200
+Info:dump_asm: entering id=201
+Info: dumping page-table-memory
+[0x0] = 0x400008a 
+[0x4] = 0x400408a 
+[0x8] = 0x400808a 
+[0xc] = 0x400c08a 
+[0x10] = 0x401008a 
+[0x14] = 0x401408a 
+[0x18] = 0x401808a 
+[0x1c] = 0x401c08a 
+[0x20] = 0x402008a 
+[0x24] = 0x402408a 
+[0x28] = 0x402808a 
+[0x2c] = 0x402c08a 
+[0x30] = 0x403008a 
+[0x34] = 0x403408a 
+[0x38] = 0x403808a 
+[0x3c] = 0x403c08a 
+[0x40] = 0x404008a 
+[0x44] = 0x404408a 
+[0x48] = 0x404808a 
+[0x4c] = 0x404c08a 
+[0x50] = 0x405008a 
+[0x54] = 0x405408a 
+[0x58] = 0x405808a 
+[0x5c] = 0x405c08a 
+[0x60] = 0x406008a 
+[0x64] = 0x406408a 
+[0x68] = 0x406808a 
+[0x6c] = 0x406c08a 
+[0x70] = 0x407008a 
+[0x74] = 0x407408a 
+[0x78] = 0x407808a 
+[0x7c] = 0x407c08a 
+[0x80] = 0x408008e 
+[0x84] = 0x408408e 
+[0x88] = 0x408808e 
+[0x8c] = 0x408c08e 
+[0x90] = 0x409008e 
+[0x94] = 0x409408e 
+[0x98] = 0x409808e 
+[0x9c] = 0x409c08e 
+[0xa0] = 0x40a008e 
+[0xa4] = 0x40a408e 
+[0xa8] = 0x40a808e 
+[0xac] = 0x40ac08e 
+[0xb0] = 0x40b008e 
+[0xb4] = 0x40b408e 
+[0xb8] = 0x40b808e 
+[0xbc] = 0x40bc08e 
+[0xc0] = 0x40c008e 
+[0xc4] = 0x40c408e 
+[0xc8] = 0x40c808e 
+[0xcc] = 0x40cc08e 
+[0xd0] = 0x40d008e 
+[0xd4] = 0x40d408e 
+[0xd8] = 0x40d808e 
+[0xdc] = 0x40dc08e 
+[0xe0] = 0x40e008e 
+[0xe4] = 0x40e408e 
+[0xe8] = 0x40e808e 
+[0xec] = 0x40ec08e 
+[0xf0] = 0x40f008e 
+[0xf4] = 0x40f408e 
+[0xf8] = 0x40f808e 
+[0xfc] = 0x40fc08e 
+[0x100] = 0x420008e 
+[0x104] = 0x420408e 
+[0x108] = 0x420808e 
+[0x10c] = 0x420c08e 
+[0x110] = 0x421008e 
+[0x114] = 0x421408e 
+[0x118] = 0x421808e 
+[0x11c] = 0x421c08e 
+[0x120] = 0x422008e 
+[0x124] = 0x422408e 
+[0x128] = 0x422808e 
+[0x12c] = 0x422c08e 
+[0x130] = 0x423008e 
+[0x134] = 0x423408e 
+[0x138] = 0x423808e 
+[0x13c] = 0x423c08e 
+[0x140] = 0x424008e 
+[0x144] = 0x424408e 
+[0x148] = 0x424808e 
+[0x14c] = 0x424c08e 
+[0x150] = 0x425008e 
+[0x154] = 0x425408e 
+[0x158] = 0x425808e 
+[0x15c] = 0x425c08e 
+[0x160] = 0x426008e 
+[0x164] = 0x426408e 
+[0x168] = 0x426808e 
+[0x16c] = 0x426c08e 
+[0x170] = 0x427008e 
+[0x174] = 0x427408e 
+[0x178] = 0x427808e 
+[0x17c] = 0x427c08e 
+[0x180] = 0x428008e 
+[0x184] = 0x428408e 
+[0x188] = 0x428808e 
+[0x18c] = 0x428c08e 
+[0x190] = 0x429008e 
+[0x194] = 0x429408e 
+[0x198] = 0x429808e 
+[0x19c] = 0x429c08e 
+[0x1a0] = 0x42a008e 
+[0x1a4] = 0x42a408e 
+[0x1a8] = 0x42a808e 
+[0x1ac] = 0x42ac08e 
+[0x1b0] = 0x42b008e 
+[0x1b4] = 0x42b408e 
+[0x1b8] = 0x42b808e 
+[0x1bc] = 0x42bc08e 
+[0x1c0] = 0x42c008e 
+[0x1c4] = 0x42c408e 
+[0x1c8] = 0x42c808e 
+[0x1cc] = 0x42cc08e 
+[0x1d0] = 0x42d008e 
+[0x1d4] = 0x42d408e 
+[0x1d8] = 0x42d808e 
+[0x1dc] = 0x42dc08e 
+[0x1e0] = 0x42e008e 
+[0x1e4] = 0x42e408e 
+[0x1e8] = 0x42e808e 
+[0x1ec] = 0x42ec08e 
+[0x1f0] = 0x42f008e 
+[0x1f4] = 0x42f408e 
+[0x1f8] = 0x42f808e 
+[0x1fc] = 0x42fc08e 
+[0x200] = 0x435008e 
+[0x204] = 0x435010e 
+[0x208] = 0x435028e 
+[0x20c] = 0x435038e 
+[0x210] = 0x435048e 
+[0x214] = 0x435058e 
+[0x218] = 0x435068e 
+[0x21c] = 0x435078e 
+[0x220] = 0x435088e 
+[0x224] = 0x435098e 
+[0x228] = 0x4350a8e 
+[0x22c] = 0x4350b8e 
+[0x230] = 0x4350c8e 
+[0x234] = 0x4350d8e 
+[0x238] = 0x4350e8e 
+[0x23c] = 0x4350f8e 
+[0x240] = 0x435108e 
+[0x244] = 0x435118e 
+[0x248] = 0x435128e 
+[0x24c] = 0x435138e 
+[0x250] = 0x435148e 
+[0x254] = 0x435158e 
+[0x258] = 0x435168e 
+[0x25c] = 0x435178e 
+[0x260] = 0x435188e 
+[0x264] = 0x435198e 
+[0x268] = 0x4351a8e 
+[0x26c] = 0x4351b92 
+[0x270] = 0x4351c8e 
+[0x274] = 0x4351d8e 
+[0x278] = 0x4351e8e 
+[0x27c] = 0x4351f8e 
+[0x280] = 0x435208e 
+[0x284] = 0x435218e 
+[0x288] = 0x435228e 
+[0x28c] = 0x435238e 
+[0x290] = 0x435248e 
+[0x294] = 0x435258e 
+[0x298] = 0x435268e 
+[0x29c] = 0x435278e 
+[0x2a0] = 0x435288e 
+[0x2a4] = 0x435298e 
+[0x2a8] = 0x4352a8e 
+[0x2ac] = 0x4352b8e 
+[0x2b0] = 0x4352c92 
+[0x300] = 0x430008e 
+[0x304] = 0x430408e 
+[0x308] = 0x430808e 
+[0x30c] = 0x430c08e 
+[0x310] = 0x431008e 
+[0x314] = 0x431408e 
+[0x318] = 0x431808e 
+[0x31c] = 0x431c08e 
+[0x320] = 0x432008e 
+[0x324] = 0x432408e 
+[0x328] = 0x432808e 
+[0x32c] = 0x432c08e 
+[0x330] = 0x433008e 
+[0x334] = 0x433408e 
+[0x338] = 0x433808e 
+[0x33c] = 0x433c08e 
+[0x340] = 0x434008e 
+[0x344] = 0x434408e 
+[0x348] = 0x434808e 
+[0x34c] = 0x434c08e 
+[0x350] = 0x21 
+[0x500] = 0x1 
+[0x504] = 0x410008e 
+[0x508] = 0x11 
+[0x50c] = 0x31 
+[0x540] = 0x5000016 
+[0x544] = 0x5100016 
+[0x7fc] = 0xff00016 
+[0x800] = 0x41 
+Info: finished dumping page-table-memory
+Info: Executing:
+	sparc-linux-as   -Av8  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/asm/clear_stack_pointers.s -o .//sparc-obj/clear_stack_pointers.o
+Info: Executing:
+	sparc-linux-as   -Av8  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/asm/generic_isr_mt.s -o .//sparc-obj/generic_isr_mt.o
+Info: Executing:
+	sparc-linux-as   -Av8  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/asm/generic_sw_trap_mt.s -o .//sparc-obj/generic_sw_trap_mt.o
+Info: Executing:
+	sparc-linux-as   -Av8  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/asm/generic_sys_calls.s -o .//sparc-obj/generic_sys_calls.o
+Info: Executing:
+	sparc-linux-as   -Av8  .//__genvmap_setup_page_tables.s -o .//sparc-obj/__genvmap_setup_page_tables.o
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/netif/ethernet.c -o .//sparc-assembly/ethernet.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/main.c -o .//sparc-assembly/main.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  ../main.c -o .//sparc-assembly/main.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  cortos_src/cortos_traps_init.c -o .//sparc-assembly/cortos_traps_init.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  cortos_src/cortos_bget.c -o .//sparc-assembly/cortos_bget.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  cortos_src/cortos_utils.c -o .//sparc-assembly/cortos_utils.s
+cortos_src/cortos_utils.c: In function 'cortos_IsNcRamAddr':
+cortos_src/cortos_utils.c:51:20: warning: comparison between pointer and integer [enabled by default]
+cortos_src/cortos_utils.c:51:42: warning: comparison between pointer and integer [enabled by default]
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  cortos_src/__bget.c -o .//sparc-assembly/__bget.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  cortos_src/cortos_util_cvt.c -o .//sparc-assembly/cortos_util_cvt.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  cortos_src/cortos_queues.c -o .//sparc-assembly/cortos_queues.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  cortos_src/cortos_logging.c -o .//sparc-assembly/cortos_logging.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  cortos_src/__bget_ncram.c -o .//sparc-assembly/__bget_ncram.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  cortos_src/cortos_util_ee_printf.c -o .//sparc-assembly/cortos_util_ee_printf.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  cortos_src/cortos_devices.c -o .//sparc-assembly/cortos_devices.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  cortos_src/cortos_locks.c -o .//sparc-assembly/cortos_locks.s
+cortos_src/cortos_locks.c:4:28: warning: initialization makes pointer from integer without a cast [enabled by default]
+cortos_src/cortos_locks.c:5:28: warning: initialization makes pointer from integer without a cast [enabled by default]
+cortos_src/cortos_locks.c: In function 'cortos_reserveLock':
+cortos_src/cortos_locks.c:22:18: warning: initialization discards 'volatile' qualifier from pointer target type [enabled by default]
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/src/ajit_mt_irc.c -o .//sparc-assembly/ajit_mt_irc.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/src/ajit_ipi.c -o .//sparc-assembly/ajit_ipi.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/src/ajit_access_routines.c -o .//sparc-assembly/ajit_access_routines.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/src/ajit_generic_sys_calls.c -o .//sparc-assembly/ajit_generic_sys_calls.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/src/additional_serial.c -o .//sparc-assembly/additional_serial.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/src/ajit_spi_flash.c -o .//sparc-assembly/ajit_spi_flash.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/src/ajit_mt_sw_traps.c -o .//sparc-assembly/ajit_mt_sw_traps.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/src/ajit_mmap.c -o .//sparc-assembly/ajit_mmap.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/sys.c -o .//sparc-assembly/sys.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/netif.c -o .//sparc-assembly/netif.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/raw.c -o .//sparc-assembly/raw.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/pbuf.c -o .//sparc-assembly/pbuf.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/init.c -o .//sparc-assembly/init.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/udp.c -o .//sparc-assembly/udp.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/memp.c -o .//sparc-assembly/memp.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/tcp.c -o .//sparc-assembly/tcp.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/inet_chksum.c -o .//sparc-assembly/inet_chksum.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/altcp.c -o .//sparc-assembly/altcp.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/def.c -o .//sparc-assembly/def.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/tcp_in.c -o .//sparc-assembly/tcp_in.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/dns.c -o .//sparc-assembly/dns.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/mem.c -o .//sparc-assembly/mem.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/tcp_out.c -o .//sparc-assembly/tcp_out.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/timeouts.c -o .//sparc-assembly/timeouts.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/altcp_alloc.c -o .//sparc-assembly/altcp_alloc.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/stats.c -o .//sparc-assembly/stats.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/ip.c -o .//sparc-assembly/ip.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/altcp_tcp.c -o .//sparc-assembly/altcp_tcp.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/ipv4/acd.c -o .//sparc-assembly/acd.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/ipv4/icmp.c -o .//sparc-assembly/icmp.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/ipv4/igmp.c -o .//sparc-assembly/igmp.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/ipv4/ip4_frag.c -o .//sparc-assembly/ip4_frag.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/ipv4/etharp.c -o .//sparc-assembly/etharp.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/ipv4/autoip.c -o .//sparc-assembly/autoip.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/ipv4/ip4.c -o .//sparc-assembly/ip4.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/ipv4/ip4_addr.c -o .//sparc-assembly/ip4_addr.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/core/ipv4/dhcp.c -o .//sparc-assembly/dhcp.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/src/sys_arch.c -o .//sparc-assembly/sys_arch.s
+Info: Executing:
+	sparc-linux-gcc  -c  -S -m32 -mcpu=v8 -nostdlib -ffreestanding    -O2  -ffreestanding     -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/include  -I .  -I ..  -I cortos_src  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/ajit_access_routines_mt/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AjitPublicResources/tools/minimal_printf_timer/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/include  -I /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/lwip/src/include  -D AJIT  -D USE_CORTOS  -D USE_VMAP  -D CLK_FREQUENCY=80000000  /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/src/ethernetif.c -o .//sparc-assembly/ethernetif.s
+Info: Executing:
+	sparc-linux-as   -Av8 cortos_src/cortos_utils_asm.s -o .//sparc-obj/cortos_utils_asm.o
+Info: Executing:
+	sparc-linux-as   -Av8 cortos_src/init.s -o .//sparc-obj/init.o
+Info: Executing:
+	sparc-linux-as   -Av8 cortos_src/cortos_traps_asm.s -o .//sparc-obj/cortos_traps_asm.o
+Info: Executing:
+	sparc-linux-as   -Av8 cortos_src/trap_handlers_for_rtos.s -o .//sparc-obj/trap_handlers_for_rtos.o
+Info: Executing:
+	sparc-linux-as   -Av8 cortos_src/cortos_lock_unlock.s -o .//sparc-obj/cortos_lock_unlock.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ajit_spi_flash.s -o .//sparc-obj/ajit_spi_flash.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/cortos_logging.s -o .//sparc-obj/cortos_logging.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/tcp_in.s -o .//sparc-obj/tcp_in.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ip4.s -o .//sparc-obj/ip4.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/cortos_util_ee_printf.s -o .//sparc-obj/cortos_util_ee_printf.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/autoip.s -o .//sparc-obj/autoip.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/memp.s -o .//sparc-obj/memp.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/cortos_utils.s -o .//sparc-obj/cortos_utils.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ethernet.s -o .//sparc-obj/ethernet.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/def.s -o .//sparc-obj/def.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/sys.s -o .//sparc-obj/sys.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/mem.s -o .//sparc-obj/mem.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ajit_mt_irc.s -o .//sparc-obj/ajit_mt_irc.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/cortos_devices.s -o .//sparc-obj/cortos_devices.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ethernetif.s -o .//sparc-obj/ethernetif.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ajit_mt_sw_traps.s -o .//sparc-obj/ajit_mt_sw_traps.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ajit_generic_sys_calls.s -o .//sparc-obj/ajit_generic_sys_calls.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/tcp_out.s -o .//sparc-obj/tcp_out.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/udp.s -o .//sparc-obj/udp.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/etharp.s -o .//sparc-obj/etharp.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/init.s -o .//sparc-obj/init.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/cortos_bget.s -o .//sparc-obj/cortos_bget.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ajit_access_routines.s -o .//sparc-obj/ajit_access_routines.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/altcp_alloc.s -o .//sparc-obj/altcp_alloc.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/dhcp.s -o .//sparc-obj/dhcp.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/timeouts.s -o .//sparc-obj/timeouts.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ip4_frag.s -o .//sparc-obj/ip4_frag.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/cortos_traps_init.s -o .//sparc-obj/cortos_traps_init.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/main.s -o .//sparc-obj/main.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/pbuf.s -o .//sparc-obj/pbuf.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/igmp.s -o .//sparc-obj/igmp.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/altcp_tcp.s -o .//sparc-obj/altcp_tcp.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/__bget.s -o .//sparc-obj/__bget.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/cortos_util_cvt.s -o .//sparc-obj/cortos_util_cvt.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/altcp.s -o .//sparc-obj/altcp.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/raw.s -o .//sparc-obj/raw.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/tcp.s -o .//sparc-obj/tcp.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/cortos_queues.s -o .//sparc-obj/cortos_queues.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/stats.s -o .//sparc-obj/stats.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/acd.s -o .//sparc-obj/acd.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ajit_mmap.s -o .//sparc-obj/ajit_mmap.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ip4_addr.s -o .//sparc-obj/ip4_addr.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/dns.s -o .//sparc-obj/dns.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/cortos_locks.s -o .//sparc-obj/cortos_locks.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ajit_ipi.s -o .//sparc-obj/ajit_ipi.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/netif.s -o .//sparc-obj/netif.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/ip.s -o .//sparc-obj/ip.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/sys_arch.s -o .//sparc-obj/sys_arch.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/additional_serial.s -o .//sparc-obj/additional_serial.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/__bget_ncram.s -o .//sparc-obj/__bget_ncram.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/inet_chksum.s -o .//sparc-obj/inet_chksum.o
+Info: Executing:
+	sparc-linux-as   -Av8 .//sparc-assembly/icmp.s -o .//sparc-obj/icmp.o
+('AJIT:', '/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/..')
+Info: Executing:
+	sparc-linux-ld  --verbose=5 -L /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib/ -e main -T cortos_src/LinkerScript.txt .//sparc-obj/clear_stack_pointers.o  .//sparc-obj/generic_isr_mt.o  .//sparc-obj/generic_sw_trap_mt.o  .//sparc-obj/generic_sys_calls.o  .//sparc-obj/__genvmap_setup_page_tables.o  .//sparc-obj/cortos_utils_asm.o  .//sparc-obj/init.o  .//sparc-obj/cortos_traps_asm.o  .//sparc-obj/trap_handlers_for_rtos.o  .//sparc-obj/cortos_lock_unlock.o  .//sparc-obj/ajit_spi_flash.o  .//sparc-obj/cortos_logging.o  .//sparc-obj/tcp_in.o  .//sparc-obj/ip4.o  .//sparc-obj/cortos_util_ee_printf.o  .//sparc-obj/autoip.o  .//sparc-obj/memp.o  .//sparc-obj/cortos_utils.o  .//sparc-obj/ethernet.o  .//sparc-obj/def.o  .//sparc-obj/sys.o  .//sparc-obj/mem.o  .//sparc-obj/ajit_mt_irc.o  .//sparc-obj/cortos_devices.o  .//sparc-obj/ethernetif.o  .//sparc-obj/ajit_mt_sw_traps.o  .//sparc-obj/ajit_generic_sys_calls.o  .//sparc-obj/tcp_out.o  .//sparc-obj/udp.o  .//sparc-obj/etharp.o  .//sparc-obj/init.o  .//sparc-obj/cortos_bget.o  .//sparc-obj/ajit_access_routines.o  .//sparc-obj/altcp_alloc.o  .//sparc-obj/dhcp.o  .//sparc-obj/timeouts.o  .//sparc-obj/ip4_frag.o  .//sparc-obj/cortos_traps_init.o  .//sparc-obj/main.o  .//sparc-obj/pbuf.o  .//sparc-obj/igmp.o  .//sparc-obj/altcp_tcp.o  .//sparc-obj/__bget.o  .//sparc-obj/cortos_util_cvt.o  .//sparc-obj/altcp.o  .//sparc-obj/raw.o  .//sparc-obj/tcp.o  .//sparc-obj/cortos_queues.o  .//sparc-obj/stats.o  .//sparc-obj/acd.o  .//sparc-obj/ajit_mmap.o  .//sparc-obj/ip4_addr.o  .//sparc-obj/dns.o  .//sparc-obj/cortos_locks.o  .//sparc-obj/ajit_ipi.o  .//sparc-obj/netif.o  .//sparc-obj/ip.o  .//sparc-obj/sys_arch.o  .//sparc-obj/additional_serial.o  .//sparc-obj/__bget_ncram.o  .//sparc-obj/inet_chksum.o  .//sparc-obj/icmp.o   -o .//main.elf -L/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/..//lib -L/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4  -static -lm -lc -lgcc  --gc-sections
+GNU ld (GNU Binutils) 2.22
+  Supported emulations:
+   elf32_sparc
+   sparclinux
+   elf64_sparc
+   sun4
+opened script file cortos_src/LinkerScript.txt
+using external linker script:
+==================================================
+/*========================================================*/
+/*                                                        */
+/* Linker script for Ajit Sparc      	                  */
+/*                                                        */
+/*========================================================*/
+
+ENTRY(_start)
+__DYNAMIC = 0;
+SECTIONS
+{
+  . = 0x40000000;
+  .text ALIGN(8) : {
+    KEEP(*(.text.ajitstart))  /* NOTE: in file `init_00.s` */
+    *(.text)
+    *(.text.*)
+    KEEP(*(.text.pagetablesetup)) /* NOTE: not needed */
+    KEEP(*(.text.traphandlers))  /* NOTE: in file `trap_handlers.s` */
+    KEEP(*(.text.traptablebase))  /* NOTE: in file `trap_handlers.s` */
+  }
+
+  . = 0x40800000;
+  .rodata ALIGN(8) : { * (.rodata) * (.rodata.*) }
+  .data   ALIGN(8) : { * (.data) * (.data.*)}
+
+  . = 0x42600000;
+  .bss   ALIGN(8) : { * (.bss) }
+}
+
+==================================================
+attempt to open .//sparc-obj/clear_stack_pointers.o succeeded
+.//sparc-obj/clear_stack_pointers.o
+attempt to open .//sparc-obj/generic_isr_mt.o succeeded
+.//sparc-obj/generic_isr_mt.o
+attempt to open .//sparc-obj/generic_sw_trap_mt.o succeeded
+.//sparc-obj/generic_sw_trap_mt.o
+attempt to open .//sparc-obj/generic_sys_calls.o succeeded
+.//sparc-obj/generic_sys_calls.o
+attempt to open .//sparc-obj/__genvmap_setup_page_tables.o succeeded
+.//sparc-obj/__genvmap_setup_page_tables.o
+attempt to open .//sparc-obj/cortos_utils_asm.o succeeded
+.//sparc-obj/cortos_utils_asm.o
+attempt to open .//sparc-obj/init.o succeeded
+.//sparc-obj/init.o
+attempt to open .//sparc-obj/cortos_traps_asm.o succeeded
+.//sparc-obj/cortos_traps_asm.o
+attempt to open .//sparc-obj/trap_handlers_for_rtos.o succeeded
+.//sparc-obj/trap_handlers_for_rtos.o
+attempt to open .//sparc-obj/cortos_lock_unlock.o succeeded
+.//sparc-obj/cortos_lock_unlock.o
+attempt to open .//sparc-obj/ajit_spi_flash.o succeeded
+.//sparc-obj/ajit_spi_flash.o
+attempt to open .//sparc-obj/cortos_logging.o succeeded
+.//sparc-obj/cortos_logging.o
+attempt to open .//sparc-obj/tcp_in.o succeeded
+.//sparc-obj/tcp_in.o
+attempt to open .//sparc-obj/ip4.o succeeded
+.//sparc-obj/ip4.o
+attempt to open .//sparc-obj/cortos_util_ee_printf.o succeeded
+.//sparc-obj/cortos_util_ee_printf.o
+attempt to open .//sparc-obj/autoip.o succeeded
+.//sparc-obj/autoip.o
+attempt to open .//sparc-obj/memp.o succeeded
+.//sparc-obj/memp.o
+attempt to open .//sparc-obj/cortos_utils.o succeeded
+.//sparc-obj/cortos_utils.o
+attempt to open .//sparc-obj/ethernet.o succeeded
+.//sparc-obj/ethernet.o
+attempt to open .//sparc-obj/def.o succeeded
+.//sparc-obj/def.o
+attempt to open .//sparc-obj/sys.o succeeded
+.//sparc-obj/sys.o
+attempt to open .//sparc-obj/mem.o succeeded
+.//sparc-obj/mem.o
+attempt to open .//sparc-obj/ajit_mt_irc.o succeeded
+.//sparc-obj/ajit_mt_irc.o
+attempt to open .//sparc-obj/cortos_devices.o succeeded
+.//sparc-obj/cortos_devices.o
+attempt to open .//sparc-obj/ethernetif.o succeeded
+.//sparc-obj/ethernetif.o
+attempt to open .//sparc-obj/ajit_mt_sw_traps.o succeeded
+.//sparc-obj/ajit_mt_sw_traps.o
+attempt to open .//sparc-obj/ajit_generic_sys_calls.o succeeded
+.//sparc-obj/ajit_generic_sys_calls.o
+attempt to open .//sparc-obj/tcp_out.o succeeded
+.//sparc-obj/tcp_out.o
+attempt to open .//sparc-obj/udp.o succeeded
+.//sparc-obj/udp.o
+attempt to open .//sparc-obj/etharp.o succeeded
+.//sparc-obj/etharp.o
+attempt to open .//sparc-obj/init.o succeeded
+.//sparc-obj/init.o
+.//sparc-obj/init.o: In function `lwip_init':
+init.c:(.text+0x0): multiple definition of `lwip_init'
+.//sparc-obj/init.o:init.c:(.text+0x0): first defined here
+attempt to open .//sparc-obj/cortos_bget.o succeeded
+.//sparc-obj/cortos_bget.o
+attempt to open .//sparc-obj/ajit_access_routines.o succeeded
+.//sparc-obj/ajit_access_routines.o
+attempt to open .//sparc-obj/altcp_alloc.o succeeded
+.//sparc-obj/altcp_alloc.o
+attempt to open .//sparc-obj/dhcp.o succeeded
+.//sparc-obj/dhcp.o
+attempt to open .//sparc-obj/timeouts.o succeeded
+.//sparc-obj/timeouts.o
+attempt to open .//sparc-obj/ip4_frag.o succeeded
+.//sparc-obj/ip4_frag.o
+attempt to open .//sparc-obj/cortos_traps_init.o succeeded
+.//sparc-obj/cortos_traps_init.o
+attempt to open .//sparc-obj/main.o succeeded
+.//sparc-obj/main.o
+attempt to open .//sparc-obj/pbuf.o succeeded
+.//sparc-obj/pbuf.o
+attempt to open .//sparc-obj/igmp.o succeeded
+.//sparc-obj/igmp.o
+attempt to open .//sparc-obj/altcp_tcp.o succeeded
+.//sparc-obj/altcp_tcp.o
+attempt to open .//sparc-obj/__bget.o succeeded
+.//sparc-obj/__bget.o
+attempt to open .//sparc-obj/cortos_util_cvt.o succeeded
+.//sparc-obj/cortos_util_cvt.o
+attempt to open .//sparc-obj/altcp.o succeeded
+.//sparc-obj/altcp.o
+attempt to open .//sparc-obj/raw.o succeeded
+.//sparc-obj/raw.o
+attempt to open .//sparc-obj/tcp.o succeeded
+.//sparc-obj/tcp.o
+attempt to open .//sparc-obj/cortos_queues.o succeeded
+.//sparc-obj/cortos_queues.o
+attempt to open .//sparc-obj/stats.o succeeded
+.//sparc-obj/stats.o
+attempt to open .//sparc-obj/acd.o succeeded
+.//sparc-obj/acd.o
+attempt to open .//sparc-obj/ajit_mmap.o succeeded
+.//sparc-obj/ajit_mmap.o
+attempt to open .//sparc-obj/ip4_addr.o succeeded
+.//sparc-obj/ip4_addr.o
+attempt to open .//sparc-obj/dns.o succeeded
+.//sparc-obj/dns.o
+attempt to open .//sparc-obj/cortos_locks.o succeeded
+.//sparc-obj/cortos_locks.o
+attempt to open .//sparc-obj/ajit_ipi.o succeeded
+.//sparc-obj/ajit_ipi.o
+attempt to open .//sparc-obj/netif.o succeeded
+.//sparc-obj/netif.o
+attempt to open .//sparc-obj/ip.o succeeded
+.//sparc-obj/ip.o
+attempt to open .//sparc-obj/sys_arch.o succeeded
+.//sparc-obj/sys_arch.o
+attempt to open .//sparc-obj/additional_serial.o succeeded
+.//sparc-obj/additional_serial.o
+attempt to open .//sparc-obj/__bget_ncram.o succeeded
+.//sparc-obj/__bget_ncram.o
+attempt to open .//sparc-obj/inet_chksum.o succeeded
+.//sparc-obj/inet_chksum.o
+attempt to open .//sparc-obj/icmp.o succeeded
+.//sparc-obj/icmp.o
+attempt to open /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libm.a succeeded
+attempt to open /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libc.a succeeded
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libc.a)__C_ctype_b.os
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libc.a)memset.os
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libc.a)strlen.os
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libc.a)memcpy.os
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libc.a)memcmp.os
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libc.a)strncmp.os
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libc.a)atol.os
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libc.a)strtol.os
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libc.a)_stdlib_strto_l.os
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libc.a)errno.os
+attempt to open /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/../lib//libgcc.a failed
+attempt to open /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/sparc-buildroot-linux-uclibc/sysroot/usr/lib/..//lib/libgcc.a failed
+attempt to open /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/libgcc.a succeeded
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/libgcc.a)_fixdfdi.o
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/libgcc.a)_fixunsdfdi.o
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/libgcc.a)_floatdidf.o
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/libgcc.a)_divdi3.o
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/libgcc.a)_moddi3.o
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/libgcc.a)_udivdi3.o
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/libgcc.a)_umoddi3.o
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/libgcc.a)_divsi3.o
+(/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/build/buildroot-2014.08/output/host/usr/lib/gcc/sparc-buildroot-linux-uclibc/4.7.4/libgcc.a)_clz.o
+Error: in building elf main.elf
+Error: sparc-executable build failed.
+CoRTOS: ERROR: command return code 1
+CoRTOS: ERROR: Status 1 while executing /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/cortos_build/build.sh -- Correct the errors above.
+root@bad0e83e4f49:/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip# 
+
+
