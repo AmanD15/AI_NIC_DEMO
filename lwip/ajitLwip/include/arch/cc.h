@@ -8,10 +8,10 @@
 #include <core_portme.h>
 
 #include <string.h>
-#include <sys/time.h>
 
 
-#define BYTE_ORDER  BIG_ENDIAN
+
+//#define BYTE_ORDER  BIG_ENDIAN
 
 typedef uint8_t     u8_t;
 typedef int8_t      s8_t;

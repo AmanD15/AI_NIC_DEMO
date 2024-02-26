@@ -1749,6 +1749,3 @@ Error: in building elf main.elf
 Error: sparc-executable build failed.
 CoRTOS: ERROR: command return code 1
 CoRTOS: ERROR: Status 1 while executing /home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip/cortos_build/build.sh -- Correct the errors above.
-root@bad0e83e4f49:/home/ajit/ajit-toolchain/harshad/sid_work/toolchain/ajit-toolchain/AI_NIC_DEMO/lwip/ajitLwip# 
-
-
