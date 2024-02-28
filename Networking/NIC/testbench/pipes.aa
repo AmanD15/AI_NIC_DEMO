@@ -58,4 +58,10 @@ $pipe rx_out_pipe : $uint<73> $depth 2
 $pipe tx_in_pipe : $uint<73> $depth 2
 
 
+// debug queue
+$pipe debug_queue_command  : $uint<64> $depth 1
+$pipe debug_queue_response : $uint<64> $depth 1
 
+// queue op  size  wp  rp
+// 4     4    8    8   8
+$pipe  QUEUE_MONITOR_SIGNAL: $uint<32> $signal

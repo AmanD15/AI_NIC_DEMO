@@ -1,7 +1,7 @@
 #ifndef tb_queue_h_______    
 #define tb_queue_h_______    
 
-#define QUEUE_SIZE_IN_MSGS       4
+#define QUEUE_SIZE_IN_MSGS       2
 #define QUEUE_MSG_SIZE_IN_BYTES  8
 
 uint32_t getField (uint32_t q_base_addr, uint32_t field);
@@ -24,4 +24,11 @@ int pushIntoQueue (uint64_t q_base_address, uint64_t val);
 
 int acquireLock  (uint64_t q_base_address);
 int releaseLock   (uint64_t q_base_address);
+
+int debugPushIntoQueue (uint32_t queue_id, uint32_t server_id,  uint32_t val);
+int debugPopFromQueue (uint32_t queue_id, uint32_t server_id, uint64_t* rval);
+
+int checkQueues(int queue_id);
+int checkQueuesInReverse (int queue_id);
+
 #endif

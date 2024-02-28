@@ -66,8 +66,8 @@ $is
 
 			// get a buffer from free queue.
 			$call popFromQueue (FREEQUEUE 0) (rx_buffer_pointer status)
-
 			$barrier
+
 
 			$guard (~status)// 0 = success
 				$call loadBuffer (rx_buffer_pointer) (bad_packet_identifier)
@@ -115,7 +115,7 @@ $is
 {
 	$rreport(populateRxQueue started_populate_rx_queue_module LAST_WRITTEN_RX_QUEUE_INDEX)
 
-	$branchblock[PushIntoQueue]
+	$branchblock[push_into_queue]
 	{
 		// iterate over the servers, and try to find
 		// one with an available slot in its rx-queue.
@@ -210,8 +210,13 @@ $is
 		// Extract individual components of the word 
 		$volatile $split (ethernet_header 1 64 8)(last_bit wdata wkeep)
 	
-		// write control information.
-		$call accessMemoryDword (UNLOCKMEM WRITEMEM wkeep buf_pointer ($bitcast ($uint<64>) addr_offset)  wdata)  (ignore_return) 
+
+
+		$call accessMemoryDword (WRITEMEM buf_pointer 
+					($bitcast ($uint<64>) addr_offset)  wdata)  (ignore_return) 
+
+			
+
 
 		$volatile naddr_offset := (addr_offset + 8)
 
@@ -239,15 +244,20 @@ $is
 
 				// Read Data from Payload Pipe
 				$phi payload_data := nic_rx_to_packet $on $entry, $loopback
+
 			$endmerge
 	
 
 			// Extract payload word components
 			$volatile $split (payload_data 1 64 8)(last_bit wdata wkeep)
 			last_keep := wkeep
-			
+
+
 			// Load wdata to memory with wkeep = bmask
-			$call accessMemoryDword (UNLOCKMEM WRITEMEM wkeep base_buf_pointer ($bitcast ($uint<64>) active_addr_offset)  wdata) (ignore_return) 
+			$call accessMemoryDword 
+					(WRITEMEM base_buf_pointer 
+						($bitcast ($uint<64>) active_addr_offset)  wdata) (ignore_return) 
+
 
 			$volatile nactive_addr_offset := (active_addr_offset + 8)
 
@@ -263,7 +273,7 @@ $is
 
 	//
 	// how many bytes in the packet (including the control word in the first dword
-	// of the buffer.
+	// of the buffer, and two dwords for the header.
 	//
 	$volatile packet_size_11 := ($bitcast ($uint<11>) active_addr_offset)
 }
@@ -279,8 +289,10 @@ $is
 	// stored by NIC so and so and send to NIC so and so etc.. 
 	$volatile control_data := ($bitcast ($uint<64>) ($concat packet_size last_keep))
 
+
 	// Write this control data with bmask set to all 1s to base_buffer_pointer location
-	$call accessMemoryDword (UNLOCKMEM READMEM FULL_BYTE_MASK base_buffer_pointer 0 control_data) (ignore_return)
+	$call accessMemoryDword (WRITEMEM base_buffer_pointer 0 control_data) (ignore_return)
+
 }
 
 

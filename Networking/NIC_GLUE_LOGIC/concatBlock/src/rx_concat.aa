@@ -18,7 +18,8 @@ $module [rx_concat] $in () $out () $is
 	
 		$merge $entry $loopback 
 			// Need to ensure that next-circulant has been sampled before RX is updated.
-			$phi CIRCULANT := ($concat $zero<64> $one<4> $zero<8>)  $on $entry next_CIRCULANT $on $loopback $barrier
+			$phi CIRCULANT := ($concat $zero<64> $one<4> $one<8>)  
+							$on $entry next_CIRCULANT $on $loopback $barrier
 
 			// last data ignore
 			//  1    8    1
@@ -36,7 +37,8 @@ $module [rx_concat] $in () $out () $is
 
 			// shift in from the right so first byte is at MSB position.
 			$volatile dword_to_pipe := ($concat ($slice collected_dword 55 0) rx_data)
-			$volatile next_collected_dword := ($mux send_to_pipe $zero<64> dword_to_pipe)
+			$volatile next_collected_dword := 
+					($mux send_to_pipe $zero<64> dword_to_pipe)
 
 			$volatile next_running_byte_count := 
 					($mux send_to_pipe $one<4> (running_byte_count + 1))
@@ -53,8 +55,10 @@ $module [rx_concat] $in () $out () $is
 						(dword_to_pipe << left_shift_amount))
 
 			$volatile byte_mask_to_pipe :=
-				($mux (send_to_pipe & (~rx_last)) (~$zero<8>)
-						(next_running_byte_mask << ($bitcast ($uint<8>) (8 - next_running_byte_count))))
+				($mux (send_to_pipe & (~rx_last)) 
+					(~$zero<8>)
+					(running_byte_mask << ($bitcast ($uint<8>) (8 - running_byte_count)))
+				)
 
 			// next..
 			$volatile next_CIRCULANT :=  ($concat next_collected_dword next_running_byte_count next_running_byte_mask)

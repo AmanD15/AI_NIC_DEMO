@@ -54,19 +54,19 @@ typedef struct __NicPacketBuffer {
 // addresses are virtual.   The physical addresses
 // are kept separately in the NIC.
 typedef struct __NicCortosQueue {
-  uint32_t totalMsgs;  
-  uint32_t readIndex;				   
-  uint32_t writeIndex;				   
-  uint32_t length;				    
-  uint32_t msgSizeInBytes;			    
-  uint32_t lock_virtual_address;			    
-  uint32_t buffer_virtual_address;
+  uint32_t totalMsgs;     			 // + 0
+  uint32_t readIndex;				 // + 4
+  uint32_t writeIndex;				 // + 8 
+  uint32_t length;				 // + 12 
+  uint32_t msgSizeInBytes;			 // + 16   
+  uint32_t lock_virtual_address;	         // + 20		    
+  uint32_t buffer_virtual_address;               // + 24
    // if misc == 1, then assume single writer and single reader and don't use locks
    //    Use misc[31:24] to keep server id
    //    Use misc[23:16] to keep queue-type 
    //    misc[15:1] is unused.
    //    Use misc[0] to keep single writer/reader status.
-  uint32_t misc;		
+  uint32_t misc;		                 // + 28
 	
 } NicCortosQueue;
 

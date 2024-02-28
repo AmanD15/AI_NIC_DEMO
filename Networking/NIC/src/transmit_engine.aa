@@ -51,6 +51,7 @@ $module [transmitEngineDaemon] $in () $out () $is
 			$guard (push_pointer_back_to_free_Q)
 				$call pushIntoQueue (FREEQUEUE 0 pkt_pointer) (push_status)
 
+
 			count := ($mux (tx_flag & transmitted_flag)  
 						($mux init_flag $zero<32> (count + 1))
 						count) $buffering 2
@@ -82,7 +83,6 @@ $module [getTxPacketPointerFromServer]
 	$call popFromQueue    (TXQUEUE server_index)  (pkt_pointer status)
 
 	$attribute input_buffering 0
-	$attribute output_buffering 0
 }
 
 
@@ -96,7 +96,7 @@ $module [transmitPacket]
 	$volatile control_data_addr := packet_pointer
 
 	$rreport(transmitPacket control_data_addr_is packet_pointer control_data_addr)	
-	$call accessMemoryDword ($zero<1> $one<1> FULL_BYTE_MASK control_data_addr  0 $zero<64>) (control_data)
+	$call accessMemoryDword (READMEM control_data_addr  0 $zero<64>) (control_data)
 	
 	
 	// get packet_size and tkeep(bytemask) of last word
@@ -110,13 +110,13 @@ $module [transmitPacket]
 
 			$phi count_down := (packet_size - 16) $on $entry ncount_down $on $loopback
 
-			//packet starts after 3 d-words (64 bit) in buffer
+			//packet starts after 3 d-words (64 bits each) in the buffer
 			$phi mem_addr_offset := ($bitcast ($uint<16>) 24) $on $entry nmem_addr_offset $on $loopback
 
 		$endmerge
 
 		// read packet data
-		$call accessMemoryDword ($zero<1> $one<1> FULL_BYTE_MASK control_data_addr 
+		$call accessMemoryDword (READMEM control_data_addr 
 							($bitcast ($uint<64>) mem_addr_offset) $zero<64>) (data)
 		
 		// TODO: will need to calculate IP-header checksum in future
@@ -134,10 +134,11 @@ $module [transmitPacket]
 		$while not_last_word
 	
 
+		last_offset := nmem_addr_offset
 	
 		//last word
-		$call accessMemoryDword ($zero<1> $one<1> FULL_BYTE_MASK control_data_addr 
-							($bitcast ($uint<64>) mem_addr_offset) $zero<64>) (last_word)
+		$call accessMemoryDword (READMEM control_data_addr 
+						($bitcast ($uint<64>) last_offset) $zero<64>) (last_word)
 		
 		// transmit last word
 		$rreport(transmitPacket sending_last_word last_word)
@@ -145,6 +146,6 @@ $module [transmitPacket]
 		
 		// transmit successful if packet_size amount of data is succesfully
 		// transmitted
-		status := (packet_size == ($bitcast ($uint<11>) mem_addr_offset))
+		status := (packet_size == ($bitcast ($uint<11>) last_offset))
 	}	
 }

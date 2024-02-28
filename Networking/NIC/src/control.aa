@@ -49,7 +49,12 @@ $module [setGlobalSignals]
 
 $module [controlDaemon] $in () $out () $is
 {
+
 		
+	// set up the lock, at the beginning.
+	// (will be accessed in doMemAccess)
+	memory_access_lock := 1
+
 	// control-register set to 0.
 	$call accessRegister (0 0 0 0) (ign)
 
@@ -93,4 +98,5 @@ $module [controlDaemon] $in () $out () $is
 	
 		$while 1
 	}
+	ignq := QUEUE_MONITOR_SIGNAL $keep
 }
