@@ -1,0 +1,50 @@
+	Building application using LwIP networking stack
+
+	Authors : Siddhant Singh Tomar.
+    	Date    : 28/02/2024
+    	
+ 	Directory structure explained:
+ 	
+ 	1.	This directory holds C code for Ajit and utilizes lwIP.
+ 		Configuration options for the lwIP stack can be found in 
+ 		ajitLwip/include/lwipopts.h, while low-level driver code 
+ 		resides in ajitLwip/src/ethernetif.c.
+ 	
+		ajitLwip/
+		
+			├── src/             
+			├── include/     			  
+			├── main.c    
+
+	2. 	This directory exclusively contains the original LwIP 
+		TCP/IP stack by Adam Dunkels.
+		 
+		    lwip/
+		    
+			├── contrib/
+			├── doc/
+			├── src/	
+			├── test/	
+				
+		**No modifications are applied to the code maintained at 
+		both https://github.com/lwip-tcpip/lwip 
+		and http://git.savannah.gnu.org/cgit/lwip.git. 
+		
+		Users can interchangeably utilize either the older stable 
+		version or the latest updated one by directly replacing this 
+		"lwip" folder.
+	
+
+		NOTE:	A. All the necessary source and header files for building 
+			   the project within the lwip/src directory.
+			 
+ 			B. ** header file "init.h" needs to be renamed to "Init.h"
+ 			   ** source file "init.c" needs to be renamed to "Init.c"
+ 			   otherwise main.elf does not build, and one can observe 
+ 			   "multiple definition" error in the log.
+ 			   
+ 	3.	This folder contains reference material for understanding Lwip.
+ 		
+ 		refMaterial/
+ 			├── ..            
+			├── ..			   	
