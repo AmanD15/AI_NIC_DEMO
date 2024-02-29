@@ -1,7 +1,7 @@
 
 /* Define those to better describe your network interface. */
 
-#include "./include/ethernetif.h"
+#include "include/ethernetif.h"
 
 #define IFNAME0 'e'
 #define IFNAME1 'n'
@@ -143,7 +143,7 @@ netif_initialize(struct netif *netif)
 {
 
   /* set MAC hardware address */
-  netif->hwaddr_len = ETHARP_HWADDR_LEN;
+  netif->hwaddr_len = ETH_HWADDR_LEN;
   netif->hwaddr[0] = 0x00;
   netif->hwaddr[1] = 0x0a;
   netif->hwaddr[2] = 0x35;
@@ -173,6 +173,7 @@ netif_initialize(struct netif *netif)
 int 
 main()
 {
+  
   struct netif netif;
   
   lwip_init();

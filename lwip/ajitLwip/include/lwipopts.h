@@ -60,7 +60,7 @@
 #define LWIP_NUM_NETIF_CLIENT_DATA (LWIP_MDNS_RESPONDER)
 
 #define LWIP_HAVE_LOOPIF           0
-#define LWIP_NETIF_LOOPBACK        1
+#define LWIP_NETIF_LOOPBACK        0
 #define LWIP_LOOPBACK_MAX_PBUFS    10
 
 #define TCP_LISTEN_BACKLOG         1
@@ -71,9 +71,9 @@
 
 #define LWIP_TCPIP_CORE_LOCKING    1
 
-#define LWIP_NETIF_LINK_CALLBACK        1
-#define LWIP_NETIF_STATUS_CALLBACK      1
-#define LWIP_NETIF_EXT_STATUS_CALLBACK  1
+#define LWIP_NETIF_LINK_CALLBACK        0
+#define LWIP_NETIF_STATUS_CALLBACK      0
+#define LWIP_NETIF_EXT_STATUS_CALLBACK  0
 
 #ifdef LWIP_DEBUG
 
@@ -213,16 +213,17 @@ a lot of data that needs to be copied, this should be set high. */
 
 
 /* ---------- ARP options ---------- */
-#define LWIP_ARP                1
+#define LWIP_ETHERNET           1
+#define LWIP_ARP                0
 #define ARP_TABLE_SIZE          10
-#define ARP_QUEUEING            1
+#define ARP_QUEUEING            0
 
 
 /* ---------- IP options ---------- */
 /* Define IP_FORWARD to 1 if you wish to have the ability to forward
    IP packets across network interfaces. If you are going to run lwIP
    on a device with only one network interface, define this to 0. */
-#define IP_FORWARD              1
+#define IP_FORWARD              0
 
 /* IP reassembly and segmentation.These are orthogonal even
  * if they both deal with IP fragments */
@@ -316,14 +317,6 @@ a lot of data that needs to be copied, this should be set high. */
 #if !defined(NO_SYS) || !NO_SYS /* default is 0 */
 void sys_check_core_locking(void);
 #define LWIP_ASSERT_CORE_LOCKED()  sys_check_core_locking()
-#endif
-
-#if 0
-#ifndef LWIP_PLATFORM_ASSERT
-/* Define LWIP_PLATFORM_ASSERT to something to catch missing stdio.h includes */
-void lwip_example_app_platform_assert(const char *msg, int line, const char *file);
-#define LWIP_PLATFORM_ASSERT(x) lwip_example_app_platform_assert(x, __LINE__, __FILE__)
-#endif
 #endif
 
 #endif /* LWIP_LWIPOPTS_H */

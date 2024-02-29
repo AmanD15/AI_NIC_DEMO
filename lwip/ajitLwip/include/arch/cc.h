@@ -2,16 +2,18 @@
 #define LWIP_HDR_CC_H
 
 
+#include <stdint.h>
+#include <string.h>
+
 #include <cortos.h>
 #include <ajit_access_routines.h>
 #include <ajit_mt_irc.h>
 #include <core_portme.h>
 
-#include <string.h>
 
 
 
-//#define BYTE_ORDER  BIG_ENDIAN
+#define BYTE_ORDER  LITTLE_ENDIAN
 
 typedef uint8_t     u8_t;
 typedef int8_t      s8_t;

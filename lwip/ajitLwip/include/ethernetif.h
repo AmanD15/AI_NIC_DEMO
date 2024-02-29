@@ -57,9 +57,8 @@
 #include "lwip/pbuf.h"
 #include "lwip/stats.h"
 #include "lwip/snmp.h"
-
 #include "lwip/etharp.h"
-#include "netif/ppp/pppoe.h"
+
 
 
 
