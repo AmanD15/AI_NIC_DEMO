@@ -15,8 +15,13 @@ $in
 	//  (muxed with nic request in test_system)
 	$pipe TB_PROCESSOR_TO_MEM	64
 
+	$pipe debug_queue_command	64
 	
 $out
+
+	$pipe debug_queue_response      64
+
+	
 	// Packet interface
 	$pipe nic_mac_bridge_to_tb	16
 

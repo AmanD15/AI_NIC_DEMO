@@ -1,3 +1,72 @@
-A block diagram showing the testbench
-threads and their interaction with
-the NIC being verified.
+	A test setup for the verification of the NIC
+		M.P. Desai
+
+------------------------------------------------------------
+1. Overview
+------------------------------------------------------------
+
+	The test setup consists of a test-system and
+	a test-bench
+
+------------------------------------------------------------
+2. Test-system
+------------------------------------------------------------
+
+	The test-system consists of 
+		- the NIC
+			a complete model of a single
+			NIC.
+
+		- the NIC_MAC_BRIDGE
+			MAC <-> NIC concatenation and
+			deconcatenation functionality.
+
+		- the TESTER
+			A conversion layer between the
+			test-system and the software test
+			bench (ie the PROCESSOR)
+
+			NIC <-> PROCESSOR slave interface
+			bridging
+
+			NIC <-> RAM master interface 
+			bridging.
+
+			NIC <-> MAC bridging 
+
+		- the ACB-MUX
+			Mux the two masters (NIC and PROCESSOR)
+			onto a single bus.  Lock-aware.
+
+------------------------------------------------------------
+3. Test-bench
+------------------------------------------------------------
+	
+		Implements the following flow
+
+			- initialize the FREE, RX, TX queues in memory.
+			- set the physical addresses related to the
+				queue (the queue-base, bget, lock addresses).
+				in the NIC registers.
+			- start transmit and receive daemons.
+
+		The test-bench contains a processor-side implementation
+		of the pop and push functions for the FREE, RX, TX queues.
+		These are exactly in synch with the NIC implementation,
+		except that 32-bit virtual addresses are used in the 
+		testbench.
+
+------------------------------------------------------------
+4. What has been tested?
+------------------------------------------------------------
+
+		Up to 16 packets, with queues of depth 4 
+		have been checked.
+
+------------------------------------------------------------
+5. Diagram
+------------------------------------------------------------
+	A block diagram showing the testbench
+	threads and their interaction with
+	the NIC being verified is included in this
+	directory.

@@ -72,13 +72,9 @@ typedef struct _CortosQueueHeader {
   uint32_t misc;				    +28
 } CortosQueueHeader;
 
-  The rx/tx/free queues assume a message size of 4-bytes.
-  The 4-bytes represent buffer_pointer[35:4], and we assume
-  that allocated buffer pointers (by software) are quad-word
-  aligned.
+  The rx/tx/free queues assume a message size of 8-bytes.
+  The 8-bytes represent buffer_pointer[35:0].
 
-  Further we assume that the rx/tx/free queue pointers are
-  also quad-word aligned!
 
 ---------------------------------------------------------
 4. Registers in the NIC

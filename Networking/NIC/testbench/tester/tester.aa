@@ -27,13 +27,17 @@ $module [tbAfbDaemon]
 $module [tbMemDaemon] $in () $out () $is
 {
 	$branchblock[loop] {
-		$merge $entry loopback $endmerge
+		$merge $entry loopback 
+			$phi COUNT := $zero<8> $on $entry nCOUNT $on loopback
+		$endmerge
+
+		nCOUNT := (COUNT + 1)
 		
 		req := MERGED_ACB_REQUEST
 		$volatile $split (req 1 1 8 36 64)
 					(lock rwbar bmask addr wdata)
 
-		$volatile ctrl_word := ($concat $zero<23> rwbar bmask ($slice addr 31 0))
+		$volatile ctrl_word := ($concat COUNT $zero<14> lock rwbar bmask ($slice addr 31 0))
 		TEST_SYSTEM_TO_TB_MEM := ctrl_word
 		TEST_SYSTEM_TO_TB_MEM := wdata
 
