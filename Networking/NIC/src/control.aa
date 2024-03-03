@@ -35,7 +35,6 @@ $module [setGlobalSignals]
 	$call accessRegister (READMEM _hF P_N_SERVERS_REGISTER_INDEX 0) (n_servers)
 	S_NUMBER_OF_SERVERS  := n_servers
 
-	$barrier
 	$call accessRegister (READMEM _hF P_NIC_CONTROL_REGISTER_INDEX 0) (ctrl_reg)
 	S_CONTROL_REGISTER := ctrl_reg
 	MAC_ENABLE := (ctrl_reg [] 1)
@@ -85,6 +84,8 @@ $module [controlDaemon] $in () $out () $is
 			// access the register.
 			$call accessRegister (rwbar bmask index wdata) (rdata)
 			
+			// ensure that the register has been
+			// written into.
 			$barrier 
 
 			$volatile update_control_register := ((~rwbar) & (index == 0))

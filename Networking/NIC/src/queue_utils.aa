@@ -159,7 +159,6 @@ $is
 {
 	// get the physical address of the queue in memory.
 	$call getQueuePointer (queue_type server_id) (q_base_address)
-	$barrier
 
 	// check if misc is 1,
 	// if 1 check if total_msgs is 0
@@ -180,6 +179,8 @@ $is
 	$guard (~lock_n) 
 		$call acquireLock(q_lock_address) (m_ok)
 
+	// do not proceed unless lock
+	// is obtained.
 	$barrier
 	
 	// Read from the CORTOS2 data srtucture.
@@ -195,7 +196,6 @@ $is
 					($bitcast ($uint<8>)  total_msgs)
 					($bitcast ($uint<8>)  write_index)
 					($bitcast ($uint<8>)  read_index))
-	$barrier
 
 	$volatile round_off := (read_index == (queue_length - 1))
 	$volatile next_ri   := ($mux round_off 0 (read_index + 1))
@@ -215,6 +215,8 @@ $is
 					($bitcast ($uint<8>) (total_msgs - 1)) 
 					($bitcast ($uint<8>)  write_index)
 					($bitcast ($uint<8>)  next_ri))
+
+	// ensure that all updates have been completed, before releasing the lock.
 	$barrier
 
 	$guard(~lock_n) $call releaseLock (q_lock_address) ()
@@ -263,6 +265,7 @@ $is
 	$guard (~lock_n) 
 		$call acquireLock (q_lock_address) (m_ok) 
 
+	// do not proceed without acquiring the lock.
 	$barrier
 
 	// access and manipulate cortos2 data structure
@@ -293,6 +296,7 @@ $is
 					($bitcast ($uint<8>)  next_wi)
 					($bitcast ($uint<8>) read_index))
 
+	// ensure all done before releasing the queue lock.
 	$barrier
 
 	$guard (~lock_n) $call releaseLock (q_lock_address) ()

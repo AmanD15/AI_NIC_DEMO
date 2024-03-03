@@ -66,7 +66,6 @@ $is
 
 			// get a buffer from free queue.
 			$call popFromQueue (FREEQUEUE 0) (rx_buffer_pointer status)
-			$barrier
 
 
 			$guard (~status)// 0 = success
@@ -164,8 +163,6 @@ $is
 	// Read from Ethernet Header Pipe and stores into memory 
 	// Returns the last pointer location which was written to
 	$call writeEthernetHeaderToMem (rx_buffer_pointer) (addr_offset_after_eth_header)
-
-	$barrier
 
 	// Read from Ethernet Payload Pipe and stores in memory starting from the last written
 	// pointer location

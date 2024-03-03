@@ -60,8 +60,8 @@
 4. What has been tested?
 ------------------------------------------------------------
 
-		Up to 16 packets, with queues of depth 4 
-		have been checked.
+		Up to 16 packets, with free/rx/tx queues of 
+		depth 4 have been checked.
 
 ------------------------------------------------------------
 5. Diagram

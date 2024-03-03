@@ -12,7 +12,7 @@ $module [calculateAddress36] $in (addr_base offset: $uint<64>) $out (addr: $uint
 //-----------------------------------------------------------------------------------------------------
 //  Base memory access routines (used indirectly by the rest of the NIC).
 //-----------------------------------------------------------------------------------------------------
-$pipeline $depth 7 $fullrate $module [accessMemoryBase]
+$pipeline $depth 7 $fullrate $opaque $module [accessMemoryBase]
 	$in (request: $uint<110>) $out (response: $uint<65>) $is
 {
 	NIC_TO_MEMORY_REQUEST := request $mark REQ
@@ -158,6 +158,9 @@ $pipeline $depth 15 $fullrate   $module [doMemAccess]
 
 	// Get the memory lock to continue.
 	mem_lock := memory_access_lock
+
+	// ensure that the memory access lock has
+	// been obtained.
 	$barrier
 
 	// release the lock right-away if 
@@ -189,6 +192,7 @@ $pipeline $depth 15 $fullrate   $module [doMemAccess]
 				is_dword_access     	     r_dword)
 
 
+	// Ensure that ldstub has completed.
 	$barrier
 
 	// return the lock if it is an atomic!
