@@ -540,6 +540,7 @@ PPPoE:
 
 PLAN:
     can only give input (decide which packet to give)
+    how to bring pbuf into picture
     deal with pbuf data
     check snmp stuff and perf counters
 

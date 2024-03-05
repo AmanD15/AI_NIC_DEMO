@@ -24,6 +24,58 @@ CortosQueueHeader* tx_queue;
 volatile uint32_t* volatile Buffers[8];
 int message_counter;
 
+static void
+low_level_init()
+{
+ 
+	uint32_t msgs_written;
+	uint32_t msgSizeInBytes = 4;
+	uint32_t length = 8;
+    uint32_t i;
+
+	// Get queues.
+
+	free_queue = cortos_reserveQueue(msgSizeInBytes, length, 1);
+	rx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
+	tx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
+		
+	cortos_printf("Reserved queues: free=0x%lx, rx=0x%lx, tx=0x%lx\n",
+				(uint32_t) free_queue,
+				(uint32_t) rx_queue,
+				(uint32_t) tx_queue);
+
+				
+	// Allocate buffers
+	
+	
+	for(i = 0; i < 8; i++)
+	{
+		Buffers[i] = (uint32_t*) cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
+		cortos_printf("Allocated Buffer[%d] = 0x%lx\n", i,(uint32_t)Buffers[i]);
+	}
+
+
+	// Preparing the allocated buffers, to push into the Q, via cortos_writeMessages
+
+	uint32_t BuffersForQ[8];
+	for(i = 0;i < 8; i++)
+	BuffersForQ[i] = (uint32_t) Buffers[i];
+	
+	// Put the four buffers onto the free-queue, so free queue has space, if Tx Q wants to push after transmission.
+
+	for(i = 0; i < 4; i++)
+	{
+		msgs_written = cortos_writeMessages(free_queue, (uint8_t*) (BuffersForQ + i), 1);
+		cortos_printf("Stored Buffer[%d] in free-queue = 0x%lx\n", i, BuffersForQ[i]);
+	}
+
+
+  /* Do whatever else is needed to initialize interface. */
+  
+}
+
+
+
 /*************************** Interrupt Handler Begins ********************************/
 
 #define TIMERCOUNT 100000
@@ -98,7 +150,7 @@ void my_timer_interrupt_handler()
 	else
 		cortos_printf ("no free buffer available for NIC!\n");
 		
-
+    
 
 	// clear timer control register.
 	__ajit_write_timer_control_register_via_vmap__ (0x0);
@@ -170,35 +222,114 @@ netif_initialize(struct netif *netif)
   return ERR_OK;
 
 }
-int 
-main()
+
+
+
+/*************************** main begins ********************************/
+
+int main()
 {
-  
-  struct netif netif;
-  
-  lwip_init();
-  netif_add_noaddr(&netif, NULL, netif_initialize, netif_input);
+	__ajit_write_serial_control_register__ (TX_ENABLE); 
 
-  //netif_create_ip6_linklocal_address(&netif, 1);
-  //netif.ip6_autoconfig_enabled = 1;
-  //netif_set_status_callback(&netif, netif_status_callback);
-  
-  netif_set_default(&netif);
-  netif_set_up(&netif);
-  
-  
+	
+	cortos_printf ("Started\n");
+
+	struct netif netif;
+	lwip_init();
+	netif_add_noaddr(&netif, NULL, netif_initialize, netif_input);
+	netif_set_default(&netif);
+	netif_set_up(&netif);
 
 
-    /* Cyclic lwIP timers check */
-    //sys_check_timeouts();
-     
-    /* your application goes here */
+/* Application beigns here*/
+
+	low_level_init();
+	cortos_printf ("Configuration Done. NIC has started\n");
+
+	uint32_t i;
+	uint32_t data[1];
+	uint32_t controlRegister;
+	
 
 
+	// enable interrupt controller for the current thread.
+	enableInterruptControllerAndAllInterrupts(0,0);
+
+	// enable the timer, right away..
+	__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);
+	message_counter=0;
+	
+	
+	while(1)
+
+	// spin this loop
+	// while this loop is running, the interrupt handler
+	// will be invoked by a timer interrupt (every 1ms or 10ms etc.)
+	//   1. the interrupt handler will pop a packet from the tx-queue
+	//      and if available, check the packet data if it is as expected.
+	//   2. the interrupt handler will pop a buffer from the free queue
+	//       and if available, fill it and push it to the rx-queue.
+
+	{
+		
+		// disable timer interrupt and confirm that it is
+		// disabled, by reading back the interrupt control register.
+		//__TURN_OFF_INTERRUPTS__;
+		
+		disableInterrupt(0, 0, 10);
+		controlRegister = readInterruptControlRegister(0, 0);
+		
+
+		// Read the buffer pointer from RxQ
+		int read_ok = cortos_readMessages(rx_queue, (uint8_t*)data, 1);
+		
+		struct pbuf* p = pbuf_alloc(PBUF_RAW, 30 , PBUF_POOL); // eth_data_count = 30 bytes
+
+		if(p != NULL) {
+			/* Copy ethernet frame into pbuf */
+			//pbuf_take(p, (uint8_t*)data, 30);
+		}
+	
+		if(read_ok) {
+
+			
+			// Write the buffer pointer to TxQ
+			int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)data, 1);
+			message_counter++;
+			// just enable the interrupt by writing to the interrupt control register..
+			//__TURN_ON_INTERRUPTS;
+			enableInterrupt(0, 0, 10);
+				
+
+		}	
+		else
+		{
+			// Spin for 1024 clock cycles.
+			enableInterrupt(0, 0, 10);
+			__ajit_sleep__ (1024);
+		}
 
 
+		if(message_counter == 512) break;
+	}
+	
 
-    
+
+	// free queue
+	cortos_freeQueue(rx_queue);	
+	cortos_freeQueue(tx_queue);	
+	cortos_freeQueue(free_queue);
+
+	// release buffers
+	for(i = 0; i < 8; i++)
+	{
+		cortos_printf("Releasing buffer[%d] 0x%lx\n",i,(uint32_t)Buffers[i]);
+		cortos_brel_ncram(Buffers[i]);
+		cortos_printf("Released  buffer[%d] 0x%lx\n",i,(uint32_t)Buffers[i]);
+		
+	}
+		
+
+	return 0;
 }
-
 
