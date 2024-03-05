@@ -212,8 +212,12 @@ a lot of data that needs to be copied, this should be set high. */
 #define TCP_SYNMAXRTX           4
 
 
-/* ---------- ARP options ---------- */
+/* ---------- ETHERNET options ---------- */
 #define LWIP_ETHERNET           1
+#define ETH_PAD_SIZE            2
+
+
+/* ---------- ARP options ---------- */
 #define LWIP_ARP                0
 #define ARP_TABLE_SIZE          10
 #define ARP_QUEUEING            0
