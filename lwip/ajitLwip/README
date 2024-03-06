@@ -318,7 +318,7 @@ and files in which they are changed */
 
 Options         Value   File    
 
-ETH_PAD_SIZE    2       opt.h
+ETH_PAD_SIZE    2       lwipopts.h
 
 /* Constructing the main function */
     - initialize the LwIP
@@ -535,3 +535,13 @@ PPPoE:
     use PPPoE can connect multiple hosts on a single Ethernet local area network to a remote 
     site via a common device such as a cable or DSL modem. The protocol can also support 
     wireless connections to the internet.
+
+
+
+PLAN:
+    can only give input (decide which packet to give)
+    how to bring pbuf into picture
+    deal with pbuf data
+    check snmp stuff and perf counters
+
+    loopback interface enable once you do this.
