@@ -35,11 +35,16 @@ ResNet-18 with 8-bit quantization       CIFAR-10          88 %                  
 
 ResNet-18 with float data type          CIFAR-10          92 %                  86%
 
-LeNet-5 with 8 bit posit                MNIST             94.59%                94.30%
+Old LeNet-5 with 8 bit posit(9 hours)   MNIST             94.59%                94.30%  
 
-LeNet-5 with 32 bit float               MNIST             96.48%                96.42%
+New LeNet-5 with 8 bit posit(2 hours)   MNIST             86.63%                86.52%
+
+LeNet-5 with 32 bit float(10 min)       MNIST             96.48%                96.42%
 
 Observations
-    - Used tanh activation function, which gives the output values from -1 to 1
-    - The max and min values for each convolution layer(for 32 bit float version)
-         was between -1 to 1
+    - Training of each iteration reduced from 2.5 hours to 10 min
+    - Number of iterations increased from 3 to 12
+    - Previously the time consuming functions were posit conversion(1.5 sec per input) function and 
+        back propogation(2 sec per input)
+    - In new architecture posit conversion takes 0.2 sec per input and backpropogation 
+        takes 0.5 ms per input
