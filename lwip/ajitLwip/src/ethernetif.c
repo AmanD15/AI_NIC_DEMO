@@ -46,7 +46,67 @@
 
 #include "../include/ethernetif.h"
 
+CortosQueueHeader* free_queue;
+CortosQueueHeader* rx_queue;
+CortosQueueHeader* tx_queue;
 
+// queue related constants
+#define NUMBER_OF_BUFFERS 8
+#define BUFFER_SIZE_IN_BYTES 32
+#define QUEUE_LENGTH (16 + 4 * NUMBER_OF_BUFFERS)
+
+volatile uint32_t* volatile Buffers[8];
+
+
+static void
+low_level_init()
+{
+ 
+	uint32_t msgs_written;
+	uint32_t msgSizeInBytes = 4;
+	uint32_t length = 8;
+    uint32_t i;
+
+	// Get queues.
+
+	free_queue = cortos_reserveQueue(msgSizeInBytes, length, 1);
+	rx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
+	tx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
+		
+	cortos_printf("Reserved queues: free=0x%lx, rx=0x%lx, tx=0x%lx\n",
+				(uint32_t) free_queue,
+				(uint32_t) rx_queue,
+				(uint32_t) tx_queue);
+
+				
+	// Allocate buffers
+	
+	
+	for(i = 0; i < 8; i++)
+	{
+		Buffers[i] = (uint32_t*) cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
+		cortos_printf("Allocated Buffer[%d] = 0x%lx\n", i,(uint32_t)Buffers[i]);
+	}
+
+
+	// Preparing the allocated buffers, to push into the Q, via cortos_writeMessages
+
+	uint32_t BuffersForQ[8];
+	for(i = 0;i < 8; i++)
+	BuffersForQ[i] = (uint32_t) Buffers[i];
+	
+	// Put the four buffers onto the free-queue, so free queue has space, if Tx Q wants to push after transmission.
+
+	for(i = 0; i < 4; i++)
+	{
+		msgs_written = cortos_writeMessages(free_queue, (uint8_t*) (BuffersForQ + i), 1);
+		cortos_printf("Stored Buffer[%d] in free-queue = 0x%lx\n", i, BuffersForQ[i]);
+	}
+
+
+  /* Do whatever else is needed to initialize interface. */
+  cortos_printf ("Configuration Done. NIC has started\n");
+}
 ///////////////////////////////////////////////////////////////////////////////////////
 /* Following functions are for reception of ethernet frame 
 
@@ -104,6 +164,8 @@ low_level_input(struct netif *netif)
        * pbuf is the sum of the chained pbuf len members.
        */
      // read data into(q->payload, q->len);
+        memcpy(q->payload, bufptr, q->len);
+        bufptr += q->len;
     }
    // acknowledge that packet has been read();
 
@@ -140,6 +202,7 @@ ethernetif_input(struct netif *netif)
   /* move received packet into a new pbuf */
   p = low_level_input(netif);
   /* if no packet could be read, silently ignore this */
+ 
   if (p != NULL) {
     /* pass all packets to ethernet_input, which decides what packets it supports */
     if (netif->input(p, netif) != ERR_OK) {

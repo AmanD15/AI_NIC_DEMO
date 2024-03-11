@@ -540,7 +540,31 @@ PPPoE:
 
 PLAN:
     can only give input (decide which packet to give)
-    how to bring pbuf into picture
+    how to bring pbuf into picture : pbuf_take()
+
+    pbuf_init() called inside pbuf_alloc():
+    static void
+    pbuf_init_alloced_pbuf(struct pbuf *p, void *payload, 
+                            u16_t tot_len, u16_t len, 
+                            pbuf_type type, u8_t flags)
+    {
+        p->next = NULL;
+        p->payload = payload;
+        p->tot_len = tot_len;
+        p->len = len;
+        p->type_internal = (u8_t)type;
+        p->flags = flags;
+        p->ref = 1;
+        p->if_idx = NETIF_NO_INDEX;
+
+        LWIP_PBUF_CUSTOM_DATA_INIT(p);
+    }
+
+    
+
+
+
+
     deal with pbuf data
     check snmp stuff and perf counters
 

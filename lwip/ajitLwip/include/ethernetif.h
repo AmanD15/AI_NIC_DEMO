@@ -61,6 +61,7 @@
 
 
 
+static void low_level_init();
 
 /**
  * Helper struct to hold private data used to operate your ethernet interface.

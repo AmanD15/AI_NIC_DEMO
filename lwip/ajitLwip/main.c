@@ -7,81 +7,12 @@
 #define IFNAME1 'n'
 #define ETHERNET_MTU 1500
 
-
-
-// queue related constants
-#define NUMBER_OF_BUFFERS 8
-#define BUFFER_SIZE_IN_BYTES 32
-#define QUEUE_LENGTH (16 + 4 * NUMBER_OF_BUFFERS)
-
-
-
-CortosQueueHeader* free_queue;
-CortosQueueHeader* rx_queue;
-CortosQueueHeader* tx_queue;
-
-
-volatile uint32_t* volatile Buffers[8];
-int message_counter;
-
-static void
-low_level_init()
-{
- 
-	uint32_t msgs_written;
-	uint32_t msgSizeInBytes = 4;
-	uint32_t length = 8;
-    uint32_t i;
-
-	// Get queues.
-
-	free_queue = cortos_reserveQueue(msgSizeInBytes, length, 1);
-	rx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
-	tx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
-		
-	cortos_printf("Reserved queues: free=0x%lx, rx=0x%lx, tx=0x%lx\n",
-				(uint32_t) free_queue,
-				(uint32_t) rx_queue,
-				(uint32_t) tx_queue);
-
-				
-	// Allocate buffers
-	
-	
-	for(i = 0; i < 8; i++)
-	{
-		Buffers[i] = (uint32_t*) cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
-		cortos_printf("Allocated Buffer[%d] = 0x%lx\n", i,(uint32_t)Buffers[i]);
-	}
-
-
-	// Preparing the allocated buffers, to push into the Q, via cortos_writeMessages
-
-	uint32_t BuffersForQ[8];
-	for(i = 0;i < 8; i++)
-	BuffersForQ[i] = (uint32_t) Buffers[i];
-	
-	// Put the four buffers onto the free-queue, so free queue has space, if Tx Q wants to push after transmission.
-
-	for(i = 0; i < 4; i++)
-	{
-		msgs_written = cortos_writeMessages(free_queue, (uint8_t*) (BuffersForQ + i), 1);
-		cortos_printf("Stored Buffer[%d] in free-queue = 0x%lx\n", i, BuffersForQ[i]);
-	}
-
-
-  /* Do whatever else is needed to initialize interface. */
-  
-}
-
-
-
 /*************************** Interrupt Handler Begins ********************************/
 
 #define TIMERCOUNT 100000
 #define COUNT TIMERCOUNT
 #define TIMERINITVAL ((COUNT << 1) | 1)
-
+int message_counter;
 void my_timer_interrupt_handler()
 {
 
@@ -159,6 +90,8 @@ void my_timer_interrupt_handler()
 	__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);
 
 }
+
+
 static err_t
 low_level_output(struct netif *netif, struct pbuf *p)
 {
@@ -239,12 +172,9 @@ int main()
 	netif_add_noaddr(&netif, NULL, netif_initialize, netif_input);
 	netif_set_default(&netif);
 	netif_set_up(&netif);
-
+	low_level_init();
 
 /* Application beigns here*/
-
-	low_level_init();
-	cortos_printf ("Configuration Done. NIC has started\n");
 
 	uint32_t i;
 	uint32_t data[1];
@@ -283,14 +213,11 @@ int main()
 		// Read the buffer pointer from RxQ
 		int read_ok = cortos_readMessages(rx_queue, (uint8_t*)data, 1);
 		
-		struct pbuf* p = pbuf_alloc(PBUF_RAW, 30 , PBUF_POOL); // eth_data_count = 30 bytes
-
-		if(p != NULL) {
-			/* Copy ethernet frame into pbuf */
-			//pbuf_take(p, (uint8_t*)data, 30);
-		}
+		
 	
 		if(read_ok) {
+
+			ethernetif_input(&netif);
 
 			
 			// Write the buffer pointer to TxQ
