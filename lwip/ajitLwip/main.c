@@ -1,14 +1,6 @@
-
-/* Define those to better describe your network interface. */
-
 #include "include/ethernetif.h"
 
-#define IFNAME0 'e'
-#define IFNAME1 'n'
-#define ETHERNET_MTU 1500
-
 /*************************** Interrupt Handler Begins ********************************/
-
 #define TIMERCOUNT 100000
 #define COUNT TIMERCOUNT
 #define TIMERINITVAL ((COUNT << 1) | 1)
@@ -88,71 +80,6 @@ void my_timer_interrupt_handler()
 
 	// reenable the timer, right away..
 	__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);
-
-}
-
-
-static err_t
-low_level_output(struct netif *netif, struct pbuf *p)
-{
-  struct ethernetif *ethernetif = netif->state;
-  struct pbuf *q;
-
-  //initiate transfer();
-
-#if ETH_PAD_SIZE
-  pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
-#endif
-
-  for (q = p; q != NULL; q = q->next) {
-    /* Send the data from the pbuf to the interface, one pbuf at a
-       time. The size of the data in each pbuf is kept in the ->len
-       variable. */
-   // send data from(q->payload, q->len);
-  }
-
- // signal that packet should be sent();
-
-#if ETH_PAD_SIZE
-  pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
-#endif
-
- 
-
-  return ERR_OK;
-}
-
-
-err_t 
-netif_initialize(struct netif *netif)
-{
-
-  /* set MAC hardware address */
-  netif->hwaddr_len = ETH_HWADDR_LEN;
-  netif->hwaddr[0] = 0x00;
-  netif->hwaddr[1] = 0x0a;
-  netif->hwaddr[2] = 0x35;
-  netif->hwaddr[3] = 0x05;
-  netif->hwaddr[4] = 0x76;
-  netif->hwaddr[5] = 0xa0;
-
-  /* maximum transfer unit */
-  netif->mtu = ETHERNET_MTU; // 1500
-
-  /* device capabilities */
-  /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
-  netif->flags =  NETIF_FLAG_ETHERNET ;
-
-
-  netif->state = NULL;
-  netif->name[0] = IFNAME0;
-  netif->name[1] = IFNAME1;
-
-  netif->output    = NULL; //etharp_output;
-  netif->linkoutput = low_level_output;
-
-  cortos_printf ("Configuration Done. NIC has started\n");
-  return ERR_OK;
 
 }
 

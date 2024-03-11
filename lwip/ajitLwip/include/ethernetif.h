@@ -59,9 +59,22 @@
 #include "lwip/snmp.h"
 #include "lwip/etharp.h"
 
+CortosQueueHeader* free_queue;
+CortosQueueHeader* rx_queue;
+CortosQueueHeader* tx_queue;
 
+// queue related constants
+#define NUMBER_OF_BUFFERS 8
+#define BUFFER_SIZE_IN_BYTES 32
+#define QUEUE_LENGTH (16 + 4 * NUMBER_OF_BUFFERS)
 
-static void low_level_init();
+volatile uint32_t* volatile Buffers[8];
+#define IFNAME0 'e'
+#define IFNAME1 'n'
+#define ETHERNET_MTU 1500
+
+void 
+low_level_init();
 
 /**
  * Helper struct to hold private data used to operate your ethernet interface.
@@ -99,11 +112,14 @@ low_level_input(struct netif *netif);
  *
  * @param netif the lwip network interface structure for this ethernetif
  */
-static void
+void
 ethernetif_input(struct netif *netif);
 
+err_t
+low_level_output(struct netif *netif, struct pbuf *p);
 
-
+err_t 
+netif_initialize(struct netif *netif);
 
 #endif /* LWIP_HDR_ETHERNETIF_H */
 

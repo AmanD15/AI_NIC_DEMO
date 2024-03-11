@@ -83,13 +83,13 @@ Software:
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
     BuildArgs: "-D USE_CORTOS -D USE_VMAP -D CLK_FREQUENCY=80000000
+    -c $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip/main.c
     -I $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip/include
     -I $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/include
     -c $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/netif/ethernet.c 
     -C $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/core 
     -C $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/core/ipv4
-    -C $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip/src 
-    -c $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip/main.c"
+    -C $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip/src"
 
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:

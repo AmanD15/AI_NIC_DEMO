@@ -46,26 +46,15 @@
 
 #include "../include/ethernetif.h"
 
-CortosQueueHeader* free_queue;
-CortosQueueHeader* rx_queue;
-CortosQueueHeader* tx_queue;
 
-// queue related constants
-#define NUMBER_OF_BUFFERS 8
-#define BUFFER_SIZE_IN_BYTES 32
-#define QUEUE_LENGTH (16 + 4 * NUMBER_OF_BUFFERS)
-
-volatile uint32_t* volatile Buffers[8];
-
-
-static void
+void
 low_level_init()
 {
  
 	uint32_t msgs_written;
 	uint32_t msgSizeInBytes = 4;
 	uint32_t length = 8;
-    uint32_t i;
+	uint32_t i;
 
 	// Get queues.
 
@@ -120,7 +109,7 @@ ethernetif_input(){
 
 */
 
-/**
+/*
  * Should allocate a pbuf and transfer the bytes of the incoming
  * packet from the interface into the pbuf.
  *
@@ -164,8 +153,8 @@ low_level_input(struct netif *netif)
        * pbuf is the sum of the chained pbuf len members.
        */
      // read data into(q->payload, q->len);
-        memcpy(q->payload, bufptr, q->len);
-        bufptr += q->len;
+       // memcpy(q->payload, bufptr, q->len);
+       // bufptr += q->len;
     }
    // acknowledge that packet has been read();
 
@@ -190,7 +179,7 @@ low_level_input(struct netif *netif)
  *
  * @param netif the lwip network interface structure for this ethernetif
  */
-static void
+void
 ethernetif_input(struct netif *netif)
 {
   struct ethernetif *ethernetif;
@@ -215,3 +204,65 @@ ethernetif_input(struct netif *netif)
 
 
 
+err_t
+low_level_output(struct netif *netif, struct pbuf *p)
+{
+  struct ethernetif *ethernetif = netif->state;
+  struct pbuf *q;
+
+  //initiate transfer();
+
+#if ETH_PAD_SIZE
+  pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
+#endif
+
+  for (q = p; q != NULL; q = q->next) {
+    /* Send the data from the pbuf to the interface, one pbuf at a
+       time. The size of the data in each pbuf is kept in the ->len
+       variable. */
+   // send data from(q->payload, q->len);
+  }
+
+ // signal that packet should be sent();
+
+#if ETH_PAD_SIZE
+  pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
+#endif
+
+ 
+
+  return ERR_OK;
+}
+
+err_t 
+netif_initialize(struct netif *netif)
+{
+
+  /* set MAC hardware address */
+  netif->hwaddr_len = ETH_HWADDR_LEN;
+  netif->hwaddr[0] = 0x00;
+  netif->hwaddr[1] = 0x0a;
+  netif->hwaddr[2] = 0x35;
+  netif->hwaddr[3] = 0x05;
+  netif->hwaddr[4] = 0x76;
+  netif->hwaddr[5] = 0xa0;
+
+  /* maximum transfer unit */
+  netif->mtu = ETHERNET_MTU; // 1500
+
+  /* device capabilities */
+  /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
+  netif->flags =  NETIF_FLAG_ETHERNET ;
+
+
+  netif->state = NULL;
+  netif->name[0] = IFNAME0;
+  netif->name[1] = IFNAME1;
+
+  netif->output    = NULL; //etharp_output;
+  netif->linkoutput = low_level_output;
+
+  cortos_printf ("Configuration Done. NIC has started\n");
+  return ERR_OK;
+
+}
