@@ -137,29 +137,29 @@ int main()
 		controlRegister = readInterruptControlRegister(0, 0);
 		
 
-		// Read the buffer pointer from RxQ
-		int read_ok = cortos_readMessages(rx_queue, (uint8_t*)data, 1);
-		
-		
 	
-		if(read_ok) {
+		if(ethernetif_input(&netif) == ERR_OK) {
 
-			ethernetif_input(&netif);
 
-			
+
+
 			// Write the buffer pointer to TxQ
 			int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)data, 1);
 			message_counter++;
+
+
+
 			// just enable the interrupt by writing to the interrupt control register..
 			//__TURN_ON_INTERRUPTS;
 			enableInterrupt(0, 0, 10);
-				
-
 		}	
 		else
 		{
-			// Spin for 1024 clock cycles.
+			
+			// just enable the interrupt by writing to the interrupt control register..
+			//__TURN_ON_INTERRUPTS;
 			enableInterrupt(0, 0, 10);
+			// Spin for 1024 clock cycles.
 			__ajit_sleep__ (1024);
 		}
 

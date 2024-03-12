@@ -5,13 +5,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <cortos.h>
-#include <ajit_access_routines.h>
-#include <ajit_mt_irc.h>
-#include <core_portme.h>
-
-
-
 
 #define BYTE_ORDER  LITTLE_ENDIAN
 

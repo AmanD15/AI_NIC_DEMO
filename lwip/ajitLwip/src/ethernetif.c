@@ -47,6 +47,9 @@
 #include "../include/ethernetif.h"
 
 
+
+
+
 void
 low_level_init()
 {
@@ -56,7 +59,7 @@ low_level_init()
 	uint32_t length = 8;
 	uint32_t i;
 
-	// Get queues.
+	// Get queues addresses
 
 	free_queue = cortos_reserveQueue(msgSizeInBytes, length, 1);
 	rx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
@@ -123,10 +126,18 @@ low_level_input(struct netif *netif)
   struct ethernetif *ethernetif = netif->state;
   struct pbuf *p, *q;
   u16_t len;
+  u32_t data[1];
+  uint8_t *bufptr = (uint8_t*) &data[0];
 
   /* Obtain the size of the packet and put it into the "len"
      variable. */
-  len = 30; // 14 byte header + 16 bytes data
+	      
+// Read the buffer pointer from RxQ
+  int read_ok = cortos_readMessages(rx_queue, bufptr, 1);
+  if(read_ok == 0){
+	  return NULL;
+  }
+  len = 30; // 14 byte header + 16 byte data
 
 #if ETH_PAD_SIZE
   len += ETH_PAD_SIZE; /* allow room for Ethernet padding */
@@ -153,8 +164,8 @@ low_level_input(struct netif *netif)
        * pbuf is the sum of the chained pbuf len members.
        */
      // read data into(q->payload, q->len);
-       // memcpy(q->payload, bufptr, q->len);
-       // bufptr += q->len;
+        memcpy(q->payload, bufptr, q->len);
+        bufptr += q->len;
     }
    // acknowledge that packet has been read();
 
@@ -179,7 +190,7 @@ low_level_input(struct netif *netif)
  *
  * @param netif the lwip network interface structure for this ethernetif
  */
-void
+err_t
 ethernetif_input(struct netif *netif)
 {
   struct ethernetif *ethernetif;
@@ -199,6 +210,11 @@ ethernetif_input(struct netif *netif)
       pbuf_free(p);
       p = NULL;
     }
+
+    if(p != NULL){
+    return ERR_OK;
+    }
+    
   }
 }
 

@@ -59,19 +59,25 @@
 #include "lwip/snmp.h"
 #include "lwip/etharp.h"
 
+
+#include <cortos.h>
+#include <ajit_access_routines.h>
+#include <ajit_mt_irc.h>
+#include <core_portme.h>
+
+#define BUFFER_SIZE_IN_BYTES 32
+#define IFNAME0 'e'
+#define IFNAME1 'n'
+#define ETHERNET_MTU 1500
+
+// The Qs
 CortosQueueHeader* free_queue;
 CortosQueueHeader* rx_queue;
 CortosQueueHeader* tx_queue;
 
-// queue related constants
-#define NUMBER_OF_BUFFERS 8
-#define BUFFER_SIZE_IN_BYTES 32
-#define QUEUE_LENGTH (16 + 4 * NUMBER_OF_BUFFERS)
+// The array to store ptr to buffers
 
 volatile uint32_t* volatile Buffers[8];
-#define IFNAME0 'e'
-#define IFNAME1 'n'
-#define ETHERNET_MTU 1500
 
 void 
 low_level_init();
@@ -112,7 +118,7 @@ low_level_input(struct netif *netif);
  *
  * @param netif the lwip network interface structure for this ethernetif
  */
-void
+err_t
 ethernetif_input(struct netif *netif);
 
 err_t
