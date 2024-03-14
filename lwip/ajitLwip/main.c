@@ -4,7 +4,26 @@
 #define TIMERCOUNT 100000
 #define COUNT TIMERCOUNT
 #define TIMERINITVAL ((COUNT << 1) | 1)
-int message_counter;
+#define ETHER_FRAME_LEN 32
+ 
+ int message_counter;
+ 
+ 
+ // Ethernet frame structure: Destination MAC (6 bytes), Source MAC (6 bytes), Type (2 bytes), Payload (Variable bytes), CRC (4 bytes)
+ 
+    uint8_t ethernet_frame[ETHER_FRAME_LEN] = {
+        // Destination MAC Address: 0xAAAAAAAAAAAA
+        0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+        // Source MAC Address: 0xBBBBBBBBBBBB
+        0xBB, 0xBB, 0xBB, 0xBB, 0xBB, 0xBB,
+        // Ethernet Type (Assuming IPv4 for example, 0x0800)
+        0x08, 0x00,
+        // Payload Data: "0123456789"
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        // CRC (Placeholder)
+    };
+    
+    
 void my_timer_interrupt_handler()
 {
 
@@ -18,9 +37,6 @@ void my_timer_interrupt_handler()
 	// above.
 	
 
-	int i;
-	char packetData[30];
-  for(i=0;i<30;i++) packetData[i]=i;
 	cortos_printf ("no. of messages forwarded by main(): %d\n",message_counter);
 
 	/* TRANSMISSION EMULATION*/
@@ -57,9 +73,9 @@ void my_timer_interrupt_handler()
 		
 		// Copying data to free buffer
 		uint8_t* ptrToBuffer =(uint8_t*) ptrToDataRx;
-
-		for(i = 0 ; i < 30 ; i++)
-			*(ptrToBuffer + i) = packetData[i];
+		int i;
+		for(i = 0 ; i < 32 ; i++)
+			*(ptrToBuffer + i) = ethernet_frame[i];
 		
 		// Pushing the buffer to RxQ
 		int RxQpush = cortos_writeMessages(rx_queue, (uint8_t*)(&ptrToDataRx), 1);
