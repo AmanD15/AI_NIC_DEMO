@@ -11286,37 +11286,85 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library AjitCustom;
-use AjitCustom.MemmapPackage.all;
+use AjitCustom.sram_stub_init_val_package.all;
 
-entity dual_port_byte_ram_with_init is
-   generic (byte_position: integer; g_addr_width: natural := 10; init_byte_array: ByteArray);
-   port (
-    	 datain_0 : in std_logic_vector(8-1 downto 0);
-         dataout_0: out std_logic_vector(8-1 downto 0);
-         addrin_0: in std_logic_vector(g_addr_width-1 downto 0);
-         enable_0: in std_logic;
-         writebar_0 : in std_logic;
-    	 datain_1 : in std_logic_vector(8-1 downto 0);
-         dataout_1: out std_logic_vector(8-1 downto 0);
-         addrin_1: in std_logic_vector(g_addr_width-1 downto 0);
-         enable_1: in std_logic;
-         writebar_1 : in std_logic;
+entity byte_ram_with_init_u64 is
+   generic (name: string; g_addr_width: natural := 10);
+   port (datain : in std_logic_vector(8-1 downto 0);
+         dataout: out std_logic_vector(8-1 downto 0);
+         addrin: in std_logic_vector(g_addr_width-1 downto 0);
+         enable: in std_logic;
+         writebar : in std_logic;
          clk: in std_logic;
          reset : in std_logic);
-end entity dual_port_byte_ram_with_init;
+end entity byte_ram_with_init_u64;
 
 
-architecture XilinxBramInfer of dual_port_byte_ram_with_init is
+architecture XilinxBramInfer of byte_ram_with_init_u64 is
+  type bank_type is array (natural range <>) of std_logic_vector(7 downto 0);
+  
+  function byte_select (x : string)
+    return bank_type
+  is
+    variable ret_val :  bank_type((2**g_addr_width)-1 downto 0);
+    variable temp : std_logic_vector(7 downto 0);
+  begin
+    
+	
+    assert false report "initializing byte_ram_with_init_u64 "  & x   severity note;
+    if (x ="SRAM-STUB-BASE-BANK-0") then 
+      for I in 0 to (2**g_addr_width)-1  loop 
+        ret_val(I) := sram_stub_init_val(I)(7 downto 0); 
+      end loop;
+       
+    elsif (x ="SRAM-STUB-BASE-BANK-1") then 
+      for I in 0 to  (2**g_addr_width)-1  loop 
+        ret_val(I) := sram_stub_init_val(I)(15 downto 8); 
+      end loop;
+      
+    elsif (x ="SRAM-STUB-BASE-BANK-2") then 
+      for I in 0 to  (2**g_addr_width)-1  loop 
+        ret_val(I) := sram_stub_init_val(I)(23 downto 16); 
+      end loop;
+    
+    elsif (x ="SRAM-STUB-BASE-BANK-3") then 
+      for I in 0 to  (2**g_addr_width)-1  loop 
+        ret_val(I) := sram_stub_init_val(I)(31 downto 24); 
+      end loop;
 
-  signal mem_array : ByteArray(0 to (2**g_addr_width)-1) :=  init_byte_array;
-  signal addr_reg_0, addr_reg_1 : std_logic_vector(g_addr_width-1 downto 0);
-  signal rd_enable_reg_0, rd_enable_reg_1 : std_logic;
-  signal read_data_0, read_data_reg_0: std_logic_vector(8-1 downto 0);
-  signal read_data_1, read_data_reg_1: std_logic_vector(8-1 downto 0);
+    elsif (x ="SRAM-STUB-BASE-BANK-4") then 
+      for I in 0 to  (2**g_addr_width)-1  loop 
+        ret_val(I) := sram_stub_init_val(I)(39 downto 32); 
+      end loop;
+
+    elsif (x ="SRAM-STUB-BASE-BANK-5") then 
+      for I in 0 to  (2**g_addr_width)-1  loop 
+        ret_val(I) := sram_stub_init_val(I)(47 downto 40); 
+      end loop;
+      
+    elsif (x ="SRAM-STUB-BASE-BANK-6") then 
+      for I in 0 to  (2**g_addr_width)-1  loop 
+        ret_val(I) := sram_stub_init_val(I)(55 downto 48); 
+      end loop;
+
+    elsif (x ="SRAM-STUB-BASE-BANK-7") then 
+      for I in 0 to  (2**g_addr_width)-1  loop 
+        ret_val(I) := sram_stub_init_val(I)(63 downto 56); 
+      end loop;
+
+    end if;
+    return (ret_val);    
+  end function byte_select;
+  
+  constant init_val : bank_type((2**g_addr_width)-1  downto 0) := byte_select(name);
+  signal mem_array : bank_type((2**g_addr_width)-1 downto 0) := init_val;
+  signal addr_reg : std_logic_vector(g_addr_width-1 downto 0);
+  signal rd_enable_reg : std_logic;
+  signal read_data, read_data_reg: std_logic_vector(8-1 downto 0);
 begin  -- XilinxBramInfer
 
   -- read/write process
-  process(clk,addrin_0,enable_0,writebar_0, datain_0, addrin_1, enable_1, writebar_1, datain_1)
+  process(clk,addrin,enable,writebar)
   begin
 
     -- synch read-write memory
@@ -11325,45 +11373,34 @@ begin  -- XilinxBramInfer
      	-- register the address
 	-- and use it in a separate assignment
 	-- for the delayed read.
-      addr_reg_0 <= addrin_0;
-      addr_reg_1 <= addrin_1;
+      addr_reg <= addrin;
 
 	-- generate a registered read enable
       if(reset = '1') then
-	rd_enable_reg_0 <= '0';
-	rd_enable_reg_1 <= '0';
+	rd_enable_reg <= '0';
       else
-	rd_enable_reg_0 <= enable_0 and writebar_0;
-	rd_enable_reg_1 <= enable_1 and writebar_1;
+	rd_enable_reg <= enable and writebar;
       end if;
 
-      if(enable_0 = '1' and writebar_0 = '0') then
-        mem_array(To_Integer(unsigned(addrin_0))) <= datain_0;
-      end if;
-      if(enable_1 = '1' and writebar_1 = '0') then
-        mem_array(To_Integer(unsigned(addrin_1))) <= datain_1;
+      if(enable = '1' and writebar = '0') then
+        mem_array(To_Integer(unsigned(addrin))) <= datain;
       end if;
     end if;
   end process;
 
   -- read data.
-  read_data_0 <= mem_array(To_Integer(unsigned(addr_reg_0)));
-  read_data_1 <= mem_array(To_Integer(unsigned(addr_reg_1)));
+  read_data <= mem_array(To_Integer(unsigned(addr_reg)));
   process(clk) 
   begin
 	if(clk'event and clk = '1') then
-		if(rd_enable_reg_0 = '1') then
-			read_data_reg_0 <= read_data_0;
-		end if;
-		if(rd_enable_reg_1 = '1') then
-			read_data_reg_1 <= read_data_1;
+		if(rd_enable_reg = '1') then
+			read_data_reg <= read_data;
 		end if;
 	end if;
   end process;
 
   -- to maintain dataout to the last value that was read!
-  dataout_0 <= read_data_0 when (rd_enable_reg_0 = '1') else read_data_reg_0;
-  dataout_1 <= read_data_1 when (rd_enable_reg_1 = '1') else read_data_reg_1;
+  dataout <= read_data when (rd_enable_reg = '1') else read_data_reg;
 
 end XilinxBramInfer;
 library ieee;
@@ -11371,31 +11408,64 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 library AjitCustom;
-use AjitCustom.MemmapPackage.all;
+use AjitCustom.sram_stub_init_val_package.all;
 
-entity single_port_byte_ram_with_init is
-   generic (byte_position: integer; g_addr_width: natural := 10; init_byte_array: ByteArray);
-   port (
-    	 datain : in std_logic_vector(8-1 downto 0);
+entity byte_ram_with_init is
+   generic (name: string; g_addr_width: natural := 10);
+   port (datain : in std_logic_vector(8-1 downto 0);
          dataout: out std_logic_vector(8-1 downto 0);
          addrin: in std_logic_vector(g_addr_width-1 downto 0);
          enable: in std_logic;
          writebar : in std_logic;
          clk: in std_logic;
          reset : in std_logic);
-end entity single_port_byte_ram_with_init;
+end entity byte_ram_with_init;
 
 
-architecture XilinxBramInfer of single_port_byte_ram_with_init is
-
-  signal mem_array : ByteArray(0 to (2**g_addr_width)-1) :=  init_byte_array;
-  signal addr_reg: std_logic_vector(g_addr_width-1 downto 0);
-  signal rd_enable_reg: std_logic;
+architecture XilinxBramInfer of byte_ram_with_init is
+  type bank_type is array (natural range <>) of std_logic_vector(7 downto 0);
+  
+  function byte_select (x : string)
+    return bank_type
+  is
+    variable ret_val :  bank_type((2**g_addr_width)-1 downto 0);
+    variable temp : std_logic_vector(7 downto 0);
+  begin
+    
+    if (x ="SRAM-STUB-BASE-BANK-0") then 
+      for I in 0 to (2**g_addr_width)-1  loop 
+        ret_val(I) := sram_stub_init_val(I)(7 downto 0); 
+      end loop;
+       
+    elsif (x ="SRAM-STUB-BASE-BANK-1") then 
+      for I in 0 to  (2**g_addr_width)-1  loop 
+        ret_val(I) := sram_stub_init_val(I)(15 downto 8); 
+      end loop;
+      
+    elsif (x ="SRAM-STUB-BASE-BANK-2") then 
+      for I in 0 to  (2**g_addr_width)-1  loop 
+        ret_val(I) := sram_stub_init_val(I)(23 downto 16); 
+      end loop;
+    
+    elsif (x ="SRAM-STUB-BASE-BANK-3") then 
+      for I in 0 to  (2**g_addr_width)-1  loop 
+        ret_val(I) := sram_stub_init_val(I)(31 downto 24); 
+      end loop;
+      
+    end if;
+    
+    return (ret_val);    
+  end function byte_select;
+  
+  constant init_val : bank_type := byte_select(name);
+  signal mem_array : bank_type((2**g_addr_width)-1 downto 0) := init_val; 
+  signal addr_reg : std_logic_vector(g_addr_width-1 downto 0);
+  signal rd_enable_reg : std_logic;
   signal read_data, read_data_reg: std_logic_vector(8-1 downto 0);
 begin  -- XilinxBramInfer
 
   -- read/write process
-  process(clk,addrin,enable,writebar, datain, addrin)
+  process(clk,addrin,enable,writebar)
   begin
 
     -- synch read-write memory
@@ -11533,6 +11603,159 @@ begin  -- XilinxBramInfer
   end process;
 
   -- read data.
+  process(clk) 
+  begin
+	if(clk'event and clk = '1') then
+		if(rd_enable_reg = '1') then
+			read_data_reg <= read_data;
+		end if;
+	end if;
+  end process;
+
+  -- to maintain dataout to the last value that was read!
+  dataout <= read_data when (rd_enable_reg = '1') else read_data_reg;
+
+end XilinxBramInfer;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library AjitCustom;
+use AjitCustom.MemmapPackage.all;
+
+entity dual_port_byte_ram_with_init is
+   generic (byte_position: integer; g_addr_width: natural := 10; init_byte_array: ByteArray);
+   port (
+    	 datain_0 : in std_logic_vector(8-1 downto 0);
+         dataout_0: out std_logic_vector(8-1 downto 0);
+         addrin_0: in std_logic_vector(g_addr_width-1 downto 0);
+         enable_0: in std_logic;
+         writebar_0 : in std_logic;
+    	 datain_1 : in std_logic_vector(8-1 downto 0);
+         dataout_1: out std_logic_vector(8-1 downto 0);
+         addrin_1: in std_logic_vector(g_addr_width-1 downto 0);
+         enable_1: in std_logic;
+         writebar_1 : in std_logic;
+         clk: in std_logic;
+         reset : in std_logic);
+end entity dual_port_byte_ram_with_init;
+
+
+architecture XilinxBramInfer of dual_port_byte_ram_with_init is
+
+  signal mem_array : ByteArray(0 to (2**g_addr_width)-1) :=  init_byte_array;
+  signal addr_reg_0, addr_reg_1 : std_logic_vector(g_addr_width-1 downto 0);
+  signal rd_enable_reg_0, rd_enable_reg_1 : std_logic;
+  signal read_data_0, read_data_reg_0: std_logic_vector(8-1 downto 0);
+  signal read_data_1, read_data_reg_1: std_logic_vector(8-1 downto 0);
+begin  -- XilinxBramInfer
+
+  -- read/write process
+  process(clk,addrin_0,enable_0,writebar_0, datain_0, addrin_1, enable_1, writebar_1, datain_1)
+  begin
+
+    -- synch read-write memory
+    if(clk'event and clk ='1') then
+
+     	-- register the address
+	-- and use it in a separate assignment
+	-- for the delayed read.
+      addr_reg_0 <= addrin_0;
+      addr_reg_1 <= addrin_1;
+
+	-- generate a registered read enable
+      if(reset = '1') then
+	rd_enable_reg_0 <= '0';
+	rd_enable_reg_1 <= '0';
+      else
+	rd_enable_reg_0 <= enable_0 and writebar_0;
+	rd_enable_reg_1 <= enable_1 and writebar_1;
+      end if;
+
+      if(enable_0 = '1' and writebar_0 = '0') then
+        mem_array(To_Integer(unsigned(addrin_0))) <= datain_0;
+      end if;
+      if(enable_1 = '1' and writebar_1 = '0') then
+        mem_array(To_Integer(unsigned(addrin_1))) <= datain_1;
+      end if;
+    end if;
+  end process;
+
+  -- read data.
+  read_data_0 <= mem_array(To_Integer(unsigned(addr_reg_0)));
+  read_data_1 <= mem_array(To_Integer(unsigned(addr_reg_1)));
+  process(clk) 
+  begin
+	if(clk'event and clk = '1') then
+		if(rd_enable_reg_0 = '1') then
+			read_data_reg_0 <= read_data_0;
+		end if;
+		if(rd_enable_reg_1 = '1') then
+			read_data_reg_1 <= read_data_1;
+		end if;
+	end if;
+  end process;
+
+  -- to maintain dataout to the last value that was read!
+  dataout_0 <= read_data_0 when (rd_enable_reg_0 = '1') else read_data_reg_0;
+  dataout_1 <= read_data_1 when (rd_enable_reg_1 = '1') else read_data_reg_1;
+
+end XilinxBramInfer;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library AjitCustom;
+use AjitCustom.MemmapPackage.all;
+
+entity single_port_byte_ram_with_init is
+   generic (byte_position: integer; g_addr_width: natural := 10; init_byte_array: ByteArray);
+   port (
+    	 datain : in std_logic_vector(8-1 downto 0);
+         dataout: out std_logic_vector(8-1 downto 0);
+         addrin: in std_logic_vector(g_addr_width-1 downto 0);
+         enable: in std_logic;
+         writebar : in std_logic;
+         clk: in std_logic;
+         reset : in std_logic);
+end entity single_port_byte_ram_with_init;
+
+
+architecture XilinxBramInfer of single_port_byte_ram_with_init is
+
+  signal mem_array : ByteArray(0 to (2**g_addr_width)-1) :=  init_byte_array;
+  signal addr_reg: std_logic_vector(g_addr_width-1 downto 0);
+  signal rd_enable_reg: std_logic;
+  signal read_data, read_data_reg: std_logic_vector(8-1 downto 0);
+begin  -- XilinxBramInfer
+
+  -- read/write process
+  process(clk,addrin,enable,writebar, datain, addrin)
+  begin
+
+    -- synch read-write memory
+    if(clk'event and clk ='1') then
+
+     	-- register the address
+	-- and use it in a separate assignment
+	-- for the delayed read.
+      addr_reg <= addrin;
+
+	-- generate a registered read enable
+      if(reset = '1') then
+	rd_enable_reg <= '0';
+      else
+	rd_enable_reg <= enable and writebar;
+      end if;
+
+      if(enable = '1' and writebar = '0') then
+        mem_array(To_Integer(unsigned(addrin))) <= datain;
+      end if;
+    end if;
+  end process;
+
+  -- read data.
+  read_data <= mem_array(To_Integer(unsigned(addr_reg)));
   process(clk) 
   begin
 	if(clk'event and clk = '1') then

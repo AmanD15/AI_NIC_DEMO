@@ -1,13 +1,7 @@
-commit dfbd647077bb13a21c693bbec6bf62ad673dd109
+commit 3fd5250446aa32e1a941e3a69353c5640c785f46
 Author: Madhav Pandurang Desai <madhav@ee.iitb.ac.in>
-Date:   Mon Oct 16 10:24:05 2023 +0530
+Date:   Thu Mar 14 13:28:50 2024 +0530
 
-    Added update fsm for split-guard-interface.
-----------------------------------------------------------------------------
-Wed Oct 18 04:46:38 Local time zone must be set--see zic manual page 2023
-commit dfbd647077bb13a21c693bbec6bf62ad673dd109
-Author: Madhav Pandurang Desai <madhav@ee.iitb.ac.in>
-Date:   Mon Oct 16 10:24:05 2023 +0530
-
-    Added update fsm for split-guard-interface.
-----------------------------------------------------------------------------
+    An optimization to reduce wastage of flip-flops in the
+    control path.  After this fix, the average number of
+    FF's per join is about 2.5.

@@ -1,10 +1,3 @@
-$system acb_null_stub $library GlueModules
-   $in 
-          $pipe  CORE_BUS_REQUEST 110 $depth 2
-   $out 
-          $pipe  CORE_BUS_RESPONSE 65 $depth 2
-{ 
-} 
 $system acb_fast_tap $library GlueModules
 	$in
 		$pipe CORE_BUS_REQUEST  110 $depth 2
@@ -23,166 +16,6 @@ $system acb_fast_tap $library GlueModules
 {
 	
 }
-$system coherent_memory_controller_two_core $library GlueModules
-   $in 
-          $pipe  CORE_0_BUS_REQUEST 110 $depth 2
-          $pipe  CORE_1_BUS_REQUEST 110 $depth 2
-          $pipe  IO_CORE_BUS_RESPONSE 65 $depth 2
-          $signal  IO_MAX_ADDR 36 $depth 1
-          $signal  IO_MIN_ADDR 36 $depth 1
-          $pipe  MAIN_MEM_INVALIDATE 30 $depth 4
-          $pipe  MAIN_MEM_RESPONSE 65 $depth 2
-   $out 
-          $signal  CACHE_STALL_ENABLE 1 $depth 1
-          $pipe  CORE_0_BUS_RESPONSE 65 $depth 2
-          $pipe  CORE_1_BUS_RESPONSE 65 $depth 2
-          $pipe  INVALIDATE_TO_CORE_0 30 $depth 4
-          $pipe  INVALIDATE_TO_CORE_1 30 $depth 4
-          $pipe  IO_CORE_BUS_REQUEST 110 $depth 2
-          $pipe  MAIN_MEM_REQUEST 110 $depth 2
-{ 
-          $pipe  ACCESS_DESCRIPTOR 4 $depth 8
-    $noblock      $pipe  INVALIDATE_DAEMON_REQUEST 36 $depth 36
-          $pipe  MC_CORE_0_BUS_RESPONSE 65 $depth 2
-          $pipe  MC_CORE_1_BUS_RESPONSE 65 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_0_BUS_REQUEST 111 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_1_BUS_REQUEST 111 $depth 2
-    $noblock      $pipe  NOBLOCK_EXTERNAL_INVALIDATE_SLOT_RETURN 1 $depth 2
-} 
-$system coherent_memory_controller_single_core $library GlueModules
-   $in 
-          $pipe  CORE_0_BUS_REQUEST 110 $depth 2
-          $pipe  IO_CORE_BUS_RESPONSE 65 $depth 2
-          $signal  IO_MAX_ADDR 36 $depth 1
-          $signal  IO_MIN_ADDR 36 $depth 1
-          $pipe  MAIN_MEM_INVALIDATE 30 $depth 4
-          $pipe  MAIN_MEM_RESPONSE 65 $depth 2
-   $out 
-          $signal  CACHE_STALL_ENABLE 1 $depth 1
-          $pipe  CORE_0_BUS_RESPONSE 65 $depth 2
-          $pipe  INVALIDATE_TO_CORE_0 30 $depth 4
-          $pipe  IO_CORE_BUS_REQUEST 110 $depth 2
-          $pipe  MAIN_MEM_REQUEST 110 $depth 2
-{ 
-          $pipe  ACCESS_DESCRIPTOR 4 $depth 8
-    $noblock      $pipe  INVALIDATE_DAEMON_REQUEST 36 $depth 24
-          $pipe  MC_CORE_0_BUS_RESPONSE 65 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_0_BUS_REQUEST 111 $depth 2
-    $noblock      $pipe  NOBLOCK_EXTERNAL_INVALIDATE_SLOT_RETURN 1 $depth 2
-} 
-$system coherent_memory_controller_four_core $library GlueModules
-   $in 
-          $pipe  CORE_0_BUS_REQUEST 110 $depth 2
-          $pipe  CORE_1_BUS_REQUEST 110 $depth 2
-          $pipe  CORE_2_BUS_REQUEST 110 $depth 2
-          $pipe  CORE_3_BUS_REQUEST 110 $depth 2
-          $pipe  IO_CORE_BUS_RESPONSE 65 $depth 2
-          $signal  IO_MAX_ADDR 36 $depth 1
-          $signal  IO_MIN_ADDR 36 $depth 1
-          $pipe  MAIN_MEM_INVALIDATE 30 $depth 4
-          $pipe  MAIN_MEM_RESPONSE 65 $depth 2
-   $out 
-          $signal  CACHE_STALL_ENABLE 1 $depth 1
-          $pipe  CORE_0_BUS_RESPONSE 65 $depth 2
-          $pipe  CORE_1_BUS_RESPONSE 65 $depth 2
-          $pipe  CORE_2_BUS_RESPONSE 65 $depth 2
-          $pipe  CORE_3_BUS_RESPONSE 65 $depth 2
-          $pipe  INVALIDATE_TO_CORE_0 30 $depth 4
-          $pipe  INVALIDATE_TO_CORE_1 30 $depth 4
-          $pipe  INVALIDATE_TO_CORE_2 30 $depth 4
-          $pipe  INVALIDATE_TO_CORE_3 30 $depth 4
-          $pipe  IO_CORE_BUS_REQUEST 110 $depth 2
-          $pipe  MAIN_MEM_REQUEST 110 $depth 2
-{ 
-          $pipe  ACCESS_DESCRIPTOR 4 $depth 8
-    $noblock      $pipe  INVALIDATE_DAEMON_REQUEST 36 $depth 60
-          $pipe  MC_CORE_0_BUS_RESPONSE 65 $depth 2
-          $pipe  MC_CORE_1_BUS_RESPONSE 65 $depth 2
-          $pipe  MC_CORE_2_BUS_RESPONSE 65 $depth 2
-          $pipe  MC_CORE_3_BUS_RESPONSE 65 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_0_BUS_REQUEST 111 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_1_BUS_REQUEST 111 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_2_BUS_REQUEST 111 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_3_BUS_REQUEST 111 $depth 2
-    $noblock      $pipe  NOBLOCK_EXTERNAL_INVALIDATE_SLOT_RETURN 1 $depth 2
-} 
-$system coherent_memory_controller_two_core_v2 $library GlueModules
-   $in 
-          $pipe  IO_CORE_BUS_RESPONSE 65 $depth 2
-          $signal  IO_MAX_ADDR 36 $depth 1
-          $signal  IO_MIN_ADDR 36 $depth 1
-          $pipe  MAIN_MEM_INVALIDATE 30 $depth 4
-          $pipe  MAIN_MEM_RESPONSE 65 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_0_BUS_REQUEST 111 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_1_BUS_REQUEST 111 $depth 2
-   $out 
-          $signal  CACHE_STALL_ENABLE 1 $depth 1
-          $pipe  CORE_0_BUS_RESPONSE 65 $depth 2
-          $pipe  CORE_1_BUS_RESPONSE 65 $depth 2
-          $pipe  INVALIDATE_TO_CORE_0 30 $depth 4
-          $pipe  INVALIDATE_TO_CORE_1 30 $depth 4
-          $pipe  IO_CORE_BUS_REQUEST 110 $depth 2
-          $pipe  MAIN_MEM_REQUEST 110 $depth 2
-{ 
-          $pipe  INVALIDATE_DAEMON_REQUEST 36 $depth 38
-          $pipe  MUXED_MEM_ACCESS_RESPONSE_CONTROL 36 $depth 8
-    $noblock      $pipe  NOBLOCK_EXTERNAL_INVALIDATE_SLOT_RETURN 1 $depth 2
-} 
-$system coherent_memory_controller_single_core_v2 $library GlueModules
-   $in 
-          $pipe  IO_CORE_BUS_RESPONSE 65 $depth 2
-          $signal  IO_MAX_ADDR 36 $depth 1
-          $signal  IO_MIN_ADDR 36 $depth 1
-          $pipe  MAIN_MEM_INVALIDATE 30 $depth 4
-          $pipe  MAIN_MEM_RESPONSE 65 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_0_BUS_REQUEST 111 $depth 2
-   $out 
-          $signal  CACHE_STALL_ENABLE 1 $depth 1
-          $pipe  CORE_0_BUS_RESPONSE 65 $depth 2
-          $pipe  INVALIDATE_TO_CORE_0 30 $depth 4
-          $pipe  IO_CORE_BUS_REQUEST 110 $depth 2
-          $pipe  MAIN_MEM_REQUEST 110 $depth 2
-{ 
-          $pipe  INVALIDATE_DAEMON_REQUEST 36 $depth 26
-          $pipe  MUXED_MEM_ACCESS_RESPONSE_CONTROL 36 $depth 8
-    $noblock      $pipe  NOBLOCK_EXTERNAL_INVALIDATE_SLOT_RETURN 1 $depth 2
-} 
-$system coherent_memory_controller_four_core_v2 $library GlueModules
-   $in 
-          $pipe  IO_CORE_BUS_RESPONSE 65 $depth 2
-          $signal  IO_MAX_ADDR 36 $depth 1
-          $signal  IO_MIN_ADDR 36 $depth 1
-          $pipe  MAIN_MEM_INVALIDATE 30 $depth 4
-          $pipe  MAIN_MEM_RESPONSE 65 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_0_BUS_REQUEST 111 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_1_BUS_REQUEST 111 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_2_BUS_REQUEST 111 $depth 2
-    $noblock      $pipe  NOBLOCK_CORE_3_BUS_REQUEST 111 $depth 2
-   $out 
-          $signal  CACHE_STALL_ENABLE 1 $depth 1
-          $pipe  CORE_0_BUS_RESPONSE 65 $depth 2
-          $pipe  CORE_1_BUS_RESPONSE 65 $depth 2
-          $pipe  CORE_2_BUS_RESPONSE 65 $depth 2
-          $pipe  CORE_3_BUS_RESPONSE 65 $depth 2
-          $pipe  INVALIDATE_TO_CORE_0 30 $depth 4
-          $pipe  INVALIDATE_TO_CORE_1 30 $depth 4
-          $pipe  INVALIDATE_TO_CORE_2 30 $depth 4
-          $pipe  INVALIDATE_TO_CORE_3 30 $depth 4
-          $pipe  IO_CORE_BUS_REQUEST 110 $depth 2
-          $pipe  MAIN_MEM_REQUEST 110 $depth 2
-{ 
-          $pipe  INVALIDATE_DAEMON_REQUEST 36 $depth 62
-          $pipe  MUXED_MEM_ACCESS_RESPONSE_CONTROL 36 $depth 8
-    $noblock      $pipe  NOBLOCK_EXTERNAL_INVALIDATE_SLOT_RETURN 1 $depth 2
-} 
-$system afb_ipi_controller $library GlueModules
-   $in 
-          $pipe  afb_ipi_controller_request 74 $depth 2
-   $out 
-          $pipe  afb_ipi_controller_response 33 $depth 2
-          $signal  ipi_interrupts 32 $depth 1
-{ 
-} 
 $system acb_fast_splitter $library GlueModules
 	$in
 		$pipe CORE_BUS_REQUEST  110 $depth 2
@@ -224,52 +57,32 @@ $system afb_fast_tap $library GlueModules
 }
 $system icache_mux_bypass $library GlueModules
 	$in
-		$noblock $pipe noblock_icache_request_0 41 $depth 2
-		$noblock $pipe noblock_icache_request_1 41 $depth 2
+		$noblock $pipe noblock_icache_request_0 51 $depth 2
+		$noblock $pipe noblock_icache_request_1 51 $depth 2
 
 		$pipe muxed_icache_response 90 $depth 2
 	$out
 
-		$noblock $pipe noblock_muxed_icache_request 41 $depth 2
+		$noblock $pipe noblock_muxed_icache_request 51 $depth 2
 		$pipe icache_response_0 90 $depth 2
 		$pipe icache_response_1 90 $depth 2
 {
 	
 }
-$system afb_1x1_interrupt_controller $library GlueModules
-   $in 
-          $pipe  AFB_BUS_REQUEST 74 $depth 2
-          $signal  INTERRUPT_VECTOR 15 $depth 1
-   $out 
-          $pipe  AFB_BUS_RESPONSE 33 $depth 2
-          $signal  INTR_LEVEL_0_0 4 $depth 1
-{ 
-          $pipe  irc_response_1x1_0_0 32 $depth 1
-    $noblock      $pipe  noblock_irc_command_1x1_0_0 18 $depth 2
-} 
 $system icache_mux $library GlueModules
 	$in
-		$noblock $pipe noblock_icache_request_0 41 $depth 2
-		$noblock $pipe noblock_icache_request_1 41 $depth 2
+		$noblock $pipe noblock_icache_request_0 51 $depth 2
+		$noblock $pipe noblock_icache_request_1 51 $depth 2
 
 		$pipe muxed_icache_response 90 $depth 2
 	$out
 
-		$noblock $pipe noblock_muxed_icache_request 41 $depth 2
+		$noblock $pipe noblock_muxed_icache_request 51 $depth 2
 		$pipe icache_response_0 90 $depth 2
 		$pipe icache_response_1 90 $depth 2
 {
 	
 }
-$system acb_afb_bridge $library GlueModules
-   $in 
-          $pipe  AFB_BUS_RESPONSE 33 $depth 2
-          $pipe  CORE_BUS_REQUEST 110 $depth 2
-   $out 
-          $pipe  AFB_BUS_REQUEST 74 $depth 2
-          $pipe  CORE_BUS_RESPONSE 65 $depth 2
-{ 
-} 
 $system acb_fast_mux $library GlueModules
 	$in
 		$pipe CORE_BUS_REQUEST_HIGH  110 $depth 2
@@ -306,45 +119,20 @@ $system afb_fast_splitter $library GlueModules
 {
 	
 }
-$system afb_spi_sram_8x8MB_controller $library GlueModules
-   $in 
-          $pipe  AFB_BUS_REQUEST 74 $depth 2
-          $pipe  SPI_MASTER_RESPONSE 8 $depth 2
-   $out 
-          $pipe  AFB_BUS_RESPONSE 33 $depth 2
-          $pipe  SPI_MASTER_COMMAND 16 $depth 2
-{ 
-} 
-$system afb_acb_bridge $library GlueModules
-   $in 
-          $pipe  AFB_BUS_REQUEST 74 $depth 2
-          $pipe  CORE_BUS_RESPONSE 65 $depth 2
-   $out 
-          $pipe  AFB_BUS_RESPONSE 33 $depth 2
-          $pipe  CORE_BUS_REQUEST 110 $depth 2
-{ 
-} 
 $system dcache_fast_interface_mux $library GlueModules
 	$in
-		$noblock $pipe noblock_dcache_request_0 143 $depth 2
-		$noblock $pipe noblock_dcache_request_1 143 $depth 2
+		$noblock $pipe noblock_dcache_request_0 151 $depth 2
+		$noblock $pipe noblock_dcache_request_1 151 $depth 2
 
 		$pipe muxed_dcache_response 72 $depth 2
 	$out
 
-		$noblock $pipe noblock_muxed_dcache_request 143 $depth 2
+		$noblock $pipe noblock_muxed_dcache_request 151 $depth 2
 		$pipe dcache_response_0 72 $depth 2
 		$pipe dcache_response_1 72 $depth 2
 {
 	
 }
-$system afb_null_stub $library GlueModules
-   $in 
-          $pipe  AFB_BUS_REQUEST 74 $depth 2
-   $out 
-          $pipe  AFB_BUS_RESPONSE 33 $depth 2
-{ 
-} 
 $system afb_fast_mux $library GlueModules
 	$in
 		$pipe AFB_BUS_REQUEST_HIGH  74 $depth 2
@@ -376,13 +164,13 @@ $system mem_reset_mux $library GlueModules
 }
 $system dcache_mux $library GlueModules
 	$in
-		$noblock $pipe noblock_dcache_request_0 121 $depth 2
-		$noblock $pipe noblock_dcache_request_1 121 $depth 2
+		$noblock $pipe noblock_dcache_request_0 129 $depth 2
+		$noblock $pipe noblock_dcache_request_1 129 $depth 2
 
 		$pipe muxed_dcache_response 72 $depth 2
 	$out
 
-		$noblock $pipe noblock_muxed_dcache_request 121 $depth 2
+		$noblock $pipe noblock_muxed_dcache_request 129 $depth 2
 		$pipe dcache_response_0 72 $depth 2
 		$pipe dcache_response_1 72 $depth 2
 {

@@ -1,6 +1,7 @@
-commit 0d97534c0d931f73c90574f473829904d08eca01
+commit d3eb5b4e9c7a8364882612c611a63f15f1d1f74a
 Author: Madhav Pandurang Desai <madhav@ee.iitb.ac.in>
-Date:   Wed Oct 4 17:58:20 2023 +0530
+Date:   Thu Mar 14 09:59:07 2024 +0530
 
-    Updated.  afb_multicore_interrupt_controller now includes an ipi
-    capability.
+    Verified multi-context-munit cpu, core (1x32), core (1x2x32)
+    to the point where they build and run dhrystone, dhrystone, simple_add.
+    Basic structure is ok.   More VHDL sims!
