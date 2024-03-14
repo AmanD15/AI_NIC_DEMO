@@ -45,5 +45,5 @@ int main(int argc, char* argv[])
 	// }
 
 
-	// Now enale all the NICs and enjoy.
+	// Now enable all the NICs and enjoy.
 }
