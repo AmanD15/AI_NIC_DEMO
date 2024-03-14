@@ -33,18 +33,30 @@ TODO
 
 ResNet-18 with 8-bit quantization       CIFAR-10          88 %                  82%
 
-ResNet-18 with float data type          CIFAR-10          92 %                  86%
+ResNet-18 with float32 data type        CIFAR-10          92 %                  86%
 
-Old LeNet-5 with 8 bit posit(9 hours)   MNIST             94.59%                94.30%  
 
-New LeNet-5 with 8 bit posit(2 hours)   MNIST             86.63%                86.52%
 
-LeNet-5 with 32 bit float(10 min)       MNIST             96.48%                96.42%
+ResNet-18 with float32 data type        MNIST-Digit       99.5 %                99%
+
+ResNet-18 with 8 bit posit conversion   MNIST-Digit       99 %                  94%
+(32 bit float operation)
+
+ResNet-18 with float16 data type        MNIST-Digit       In Progress
+
+
+
+LeNet-5 with 32 bit float               MNIST-Digit       96.48%                96.42%
+
+LeNet-5 with 8 bit posit conversion     MNIST-Digit       88%                   89%
+(32 bit float operation)
+
+LeNet-5 with 16 bit float               MNIST-Digit       96.65%                96.37%
+
+LeNet-5 with 8 bit posit conversion     MNIST-Digit       88.7%                 89.37%
+(16 bit float operation)
+
 
 Observations
-    - Training of each iteration reduced from 2.5 hours to 10 min
-    - Number of iterations increased from 3 to 12
-    - Previously the time consuming functions were posit conversion(1.5 sec per input) function and 
-        back propogation(2 sec per input)
-    - In new architecture posit conversion takes 0.2 sec per input and backpropogation 
-        takes 0.5 ms per input
+    - In LeNet-5, conversion from full precision to half precision operations did not give significant 
+        change in accuracy
