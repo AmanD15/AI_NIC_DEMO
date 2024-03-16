@@ -126,26 +126,28 @@ low_level_input(struct netif *netif)
   struct ethernetif *ethernetif = netif->state;
   struct pbuf *p, *q;
   u16_t len;
-  u32_t data[1];
-  uint8_t *bufptr = (uint8_t*) &data[0];
+  u32_t bufptr;
+  
 
   /* Obtain the size of the packet and put it into the "len"
      variable. */
 	      
 // Read the buffer pointer from RxQ
-  int read_ok = cortos_readMessages(rx_queue, bufptr, 1);
+  int read_ok = cortos_readMessages(rx_queue, (uint8_t*)(&bufptr), 1);
   if(read_ok == 0){
+    cortos_printf("\n failed to read from RxQ");
 	  return NULL;
   }
-  len = 30; // 14 byte header + 16 byte data
+  len = 24; // 14 byte header + 10 byte data
 
 #if ETH_PAD_SIZE
   len += ETH_PAD_SIZE; /* allow room for Ethernet padding */
 #endif
 
   /* We allocate a pbuf chain of pbufs from the pool. */
+  cortos_printf("\n Allocating pbuf");
   p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
-
+  cortos_printf("\n Allocated pbuf");
   if (p != NULL) {
 
 #if ETH_PAD_SIZE
@@ -164,12 +166,12 @@ low_level_input(struct netif *netif)
        * pbuf is the sum of the chained pbuf len members.
        */
      // read data into(q->payload, q->len);
-        memcpy(q->payload, bufptr, q->len);
+        memcpy(q->payload, (uint8_t*)bufptr, q->len);
         bufptr += q->len;
+        cortos_printf("q->len = %hu \n",q->len);
     }
    // acknowledge that packet has been read();
-
-   
+  
 #if ETH_PAD_SIZE
     pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
 #endif
@@ -193,11 +195,11 @@ low_level_input(struct netif *netif)
 err_t
 ethernetif_input(struct netif *netif)
 {
-  struct ethernetif *ethernetif;
-  struct eth_hdr *ethhdr;
+ // struct ethernetif *ethernetif;
+  //struct eth_hdr *ethhdr;
   struct pbuf *p;
 
-  ethernetif = netif->state;
+  //ethernetif = netif->state;
 
   /* move received packet into a new pbuf */
   p = low_level_input(netif);
@@ -206,6 +208,7 @@ ethernetif_input(struct netif *netif)
   if (p != NULL) {
     /* pass all packets to ethernet_input, which decides what packets it supports */
     if (netif->input(p, netif) != ERR_OK) {
+  
       LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
       pbuf_free(p);
       p = NULL;
@@ -223,13 +226,16 @@ ethernetif_input(struct netif *netif)
 err_t
 low_level_output(struct netif *netif, struct pbuf *p)
 {
-  struct ethernetif *ethernetif = netif->state;
+ // struct ethernetif *ethernetif = netif->state;
   struct pbuf *q;
-
+  u16_t len;
+  u8_t data[64];
+  uint8_t *bufptr = &data[0];
+  
   //initiate transfer();
 
 #if ETH_PAD_SIZE
-  pbuf_remove_header(p, ETH_PAD_SIZE); /* drop the padding word */
+  pbuf_remove_header(p, -ETH_PAD_SIZE); /* drop the padding word */
 #endif
 
   for (q = p; q != NULL; q = q->next) {
@@ -237,6 +243,13 @@ low_level_output(struct netif *netif, struct pbuf *p)
        time. The size of the data in each pbuf is kept in the ->len
        variable. */
    // send data from(q->payload, q->len);
+    memcpy(bufptr,q->payload,q->len);
+    bufptr += q->len;
+  }
+int write_ok = cortos_writeMessages(tx_queue, bufptr , 1);
+ if(write_ok == 0){
+   cortos_printf("\n failed to wrtite to TxQ");
+	  return 1;
   }
 
  // signal that packet should be sent();
@@ -275,7 +288,7 @@ netif_initialize(struct netif *netif)
   netif->name[0] = IFNAME0;
   netif->name[1] = IFNAME1;
 
-  netif->output    = NULL; //etharp_output;
+  netif->output    =  ethernet_output ; //etharp_output;
   netif->linkoutput = low_level_output;
 
   cortos_printf ("Configuration Done. NIC has started\n");

@@ -13,13 +13,13 @@
  
     uint8_t ethernet_frame[ETHER_FRAME_LEN] = {
         // Destination MAC Address: 0xAAAAAAAAAAAA
-        0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+       0x00, 0x0a, 0x35, 0x05, 0x76, 0xa0,
         // Source MAC Address: 0xBBBBBBBBBBBB
         0xBB, 0xBB, 0xBB, 0xBB, 0xBB, 0xBB,
         // Ethernet Type (Assuming IPv4 for example, 0x0800)
         0x08, 0x00,
         // Payload Data: "0123456789"
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
         // CRC (Placeholder)
     };
     
@@ -74,10 +74,14 @@ void my_timer_interrupt_handler()
 		// Copying data to free buffer
 		uint8_t* ptrToBuffer =(uint8_t*) ptrToDataRx;
 		int i;
-		for(i = 0 ; i < 32 ; i++)
+		for(i = 0 ; i < 24 ; i++){
+			
 			*(ptrToBuffer + i) = ethernet_frame[i];
 		
+		}
+
 		// Pushing the buffer to RxQ
+		cortos_printf("IN NIC :bufptr written = %lx \n", ptrToDataRx);
 		int RxQpush = cortos_writeMessages(rx_queue, (uint8_t*)(&ptrToDataRx), 1);
 	
 		if(RxQpush)
@@ -132,7 +136,11 @@ int main()
 	__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);
 	message_counter=0;
 	
-	
+	int n=1;
+	if(*(char*)&n  == 1)
+	cortos_printf("\n Little endian");
+	else
+	cortos_printf("\n Big endian");
 	while(1)
 
 	// spin this loop
@@ -157,13 +165,18 @@ int main()
 		if(ethernetif_input(&netif) == ERR_OK) {
 
 
-
+			cortos_printf("\n pushed ethernet frame to pbuf");
 
 			// Write the buffer pointer to TxQ
-			int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)data, 1);
+			// int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)data, 1);
 			message_counter++;
 
-
+			if(message_counter == 4) {	
+		
+			disableInterrupt(0, 0, 10);
+			controlRegister = readInterruptControlRegister(0, 0);
+			break;
+			}
 
 			// just enable the interrupt by writing to the interrupt control register..
 			//__TURN_ON_INTERRUPTS;
@@ -180,7 +193,7 @@ int main()
 		}
 
 
-		if(message_counter == 512) break;
+	
 	}
 	
 

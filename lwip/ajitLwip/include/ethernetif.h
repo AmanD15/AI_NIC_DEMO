@@ -59,6 +59,7 @@
 #include "lwip/snmp.h"
 #include "lwip/etharp.h"
 
+#include "netif/ethernet.h"
 
 #include <cortos.h>
 #include <ajit_access_routines.h>
