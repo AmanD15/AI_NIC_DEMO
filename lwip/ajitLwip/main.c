@@ -4,7 +4,7 @@
 #define TIMERCOUNT 100000
 #define COUNT TIMERCOUNT
 #define TIMERINITVAL ((COUNT << 1) | 1)
-#define ETHER_FRAME_LEN 32
+#define ETHER_FRAME_LEN 64
  
  int message_counter;
  
@@ -12,16 +12,35 @@
  // Ethernet frame structure: Destination MAC (6 bytes), Source MAC (6 bytes), Type (2 bytes), Payload (Variable bytes), CRC (4 bytes)
  
     uint8_t ethernet_frame[ETHER_FRAME_LEN] = {
-        // Destination MAC Address: 0xAAAAAAAAAAAA
-       0x00, 0x0a, 0x35, 0x05, 0x76, 0xa0,
-        // Source MAC Address: 0xBBBBBBBBBBBB
-        0xBB, 0xBB, 0xBB, 0xBB, 0xBB, 0xBB,
-        // Ethernet Type (Assuming IPv4 for example, 0x0800)
-        0x08, 0x00,
-        // Payload Data: "0123456789"
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
-        // CRC (Placeholder)
-    };
+		
+    
+	//ETHERNET HEADER:
+		// Destination MAC Address: 
+		0x00, 0x0A, 0x35, 0x05, 0x76, 0xA0,
+		// Source MAC Address: 
+		0x66, 0x77, 0x88, 0x99, 0xAA, 0xBB,
+		// Ethernet Type (Assuming IPv4 for example, 0x0800)
+		0x08, 0x00, 
+
+    // IP HEADER:
+		0x45, 0x00, 0x00, 0x22, 
+		0x04, 0xD2, 0x00, 0x00,
+		0x40, 0x01, 0xF1, 0xEE,
+		// Source IP Address:  
+		0xC0, 0xA8, 0x01, 0x64, 
+		// Destination IP Address:
+		0xC0, 0xA8, 0x01, 0x66, 
+
+	// ICMP HEADER:
+		0x08, 0x00, 0xCF, 0x5A, 
+		0x04, 0xD2, 0x00, 0x01,
+
+	// ICMP DATA: Hello	 
+		0x48, 0x65, 0x6C, 0x6C, 
+		0x6F, 0x00
+		
+
+	};
     
     
 void my_timer_interrupt_handler()
@@ -36,7 +55,7 @@ void my_timer_interrupt_handler()
 	// this code depends on the state which may have been altered
 	// above.
 	
-
+    cortos_printf ("*************** EMULATED NIC LOG BEGINS***************\n");
 	cortos_printf ("no. of messages forwarded by main(): %d\n",message_counter);
 
 	/* TRANSMISSION EMULATION*/
@@ -74,7 +93,7 @@ void my_timer_interrupt_handler()
 		// Copying data to free buffer
 		uint8_t* ptrToBuffer =(uint8_t*) ptrToDataRx;
 		int i;
-		for(i = 0 ; i < 24 ; i++){
+		for(i = 0 ; i < ETHER_FRAME_LEN ; i++){
 			
 			*(ptrToBuffer + i) = ethernet_frame[i];
 		
@@ -94,7 +113,7 @@ void my_timer_interrupt_handler()
 		cortos_printf ("no free buffer available for NIC!\n");
 		
     
-
+	    cortos_printf ("*************** EMULATED NIC LOG ENDS***************\n");
 	// clear timer control register.
 	__ajit_write_timer_control_register_via_vmap__ (0x0);
 
@@ -113,10 +132,18 @@ int main()
 
 	
 	cortos_printf ("Started\n");
+	const ip4_addr_t ipaddr  =  {{LWIP_MAKEU32(192,168,1,102)}}  ;
+	const ip4_addr_t netmask  = {{LWIP_MAKEU32(255,255,255,0)}}  ;
+	const ip4_addr_t gw       = {{LWIP_MAKEU32(127,0,0,1)}}  ;
 
 	struct netif netif;
 	lwip_init();
-	netif_add_noaddr(&netif, NULL, netif_initialize, netif_input);
+	//netif_add_noaddr(&netif, NULL, netif_initialize, netif_input);
+	netif_add(&netif, &ipaddr, 
+					  &netmask,
+					  &gw, NULL, 
+					  netif_initialize, netif_input);
+
 	netif_set_default(&netif);
 	netif_set_up(&netif);
 	low_level_init();
@@ -128,19 +155,20 @@ int main()
 	uint32_t controlRegister;
 	
 
-
-	// enable interrupt controller for the current thread.
-	enableInterruptControllerAndAllInterrupts(0,0);
-
 	// enable the timer, right away..
 	__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);
 	message_counter=0;
 	
-	int n=1;
-	if(*(char*)&n  == 1)
-	cortos_printf("\n Little endian");
+	unsigned int n = 1;
+	char *c;
+	c = (char *)&n;
+	if(*c  == 1)
+		cortos_printf("Ajit Follows Little endian \n");
 	else
-	cortos_printf("\n Big endian");
+		cortos_printf("Ajit Follows Big endian \n");
+
+	// enable interrupt controller for the current thread.
+	enableInterruptControllerAndAllInterrupts(0,0);
 	while(1)
 
 	// spin this loop
@@ -165,7 +193,6 @@ int main()
 		if(ethernetif_input(&netif) == ERR_OK) {
 
 
-			cortos_printf("\n pushed ethernet frame to pbuf");
 
 			// Write the buffer pointer to TxQ
 			// int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)data, 1);

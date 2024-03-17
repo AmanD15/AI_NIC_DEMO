@@ -135,19 +135,19 @@ low_level_input(struct netif *netif)
 // Read the buffer pointer from RxQ
   int read_ok = cortos_readMessages(rx_queue, (uint8_t*)(&bufptr), 1);
   if(read_ok == 0){
-    cortos_printf("\n failed to read from RxQ");
+    cortos_printf("failed to read from RxQ\n");
 	  return NULL;
   }
-  len = 24; // 14 byte header + 10 byte data
+  len = 48; // 14 byte header + 34 byte data
 
 #if ETH_PAD_SIZE
   len += ETH_PAD_SIZE; /* allow room for Ethernet padding */
 #endif
 
   /* We allocate a pbuf chain of pbufs from the pool. */
-  cortos_printf("\n Allocating pbuf");
+ 
   p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
-  cortos_printf("\n Allocated pbuf");
+ 
   if (p != NULL) {
 
 #if ETH_PAD_SIZE
@@ -281,14 +281,14 @@ netif_initialize(struct netif *netif)
 
   /* device capabilities */
   /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
-  netif->flags =  NETIF_FLAG_ETHERNET ;
+  netif->flags =  NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET ;
 
 
   netif->state = NULL;
   netif->name[0] = IFNAME0;
   netif->name[1] = IFNAME1;
 
-  netif->output    =  ethernet_output ; //etharp_output;
+  netif->output    =  etharp_output ; 
   netif->linkoutput = low_level_output;
 
   cortos_printf ("Configuration Done. NIC has started\n");

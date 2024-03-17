@@ -87,7 +87,8 @@ Software:
     -I $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip/include
     -I $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip/include/arch
     -I $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/include
-    -c $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/netif/ethernet.c 
+    -c $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/netif/ethernet.c
+    -c $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/api/err.c 
     -C $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/core 
     -C $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/core/ipv4
     -C $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip/src"

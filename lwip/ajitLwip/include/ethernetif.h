@@ -66,7 +66,7 @@
 #include <ajit_mt_irc.h>
 #include <core_portme.h>
 
-#define BUFFER_SIZE_IN_BYTES 32
+#define BUFFER_SIZE_IN_BYTES 64
 #define IFNAME0 'e'
 #define IFNAME1 'n'
 #define ETHERNET_MTU 1500

@@ -569,3 +569,8 @@ PLAN:
     check snmp stuff and perf counters
 
     loopback interface enable once you do this.
+
+    PLAN:
+    add ip addr to netif
+    push packet all the way to icmp
+    ip4.c line no. 1041 reached.
