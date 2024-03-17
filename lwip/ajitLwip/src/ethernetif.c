@@ -228,10 +228,10 @@ low_level_output(struct netif *netif, struct pbuf *p)
 {
  // struct ethernetif *ethernetif = netif->state;
   struct pbuf *q;
-  u16_t len;
-  u8_t data[64];
+
+  uint8_t data[64];
   uint8_t *bufptr = &data[0];
-  
+ 
   //initiate transfer();
 
 #if ETH_PAD_SIZE
@@ -246,11 +246,15 @@ low_level_output(struct netif *netif, struct pbuf *p)
     memcpy(bufptr,q->payload,q->len);
     bufptr += q->len;
   }
-int write_ok = cortos_writeMessages(tx_queue, bufptr , 1);
+
+uint32_t BufPtr = (uint32_t)bufptr;  
+int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)(&BufPtr) , 1);
  if(write_ok == 0){
-   cortos_printf("\n failed to wrtite to TxQ");
+   cortos_printf("failed to wrtite to TxQ\n");
 	  return 1;
   }
+  else
+    cortos_printf("netif->linkoutput() or low_level_output(): packet transmitted");
 
  // signal that packet should be sent();
 
