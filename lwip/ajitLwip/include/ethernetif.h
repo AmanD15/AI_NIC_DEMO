@@ -70,11 +70,17 @@
 #define IFNAME0 'e'
 #define IFNAME1 'n'
 #define ETHERNET_MTU 1500
+#define ETHER_FRAME_LEN 64
 
 // The Qs
 CortosQueueHeader* free_queue;
 CortosQueueHeader* rx_queue;
 CortosQueueHeader* tx_queue;
+
+
+
+  
+
 
 // The array to store ptr to buffers
 

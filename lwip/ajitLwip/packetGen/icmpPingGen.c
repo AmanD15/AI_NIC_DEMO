@@ -8,7 +8,7 @@ struct EthernetHeader {
     uint8_t destination[6];
     uint8_t source[6];
     uint16_t type;
-};
+}__attribute__((packed));
 
 // IP header structure
 struct IPHeader {
@@ -22,7 +22,7 @@ struct IPHeader {
     uint16_t header_checksum;
     uint32_t source_ip;
     uint32_t dest_ip;
-};
+}__attribute__((packed));
 
 // ICMP header structure
 struct ICMPHeader {
@@ -32,7 +32,7 @@ struct ICMPHeader {
     uint16_t identifier;
     uint16_t sequence_number;
     // Add any additional fields here
-};
+}__attribute__((packed));
 
 // Function to calculate checksumh
 uint16_t calculateChecksum(uint16_t *data, int length) {
@@ -127,8 +127,8 @@ int main() {
     printEthernetFrame(ethernetFrame, sizeof(struct EthernetHeader) + sizeof(struct IPHeader) + sizeof(struct ICMPHeader),
 				      sizeof(struct EthernetHeader) + sizeof(struct IPHeader) + sizeof(struct ICMPHeader)+ strlen(pingData) + 1 ,4);
 
-printf("size of ethernet header = %d\n",sizeof(struct EthernetHeader));
-printf("size of ip header = %d\n",sizeof(struct IPHeader));
-
+printf("size of ethernet header = %ld\n",sizeof(struct EthernetHeader));
+printf("size of ip header = %ld\n",sizeof(struct IPHeader));
+printf("size of icmp header = %ld\n",sizeof(struct ICMPHeader));
     return 0;
 }

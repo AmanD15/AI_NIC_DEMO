@@ -1,13 +1,6 @@
 #include "include/ethernetif.h"
 
-/*************************** Interrupt Handler Begins ********************************/
-#define TIMERCOUNT 100000
-#define COUNT TIMERCOUNT
-#define TIMERINITVAL ((COUNT << 1) | 1)
-#define ETHER_FRAME_LEN 64
- 
- int message_counter;
- 
+
  
  // Ethernet frame structure: Destination MAC (6 bytes), Source MAC (6 bytes), Type (2 bytes), Payload (Variable bytes), CRC (4 bytes)
  
@@ -42,7 +35,35 @@
 
 	};
     
+
+// ARP Response packet
+    uint8_t arpResponse[ETHER_FRAME_LEN] = {
+		
     
+	//ETHERNET HEADER:
+		// Destination MAC Address: 
+		0x00, 0x0A, 0x35, 0x05, 0x76, 0xA0,
+		// Source MAC Address: 
+		0x66, 0x77, 0x88, 0x99, 0xAA, 0xBB,
+		// Ethernet Type (Assuming IPv4 for example, 0x0800)
+		0x08, 0x06, 
+
+    //Constructed ARP Response:
+		0x00, 0x01, 0x08, 0x00, 
+		0x06, 0x04, 0x00, 0x02, 
+		0x66, 0x77, 0x88, 0x99, 0xAA, 0xBB,  
+		0xC0, 0xA8, 0x01, 0x64, 
+		0x00, 0x0A, 0x35, 0x05, 0x76, 0xA0,  
+		0xC0, 0xA8, 0x01, 0x66
+	
+	};
+    
+/*************************** Interrupt Handler Begins ********************************/
+#define TIMERCOUNT 100000
+#define COUNT TIMERCOUNT
+#define TIMERINITVAL ((COUNT << 1) | 1)
+int message_counter;
+
 void my_timer_interrupt_handler()
 {
 
@@ -55,17 +76,20 @@ void my_timer_interrupt_handler()
 	// this code depends on the state which may have been altered
 	// above.
 
-	cortos_printf ("*************** EMULATED NIC LOG BEGINS***************\n");
-	cortos_printf ("no. of messages forwarded by main(): %d\n",message_counter);
+	cortos_printf ("\n*************** EMULATED NIC(HARDWARE) LOG BEGINS***************\n");
+
 
 	/* TRANSMISSION EMULATION*/
+	uint8_t arpPacketTransmitted,arpPacketReceived; 
 	uint8_t* ethernetFrame;
 	uint32_t ptrToDataTx;
+	
 	int TxQpop = cortos_readMessages(tx_queue, (uint8_t*)(&ptrToDataTx), 1);
 
 	if(TxQpop)
 	{
 		ethernetFrame = (uint8_t*) ptrToDataTx;
+		arpPacketTransmitted = (ethernetFrame[12] == 0x08) && (ethernetFrame[13] == 0x06);
 		cortos_printf ("NIC transmitted a packet \n");
 
 		// Print the constructed Ethernet frame
@@ -74,9 +98,20 @@ void my_timer_interrupt_handler()
 		cortos_printf("Ethernet Header:\n");
 		printEthernetFrame(ethernetFrame, 0, 14, 6);
 
-		cortos_printf("IP Header:\n");
-		printEthernetFrame(ethernetFrame, 14, (14 + 20), 4);
 
+		if(arpPacketTransmitted)
+		{
+			cortos_printf("ARP Header:\n");
+			printEthernetFrame(ethernetFrame, 14, (14 + 28), 4);
+		}
+		else
+		{
+			cortos_printf("IP Header:\n");
+			printEthernetFrame(ethernetFrame, 14, (14 + 20), 4);
+
+			cortos_printf("ICMP Header:\n");
+			printEthernetFrame(ethernetFrame, 34, (34 + 8), 4);
+		}
 
 		// Pushing the buffer back to freeQ
 		int freeQpush = cortos_writeMessages(free_queue, (uint8_t*)(&ptrToDataTx), 1);
@@ -108,18 +143,72 @@ void my_timer_interrupt_handler()
 		// Copying data to free buffer
 		uint8_t* ptrToBuffer =(uint8_t*) ptrToDataRx;
 		int i;
-		for(i = 0 ; i < ETHER_FRAME_LEN ; i++){
+	
+		if(TxQpop)
+		{
+
 			
-			*(ptrToBuffer + i) = ethernet_frame[i];
-		
+			if (arpPacketTransmitted)
+				{
+					 memcpy(ptrToBuffer,arpResponse,ETHER_FRAME_LEN);
+				}
+
+			else
+				{
+
+					memcpy(ptrToBuffer,ethernet_frame,ETHER_FRAME_LEN);
+
+				}
+
+
+
 		}
+		else
+		{
+
+			memcpy(ptrToBuffer,ethernet_frame,ETHER_FRAME_LEN);
+
+		}
+			
 
 		// Pushing the buffer to RxQ
 		cortos_printf("bufptr written = %lx \n", ptrToDataRx);
 		int RxQpush = cortos_writeMessages(rx_queue, (uint8_t*)(&ptrToDataRx), 1);
 	
 		if(RxQpush)
+		{
 			cortos_printf ("NIC received a packet\n");
+
+			// Print the constructed Ethernet frame
+			cortos_printf("Receieved packet:\n");
+
+			cortos_printf("Ethernet Header:\n");
+			printEthernetFrame(ptrToBuffer, 0, 14, 6);
+
+			arpPacketReceived = (ptrToBuffer[12] == 0x08) && (ptrToBuffer[13] == 0x06);
+
+			if (arpPacketReceived)
+				{
+					cortos_printf("ARP Header:\n");
+					printEthernetFrame(ptrToBuffer, 14, (14 + 28), 4);
+				}
+
+			else
+				{
+
+					cortos_printf("IP Header:\n");
+					printEthernetFrame(ptrToBuffer, 14, (14 + 20), 4);
+
+					cortos_printf("ICMP Header:\n");
+					printEthernetFrame(ptrToBuffer, 34, (34 + 8), 4);
+
+				}
+			
+
+
+
+
+		}
 		else
 			cortos_printf ("NIC reception failure!\n");
 	}
@@ -128,7 +217,7 @@ void my_timer_interrupt_handler()
 		cortos_printf ("no free buffer available for NIC!\n");
 		
     
-	    cortos_printf ("*************** EMULATED NIC LOG ENDS***************\n");
+	    cortos_printf ("\n*************** EMULATED NIC(HARDWARE) LOG ENDS*****************\n");
 	// clear timer control register.
 	__ajit_write_timer_control_register_via_vmap__ (0x0);
 
@@ -209,8 +298,9 @@ int main()
 
 
 			message_counter++;
+			cortos_printf ("main(): no. of messages recieved: %d\n",message_counter);
 
-			if(message_counter == 4) {	
+			if(message_counter == 8) {	
 		
 			disableInterrupt(0, 0, 10);
 			controlRegister = readInterruptControlRegister(0, 0);

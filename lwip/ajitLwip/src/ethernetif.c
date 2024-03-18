@@ -127,7 +127,7 @@ low_level_input(struct netif *netif)
   struct pbuf *p, *q;
   u16_t len;
   u32_t bufptr;
-  
+  u8_t* BufPtr;
 
   /* Obtain the size of the packet and put it into the "len"
      variable. */
@@ -138,8 +138,14 @@ low_level_input(struct netif *netif)
     cortos_printf("failed to read from RxQ\n");
 	  return NULL;
   }
-  len = 48; // 14 byte header + 34 byte data
 
+  BufPtr = (u8_t*)bufptr;
+
+  if( (BufPtr[12]==0x08) && (BufPtr[13]==0x06) )
+    len = 42; // 14 byte header + 28 byte data
+  else
+    len = 48; // 14 byte header + 34 byte data
+  
 #if ETH_PAD_SIZE
   len += ETH_PAD_SIZE; /* allow room for Ethernet padding */
 #endif
