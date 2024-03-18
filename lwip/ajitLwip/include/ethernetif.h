@@ -128,6 +128,8 @@ low_level_output(struct netif *netif, struct pbuf *p);
 err_t 
 netif_initialize(struct netif *netif);
 
+void printEthernetFrame(uint8_t *ethernetFrame, int start,int length,int tab);
+
 #endif /* LWIP_HDR_ETHERNETIF_H */
 
 

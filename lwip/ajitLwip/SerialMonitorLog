@@ -1,271 +1,275 @@
-14:40:27.827 -> Started
-14:40:27.827 -> netif: netmask of interface en set to 255.255.255.0
-14:40:27.827 -> netif: GW address of interface en set to 127.0.0.1
-14:40:27.827 -> netif_set_ipaddr: netif address being changed
-14:40:27.827 -> Configuration Done. NIC has started
-14:40:27.827 -> netif: added interface en IP addr 192.168.1.102 netmask 255.255.255.0 gw 127.0.0.1
-14:40:27.827 -> netif: setting default interface en
-14:40:27.827 -> Reserved queues: free=0x51ffffa0, rx=0x51ffff50, tx=0x51fffef0
-14:40:27.860 -> Allocated Buffer[0] = 0x51fffea0
-14:40:27.860 -> Allocated Buffer[1] = 0x51fffe58
-14:40:27.860 -> Allocated Buffer[2] = 0x51fffe10
-14:40:27.860 -> Allocated Buffer[3] = 0x51fffdc8
-14:40:27.860 -> Allocated Buffer[4] = 0x51fffd80
-14:40:27.860 -> Allocated Buffer[5] = 0x51fffd38
-14:40:27.860 -> Allocated Buffer[6] = 0x51fffcf0
-14:40:27.860 -> Allocated Buffer[7] = 0x51fffca8
-14:40:27.860 -> Stored Buffer[0] in free-queue = 0x51fffea0
-14:40:27.860 -> Stored Buffer[1] in free-queue = 0x51fffe58
-14:40:27.860 -> Stored Buffer[2] in free-queue = 0x51fffe10
-14:40:27.893 -> Stored Buffer[3] in free-queue = 0x51fffdc8
-14:40:27.893 -> Configuration Done. NIC has started
-14:40:27.893 -> Ajit Follows Big endian 
-14:40:27.893 -> failed to read from RxQ
-14:40:27.893 -> *************** EMULATED NIC LOG BEGINS***************
-14:40:27.893 -> no. of messages forwarded by main(): 0
-14:40:27.893 -> NIC has no packet to transmit!
-14:40:27.893 -> free buffer obtained by NIC
-14:40:27.893 -> IN NIC :bufptr written = 51fffea0 
-14:40:27.893 -> NIC received a packet
-14:40:27.893 -> *************** EMULATED NIC LOG ENDS***************
-14:40:27.926 -> pbuf_alloc(length=48)
-14:40:27.926 -> pbuf_alloc(length=48) == 0x40027ad8
-14:40:27.926 -> q->len = 48 
-14:40:27.926 -> ethernet_input: dest:00:0a:35:05:76:a0, src:66:77:88:99:aa:bb, type:800
-14:40:27.926 -> 
-14:40:27.926 -> came here 
-14:40:27.926 -> pbuf_remove_header: old 0x40027ae8 new 0x40027af6 (14)
-14:40:27.926 -> ip_input: iphdr->dest 0xc0a80166 netif->ip_addr 0xc0a80166 (0xc0a80100, 0xc0a80100, 0x66)
-14:40:27.926 -> ip4_input: packet accepted on interface en
-14:40:27.926 -> ip4_input: 
-14:40:27.960 -> IP header:
-14:40:27.960 -> +-------------------------------+
-14:40:27.960 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
-14:40:27.960 -> +-------------------------------+
-14:40:27.960 -> |     1234      |000|       0   | (id, flags, offset)
-14:40:27.960 -> +-------------------------------+
-14:40:27.960 -> |   64  |    1  |    0xf1ee     | (ttl, proto, chksum)
-14:40:27.960 -> +-------------------------------+
-14:40:27.960 -> |  100  |    1  |  168  |  192  | (src)
-14:40:27.960 -> +-------------------------------+
-14:40:27.993 -> |  102  |    1  |  168  |  192  | (dest)
-14:40:27.993 -> +-------------------------------+
-14:40:27.993 -> ip4_input: p->len 34 p->tot_len 34
-14:40:27.993 -> pbuf_remove_header: old 0x40027af6 new 0x40027b0a (20)
-14:40:27.993 -> icmp_input: ping
-14:40:27.993 -> pbuf_add_header: old 0x40027b0a new 0x40027ae8 (34)
-14:40:27.993 -> pbuf_remove_header: old 0x40027ae8 new 0x40027b0a (34)
-14:40:27.993 -> pbuf_add_header: old 0x40027b0a new 0x40027af6 (20)
-14:40:27.993 -> ip4_output_if: en0
-14:40:27.993 -> IP header:
-14:40:28.030 -> +-------------------------------+
-14:40:28.030 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
-14:40:28.030 -> +-------------------------------+
-14:40:28.030 -> |     1234      |000|       0   | (id, flags, offset)
-14:40:28.030 -> +-------------------------------+
-14:40:28.030 -> |  255  |    1  |    0x32ee     | (ttl, proto, chksum)
-14:40:28.030 -> +-------------------------------+
-14:40:28.030 -> |  102  |    1  |  168  |  192  | (src)
-14:40:28.030 -> +-------------------------------+
-14:40:28.030 -> |  100  |    1  |  168  |  192  | (dest)
-14:40:28.030 -> +-------------------------------+
-14:40:28.063 -> ip4_output_if: call netif->output()
-14:40:28.063 -> etharp_find_entry: found empty entry 0
-14:40:28.063 -> etharp_find_entry: selecting empty entry 0
-14:40:28.063 -> etharp_request: sending ARP request.
-14:40:28.063 -> pbuf_alloc(length=28)
-14:40:28.063 -> pbuf_alloc(length=28) == 0x4001d380
-14:40:28.063 -> etharp_raw: sending raw ARP packet.
-14:40:28.063 -> pbuf_add_header: old 0x4001d3a0 new 0x4001d392 (14)
-14:40:28.063 -> ethernet_output: sending packet 0x4001d380
-14:40:28.063 -> pbuf_free(0x4001d380)
-14:40:28.096 -> pbuf_free: deallocating 0x4001d380
-14:40:28.096 -> etharp_query: queued packet 0x40027ad8 on ARP entry 0
-14:40:28.096 -> pbuf_free(0x40027ad8)
-14:40:28.096 -> pbuf_free: 0x40027ad8 has ref 1, ending here.
-14:40:28.096 -> *************** EMULATED NIC LOG BEGINS***************
-14:40:28.096 -> no. of messages forwarded by main(): 1
-14:40:28.096 -> NIC transmitted a packet
-14:40:28.096 -> FreeQ replenished back
-14:40:28.096 -> free buffer obtained by NIC
-14:40:28.096 -> IN NIC :bufptr written = 51fffe58 
-14:40:28.096 -> NIC received a packet
-14:40:28.129 -> *************** EMULATED NIC LOG ENDS***************
-14:40:28.129 -> pbuf_alloc(length=48)
-14:40:28.129 -> pbuf_alloc(length=48) == 0x400279c8
-14:40:28.129 -> q->len = 48 
-14:40:28.129 -> ethernet_input: dest:00:0a:35:05:76:a0, src:66:77:88:99:aa:bb, type:800
-14:40:28.129 -> 
-14:40:28.129 -> came here 
-14:40:28.129 -> pbuf_remove_header: old 0x400279d8 new 0x400279e6 (14)
-14:40:28.129 -> ip_input: iphdr->dest 0xc0a80166 netif->ip_addr 0xc0a80166 (0xc0a80100, 0xc0a80100, 0x66)
-14:40:28.129 -> ip4_input: packet accepted on interface en
-14:40:28.162 -> ip4_input: 
-14:40:28.162 -> IP header:
-14:40:28.162 -> +-------------------------------+
-14:40:28.162 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
-14:40:28.162 -> +-------------------------------+
-14:40:28.162 -> |     1234      |000|       0   | (id, flags, offset)
-14:40:28.162 -> +-------------------------------+
-14:40:28.162 -> |   64  |    1  |    0xf1ee     | (ttl, proto, chksum)
-14:40:28.162 -> +-------------------------------+
-14:40:28.162 -> |  100  |    1  |  168  |  192  | (src)
-14:40:28.195 -> +-------------------------------+
-14:40:28.195 -> |  102  |    1  |  168  |  192  | (dest)
-14:40:28.195 -> +-------------------------------+
-14:40:28.195 -> ip4_input: p->len 34 p->tot_len 34
-14:40:28.195 -> pbuf_remove_header: old 0x400279e6 new 0x400279fa (20)
-14:40:28.195 -> icmp_input: ping
-14:40:28.195 -> pbuf_add_header: old 0x400279fa new 0x400279d8 (34)
-14:40:28.195 -> pbuf_remove_header: old 0x400279d8 new 0x400279fa (34)
-14:40:28.195 -> pbuf_add_header: old 0x400279fa new 0x400279e6 (20)
-14:40:28.228 -> ip4_output_if: en0
-14:40:28.228 -> IP header:
-14:40:28.228 -> +-------------------------------+
-14:40:28.228 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
-14:40:28.228 -> +-------------------------------+
-14:40:28.228 -> |     1234      |000|       0   | (id, flags, offset)
-14:40:28.228 -> +-------------------------------+
-14:40:28.228 -> |  255  |    1  |    0x32ee     | (ttl, proto, chksum)
-14:40:28.228 -> +-------------------------------+
-14:40:28.228 -> |  102  |    1  |  168  |  192  | (src)
-14:40:28.228 -> +-------------------------------+
-14:40:28.261 -> |  100  |    1  |  168  |  192  | (dest)
-14:40:28.261 -> +-------------------------------+
-14:40:28.261 -> ip4_output_if: call netif->output()
-14:40:28.261 -> etharp_find_entry: found matching entry 0
-14:40:28.261 -> etharp_query: dropped previously queued packet 0x400279c8 for ARP entry 0
-14:40:28.261 -> pbuf_free(0x40027ad8)
-14:40:28.261 -> pbuf_free: deallocating 0x40027ad8
-14:40:28.261 -> etharp_query: queued packet 0x400279c8 on ARP entry 0
-14:40:28.261 -> pbuf_free(0x400279c8)
-14:40:28.295 -> pbuf_free: 0x400279c8 has ref 1, ending here.
-14:40:28.295 -> *************** EMULATED NIC LOG BEGINS***************
-14:40:28.295 -> no. of messages forwarded by main(): 2
-14:40:28.295 -> NIC has no packet to transmit!
-14:40:28.295 -> free buffer obtained by NIC
-14:40:28.295 -> IN NIC :bufptr written = 51fffe10 
-14:40:28.295 -> NIC received a packet
-14:40:28.295 -> *************** EMULATED NIC LOG ENDS***************
-14:40:28.295 -> pbuf_alloc(length=48)
-14:40:28.295 -> pbuf_alloc(length=48) == 0x40027ad8
-14:40:28.295 -> q->len = 48 
-14:40:28.295 -> ethernet_input: dest:00:0a:35:05:76:a0, src:66:77:88:99:aa:bb, type:800
-14:40:28.328 -> 
-14:40:28.328 -> came here 
-14:40:28.328 -> pbuf_remove_header: old 0x40027ae8 new 0x40027af6 (14)
-14:40:28.328 -> ip_input: iphdr->dest 0xc0a80166 netif->ip_addr 0xc0a80166 (0xc0a80100, 0xc0a80100, 0x66)
-14:40:28.328 -> ip4_input: packet accepted on interface en
-14:40:28.328 -> ip4_input: 
-14:40:28.328 -> IP header:
-14:40:28.328 -> +-------------------------------+
-14:40:28.328 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
-14:40:28.328 -> +-------------------------------+
-14:40:28.361 -> |     1234      |000|       0   | (id, flags, offset)
-14:40:28.361 -> +-------------------------------+
-14:40:28.361 -> |   64  |    1  |    0xf1ee     | (ttl, proto, chksum)
-14:40:28.361 -> +-------------------------------+
-14:40:28.361 -> |  100  |    1  |  168  |  192  | (src)
-14:40:28.361 -> +-------------------------------+
-14:40:28.361 -> |  102  |    1  |  168  |  192  | (dest)
-14:40:28.361 -> +-------------------------------+
-14:40:28.361 -> ip4_input: p->len 34 p->tot_len 34
-14:40:28.394 -> pbuf_remove_header: old 0x40027af6 new 0x40027b0a (20)
-14:40:28.394 -> icmp_input: ping
-14:40:28.394 -> pbuf_add_header: old 0x40027b0a new 0x40027ae8 (34)
-14:40:28.394 -> pbuf_remove_header: old 0x40027ae8 new 0x40027b0a (34)
-14:40:28.394 -> pbuf_add_header: old 0x40027b0a new 0x40027af6 (20)
-14:40:28.394 -> ip4_output_if: en0
-14:40:28.394 -> IP header:
-14:40:28.394 -> +-------------------------------+
-14:40:28.394 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
-14:40:28.394 -> +-------------------------------+
-14:40:28.427 -> |     1234      |000|       0   | (id, flags, offset)
-14:40:28.427 -> +-------------------------------+
-14:40:28.427 -> |  255  |    1  |    0x32ee     | (ttl, proto, chksum)
-14:40:28.427 -> +-------------------------------+
-14:40:28.427 -> |  102  |    1  |  168  |  192  | (src)
-14:40:28.427 -> +-------------------------------+
-14:40:28.427 -> |  100  |    1  |  168  |  192  | (dest)
-14:40:28.427 -> +-------------------------------+
-14:40:28.427 -> ip4_output_if: call netif->output()
-14:40:28.427 -> etharp_find_entry: found matching entry 0
-14:40:28.462 -> etharp_query: dropped previously queued packet 0x40027ad8 for ARP entry 0
-14:40:28.462 -> pbuf_free(0x400279c8)
-14:40:28.462 -> pbuf_free: deallocating 0x400279c8
-14:40:28.462 -> etharp_query: queued packet 0x40027ad8 on ARP entry 0
-14:40:28.462 -> pbuf_free(0x40027ad8)
-14:40:28.462 -> pbuf_free: 0x40027ad8 has ref 1, ending here.
-14:40:28.462 -> *************** EMULATED NIC LOG BEGINS***************
-14:40:28.462 -> no. of messages forwarded by main(): 3
-14:40:28.494 -> NIC has no packet to transmit!
-14:40:28.494 -> free buffer obtained by NIC
-14:40:28.494 -> IN NIC :bufptr written = 51fffdc8 
-14:40:28.494 -> NIC received a packet
-14:40:28.494 -> *************** EMULATED NIC LOG ENDS***************
-14:40:28.494 -> pbuf_alloc(length=48)
-14:40:28.494 -> pbuf_alloc(length=48) == 0x400279c8
-14:40:28.494 -> q->len = 48 
-14:40:28.494 -> ethernet_input: dest:00:0a:35:05:76:a0, src:66:77:88:99:aa:bb, type:800
-14:40:28.494 -> 
-14:40:28.494 -> came here 
-14:40:28.494 -> pbuf_remove_header: old 0x400279d8 new 0x400279e6 (14)
-14:40:28.494 -> ip_input: iphdr->dest 0xc0a80166 netif->ip_addr 0xc0a80166 (0xc0a80100, 0xc0a80100, 0x66)
-14:40:28.527 -> ip4_input: packet accepted on interface en
-14:40:28.527 -> ip4_input: 
-14:40:28.527 -> IP header:
-14:40:28.527 -> +-------------------------------+
-14:40:28.527 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
-14:40:28.527 -> +-------------------------------+
-14:40:28.527 -> |     1234      |000|       0   | (id, flags, offset)
-14:40:28.527 -> +-------------------------------+
-14:40:28.527 -> |   64  |    1  |    0xf1ee     | (ttl, proto, chksum)
-14:40:28.561 -> +-------------------------------+
-14:40:28.561 -> |  100  |    1  |  168  |  192  | (src)
-14:40:28.561 -> +-------------------------------+
-14:40:28.561 -> |  102  |    1  |  168  |  192  | (dest)
-14:40:28.561 -> +-------------------------------+
-14:40:28.561 -> ip4_input: p->len 34 p->tot_len 34
-14:40:28.561 -> pbuf_remove_header: old 0x400279e6 new 0x400279fa (20)
-14:40:28.561 -> icmp_input: ping
-14:40:28.561 -> pbuf_add_header: old 0x400279fa new 0x400279d8 (34)
-14:40:28.561 -> pbuf_remove_header: old 0x400279d8 new 0x400279fa (34)
-14:40:28.594 -> pbuf_add_header: old 0x400279fa new 0x400279e6 (20)
-14:40:28.594 -> ip4_output_if: en0
-14:40:28.594 -> IP header:
-14:40:28.594 -> +-------------------------------+
-14:40:28.594 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
-14:40:28.594 -> +-------------------------------+
-14:40:28.594 -> |     1234      |000|       0   | (id, flags, offset)
-14:40:28.594 -> +-------------------------------+
-14:40:28.594 -> |  255  |    1  |    0x32ee     | (ttl, proto, chksum)
-14:40:28.627 -> +-------------------------------+
-14:40:28.627 -> |  102  |    1  |  168  |  192  | (src)
-14:40:28.627 -> +-------------------------------+
-14:40:28.627 -> |  100  |    1  |  168  |  192  | (dest)
-14:40:28.627 -> +-------------------------------+
-14:40:28.627 -> ip4_output_if: call netif->output()
-14:40:28.627 -> etharp_find_entry: found matching entry 0
-14:40:28.627 -> etharp_query: dropped previously queued packet 0x400279c8 for ARP entry 0
-14:40:28.627 -> pbuf_free(0x40027ad8)
-14:40:28.627 -> pbuf_free: deallocating 0x40027ad8
-14:40:28.660 -> etharp_query: queued packet 0x400279c8 on ARP entry 0
-14:40:28.660 -> pbuf_free(0x400279c8)
-14:40:28.660 -> pbuf_free: 0x400279c8 has ref 1, ending here.
-14:40:28.660 -> Releasing buffer[0] 0x51fffea0
-14:40:28.660 -> Released  buffer[0] 0x51fffea0
-14:40:28.660 -> Releasing buffer[1] 0x51fffe58
-14:40:28.660 -> Released  buffer[1] 0x51fffe58
-14:40:28.660 -> Releasing buffer[2] 0x51fffe10
-14:40:28.660 -> Released  buffer[2] 0x51fffe10
-14:40:28.660 -> Releasing buffer[3] 0x51fffdc8
-14:40:28.660 -> Released  buffer[3] 0x51fffdc8
-14:40:28.693 -> Releasing buffer[4] 0x51fffd80
-14:40:28.693 -> Released  buffer[4] 0x51fffd80
-14:40:28.693 -> Releasing buffer[5] 0x51fffd38
-14:40:28.693 -> Released  buffer[5] 0x51fffd38
-14:40:28.693 -> Releasing buffer[6] 0x51fffcf0
-14:40:28.693 -> Released  buffer[6] 0x51fffcf0
-14:40:28.693 -> Releasing buffer[7] 0x51fffca8
-14:40:28.693 -> Released  buffer[7] 0x51fffca8
+11:42:26.906 -> Started
+11:42:26.906 -> netif: netmask of interface en set to 255.255.255.0
+11:42:26.939 -> netif: GW address of interface en set to 127.0.0.1
+11:42:26.939 -> netif_set_ipaddr: netif address being changed
+11:42:26.939 -> Configuration Done. NIC has started
+11:42:26.939 -> netif: added interface en IP addr 192.168.1.102 netmask 255.255.255.0 gw 127.0.0.1
+11:42:26.939 -> netif: setting default interface en
+11:42:26.939 -> Reserved queues: free=0x51ffffa0, rx=0x51ffff50, tx=0x51fffef0
+11:42:26.939 -> Allocated Buffer[0] = 0x51fffea0
+11:42:26.972 -> Allocated Buffer[1] = 0x51fffe58
+11:42:26.972 -> Allocated Buffer[2] = 0x51fffe10
+11:42:26.972 -> Allocated Buffer[3] = 0x51fffdc8
+11:42:26.972 -> Allocated Buffer[4] = 0x51fffd80
+11:42:26.972 -> Allocated Buffer[5] = 0x51fffd38
+11:42:26.972 -> Allocated Buffer[6] = 0x51fffcf0
+11:42:26.972 -> Allocated Buffer[7] = 0x51fffca8
+11:42:26.972 -> Stored Buffer[0] in free-queue = 0x51fffea0
+11:42:26.972 -> Stored Buffer[1] in free-queue = 0x51fffe58
+11:42:26.972 -> Stored Buffer[2] in free-queue = 0x51fffe10
+11:42:26.972 -> Stored Buffer[3] in free-queue = 0x51fffdc8
+11:42:27.005 -> Configuration Done. NIC has started
+11:42:27.005 -> Ajit Follows Big endian 
+11:42:27.005 -> *************** EMULATED NIC LOG BEGINS***************
+11:42:27.005 -> no. of messages forwarded by main(): 0
+11:42:27.005 -> NIC has no packet to transmit!
+11:42:27.005 -> free buffer obtained by NIC
+11:42:27.005 -> bufptr written = 51fffea0 
+11:42:27.005 -> NIC received a packet
+11:42:27.005 -> *************** EMULATED NIC LOG ENDS***************
+11:42:27.005 -> pbuf_alloc(length=48)
+11:42:27.005 -> pbuf_alloc(length=48) == 0x40027ad8
+11:42:27.038 -> q->len = 48 
+11:42:27.038 -> ethernet_input: dest:00:0a:35:05:76:a0, src:66:77:88:99:aa:bb, type:800
+11:42:27.038 -> pbuf_remove_header: old 0x40027ae8 new 0x40027af6 (14)
+11:42:27.038 -> ip_input: iphdr->dest 0xc0a80166 netif->ip_addr 0xc0a80166 (0xc0a80100, 0xc0a80100, 0x66)
+11:42:27.038 -> ip4_input: packet accepted on interface en
+11:42:27.038 -> ip4_input: 
+11:42:27.038 -> IP header:
+11:42:27.038 -> +-------------------------------+
+11:42:27.038 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
+11:42:27.071 -> +-------------------------------+
+11:42:27.071 -> |     1234      |000|       0   | (id, flags, offset)
+11:42:27.071 -> +-------------------------------+
+11:42:27.071 -> |   64  |    1  |    0xf1ee     | (ttl, proto, chksum)
+11:42:27.071 -> +-------------------------------+
+11:42:27.071 -> |  100  |    1  |  168  |  192  | (src)
+11:42:27.071 -> +-------------------------------+
+11:42:27.104 -> |  102  |    1  |  168  |  192  | (dest)
+11:42:27.104 -> +-------------------------------+
+11:42:27.104 -> ip4_input: p->len 34 p->tot_len 34
+11:42:27.104 -> pbuf_remove_header: old 0x40027af6 new 0x40027b0a (20)
+11:42:27.104 -> icmp_input: ping
+11:42:27.104 -> pbuf_add_header: old 0x40027b0a new 0x40027ae8 (34)
+11:42:27.104 -> pbuf_remove_header: old 0x40027ae8 new 0x40027b0a (34)
+11:42:27.104 -> pbuf_add_header: old 0x40027b0a new 0x40027af6 (20)
+11:42:27.104 -> ip4_output_if: en0
+11:42:27.104 -> IP header:
+11:42:27.104 -> +-------------------------------+
+11:42:27.104 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
+11:42:27.137 -> +-------------------------------+
+11:42:27.137 -> |     1234      |000|       0   | (id, flags, offset)
+11:42:27.137 -> +-------------------------------+
+11:42:27.137 -> |  255  |    1  |    0x32ee     | (ttl, proto, chksum)
+11:42:27.137 -> +-------------------------------+
+11:42:27.137 -> |  102  |    1  |  168  |  192  | (src)
+11:42:27.137 -> +-------------------------------+
+11:42:27.137 -> |  100  |    1  |  168  |  192  | (dest)
+11:42:27.137 -> +-------------------------------+
+11:42:27.171 -> ip4_output_if: call netif->output()
+11:42:27.171 -> etharp_find_entry: found empty entry 0
+11:42:27.171 -> etharp_find_entry: selecting empty entry 0
+11:42:27.171 -> etharp_request: sending ARP request.
+11:42:27.171 -> pbuf_alloc(length=28)
+11:42:27.171 -> pbuf_alloc(length=28) == 0x4001d380
+11:42:27.171 -> etharp_raw: sending raw ARP packet.
+11:42:27.171 -> pbuf_add_header: old 0x4001d3a0 new 0x4001d392 (14)
+11:42:27.171 -> ethernet_output: sending packet 0x4001d380
+11:42:27.171 -> netif->linkoutput() or low_level_output(): packet transmitted
+11:42:27.204 -> pbuf_free(0x4001d380)
+11:42:27.204 -> pbuf_free: deallocating 0x4001d380
+11:42:27.204 -> etharp_query: queued packet 0x40027ad8 on ARP entry 0
+11:42:27.204 -> pbuf_free(0x40027ad8)
+11:42:27.204 -> pbuf_free: 0x40027ad8 has ref 1, ending here.
+11:42:27.204 -> *************** EMULATED NIC LOG BEGINS***************
+11:42:27.204 -> no. of messages forwarded by main(): 1
+11:42:27.204 -> NIC transmitted a packet 
+11:42:27.204 -> Transmitted packet:
+11:42:27.204 -> Ethernet Header:
+11:42:27.204 -> 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 
+11:42:27.237 -> 0x00, 0x0A, 0x35, 0x05, 0x76, 0xA0, 
+11:42:27.237 -> 0x08, 0x06, 
+11:42:27.237 -> IP Header:
+11:42:27.237 -> 0x00, 0x01, 0x08, 0x00, 
+11:42:27.237 -> 0x06, 0x04, 0x00, 0x01, 
+11:42:27.237 -> 0x00, 0x0A, 0x35, 0x05, 
+11:42:27.237 -> 0x76, 0xA0, 0xC0, 0xA8, 
+11:42:27.237 -> 0x01, 0x66, 0x00, 0x00, 
+11:42:27.237 -> 
+11:42:27.237 -> FreeQ replenished back
+11:42:27.237 -> free buffer obtained by NIC
+11:42:27.237 -> bufptr written = 51fffe58 
+11:42:27.237 -> NIC received a packet
+11:42:27.237 -> *************** EMULATED NIC LOG ENDS***************
+11:42:27.237 -> pbuf_alloc(length=48)
+11:42:27.270 -> pbuf_alloc(length=48) == 0x400279c8
+11:42:27.270 -> q->len = 48 
+11:42:27.270 -> ethernet_input: dest:00:0a:35:05:76:a0, src:66:77:88:99:aa:bb, type:800
+11:42:27.270 -> pbuf_remove_header: old 0x400279d8 new 0x400279e6 (14)
+11:42:27.270 -> ip_input: iphdr->dest 0xc0a80166 netif->ip_addr 0xc0a80166 (0xc0a80100, 0xc0a80100, 0x66)
+11:42:27.270 -> ip4_input: packet accepted on interface en
+11:42:27.270 -> ip4_input: 
+11:42:27.270 -> IP header:
+11:42:27.270 -> +-------------------------------+
+11:42:27.270 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
+11:42:27.303 -> +-------------------------------+
+11:42:27.303 -> |     1234      |000|       0   | (id, flags, offset)
+11:42:27.303 -> +-------------------------------+
+11:42:27.303 -> |   64  |    1  |    0xf1ee     | (ttl, proto, chksum)
+11:42:27.303 -> +-------------------------------+
+11:42:27.303 -> |  100  |    1  |  168  |  192  | (src)
+11:42:27.303 -> +-------------------------------+
+11:42:27.303 -> |  102  |    1  |  168  |  192  | (dest)
+11:42:27.303 -> +-------------------------------+
+11:42:27.337 -> ip4_input: p->len 34 p->tot_len 34
+11:42:27.337 -> pbuf_remove_header: old 0x400279e6 new 0x400279fa (20)
+11:42:27.337 -> icmp_input: ping
+11:42:27.337 -> pbuf_add_header: old 0x400279fa new 0x400279d8 (34)
+11:42:27.337 -> pbuf_remove_header: old 0x400279d8 new 0x400279fa (34)
+11:42:27.337 -> pbuf_add_header: old 0x400279fa new 0x400279e6 (20)
+11:42:27.337 -> ip4_output_if: en0
+11:42:27.337 -> IP header:
+11:42:27.337 -> +-------------------------------+
+11:42:27.337 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
+11:42:27.370 -> +-------------------------------+
+11:42:27.370 -> |     1234      |000|       0   | (id, flags, offset)
+11:42:27.370 -> +-------------------------------+
+11:42:27.370 -> |  255  |    1  |    0x32ee     | (ttl, proto, chksum)
+11:42:27.370 -> +-------------------------------+
+11:42:27.370 -> |  102  |    1  |  168  |  192  | (src)
+11:42:27.370 -> +-------------------------------+
+11:42:27.370 -> |  100  |    1  |  168  |  192  | (dest)
+11:42:27.370 -> +-------------------------------+
+11:42:27.370 -> ip4_output_if: call netif->output()
+11:42:27.403 -> etharp_find_entry: found matching entry 0
+11:42:27.403 -> etharp_query: dropped previously queued packet 0x400279c8 for ARP entry 0
+11:42:27.403 -> pbuf_free(0x40027ad8)
+11:42:27.403 -> pbuf_free: deallocating 0x40027ad8
+11:42:27.403 -> etharp_query: queued packet 0x400279c8 on ARP entry 0
+11:42:27.403 -> pbuf_free(0x400279c8)
+11:42:27.403 -> pbuf_free: 0x400279c8 has ref 1, ending here.
+11:42:27.403 -> *************** EMULATED NIC LOG BEGINS***************
+11:42:27.436 -> no. of messages forwarded by main(): 2
+11:42:27.436 -> NIC has no packet to transmit!
+11:42:27.436 -> free buffer obtained by NIC
+11:42:27.436 -> bufptr written = 51fffe10 
+11:42:27.436 -> NIC received a packet
+11:42:27.436 -> *************** EMULATED NIC LOG ENDS***************
+11:42:27.436 -> pbuf_alloc(length=48)
+11:42:27.436 -> pbuf_alloc(length=48) == 0x40027ad8
+11:42:27.436 -> q->len = 48 
+11:42:27.436 -> ethernet_input: dest:00:0a:35:05:76:a0, src:66:77:88:99:aa:bb, type:800
+11:42:27.436 -> pbuf_remove_header: old 0x40027ae8 new 0x40027af6 (14)
+11:42:27.469 -> ip_input: iphdr->dest 0xc0a80166 netif->ip_addr 0xc0a80166 (0xc0a80100, 0xc0a80100, 0x66)
+11:42:27.469 -> ip4_input: packet accepted on interface en
+11:42:27.469 -> ip4_input: 
+11:42:27.469 -> IP header:
+11:42:27.469 -> +-------------------------------+
+11:42:27.469 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
+11:42:27.469 -> +-------------------------------+
+11:42:27.469 -> |     1234      |000|       0   | (id, flags, offset)
+11:42:27.502 -> +-------------------------------+
+11:42:27.502 -> |   64  |    1  |    0xf1ee     | (ttl, proto, chksum)
+11:42:27.502 -> +-------------------------------+
+11:42:27.502 -> |  100  |    1  |  168  |  192  | (src)
+11:42:27.502 -> +-------------------------------+
+11:42:27.502 -> |  102  |    1  |  168  |  192  | (dest)
+11:42:27.502 -> +-------------------------------+
+11:42:27.502 -> ip4_input: p->len 34 p->tot_len 34
+11:42:27.502 -> pbuf_remove_header: old 0x40027af6 new 0x40027b0a (20)
+11:42:27.502 -> icmp_input: ping
+11:42:27.502 -> pbuf_add_header: old 0x40027b0a new 0x40027ae8 (34)
+11:42:27.535 -> pbuf_remove_header: old 0x40027ae8 new 0x40027b0a (34)
+11:42:27.535 -> pbuf_add_header: old 0x40027b0a new 0x40027af6 (20)
+11:42:27.535 -> ip4_output_if: en0
+11:42:27.535 -> IP header:
+11:42:27.535 -> +-------------------------------+
+11:42:27.535 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
+11:42:27.535 -> +-------------------------------+
+11:42:27.535 -> |     1234      |000|       0   | (id, flags, offset)
+11:42:27.535 -> +-------------------------------+
+11:42:27.535 -> |  255  |    1  |    0x32ee     | (ttl, proto, chksum)
+11:42:27.568 -> +-------------------------------+
+11:42:27.568 -> |  102  |    1  |  168  |  192  | (src)
+11:42:27.568 -> +-------------------------------+
+11:42:27.568 -> |  100  |    1  |  168  |  192  | (dest)
+11:42:27.568 -> +-------------------------------+
+11:42:27.568 -> ip4_output_if: call netif->output()
+11:42:27.568 -> etharp_find_entry: found matching entry 0
+11:42:27.568 -> etharp_query: dropped previously queued packet 0x40027ad8 for ARP entry 0
+11:42:27.568 -> pbuf_free(0x400279c8)
+11:42:27.601 -> pbuf_free: deallocating 0x400279c8
+11:42:27.601 -> etharp_query: queued packet 0x40027ad8 on ARP entry 0
+11:42:27.601 -> pbuf_free(0x40027ad8)
+11:42:27.601 -> pbuf_free: 0x40027ad8 has ref 1, ending here.
+11:42:27.601 -> *************** EMULATED NIC LOG BEGINS***************
+11:42:27.601 -> no. of messages forwarded by main(): 3
+11:42:27.601 -> NIC has no packet to transmit!
+11:42:27.601 -> free buffer obtained by NIC
+11:42:27.601 -> bufptr written = 51fffdc8 
+11:42:27.601 -> NIC received a packet
+11:42:27.601 -> *************** EMULATED NIC LOG ENDS***************
+11:42:27.635 -> pbuf_alloc(length=48)
+11:42:27.635 -> pbuf_alloc(length=48) == 0x400279c8
+11:42:27.635 -> q->len = 48 
+11:42:27.635 -> ethernet_input: dest:00:0a:35:05:76:a0, src:66:77:88:99:aa:bb, type:800
+11:42:27.635 -> pbuf_remove_header: old 0x400279d8 new 0x400279e6 (14)
+11:42:27.635 -> ip_input: iphdr->dest 0xc0a80166 netif->ip_addr 0xc0a80166 (0xc0a80100, 0xc0a80100, 0x66)
+11:42:27.635 -> ip4_input: packet accepted on interface en
+11:42:27.635 -> ip4_input: 
+11:42:27.668 -> IP header:
+11:42:27.668 -> +-------------------------------+
+11:42:27.668 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
+11:42:27.668 -> +-------------------------------+
+11:42:27.668 -> |     1234      |000|       0   | (id, flags, offset)
+11:42:27.668 -> +-------------------------------+
+11:42:27.668 -> |   64  |    1  |    0xf1ee     | (ttl, proto, chksum)
+11:42:27.668 -> +-------------------------------+
+11:42:27.668 -> |  100  |    1  |  168  |  192  | (src)
+11:42:27.668 -> +-------------------------------+
+11:42:27.703 -> |  102  |    1  |  168  |  192  | (dest)
+11:42:27.703 -> +-------------------------------+
+11:42:27.703 -> ip4_input: p->len 34 p->tot_len 34
+11:42:27.703 -> pbuf_remove_header: old 0x400279e6 new 0x400279fa (20)
+11:42:27.703 -> icmp_input: ping
+11:42:27.703 -> pbuf_add_header: old 0x400279fa new 0x400279d8 (34)
+11:42:27.703 -> pbuf_remove_header: old 0x400279d8 new 0x400279fa (34)
+11:42:27.703 -> pbuf_add_header: old 0x400279fa new 0x400279e6 (20)
+11:42:27.703 -> ip4_output_if: en0
+11:42:27.703 -> IP header:
+11:42:27.703 -> +-------------------------------+
+11:42:27.736 -> | 4 | 5 |  0x00 |        34     | (v, hl, tos, len)
+11:42:27.736 -> +-------------------------------+
+11:42:27.736 -> |     1234      |000|       0   | (id, flags, offset)
+11:42:27.736 -> +-------------------------------+
+11:42:27.736 -> |  255  |    1  |    0x32ee     | (ttl, proto, chksum)
+11:42:27.736 -> +-------------------------------+
+11:42:27.736 -> |  102  |    1  |  168  |  192  | (src)
+11:42:27.736 -> +-------------------------------+
+11:42:27.736 -> |  100  |    1  |  168  |  192  | (dest)
+11:42:27.736 -> +-------------------------------+
+11:42:27.769 -> ip4_output_if: call netif->output()
+11:42:27.769 -> etharp_find_entry: found matching entry 0
+11:42:27.769 -> etharp_query: dropped previously queued packet 0x400279c8 for ARP entry 0
+11:42:27.769 -> pbuf_free(0x40027ad8)
+11:42:27.769 -> pbuf_free: deallocating 0x40027ad8
+11:42:27.769 -> etharp_query: queued packet 0x400279c8 on ARP entry 0
+11:42:27.769 -> pbuf_free(0x400279c8)
+11:42:27.769 -> pbuf_free: 0x400279c8 has ref 1, ending here.
+11:42:27.769 -> Releasing buffer[0] 0x51fffea0
+11:42:27.803 -> Released  buffer[0] 0x51fffea0
+11:42:27.803 -> Releasing buffer[1] 0x51fffe58
+11:42:27.803 -> Released  buffer[1] 0x51fffe58
+11:42:27.803 -> Releasing buffer[2] 0x51fffe10
+11:42:27.803 -> Released  buffer[2] 0x51fffe10
+11:42:27.803 -> Releasing buffer[3] 0x51fffdc8
+11:42:27.803 -> Released  buffer[3] 0x51fffdc8
+11:42:27.803 -> Releasing buffer[4] 0x51fffd80
+11:42:27.803 -> Released  buffer[4] 0x51fffd80
+11:42:27.803 -> Releasing buffer[5] 0x51fffd38
+11:42:27.803 -> Released  buffer[5] 0x51fffd38
+11:42:27.803 -> Releasing buffer[6] 0x51fffcf0
+11:42:27.836 -> Released  buffer[6] 0x51fffcf0
+11:42:27.836 -> Releasing buffer[7] 0x51fffca8
+11:42:27.836 -> Released  buffer[7] 0x51fffca8
 

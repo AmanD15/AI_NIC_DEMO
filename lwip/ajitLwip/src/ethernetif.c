@@ -227,12 +227,12 @@ err_t
 low_level_output(struct netif *netif, struct pbuf *p)
 {
  // struct ethernetif *ethernetif = netif->state;
+
+
+#if 0
   struct pbuf *q;
-  u16_t len;
-  u8_t data[64];
+  uint8_t data[64];
   uint8_t *bufptr = &data[0];
-  
-  //initiate transfer();
 
 #if ETH_PAD_SIZE
   pbuf_remove_header(p, -ETH_PAD_SIZE); /* drop the padding word */
@@ -246,11 +246,17 @@ low_level_output(struct netif *netif, struct pbuf *p)
     memcpy(bufptr,q->payload,q->len);
     bufptr += q->len;
   }
-int write_ok = cortos_writeMessages(tx_queue, bufptr , 1);
+
+#endif
+
+uint32_t BufPtr = (uint32_t)p->payload;  
+int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)(&BufPtr) , 1);
  if(write_ok == 0){
-   cortos_printf("\n failed to wrtite to TxQ");
+   cortos_printf("failed to wrtite to TxQ\n");
 	  return 1;
   }
+  else
+    cortos_printf("netif->linkoutput() or low_level_output(): packet transmitted\n");
 
  // signal that packet should be sent();
 
@@ -294,4 +300,17 @@ netif_initialize(struct netif *netif)
   cortos_printf ("Configuration Done. NIC has started\n");
   return ERR_OK;
 
+}
+
+
+void printEthernetFrame(uint8_t *ethernetFrame, int start,int length,int tab) {
+
+    int i,count =0;
+    for (i = start; i < length; i++) {
+        cortos_printf("0x%02X, ", ethernetFrame[i]);
+	count ++;
+        if (count%tab == 0)
+            cortos_printf("\n");
+    }
+    cortos_printf("\n");
 }
