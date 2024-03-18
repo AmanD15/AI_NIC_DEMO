@@ -127,5 +127,8 @@ int main() {
     printEthernetFrame(ethernetFrame, sizeof(struct EthernetHeader) + sizeof(struct IPHeader) + sizeof(struct ICMPHeader),
 				      sizeof(struct EthernetHeader) + sizeof(struct IPHeader) + sizeof(struct ICMPHeader)+ strlen(pingData) + 1 ,4);
 
+printf("size of ethernet header = %d\n",sizeof(struct EthernetHeader));
+printf("size of ip header = %d\n",sizeof(struct IPHeader));
+
     return 0;
 }

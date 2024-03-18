@@ -54,25 +54,40 @@ void my_timer_interrupt_handler()
 	//  (e.g. PVT calculation)
 	// this code depends on the state which may have been altered
 	// above.
-	
-    cortos_printf ("*************** EMULATED NIC LOG BEGINS***************\n");
+
+	cortos_printf ("*************** EMULATED NIC LOG BEGINS***************\n");
 	cortos_printf ("no. of messages forwarded by main(): %d\n",message_counter);
 
 	/* TRANSMISSION EMULATION*/
-	
+	uint8_t* ethernetFrame;
 	uint32_t ptrToDataTx;
 	int TxQpop = cortos_readMessages(tx_queue, (uint8_t*)(&ptrToDataTx), 1);
 
 	if(TxQpop)
 	{
-		cortos_printf ("NIC transmitted a packet\n");
+		ethernetFrame = (uint8_t*) ptrToDataTx;
+		cortos_printf ("NIC transmitted a packet \n");
+
+		// Print the constructed Ethernet frame
+		cortos_printf("Transmitted packet:\n");
+
+		cortos_printf("Ethernet Header:\n");
+		printEthernetFrame(ethernetFrame, 0, 14, 6);
+
+		cortos_printf("IP Header:\n");
+		printEthernetFrame(ethernetFrame, 14, (14 + 20), 4);
+
 
 		// Pushing the buffer back to freeQ
 		int freeQpush = cortos_writeMessages(free_queue, (uint8_t*)(&ptrToDataTx), 1);
 		if(freeQpush)
+		{
 			cortos_printf ("FreeQ replenished back\n");
+		}
 		else
+		{
 			cortos_printf ("FreeQ push failed\n");
+		}
 
 	}
 	else
@@ -100,7 +115,7 @@ void my_timer_interrupt_handler()
 		}
 
 		// Pushing the buffer to RxQ
-		cortos_printf("IN NIC :bufptr written = %lx \n", ptrToDataRx);
+		cortos_printf("bufptr written = %lx \n", ptrToDataRx);
 		int RxQpush = cortos_writeMessages(rx_queue, (uint8_t*)(&ptrToDataRx), 1);
 	
 		if(RxQpush)
@@ -151,7 +166,6 @@ int main()
 /* Application beigns here*/
 
 	uint32_t i;
-	uint32_t data[1];
 	uint32_t controlRegister;
 	
 
@@ -194,8 +208,6 @@ int main()
 
 
 
-			// Write the buffer pointer to TxQ
-			// int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)data, 1);
 			message_counter++;
 
 			if(message_counter == 4) {	
