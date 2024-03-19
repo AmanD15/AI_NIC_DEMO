@@ -293,7 +293,7 @@ int main()
 		
 
 	
-		if(ethernetif_input(&netif) == ERR_OK) {
+		if(low_level_input(&netif) == ERR_OK) {
 
 
 

@@ -120,7 +120,7 @@ ethernetif_input(){
  * @return a pbuf filled with the received packet (including MAC header)
  *         NULL on memory error
  */
-static struct pbuf *
+err_t
 low_level_input(struct netif *netif)
 {
   struct ethernetif *ethernetif = netif->state;
@@ -185,33 +185,7 @@ low_level_input(struct netif *netif)
     
   } 
 
-  return p;
-}
-
-
-/**
- * This function should be called when a packet is ready to be read
- * from the interface. It uses the function low_level_input() that
- * should handle the actual reception of bytes from the network
- * interface. Then the type of the received packet is determined and
- * the appropriate input function is called.
- *
- * @param netif the lwip network interface structure for this ethernetif
- */
-err_t
-ethernetif_input(struct netif *netif)
-{
- // struct ethernetif *ethernetif;
-  //struct eth_hdr *ethhdr;
-  struct pbuf *p;
-
-  //ethernetif = netif->state;
-
-  /* move received packet into a new pbuf */
-  p = low_level_input(netif);
-  /* if no packet could be read, silently ignore this */
- 
-  if (p != NULL) {
+ if (p != NULL) {
     /* pass all packets to ethernet_input, which decides what packets it supports */
     if (netif->input(p, netif) != ERR_OK) {
   
@@ -225,7 +199,9 @@ ethernetif_input(struct netif *netif)
     }
     
   }
+
 }
+
 
 
 

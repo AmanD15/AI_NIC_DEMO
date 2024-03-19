@@ -112,21 +112,8 @@ struct ethernetif {
  * @return a pbuf filled with the received packet (including MAC header)
  *         NULL on memory error
  */
-static struct pbuf *
-low_level_input(struct netif *netif);
-
-
-/**
- * This function should be called when a packet is ready to be read
- * from the interface. It uses the function low_level_input() that
- * should handle the actual reception of bytes from the network
- * interface. Then the type of the received packet is determined and
- * the appropriate input function is called.
- *
- * @param netif the lwip network interface structure for this ethernetif
- */
 err_t
-ethernetif_input(struct netif *netif);
+low_level_input(struct netif *netif);
 
 err_t
 low_level_output(struct netif *netif, struct pbuf *p);
