@@ -7,7 +7,7 @@ package AjitCoreConfigurationPackage is
 -------------------------------------------- SPECIAL CONFIGURATION PARAMETERS --------------------------------
 -- These are nominal values.  If modified, they should be modified as a group. See the HOWTO on processor builds.
 --------------------------------------------------------------------------------------------------------------
-  constant  TWO_THREADS_IN_CORE		: integer :=  1 ; -- two threads in core?
+  constant  TWO_THREADS_IN_CORE		: integer :=  0 ; -- two threads in core?
   constant  THREAD_IS_ISA_64		: integer :=  0 ; -- thread is 64-bit ISA?
 
   constant  DCACHE_BUFFER_REQUEST	: integer :=  0 ; -- buffer request inside DCACHE?  Adds one cycle to dcache hit latency!
@@ -17,8 +17,8 @@ package AjitCoreConfigurationPackage is
   constant  DCACHE_HIT_LATENCY       : integer :=     (2 + (TWO_THREADS_IN_CORE + DCACHE_BUFFER_REQUEST))	; -- DCACHE hit path latency (including buffering)
   constant  ICACHE_HIT_LATENCY       : integer :=     (2 + (TWO_THREADS_IN_CORE + ICACHE_BUFFER_REQUEST))    ; -- ICACHE hit path latency (including buffering)
 
-  constant  LOG_DCACHE_SET_ASSOCIATIVITY : integer :=   2  ;   -- log of set associativity.
-  constant  LOG_ICACHE_SET_ASSOCIATIVITY : integer :=   2  ;   -- log of set associativity.
+  constant  LOG_DCACHE_SET_ASSOCIATIVITY : integer :=   1  ;   -- log of set associativity.
+  constant  LOG_ICACHE_SET_ASSOCIATIVITY : integer :=   1  ;   -- log of set associativity.
 
   constant  DCACHE_ASSOCIATIVITY         : integer :=  (2 ** LOG_DCACHE_SET_ASSOCIATIVITY) ; -- dcache associativity
   constant  ICACHE_ASSOCIATIVITY         : integer :=  (2 ** LOG_ICACHE_SET_ASSOCIATIVITY) ; -- icache associativity
@@ -453,7 +453,6 @@ package AjitCustomComponents is
       access_acc: in std_logic_vector(2 downto 0);
       access_tag_command : in  std_logic_vector(2 downto 0);
       access_tag_addr : in  std_logic_vector(address_width-1 downto 0);
-      access_tag_context : in  std_logic_vector(7 downto 0);
       -- invalidation channel for cache coherence and synonym avoidance.
       invalidate: in std_logic_vector(0 downto 0);
       invalidate_line_address: in std_logic_vector(((address_width-1) - log2_block_size_in_bytes) downto 0);
@@ -481,7 +480,6 @@ package AjitCustomComponents is
     access_acc: in std_logic_vector(2 downto 0);
     access_tag_command: in std_logic_vector(2 downto 0);
     access_tag_addr : in  std_logic_vector(address_width-1 downto 0);
-    access_tag_context: in std_logic_vector(7 downto 0);
     -- invalidation channel for cache coherence and synonym avoidance.
     invalidate: in std_logic_vector(0 downto 0);
     invalidate_line_address: in std_logic_vector(((address_width-1) - log2_block_size_in_bytes) downto 0);
@@ -526,7 +524,6 @@ package AjitCustomComponents is
     lookup_acc : out  std_logic_vector(2 downto 0);
     access_array_command : in  std_logic_vector(2 downto 0);
     access_addr : in  std_logic_vector(address_width-1 downto 0);
-    access_context : in  std_logic_vector(7 downto 0);
     access_dword : in  std_logic_vector((8*(2**log2_data_width_in_bytes))-1 downto 0);
     dword_out : out  std_logic_vector((8*(2**log2_data_width_in_bytes))-1 downto 0);
     clk, reset: in std_logic
@@ -613,7 +610,6 @@ package AjitCustomComponents is
     access_tag_clear_all : in  std_logic;
     access_tag_insert : in  std_logic;
     access_tag_addr : in  std_logic_vector(address_width-1 downto 0);
-    access_tag_context : in  std_logic_vector(7 downto 0);
     -- invalidation channel for cache coherence and synonym avoidance.
     invalidate: in std_logic;
     invalidate_line_address: in std_logic_vector(((address_width-1) - log2_block_size_in_bytes) downto 0);
@@ -660,7 +656,6 @@ package AjitCustomComponents is
     access_tag_insert : in  std_logic;
     access_array_command : in  std_logic_vector(2 downto 0);
     access_addr : in  std_logic_vector(address_width-1 downto 0);
-    access_context : in  std_logic_vector(7 downto 0);
     access_byte_mask : in  std_logic_vector((2**log2_data_width_in_bytes)-1 downto 0);
     access_dword : in  std_logic_vector((8*(2**log2_data_width_in_bytes))-1 downto 0);
     -- invalidation channel for cache coherence and synonym avoidance.
@@ -681,7 +676,7 @@ package AjitCustomComponents is
    port (-- 
     NOBLOCK_CPU_to_ICACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_ICACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_ICACHE_command_pipe_read_data : in   std_logic_vector(50 downto 0);
+    NOBLOCK_CPU_to_ICACHE_command_pipe_read_data : in   std_logic_vector(40 downto 0);
     NOBLOCK_CPU_to_ICACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_ICACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_ICACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
@@ -696,7 +691,7 @@ package AjitCustomComponents is
     ICACHE_to_CPU_response_pipe_write_data : out  std_logic_vector(89 downto 0);
     icache_frontend_to_backend_pipe_write_req : out  std_logic_vector(0 downto 0);
     icache_frontend_to_backend_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    icache_frontend_to_backend_pipe_write_data : out  std_logic_vector(43 downto 0);
+    icache_frontend_to_backend_pipe_write_data : out  std_logic_vector(41 downto 0);
     MMU_TO_ICACHE_SYNONYM_INVALIDATE_PIPE_pipe_read_req: out std_logic_vector(0 downto 0);
     MMU_TO_ICACHE_SYNONYM_INVALIDATE_PIPE_pipe_read_ack: in std_logic_vector(0 downto 0);
     MMU_TO_ICACHE_SYNONYM_INVALIDATE_PIPE_pipe_read_data: in std_logic_vector(26 downto 0);
@@ -718,7 +713,7 @@ package AjitCustomComponents is
    port (-- 
     NOBLOCK_CPU_to_ICACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_ICACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_ICACHE_command_pipe_read_data : in   std_logic_vector(50 downto 0);
+    NOBLOCK_CPU_to_ICACHE_command_pipe_read_data : in   std_logic_vector(40 downto 0);
     NOBLOCK_CPU_to_ICACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_ICACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_ICACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
@@ -733,7 +728,7 @@ package AjitCustomComponents is
     ICACHE_to_CPU_response_pipe_write_data : out  std_logic_vector(89 downto 0);
     icache_frontend_to_backend_pipe_write_req : out  std_logic_vector(0 downto 0);
     icache_frontend_to_backend_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    icache_frontend_to_backend_pipe_write_data : out  std_logic_vector(43 downto 0);
+    icache_frontend_to_backend_pipe_write_data : out  std_logic_vector(41 downto 0);
     MMU_TO_ICACHE_SYNONYM_INVALIDATE_PIPE_pipe_read_req: out std_logic_vector(0 downto 0);
     MMU_TO_ICACHE_SYNONYM_INVALIDATE_PIPE_pipe_read_ack: in std_logic_vector(0 downto 0);
     MMU_TO_ICACHE_SYNONYM_INVALIDATE_PIPE_pipe_read_data: in std_logic_vector(26 downto 0);
@@ -756,7 +751,7 @@ package AjitCustomComponents is
     port ( -- 
     	NOBLOCK_CPU_to_ICACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     	NOBLOCK_CPU_to_ICACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    	NOBLOCK_CPU_to_ICACHE_command_pipe_read_data : in   std_logic_vector(50 downto 0);
+    	NOBLOCK_CPU_to_ICACHE_command_pipe_read_data : in   std_logic_vector(40 downto 0);
     	NOBLOCK_CPU_to_ICACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     	NOBLOCK_CPU_to_ICACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     	NOBLOCK_CPU_to_ICACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
@@ -771,7 +766,7 @@ package AjitCustomComponents is
     	ICACHE_to_CPU_response_pipe_write_data : out  std_logic_vector(89 downto 0);
     	icache_frontend_to_backend_pipe_write_req : out  std_logic_vector(0 downto 0);
     	icache_frontend_to_backend_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    	icache_frontend_to_backend_pipe_write_data : out  std_logic_vector(43 downto 0);
+    	icache_frontend_to_backend_pipe_write_data : out  std_logic_vector(41 downto 0);
     	-- RLUT related.
     	NOBLOCK_RLUT_to_ICACHE_pipe_read_req : out  std_logic_vector(0 downto 0);
     	NOBLOCK_RLUT_to_ICACHE_pipe_read_ack : in   std_logic_vector(0 downto 0);
@@ -796,13 +791,13 @@ package AjitCustomComponents is
    port ( -- 
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(150 downto 0);
+    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(142 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(128 downto 0);
+    NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(120 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
@@ -850,13 +845,13 @@ package AjitCustomComponents is
    port ( -- 
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(150 downto 0);
+    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(142 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(128 downto 0);
+    NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(120 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
@@ -890,7 +885,7 @@ package AjitCustomComponents is
     NOBLOCK_INVALIDATE_SLOT_RETURN_pipe_read_data: in std_logic_vector(0 downto 0);
     dcache_frontend_to_backend_pipe_write_req : out  std_logic_vector(0 downto 0);
     dcache_frontend_to_backend_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    dcache_frontend_to_backend_pipe_write_data : out  std_logic_vector(121 downto 0);
+    dcache_frontend_to_backend_pipe_write_data : out  std_logic_vector(119 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -908,13 +903,13 @@ package AjitCustomComponents is
    port ( -- 
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(150 downto 0);
+    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(142 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(128 downto 0);
+    NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(120 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
@@ -948,7 +943,7 @@ package AjitCustomComponents is
     NOBLOCK_INVALIDATE_SLOT_RETURN_pipe_read_data: in std_logic_vector(0 downto 0);
     dcache_frontend_to_backend_pipe_write_req : out  std_logic_vector(0 downto 0);
     dcache_frontend_to_backend_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    dcache_frontend_to_backend_pipe_write_data : out  std_logic_vector(121 downto 0);
+    dcache_frontend_to_backend_pipe_write_data : out  std_logic_vector(119 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -1733,13 +1728,13 @@ package AjitCustomComponents is
     load_store_messy_to_router_pipe_pipe_read_data : in   std_logic_vector(97 downto 0);
     load_store_router_control_pipe_pipe_read_req : out  std_logic_vector(0 downto 0);
     load_store_router_control_pipe_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    load_store_router_control_pipe_pipe_read_data : in   std_logic_vector(105 downto 0);
+    load_store_router_control_pipe_pipe_read_data : in   std_logic_vector(96 downto 0);
     teu_loadstore_to_fpunit_pipe_write_req : out  std_logic_vector(0 downto 0);
     teu_loadstore_to_fpunit_pipe_write_ack : in   std_logic_vector(0 downto 0);
     teu_loadstore_to_fpunit_pipe_write_data : out  std_logic_vector(77 downto 0);
     teu_loadstore_to_iretire_pipe_write_req : out  std_logic_vector(0 downto 0);
     teu_loadstore_to_iretire_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    teu_loadstore_to_iretire_pipe_write_data : out  std_logic_vector(62 downto 0);
+    teu_loadstore_to_iretire_pipe_write_data : out  std_logic_vector(53 downto 0);
     teu_loadstore_to_iunit_pipe_write_req : out  std_logic_vector(0 downto 0);
     teu_loadstore_to_iunit_pipe_write_ack : in   std_logic_vector(0 downto 0);
     teu_loadstore_to_iunit_pipe_write_data : out  std_logic_vector(77 downto 0);
@@ -1793,13 +1788,13 @@ package AjitCustomComponents is
     port ( -- 
       noblock_teu_stream_corrector_to_idispatch_pipe_read_req : out  std_logic_vector(0 downto 0);
       noblock_teu_stream_corrector_to_idispatch_pipe_read_ack : in   std_logic_vector(0 downto 0);
-      noblock_teu_stream_corrector_to_idispatch_pipe_read_data : in   std_logic_vector(156 downto 0);
+      noblock_teu_stream_corrector_to_idispatch_pipe_read_data : in   std_logic_vector(147 downto 0);
       teu_iretire_to_idispatch_pipe_read_req : out  std_logic_vector(0 downto 0);
       teu_iretire_to_idispatch_pipe_read_ack : in   std_logic_vector(0 downto 0);
-      teu_iretire_to_idispatch_pipe_read_data : in   std_logic_vector(9 downto 0);
+      teu_iretire_to_idispatch_pipe_read_data : in   std_logic_vector(0 downto 0);
       noblock_joined_iretire_sc_to_idispatch_pipe_write_req : out  std_logic_vector(0 downto 0);
       noblock_joined_iretire_sc_to_idispatch_pipe_write_ack : in   std_logic_vector(0 downto 0);
-      noblock_joined_iretire_sc_to_idispatch_pipe_write_data : out  std_logic_vector(156 downto 0);
+      noblock_joined_iretire_sc_to_idispatch_pipe_write_data : out  std_logic_vector(147 downto 0);
       tag_in: in std_logic_vector(tag_length-1 downto 0);
       tag_out: out std_logic_vector(tag_length-1 downto 0) ;
       clk : in std_logic;
@@ -2231,10 +2226,10 @@ package AjitCustomComponents is
    port ( -- 
     DCACHE_to_MMU_request_pipe_read_req : out  std_logic_vector(0 downto 0);
     DCACHE_to_MMU_request_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    DCACHE_to_MMU_request_pipe_read_data : in   std_logic_vector(121 downto 0);
+    DCACHE_to_MMU_request_pipe_read_data : in   std_logic_vector(119 downto 0);
     NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_write_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_write_data : out  std_logic_vector(123 downto 0);
+    NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_write_data : out  std_logic_vector(121 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -2252,10 +2247,10 @@ package AjitCustomComponents is
    port ( -- 
     ICACHE_to_MMU_request_pipe_read_req : out  std_logic_vector(0 downto 0);
     ICACHE_to_MMU_request_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    ICACHE_to_MMU_request_pipe_read_data : in   std_logic_vector(49 downto 0);
+    ICACHE_to_MMU_request_pipe_read_data : in   std_logic_vector(47 downto 0);
     NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_write_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_write_data : out  std_logic_vector(123 downto 0);
+    NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_write_data : out  std_logic_vector(121 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -2272,13 +2267,13 @@ package AjitCustomComponents is
    port ( -- 
     NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_read_data : in   std_logic_vector(123 downto 0);
+    NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_read_data : in   std_logic_vector(121 downto 0);
     NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_read_data : in   std_logic_vector(123 downto 0);
+    NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_read_data : in   std_logic_vector(121 downto 0);
     NOBLOCK_CACHE_TO_MMU_REQUEST_pipe_write_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CACHE_TO_MMU_REQUEST_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CACHE_TO_MMU_REQUEST_pipe_write_data : out  std_logic_vector(123 downto 0);
+    NOBLOCK_CACHE_TO_MMU_REQUEST_pipe_write_data : out  std_logic_vector(121 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -3926,7 +3921,6 @@ entity GenericCacheTagsWithInvalidate is --
     access_acc: in std_logic_vector(2 downto 0);
     access_tag_command : in  std_logic_vector(2 downto 0);
     access_tag_addr : in  std_logic_vector(address_width-1 downto 0);
-    access_tag_context : in  std_logic_vector(7 downto 0);
     -- invalidation channel for cache coherence and synonym avoidance.
     invalidate: in std_logic_vector(0 downto 0);
     invalidate_line_address: in std_logic_vector(((address_width-1) - log2_block_size_in_bytes) downto 0);
@@ -3955,7 +3949,7 @@ architecture Behave of GenericCacheTagsWithInvalidate is --
 
 
 	--  tag width 
-	constant tag_width : integer :=  (address_width - (log2_number_of_blocks + log2_block_size_in_bytes)) + 8; -- with context.
+	constant tag_width : integer :=  address_width - (log2_number_of_blocks + log2_block_size_in_bytes);
 	
 	--
 	--  memory access signals.
@@ -4101,7 +4095,7 @@ begin --
 	end process;	
 	
 	tag_block_id_int <=  blockId(access_tag_addr);
-	tag_addr_tag <= access_tag_context & access_tag_addr(address_width-1 downto (address_width - tag_width));
+	tag_addr_tag <= access_tag_addr(address_width-1 downto (address_width - tag_width));
 	tag_mem_address   <=  access_tag_addr((log2_number_of_blocks + log2_block_size_in_bytes)-1 
 						downto log2_block_size_in_bytes);
 	tag_mem_enable <= (enable_sig and (not access_mae))
@@ -4233,7 +4227,6 @@ entity GenericDcacheTagsArraysWithInvalidate is --
     access_acc: in std_logic_vector(2 downto 0);
     access_tag_command : in  std_logic_vector(2 downto 0);
     access_tag_addr : in  std_logic_vector(address_width-1 downto 0);
-    access_tag_context: in std_logic_vector(7 downto 0);
     -- invalidation channel for cache coherence and synonym avoidance.
     invalidate: in std_logic_vector(0 downto 0);
     invalidate_line_address: in std_logic_vector(((address_width-1) - log2_block_size_in_bytes) downto 0);
@@ -4272,7 +4265,6 @@ begin --
 					access_acc => access_acc,
 					access_tag_command => access_tag_command,
 					access_tag_addr => access_tag_addr,
-					access_tag_context => access_tag_context,
 					invalidate => invalidate,
 					invalidate_line_address => invalidate_line_address,
 					is_hit => is_hit,
@@ -4494,7 +4486,6 @@ entity GenericIcacheTagsArraysWithInvalidate is --
     lookup_acc: out std_logic_vector(2 downto 0);
     access_array_command : in  std_logic_vector(2 downto 0);
     access_addr : in  std_logic_vector(address_width-1 downto 0);
-    access_context : in  std_logic_vector(7 downto 0);
     access_dword : in  std_logic_vector((8*(2**log2_data_width_in_bytes))-1 downto 0);
     dword_out : out  std_logic_vector((8*(2**log2_data_width_in_bytes))-1 downto 0);
     clk, reset: in std_logic
@@ -4524,7 +4515,6 @@ begin --
 					access_acc => access_acc,
 					access_tag_command => access_tag_command,
 					access_tag_addr => access_addr,
-					access_tag_context => access_context,
 					invalidate => invalidate,
 					invalidate_line_address => invalidate_line_address,
 					is_hit => is_hit,
@@ -4908,7 +4898,6 @@ entity GenericSetAssociativeCacheTagsArraysWithInvalidate is --
     access_tag_insert : in  std_logic;
     access_array_command : in  std_logic_vector(2 downto 0);
     access_addr : in  std_logic_vector(address_width-1 downto 0);
-    access_context : in  std_logic_vector(7 downto 0);
     access_byte_mask : in  std_logic_vector((2**log2_data_width_in_bytes)-1 downto 0);
     access_dword : in  std_logic_vector((8*(2**log2_data_width_in_bytes))-1 downto 0);
     -- invalidation channel for cache coherence and synonym avoidance.
@@ -5344,7 +5333,6 @@ begin --
 					access_tag_clear_all => access_tag_clear_all,
 					access_tag_insert => access_tag_insert,
 					access_tag_addr => access_addr,
-					access_tag_context => access_context,
 					invalidate => invalidate(0),
 					invalidate_line_address => invalidate_line_address,
 					valid_match => va_tlb_match,
@@ -5491,7 +5479,6 @@ entity GenericSetAssociativeCacheTagsWithInvalidate is --
     access_tag_insert : in  std_logic;
     --
     access_tag_addr : in  std_logic_vector(address_width-1 downto 0);
-    access_tag_context : in  std_logic_vector(7 downto 0);
     -- invalidation channel for cache coherence and synonym avoidance.
     invalidate: in std_logic;
     invalidate_line_address: in std_logic_vector(((address_width-1) - log2_block_size_in_bytes) downto 0);
@@ -5550,7 +5537,7 @@ architecture Behave of GenericSetAssociativeCacheTagsWithInvalidate is --
 
 	--  tag width 
 	constant tag_width : integer :=  
-		(address_width - (log2_number_of_sets + log2_block_size_in_bytes)) + 8; -- includes context
+		address_width - (log2_number_of_sets + log2_block_size_in_bytes);
 	--  acc + tag.
 	constant tag_mem_data_width : integer :=  tag_width + 3;
 	
@@ -5588,18 +5575,17 @@ architecture Behave of GenericSetAssociativeCacheTagsWithInvalidate is --
 
     	signal access_acc_reg: std_logic_vector(2 downto 0);
     	signal access_tag_addr_reg : std_logic_vector(address_width-1 downto 0);
-    	signal access_tag_context_reg : std_logic_vector(7 downto 0);
 
     	signal invalidate_reg: std_logic;
     	signal invalidate_line_address_reg: std_logic_vector(line_address_width-1 downto 0);
     
 
 		
-	function virtualAddressTag(context: std_logic_vector(7 downto 0); va: std_logic_vector(address_width-1 downto 0)) 
+	function virtualAddressTag(va: std_logic_vector(address_width-1 downto 0)) 
 		return std_logic_vector is
 		variable ret_var : std_logic_vector(tag_width-1 downto 0);
 	begin
-		ret_var := context & va(address_width-1 downto (log2_number_of_sets  + log2_block_size_in_bytes));
+		ret_var := va(address_width-1 downto (log2_number_of_sets  + log2_block_size_in_bytes));
 		return(ret_var);
 	end function virtualAddressTag;
 
@@ -5761,7 +5747,6 @@ begin --
 				if trigger = '1' then
     					access_acc_reg <= access_acc;
     					access_tag_addr_reg <= access_tag_addr;
-					access_tag_context_reg <= access_tag_context;
     					invalidate_reg <= invalidate;
     					invalidate_line_address_reg <= invalidate_line_address;
 
@@ -5795,7 +5780,6 @@ begin --
 				match_index_in_set,
 				most_recently_used_indices,
 				access_tag_addr, 
-				access_tag_context,
 				invalidate_line_address)
 			variable next_valid_bits_var: ValidBitArray(number_of_sets-1 downto 0);
 			variable next_most_recently_used_indices_var: LastWrittenIndexArray(number_of_sets-1 downto 0);
@@ -5849,9 +5833,7 @@ begin --
 									
 				
 			tag_mem_address_var := access_tag_line_address_var(log2_number_of_sets-1 downto 0);
-
-			-- include context in tag.
-			active_tag_var := access_tag_context & access_tag_line_address_var(line_address_width - 1 downto  log2_number_of_sets);
+			active_tag_var := access_tag_line_address_var(line_address_width - 1 downto  log2_number_of_sets);
 				
 
 			-- tag mem is addressed by the set-id.
@@ -5941,9 +5923,8 @@ begin --
 
 				match_sig <= '1' when
 						(set_valids(T) = '1') and 
-						(isEqualSLV(tag_mem_read_data(T)(tag_width-1 downto 0), 
-							virtualAddressTag(access_tag_context_reg, access_tag_addr_reg)) = '1') and
-								(lookup_reg = '1') else '0';
+						(isEqualSLV(tag_mem_read_data(T)(tag_width-1 downto 0), virtualAddressTag(access_tag_addr_reg)) = '1') and
+						(lookup_reg = '1') else '0';
 				lookup_valid_aggregate(T) <= match_sig;
 				active_lookup_index_aggregate(((T+1)*log2_associativity)-1 downto (T*log2_associativity)) 
 						<= std_logic_vector(to_unsigned(T, log2_associativity)) when match_sig  = '1' else ZeroA;
@@ -12399,7 +12380,7 @@ package icache_global_package is --
   constant REQUEST_TYPE_STBAR : std_logic_vector(3 downto 0) := "0011";
   constant REQUEST_TYPE_WRFSRFAR : std_logic_vector(3 downto 0) := "0100";
   constant REQUEST_TYPE_WRITE : std_logic_vector(3 downto 0) := "0010";
-  constant FE_BE_COMMAND_SIZE :integer := 44; -- added +2 for cpu-id
+  constant FE_BE_COMMAND_SIZE :integer := 42; -- will be changed.
   constant BE_FE_RESPONSE_SIZE :integer := 102; -- will be changed.
 
   component classifyCpuSideRequests is -- 
@@ -12459,7 +12440,7 @@ entity IcacheFrontendCoreDaemon is --
   port ( -- 
     NOBLOCK_CPU_to_ICACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_ICACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_ICACHE_command_pipe_read_data : in   std_logic_vector(50 downto 0);
+    NOBLOCK_CPU_to_ICACHE_command_pipe_read_data : in   std_logic_vector(40 downto 0);
     NOBLOCK_CPU_to_ICACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_ICACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_ICACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
@@ -12474,7 +12455,7 @@ entity IcacheFrontendCoreDaemon is --
     ICACHE_to_CPU_response_pipe_write_data : out  std_logic_vector(89 downto 0);
     icache_frontend_to_backend_pipe_write_req : out  std_logic_vector(0 downto 0);
     icache_frontend_to_backend_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    icache_frontend_to_backend_pipe_write_data : out  std_logic_vector(43 downto 0);
+    icache_frontend_to_backend_pipe_write_data : out  std_logic_vector(41 downto 0);
     MMU_TO_ICACHE_SYNONYM_INVALIDATE_PIPE_pipe_read_req: out std_logic_vector(0 downto 0);
     MMU_TO_ICACHE_SYNONYM_INVALIDATE_PIPE_pipe_read_ack: in std_logic_vector(0 downto 0);
     MMU_TO_ICACHE_SYNONYM_INVALIDATE_PIPE_pipe_read_data: in std_logic_vector(26 downto 0);
@@ -12546,10 +12527,7 @@ architecture IcacheFrontendCoreArch  of IcacheFrontEndCoreDaemon is -- system-ar
 	-------------------------------------------------------------------------------------------
 	-- signals, registers
 	-------------------------------------------------------------------------------------------
-	signal cpu_command_ext : std_logic_vector(50 downto 0);
-	signal cpu_command     : std_logic_vector(40 downto 0);
-	signal cpu_id, cpu_id_reg: std_logic_vector(1 downto 0);
-	signal cpu_context, cpu_context_reg: std_logic_vector(7 downto 0);
+	signal cpu_command : std_logic_vector(40 downto 0);
 	signal cpu_reset_registered : boolean;
       
       	signal cpu_valid : std_logic_vector(0 downto 0);
@@ -12720,8 +12698,6 @@ begin --
 				cpu_tag_lookup_reg <= cpu_tag_lookup;
       				cpu_ifetch_valid_reg  <= cpu_ifetch_valid;
 				cpu_valid_reg <= cpu_valid;
-				cpu_id_reg <= cpu_id;
-				cpu_context_reg <= cpu_context;
 			elsif clear_cpu_commands then
 				init_or_reset_reg <= false;
       				exec_cpu_ifetch_reg <= (others => '0');
@@ -12778,7 +12754,7 @@ begin --
 	-- the command to the be will be generated after tag look up
 	--   (note the use of registered values from the cpu).
 	-------------------------------------------------------------------------------------------
-	to_be  <= is_hit & cpu_permissions_ok & cpu_id_reg & exec_cpu_asi_reg & exec_cpu_addr_reg;
+	to_be  <= is_hit & cpu_permissions_ok & exec_cpu_asi_reg & exec_cpu_addr_reg;
 
 	-------------------------------------------------------------------------------------------
 	-- decoders.
@@ -12823,7 +12799,7 @@ begin --
 				  (NOBLOCK_CPU_to_ICACHE_reset_pipe_read_data(0) = '1'));
 	cpu_command_available <= 
 			((NOBLOCK_CPU_to_ICACHE_command_pipe_read_ack(0) = '1') and 
-				  (NOBLOCK_CPU_to_ICACHE_command_pipe_read_data(50) = '1'));
+				  (NOBLOCK_CPU_to_ICACHE_command_pipe_read_data(40) = '1'));
 	be_response_available <= 
 			((noblock_icache_backend_to_frontend_pipe_read_ack(0) = '1') and 
 				  (noblock_icache_backend_to_frontend_pipe_read_data(BE_FE_RESPONSE_SIZE-1) = '1'));
@@ -13128,7 +13104,6 @@ begin --
 	access_S <= be_S(0) when be_response_can_be_applied else exec_cpu_S(0);
 	access_tags_acc <= be_acc when be_response_can_be_applied else (others => '0');
 
-
 	TagsArraysBlock: block
     		signal access_tag_command : std_logic_vector(2 downto 0);
     		signal access_tag_lookup, access_tag_insert, 
@@ -13137,7 +13112,6 @@ begin --
     		signal access_array_command : std_logic_vector(2 downto 0);
     		signal access_addr : std_logic_vector(31 downto 0);
     		signal access_dword : std_logic_vector((2**log2_block_size_in_bytes)-1 downto 0);
-		signal access_context : std_logic_vector(7 downto 0);
 
 	begin
 	   access_tag_command <=  CACHE_TAG_CLEAR_LINE
@@ -13153,7 +13127,6 @@ begin --
 	   access_tag_clear_line <= '1' when (access_tag_command = CACHE_TAG_CLEAR_LINE) else '0';
 	   access_tag_clear_all <= '1' when (access_tag_command = CACHE_TAG_CLEAR_ALL) else '0';
  
-	   access_context <= cpu_context_reg when be_response_can_be_applied else cpu_context;
 	   access_addr <= be_addr when be_response_can_be_applied else exec_cpu_addr;
 
 	   access_array_command <=  CACHE_ARRAY_NOP when (((be_mae(0) = '1') or (be_access_error(0) = '1')) and be_response_can_be_applied)
@@ -13187,7 +13160,6 @@ begin --
 					lookup_acc => lookup_acc,
     					access_array_command  => access_array_command ,
     					access_addr  => access_addr ,
-					access_context => access_context,
     					access_dword  => access_dword ,
     					dword_out  => dword_out ,
     					clk => clk,
@@ -13222,7 +13194,6 @@ begin --
 					access_tag_clear_all => access_tag_clear_all,
     					access_array_command  => access_array_command ,
 					access_addr => access_addr,
-					access_context => access_context,
     					access_byte_mask  => access_byte_mask ,
     					access_dword  => access_dword ,
 					-- invalidation...
@@ -13261,11 +13232,8 @@ begin --
 	-- pipe access logic.
 	-------------------------------------------------------------------------------------------
 	NOBLOCK_CPU_to_ICACHE_command_pipe_read_req (0) <= '1' when accept_cpu_commands else '0';
-	cpu_command_ext <= NOBLOCK_CPU_to_ICACHE_command_pipe_read_data when NOBLOCK_CPU_to_ICACHE_command_pipe_read_ack(0) = '1' 
+	cpu_command <= NOBLOCK_CPU_to_ICACHE_command_pipe_read_data when NOBLOCK_CPU_to_ICACHE_command_pipe_read_ack(0) = '1' 
 					else (others => '0');
-	cpu_command <= cpu_command_ext(50 downto 50) & cpu_command_ext (39 downto 0);
-	cpu_id      <= cpu_command_ext(49 downto 48);
-	cpu_context <= cpu_command_ext (47 downto 40);
 
 	NOBLOCK_CPU_to_ICACHE_reset_pipe_read_req (0) <= '1' when accept_cpu_reset else '0';
 
@@ -13304,7 +13272,7 @@ entity IcacheFrontendDaemon is --
   port ( -- 
     NOBLOCK_CPU_to_ICACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_ICACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_ICACHE_command_pipe_read_data : in   std_logic_vector(50 downto 0);
+    NOBLOCK_CPU_to_ICACHE_command_pipe_read_data : in   std_logic_vector(40 downto 0);
     NOBLOCK_CPU_to_ICACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_ICACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_ICACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
@@ -13319,7 +13287,7 @@ entity IcacheFrontendDaemon is --
     ICACHE_to_CPU_response_pipe_write_data : out  std_logic_vector(89 downto 0);
     icache_frontend_to_backend_pipe_write_req : out  std_logic_vector(0 downto 0);
     icache_frontend_to_backend_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    icache_frontend_to_backend_pipe_write_data : out  std_logic_vector(43 downto 0);
+    icache_frontend_to_backend_pipe_write_data : out  std_logic_vector(41 downto 0);
     MMU_TO_ICACHE_SYNONYM_INVALIDATE_PIPE_pipe_read_req: out std_logic_vector(0 downto 0);
     MMU_TO_ICACHE_SYNONYM_INVALIDATE_PIPE_pipe_read_ack: in std_logic_vector(0 downto 0);
     MMU_TO_ICACHE_SYNONYM_INVALIDATE_PIPE_pipe_read_data: in std_logic_vector(26 downto 0);
@@ -13342,13 +13310,13 @@ architecture IcacheFrontendArch  of IcacheFrontEndDaemon is -- system-architectu
 
     signal NOBLOCK_BUFFERED_CPU_to_ICACHE_command_pipe_read_req : std_logic_vector(0 downto 0);
     signal NOBLOCK_BUFFERED_CPU_to_ICACHE_command_pipe_read_ack : std_logic_vector(0 downto 0);
-    signal NOBLOCK_BUFFERED_CPU_to_ICACHE_command_pipe_read_data : std_logic_vector(50 downto 0);
+    signal NOBLOCK_BUFFERED_CPU_to_ICACHE_command_pipe_read_data : std_logic_vector(40 downto 0);
 
 begin -- 
 	ifBuffer: if (ICACHE_BUFFER_REQUEST > 0) generate
 		qBuf: QueueBase
 			generic map (name => "IcacheRequestQueue", queue_depth => 2,
-						data_width => 51, save_one_slot => false)
+						data_width => 41, save_one_slot => false)
 			port map (
 				clk => clk,
 				reset => reset,
@@ -15467,13 +15435,13 @@ entity DcacheFrontendDaemon is --
   port ( -- 
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(150 downto 0);
+    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(142 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(128 downto 0);
+    NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(120 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
@@ -15503,7 +15471,7 @@ entity DcacheFrontendDaemon is --
     NOBLOCK_MMU_TO_DCACHE_COHERENCE_INVALIDATE_PIPE_pipe_read_data: in std_logic_vector(26 downto 0);
     dcache_frontend_to_backend_pipe_write_req : out  std_logic_vector(0 downto 0);
     dcache_frontend_to_backend_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    dcache_frontend_to_backend_pipe_write_data : out  std_logic_vector(121 downto 0);
+    dcache_frontend_to_backend_pipe_write_data : out  std_logic_vector(119 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -15918,13 +15886,13 @@ entity DcacheFrontendWithStallCoreDaemon is --
   port ( -- 
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(150 downto 0);
+    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(142 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(128 downto 0);
+    NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(120 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
@@ -15958,7 +15926,7 @@ entity DcacheFrontendWithStallCoreDaemon is --
     NOBLOCK_INVALIDATE_SLOT_RETURN_pipe_read_data: in std_logic_vector(0 downto 0);
     dcache_frontend_to_backend_pipe_write_req : out  std_logic_vector(0 downto 0);
     dcache_frontend_to_backend_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    dcache_frontend_to_backend_pipe_write_data : out  std_logic_vector(121 downto 0);
+    dcache_frontend_to_backend_pipe_write_data : out  std_logic_vector(119 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -16033,8 +16001,6 @@ architecture DcacheFrontendCoreDaemon_arch of DcacheFrontendWithStallCoreDaemon 
 
 	signal exec_be: boolean;
 	signal exec_tag_access_cpu: boolean;
-
-	signal active_cpu_context, active_cpu_context_reg: std_logic_vector(7 downto 0);
 	-------------------------------------------------------------------------------------------
 	-- actions/outputs
 	-------------------------------------------------------------------------------------------
@@ -16067,7 +16033,8 @@ architecture DcacheFrontendCoreDaemon_arch of DcacheFrontendWithStallCoreDaemon 
 	-- is the cpu thread trapped.. for the two threads..
 	signal dcache_trapped_vector: std_logic_vector(0 to 1);
 
-	signal from_cpu_fast, from_cpu_slow, cpu_slow_command, cpu_fast_command : std_logic_vector(120 downto 0);
+	signal from_cpu_fast, from_cpu_slow, cpu_slow_command, 
+					cpu_fast_command : std_logic_vector(120 downto 0);
 
 	signal fast_command_bypass_control_info: std_logic_vector(21 downto 0);
 	signal fast_command_bypass_control_info_reg: std_logic_vector(21 downto 0);
@@ -16095,7 +16062,6 @@ architecture DcacheFrontendCoreDaemon_arch of DcacheFrontendWithStallCoreDaemon 
 			is_supervisor_asi,
 			is_mmu_access_asi,
 			dcache_needs_to_be_flushed,
-			dcache_needs_to_be_flushed_corrected,
 			is_memory_read,
 			is_memory_write,
 			is_mmu_fsr_write,
@@ -16143,11 +16109,7 @@ architecture DcacheFrontendCoreDaemon_arch of DcacheFrontendWithStallCoreDaemon 
 	
     	signal to_cpu, to_cpu_registered: std_logic_vector(71 downto 0);
     	signal bypass_response_to_cpu:  std_logic_vector(71 downto 0);
-
-    	signal to_be_from_bypass :  std_logic_vector(119 downto 0);
-    	signal to_be_from_bypass_augmented_with_cpu_id :  std_logic_vector(121 downto 0);
-
-    	signal to_be, to_be_registered:  std_logic_vector(121 downto 0);
+    	signal to_be, to_be_registered, to_be_from_bypass :  std_logic_vector(119 downto 0);
 
 	signal access_byte_mask: std_logic_vector(7 downto 0); 
 
@@ -16235,22 +16197,6 @@ begin
 	cpu_valid <= cpu_valid_fast or cpu_valid_slow;
 	exec_cpu <= cpu_valid;
 	exec_cpu_reg <= cpu_valid_reg;
-
-	---------------------------------------------------------------------------------------------------------------
-	-- active context for the request..  This will be used in the tags!
-	---------------------------------------------------------------------------------------------------------------
-	active_cpu_context <= NOBLOCK_CPU_to_DCACHE_command_pipe_read_data (149 downto 142) when
-				(cpu_valid_fast(0) = '1')  else  NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data (127 downto 120);
-	process(clk, reset)
-	begin
-		if(clk'event and (clk = '1')) then
-			if (reset = '1') then
-				active_cpu_context_reg <= (others => '0');
-			elsif latch_cpu_commands then
-				active_cpu_context_reg <= active_cpu_context;
-			end if;
-		end if;
-	end process;
 
 	-- register the cache stall to cut combi path.
 	process(clk,reset)
@@ -16343,7 +16289,7 @@ begin
 					NOBLOCK_MMU_TO_DCACHE_COHERENCE_INVALIDATE_PIPE_pipe_read_data(25 downto 0);
 	
 	cpu_command_is_not_a_clear_or_flush <=
-			exec_tag_access_cpu and (dcache_needs_to_be_flushed_corrected(0) = '0');
+			exec_tag_access_cpu and (dcache_needs_to_be_flushed(0) = '0');
 
 
 
@@ -16517,14 +16463,6 @@ begin
 	
 	
 	
-	-------------------------------------------------------------------------------------	
-	-- correct the dcache needs to be flushed field: if it is an mmu context register
-	-- write, then we will not flush the dcache.
-	-------------------------------------------------------------------------------------	
-	dcache_needs_to_be_flushed_corrected(0) <=
-		dcache_needs_to_be_flushed(0) when 
-			((is_mmu_ctrl_reg_write(0) = '0') or (cpu_addr (10 downto 8) /= "010"))
-				else '0';
 
 	-------------------------------------------------------------------------------------------
 	-- ACTIVE CPU FOR THIS REQUEST!
@@ -17005,13 +16943,13 @@ begin
 	access_is_ifetch <= '0';
 
 	-- cpu_tag_command
-	process(dcache_needs_to_be_flushed_corrected, flush_line_only, do_tag_lookup, trap_dcache, init_flag)
+	process(dcache_needs_to_be_flushed, flush_line_only, do_tag_lookup, trap_dcache, init_flag)
 	begin
 		if(init_flag = '1') then
 			cpu_tag_command <= CACHE_TAG_CLEAR_ALL;
 		elsif(trap_dcache and (is_ccu_request(0) = '0')) then
 			cpu_tag_command <= CACHE_TAG_NOP;
-		elsif(dcache_needs_to_be_flushed_corrected(0) = '1') then
+		elsif(dcache_needs_to_be_flushed(0) = '1') then
 			if(flush_line_only(0) = '1') then
 				cpu_tag_command <= CACHE_TAG_CLEAR_LINE;
 			else
@@ -17030,8 +16968,7 @@ begin
     		signal access_tag_lookup, access_tag_insert, 
 				access_tag_clear_line,
 				access_tag_clear_all : std_logic;
-    		signal access_tag_addr    : std_logic_vector(31 downto 0);
-    		signal access_tag_context : std_logic_vector(7 downto 0);
+    		signal access_tag_addr : std_logic_vector(31 downto 0);
     		signal tag_in: std_logic_vector(0 downto 0);
     		signal tag_out: std_logic_vector(0 downto 0);
     		signal access_array_command, cpu_array_command : std_logic_vector(2 downto 0);
@@ -17055,8 +16992,6 @@ begin
 
 	-- note that when the BE command is executed, we use the registered address/byte-mask from the cpu.
 	   access_tag_addr <= cpu_addr_reg when exec_be else cpu_addr;
-	   access_tag_context <= active_cpu_context_reg when exec_be else active_cpu_context;
-
 	
 	
 
@@ -17113,7 +17048,6 @@ begin
 					access_acc => access_tags_acc,
 					access_tag_command => access_tag_command,
 					access_tag_addr => access_tag_addr,
-					access_tag_context => access_tag_context,
 					invalidate => tag_invalidate_apply,
 					invalidate_line_address => tag_invalidate_line_address,
 					is_hit => is_hit,
@@ -17168,7 +17102,6 @@ begin
 					access_tag_clear_all => access_tag_clear_all,
     					access_array_command  => access_array_command ,
 					access_addr => access_array_addr,
-					access_context => access_tag_context,
     					access_byte_mask  => access_byte_mask ,
     					access_dword  => access_dword ,
 					-- invalidation...
@@ -17223,9 +17156,7 @@ begin
 
 	-- no need to use registered values unless mentioned.. to_be itself will be registered
 	-- if necessary.
-	to_be <= (
-				cpu_thread_id_registered & 
-				no_response_from_be  &
+	to_be <= (no_response_from_be  &
 				lock_bus_reg &  -- note: registered value!
 				read_dword_miss &
 				write_dword_miss &
@@ -17259,18 +17190,18 @@ begin
 	--
 	-- Added: do not consider fast valid if slow request has
 	--         lock.
-	cpu_fast_command_valid <= (NOBLOCK_CPU_to_DCACHE_command_pipe_read_data (150) = '1') 
+	cpu_fast_command_valid <= (NOBLOCK_CPU_to_DCACHE_command_pipe_read_data (142) = '1') 
 					and 
 					(NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack (0) = '1')
 					and 
 					(not slow_request_has_lock);
 
-	cpu_slow_command_valid <= (NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data (128) = '1') 
+	cpu_slow_command_valid <= (NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data (120) = '1') 
 					and 
 					(NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_ack (0) = '1');
 
 	cpu_fast_command <= 
-		NOBLOCK_CPU_to_DCACHE_command_pipe_read_data(150 downto 150) & NOBLOCK_CPU_to_DCACHE_command_pipe_read_data (119 downto 0)
+		NOBLOCK_CPU_to_DCACHE_command_pipe_read_data(142 downto 142) & NOBLOCK_CPU_to_DCACHE_command_pipe_read_data (119 downto 0)
 						when cpu_fast_command_valid
 									else (others => '0');
 	fast_command_bypass_control_info <=
@@ -17278,8 +17209,7 @@ begin
 						when cpu_fast_command_valid
 									else (others => '0');
 
-	cpu_slow_command <=  NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data (128 downto 128) & 
-					NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data (119 downto 0) when cpu_slow_command_valid
+	cpu_slow_command <=  NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data when cpu_slow_command_valid
 						else (others => '0');
 
 	noblock_dcache_backend_to_frontend_command_pipe_read_req (0) <= 
@@ -17291,7 +17221,7 @@ begin
 	dcache_frontend_to_backend_pipe_write_req (0) <= '1' when 
 					(write_to_be or write_to_be_from_bypass) else '0';
 	dcache_frontend_to_backend_pipe_write_data  <= 
-			to_be_from_bypass_augmented_with_cpu_id when write_to_be_from_bypass else
+			to_be_from_bypass when write_to_be_from_bypass else
 				to_be_registered when (dcache_state = SEND_WAIT_ON_BE) else to_be;
 
 	DCACHE_to_CPU_response_pipe_write_req(0) <= 
@@ -17370,9 +17300,6 @@ begin
 				be_read => accept_be_bypass_response,
 				be_dword => be_dword,
 				bypass_response_pending => bypass_response_pending);
-
-	-- add two bits on the left for cpu-thread-id
-	to_be_from_bypass_augmented_with_cpu_id <= cpu_thread_id & to_be_from_bypass;
 
 	------------------------------------------------------------------------------------------
 	-- Non-cacheable logic.
@@ -17559,13 +17486,13 @@ entity DcacheFrontendWithStallDaemon is --
   port ( -- 
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(150 downto 0);
+    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(142 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(128 downto 0);
+    NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(120 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
@@ -17599,7 +17526,7 @@ entity DcacheFrontendWithStallDaemon is --
     NOBLOCK_INVALIDATE_SLOT_RETURN_pipe_read_data: in std_logic_vector(0 downto 0);
     dcache_frontend_to_backend_pipe_write_req : out  std_logic_vector(0 downto 0);
     dcache_frontend_to_backend_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    dcache_frontend_to_backend_pipe_write_data : out  std_logic_vector(121 downto 0);
+    dcache_frontend_to_backend_pipe_write_data : out  std_logic_vector(119 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -17615,17 +17542,17 @@ architecture DcacheFrontendDaemon_arch of DcacheFrontendWithStallDaemon is --
 
     signal NOBLOCK_BUFFERED_CPU_to_DCACHE_command_pipe_read_req : std_logic_vector(0 downto 0);
     signal NOBLOCK_BUFFERED_CPU_to_DCACHE_command_pipe_read_ack : std_logic_vector(0 downto 0);
-    signal NOBLOCK_BUFFERED_CPU_to_DCACHE_command_pipe_read_data : std_logic_vector(150 downto 0);
+    signal NOBLOCK_BUFFERED_CPU_to_DCACHE_command_pipe_read_data : std_logic_vector(142 downto 0);
 
     signal NOBLOCK_BUFFERED_CPU_to_DCACHE_slow_command_pipe_read_req : std_logic_vector(0 downto 0);
     signal NOBLOCK_BUFFERED_CPU_to_DCACHE_slow_command_pipe_read_ack : std_logic_vector(0 downto 0);
-    signal NOBLOCK_BUFFERED_CPU_to_DCACHE_slow_command_pipe_read_data : std_logic_vector(128 downto 0);
+    signal NOBLOCK_BUFFERED_CPU_to_DCACHE_slow_command_pipe_read_data : std_logic_vector(120 downto 0);
 begin
 
 	ifBuffer: if (DCACHE_BUFFER_REQUEST > 0) generate
 		qBuf: QueueBase
 			generic map (name => "DcacheRequestQueue", queue_depth => 2,
-						data_width => 151, save_one_slot => false)
+						data_width => 143, save_one_slot => false)
 			port map (
 				clk => clk,
 				reset => reset,
@@ -17638,7 +17565,7 @@ begin
 			);
 		qBufSlow: QueueBase
 			generic map (name => "DcacheSlowRequestQueue", queue_depth => 2,
-						data_width => 129, save_one_slot => false)
+						data_width => 121, save_one_slot => false)
 			port map (
 				clk => clk,
 				reset => reset,
@@ -18612,7 +18539,6 @@ library std;
 use std.standard.all;
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
 library aHiR_ieee_proposed;
 use aHiR_ieee_proposed.math_utility_pkg.all;
 use aHiR_ieee_proposed.fixed_pkg.all;
@@ -18626,6 +18552,7 @@ use ahir.basecomponents.all;
 use ahir.operatorpackage.all;
 use ahir.floatoperatorpackage.all;
 use ahir.utilities.all;
+use ahir.functionLibraryComponents.all;
 entity analyze_dcache_response_VVP is -- 
   port ( -- 
     addr : in  std_logic_vector(31 downto 0);
@@ -18693,292 +18620,332 @@ begin --
   -- volatile module, no control path
   -- the data path
   data_path: Block -- 
-    signal BITSEL_u32_u1_1221_wire : std_logic_vector(0 downto 0);
-    signal EQ_u2_u1_1231_wire : std_logic_vector(0 downto 0);
-    signal EQ_u2_u1_1238_wire : std_logic_vector(0 downto 0);
-    signal EQ_u2_u1_1246_wire : std_logic_vector(0 downto 0);
-    signal EQ_u2_u1_1253_wire : std_logic_vector(0 downto 0);
-    signal EQ_u2_u1_1264_wire : std_logic_vector(0 downto 0);
-    signal EQ_u2_u1_1271_wire : std_logic_vector(0 downto 0);
-    signal MUX_1235_wire : std_logic_vector(7 downto 0);
-    signal MUX_1242_wire : std_logic_vector(7 downto 0);
-    signal MUX_1250_wire : std_logic_vector(7 downto 0);
-    signal MUX_1257_wire : std_logic_vector(7 downto 0);
-    signal MUX_1268_wire : std_logic_vector(15 downto 0);
-    signal MUX_1275_wire : std_logic_vector(15 downto 0);
-    signal MUX_1292_wire : std_logic_vector(31 downto 0);
-    signal MUX_1294_wire : std_logic_vector(31 downto 0);
-    signal MUX_1304_wire : std_logic_vector(31 downto 0);
-    signal MUX_1306_wire : std_logic_vector(31 downto 0);
-    signal MUX_1313_wire : std_logic_vector(31 downto 0);
-    signal OR_u1_u1_1222_wire : std_logic_vector(0 downto 0);
-    signal OR_u1_u1_1310_wire : std_logic_vector(0 downto 0);
-    signal OR_u32_u32_1307_wire : std_logic_vector(31 downto 0);
-    signal OR_u8_u8_1243_wire : std_logic_vector(7 downto 0);
-    signal OR_u8_u8_1258_wire : std_logic_vector(7 downto 0);
-    signal a10_1212 : std_logic_vector(1 downto 0);
-    signal dcache_mae_1189 : std_logic_vector(7 downto 0);
-    signal ext_byte_1260 : std_logic_vector(7 downto 0);
-    signal ext_half_word_1277 : std_logic_vector(15 downto 0);
+    signal BITSEL_u32_u1_1216_wire : std_logic_vector(0 downto 0);
+    signal EQ_u2_u1_1226_wire : std_logic_vector(0 downto 0);
+    signal EQ_u2_u1_1233_wire : std_logic_vector(0 downto 0);
+    signal EQ_u2_u1_1241_wire : std_logic_vector(0 downto 0);
+    signal EQ_u2_u1_1248_wire : std_logic_vector(0 downto 0);
+    signal EQ_u2_u1_1259_wire : std_logic_vector(0 downto 0);
+    signal EQ_u2_u1_1266_wire : std_logic_vector(0 downto 0);
+    signal MUX_1230_wire : std_logic_vector(7 downto 0);
+    signal MUX_1237_wire : std_logic_vector(7 downto 0);
+    signal MUX_1245_wire : std_logic_vector(7 downto 0);
+    signal MUX_1252_wire : std_logic_vector(7 downto 0);
+    signal MUX_1263_wire : std_logic_vector(15 downto 0);
+    signal MUX_1270_wire : std_logic_vector(15 downto 0);
+    signal MUX_1287_wire : std_logic_vector(31 downto 0);
+    signal MUX_1289_wire : std_logic_vector(31 downto 0);
+    signal MUX_1299_wire : std_logic_vector(31 downto 0);
+    signal MUX_1301_wire : std_logic_vector(31 downto 0);
+    signal MUX_1308_wire : std_logic_vector(31 downto 0);
+    signal OR_u1_u1_1217_wire : std_logic_vector(0 downto 0);
+    signal OR_u1_u1_1305_wire : std_logic_vector(0 downto 0);
+    signal OR_u32_u32_1302_wire : std_logic_vector(31 downto 0);
+    signal OR_u8_u8_1238_wire : std_logic_vector(7 downto 0);
+    signal OR_u8_u8_1253_wire : std_logic_vector(7 downto 0);
+    signal a10_1207 : std_logic_vector(1 downto 0);
+    signal dcache_mae_1184 : std_logic_vector(7 downto 0);
+    signal ext_byte_1255 : std_logic_vector(7 downto 0);
+    signal ext_half_word_1272 : std_logic_vector(15 downto 0);
+    signal konst_1191_wire_constant : std_logic_vector(7 downto 0);
     signal konst_1196_wire_constant : std_logic_vector(7 downto 0);
     signal konst_1201_wire_constant : std_logic_vector(7 downto 0);
-    signal konst_1206_wire_constant : std_logic_vector(7 downto 0);
-    signal konst_1220_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_1230_wire_constant : std_logic_vector(1 downto 0);
-    signal konst_1234_wire_constant : std_logic_vector(7 downto 0);
-    signal konst_1237_wire_constant : std_logic_vector(1 downto 0);
-    signal konst_1241_wire_constant : std_logic_vector(7 downto 0);
-    signal konst_1245_wire_constant : std_logic_vector(1 downto 0);
-    signal konst_1249_wire_constant : std_logic_vector(7 downto 0);
-    signal konst_1252_wire_constant : std_logic_vector(1 downto 0);
-    signal konst_1256_wire_constant : std_logic_vector(7 downto 0);
-    signal konst_1263_wire_constant : std_logic_vector(1 downto 0);
-    signal konst_1267_wire_constant : std_logic_vector(15 downto 0);
-    signal konst_1270_wire_constant : std_logic_vector(1 downto 0);
-    signal konst_1274_wire_constant : std_logic_vector(15 downto 0);
-    signal konst_1293_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_1305_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_1312_wire_constant : std_logic_vector(31 downto 0);
-    signal loaded_high_word_1216 : std_logic_vector(31 downto 0);
-    signal loaded_low_word_1227 : std_logic_vector(31 downto 0);
-    signal loaded_word_1193 : std_logic_vector(63 downto 0);
-    signal slice_1224_wire : std_logic_vector(31 downto 0);
-    signal slice_1233_wire : std_logic_vector(7 downto 0);
-    signal slice_1240_wire : std_logic_vector(7 downto 0);
-    signal slice_1248_wire : std_logic_vector(7 downto 0);
-    signal slice_1255_wire : std_logic_vector(7 downto 0);
-    signal slice_1266_wire : std_logic_vector(15 downto 0);
-    signal slice_1273_wire : std_logic_vector(15 downto 0);
-    signal type_cast_1287_wire : std_logic_vector(7 downto 0);
-    signal type_cast_1288_wire : std_logic_vector(31 downto 0);
-    signal type_cast_1289_wire : std_logic_vector(31 downto 0);
-    signal type_cast_1291_wire : std_logic_vector(31 downto 0);
-    signal type_cast_1299_wire : std_logic_vector(15 downto 0);
-    signal type_cast_1300_wire : std_logic_vector(31 downto 0);
-    signal type_cast_1301_wire : std_logic_vector(31 downto 0);
-    signal type_cast_1303_wire : std_logic_vector(31 downto 0);
+    signal konst_1215_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_1225_wire_constant : std_logic_vector(1 downto 0);
+    signal konst_1229_wire_constant : std_logic_vector(7 downto 0);
+    signal konst_1232_wire_constant : std_logic_vector(1 downto 0);
+    signal konst_1236_wire_constant : std_logic_vector(7 downto 0);
+    signal konst_1240_wire_constant : std_logic_vector(1 downto 0);
+    signal konst_1244_wire_constant : std_logic_vector(7 downto 0);
+    signal konst_1247_wire_constant : std_logic_vector(1 downto 0);
+    signal konst_1251_wire_constant : std_logic_vector(7 downto 0);
+    signal konst_1258_wire_constant : std_logic_vector(1 downto 0);
+    signal konst_1262_wire_constant : std_logic_vector(15 downto 0);
+    signal konst_1265_wire_constant : std_logic_vector(1 downto 0);
+    signal konst_1269_wire_constant : std_logic_vector(15 downto 0);
+    signal konst_1288_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_1300_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_1307_wire_constant : std_logic_vector(31 downto 0);
+    signal loaded_high_word_1211 : std_logic_vector(31 downto 0);
+    signal loaded_low_word_1222 : std_logic_vector(31 downto 0);
+    signal loaded_word_1188 : std_logic_vector(63 downto 0);
+    signal slice_1219_wire : std_logic_vector(31 downto 0);
+    signal slice_1228_wire : std_logic_vector(7 downto 0);
+    signal slice_1235_wire : std_logic_vector(7 downto 0);
+    signal slice_1243_wire : std_logic_vector(7 downto 0);
+    signal slice_1250_wire : std_logic_vector(7 downto 0);
+    signal slice_1261_wire : std_logic_vector(15 downto 0);
+    signal slice_1268_wire : std_logic_vector(15 downto 0);
+    signal type_cast_1282_wire : std_logic_vector(7 downto 0);
+    signal type_cast_1283_wire : std_logic_vector(31 downto 0);
+    signal type_cast_1284_wire : std_logic_vector(31 downto 0);
+    signal type_cast_1286_wire : std_logic_vector(31 downto 0);
+    signal type_cast_1294_wire : std_logic_vector(15 downto 0);
+    signal type_cast_1295_wire : std_logic_vector(31 downto 0);
+    signal type_cast_1296_wire : std_logic_vector(31 downto 0);
+    signal type_cast_1298_wire : std_logic_vector(31 downto 0);
     -- 
   begin -- 
-    konst_1196_wire_constant <= "00000000";
-    konst_1201_wire_constant <= "00000001";
-    konst_1206_wire_constant <= "00000010";
-    konst_1220_wire_constant <= "00000000000000000000000000000010";
-    konst_1230_wire_constant <= "00";
-    konst_1234_wire_constant <= "00000000";
-    konst_1237_wire_constant <= "01";
-    konst_1241_wire_constant <= "00000000";
-    konst_1245_wire_constant <= "10";
-    konst_1249_wire_constant <= "00000000";
-    konst_1252_wire_constant <= "11";
-    konst_1256_wire_constant <= "00000000";
-    konst_1263_wire_constant <= "00";
-    konst_1267_wire_constant <= "0000000000000000";
-    konst_1270_wire_constant <= "10";
-    konst_1274_wire_constant <= "0000000000000000";
-    konst_1293_wire_constant <= "00000000000000000000000000000000";
-    konst_1305_wire_constant <= "00000000000000000000000000000000";
-    konst_1312_wire_constant <= "00000000000000000000000000000000";
-    -- flow-through select operator MUX_1226_inst
-    loaded_low_word_1227 <= slice_1224_wire when (OR_u1_u1_1222_wire(0) /=  '0') else loaded_high_word_1216;
-    -- flow-through select operator MUX_1235_inst
-    MUX_1235_wire <= slice_1233_wire when (EQ_u2_u1_1231_wire(0) /=  '0') else konst_1234_wire_constant;
-    -- flow-through select operator MUX_1242_inst
-    MUX_1242_wire <= slice_1240_wire when (EQ_u2_u1_1238_wire(0) /=  '0') else konst_1241_wire_constant;
-    -- flow-through select operator MUX_1250_inst
-    MUX_1250_wire <= slice_1248_wire when (EQ_u2_u1_1246_wire(0) /=  '0') else konst_1249_wire_constant;
-    -- flow-through select operator MUX_1257_inst
-    MUX_1257_wire <= slice_1255_wire when (EQ_u2_u1_1253_wire(0) /=  '0') else konst_1256_wire_constant;
-    -- flow-through select operator MUX_1268_inst
-    MUX_1268_wire <= slice_1266_wire when (EQ_u2_u1_1264_wire(0) /=  '0') else konst_1267_wire_constant;
-    -- flow-through select operator MUX_1275_inst
-    MUX_1275_wire <= slice_1273_wire when (EQ_u2_u1_1271_wire(0) /=  '0') else konst_1274_wire_constant;
-    -- flow-through select operator MUX_1292_inst
-    MUX_1292_wire <= type_cast_1289_wire when (signed_type_buffer(0) /=  '0') else type_cast_1291_wire;
-    -- flow-through select operator MUX_1294_inst
-    MUX_1294_wire <= MUX_1292_wire when (byte_buffer(0) /=  '0') else konst_1293_wire_constant;
-    -- flow-through select operator MUX_1304_inst
-    MUX_1304_wire <= type_cast_1301_wire when (signed_type_buffer(0) /=  '0') else type_cast_1303_wire;
-    -- flow-through select operator MUX_1306_inst
-    MUX_1306_wire <= MUX_1304_wire when (half_word_buffer(0) /=  '0') else konst_1305_wire_constant;
-    -- flow-through select operator MUX_1313_inst
-    MUX_1313_wire <= loaded_low_word_1227 when (OR_u1_u1_1310_wire(0) /=  '0') else konst_1312_wire_constant;
-    -- flow-through slice operator slice_1188_inst
-    dcache_mae_1189 <= dcache_response_buffer(71 downto 64);
-    -- flow-through slice operator slice_1192_inst
-    loaded_word_1193 <= dcache_response_buffer(63 downto 0);
-    -- flow-through slice operator slice_1211_inst
-    a10_1212 <= addr_buffer(1 downto 0);
-    -- flow-through slice operator slice_1215_inst
-    loaded_high_word_1216 <= loaded_word_1193(63 downto 32);
-    -- flow-through slice operator slice_1224_inst
-    slice_1224_wire <= loaded_word_1193(31 downto 0);
-    -- flow-through slice operator slice_1233_inst
-    slice_1233_wire <= loaded_low_word_1227(31 downto 24);
-    -- flow-through slice operator slice_1240_inst
-    slice_1240_wire <= loaded_low_word_1227(23 downto 16);
-    -- flow-through slice operator slice_1248_inst
-    slice_1248_wire <= loaded_low_word_1227(15 downto 8);
-    -- flow-through slice operator slice_1255_inst
-    slice_1255_wire <= loaded_low_word_1227(7 downto 0);
-    -- flow-through slice operator slice_1266_inst
-    slice_1266_wire <= loaded_low_word_1227(31 downto 16);
-    -- flow-through slice operator slice_1273_inst
-    slice_1273_wire <= loaded_low_word_1227(15 downto 0);
-    -- interlock W_dout_h_1278_inst
-    process(loaded_high_word_1216) -- 
+    konst_1191_wire_constant <= "00000000";
+    konst_1196_wire_constant <= "00000001";
+    konst_1201_wire_constant <= "00000010";
+    konst_1215_wire_constant <= "00000000000000000000000000000010";
+    konst_1225_wire_constant <= "00";
+    konst_1229_wire_constant <= "00000000";
+    konst_1232_wire_constant <= "01";
+    konst_1236_wire_constant <= "00000000";
+    konst_1240_wire_constant <= "10";
+    konst_1244_wire_constant <= "00000000";
+    konst_1247_wire_constant <= "11";
+    konst_1251_wire_constant <= "00000000";
+    konst_1258_wire_constant <= "00";
+    konst_1262_wire_constant <= "0000000000000000";
+    konst_1265_wire_constant <= "10";
+    konst_1269_wire_constant <= "0000000000000000";
+    konst_1288_wire_constant <= "00000000000000000000000000000000";
+    konst_1300_wire_constant <= "00000000000000000000000000000000";
+    konst_1307_wire_constant <= "00000000000000000000000000000000";
+    -- flow-through select operator MUX_1221_inst
+    loaded_low_word_1222 <= slice_1219_wire when (OR_u1_u1_1217_wire(0) /=  '0') else loaded_high_word_1211;
+    -- flow-through select operator MUX_1230_inst
+    MUX_1230_wire <= slice_1228_wire when (EQ_u2_u1_1226_wire(0) /=  '0') else konst_1229_wire_constant;
+    -- flow-through select operator MUX_1237_inst
+    MUX_1237_wire <= slice_1235_wire when (EQ_u2_u1_1233_wire(0) /=  '0') else konst_1236_wire_constant;
+    -- flow-through select operator MUX_1245_inst
+    MUX_1245_wire <= slice_1243_wire when (EQ_u2_u1_1241_wire(0) /=  '0') else konst_1244_wire_constant;
+    -- flow-through select operator MUX_1252_inst
+    MUX_1252_wire <= slice_1250_wire when (EQ_u2_u1_1248_wire(0) /=  '0') else konst_1251_wire_constant;
+    -- flow-through select operator MUX_1263_inst
+    MUX_1263_wire <= slice_1261_wire when (EQ_u2_u1_1259_wire(0) /=  '0') else konst_1262_wire_constant;
+    -- flow-through select operator MUX_1270_inst
+    MUX_1270_wire <= slice_1268_wire when (EQ_u2_u1_1266_wire(0) /=  '0') else konst_1269_wire_constant;
+    -- flow-through select operator MUX_1287_inst
+    MUX_1287_wire <= type_cast_1284_wire when (signed_type_buffer(0) /=  '0') else type_cast_1286_wire;
+    -- flow-through select operator MUX_1289_inst
+    MUX_1289_wire <= MUX_1287_wire when (byte_buffer(0) /=  '0') else konst_1288_wire_constant;
+    -- flow-through select operator MUX_1299_inst
+    MUX_1299_wire <= type_cast_1296_wire when (signed_type_buffer(0) /=  '0') else type_cast_1298_wire;
+    -- flow-through select operator MUX_1301_inst
+    MUX_1301_wire <= MUX_1299_wire when (half_word_buffer(0) /=  '0') else konst_1300_wire_constant;
+    -- flow-through select operator MUX_1308_inst
+    MUX_1308_wire <= loaded_low_word_1222 when (OR_u1_u1_1305_wire(0) /=  '0') else konst_1307_wire_constant;
+    -- flow-through slice operator slice_1183_inst
+    dcache_mae_1184 <= dcache_response_buffer(71 downto 64);
+    -- flow-through slice operator slice_1187_inst
+    loaded_word_1188 <= dcache_response_buffer(63 downto 0);
+    -- flow-through slice operator slice_1206_inst
+    a10_1207 <= addr_buffer(1 downto 0);
+    -- flow-through slice operator slice_1210_inst
+    loaded_high_word_1211 <= loaded_word_1188(63 downto 32);
+    -- flow-through slice operator slice_1219_inst
+    slice_1219_wire <= loaded_word_1188(31 downto 0);
+    -- flow-through slice operator slice_1228_inst
+    slice_1228_wire <= loaded_low_word_1222(31 downto 24);
+    -- flow-through slice operator slice_1235_inst
+    slice_1235_wire <= loaded_low_word_1222(23 downto 16);
+    -- flow-through slice operator slice_1243_inst
+    slice_1243_wire <= loaded_low_word_1222(15 downto 8);
+    -- flow-through slice operator slice_1250_inst
+    slice_1250_wire <= loaded_low_word_1222(7 downto 0);
+    -- flow-through slice operator slice_1261_inst
+    slice_1261_wire <= loaded_low_word_1222(31 downto 16);
+    -- flow-through slice operator slice_1268_inst
+    slice_1268_wire <= loaded_low_word_1222(15 downto 0);
+    -- interlock W_dout_h_1273_inst
+    process(loaded_high_word_1211) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 31 downto 0) := loaded_high_word_1216(31 downto 0);
+      tmp_var( 31 downto 0) := loaded_high_word_1211(31 downto 0);
       dout_h_buffer <= tmp_var; -- 
     end process;
-    -- interlock type_cast_1287_inst
-    process(ext_byte_1260) -- 
+    -- interlock type_cast_1282_inst
+    process(ext_byte_1255) -- 
       variable tmp_var : std_logic_vector(7 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 7 downto 0) := ext_byte_1260(7 downto 0);
-      type_cast_1287_wire <= tmp_var; -- 
+      tmp_var( 7 downto 0) := ext_byte_1255(7 downto 0);
+      type_cast_1282_wire <= tmp_var; -- 
     end process;
-    -- interlock type_cast_1289_inst
-    process(type_cast_1288_wire) -- 
+    -- interlock type_cast_1284_inst
+    process(type_cast_1283_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 31 downto 0) := type_cast_1288_wire(31 downto 0);
-      type_cast_1289_wire <= tmp_var; -- 
+      tmp_var( 31 downto 0) := type_cast_1283_wire(31 downto 0);
+      type_cast_1284_wire <= tmp_var; -- 
     end process;
-    -- interlock type_cast_1291_inst
-    process(ext_byte_1260) -- 
+    -- interlock type_cast_1286_inst
+    process(ext_byte_1255) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 7 downto 0) := ext_byte_1260(7 downto 0);
-      type_cast_1291_wire <= tmp_var; -- 
+      tmp_var( 7 downto 0) := ext_byte_1255(7 downto 0);
+      type_cast_1286_wire <= tmp_var; -- 
     end process;
-    -- interlock type_cast_1299_inst
-    process(ext_half_word_1277) -- 
+    -- interlock type_cast_1294_inst
+    process(ext_half_word_1272) -- 
       variable tmp_var : std_logic_vector(15 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 15 downto 0) := ext_half_word_1277(15 downto 0);
-      type_cast_1299_wire <= tmp_var; -- 
+      tmp_var( 15 downto 0) := ext_half_word_1272(15 downto 0);
+      type_cast_1294_wire <= tmp_var; -- 
     end process;
-    -- interlock type_cast_1301_inst
-    process(type_cast_1300_wire) -- 
+    -- interlock type_cast_1296_inst
+    process(type_cast_1295_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 31 downto 0) := type_cast_1300_wire(31 downto 0);
-      type_cast_1301_wire <= tmp_var; -- 
+      tmp_var( 31 downto 0) := type_cast_1295_wire(31 downto 0);
+      type_cast_1296_wire <= tmp_var; -- 
     end process;
-    -- interlock type_cast_1303_inst
-    process(ext_half_word_1277) -- 
+    -- interlock type_cast_1298_inst
+    process(ext_half_word_1272) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 15 downto 0) := ext_half_word_1277(15 downto 0);
-      type_cast_1303_wire <= tmp_var; -- 
+      tmp_var( 15 downto 0) := ext_half_word_1272(15 downto 0);
+      type_cast_1298_wire <= tmp_var; -- 
     end process;
-    -- flow through binary operator BITSEL_u32_u1_1221_inst
+    -- binary operator BITSEL_u32_u1_1216_inst
     process(addr_buffer) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApBitsel_proc(addr_buffer, konst_1220_wire_constant, tmp_var);
-      BITSEL_u32_u1_1221_wire <= tmp_var; --
+      ApBitsel_proc(addr_buffer, konst_1215_wire_constant, tmp_var);
+      BITSEL_u32_u1_1216_wire <= tmp_var; --
     end process;
-    -- flow through binary operator BITSEL_u8_u1_1197_inst
-    process(dcache_mae_1189) -- 
+    -- binary operator BITSEL_u8_u1_1192_inst
+    process(dcache_mae_1184) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApBitsel_proc(dcache_mae_1189, konst_1196_wire_constant, tmp_var);
+      ApBitsel_proc(dcache_mae_1184, konst_1191_wire_constant, tmp_var);
       data_access_exception_buffer <= tmp_var; --
     end process;
-    -- flow through binary operator BITSEL_u8_u1_1202_inst
-    process(dcache_mae_1189) -- 
+    -- binary operator BITSEL_u8_u1_1197_inst
+    process(dcache_mae_1184) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApBitsel_proc(dcache_mae_1189, konst_1201_wire_constant, tmp_var);
+      ApBitsel_proc(dcache_mae_1184, konst_1196_wire_constant, tmp_var);
       data_access_error_buffer <= tmp_var; --
     end process;
-    -- flow through binary operator BITSEL_u8_u1_1207_inst
-    process(dcache_mae_1189) -- 
+    -- binary operator BITSEL_u8_u1_1202_inst
+    process(dcache_mae_1184) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApBitsel_proc(dcache_mae_1189, konst_1206_wire_constant, tmp_var);
+      ApBitsel_proc(dcache_mae_1184, konst_1201_wire_constant, tmp_var);
       dcache_hit_buffer <= tmp_var; --
     end process;
-    -- flow through binary operator EQ_u2_u1_1231_inst
-    process(a10_1212) -- 
+    -- binary operator EQ_u2_u1_1226_inst
+    process(a10_1207) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(a10_1212, konst_1230_wire_constant, tmp_var);
-      EQ_u2_u1_1231_wire <= tmp_var; --
+      ApIntEq_proc(a10_1207, konst_1225_wire_constant, tmp_var);
+      EQ_u2_u1_1226_wire <= tmp_var; --
     end process;
-    -- flow through binary operator EQ_u2_u1_1238_inst
-    process(a10_1212) -- 
+    -- binary operator EQ_u2_u1_1233_inst
+    process(a10_1207) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(a10_1212, konst_1237_wire_constant, tmp_var);
-      EQ_u2_u1_1238_wire <= tmp_var; --
+      ApIntEq_proc(a10_1207, konst_1232_wire_constant, tmp_var);
+      EQ_u2_u1_1233_wire <= tmp_var; --
     end process;
-    -- flow through binary operator EQ_u2_u1_1246_inst
-    process(a10_1212) -- 
+    -- binary operator EQ_u2_u1_1241_inst
+    process(a10_1207) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(a10_1212, konst_1245_wire_constant, tmp_var);
-      EQ_u2_u1_1246_wire <= tmp_var; --
+      ApIntEq_proc(a10_1207, konst_1240_wire_constant, tmp_var);
+      EQ_u2_u1_1241_wire <= tmp_var; --
     end process;
-    -- flow through binary operator EQ_u2_u1_1253_inst
-    process(a10_1212) -- 
+    -- binary operator EQ_u2_u1_1248_inst
+    process(a10_1207) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(a10_1212, konst_1252_wire_constant, tmp_var);
-      EQ_u2_u1_1253_wire <= tmp_var; --
+      ApIntEq_proc(a10_1207, konst_1247_wire_constant, tmp_var);
+      EQ_u2_u1_1248_wire <= tmp_var; --
     end process;
-    -- flow through binary operator EQ_u2_u1_1264_inst
-    process(a10_1212) -- 
+    -- binary operator EQ_u2_u1_1259_inst
+    process(a10_1207) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(a10_1212, konst_1263_wire_constant, tmp_var);
-      EQ_u2_u1_1264_wire <= tmp_var; --
+      ApIntEq_proc(a10_1207, konst_1258_wire_constant, tmp_var);
+      EQ_u2_u1_1259_wire <= tmp_var; --
     end process;
-    -- flow through binary operator EQ_u2_u1_1271_inst
-    process(a10_1212) -- 
+    -- binary operator EQ_u2_u1_1266_inst
+    process(a10_1207) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(a10_1212, konst_1270_wire_constant, tmp_var);
-      EQ_u2_u1_1271_wire <= tmp_var; --
+      ApIntEq_proc(a10_1207, konst_1265_wire_constant, tmp_var);
+      EQ_u2_u1_1266_wire <= tmp_var; --
     end process;
-    -- flow through binary operator OR_u16_u16_1276_inst
-    ext_half_word_1277 <= (MUX_1268_wire or MUX_1275_wire);
-    -- flow through binary operator OR_u1_u1_1222_inst
-    OR_u1_u1_1222_wire <= (double_word_buffer or BITSEL_u32_u1_1221_wire);
-    -- flow through binary operator OR_u1_u1_1310_inst
-    OR_u1_u1_1310_wire <= (word_buffer or double_word_buffer);
-    -- flow through binary operator OR_u32_u32_1307_inst
-    OR_u32_u32_1307_wire <= (MUX_1294_wire or MUX_1306_wire);
-    -- flow through binary operator OR_u32_u32_1314_inst
-    dout_l_buffer <= (OR_u32_u32_1307_wire or MUX_1313_wire);
-    -- flow through binary operator OR_u8_u8_1243_inst
-    OR_u8_u8_1243_wire <= (MUX_1235_wire or MUX_1242_wire);
-    -- flow through binary operator OR_u8_u8_1258_inst
-    OR_u8_u8_1258_wire <= (MUX_1250_wire or MUX_1257_wire);
-    -- flow through binary operator OR_u8_u8_1259_inst
-    ext_byte_1260 <= (OR_u8_u8_1243_wire or OR_u8_u8_1258_wire);
-    -- unary operator type_cast_1288_inst
-    process(type_cast_1287_wire) -- 
+    -- binary operator OR_u16_u16_1271_inst
+    process(MUX_1263_wire, MUX_1270_wire) -- 
+      variable tmp_var : std_logic_vector(15 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(MUX_1263_wire, MUX_1270_wire, tmp_var);
+      ext_half_word_1272 <= tmp_var; --
+    end process;
+    -- binary operator OR_u1_u1_1217_inst
+    process(double_word_buffer, BITSEL_u32_u1_1216_wire) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(double_word_buffer, BITSEL_u32_u1_1216_wire, tmp_var);
+      OR_u1_u1_1217_wire <= tmp_var; --
+    end process;
+    -- binary operator OR_u1_u1_1305_inst
+    process(word_buffer, double_word_buffer) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(word_buffer, double_word_buffer, tmp_var);
+      OR_u1_u1_1305_wire <= tmp_var; --
+    end process;
+    -- binary operator OR_u32_u32_1302_inst
+    process(MUX_1289_wire, MUX_1301_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
-      SingleInputOperation("ApIntToApIntSigned", type_cast_1287_wire, tmp_var);
-      type_cast_1288_wire <= tmp_var; -- 
+      ApIntOr_proc(MUX_1289_wire, MUX_1301_wire, tmp_var);
+      OR_u32_u32_1302_wire <= tmp_var; --
     end process;
-    -- unary operator type_cast_1300_inst
-    process(type_cast_1299_wire) -- 
+    -- binary operator OR_u32_u32_1309_inst
+    process(OR_u32_u32_1302_wire, MUX_1308_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
-      SingleInputOperation("ApIntToApIntSigned", type_cast_1299_wire, tmp_var);
-      type_cast_1300_wire <= tmp_var; -- 
+      ApIntOr_proc(OR_u32_u32_1302_wire, MUX_1308_wire, tmp_var);
+      dout_l_buffer <= tmp_var; --
+    end process;
+    -- binary operator OR_u8_u8_1238_inst
+    process(MUX_1230_wire, MUX_1237_wire) -- 
+      variable tmp_var : std_logic_vector(7 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(MUX_1230_wire, MUX_1237_wire, tmp_var);
+      OR_u8_u8_1238_wire <= tmp_var; --
+    end process;
+    -- binary operator OR_u8_u8_1253_inst
+    process(MUX_1245_wire, MUX_1252_wire) -- 
+      variable tmp_var : std_logic_vector(7 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(MUX_1245_wire, MUX_1252_wire, tmp_var);
+      OR_u8_u8_1253_wire <= tmp_var; --
+    end process;
+    -- binary operator OR_u8_u8_1254_inst
+    process(OR_u8_u8_1238_wire, OR_u8_u8_1253_wire) -- 
+      variable tmp_var : std_logic_vector(7 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(OR_u8_u8_1238_wire, OR_u8_u8_1253_wire, tmp_var);
+      ext_byte_1255 <= tmp_var; --
+    end process;
+    -- unary operator type_cast_1283_inst
+    process(type_cast_1282_wire) -- 
+      variable tmp_var : std_logic_vector(31 downto 0); -- 
+    begin -- 
+      SingleInputOperation("ApIntToApIntSigned", type_cast_1282_wire, tmp_var);
+      type_cast_1283_wire <= tmp_var; -- 
+    end process;
+    -- unary operator type_cast_1295_inst
+    process(type_cast_1294_wire) -- 
+      variable tmp_var : std_logic_vector(31 downto 0); -- 
+    begin -- 
+      SingleInputOperation("ApIntToApIntSigned", type_cast_1294_wire, tmp_var);
+      type_cast_1295_wire <= tmp_var; -- 
     end process;
     -- 
   end Block; -- data_path
@@ -18989,7 +18956,6 @@ library std;
 use std.standard.all;
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
 library aHiR_ieee_proposed;
 use aHiR_ieee_proposed.math_utility_pkg.all;
 use aHiR_ieee_proposed.fixed_pkg.all;
@@ -19003,9 +18969,10 @@ use ahir.basecomponents.all;
 use ahir.operatorpackage.all;
 use ahir.floatoperatorpackage.all;
 use ahir.utilities.all;
+use ahir.functionLibraryComponents.all;
 entity decode_routing_control_info_VVP is -- 
   port ( -- 
-    control_info : in  std_logic_vector(105 downto 0);
+    control_info : in  std_logic_vector(96 downto 0);
     read_simple : out  std_logic_vector(0 downto 0);
     read_messy : out  std_logic_vector(0 downto 0)-- 
   );
@@ -19014,10 +18981,10 @@ end entity decode_routing_control_info_VVP;
 architecture decode_routing_control_info_VVP_arch of decode_routing_control_info_VVP is -- 
   -- always true...
   signal always_true_symbol: Boolean;
-  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(106-1 downto 0);
+  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(97-1 downto 0);
   signal default_zero_sig: std_logic;
   -- input port buffer signals
-  signal control_info_buffer :  std_logic_vector(105 downto 0);
+  signal control_info_buffer :  std_logic_vector(96 downto 0);
   -- output port buffer signals
   signal read_simple_buffer :  std_logic_vector(0 downto 0);
   signal read_messy_buffer :  std_logic_vector(0 downto 0);
@@ -19034,22 +19001,85 @@ begin --
   -- volatile module, no control path
   -- the data path
   data_path: Block -- 
+    signal addr_4166 : std_logic_vector(31 downto 0);
+    signal byte_4134 : std_logic_vector(0 downto 0);
+    signal dbg_wp_read_hit_4154 : std_logic_vector(0 downto 0);
+    signal dbg_wp_reg_id_4150 : std_logic_vector(1 downto 0);
+    signal dbg_wp_write_hit_4158 : std_logic_vector(0 downto 0);
+    signal double_word_4146 : std_logic_vector(0 downto 0);
+    signal early_ls_traps_4114 : std_logic_vector(2 downto 0);
+    signal half_word_4138 : std_logic_vector(0 downto 0);
+    signal is_load_4118 : std_logic_vector(0 downto 0);
+    signal is_store_4122 : std_logic_vector(0 downto 0);
+    signal signed_type_4126 : std_logic_vector(0 downto 0);
+    signal simple_store_signature_4162 : std_logic_vector(31 downto 0);
+    signal slot_id_4086 : std_logic_vector(5 downto 0);
+    signal stream_id_4082 : std_logic_vector(1 downto 0);
+    signal thread_id_4078 : std_logic_vector(3 downto 0);
+    signal to_cu_4098 : std_logic_vector(0 downto 0);
+    signal to_fu_4094 : std_logic_vector(0 downto 0);
+    signal to_iu_4090 : std_logic_vector(0 downto 0);
+    signal to_retire_4102 : std_logic_vector(0 downto 0);
+    signal unsigned_type_4130 : std_logic_vector(0 downto 0);
+    signal word_4142 : std_logic_vector(0 downto 0);
     -- 
   begin -- 
-    -- flow-through slice operator slice_6266_inst
+    -- flow-through slice operator slice_4077_inst
+    thread_id_4078 <= control_info_buffer(96 downto 93);
+    -- flow-through slice operator slice_4081_inst
+    stream_id_4082 <= control_info_buffer(92 downto 91);
+    -- flow-through slice operator slice_4085_inst
+    slot_id_4086 <= control_info_buffer(90 downto 85);
+    -- flow-through slice operator slice_4089_inst
+    to_iu_4090 <= control_info_buffer(84 downto 84);
+    -- flow-through slice operator slice_4093_inst
+    to_fu_4094 <= control_info_buffer(83 downto 83);
+    -- flow-through slice operator slice_4097_inst
+    to_cu_4098 <= control_info_buffer(82 downto 82);
+    -- flow-through slice operator slice_4101_inst
+    to_retire_4102 <= control_info_buffer(81 downto 81);
+    -- flow-through slice operator slice_4105_inst
     read_messy_buffer <= control_info_buffer(80 downto 80);
-    -- flow-through slice operator slice_6270_inst
+    -- flow-through slice operator slice_4109_inst
     read_simple_buffer <= control_info_buffer(79 downto 79);
+    -- flow-through slice operator slice_4113_inst
+    early_ls_traps_4114 <= control_info_buffer(78 downto 76);
+    -- flow-through slice operator slice_4117_inst
+    is_load_4118 <= control_info_buffer(75 downto 75);
+    -- flow-through slice operator slice_4121_inst
+    is_store_4122 <= control_info_buffer(74 downto 74);
+    -- flow-through slice operator slice_4125_inst
+    signed_type_4126 <= control_info_buffer(73 downto 73);
+    -- flow-through slice operator slice_4129_inst
+    unsigned_type_4130 <= control_info_buffer(72 downto 72);
+    -- flow-through slice operator slice_4133_inst
+    byte_4134 <= control_info_buffer(71 downto 71);
+    -- flow-through slice operator slice_4137_inst
+    half_word_4138 <= control_info_buffer(70 downto 70);
+    -- flow-through slice operator slice_4141_inst
+    word_4142 <= control_info_buffer(69 downto 69);
+    -- flow-through slice operator slice_4145_inst
+    double_word_4146 <= control_info_buffer(68 downto 68);
+    -- flow-through slice operator slice_4149_inst
+    dbg_wp_reg_id_4150 <= control_info_buffer(67 downto 66);
+    -- flow-through slice operator slice_4153_inst
+    dbg_wp_read_hit_4154 <= control_info_buffer(65 downto 65);
+    -- flow-through slice operator slice_4157_inst
+    dbg_wp_write_hit_4158 <= control_info_buffer(64 downto 64);
+    -- flow-through slice operator slice_4161_inst
+    simple_store_signature_4162 <= control_info_buffer(63 downto 32);
+    -- flow-through slice operator slice_4165_inst
+    addr_4166 <= control_info_buffer(31 downto 0);
     -- 
   end Block; -- data_path
   -- 
 end decode_routing_control_info_VVP_arch;
 
+
 library std;
 use std.standard.all;
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
 library aHiR_ieee_proposed;
 use aHiR_ieee_proposed.math_utility_pkg.all;
 use aHiR_ieee_proposed.fixed_pkg.all;
@@ -19063,9 +19093,10 @@ use ahir.basecomponents.all;
 use ahir.operatorpackage.all;
 use ahir.floatoperatorpackage.all;
 use ahir.utilities.all;
+use ahir.functionLibraryComponents.all;
 entity loadstore_router_core_VVP is -- 
   port ( -- 
-    control_info : in  std_logic_vector(105 downto 0);
+    control_info : in  std_logic_vector(96 downto 0);
     simple_info : in  std_logic_vector(71 downto 0);
     messy_info : in  std_logic_vector(97 downto 0);
     to_iu : out  std_logic_vector(0 downto 0);
@@ -19074,17 +19105,17 @@ entity loadstore_router_core_VVP is --
     to_retire : out  std_logic_vector(0 downto 0);
     to_iu_fu_data : out  std_logic_vector(77 downto 0);
     to_cu_data : out  std_logic_vector(13 downto 0);
-    data_to_iretire : out  std_logic_vector(62 downto 0)-- 
+    data_to_iretire : out  std_logic_vector(53 downto 0)-- 
   );
   -- 
 end entity loadstore_router_core_VVP;
 architecture loadstore_router_core_VVP_arch of loadstore_router_core_VVP is -- 
   -- always true...
   signal always_true_symbol: Boolean;
-  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(276-1 downto 0);
+  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(267-1 downto 0);
   signal default_zero_sig: std_logic;
   -- input port buffer signals
-  signal control_info_buffer :  std_logic_vector(105 downto 0);
+  signal control_info_buffer :  std_logic_vector(96 downto 0);
   signal simple_info_buffer :  std_logic_vector(71 downto 0);
   signal messy_info_buffer :  std_logic_vector(97 downto 0);
   -- output port buffer signals
@@ -19094,7 +19125,7 @@ architecture loadstore_router_core_VVP_arch of loadstore_router_core_VVP is --
   signal to_retire_buffer :  std_logic_vector(0 downto 0);
   signal to_iu_fu_data_buffer :  std_logic_vector(77 downto 0);
   signal to_cu_data_buffer :  std_logic_vector(13 downto 0);
-  signal data_to_iretire_buffer :  std_logic_vector(62 downto 0);
+  signal data_to_iretire_buffer :  std_logic_vector(53 downto 0);
   -- volatile/operator module components. 
   component analyze_dcache_response_VVP is -- 
     port ( -- 
@@ -19135,400 +19166,439 @@ begin --
   -- volatile module, no control path
   -- the data path
   data_path: Block -- 
-    signal AND_u1_u1_9712_wire : std_logic_vector(0 downto 0);
-    signal AND_u1_u1_9715_wire : std_logic_vector(0 downto 0);
-    signal AND_u1_u1_9721_wire : std_logic_vector(0 downto 0);
-    signal AND_u1_u1_9724_wire : std_logic_vector(0 downto 0);
-    signal CONCAT_u13_u24_9859_wire : std_logic_vector(23 downto 0);
-    signal CONCAT_u1_u2_9786_wire : std_logic_vector(1 downto 0);
-    signal CONCAT_u1_u2_9857_wire : std_logic_vector(1 downto 0);
-    signal CONCAT_u1_u2_9862_wire : std_logic_vector(1 downto 0);
-    signal CONCAT_u1_u2_9869_wire : std_logic_vector(1 downto 0);
-    signal CONCAT_u1_u33_9773_wire : std_logic_vector(32 downto 0);
-    signal CONCAT_u1_u3_9865_wire : std_logic_vector(2 downto 0);
-    signal CONCAT_u2_u34_9871_wire : std_logic_vector(33 downto 0);
-    signal CONCAT_u2_u3_9832_wire : std_logic_vector(2 downto 0);
-    signal CONCAT_u2_u5_9866_wire : std_logic_vector(4 downto 0);
-    signal CONCAT_u33_u65_9775_wire : std_logic_vector(64 downto 0);
-    signal CONCAT_u3_u32_9835_wire : std_logic_vector(31 downto 0);
-    signal CONCAT_u4_u6_9766_wire : std_logic_vector(5 downto 0);
-    signal CONCAT_u4_u6_9781_wire : std_logic_vector(5 downto 0);
-    signal CONCAT_u4_u6_9847_wire : std_logic_vector(5 downto 0);
-    signal CONCAT_u5_u39_9872_wire : std_logic_vector(38 downto 0);
-    signal CONCAT_u6_u12_9783_wire : std_logic_vector(11 downto 0);
-    signal CONCAT_u6_u13_9770_wire : std_logic_vector(12 downto 0);
-    signal CONCAT_u6_u13_9851_wire : std_logic_vector(12 downto 0);
-    signal CONCAT_u6_u7_9769_wire : std_logic_vector(6 downto 0);
-    signal CONCAT_u6_u7_9850_wire : std_logic_vector(6 downto 0);
-    signal CONCAT_u8_u9_9854_wire : std_logic_vector(8 downto 0);
-    signal CONCAT_u9_u11_9858_wire : std_logic_vector(10 downto 0);
-    signal MUX_9745_wire : std_logic_vector(31 downto 0);
-    signal MUX_9749_wire : std_logic_vector(31 downto 0);
-    signal MUX_9756_wire : std_logic_vector(31 downto 0);
-    signal MUX_9760_wire : std_logic_vector(31 downto 0);
-    signal MUX_9837_wire : std_logic_vector(31 downto 0);
-    signal MUX_9841_wire : std_logic_vector(31 downto 0);
-    signal NEQ_u3_u1_9730_wire : std_logic_vector(0 downto 0);
-    signal OR_u1_u1_9732_wire : std_logic_vector(0 downto 0);
-    signal addr_9639 : std_logic_vector(31 downto 0);
-    signal byte_9607 : std_logic_vector(0 downto 0);
-    signal data_access_error_9726 : std_logic_vector(0 downto 0);
-    signal data_access_exception_9717 : std_logic_vector(0 downto 0);
-    signal dbg_wp_hit_9740 : std_logic_vector(0 downto 0);
-    signal dbg_wp_read_hit_9627 : std_logic_vector(0 downto 0);
-    signal dbg_wp_reg_id_9623 : std_logic_vector(1 downto 0);
-    signal dbg_wp_write_hit_9631 : std_logic_vector(0 downto 0);
-    signal double_word_9619 : std_logic_vector(0 downto 0);
-    signal dout_h_9751 : std_logic_vector(31 downto 0);
-    signal dout_l_9762 : std_logic_vector(31 downto 0);
-    signal early_ls_traps_9587 : std_logic_vector(2 downto 0);
-    signal half_word_9611 : std_logic_vector(0 downto 0);
-    signal illegal_instr_trap_9822 : std_logic_vector(0 downto 0);
-    signal is_load_9591 : std_logic_vector(0 downto 0);
-    signal is_store_9595 : std_logic_vector(0 downto 0);
-    signal is_write_context_9555 : std_logic_vector(0 downto 0);
-    signal konst_9729_wire_constant : std_logic_vector(2 downto 0);
-    signal konst_9744_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_9748_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_9755_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_9759_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_9836_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_9840_wire_constant : std_logic_vector(31 downto 0);
-    signal late_load_store_trap_9735 : std_logic_vector(0 downto 0);
-    signal mem_address_not_aligned_trap_9826 : std_logic_vector(0 downto 0);
-    signal messy_dout_h_9681 : std_logic_vector(31 downto 0);
-    signal messy_dout_l_9685 : std_logic_vector(31 downto 0);
-    signal messy_error_9673 : std_logic_vector(0 downto 0);
-    signal messy_store_signature_9677 : std_logic_vector(31 downto 0);
-    signal messy_trap_9669 : std_logic_vector(0 downto 0);
-    signal new_context_value_9559 : std_logic_vector(7 downto 0);
-    signal privileged_instr_trap_9818 : std_logic_vector(0 downto 0);
-    signal read_messy_9579 : std_logic_vector(0 downto 0);
-    signal read_simple_9583 : std_logic_vector(0 downto 0);
-    signal signed_type_9599 : std_logic_vector(0 downto 0);
-    signal simple_data_access_error_9701 : std_logic_vector(0 downto 0);
-    signal simple_data_access_exception_9701 : std_logic_vector(0 downto 0);
-    signal simple_dcache_hit_9701 : std_logic_vector(0 downto 0);
-    signal simple_dout_h_9701 : std_logic_vector(31 downto 0);
-    signal simple_dout_l_9701 : std_logic_vector(31 downto 0);
-    signal simple_store_signature_9635 : std_logic_vector(31 downto 0);
-    signal slice_9830_wire : std_logic_vector(1 downto 0);
-    signal slice_9834_wire : std_logic_vector(28 downto 0);
-    signal slot_id_9551 : std_logic_vector(5 downto 0);
-    signal store_signature_9843 : std_logic_vector(31 downto 0);
-    signal stream_id_9547 : std_logic_vector(1 downto 0);
-    signal thread_id_9543 : std_logic_vector(3 downto 0);
-    signal unsigned_type_9603 : std_logic_vector(0 downto 0);
-    signal word_9615 : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_9626_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_9629_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_9635_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_9638_wire : std_logic_vector(0 downto 0);
+    signal CONCAT_u13_u16_9771_wire : std_logic_vector(15 downto 0);
+    signal CONCAT_u1_u2_9700_wire : std_logic_vector(1 downto 0);
+    signal CONCAT_u1_u2_9768_wire : std_logic_vector(1 downto 0);
+    signal CONCAT_u1_u2_9774_wire : std_logic_vector(1 downto 0);
+    signal CONCAT_u1_u2_9779_wire : std_logic_vector(1 downto 0);
+    signal CONCAT_u1_u33_9687_wire : std_logic_vector(32 downto 0);
+    signal CONCAT_u2_u34_9781_wire : std_logic_vector(33 downto 0);
+    signal CONCAT_u2_u3_9746_wire : std_logic_vector(2 downto 0);
+    signal CONCAT_u2_u3_9770_wire : std_logic_vector(2 downto 0);
+    signal CONCAT_u2_u4_9776_wire : std_logic_vector(3 downto 0);
+    signal CONCAT_u33_u65_9689_wire : std_logic_vector(64 downto 0);
+    signal CONCAT_u3_u32_9749_wire : std_logic_vector(31 downto 0);
+    signal CONCAT_u4_u38_9782_wire : std_logic_vector(37 downto 0);
+    signal CONCAT_u4_u6_9680_wire : std_logic_vector(5 downto 0);
+    signal CONCAT_u4_u6_9695_wire : std_logic_vector(5 downto 0);
+    signal CONCAT_u4_u6_9761_wire : std_logic_vector(5 downto 0);
+    signal CONCAT_u6_u12_9697_wire : std_logic_vector(11 downto 0);
+    signal CONCAT_u6_u13_9684_wire : std_logic_vector(12 downto 0);
+    signal CONCAT_u6_u13_9765_wire : std_logic_vector(12 downto 0);
+    signal CONCAT_u6_u7_9683_wire : std_logic_vector(6 downto 0);
+    signal CONCAT_u6_u7_9764_wire : std_logic_vector(6 downto 0);
+    signal MUX_9659_wire : std_logic_vector(31 downto 0);
+    signal MUX_9663_wire : std_logic_vector(31 downto 0);
+    signal MUX_9670_wire : std_logic_vector(31 downto 0);
+    signal MUX_9674_wire : std_logic_vector(31 downto 0);
+    signal MUX_9751_wire : std_logic_vector(31 downto 0);
+    signal MUX_9755_wire : std_logic_vector(31 downto 0);
+    signal NEQ_u3_u1_9644_wire : std_logic_vector(0 downto 0);
+    signal OR_u1_u1_9646_wire : std_logic_vector(0 downto 0);
+    signal addr_9579 : std_logic_vector(31 downto 0);
+    signal byte_9547 : std_logic_vector(0 downto 0);
+    signal data_access_error_9640 : std_logic_vector(0 downto 0);
+    signal data_access_exception_9631 : std_logic_vector(0 downto 0);
+    signal dbg_wp_hit_9654 : std_logic_vector(0 downto 0);
+    signal dbg_wp_read_hit_9567 : std_logic_vector(0 downto 0);
+    signal dbg_wp_reg_id_9563 : std_logic_vector(1 downto 0);
+    signal dbg_wp_write_hit_9571 : std_logic_vector(0 downto 0);
+    signal double_word_9559 : std_logic_vector(0 downto 0);
+    signal dout_h_9665 : std_logic_vector(31 downto 0);
+    signal dout_l_9676 : std_logic_vector(31 downto 0);
+    signal early_ls_traps_9527 : std_logic_vector(2 downto 0);
+    signal half_word_9551 : std_logic_vector(0 downto 0);
+    signal illegal_instr_trap_9736 : std_logic_vector(0 downto 0);
+    signal is_load_9531 : std_logic_vector(0 downto 0);
+    signal is_store_9535 : std_logic_vector(0 downto 0);
+    signal konst_9643_wire_constant : std_logic_vector(2 downto 0);
+    signal konst_9658_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_9662_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_9669_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_9673_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_9750_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_9754_wire_constant : std_logic_vector(31 downto 0);
+    signal late_load_store_trap_9649 : std_logic_vector(0 downto 0);
+    signal mem_address_not_aligned_trap_9740 : std_logic_vector(0 downto 0);
+    signal messy_dout_h_9595 : std_logic_vector(31 downto 0);
+    signal messy_dout_l_9599 : std_logic_vector(31 downto 0);
+    signal messy_error_9587 : std_logic_vector(0 downto 0);
+    signal messy_store_signature_9591 : std_logic_vector(31 downto 0);
+    signal messy_trap_9583 : std_logic_vector(0 downto 0);
+    signal privileged_instr_trap_9732 : std_logic_vector(0 downto 0);
+    signal read_messy_9519 : std_logic_vector(0 downto 0);
+    signal read_simple_9523 : std_logic_vector(0 downto 0);
+    signal signed_type_9539 : std_logic_vector(0 downto 0);
+    signal simple_data_access_error_9615 : std_logic_vector(0 downto 0);
+    signal simple_data_access_exception_9615 : std_logic_vector(0 downto 0);
+    signal simple_dcache_hit_9615 : std_logic_vector(0 downto 0);
+    signal simple_dout_h_9615 : std_logic_vector(31 downto 0);
+    signal simple_dout_l_9615 : std_logic_vector(31 downto 0);
+    signal simple_store_signature_9575 : std_logic_vector(31 downto 0);
+    signal slice_9744_wire : std_logic_vector(1 downto 0);
+    signal slice_9748_wire : std_logic_vector(28 downto 0);
+    signal slot_id_9499 : std_logic_vector(5 downto 0);
+    signal store_signature_9757 : std_logic_vector(31 downto 0);
+    signal stream_id_9495 : std_logic_vector(1 downto 0);
+    signal thread_id_9491 : std_logic_vector(3 downto 0);
+    signal unsigned_type_9543 : std_logic_vector(0 downto 0);
+    signal word_9555 : std_logic_vector(0 downto 0);
     -- 
   begin -- 
-    konst_9729_wire_constant <= "000";
-    konst_9744_wire_constant <= "00000000000000000000000000000000";
-    konst_9748_wire_constant <= "00000000000000000000000000000000";
-    konst_9755_wire_constant <= "00000000000000000000000000000000";
-    konst_9759_wire_constant <= "00000000000000000000000000000000";
-    konst_9836_wire_constant <= "00000000000000000000000000000000";
-    konst_9840_wire_constant <= "00000000000000000000000000000000";
-    -- flow-through select operator MUX_9745_inst
-    MUX_9745_wire <= simple_dout_h_9701 when (read_simple_9583(0) /=  '0') else konst_9744_wire_constant;
-    -- flow-through select operator MUX_9749_inst
-    MUX_9749_wire <= messy_dout_h_9681 when (read_messy_9579(0) /=  '0') else konst_9748_wire_constant;
-    -- flow-through select operator MUX_9756_inst
-    MUX_9756_wire <= simple_dout_l_9701 when (read_simple_9583(0) /=  '0') else konst_9755_wire_constant;
-    -- flow-through select operator MUX_9760_inst
-    MUX_9760_wire <= messy_dout_l_9685 when (read_messy_9579(0) /=  '0') else konst_9759_wire_constant;
-    -- flow-through select operator MUX_9837_inst
-    MUX_9837_wire <= CONCAT_u3_u32_9835_wire when (read_simple_9583(0) /=  '0') else konst_9836_wire_constant;
-    -- flow-through select operator MUX_9841_inst
-    MUX_9841_wire <= messy_store_signature_9677 when (read_messy_9579(0) /=  '0') else konst_9840_wire_constant;
-    -- flow-through slice operator slice_9542_inst
-    thread_id_9543 <= control_info_buffer(105 downto 102);
-    -- flow-through slice operator slice_9546_inst
-    stream_id_9547 <= control_info_buffer(101 downto 100);
-    -- flow-through slice operator slice_9550_inst
-    slot_id_9551 <= control_info_buffer(99 downto 94);
-    -- flow-through slice operator slice_9554_inst
-    is_write_context_9555 <= control_info_buffer(93 downto 93);
-    -- flow-through slice operator slice_9558_inst
-    new_context_value_9559 <= control_info_buffer(92 downto 85);
-    -- flow-through slice operator slice_9562_inst
+    konst_9643_wire_constant <= "000";
+    konst_9658_wire_constant <= "00000000000000000000000000000000";
+    konst_9662_wire_constant <= "00000000000000000000000000000000";
+    konst_9669_wire_constant <= "00000000000000000000000000000000";
+    konst_9673_wire_constant <= "00000000000000000000000000000000";
+    konst_9750_wire_constant <= "00000000000000000000000000000000";
+    konst_9754_wire_constant <= "00000000000000000000000000000000";
+    -- flow-through select operator MUX_9659_inst
+    MUX_9659_wire <= simple_dout_h_9615 when (read_simple_9523(0) /=  '0') else konst_9658_wire_constant;
+    -- flow-through select operator MUX_9663_inst
+    MUX_9663_wire <= messy_dout_h_9595 when (read_messy_9519(0) /=  '0') else konst_9662_wire_constant;
+    -- flow-through select operator MUX_9670_inst
+    MUX_9670_wire <= simple_dout_l_9615 when (read_simple_9523(0) /=  '0') else konst_9669_wire_constant;
+    -- flow-through select operator MUX_9674_inst
+    MUX_9674_wire <= messy_dout_l_9599 when (read_messy_9519(0) /=  '0') else konst_9673_wire_constant;
+    -- flow-through select operator MUX_9751_inst
+    MUX_9751_wire <= CONCAT_u3_u32_9749_wire when (read_simple_9523(0) /=  '0') else konst_9750_wire_constant;
+    -- flow-through select operator MUX_9755_inst
+    MUX_9755_wire <= messy_store_signature_9591 when (read_messy_9519(0) /=  '0') else konst_9754_wire_constant;
+    -- flow-through slice operator slice_9490_inst
+    thread_id_9491 <= control_info_buffer(96 downto 93);
+    -- flow-through slice operator slice_9494_inst
+    stream_id_9495 <= control_info_buffer(92 downto 91);
+    -- flow-through slice operator slice_9498_inst
+    slot_id_9499 <= control_info_buffer(90 downto 85);
+    -- flow-through slice operator slice_9502_inst
     to_iu_buffer <= control_info_buffer(84 downto 84);
-    -- flow-through slice operator slice_9566_inst
+    -- flow-through slice operator slice_9506_inst
     to_fu_buffer <= control_info_buffer(83 downto 83);
-    -- flow-through slice operator slice_9570_inst
+    -- flow-through slice operator slice_9510_inst
     to_cu_buffer <= control_info_buffer(82 downto 82);
-    -- flow-through slice operator slice_9574_inst
+    -- flow-through slice operator slice_9514_inst
     to_retire_buffer <= control_info_buffer(81 downto 81);
+    -- flow-through slice operator slice_9518_inst
+    read_messy_9519 <= control_info_buffer(80 downto 80);
+    -- flow-through slice operator slice_9522_inst
+    read_simple_9523 <= control_info_buffer(79 downto 79);
+    -- flow-through slice operator slice_9526_inst
+    early_ls_traps_9527 <= control_info_buffer(78 downto 76);
+    -- flow-through slice operator slice_9530_inst
+    is_load_9531 <= control_info_buffer(75 downto 75);
+    -- flow-through slice operator slice_9534_inst
+    is_store_9535 <= control_info_buffer(74 downto 74);
+    -- flow-through slice operator slice_9538_inst
+    signed_type_9539 <= control_info_buffer(73 downto 73);
+    -- flow-through slice operator slice_9542_inst
+    unsigned_type_9543 <= control_info_buffer(72 downto 72);
+    -- flow-through slice operator slice_9546_inst
+    byte_9547 <= control_info_buffer(71 downto 71);
+    -- flow-through slice operator slice_9550_inst
+    half_word_9551 <= control_info_buffer(70 downto 70);
+    -- flow-through slice operator slice_9554_inst
+    word_9555 <= control_info_buffer(69 downto 69);
+    -- flow-through slice operator slice_9558_inst
+    double_word_9559 <= control_info_buffer(68 downto 68);
+    -- flow-through slice operator slice_9562_inst
+    dbg_wp_reg_id_9563 <= control_info_buffer(67 downto 66);
+    -- flow-through slice operator slice_9566_inst
+    dbg_wp_read_hit_9567 <= control_info_buffer(65 downto 65);
+    -- flow-through slice operator slice_9570_inst
+    dbg_wp_write_hit_9571 <= control_info_buffer(64 downto 64);
+    -- flow-through slice operator slice_9574_inst
+    simple_store_signature_9575 <= control_info_buffer(63 downto 32);
     -- flow-through slice operator slice_9578_inst
-    read_messy_9579 <= control_info_buffer(80 downto 80);
+    addr_9579 <= control_info_buffer(31 downto 0);
     -- flow-through slice operator slice_9582_inst
-    read_simple_9583 <= control_info_buffer(79 downto 79);
+    messy_trap_9583 <= messy_info_buffer(97 downto 97);
     -- flow-through slice operator slice_9586_inst
-    early_ls_traps_9587 <= control_info_buffer(78 downto 76);
+    messy_error_9587 <= messy_info_buffer(96 downto 96);
     -- flow-through slice operator slice_9590_inst
-    is_load_9591 <= control_info_buffer(75 downto 75);
+    messy_store_signature_9591 <= messy_info_buffer(95 downto 64);
     -- flow-through slice operator slice_9594_inst
-    is_store_9595 <= control_info_buffer(74 downto 74);
+    messy_dout_h_9595 <= messy_info_buffer(63 downto 32);
     -- flow-through slice operator slice_9598_inst
-    signed_type_9599 <= control_info_buffer(73 downto 73);
-    -- flow-through slice operator slice_9602_inst
-    unsigned_type_9603 <= control_info_buffer(72 downto 72);
-    -- flow-through slice operator slice_9606_inst
-    byte_9607 <= control_info_buffer(71 downto 71);
-    -- flow-through slice operator slice_9610_inst
-    half_word_9611 <= control_info_buffer(70 downto 70);
-    -- flow-through slice operator slice_9614_inst
-    word_9615 <= control_info_buffer(69 downto 69);
-    -- flow-through slice operator slice_9618_inst
-    double_word_9619 <= control_info_buffer(68 downto 68);
-    -- flow-through slice operator slice_9622_inst
-    dbg_wp_reg_id_9623 <= control_info_buffer(67 downto 66);
-    -- flow-through slice operator slice_9626_inst
-    dbg_wp_read_hit_9627 <= control_info_buffer(65 downto 65);
-    -- flow-through slice operator slice_9630_inst
-    dbg_wp_write_hit_9631 <= control_info_buffer(64 downto 64);
-    -- flow-through slice operator slice_9634_inst
-    simple_store_signature_9635 <= control_info_buffer(63 downto 32);
-    -- flow-through slice operator slice_9638_inst
-    addr_9639 <= control_info_buffer(31 downto 0);
-    -- flow-through slice operator slice_9668_inst
-    messy_trap_9669 <= messy_info_buffer(97 downto 97);
-    -- flow-through slice operator slice_9672_inst
-    messy_error_9673 <= messy_info_buffer(96 downto 96);
-    -- flow-through slice operator slice_9676_inst
-    messy_store_signature_9677 <= messy_info_buffer(95 downto 64);
-    -- flow-through slice operator slice_9680_inst
-    messy_dout_h_9681 <= messy_info_buffer(63 downto 32);
-    -- flow-through slice operator slice_9684_inst
-    messy_dout_l_9685 <= messy_info_buffer(31 downto 0);
-    -- flow-through slice operator slice_9817_inst
-    privileged_instr_trap_9818 <= early_ls_traps_9587(2 downto 2);
-    -- flow-through slice operator slice_9821_inst
-    illegal_instr_trap_9822 <= early_ls_traps_9587(1 downto 1);
-    -- flow-through slice operator slice_9825_inst
-    mem_address_not_aligned_trap_9826 <= early_ls_traps_9587(0 downto 0);
-    -- flow-through slice operator slice_9830_inst
-    slice_9830_wire <= simple_store_signature_9635(31 downto 30);
-    -- flow-through slice operator slice_9834_inst
-    slice_9834_wire <= simple_store_signature_9635(28 downto 0);
-    -- flow through binary operator AND_u1_u1_9712_inst
-    AND_u1_u1_9712_wire <= (read_simple_9583 and simple_data_access_exception_9701);
-    -- flow through binary operator AND_u1_u1_9715_inst
-    AND_u1_u1_9715_wire <= (read_messy_9579 and messy_trap_9669);
-    -- flow through binary operator AND_u1_u1_9721_inst
-    AND_u1_u1_9721_wire <= (read_simple_9583 and simple_data_access_error_9701);
-    -- flow through binary operator AND_u1_u1_9724_inst
-    AND_u1_u1_9724_wire <= (read_messy_9579 and messy_error_9673);
-    -- flow through binary operator CONCAT_u12_u14_9787_inst
-    process(CONCAT_u6_u12_9783_wire, CONCAT_u1_u2_9786_wire) -- 
-      variable tmp_var : std_logic_vector(13 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u6_u12_9783_wire, CONCAT_u1_u2_9786_wire, tmp_var);
-      to_cu_data_buffer <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u13_u24_9859_inst
-    process(CONCAT_u6_u13_9851_wire, CONCAT_u9_u11_9858_wire) -- 
-      variable tmp_var : std_logic_vector(23 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u6_u13_9851_wire, CONCAT_u9_u11_9858_wire, tmp_var);
-      CONCAT_u13_u24_9859_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u13_u78_9776_inst
-    process(CONCAT_u6_u13_9770_wire, CONCAT_u33_u65_9775_wire) -- 
-      variable tmp_var : std_logic_vector(77 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u6_u13_9770_wire, CONCAT_u33_u65_9775_wire, tmp_var);
-      to_iu_fu_data_buffer <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u1_u2_9786_inst
-    process(dbg_wp_hit_9740, late_load_store_trap_9735) -- 
-      variable tmp_var : std_logic_vector(1 downto 0); -- 
-    begin -- 
-      ApConcat_proc(dbg_wp_hit_9740, late_load_store_trap_9735, tmp_var);
-      CONCAT_u1_u2_9786_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u1_u2_9857_inst
-    process(illegal_instr_trap_9822, privileged_instr_trap_9818) -- 
-      variable tmp_var : std_logic_vector(1 downto 0); -- 
-    begin -- 
-      ApConcat_proc(illegal_instr_trap_9822, privileged_instr_trap_9818, tmp_var);
-      CONCAT_u1_u2_9857_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u1_u2_9862_inst
-    process(data_access_exception_9717, mem_address_not_aligned_trap_9826) -- 
-      variable tmp_var : std_logic_vector(1 downto 0); -- 
-    begin -- 
-      ApConcat_proc(data_access_exception_9717, mem_address_not_aligned_trap_9826, tmp_var);
-      CONCAT_u1_u2_9862_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u1_u2_9869_inst
-    process(dbg_wp_read_hit_9627, dbg_wp_write_hit_9631) -- 
-      variable tmp_var : std_logic_vector(1 downto 0); -- 
-    begin -- 
-      ApConcat_proc(dbg_wp_read_hit_9627, dbg_wp_write_hit_9631, tmp_var);
-      CONCAT_u1_u2_9869_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u1_u33_9773_inst
-    process(late_load_store_trap_9735, dout_h_9751) -- 
-      variable tmp_var : std_logic_vector(32 downto 0); -- 
-    begin -- 
-      ApConcat_proc(late_load_store_trap_9735, dout_h_9751, tmp_var);
-      CONCAT_u1_u33_9773_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u1_u3_9865_inst
-    process(data_access_error_9726, dbg_wp_reg_id_9623) -- 
-      variable tmp_var : std_logic_vector(2 downto 0); -- 
-    begin -- 
-      ApConcat_proc(data_access_error_9726, dbg_wp_reg_id_9623, tmp_var);
-      CONCAT_u1_u3_9865_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u24_u63_9873_inst
-    process(CONCAT_u13_u24_9859_wire, CONCAT_u5_u39_9872_wire) -- 
-      variable tmp_var : std_logic_vector(62 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u13_u24_9859_wire, CONCAT_u5_u39_9872_wire, tmp_var);
-      data_to_iretire_buffer <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u2_u34_9871_inst
-    process(CONCAT_u1_u2_9869_wire, store_signature_9843) -- 
-      variable tmp_var : std_logic_vector(33 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u1_u2_9869_wire, store_signature_9843, tmp_var);
-      CONCAT_u2_u34_9871_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u2_u3_9832_inst
-    process(slice_9830_wire, simple_dcache_hit_9701) -- 
-      variable tmp_var : std_logic_vector(2 downto 0); -- 
-    begin -- 
-      ApConcat_proc(slice_9830_wire, simple_dcache_hit_9701, tmp_var);
-      CONCAT_u2_u3_9832_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u2_u5_9866_inst
-    process(CONCAT_u1_u2_9862_wire, CONCAT_u1_u3_9865_wire) -- 
-      variable tmp_var : std_logic_vector(4 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u1_u2_9862_wire, CONCAT_u1_u3_9865_wire, tmp_var);
-      CONCAT_u2_u5_9866_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u33_u65_9775_inst
-    process(CONCAT_u1_u33_9773_wire, dout_l_9762) -- 
-      variable tmp_var : std_logic_vector(64 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u1_u33_9773_wire, dout_l_9762, tmp_var);
-      CONCAT_u33_u65_9775_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u3_u32_9835_inst
-    process(CONCAT_u2_u3_9832_wire, slice_9834_wire) -- 
-      variable tmp_var : std_logic_vector(31 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u2_u3_9832_wire, slice_9834_wire, tmp_var);
-      CONCAT_u3_u32_9835_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u4_u6_9766_inst
-    process(thread_id_9543, stream_id_9547) -- 
-      variable tmp_var : std_logic_vector(5 downto 0); -- 
-    begin -- 
-      ApConcat_proc(thread_id_9543, stream_id_9547, tmp_var);
-      CONCAT_u4_u6_9766_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u4_u6_9781_inst
-    process(thread_id_9543, stream_id_9547) -- 
-      variable tmp_var : std_logic_vector(5 downto 0); -- 
-    begin -- 
-      ApConcat_proc(thread_id_9543, stream_id_9547, tmp_var);
-      CONCAT_u4_u6_9781_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u4_u6_9847_inst
-    process(thread_id_9543, stream_id_9547) -- 
-      variable tmp_var : std_logic_vector(5 downto 0); -- 
-    begin -- 
-      ApConcat_proc(thread_id_9543, stream_id_9547, tmp_var);
-      CONCAT_u4_u6_9847_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u5_u39_9872_inst
-    process(CONCAT_u2_u5_9866_wire, CONCAT_u2_u34_9871_wire) -- 
-      variable tmp_var : std_logic_vector(38 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u2_u5_9866_wire, CONCAT_u2_u34_9871_wire, tmp_var);
-      CONCAT_u5_u39_9872_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u6_u12_9783_inst
-    process(CONCAT_u4_u6_9781_wire, slot_id_9551) -- 
-      variable tmp_var : std_logic_vector(11 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u4_u6_9781_wire, slot_id_9551, tmp_var);
-      CONCAT_u6_u12_9783_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u6_u13_9770_inst
-    process(CONCAT_u4_u6_9766_wire, CONCAT_u6_u7_9769_wire) -- 
-      variable tmp_var : std_logic_vector(12 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u4_u6_9766_wire, CONCAT_u6_u7_9769_wire, tmp_var);
-      CONCAT_u6_u13_9770_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u6_u13_9851_inst
-    process(CONCAT_u4_u6_9847_wire, CONCAT_u6_u7_9850_wire) -- 
-      variable tmp_var : std_logic_vector(12 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u4_u6_9847_wire, CONCAT_u6_u7_9850_wire, tmp_var);
-      CONCAT_u6_u13_9851_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u6_u7_9769_inst
-    process(slot_id_9551, dbg_wp_hit_9740) -- 
-      variable tmp_var : std_logic_vector(6 downto 0); -- 
-    begin -- 
-      ApConcat_proc(slot_id_9551, dbg_wp_hit_9740, tmp_var);
-      CONCAT_u6_u7_9769_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u6_u7_9850_inst
-    process(slot_id_9551, is_write_context_9555) -- 
-      variable tmp_var : std_logic_vector(6 downto 0); -- 
-    begin -- 
-      ApConcat_proc(slot_id_9551, is_write_context_9555, tmp_var);
-      CONCAT_u6_u7_9850_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u8_u9_9854_inst
-    process(new_context_value_9559, late_load_store_trap_9735) -- 
-      variable tmp_var : std_logic_vector(8 downto 0); -- 
-    begin -- 
-      ApConcat_proc(new_context_value_9559, late_load_store_trap_9735, tmp_var);
-      CONCAT_u8_u9_9854_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u9_u11_9858_inst
-    process(CONCAT_u8_u9_9854_wire, CONCAT_u1_u2_9857_wire) -- 
-      variable tmp_var : std_logic_vector(10 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u8_u9_9854_wire, CONCAT_u1_u2_9857_wire, tmp_var);
-      CONCAT_u9_u11_9858_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator NEQ_u3_u1_9730_inst
-    process(early_ls_traps_9587) -- 
+    messy_dout_l_9599 <= messy_info_buffer(31 downto 0);
+    -- flow-through slice operator slice_9731_inst
+    privileged_instr_trap_9732 <= early_ls_traps_9527(2 downto 2);
+    -- flow-through slice operator slice_9735_inst
+    illegal_instr_trap_9736 <= early_ls_traps_9527(1 downto 1);
+    -- flow-through slice operator slice_9739_inst
+    mem_address_not_aligned_trap_9740 <= early_ls_traps_9527(0 downto 0);
+    -- flow-through slice operator slice_9744_inst
+    slice_9744_wire <= simple_store_signature_9575(31 downto 30);
+    -- flow-through slice operator slice_9748_inst
+    slice_9748_wire <= simple_store_signature_9575(28 downto 0);
+    -- binary operator AND_u1_u1_9626_inst
+    process(read_simple_9523, simple_data_access_exception_9615) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntNe_proc(early_ls_traps_9587, konst_9729_wire_constant, tmp_var);
-      NEQ_u3_u1_9730_wire <= tmp_var; --
+      ApIntAnd_proc(read_simple_9523, simple_data_access_exception_9615, tmp_var);
+      AND_u1_u1_9626_wire <= tmp_var; --
     end process;
-    -- flow through binary operator OR_u1_u1_9716_inst
-    data_access_exception_9717 <= (AND_u1_u1_9712_wire or AND_u1_u1_9715_wire);
-    -- flow through binary operator OR_u1_u1_9725_inst
-    data_access_error_9726 <= (AND_u1_u1_9721_wire or AND_u1_u1_9724_wire);
-    -- flow through binary operator OR_u1_u1_9732_inst
-    OR_u1_u1_9732_wire <= (NEQ_u3_u1_9730_wire or data_access_exception_9717);
-    -- flow through binary operator OR_u1_u1_9734_inst
-    late_load_store_trap_9735 <= (OR_u1_u1_9732_wire or data_access_error_9726);
-    -- flow through binary operator OR_u1_u1_9739_inst
-    dbg_wp_hit_9740 <= (dbg_wp_read_hit_9627 or dbg_wp_write_hit_9631);
-    -- flow through binary operator OR_u32_u32_9750_inst
-    dout_h_9751 <= (MUX_9745_wire or MUX_9749_wire);
-    -- flow through binary operator OR_u32_u32_9761_inst
-    dout_l_9762 <= (MUX_9756_wire or MUX_9760_wire);
-    -- flow through binary operator OR_u32_u32_9842_inst
-    store_signature_9843 <= (MUX_9837_wire or MUX_9841_wire);
-    volatile_operator_analyze_dcache_response_8508: analyze_dcache_response_VVP port map(addr => addr_9639, dcache_response => simple_info_buffer, is_load => is_load_9591, is_store => is_store_9595, signed_type => signed_type_9599, unsigned_type => unsigned_type_9603, byte => byte_9607, half_word => half_word_9611, word => word_9615, double_word => double_word_9619, dout_h => simple_dout_h_9701, dout_l => simple_dout_l_9701, data_access_exception => simple_data_access_exception_9701, data_access_error => simple_data_access_error_9701, dcache_hit => simple_dcache_hit_9701); 
+    -- binary operator AND_u1_u1_9629_inst
+    process(read_messy_9519, messy_trap_9583) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntAnd_proc(read_messy_9519, messy_trap_9583, tmp_var);
+      AND_u1_u1_9629_wire <= tmp_var; --
+    end process;
+    -- binary operator AND_u1_u1_9635_inst
+    process(read_simple_9523, simple_data_access_error_9615) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntAnd_proc(read_simple_9523, simple_data_access_error_9615, tmp_var);
+      AND_u1_u1_9635_wire <= tmp_var; --
+    end process;
+    -- binary operator AND_u1_u1_9638_inst
+    process(read_messy_9519, messy_error_9587) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntAnd_proc(read_messy_9519, messy_error_9587, tmp_var);
+      AND_u1_u1_9638_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u12_u14_9701_inst
+    process(CONCAT_u6_u12_9697_wire, CONCAT_u1_u2_9700_wire) -- 
+      variable tmp_var : std_logic_vector(13 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u6_u12_9697_wire, CONCAT_u1_u2_9700_wire, tmp_var);
+      to_cu_data_buffer <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u13_u16_9771_inst
+    process(CONCAT_u6_u13_9765_wire, CONCAT_u2_u3_9770_wire) -- 
+      variable tmp_var : std_logic_vector(15 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u6_u13_9765_wire, CONCAT_u2_u3_9770_wire, tmp_var);
+      CONCAT_u13_u16_9771_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u13_u78_9690_inst
+    process(CONCAT_u6_u13_9684_wire, CONCAT_u33_u65_9689_wire) -- 
+      variable tmp_var : std_logic_vector(77 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u6_u13_9684_wire, CONCAT_u33_u65_9689_wire, tmp_var);
+      to_iu_fu_data_buffer <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u16_u54_9783_inst
+    process(CONCAT_u13_u16_9771_wire, CONCAT_u4_u38_9782_wire) -- 
+      variable tmp_var : std_logic_vector(53 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u13_u16_9771_wire, CONCAT_u4_u38_9782_wire, tmp_var);
+      data_to_iretire_buffer <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u1_u2_9700_inst
+    process(dbg_wp_hit_9654, late_load_store_trap_9649) -- 
+      variable tmp_var : std_logic_vector(1 downto 0); -- 
+    begin -- 
+      ApConcat_proc(dbg_wp_hit_9654, late_load_store_trap_9649, tmp_var);
+      CONCAT_u1_u2_9700_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u1_u2_9768_inst
+    process(illegal_instr_trap_9736, privileged_instr_trap_9732) -- 
+      variable tmp_var : std_logic_vector(1 downto 0); -- 
+    begin -- 
+      ApConcat_proc(illegal_instr_trap_9736, privileged_instr_trap_9732, tmp_var);
+      CONCAT_u1_u2_9768_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u1_u2_9774_inst
+    process(mem_address_not_aligned_trap_9740, data_access_error_9640) -- 
+      variable tmp_var : std_logic_vector(1 downto 0); -- 
+    begin -- 
+      ApConcat_proc(mem_address_not_aligned_trap_9740, data_access_error_9640, tmp_var);
+      CONCAT_u1_u2_9774_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u1_u2_9779_inst
+    process(dbg_wp_read_hit_9567, dbg_wp_write_hit_9571) -- 
+      variable tmp_var : std_logic_vector(1 downto 0); -- 
+    begin -- 
+      ApConcat_proc(dbg_wp_read_hit_9567, dbg_wp_write_hit_9571, tmp_var);
+      CONCAT_u1_u2_9779_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u1_u33_9687_inst
+    process(late_load_store_trap_9649, dout_h_9665) -- 
+      variable tmp_var : std_logic_vector(32 downto 0); -- 
+    begin -- 
+      ApConcat_proc(late_load_store_trap_9649, dout_h_9665, tmp_var);
+      CONCAT_u1_u33_9687_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u2_u34_9781_inst
+    process(CONCAT_u1_u2_9779_wire, store_signature_9757) -- 
+      variable tmp_var : std_logic_vector(33 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u2_9779_wire, store_signature_9757, tmp_var);
+      CONCAT_u2_u34_9781_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u2_u3_9746_inst
+    process(slice_9744_wire, simple_dcache_hit_9615) -- 
+      variable tmp_var : std_logic_vector(2 downto 0); -- 
+    begin -- 
+      ApConcat_proc(slice_9744_wire, simple_dcache_hit_9615, tmp_var);
+      CONCAT_u2_u3_9746_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u2_u3_9770_inst
+    process(CONCAT_u1_u2_9768_wire, data_access_exception_9631) -- 
+      variable tmp_var : std_logic_vector(2 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u2_9768_wire, data_access_exception_9631, tmp_var);
+      CONCAT_u2_u3_9770_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u2_u4_9776_inst
+    process(CONCAT_u1_u2_9774_wire, dbg_wp_reg_id_9563) -- 
+      variable tmp_var : std_logic_vector(3 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u2_9774_wire, dbg_wp_reg_id_9563, tmp_var);
+      CONCAT_u2_u4_9776_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u33_u65_9689_inst
+    process(CONCAT_u1_u33_9687_wire, dout_l_9676) -- 
+      variable tmp_var : std_logic_vector(64 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u33_9687_wire, dout_l_9676, tmp_var);
+      CONCAT_u33_u65_9689_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u3_u32_9749_inst
+    process(CONCAT_u2_u3_9746_wire, slice_9748_wire) -- 
+      variable tmp_var : std_logic_vector(31 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u2_u3_9746_wire, slice_9748_wire, tmp_var);
+      CONCAT_u3_u32_9749_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u4_u38_9782_inst
+    process(CONCAT_u2_u4_9776_wire, CONCAT_u2_u34_9781_wire) -- 
+      variable tmp_var : std_logic_vector(37 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u2_u4_9776_wire, CONCAT_u2_u34_9781_wire, tmp_var);
+      CONCAT_u4_u38_9782_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u4_u6_9680_inst
+    process(thread_id_9491, stream_id_9495) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      ApConcat_proc(thread_id_9491, stream_id_9495, tmp_var);
+      CONCAT_u4_u6_9680_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u4_u6_9695_inst
+    process(thread_id_9491, stream_id_9495) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      ApConcat_proc(thread_id_9491, stream_id_9495, tmp_var);
+      CONCAT_u4_u6_9695_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u4_u6_9761_inst
+    process(thread_id_9491, stream_id_9495) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      ApConcat_proc(thread_id_9491, stream_id_9495, tmp_var);
+      CONCAT_u4_u6_9761_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u6_u12_9697_inst
+    process(CONCAT_u4_u6_9695_wire, slot_id_9499) -- 
+      variable tmp_var : std_logic_vector(11 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u4_u6_9695_wire, slot_id_9499, tmp_var);
+      CONCAT_u6_u12_9697_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u6_u13_9684_inst
+    process(CONCAT_u4_u6_9680_wire, CONCAT_u6_u7_9683_wire) -- 
+      variable tmp_var : std_logic_vector(12 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u4_u6_9680_wire, CONCAT_u6_u7_9683_wire, tmp_var);
+      CONCAT_u6_u13_9684_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u6_u13_9765_inst
+    process(CONCAT_u4_u6_9761_wire, CONCAT_u6_u7_9764_wire) -- 
+      variable tmp_var : std_logic_vector(12 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u4_u6_9761_wire, CONCAT_u6_u7_9764_wire, tmp_var);
+      CONCAT_u6_u13_9765_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u6_u7_9683_inst
+    process(slot_id_9499, dbg_wp_hit_9654) -- 
+      variable tmp_var : std_logic_vector(6 downto 0); -- 
+    begin -- 
+      ApConcat_proc(slot_id_9499, dbg_wp_hit_9654, tmp_var);
+      CONCAT_u6_u7_9683_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u6_u7_9764_inst
+    process(slot_id_9499, late_load_store_trap_9649) -- 
+      variable tmp_var : std_logic_vector(6 downto 0); -- 
+    begin -- 
+      ApConcat_proc(slot_id_9499, late_load_store_trap_9649, tmp_var);
+      CONCAT_u6_u7_9764_wire <= tmp_var; --
+    end process;
+    -- binary operator NEQ_u3_u1_9644_inst
+    process(early_ls_traps_9527) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntNe_proc(early_ls_traps_9527, konst_9643_wire_constant, tmp_var);
+      NEQ_u3_u1_9644_wire <= tmp_var; --
+    end process;
+    -- binary operator OR_u1_u1_9630_inst
+    process(AND_u1_u1_9626_wire, AND_u1_u1_9629_wire) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(AND_u1_u1_9626_wire, AND_u1_u1_9629_wire, tmp_var);
+      data_access_exception_9631 <= tmp_var; --
+    end process;
+    -- binary operator OR_u1_u1_9639_inst
+    process(AND_u1_u1_9635_wire, AND_u1_u1_9638_wire) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(AND_u1_u1_9635_wire, AND_u1_u1_9638_wire, tmp_var);
+      data_access_error_9640 <= tmp_var; --
+    end process;
+    -- binary operator OR_u1_u1_9646_inst
+    process(NEQ_u3_u1_9644_wire, data_access_exception_9631) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(NEQ_u3_u1_9644_wire, data_access_exception_9631, tmp_var);
+      OR_u1_u1_9646_wire <= tmp_var; --
+    end process;
+    -- binary operator OR_u1_u1_9648_inst
+    process(OR_u1_u1_9646_wire, data_access_error_9640) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(OR_u1_u1_9646_wire, data_access_error_9640, tmp_var);
+      late_load_store_trap_9649 <= tmp_var; --
+    end process;
+    -- binary operator OR_u1_u1_9653_inst
+    process(dbg_wp_read_hit_9567, dbg_wp_write_hit_9571) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(dbg_wp_read_hit_9567, dbg_wp_write_hit_9571, tmp_var);
+      dbg_wp_hit_9654 <= tmp_var; --
+    end process;
+    -- binary operator OR_u32_u32_9664_inst
+    process(MUX_9659_wire, MUX_9663_wire) -- 
+      variable tmp_var : std_logic_vector(31 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(MUX_9659_wire, MUX_9663_wire, tmp_var);
+      dout_h_9665 <= tmp_var; --
+    end process;
+    -- binary operator OR_u32_u32_9675_inst
+    process(MUX_9670_wire, MUX_9674_wire) -- 
+      variable tmp_var : std_logic_vector(31 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(MUX_9670_wire, MUX_9674_wire, tmp_var);
+      dout_l_9676 <= tmp_var; --
+    end process;
+    -- binary operator OR_u32_u32_9756_inst
+    process(MUX_9751_wire, MUX_9755_wire) -- 
+      variable tmp_var : std_logic_vector(31 downto 0); -- 
+    begin -- 
+      ApIntOr_proc(MUX_9751_wire, MUX_9755_wire, tmp_var);
+      store_signature_9757 <= tmp_var; --
+    end process;
+    volatile_operator_analyze_dcache_response_8445: analyze_dcache_response_VVP port map(addr => addr_9579, dcache_response => simple_info_buffer, is_load => is_load_9531, is_store => is_store_9535, signed_type => signed_type_9539, unsigned_type => unsigned_type_9543, byte => byte_9547, half_word => half_word_9551, word => word_9555, double_word => double_word_9559, dout_h => simple_dout_h_9615, dout_l => simple_dout_l_9615, data_access_exception => simple_data_access_exception_9615, data_access_error => simple_data_access_error_9615, dcache_hit => simple_dcache_hit_9615); 
     -- 
   end Block; -- data_path
   -- 
 end loadstore_router_core_VVP_arch;
+
 library ieee;
 use ieee.std_logic_1164.all;
 library aHiR_ieee_proposed;
@@ -19556,13 +19626,13 @@ entity load_store_router_daemon is --
     load_store_messy_to_router_pipe_pipe_read_data : in   std_logic_vector(97 downto 0);
     load_store_router_control_pipe_pipe_read_req : out  std_logic_vector(0 downto 0);
     load_store_router_control_pipe_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    load_store_router_control_pipe_pipe_read_data : in   std_logic_vector(105 downto 0);
+    load_store_router_control_pipe_pipe_read_data : in   std_logic_vector(96 downto 0);
     teu_loadstore_to_fpunit_pipe_write_req : out  std_logic_vector(0 downto 0);
     teu_loadstore_to_fpunit_pipe_write_ack : in   std_logic_vector(0 downto 0);
     teu_loadstore_to_fpunit_pipe_write_data : out  std_logic_vector(77 downto 0);
     teu_loadstore_to_iretire_pipe_write_req : out  std_logic_vector(0 downto 0);
     teu_loadstore_to_iretire_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    teu_loadstore_to_iretire_pipe_write_data : out  std_logic_vector(62 downto 0);
+    teu_loadstore_to_iretire_pipe_write_data : out  std_logic_vector(53 downto 0);
     teu_loadstore_to_iunit_pipe_write_req : out  std_logic_vector(0 downto 0);
     teu_loadstore_to_iunit_pipe_write_ack : in   std_logic_vector(0 downto 0);
     teu_loadstore_to_iunit_pipe_write_data : out  std_logic_vector(77 downto 0);
@@ -19581,7 +19651,7 @@ architecture load_store_router_daemon_arch of load_store_router_daemon is --
   -- volatile/operator module components. 
   component decode_routing_control_info_VVP is -- 
     port ( -- 
-      control_info : in  std_logic_vector(105 downto 0);
+      control_info : in  std_logic_vector(96 downto 0);
       read_simple : out  std_logic_vector(0 downto 0);
       read_messy : out  std_logic_vector(0 downto 0)-- 
     );
@@ -19589,7 +19659,7 @@ architecture load_store_router_daemon_arch of load_store_router_daemon is --
   end component; 
   component loadstore_router_core_VVP is -- 
     port ( -- 
-      control_info : in  std_logic_vector(105 downto 0);
+      control_info : in  std_logic_vector(96 downto 0);
       simple_info : in  std_logic_vector(71 downto 0);
       messy_info : in  std_logic_vector(97 downto 0);
       to_iu : out  std_logic_vector(0 downto 0);
@@ -19598,7 +19668,7 @@ architecture load_store_router_daemon_arch of load_store_router_daemon is --
       to_retire : out  std_logic_vector(0 downto 0);
       to_iu_fu_data : out  std_logic_vector(77 downto 0);
       to_cu_data : out  std_logic_vector(13 downto 0);
-      data_to_iretire : out  std_logic_vector(62 downto 0)-- 
+      data_to_iretire : out  std_logic_vector(53 downto 0)-- 
     );
     -- 
   end component; 
@@ -19609,7 +19679,7 @@ architecture load_store_router_daemon_arch of load_store_router_daemon is --
   signal to_iu, to_fu, to_cu, to_retire: std_logic_vector(0 downto 0);
   signal to_iu_fu_data : std_logic_vector(77 downto 0);
   signal to_cu_data : std_logic_vector(13 downto 0);
-  signal data_to_iretire : std_logic_vector(62 downto 0);
+  signal data_to_iretire : std_logic_vector(53 downto 0);
 
   signal dcache_rdy, messy_rdy, iu_rdy, fu_rdy, retire_rdy, ctrl_rdy: boolean;
 
@@ -19618,7 +19688,7 @@ architecture load_store_router_daemon_arch of load_store_router_daemon is --
   signal pop_req_to_dcache, pop_ack_from_dcache: std_logic;
 
   signal data_from_dcache : std_logic_vector(71 downto 0);
-  signal data_from_ctrl: std_logic_vector(105 downto 0);
+  signal data_from_ctrl: std_logic_vector(96 downto 0);
   signal data_from_messy : std_logic_vector(97 downto 0);
 begin --  
     tag_out <= (others => '0');
@@ -19628,7 +19698,7 @@ begin --
     --      Input Queues!
     qCtrl: QueueBase
 		generic map (name => "ls_router_qCtrl",
-				queue_depth => 2, data_width => 106)
+				queue_depth => 2, data_width => 97)
 		port map (clk => clk, reset => reset,
 				data_in => load_store_router_control_pipe_pipe_read_data,
 				 push_req => load_store_router_control_pipe_pipe_read_ack(0),
@@ -19708,24 +19778,9 @@ library std;
 use std.standard.all;
 library ieee;
 use ieee.std_logic_1164.all;
-
-library aHiR_ieee_proposed;
-use aHiR_ieee_proposed.math_utility_pkg.all;
-use aHiR_ieee_proposed.fixed_pkg.all;
-use aHiR_ieee_proposed.float_pkg.all;
-library ahir;
-use ahir.memory_subsystem_package.all;
-use ahir.types.all;
-use ahir.subprograms.all;
-use ahir.components.all;
-use ahir.basecomponents.all;
-use ahir.operatorpackage.all;
-use ahir.floatoperatorpackage.all;
-use ahir.utilities.all;
-
 entity needSignalFromRetire_VVV is -- 
   port ( -- 
-    msg_from_sc : in  std_logic_vector(156 downto 0);
+    msg_from_sc : in  std_logic_vector(147 downto 0);
     sc_valid : out  std_logic_vector(0 downto 0);
     wait_on_iretire : out  std_logic_vector(0 downto 0)-- 
   );
@@ -19734,10 +19789,10 @@ end entity needSignalFromRetire_VVV;
 architecture needSignalFromRetire_VVV_arch of needSignalFromRetire_VVV is -- 
   -- always true...
   signal always_true_symbol: Boolean;
-  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(157-1 downto 0);
+  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(148-1 downto 0);
   signal default_zero_sig: std_logic;
   -- input port buffer signals
-  signal msg_from_sc_buffer :  std_logic_vector(156 downto 0);
+  signal msg_from_sc_buffer :  std_logic_vector(147 downto 0);
   -- output port buffer signals
   signal sc_valid_buffer :  std_logic_vector(0 downto 0);
   signal wait_on_iretire_buffer :  std_logic_vector(0 downto 0);
@@ -19754,119 +19809,26 @@ begin --
   -- volatile module, no control path
   -- the data path
   data_path: Block -- 
-    signal w_10252 : std_logic_vector(0 downto 0);
+    signal w_9142 : std_logic_vector(0 downto 0);
     -- 
   begin -- 
-    -- flow-through slice operator slice_10247_inst
-    sc_valid_buffer <= msg_from_sc_buffer(156 downto 156);
-    -- flow-through slice operator slice_10251_inst
-    w_10252 <= msg_from_sc_buffer(134 downto 134);
-    -- flow through binary operator AND_u1_u1_10256_inst
-    wait_on_iretire_buffer <= (sc_valid_buffer and w_10252);
+    -- flow-through slice operator slice_9137_inst
+    sc_valid_buffer <= msg_from_sc_buffer(147 downto 147);
+    -- flow-through slice operator slice_9141_inst
+    w_9142 <= msg_from_sc_buffer(134 downto 134);
+    -- binary operator AND_u1_u1_9146_inst
+    process(sc_valid_buffer, w_9142) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      -- ApIntAnd_proc(sc_valid_buffer, w_9142, tmp_var);
+      tmp_var := sc_valid_buffer and w_9142;
+      wait_on_iretire_buffer <= tmp_var; --
+    end process;
     -- 
   end Block; -- data_path
   -- 
 end needSignalFromRetire_VVV_arch;
 
-library std;
-use std.standard.all;
-library ieee;
-use ieee.std_logic_1164.all;
-
-library aHiR_ieee_proposed;
-use aHiR_ieee_proposed.math_utility_pkg.all;
-use aHiR_ieee_proposed.fixed_pkg.all;
-use aHiR_ieee_proposed.float_pkg.all;
-library ahir;
-use ahir.memory_subsystem_package.all;
-use ahir.types.all;
-use ahir.subprograms.all;
-use ahir.components.all;
-use ahir.basecomponents.all;
-use ahir.operatorpackage.all;
-use ahir.floatoperatorpackage.all;
-use ahir.utilities.all;
-
-entity spliceSetContextFromRetire_VVV is -- 
-  port ( -- 
-    p : in  std_logic_vector(156 downto 0);
-    set_context : in  std_logic_vector(0 downto 0);
-    new_context : in  std_logic_vector(7 downto 0);
-    q : out  std_logic_vector(156 downto 0)-- 
-  );
-  -- 
-end entity spliceSetContextFromRetire_VVV;
-architecture spliceSetContextFromRetire_VVV_arch of spliceSetContextFromRetire_VVV is -- 
-  -- always true...
-  signal always_true_symbol: Boolean;
-  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(166-1 downto 0);
-  signal default_zero_sig: std_logic;
-  -- input port buffer signals
-  signal p_buffer :  std_logic_vector(156 downto 0);
-  signal set_context_buffer :  std_logic_vector(0 downto 0);
-  signal new_context_buffer :  std_logic_vector(7 downto 0);
-  -- output port buffer signals
-  signal q_buffer :  std_logic_vector(156 downto 0);
-  -- volatile/operator module components. 
-  -- 
-begin --  
-  -- input handling ------------------------------------------------
-  p_buffer <= p;
-  set_context_buffer <= set_context;
-  new_context_buffer <= new_context;
-  -- output handling  -------------------------------------------------------
-  q <= q_buffer;
-  -- the control path --------------------------------------------------
-  default_zero_sig <= '0';
-  -- volatile module, no control path
-  -- the data path
-  data_path: Block -- 
-    signal CONCAT_u13_u14_10282_wire : std_logic_vector(13 downto 0);
-    signal CONCAT_u1_u13_10280_wire : std_logic_vector(12 downto 0);
-    signal CONCAT_u8_u143_10285_wire : std_logic_vector(142 downto 0);
-    signal rest_10276 : std_logic_vector(134 downto 0);
-    signal tid_etc_10271 : std_logic_vector(11 downto 0);
-    signal v_10267 : std_logic_vector(0 downto 0);
-    -- 
-  begin -- 
-    -- flow-through slice operator slice_10266_inst
-    v_10267 <= p_buffer(156 downto 156);
-    -- flow-through slice operator slice_10270_inst
-    tid_etc_10271 <= p_buffer(155 downto 144);
-    -- flow-through slice operator slice_10275_inst
-    rest_10276 <= p_buffer(134 downto 0);
-    -- flow through binary operator CONCAT_u13_u14_10282_inst
-    process(CONCAT_u1_u13_10280_wire, set_context_buffer) -- 
-      variable tmp_var : std_logic_vector(13 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u1_u13_10280_wire, set_context_buffer, tmp_var);
-      CONCAT_u13_u14_10282_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u14_u157_10286_inst
-    process(CONCAT_u13_u14_10282_wire, CONCAT_u8_u143_10285_wire) -- 
-      variable tmp_var : std_logic_vector(156 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u13_u14_10282_wire, CONCAT_u8_u143_10285_wire, tmp_var);
-      q_buffer <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u1_u13_10280_inst
-    process(v_10267, tid_etc_10271) -- 
-      variable tmp_var : std_logic_vector(12 downto 0); -- 
-    begin -- 
-      ApConcat_proc(v_10267, tid_etc_10271, tmp_var);
-      CONCAT_u1_u13_10280_wire <= tmp_var; --
-    end process;
-    -- flow through binary operator CONCAT_u8_u143_10285_inst
-    process(new_context_buffer, rest_10276) -- 
-      variable tmp_var : std_logic_vector(142 downto 0); -- 
-    begin -- 
-      ApConcat_proc(new_context_buffer, rest_10276, tmp_var);
-      CONCAT_u8_u143_10285_wire <= tmp_var; --
-    end process;
-    -- 
-  end Block; -- data_path
-  -- 
-end spliceSetContextFromRetire_VVV_arch;
 library std;
 use std.standard.all;
 library ieee;
@@ -19881,13 +19843,13 @@ entity sc_iretire_join_daemon is --
   port ( -- 
     noblock_teu_stream_corrector_to_idispatch_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_teu_stream_corrector_to_idispatch_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    noblock_teu_stream_corrector_to_idispatch_pipe_read_data : in   std_logic_vector(156 downto 0);
+    noblock_teu_stream_corrector_to_idispatch_pipe_read_data : in   std_logic_vector(147 downto 0);
     teu_iretire_to_idispatch_pipe_read_req : out  std_logic_vector(0 downto 0);
     teu_iretire_to_idispatch_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    teu_iretire_to_idispatch_pipe_read_data : in   std_logic_vector(9 downto 0);
+    teu_iretire_to_idispatch_pipe_read_data : in   std_logic_vector(0 downto 0);
     noblock_joined_iretire_sc_to_idispatch_pipe_write_req : out  std_logic_vector(0 downto 0);
     noblock_joined_iretire_sc_to_idispatch_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    noblock_joined_iretire_sc_to_idispatch_pipe_write_data : out  std_logic_vector(156 downto 0);
+    noblock_joined_iretire_sc_to_idispatch_pipe_write_data : out  std_logic_vector(147 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -19903,35 +19865,22 @@ architecture sc_iretire_join_daemon_arch of sc_iretire_join_daemon is --
   -- volatile/operator module components. 
   component needSignalFromRetire_VVV is -- 
     port ( -- 
-      msg_from_sc : in  std_logic_vector(156 downto 0);
+      msg_from_sc : in  std_logic_vector(147 downto 0);
       sc_valid : out  std_logic_vector(0 downto 0);
       wait_on_iretire : out  std_logic_vector(0 downto 0)-- 
     );
     -- 
   end component; 
 
-  component spliceSetContextFromRetire_VVV is -- 
-    port ( -- 
-      p : in  std_logic_vector(156 downto 0);
-      set_context : in  std_logic_vector(0 downto 0);
-      new_context : in  std_logic_vector(7 downto 0);
-      q : out  std_logic_vector(156 downto 0)-- 
-    );
-  -- 
-  end component spliceSetContextFromRetire_VVV;
-
-  signal msg_from_sc : std_logic_vector(156 downto 0);
+  signal msg_from_sc : std_logic_vector(147 downto 0);
   signal wait_on_iretire, sc_valid: std_logic_vector(0 downto 0);
  
   signal sc_ok, iretire_ok, dest_ready: boolean;
   signal write_to_dest_valid, need_iretire: boolean;
   
   signal pop_req_to_sc, pop_ack_from_sc: std_logic;
-  signal data_from_sc, spliced_to_idecode: std_logic_vector(156 downto 0);
+  signal data_from_sc: std_logic_vector(147 downto 0);
 
-  signal from_iretire: std_logic_vector(9 downto 0);
-  signal set_context: std_logic_vector(0 downto 0);
-  signal new_context : std_logic_vector(7 downto 0);
 begin --  
 	start_ack <= '1';
 	fin_ack <= '0';
@@ -19940,7 +19889,7 @@ begin --
         -- receive the data in a queue.
 	qbSC: QueueBase
 		generic map (name => "sc_iretire_join_qbSC",
-				queue_depth => 1, data_width => 157)
+				queue_depth => 1, data_width => 148)
 		port map (clk => clk, reset => reset,
 				data_in => noblock_teu_stream_corrector_to_idispatch_pipe_read_data ,
 				 push_req => noblock_teu_stream_corrector_to_idispatch_pipe_read_ack(0),
@@ -19950,16 +19899,12 @@ begin --
 				 pop_ack => pop_ack_from_sc);
 
 
-	-- raw message from sc.. forwarded after splicing newcontext.
-	noblock_joined_iretire_sc_to_idispatch_pipe_write_data <= spliced_to_idecode;
+	-- raw message from sc.. forwarded.
+	noblock_joined_iretire_sc_to_idispatch_pipe_write_data <= data_from_sc;
 
 	-- writers ok?
 	sc_ok <= pop_ack_from_sc = '1';
         iretire_ok <= teu_iretire_to_idispatch_pipe_read_ack(0) = '1';
-	from_iretire <= teu_iretire_to_idispatch_pipe_read_data;
-
-	set_context(0) <= from_iretire(8);
-        new_context    <= from_iretire(7 downto 0);
 
 	-- destination ready?
 	dest_ready <= noblock_joined_iretire_sc_to_idispatch_pipe_write_ack(0) = '1'; 
@@ -19985,12 +19930,6 @@ begin --
   	decInst: needSignalFromRetire_VVV
 			port map (msg_from_sc => data_from_sc, wait_on_iretire => wait_on_iretire,
 								sc_valid => sc_valid);
-
-	spliceInst: spliceSetContextFromRetire_VVV 
-				port map (p => data_from_sc,
-						set_context => set_context,
-						new_context => new_context,
-						q => spliced_to_idecode);
 
 
 
@@ -22191,20 +22130,20 @@ use ahir.floatoperatorpackage.all;
 use ahir.utilities.all;
 entity constructDcacheMmuRequest_VVV is -- 
   port ( -- 
-    from_dcache : in  std_logic_vector(121 downto 0);
-    to_mmu : out  std_logic_vector(123 downto 0)-- 
+    from_dcache : in  std_logic_vector(119 downto 0);
+    to_mmu : out  std_logic_vector(121 downto 0)-- 
   );
   -- 
 end entity constructDcacheMmuRequest_VVV;
 architecture constructDcacheMmuRequest_VVV_arch of constructDcacheMmuRequest_VVV is -- 
   -- always true...
   signal always_true_symbol: Boolean;
-  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(122-1 downto 0);
+  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(120-1 downto 0);
   signal default_zero_sig: std_logic;
   -- input port buffer signals
-  signal from_dcache_buffer :  std_logic_vector(121 downto 0);
+  signal from_dcache_buffer :  std_logic_vector(119 downto 0);
   -- output port buffer signals
-  signal to_mmu_buffer :  std_logic_vector(123 downto 0);
+  signal to_mmu_buffer :  std_logic_vector(121 downto 0);
   -- volatile/operator module components. 
   -- 
 begin --  
@@ -22217,80 +22156,78 @@ begin --
   -- volatile module, no control path
   -- the data path
   data_path: Block -- 
-    signal CONCAT_u10_u26_119_wire : std_logic_vector(25 downto 0);
-    signal CONCAT_u1_u2_127_wire_constant : std_logic_vector(1 downto 0);
-    signal CONCAT_u2_u10_115_wire : std_logic_vector(9 downto 0);
-    signal CONCAT_u32_u96_122_wire : std_logic_vector(95 downto 0);
-    signal CONCAT_u8_u16_118_wire : std_logic_vector(15 downto 0);
-    signal CONCAT_u96_u98_128_wire : std_logic_vector(97 downto 0);
-    signal addr_107 : std_logic_vector(31 downto 0);
-    signal asi_95 : std_logic_vector(7 downto 0);
-    signal byte_mask_99 : std_logic_vector(7 downto 0);
-    signal cpu_id_91 : std_logic_vector(1 downto 0);
-    signal request_type_103 : std_logic_vector(7 downto 0);
-    signal write_data_111 : std_logic_vector(63 downto 0);
+    signal CONCAT_u16_u56_92_wire : std_logic_vector(55 downto 0);
+    signal CONCAT_u64_u65_96_wire : std_logic_vector(64 downto 0);
+    signal CONCAT_u65_u66_99_wire : std_logic_vector(65 downto 0);
+    signal CONCAT_u8_u16_88_wire : std_logic_vector(15 downto 0);
+    signal CONCAT_u8_u40_91_wire : std_logic_vector(39 downto 0);
+    signal addr_80 : std_logic_vector(31 downto 0);
+    signal asi_68 : std_logic_vector(7 downto 0);
+    signal byte_mask_72 : std_logic_vector(7 downto 0);
+    signal request_type_76 : std_logic_vector(7 downto 0);
+    signal type_cast_95_wire_constant : std_logic_vector(0 downto 0);
+    signal type_cast_98_wire_constant : std_logic_vector(0 downto 0);
+    signal write_data_84 : std_logic_vector(63 downto 0);
     -- 
   begin -- 
-    CONCAT_u1_u2_127_wire_constant <= "11";
-    -- flow-through slice operator slice_102_inst
-    request_type_103 <= from_dcache_buffer(103 downto 96);
-    -- flow-through slice operator slice_106_inst
-    addr_107 <= from_dcache_buffer(95 downto 64);
-    -- flow-through slice operator slice_110_inst
-    write_data_111 <= from_dcache_buffer(63 downto 0);
-    -- flow-through slice operator slice_90_inst
-    cpu_id_91 <= from_dcache_buffer(121 downto 120);
-    -- flow-through slice operator slice_94_inst
-    asi_95 <= from_dcache_buffer(119 downto 112);
-    -- flow-through slice operator slice_98_inst
-    byte_mask_99 <= from_dcache_buffer(111 downto 104);
-    -- binary operator CONCAT_u10_u26_119_inst
-    process(CONCAT_u2_u10_115_wire, CONCAT_u8_u16_118_wire) -- 
-      variable tmp_var : std_logic_vector(25 downto 0); -- 
+    type_cast_95_wire_constant <= "1";
+    type_cast_98_wire_constant <= "1";
+    -- flow-through slice operator slice_67_inst
+    asi_68 <= from_dcache_buffer(119 downto 112);
+    -- flow-through slice operator slice_71_inst
+    byte_mask_72 <= from_dcache_buffer(111 downto 104);
+    -- flow-through slice operator slice_75_inst
+    request_type_76 <= from_dcache_buffer(103 downto 96);
+    -- flow-through slice operator slice_79_inst
+    addr_80 <= from_dcache_buffer(95 downto 64);
+    -- flow-through slice operator slice_83_inst
+    write_data_84 <= from_dcache_buffer(63 downto 0);
+    -- binary operator CONCAT_u16_u56_92_inst
+    process(CONCAT_u8_u16_88_wire, CONCAT_u8_u40_91_wire) -- 
+      variable tmp_var : std_logic_vector(55 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u2_u10_115_wire, CONCAT_u8_u16_118_wire, tmp_var);
-      CONCAT_u10_u26_119_wire <= tmp_var; --
+      ApConcat_proc(CONCAT_u8_u16_88_wire, CONCAT_u8_u40_91_wire, tmp_var);
+      CONCAT_u16_u56_92_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u26_u124_129_inst
-    process(CONCAT_u10_u26_119_wire, CONCAT_u96_u98_128_wire) -- 
-      variable tmp_var : std_logic_vector(123 downto 0); -- 
+    -- binary operator CONCAT_u56_u122_100_inst
+    process(CONCAT_u16_u56_92_wire, CONCAT_u65_u66_99_wire) -- 
+      variable tmp_var : std_logic_vector(121 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u10_u26_119_wire, CONCAT_u96_u98_128_wire, tmp_var);
+      ApConcat_proc(CONCAT_u16_u56_92_wire, CONCAT_u65_u66_99_wire, tmp_var);
       to_mmu_buffer <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u2_u10_115_inst
-    process(cpu_id_91, asi_95) -- 
-      variable tmp_var : std_logic_vector(9 downto 0); -- 
+    -- binary operator CONCAT_u64_u65_96_inst
+    process(write_data_84) -- 
+      variable tmp_var : std_logic_vector(64 downto 0); -- 
     begin -- 
-      ApConcat_proc(cpu_id_91, asi_95, tmp_var);
-      CONCAT_u2_u10_115_wire <= tmp_var; --
+      ApConcat_proc(write_data_84, type_cast_95_wire_constant, tmp_var);
+      CONCAT_u64_u65_96_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u32_u96_122_inst
-    process(addr_107, write_data_111) -- 
-      variable tmp_var : std_logic_vector(95 downto 0); -- 
+    -- binary operator CONCAT_u65_u66_99_inst
+    process(CONCAT_u64_u65_96_wire) -- 
+      variable tmp_var : std_logic_vector(65 downto 0); -- 
     begin -- 
-      ApConcat_proc(addr_107, write_data_111, tmp_var);
-      CONCAT_u32_u96_122_wire <= tmp_var; --
+      ApConcat_proc(CONCAT_u64_u65_96_wire, type_cast_98_wire_constant, tmp_var);
+      CONCAT_u65_u66_99_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u8_u16_118_inst
-    process(request_type_103, byte_mask_99) -- 
+    -- binary operator CONCAT_u8_u16_88_inst
+    process(asi_68, request_type_76) -- 
       variable tmp_var : std_logic_vector(15 downto 0); -- 
     begin -- 
-      ApConcat_proc(request_type_103, byte_mask_99, tmp_var);
-      CONCAT_u8_u16_118_wire <= tmp_var; --
+      ApConcat_proc(asi_68, request_type_76, tmp_var);
+      CONCAT_u8_u16_88_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u96_u98_128_inst
-    process(CONCAT_u32_u96_122_wire) -- 
-      variable tmp_var : std_logic_vector(97 downto 0); -- 
+    -- binary operator CONCAT_u8_u40_91_inst
+    process(byte_mask_72, addr_80) -- 
+      variable tmp_var : std_logic_vector(39 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u32_u96_122_wire, CONCAT_u1_u2_127_wire_constant, tmp_var);
-      CONCAT_u96_u98_128_wire <= tmp_var; --
+      ApConcat_proc(byte_mask_72, addr_80, tmp_var);
+      CONCAT_u8_u40_91_wire <= tmp_var; --
     end process;
     -- 
   end Block; -- data_path
   -- 
 end constructDcacheMmuRequest_VVV_arch;
-
 library std;
 use std.standard.all;
 library ieee;
@@ -22310,20 +22247,20 @@ use ahir.floatoperatorpackage.all;
 use ahir.utilities.all;
 entity constructIcacheMmuRequest_VVV is -- 
   port ( -- 
-    from_icache : in  std_logic_vector(49 downto 0);
-    to_mmu : out  std_logic_vector(123 downto 0)-- 
+    from_icache : in  std_logic_vector(47 downto 0);
+    to_mmu : out  std_logic_vector(121 downto 0)-- 
   );
   -- 
 end entity constructIcacheMmuRequest_VVV;
 architecture constructIcacheMmuRequest_VVV_arch of constructIcacheMmuRequest_VVV is -- 
   -- always true...
   signal always_true_symbol: Boolean;
-  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(50-1 downto 0);
+  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(48-1 downto 0);
   signal default_zero_sig: std_logic;
   -- input port buffer signals
-  signal from_icache_buffer :  std_logic_vector(49 downto 0);
+  signal from_icache_buffer :  std_logic_vector(47 downto 0);
   -- output port buffer signals
-  signal to_mmu_buffer :  std_logic_vector(123 downto 0);
+  signal to_mmu_buffer :  std_logic_vector(121 downto 0);
   -- volatile/operator module components. 
   -- 
 begin --  
@@ -22336,78 +22273,56 @@ begin --
   -- volatile module, no control path
   -- the data path
   data_path: Block -- 
-    signal CONCAT_u10_u26_160_wire : std_logic_vector(25 downto 0);
-    signal CONCAT_u1_u2_169_wire_constant : std_logic_vector(1 downto 0);
-    signal CONCAT_u2_u10_154_wire : std_logic_vector(9 downto 0);
-    signal CONCAT_u32_u96_164_wire : std_logic_vector(95 downto 0);
-    signal CONCAT_u8_u16_159_wire : std_logic_vector(15 downto 0);
-    signal CONCAT_u96_u98_170_wire : std_logic_vector(97 downto 0);
-    signal NOT_u8_u8_158_wire_constant : std_logic_vector(7 downto 0);
-    signal addr_150 : std_logic_vector(31 downto 0);
-    signal asi_142 : std_logic_vector(7 downto 0);
-    signal cpu_id_138 : std_logic_vector(1 downto 0);
-    signal request_type_146 : std_logic_vector(7 downto 0);
-    signal type_cast_163_wire_constant : std_logic_vector(63 downto 0);
+    signal CONCAT_u16_u56_127_wire : std_logic_vector(55 downto 0);
+    signal CONCAT_u65_u66_136_wire_constant : std_logic_vector(65 downto 0);
+    signal CONCAT_u8_u16_121_wire : std_logic_vector(15 downto 0);
+    signal CONCAT_u8_u40_126_wire : std_logic_vector(39 downto 0);
+    signal NOT_u8_u8_124_wire_constant : std_logic_vector(7 downto 0);
+    signal addr_117 : std_logic_vector(31 downto 0);
+    signal asi_109 : std_logic_vector(7 downto 0);
+    signal request_type_113 : std_logic_vector(7 downto 0);
     -- 
   begin -- 
-    CONCAT_u1_u2_169_wire_constant <= "01";
-    NOT_u8_u8_158_wire_constant <= "11111111";
-    type_cast_163_wire_constant <= "0000000000000000000000000000000000000000000000000000000000000000";
-    -- flow-through slice operator slice_137_inst
-    cpu_id_138 <= from_icache_buffer(49 downto 48);
-    -- flow-through slice operator slice_141_inst
-    asi_142 <= from_icache_buffer(47 downto 40);
-    -- flow-through slice operator slice_145_inst
-    request_type_146 <= from_icache_buffer(39 downto 32);
-    -- flow-through slice operator slice_149_inst
-    addr_150 <= from_icache_buffer(31 downto 0);
-    -- binary operator CONCAT_u10_u26_160_inst
-    process(CONCAT_u2_u10_154_wire, CONCAT_u8_u16_159_wire) -- 
-      variable tmp_var : std_logic_vector(25 downto 0); -- 
+    CONCAT_u65_u66_136_wire_constant <= "000000000000000000000000000000000000000000000000000000000000000001";
+    NOT_u8_u8_124_wire_constant <= "11111111";
+    -- flow-through slice operator slice_108_inst
+    asi_109 <= from_icache_buffer(47 downto 40);
+    -- flow-through slice operator slice_112_inst
+    request_type_113 <= from_icache_buffer(39 downto 32);
+    -- flow-through slice operator slice_116_inst
+    addr_117 <= from_icache_buffer(31 downto 0);
+    -- binary operator CONCAT_u16_u56_127_inst
+    process(CONCAT_u8_u16_121_wire, CONCAT_u8_u40_126_wire) -- 
+      variable tmp_var : std_logic_vector(55 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u2_u10_154_wire, CONCAT_u8_u16_159_wire, tmp_var);
-      CONCAT_u10_u26_160_wire <= tmp_var; --
+      ApConcat_proc(CONCAT_u8_u16_121_wire, CONCAT_u8_u40_126_wire, tmp_var);
+      CONCAT_u16_u56_127_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u26_u124_171_inst
-    process(CONCAT_u10_u26_160_wire, CONCAT_u96_u98_170_wire) -- 
-      variable tmp_var : std_logic_vector(123 downto 0); -- 
+    -- binary operator CONCAT_u56_u122_138_inst
+    process(CONCAT_u16_u56_127_wire) -- 
+      variable tmp_var : std_logic_vector(121 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u10_u26_160_wire, CONCAT_u96_u98_170_wire, tmp_var);
+      ApConcat_proc(CONCAT_u16_u56_127_wire, CONCAT_u65_u66_136_wire_constant, tmp_var);
       to_mmu_buffer <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u2_u10_154_inst
-    process(cpu_id_138, asi_142) -- 
-      variable tmp_var : std_logic_vector(9 downto 0); -- 
-    begin -- 
-      ApConcat_proc(cpu_id_138, asi_142, tmp_var);
-      CONCAT_u2_u10_154_wire <= tmp_var; --
-    end process;
-    -- binary operator CONCAT_u32_u96_164_inst
-    process(addr_150) -- 
-      variable tmp_var : std_logic_vector(95 downto 0); -- 
-    begin -- 
-      ApConcat_proc(addr_150, type_cast_163_wire_constant, tmp_var);
-      CONCAT_u32_u96_164_wire <= tmp_var; --
-    end process;
-    -- binary operator CONCAT_u8_u16_159_inst
-    process(request_type_146) -- 
+    -- binary operator CONCAT_u8_u16_121_inst
+    process(asi_109, request_type_113) -- 
       variable tmp_var : std_logic_vector(15 downto 0); -- 
     begin -- 
-      ApConcat_proc(request_type_146, NOT_u8_u8_158_wire_constant, tmp_var);
-      CONCAT_u8_u16_159_wire <= tmp_var; --
+      ApConcat_proc(asi_109, request_type_113, tmp_var);
+      CONCAT_u8_u16_121_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u96_u98_170_inst
-    process(CONCAT_u32_u96_164_wire) -- 
-      variable tmp_var : std_logic_vector(97 downto 0); -- 
+    -- binary operator CONCAT_u8_u40_126_inst
+    process(NOT_u8_u8_124_wire_constant, addr_117) -- 
+      variable tmp_var : std_logic_vector(39 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u32_u96_164_wire, CONCAT_u1_u2_169_wire_constant, tmp_var);
-      CONCAT_u96_u98_170_wire <= tmp_var; --
+      ApConcat_proc(NOT_u8_u8_124_wire_constant, addr_117, tmp_var);
+      CONCAT_u8_u40_126_wire <= tmp_var; --
     end process;
     -- 
   end Block; -- data_path
   -- 
 end constructIcacheMmuRequest_VVV_arch;
-
 library std;
 use std.standard.all;
 library ieee;
@@ -22430,10 +22345,10 @@ entity mmuDcacheServiceDaemon is --
   port ( -- 
     DCACHE_to_MMU_request_pipe_read_req : out  std_logic_vector(0 downto 0);
     DCACHE_to_MMU_request_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    DCACHE_to_MMU_request_pipe_read_data : in   std_logic_vector(121 downto 0);
+    DCACHE_to_MMU_request_pipe_read_data : in   std_logic_vector(119 downto 0);
     NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_write_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_write_data : out  std_logic_vector(123 downto 0);
+    NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_write_data : out  std_logic_vector(121 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -22449,8 +22364,8 @@ architecture mmuDcacheServiceDaemon_arch of mmuDcacheServiceDaemon is --
   -- volatile/operator module components. 
   component constructDcacheMmuRequest_VVV is -- 
     port ( -- 
-      from_dcache : in  std_logic_vector(121 downto 0);
-      to_mmu : out  std_logic_vector(123 downto 0)-- 
+      from_dcache : in  std_logic_vector(119 downto 0);
+      to_mmu : out  std_logic_vector(121 downto 0)-- 
     );
   end component; 
 begin --  
@@ -22490,10 +22405,10 @@ entity mmuIcacheServiceDaemon is --
   port ( -- 
     ICACHE_to_MMU_request_pipe_read_req : out  std_logic_vector(0 downto 0);
     ICACHE_to_MMU_request_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    ICACHE_to_MMU_request_pipe_read_data : in   std_logic_vector(49 downto 0);
+    ICACHE_to_MMU_request_pipe_read_data : in   std_logic_vector(47 downto 0);
     NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_write_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_write_data : out  std_logic_vector(123 downto 0);
+    NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_write_data : out  std_logic_vector(121 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -22508,8 +22423,8 @@ end entity mmuIcacheServiceDaemon;
 architecture mmuIcacheServiceDaemon_arch of mmuIcacheServiceDaemon is -- 
   component constructIcacheMmuRequest_VVV is -- 
     port ( -- 
-      from_icache : in  std_logic_vector(49 downto 0);
-      to_mmu : out  std_logic_vector(123 downto 0)-- 
+      from_icache : in  std_logic_vector(47 downto 0);
+      to_mmu : out  std_logic_vector(121 downto 0)-- 
     );
     -- 
   end component; 
@@ -22549,13 +22464,13 @@ entity mmuMuxDaemon is --
   port ( -- 
     NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_read_data : in   std_logic_vector(123 downto 0);
+    NOBLOCK_DCACHE_TO_MMU_REQUEST_pipe_read_data : in   std_logic_vector(121 downto 0);
     NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_read_data : in   std_logic_vector(123 downto 0);
+    NOBLOCK_ICACHE_TO_MMU_REQUEST_pipe_read_data : in   std_logic_vector(121 downto 0);
     NOBLOCK_CACHE_TO_MMU_REQUEST_pipe_write_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CACHE_TO_MMU_REQUEST_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CACHE_TO_MMU_REQUEST_pipe_write_data : out  std_logic_vector(123 downto 0);
+    NOBLOCK_CACHE_TO_MMU_REQUEST_pipe_write_data : out  std_logic_vector(121 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -22582,7 +22497,7 @@ architecture mmuMuxDaemon_arch of mmuMuxDaemon is --
 
 	signal ack_icache, ack_dcache: std_logic;
 
-	signal dcache_queue_data_out : std_logic_vector(123 downto 0);
+	signal dcache_queue_data_out : std_logic_vector(121 downto 0);
 	signal dcache_queue_pop_req,  dcache_queue_pop_ack: std_logic;
 
 	signal dcache_wants_lock, dcache_has_lock: boolean;
@@ -22611,7 +22526,6 @@ begin --
 	dcache_is_valid <= (dcache_queue_pop_ack = '1') and (dcache_queue_data_out(0) = '1'); 
 
 	-- dcache lock is bit 6 of request
-	--    cpu-id [123:122]
 	--    asi [121:114]
 	--    request [113:106], so [112]
 	dcache_wants_lock <=  (dcache_is_valid and (dcache_queue_data_out(112) = '1'));

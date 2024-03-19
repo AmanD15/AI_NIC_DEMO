@@ -176,6 +176,14 @@ package SpiMasterLibComponents is
 			clk, reset: in std_logic);
     end component spi_ping;
 
+    component spi_ping_v2 is
+	port (SPI_CS_L: in std_logic_vector(0 downto 0);
+			SPI_MASTER_MISO: out std_logic_vector(0 downto 0);
+			SPI_MASTER_MOSI: in std_logic_vector(0 downto 0);
+			SPI_MASTER_CLK: in std_logic_vector(0 downto 0);
+			clk, reset: in std_logic);
+    end component spi_ping_v2;
+
     component spi_byte_ram_with_init is
 	generic (	mmap_file_name: string;
 			addr_width_in_bytes: integer := 3; 
@@ -2242,6 +2250,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+
 --
 -- write back the complement of what is received...
 --
@@ -2301,3 +2310,31 @@ begin
 
 	SPI_MASTER_MISO(0) <= update_sig when CS_L = '0' else '0';
 end Mixed;
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library SpiMasterLib;
+use SpiMasterLib.SpiMasterLibComponents.all;
+
+entity spi_ping_v2 is
+	port (SPI_CS_L: in std_logic_vector(0 downto 0);
+			SPI_MASTER_MISO: out std_logic_vector(0 downto 0);
+			SPI_MASTER_MOSI: in std_logic_vector(0 downto 0);
+			SPI_MASTER_CLK: in std_logic_vector(0 downto 0);
+			clk, reset: in std_logic);
+end entity spi_ping_v2;
+
+architecture TrivialSpiPingV2 of spi_ping_v2 is
+begin
+
+	base: spi_ping
+		port map (CS_L => SPI_CS_L(0),
+				SPI_MASTER_MISO => SPI_MASTER_MISO,
+				SPI_MASTER_MOSI => SPI_MASTER_MOSI,
+				SPI_MASTER_CLK => SPI_MASTER_CLK,
+				clk => clk, reset => reset);
+
+end TrivialSpiPingV2;
+			

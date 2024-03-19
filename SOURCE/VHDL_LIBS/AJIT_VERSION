@@ -1,7 +1,5 @@
-commit d3eb5b4e9c7a8364882612c611a63f15f1d1f74a
-Author: Madhav Pandurang Desai <madhav@ee.iitb.ac.in>
-Date:   Thu Mar 14 09:59:07 2024 +0530
+commit 77bf41b205422cd37cfb153448f23aa690fa583b
+Author: madhav <madhav@localhost.localdomain>
+Date:   Mon Feb 5 07:08:12 2024 +0000
 
-    Verified multi-context-munit cpu, core (1x32), core (1x2x32)
-    to the point where they build and run dhrystone, dhrystone, simple_add.
-    Basic structure is ok.   More VHDL sims!
+    Generate ofc (overflow) exception on fdtoi, fstoi.
