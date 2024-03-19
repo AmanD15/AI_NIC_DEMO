@@ -30,35 +30,17 @@
 
 #define    NIC_MAX_NUMBER_OF_SERVERS		8
 
-// This should be allocated only from non-cacheable NCRAM.
-typedef struct __NicPacketBuffer {
-
-	// unused   buffer-size   pkt-length   last-dword-byte-mask
-	// 	     in dwords	   in bytes
-	// [63:32]   [31:20]        [19:8]           [7:0]
-	// 
-	uint64_t control_word;
-
-	uint64_t ethernet_header_h;
-	uint64_t ethernet_header_l;
-
-	uint64_t* packet_data;
-
-	// time-stamps.
-	uint64_t nic_arrival_time_stamp;
-	uint64_t nic_exit_time_stamp;
-	
-	uint64_t processor_arrival_time_stamp;
-	uint64_t processor_exit_time_stamp;
-	
-} NicPacketBuffer;
-
-
 #ifndef USE_CORTOS
+//
 // This is a mirror of the cortos-queue data
 // structure.  Note that the lock and buffer
 // addresses are virtual.   The physical addresses
 // are kept separately in the NIC.
+// 
+// Note that entries in the queue will be 64-bits
+// wide (message size = 8 bytes). PHYSICAL addresses
+// will be stored in the queues!
+// 
 typedef struct __NicCortosQueue {
   uint32_t totalMsgs;     			 // + 0
   uint32_t readIndex;				 // + 4
