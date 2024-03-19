@@ -6,7 +6,7 @@
 #include <string.h>
 
 
-#define BYTE_ORDER  LITTLE_ENDIAN
+#define BYTE_ORDER  BIG_ENDIAN
 
 typedef uint8_t     u8_t;
 typedef int8_t      s8_t;
@@ -20,13 +20,15 @@ typedef uintptr_t   mem_ptr_t;
 #define LWIP_ERR_T  int
 
 /* Define (sn)printf formatters for these lwIP types */
+#define LWIP_NO_INTTYPES_H 1
+#define X8_F  "02x" 
 #define U16_F "hu"
 #define S16_F "hd"
 #define X16_F "hx"
 #define U32_F "u"
 #define S32_F "d"
 #define X32_F "x"
-
+#define SZT_F U32_F
 /* Compiler hints for packing structures */
 #define PACK_STRUCT_FIELD(x)    x
 #define PACK_STRUCT_STRUCT  __attribute__((packed))
@@ -36,7 +38,7 @@ typedef uintptr_t   mem_ptr_t;
 /* Plaform specific diagnostic output */
 #ifndef LWIP_PLATFORM_DIAG
 #define LWIP_PLATFORM_DIAG(x)   do {                \
-        cortos_printf(x);                   \
+        cortos_printf x ;                   \
     } while (0)
 #endif
 

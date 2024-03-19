@@ -39,7 +39,7 @@ $module [setGlobalSignals]
 	$call accessRegister (READMEM _hF P_NIC_CONTROL_REGISTER_INDEX 0) (ctrl_reg)
 	S_CONTROL_REGISTER := ctrl_reg
 	MAC_ENABLE := (ctrl_reg [] 1)
-
+	NIC_INTR   := (ctrl_reg [] 2)
 	$attribute input_buffering 0
 	$attribute output_buffering 0
 }
@@ -59,6 +59,7 @@ $module [controlDaemon] $in () $out () $is
 	$call accessRegister (0 0 0 0) (ign)
 
 	MAC_ENABLE := 0
+	NIC_INTR   := 0
 	S_CONTROL_REGISTER := 0
 	S_NUMBER_OF_SERVERS := 0
 	

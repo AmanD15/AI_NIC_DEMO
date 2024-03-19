@@ -23,24 +23,24 @@ $system nic_subsystem $library nic_subsystem_lib
 /////////////////////////// MAC <--> Bridge /////////////////////////////////////////
 
 	$instance nic_mac_bridge_inst  nic_mac_bridge_lib: nic_mac_bridge
-		        rx_in_pipe          => MAC_TO_NIC_DATA		        // input (10)
-		        rx_out_pipe         => rx_concat_to_nic_data	    // output (73)
+		rx_in_pipe          => MAC_TO_NIC_DATA		    // input (10)
+		rx_out_pipe         => rx_concat_to_nic_data	    // output (73)
                 tx_in_pipe          => nic_to_tx_deconcat_data      // input(73)
                 tx_out_pipe         => NIC_TO_MAC_DATA              // output(10)
-		        nic_to_mac_resetn   => NIC_TO_MAC_RESETN            // output
+		nic_to_mac_resetn   => NIC_TO_MAC_RESETN            // output
                 ENABLE_MAC          => nic_mac_enable               // input
 		
 ////////////////////////// Bridge <--> NIC <--> SBC_core /////////////////////////////
 
          $instance inst_nic nic_lib:nic
-                enable_mac                  => nic_mac_enable // output
+                MAC_ENABLE                  => nic_mac_enable // output
                 AFB_NIC_REQUEST             => AFB_TO_NIC_REQUEST 
                 AFB_NIC_RESPONSE            => NIC_TO_AFB_RESPONSE 
                 MEMORY_TO_NIC_RESPONSE      => ACB_TO_NIC_RESPONSE 
                 NIC_TO_MEMORY_REQUEST       => NIC_TO_ACB_REQUEST  
                 mac_to_nic_data             => rx_concat_to_nic_data //input
                 nic_to_mac_transmit_pipe    => nic_to_tx_deconcat_data //output
-                nic_intr                    => NIC_INTERRUPT_TO_PROCESSOR
+                NIC_INTR                    => NIC_INTERRUPT_TO_PROCESSOR
 
 	// tie the interrupt off for now.
 	$thread tie_interrupt_off

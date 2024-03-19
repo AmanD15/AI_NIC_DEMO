@@ -59,21 +59,28 @@
 #include "lwip/snmp.h"
 #include "lwip/etharp.h"
 
+#include "netif/ethernet.h"
 
 #include <cortos.h>
 #include <ajit_access_routines.h>
 #include <ajit_mt_irc.h>
 #include <core_portme.h>
 
-#define BUFFER_SIZE_IN_BYTES 32
+#define BUFFER_SIZE_IN_BYTES 64
 #define IFNAME0 'e'
 #define IFNAME1 'n'
 #define ETHERNET_MTU 1500
+#define ETHER_FRAME_LEN 64
 
 // The Qs
 CortosQueueHeader* free_queue;
 CortosQueueHeader* rx_queue;
 CortosQueueHeader* tx_queue;
+
+
+
+  
+
 
 // The array to store ptr to buffers
 
@@ -126,6 +133,8 @@ low_level_output(struct netif *netif, struct pbuf *p);
 
 err_t 
 netif_initialize(struct netif *netif);
+
+void printEthernetFrame(uint8_t *ethernetFrame, int start,int length,int tab);
 
 #endif /* LWIP_HDR_ETHERNETIF_H */
 
