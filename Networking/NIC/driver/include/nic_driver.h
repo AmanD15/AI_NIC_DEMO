@@ -140,5 +140,10 @@ void getNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 void configureNic (NicConfiguration* config);
 void enableNic  (uint32_t nic_id, uint8_t enable_interrupt, uint8_t enable_nic);
 void disableNic (uint32_t nic_id);
+
+// The following routine gives the PA for the specified VA
+// 
+// returns 0 if translation is successful (*pa holds the return value)
+int translateVaToPa (uint32_t va, uint64_t* pa);
 		
 #endif
