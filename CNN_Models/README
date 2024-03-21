@@ -35,16 +35,13 @@ ResNet-18 with 8-bit quantization       CIFAR-10          88 %                  
 
 ResNet-18 with float32 data type        CIFAR-10          92 %                  86%
 
-
-
 ResNet-18 with float32 data type        MNIST-Digit       99.5 %                99%
 
 ResNet-18 with 8 bit posit conversion   MNIST-Digit       99 %                  94%
 (32 bit float operation)
 
-ResNet-18 with float16 data type        MNIST-Digit       In Progress
-
-
+ResNet-18 with 8bit posit conversion    MNIST-Digit       98%                   93%
+(16 bit float operation)
 
 LeNet-5 with 32 bit float               MNIST-Digit       96.48%                96.42%
 
@@ -58,5 +55,5 @@ LeNet-5 with 8 bit posit conversion     MNIST-Digit       88.7%                 
 
 
 Observations
-    - In LeNet-5, conversion from full precision to half precision operations did not give significant 
-        change in accuracy
+    - In LeNet-5, conversion from full precision to half precision operations did not change
+        accuracy much
