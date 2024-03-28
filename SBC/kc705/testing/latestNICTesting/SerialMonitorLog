@@ -1,37 +1,41 @@
-22:44:57.692 -> Started
-22:44:57.692 -> Reserved queues in non cacheable region: free=0x41ffff80, rx=0x41ffff10, tx=0x41fffe90
-22:44:57.726 -> free_queue address: VA = 0x41ffff80 , PA = 0x0000000041ffff80 
-22:44:57.726 -> free_queue lock address: VA = 0x40014001 , PA = 0x0000000040014001 
-22:44:57.726 -> free_queue buffer address: VA = 0x41ffff78 , PA = 0x0000000041ffff78 
-22:44:57.726 -> rx_queue address: VA = 0x41ffff10 , PA = 0x0000000041ffff10 
-22:44:57.726 -> rx_queue lock address: VA = 0x40014006 , PA = 0x0000000040014006 
-22:44:57.761 -> rx_queue buffer address: VA = 0x41ffff00 , PA = 0x0000000041ffff00 
-22:44:57.761 -> tx_queue address: VA = 0x41fffe90 , PA = 0x0000000041fffe90 
-22:44:57.761 -> tx_queue lock address: VA = 0x40014007 , PA = 0x0000000040014007 
-22:44:57.761 -> tx_queue buffer address: VA = 0x41fffe88 , PA = 0x0000000041fffe88 
-22:44:57.761 -> free_queue addr: 0000000041ffff80,free_queue lock addr: 0000000040014001,free_queue buffer addr: 0000000041ffff78
-22:44:57.761 -> rx_queue addr: 0000000041ffff10,rx_queue lock addr: 0000000040014006,rx_queue buffer addr: 0000000041ffff00 
-22:44:57.795 -> tx_queue addr: 0000000041fffe90,tx_queue lock addr: 0000000040014007,tx_queue buffer addr: 0000000041fffe88 
-22:44:57.795 -> Allocated Buffer[0] VA = 0x41fffe40
-22:44:57.795 -> Allocated Buffer[1] VA = 0x41fffdf8
-22:44:57.795 -> Allocated Buffer[2] VA = 0x41fffdb0
-22:44:57.795 -> Allocated Buffer[3] VA = 0x41fffd68
-22:44:57.795 -> Allocated Buffer[0] PA = 0x0000000041fffe40
-22:44:57.828 -> Allocated Buffer[1] PA = 0x0000000041fffdf8
-22:44:57.828 -> Allocated Buffer[2] PA = 0x0000000041fffdb0
-22:44:57.828 -> Allocated Buffer[3] PA = 0x0000000041fffd68
-22:44:57.828 -> Stored Buffer[0] in free-queue = 0x0000000041fffe40
-22:44:57.828 -> Stored Buffer[1] in free-queue = 0x0000000041fffdf8
-22:44:57.828 -> Stored Buffer[2] in free-queue = 0x0000000041fffdb0
-22:44:57.828 -> Stored Buffer[3] in free-queue = 0x0000000041fffd68
-22:44:57.828 -> Control register = 3
-22:44:57.828 -> Configuration Done. NIC has started
-22:45:27.796 -> packet red and sent back
-22:45:27.796 -> message_counter:1
-22:45:32.163 -> packet red and sent back
-22:45:32.163 -> message_counter:2
-22:45:33.170 -> packet red and sent back
-22:45:33.170 -> message_counter:3
-22:45:34.184 -> packet red and sent back
-22:45:34.184 -> message_counter:4
+12:31:13.418 -> Started
+12:31:13.418 -> Reserved queues in non cacheable region: free=0x41ffff80, rx=0x41ffff10, tx=0x41fffe90
+12:31:13.418 -> free_queue address: VA = 0x41ffff80 , PA = 0x0000000041ffff80 
+12:31:13.418 -> free_queue lock address: VA = 0x40014001 , PA = 0x0000000040014001 
+12:31:13.418 -> free_queue buffer start address: VA = 0x41ffff78 , PA = 0x0000000041ffff78 
+12:31:13.418 -> rx_queue address: VA = 0x41ffff10 , PA = 0x0000000041ffff10 
+12:31:13.451 -> rx_queue lock address: VA = 0x40014006 , PA = 0x0000000040014006 
+12:31:13.451 -> rx_queue buffer start address: VA = 0x41ffff00 , PA = 0x0000000041ffff00 
+12:31:13.451 -> tx_queue address: VA = 0x41fffe90 , PA = 0x0000000041fffe90 
+12:31:13.451 -> tx_queue lock address: VA = 0x40014007 , PA = 0x0000000040014007 
+12:31:13.451 -> tx_queue buffer start address: VA = 0x41fffe88 , PA = 0x0000000041fffe88 
+12:31:13.451 -> free_queue addr: 0000000041ffff80,free_queue lock addr: 0000000040014001,free_queue buffer addr: 0000000041ffff78
+12:31:13.484 -> rx_queue addr: 0000000041ffff10,rx_queue lock addr: 0000000040014006,rx_queue buffer addr: 0000000041ffff00 
+12:31:13.484 -> tx_queue addr: 0000000041fffe90,tx_queue lock addr: 0000000040014007,tx_queue buffer addr: 0000000041fffe88 
+12:31:13.484 -> Allocated Buffer[0] VA = 0x41fffe40
+12:31:13.484 -> Allocated Buffer[1] VA = 0x41fffdf8
+12:31:13.517 -> Allocated Buffer[2] VA = 0x41fffdb0
+12:31:13.517 -> Allocated Buffer[3] VA = 0x41fffd68
+12:31:13.517 -> Allocated Buffer[0] PA = 0x0000000041fffe40
+12:31:13.517 -> Allocated Buffer[1] PA = 0x0000000041fffdf8
+12:31:13.517 -> Allocated Buffer[2] PA = 0x0000000041fffdb0
+12:31:13.517 -> Allocated Buffer[3] PA = 0x0000000041fffd68
+12:31:13.517 -> Stored Buffer[0] in free-queue = 0x0000000041fffe40
+12:31:13.517 -> Stored Buffer[1] in free-queue = 0x0000000041fffdf8
+12:31:13.517 -> Stored Buffer[2] in free-queue = 0x0000000041fffdb0
+12:31:13.550 -> Stored Buffer[3] in free-queue = 0x0000000041fffd68
+12:31:13.550 -> Control register = 0x00000003
+12:31:13.550 -> Configuration Done. NIC has started
+12:31:29.996 -> packet red and sent back, buffer used = 210ed5c9e27dc32c
+12:31:30.029 -> message_counter:1
+12:31:30.029 -> transmitted packet = 0, Received packet = 0, status register = 1
+12:31:31.044 -> packet red and sent back, buffer used = 2d4e62a4f04a936d
+12:31:31.044 -> message_counter:2
+12:31:31.044 -> transmitted packet = 151618, Received packet = 0, status register = 1
+12:31:32.046 -> packet red and sent back, buffer used = 6dd6e3de7448abad
+12:31:32.046 -> message_counter:3
+12:31:32.046 -> transmitted packet = 299378, Received packet = 0, status register = 1
+12:31:33.047 -> packet red and sent back, buffer used = 6d6ff31fe159c70d
+12:31:33.080 -> message_counter:4
+12:31:33.080 -> transmitted packet = 299378, Received packet = 0, status register = 1
 

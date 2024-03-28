@@ -120,7 +120,7 @@ int main()
 
 	enableNic (0,0,1,1);
 	uint32_t controlReg = readFromNicReg (0,0);
-	cortos_printf("Control register = %lx\n",controlReg);
+	cortos_printf("Control register = 0x%08lx\n",controlReg);
 	cortos_printf ("Configuration Done. NIC has started\n");
 
 	
@@ -129,7 +129,9 @@ int main()
 
 	int message_counter = 0;
 	uint64_t bufptr;
-	
+	uint32_t tx_pkt_count;
+	uint32_t rx_pkt_count;
+	uint32_t status_reg;
 	while(1)
 	{
 		
@@ -139,9 +141,15 @@ int main()
 			
 			msgs_written = cortos_writeMessages(tx_queue, (uint8_t*)(&bufptr), 1);
 			if(msgs_written)
-				cortos_printf("packet red and sent back\n");
+				cortos_printf("packet red and sent back, buffer used = %016llx\n",bufptr);
 			message_counter++;
 			cortos_printf("message_counter:%d\n",message_counter);
+
+			probeNic (0,&tx_pkt_count,&rx_pkt_count,&status_reg);
+			cortos_printf("transmitted packet = %u, Received packet = %u, status register = %u\n",
+			 tx_pkt_count, rx_pkt_count,status_reg);
+
+
 	
 
 		}	

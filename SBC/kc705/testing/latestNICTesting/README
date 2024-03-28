@@ -68,18 +68,12 @@
   
 5. Observations
 -------------------------------
-    - Wireshark displays double the number of sent packets on the ethernet interface with 
-      source and destination MAC addresses, swapped.
-    - RTT time can be observed in Wireshark.
-    - for 10 Mbps  link avg RTT : 0.3ms
-    - for 100 Mbps link avg RTT : 0.1ms
+	- Transmit Led is always on
+	- when we are getting error, its in cortos lock release function
+	- not going to error mode in most tests
 
 
-6. TODO
--------------------------------
-    - work on VIO script.
-    - Send ICMP packets via driver
-    - 
+
     
 
 

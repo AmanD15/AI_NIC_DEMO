@@ -91,6 +91,8 @@ void enableNic  (uint32_t nic_id, uint8_t enable_interrupt, uint8_t enable_mac, 
 	writeNicControlRegister (nic_id, (enable_interrupt << 2) |(enable_mac << 1) | enable_nic);
 }
 
+
+
 void disableNic (uint32_t nic_id)
 {
 	writeNicControlRegister (nic_id, 0);
