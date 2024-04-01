@@ -3,7 +3,7 @@
 
 
 #define NUMBER_OF_BUFFERS 4
-#define BUFFER_SIZE_IN_BYTES 64
+#define BUFFER_SIZE_IN_BYTES 128
 #define NIC_START_ADDR 0xFF000000
 
 void findQueuePhyAddr(char*,CortosQueueHeader*,uint64_t*,uint64_t*,uint64_t*);
@@ -14,6 +14,11 @@ CortosQueueHeader* tx_queue;
 
 volatile uint32_t*  BufferPtrsVA[NUMBER_OF_BUFFERS];
 volatile uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
+
+//////////////////////////////////////
+
+
+//////////////////////////////////////
 
 int main()
 {
@@ -26,6 +31,16 @@ int main()
 	uint32_t length = 8;
 	uint8_t nonCacheable = 1;
 
+	
+	// Step 5 : Allocating Packet buffers
+
+	int i,status;
+	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
+	{
+		BufferPtrsVA[i] = (uint32_t*) cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
+		cortos_printf("Allocated Buffer[%d] VA = 0x%08lx\n", i,(uint32_t)BufferPtrsVA[i]);
+	}
+	
 	free_queue = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
 	rx_queue   = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
 	tx_queue   = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
@@ -85,6 +100,7 @@ int main()
 	storedPA[6]  ,storedPA[7] ,storedPA[8]);
 
 
+	/*
 	// Step 5 : Allocating Packet buffers
 
 	int i,status;
@@ -93,7 +109,7 @@ int main()
 		BufferPtrsVA[i] = (uint32_t*) cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
 		cortos_printf("Allocated Buffer[%d] VA = 0x%08lx\n", i,(uint32_t)BufferPtrsVA[i]);
 	}
-
+	*/
 		// Converting to PA
 	
 	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
@@ -116,6 +132,18 @@ int main()
 		cortos_printf("Stored Buffer[%d] in free-queue = 0x%016llx\n", i, BufferPtrsPA[i]);
 	}
 
+		
+		// Ensuring buffers are stored properly in free queue.
+			uint8_t* addr  = (uint8_t*)(free_queue + 1);
+			cortos_printf("no. of item in free queue: %u\n",free_queue->totalMsgs);
+			
+			for(i=0 ; i <free_queue->totalMsgs;i++)
+				cortos_printf("bufferPtr(PA) stored in freeQ at : 0x%08lx is 0x%016llx\n",
+				(uint32_t)(addr + 8*i),*( (uint64_t*)(addr + 8*i) ));
+
+		
+
+
 	// Step 7 : Enabling the NIC.
 
 	enableNic (0,0,1,1);
@@ -129,6 +157,7 @@ int main()
 
 	int message_counter = 0;
 	uint64_t bufptr;
+	
 	uint32_t tx_pkt_count;
 	uint32_t rx_pkt_count;
 	uint32_t status_reg;
@@ -138,10 +167,10 @@ int main()
 
 		if(cortos_readMessages(rx_queue, (uint8_t*)(&bufptr), 1)){
 
-			
+			cortos_printf("bufferPtr(PA) red = %016llx\n",bufptr);
 			msgs_written = cortos_writeMessages(tx_queue, (uint8_t*)(&bufptr), 1);
 			if(msgs_written)
-				cortos_printf("packet red and sent back, buffer used = %016llx\n",bufptr);
+				cortos_printf("bufferPtr(PA) written = %016llx\n",bufptr);
 			message_counter++;
 			cortos_printf("message_counter:%d\n",message_counter);
 
@@ -149,8 +178,6 @@ int main()
 			cortos_printf("transmitted packet = %u, Received packet = %u, status register = %u\n",
 			 tx_pkt_count, rx_pkt_count,status_reg);
 
-
-	
 
 		}	
 		else
@@ -162,7 +189,7 @@ int main()
 
 		
 		
-		if(message_counter == 512)break;
+		if(message_counter == 2048)break;
 
 	}
 	
@@ -182,7 +209,7 @@ int main()
 	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
 	{
 		cortos_printf("Releasing buffer[%d] 0x%lx\n",i,(uint32_t)BufferPtrsVA[i]);
-		cortos_brel_ncram((void*)BufferPtrsVA[i]);
+		cortos_brel_ncram(BufferPtrsVA[i]);
 		cortos_printf("Released  buffer[%d] 0x%lx\n",i,(uint32_t)BufferPtrsVA[i]);
 		
 	}
@@ -212,9 +239,9 @@ void findQueuePhyAddr(char *s,CortosQueueHeader* Q_VA,
 	else
 		cortos_printf("%s lock address translation not found\n", s);
 
-	foundPTE = translateVaToPa((uint32_t)(Q_VA->bget_addr), Qbuf_PA);
+	foundPTE = translateVaToPa((uint32_t)(Q_VA + 1), Qbuf_PA);
 	if(foundPTE == 0)
-		cortos_printf("%s buffer start address: VA = 0x%lx , PA = 0x%016llx \n",s,(uint32_t)(Q_VA->bget_addr),*Qbuf_PA);
+		cortos_printf("%s buffer start address: VA = 0x%lx , PA = 0x%016llx \n",s,(uint32_t)(Q_VA + 1),*Qbuf_PA);
 	else
 		cortos_printf("%s buffer address translation not found\n", s);
 

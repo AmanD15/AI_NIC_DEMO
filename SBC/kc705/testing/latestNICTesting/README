@@ -68,13 +68,31 @@
   
 5. Observations
 -------------------------------
+	Problem:
+
 	- Transmit Led is always on
-	- when we are getting error, its in cortos lock release function
-	- not going to error mode in most tests
+	- Reason for junk bufferPtr: wrong buffer start address configured in NIC reg.
 
+	Fixed buffer addresses:
+	
+	- In the main program queues allocated first, then buffers (Queues allocated in lower region of NCRAM and 
+	  buffers are above ) => giving problems.
 
+	- when we are getting error, its in cortos lock release function(0x40000330: clrb  [ %i0 ],  i0 holds 0x0) 
+		or wait_for_lock. (happens in the beginning of test, when first packet is sent)
 
-    
+	Corrected TX and RX packet count register and new bitfile generated:
+
+	- In the main program still queues allocated first, then buffers (Queues allocated in lower region of NCRAM and 
+	  buffers are above ) => works ok in short test, in long test gives problem.
+
+	- when we are getting error, its in cortos lock release function(0x40000330: clrb  [ %i0 ], i0 holds 0x0) 
+		or wait_for_lock.(happens later in the test)
+		
+	Current Status:
+
+   	- In the main program, now buffers allocated first, Queues later (buffer allocated in lower region of NCRAM and 
+	   queues are above ) => works fine in long test (40 min: 2048 packets loopbacked)
 
 
 

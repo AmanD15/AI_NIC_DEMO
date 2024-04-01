@@ -1,41 +1,325 @@
-12:31:13.418 -> Started
-12:31:13.418 -> Reserved queues in non cacheable region: free=0x41ffff80, rx=0x41ffff10, tx=0x41fffe90
-12:31:13.418 -> free_queue address: VA = 0x41ffff80 , PA = 0x0000000041ffff80 
-12:31:13.418 -> free_queue lock address: VA = 0x40014001 , PA = 0x0000000040014001 
-12:31:13.418 -> free_queue buffer start address: VA = 0x41ffff78 , PA = 0x0000000041ffff78 
-12:31:13.418 -> rx_queue address: VA = 0x41ffff10 , PA = 0x0000000041ffff10 
-12:31:13.451 -> rx_queue lock address: VA = 0x40014006 , PA = 0x0000000040014006 
-12:31:13.451 -> rx_queue buffer start address: VA = 0x41ffff00 , PA = 0x0000000041ffff00 
-12:31:13.451 -> tx_queue address: VA = 0x41fffe90 , PA = 0x0000000041fffe90 
-12:31:13.451 -> tx_queue lock address: VA = 0x40014007 , PA = 0x0000000040014007 
-12:31:13.451 -> tx_queue buffer start address: VA = 0x41fffe88 , PA = 0x0000000041fffe88 
-12:31:13.451 -> free_queue addr: 0000000041ffff80,free_queue lock addr: 0000000040014001,free_queue buffer addr: 0000000041ffff78
-12:31:13.484 -> rx_queue addr: 0000000041ffff10,rx_queue lock addr: 0000000040014006,rx_queue buffer addr: 0000000041ffff00 
-12:31:13.484 -> tx_queue addr: 0000000041fffe90,tx_queue lock addr: 0000000040014007,tx_queue buffer addr: 0000000041fffe88 
-12:31:13.484 -> Allocated Buffer[0] VA = 0x41fffe40
-12:31:13.484 -> Allocated Buffer[1] VA = 0x41fffdf8
-12:31:13.517 -> Allocated Buffer[2] VA = 0x41fffdb0
-12:31:13.517 -> Allocated Buffer[3] VA = 0x41fffd68
-12:31:13.517 -> Allocated Buffer[0] PA = 0x0000000041fffe40
-12:31:13.517 -> Allocated Buffer[1] PA = 0x0000000041fffdf8
-12:31:13.517 -> Allocated Buffer[2] PA = 0x0000000041fffdb0
-12:31:13.517 -> Allocated Buffer[3] PA = 0x0000000041fffd68
-12:31:13.517 -> Stored Buffer[0] in free-queue = 0x0000000041fffe40
-12:31:13.517 -> Stored Buffer[1] in free-queue = 0x0000000041fffdf8
-12:31:13.517 -> Stored Buffer[2] in free-queue = 0x0000000041fffdb0
-12:31:13.550 -> Stored Buffer[3] in free-queue = 0x0000000041fffd68
-12:31:13.550 -> Control register = 0x00000003
-12:31:13.550 -> Configuration Done. NIC has started
-12:31:29.996 -> packet red and sent back, buffer used = 210ed5c9e27dc32c
-12:31:30.029 -> message_counter:1
-12:31:30.029 -> transmitted packet = 0, Received packet = 0, status register = 1
-12:31:31.044 -> packet red and sent back, buffer used = 2d4e62a4f04a936d
-12:31:31.044 -> message_counter:2
-12:31:31.044 -> transmitted packet = 151618, Received packet = 0, status register = 1
-12:31:32.046 -> packet red and sent back, buffer used = 6dd6e3de7448abad
-12:31:32.046 -> message_counter:3
-12:31:32.046 -> transmitted packet = 299378, Received packet = 0, status register = 1
-12:31:33.047 -> packet red and sent back, buffer used = 6d6ff31fe159c70d
-12:31:33.080 -> message_counter:4
-12:31:33.080 -> transmitted packet = 299378, Received packet = 0, status register = 1
+18:30:46.624 -> Started
+18:30:46.624 -> Allocated Buffer[0] VA = 0x41ffff68
+18:30:46.624 -> Allocated Buffer[1] VA = 0x41fffee0
+18:30:46.624 -> Allocated Buffer[2] VA = 0x41fffe58
+18:30:46.624 -> Allocated Buffer[3] VA = 0x41fffdd0
+18:30:46.624 -> Reserved queues in non cacheable region: free=0x41fffd60, rx=0x41fffcf0, tx=0x41fffc70
+18:30:46.657 -> free_queue address: VA = 0x41fffd60 , PA = 0x0000000041fffd60 
+18:30:46.657 -> free_queue lock address: VA = 0x40014001 , PA = 0x0000000040014001 
+18:30:46.657 -> free_queue buffer start address: VA = 0x41fffd80 , PA = 0x0000000041fffd80 
+18:30:46.657 -> rx_queue address: VA = 0x41fffcf0 , PA = 0x0000000041fffcf0 
+18:30:46.657 -> rx_queue lock address: VA = 0x40014006 , PA = 0x0000000040014006 
+18:30:46.690 -> rx_queue buffer start address: VA = 0x41fffd10 , PA = 0x0000000041fffd10 
+18:30:46.690 -> tx_queue address: VA = 0x41fffc70 , PA = 0x0000000041fffc70 
+18:30:46.690 -> tx_queue lock address: VA = 0x40014007 , PA = 0x0000000040014007 
+18:30:46.690 -> tx_queue buffer start address: VA = 0x41fffc90 , PA = 0x0000000041fffc90 
+18:30:46.690 -> free_queue addr: 0000000041fffd60,free_queue lock addr: 0000000040014001,free_queue buffer addr: 0000000041fffd80
+18:30:46.723 -> rx_queue addr: 0000000041fffcf0,rx_queue lock addr: 0000000040014006,rx_queue buffer addr: 0000000041fffd10 
+18:30:46.723 -> tx_queue addr: 0000000041fffc70,tx_queue lock addr: 0000000040014007,tx_queue buffer addr: 0000000041fffc90 
+18:30:46.723 -> Allocated Buffer[0] PA = 0x0000000041ffff68
+18:30:46.723 -> Allocated Buffer[1] PA = 0x0000000041fffee0
+18:30:46.723 -> Allocated Buffer[2] PA = 0x0000000041fffe58
+18:30:46.757 -> Allocated Buffer[3] PA = 0x0000000041fffdd0
+18:30:46.757 -> Stored Buffer[0] in free-queue = 0x0000000041ffff68
+18:30:46.757 -> Stored Buffer[1] in free-queue = 0x0000000041fffee0
+18:30:46.757 -> Stored Buffer[2] in free-queue = 0x0000000041fffe58
+18:30:46.757 -> Stored Buffer[3] in free-queue = 0x0000000041fffdd0
+18:30:46.757 -> Control register = 0x00000003
+18:30:46.757 -> Configuration Done. NIC has started
+18:31:31.060 -> bufferPtr(PA) red = 0000000041ffff68
+18:31:31.060 -> bufferPtr(PA) written = 0000000041ffff68
+18:31:31.060 -> message_counter:1
+18:31:31.060 -> transmitted packet = 0, Received packet = 0, status register = 1
+18:31:32.085 -> bufferPtr(PA) red = 0000000041fffee0
+18:31:32.085 -> bufferPtr(PA) written = 0000000041fffee0
+18:31:32.085 -> message_counter:2
+18:31:32.085 -> transmitted packet = 146875, Received packet = 0, status register = 1
+18:31:33.080 -> bufferPtr(PA) red = 0000000041fffe58
+18:31:33.080 -> bufferPtr(PA) written = 0000000041fffe58
+18:31:33.080 -> message_counter:3
+18:31:33.080 -> transmitted packet = 293445, Received packet = 0, status register = 1
+18:31:34.084 -> bufferPtr(PA) red = 0000000041fffdd0
+18:31:34.084 -> bufferPtr(PA) written = 0000000041fffdd0
+18:31:34.084 -> message_counter:4
+18:31:34.084 -> transmitted packet = 439972, Received packet = 0, status register = 1
+18:31:35.076 -> bufferPtr(PA) red = 0000000041ffff68
+18:31:35.076 -> bufferPtr(PA) written = 0000000041ffff68
+18:31:35.076 -> message_counter:5
+18:31:35.076 -> transmitted packet = 586651, Received packet = 0, status register = 1
+18:31:35.574 -> bufferPtr(PA) red = 0000000041fffee0
+18:31:35.574 -> bufferPtr(PA) written = 0000000041fffee0
+18:31:35.574 -> message_counter:6
+18:31:35.574 -> transmitted packet = 659045, Received packet = 0, status register = 1
+18:31:36.070 -> bufferPtr(PA) red = 0000000041fffe58
+18:31:36.070 -> bufferPtr(PA) written = 0000000041fffe58
+18:31:36.070 -> message_counter:7
+18:31:36.103 -> transmitted packet = 734108, Received packet = 0, status register = 1
+18:31:37.072 -> bufferPtr(PA) red = 0000000041fffdd0
+18:31:37.072 -> bufferPtr(PA) written = 0000000041fffdd0
+18:31:37.109 -> message_counter:8
+18:31:37.109 -> transmitted packet = 881386, Received packet = 0, status register = 1
+18:31:38.071 -> bufferPtr(PA) red = 0000000041ffff68
+18:31:38.104 -> bufferPtr(PA) written = 0000000041ffff68
+18:31:38.104 -> message_counter:9
+18:31:38.104 -> transmitted packet = 1028041, Received packet = 0, status register = 1
+18:31:39.096 -> bufferPtr(PA) red = 0000000041fffee0
+18:31:39.096 -> bufferPtr(PA) written = 0000000041fffee0
+18:31:39.096 -> message_counter:10
+18:31:39.096 -> transmitted packet = 1174579, Received packet = 0, status register = 1
+18:31:40.089 -> bufferPtr(PA) red = 0000000041fffe58
+18:31:40.089 -> bufferPtr(PA) written = 0000000041fffe58
+18:31:40.089 -> message_counter:11
+18:31:40.089 -> transmitted packet = 1321110, Received packet = 0, status register = 1
+18:31:41.080 -> bufferPtr(PA) red = 0000000041fffdd0
+18:31:41.080 -> bufferPtr(PA) written = 0000000041fffdd0
+18:31:41.080 -> message_counter:12
+18:31:41.080 -> transmitted packet = 1467626, Received packet = 0, status register = 1
+18:31:42.073 -> bufferPtr(PA) red = 0000000041ffff68
+18:31:42.106 -> bufferPtr(PA) written = 0000000041ffff68
+18:31:42.106 -> message_counter:13
+18:31:42.106 -> transmitted packet = 1614147, Received packet = 0, status register = 1
+18:31:43.105 -> bufferPtr(PA) red = 0000000041fffee0
+18:31:43.105 -> bufferPtr(PA) written = 0000000041fffee0
+18:31:43.105 -> message_counter:14
+18:31:43.105 -> transmitted packet = 1760893, Received packet = 0, status register = 1
+18:31:44.114 -> bufferPtr(PA) red = 0000000041fffe58
+18:31:44.114 -> bufferPtr(PA) written = 0000000041fffe58
+18:31:44.114 -> message_counter:15
+18:31:44.114 -> transmitted packet = 1908041, Received packet = 0, status register = 1
+18:31:45.103 -> bufferPtr(PA) red = 0000000041fffdd0
+18:31:45.103 -> bufferPtr(PA) written = 0000000041fffdd0
+18:31:45.103 -> message_counter:16
+18:31:45.103 -> transmitted packet = 2055204, Received packet = 0, status register = 1
+18:31:46.101 -> bufferPtr(PA) red = 0000000041ffff68
+18:31:46.101 -> bufferPtr(PA) written = 0000000041ffff68
+18:31:46.101 -> message_counter:17
+18:31:46.101 -> transmitted packet = 2201721, Received packet = 0, status register = 1
+18:31:47.093 -> bufferPtr(PA) red = 0000000041fffee0
+18:31:47.093 -> bufferPtr(PA) written = 0000000041fffee0
+18:31:47.093 -> message_counter:18
+18:31:47.126 -> transmitted packet = 2348616, Received packet = 0, status register = 1
+18:31:48.098 -> bufferPtr(PA) red = 0000000041fffe58
+18:31:48.098 -> bufferPtr(PA) written = 0000000041fffe58
+18:31:48.098 -> message_counter:19
+18:31:48.131 -> transmitted packet = 2495522, Received packet = 0, status register = 1
+18:31:49.097 -> bufferPtr(PA) red = 0000000041fffdd0
+18:31:49.097 -> bufferPtr(PA) written = 0000000041fffdd0
+18:31:49.131 -> message_counter:20
+18:31:49.131 -> transmitted packet = 2642484, Received packet = 0, status register = 1
+18:31:50.125 -> bufferPtr(PA) red = 0000000041ffff68
+18:31:50.125 -> bufferPtr(PA) written = 0000000041ffff68
+18:31:50.125 -> message_counter:21
+18:31:50.125 -> transmitted packet = 2789017, Received packet = 0, status register = 1
+18:31:51.130 -> bufferPtr(PA) red = 0000000041fffee0
+18:31:51.130 -> bufferPtr(PA) written = 0000000041fffee0
+18:31:51.130 -> message_counter:22
+18:31:51.130 -> transmitted packet = 2935982, Received packet = 0, status register = 1
+18:31:52.127 -> bufferPtr(PA) red = 0000000041fffe58
+18:31:52.127 -> bufferPtr(PA) written = 0000000041fffe58
+18:31:52.127 -> message_counter:23
+18:31:52.160 -> transmitted packet = 3085729, Received packet = 0, status register = 1
+18:31:53.132 -> bufferPtr(PA) red = 0000000041fffdd0
+18:31:53.132 -> bufferPtr(PA) written = 0000000041fffdd0
+18:31:53.132 -> message_counter:24
+18:31:53.165 -> transmitted packet = 3232813, Received packet = 0, status register = 1
+18:31:54.127 -> bufferPtr(PA) red = 0000000041ffff68
+18:31:54.127 -> bufferPtr(PA) written = 0000000041ffff68
+18:31:54.161 -> message_counter:25
+18:31:54.161 -> transmitted packet = 3379324, Received packet = 0, status register = 1
+18:31:55.154 -> bufferPtr(PA) red = 0000000041fffee0
+18:31:55.154 -> bufferPtr(PA) written = 0000000041fffee0
+18:31:55.154 -> message_counter:26
+18:31:55.154 -> transmitted packet = 3525846, Received packet = 0, status register = 1
+18:31:56.146 -> bufferPtr(PA) red = 0000000041fffe58
+18:31:56.146 -> bufferPtr(PA) written = 0000000041fffe58
+18:31:56.146 -> message_counter:27
+18:31:56.146 -> transmitted packet = 3672322, Received packet = 0, status register = 1
+18:31:57.140 -> bufferPtr(PA) red = 0000000041fffdd0
+18:31:57.140 -> bufferPtr(PA) written = 0000000041fffdd0
+18:31:57.140 -> message_counter:28
+18:31:57.140 -> transmitted packet = 3818864, Received packet = 0, status register = 1
+18:31:58.141 -> bufferPtr(PA) red = 0000000041ffff68
+18:31:58.141 -> bufferPtr(PA) written = 0000000041ffff68
+18:31:58.141 -> message_counter:29
+18:31:58.141 -> transmitted packet = 3965436, Received packet = 0, status register = 1
+18:31:59.136 -> bufferPtr(PA) red = 0000000041fffee0
+18:31:59.136 -> bufferPtr(PA) written = 0000000041fffee0
+18:31:59.136 -> message_counter:30
+18:31:59.169 -> transmitted packet = 4112335, Received packet = 0, status register = 1
+18:32:00.139 -> bufferPtr(PA) red = 0000000041fffe58
+18:32:00.172 -> bufferPtr(PA) written = 0000000041fffe58
+18:32:00.172 -> message_counter:31
+18:32:00.172 -> transmitted packet = 4260239, Received packet = 0, status register = 1
+18:32:01.174 -> bufferPtr(PA) red = 0000000041fffdd0
+18:32:01.174 -> bufferPtr(PA) written = 0000000041fffdd0
+18:32:01.174 -> message_counter:32
+18:32:01.174 -> transmitted packet = 4408452, Received packet = 0, status register = 1
+18:32:02.178 -> bufferPtr(PA) red = 0000000041ffff68
+18:32:02.178 -> bufferPtr(PA) written = 0000000041ffff68
+18:32:02.178 -> message_counter:33
+18:32:02.178 -> transmitted packet = 4555890, Received packet = 0, status register = 1
+18:32:03.174 -> bufferPtr(PA) red = 0000000041fffee0
+18:32:03.174 -> bufferPtr(PA) written = 0000000041fffee0
+18:32:03.174 -> message_counter:34
+18:32:03.174 -> transmitted packet = 4702845, Received packet = 0, status register = 1
+18:32:04.167 -> bufferPtr(PA) red = 0000000041fffe58
+18:32:04.167 -> bufferPtr(PA) written = 0000000041fffe58
+18:32:04.200 -> message_counter:35
+18:32:04.200 -> transmitted packet = 4849367, Received packet = 0, status register = 1
+18:32:05.192 -> bufferPtr(PA) red = 0000000041fffdd0
+18:32:05.192 -> bufferPtr(PA) written = 0000000041fffdd0
+18:32:05.192 -> message_counter:36
+18:32:05.192 -> transmitted packet = 4995939, Received packet = 0, status register = 1
+18:32:06.187 -> bufferPtr(PA) red = 0000000041ffff68
+18:32:06.187 -> bufferPtr(PA) written = 0000000041ffff68
+18:32:06.187 -> message_counter:37
+18:32:06.187 -> transmitted packet = 5142400, Received packet = 0, status register = 1
+18:32:07.179 -> bufferPtr(PA) red = 0000000041fffee0
+18:32:07.179 -> bufferPtr(PA) written = 0000000041fffee0
+18:32:07.179 -> message_counter:38
+18:32:07.179 -> transmitted packet = 5288925, Received packet = 0, status register = 1
+18:32:07.623 -> bufferPtr(PA) red = 0000000041fffe58
+18:32:07.623 -> bufferPtr(PA) written = 0000000041fffe58
+18:32:07.623 -> message_counter:39
+18:32:07.623 -> transmitted packet = 5352805, Received packet = 0, status register = 1
+18:32:08.186 -> bufferPtr(PA) red = 0000000041fffdd0
+18:32:08.186 -> bufferPtr(PA) written = 0000000041fffdd0
+18:32:08.186 -> message_counter:40
+18:32:08.186 -> transmitted packet = 5435572, Received packet = 0, status register = 1
+18:32:09.184 -> bufferPtr(PA) red = 0000000041ffff68
+18:32:09.184 -> bufferPtr(PA) written = 0000000041ffff68
+18:32:09.184 -> message_counter:41
+18:32:09.184 -> transmitted packet = 5582100, Received packet = 0, status register = 1
+18:32:10.179 -> bufferPtr(PA) red = 0000000041fffee0
+18:32:10.179 -> bufferPtr(PA) written = 0000000041fffee0
+18:32:10.179 -> message_counter:42
+18:32:10.179 -> transmitted packet = 5728705, Received packet = 0, status register = 1
+18:32:11.172 -> bufferPtr(PA) red = 0000000041fffe58
+18:32:11.172 -> bufferPtr(PA) written = 0000000041fffe58
+18:32:11.205 -> message_counter:43
+18:32:11.205 -> transmitted packet = 5875284, Received packet = 0, status register = 1
+18:32:12.197 -> bufferPtr(PA) red = 0000000041fffdd0
+18:32:12.197 -> bufferPtr(PA) written = 0000000041fffdd0
+18:32:12.197 -> message_counter:44
+18:32:12.197 -> transmitted packet = 6023326, Received packet = 0, status register = 1
+18:32:13.189 -> bufferPtr(PA) red = 0000000041ffff68
+18:32:13.189 -> bufferPtr(PA) written = 0000000041ffff68
+18:32:13.189 -> message_counter:45
+18:32:13.189 -> transmitted packet = 6169805, Received packet = 0, status register = 1
+18:32:14.186 -> bufferPtr(PA) red = 0000000041fffee0
+18:32:14.186 -> bufferPtr(PA) written = 0000000041fffee0
+18:32:14.186 -> message_counter:46
+18:32:14.186 -> transmitted packet = 6316264, Received packet = 0, status register = 1
+18:32:15.191 -> bufferPtr(PA) red = 0000000041fffe58
+18:32:15.191 -> bufferPtr(PA) written = 0000000041fffe58
+18:32:15.191 -> message_counter:47
+18:32:15.191 -> transmitted packet = 6462950, Received packet = 0, status register = 1
+18:32:16.188 -> bufferPtr(PA) red = 0000000041fffdd0
+18:32:16.188 -> bufferPtr(PA) written = 0000000041fffdd0
+18:32:16.188 -> message_counter:48
+18:32:16.188 -> transmitted packet = 6609460, Received packet = 0, status register = 1
+18:32:17.195 -> bufferPtr(PA) red = 0000000041ffff68
+18:32:17.195 -> bufferPtr(PA) written = 0000000041ffff68
+18:32:17.195 -> message_counter:49
+18:32:17.195 -> transmitted packet = 6755943, Received packet = 0, status register = 1
+18:32:18.188 -> bufferPtr(PA) red = 0000000041fffee0
+18:32:18.188 -> bufferPtr(PA) written = 0000000041fffee0
+18:32:18.188 -> message_counter:50
+18:32:18.188 -> transmitted packet = 6902412, Received packet = 0, status register = 1
+18:32:19.194 -> bufferPtr(PA) red = 0000000041fffe58
+18:32:19.194 -> bufferPtr(PA) written = 0000000041fffe58
+18:32:19.194 -> message_counter:51
+18:32:19.194 -> transmitted packet = 7048874, Received packet = 0, status register = 1
+18:32:20.191 -> bufferPtr(PA) red = 0000000041fffdd0
+18:32:20.191 -> bufferPtr(PA) written = 0000000041fffdd0
+18:32:20.191 -> message_counter:52
+18:32:20.191 -> transmitted packet = 7195334, Received packet = 0, status register = 1
+18:32:21.187 -> bufferPtr(PA) red = 0000000041ffff68
+18:32:21.187 -> bufferPtr(PA) written = 0000000041ffff68
+18:32:21.187 -> message_counter:53
+18:32:21.220 -> transmitted packet = 7341803, Received packet = 0, status register = 1
+18:32:22.210 -> bufferPtr(PA) red = 0000000041fffee0
+18:32:22.210 -> bufferPtr(PA) written = 0000000041fffee0
+18:32:22.210 -> message_counter:54
+18:32:22.210 -> transmitted packet = 7488266, Received packet = 0, status register = 1
+18:32:23.202 -> bufferPtr(PA) red = 0000000041fffe58
+18:32:23.202 -> bufferPtr(PA) written = 0000000041fffe58
+18:32:23.202 -> message_counter:55
+18:32:23.202 -> transmitted packet = 7634725, Received packet = 0, status register = 1
+18:32:24.199 -> bufferPtr(PA) red = 0000000041fffdd0
+18:32:24.199 -> bufferPtr(PA) written = 0000000041fffdd0
+18:32:24.199 -> message_counter:56
+18:32:24.199 -> transmitted packet = 7781190, Received packet = 0, status register = 1
+18:32:25.198 -> bufferPtr(PA) red = 0000000041ffff68
+18:32:25.198 -> bufferPtr(PA) written = 0000000041ffff68
+18:32:25.198 -> message_counter:57
+18:32:25.198 -> transmitted packet = 7927649, Received packet = 0, status register = 1
+18:32:26.194 -> bufferPtr(PA) red = 0000000041fffee0
+18:32:26.194 -> bufferPtr(PA) written = 0000000041fffee0
+18:32:26.194 -> message_counter:58
+18:32:26.194 -> transmitted packet = 8074108, Received packet = 0, status register = 1
+18:32:27.188 -> bufferPtr(PA) red = 0000000041fffe58
+18:32:27.188 -> bufferPtr(PA) written = 0000000041fffe58
+18:32:27.221 -> message_counter:59
+18:32:27.221 -> transmitted packet = 8220569, Received packet = 0, status register = 1
+18:32:28.187 -> bufferPtr(PA) red = 0000000041fffdd0
+18:32:28.187 -> bufferPtr(PA) written = 0000000041fffdd0
+18:32:28.220 -> message_counter:60
+18:32:28.220 -> transmitted packet = 8367063, Received packet = 0, status register = 1
+18:32:29.213 -> bufferPtr(PA) red = 0000000041ffff68
+18:32:29.213 -> bufferPtr(PA) written = 0000000041ffff68
+18:32:29.213 -> message_counter:61
+18:32:29.213 -> transmitted packet = 8513521, Received packet = 0, status register = 1
+18:32:30.210 -> bufferPtr(PA) red = 0000000041fffee0
+18:32:30.210 -> bufferPtr(PA) written = 0000000041fffee0
+18:32:30.210 -> message_counter:62
+18:32:30.210 -> transmitted packet = 8659982, Received packet = 0, status register = 1
+18:32:31.202 -> bufferPtr(PA) red = 0000000041fffe58
+18:32:31.202 -> bufferPtr(PA) written = 0000000041fffe58
+18:32:31.202 -> message_counter:63
+18:32:31.202 -> transmitted packet = 8806443, Received packet = 0, status register = 1
+18:32:32.200 -> bufferPtr(PA) red = 0000000041fffdd0
+18:32:32.200 -> bufferPtr(PA) written = 0000000041fffdd0
+18:32:32.200 -> message_counter:64
+18:32:32.200 -> transmitted packet = 8952907, Received packet = 0, status register = 1
+18:32:32.200 -> Releasing buffer[0] 0x41ffff68
+18:32:32.200 -> Released  buffer[0] 0x41ffff68
+18:32:32.233 -> Releasing buffer[1] 0x41fffee0
+18:32:32.233 -> Released  buffer[1] 0x41fffee0
+18:32:32.233 -> Releasing buffer[2] 0x41fffe58
+18:32:32.233 -> Released  buffer[2] 0x41fffe58
+18:32:32.233 -> Releasing buffer[3] 0x41fffdd0
+18:32:32.233 -> Released  buffer[3] 0x41fffdd0
+18:34:34.567 -> Started
+18:34:34.567 -> Reserved queues in non cacheable region: free=0x41ffff80, rx=0x41ffff10, tx=0x41fffe90
+18:34:34.567 -> free_queue address: VA = 0x41ffff80 , PA = 0x0000000041ffff80 
+18:34:34.567 -> free_queue lock address: VA = 0x40014001 , PA = 0x0000000040014001 
+18:34:34.567 -> free_queue buffer start address: VA = 0x41ffffa0 , PA = 0x0000000041ffffa0 
+18:34:34.600 -> rx_queue address: VA = 0x41ffff10 , PA = 0x0000000041ffff10 
+18:34:34.600 -> rx_queue lock address: VA = 0x40014006 , PA = 0x0000000040014006 
+18:34:34.600 -> rx_queue buffer start address: VA = 0x41ffff30 , PA = 0x0000000041ffff30 
+18:34:34.600 -> tx_queue address: VA = 0x41fffe90 , PA = 0x0000000041fffe90 
+18:34:34.600 -> tx_queue lock address: VA = 0x40014007 , PA = 0x0000000040014007 
+18:34:34.600 -> tx_queue buffer start address: VA = 0x41fffeb0 , PA = 0x0000000041fffeb0 
+18:34:34.633 -> free_queue addr: 0000000041ffff80,free_queue lock addr: 0000000040014001,free_queue buffer addr: 0000000041ffffa0
+18:34:34.633 -> rx_queue addr: 0000000041ffff10,rx_queue lock addr: 0000000040014006,rx_queue buffer addr: 0000000041ffff30 
+18:34:34.633 -> tx_queue addr: 0000000041fffe90,tx_queue lock addr: 0000000040014007,tx_queue buffer addr: 0000000041fffeb0 
+18:34:34.633 -> Allocated Buffer[0] VA = 0x41fffe00
+18:34:34.667 -> Allocated Buffer[1] VA = 0x41fffd78
+18:34:34.667 -> Allocated Buffer[2] VA = 0x41fffcf0
+18:34:34.667 -> Allocated Buffer[3] VA = 0x41fffc68
+18:34:34.667 -> Allocated Buffer[0] PA = 0x0000000041fffe00
+18:34:34.667 -> Allocated Buffer[1] PA = 0x0000000041fffd78
+18:34:34.667 -> Allocated Buffer[2] PA = 0x0000000041fffcf0
+18:34:34.667 -> Allocated Buffer[3] PA = 0x0000000041fffc68
+18:34:34.667 -> Stored Buffer[0] in free-queue = 0x0000000041fffe00
+18:34:34.667 -> Stored Buffer[1] in free-queue = 0x0000000041fffd78
+18:34:34.700 -> Stored Buffer[2] in free-queue = 0x0000000041fffcf0
+18:34:34.700 -> Stored Buffer[3] in free-queue = 0x0000000041fffc68
+18:34:34.700 -> Control register = 0x00000003
+18:34:34.700 -> Configuration Done. NIC has started
+18:35:15.691 -> bufferPtr(PA) red = 0000000041fffe00
+18:35:15.691 -> bufferPtr(PA) written = 0000000041fffe00
+18:35:15.691 -> message_counter:1
+18:35:15.691 -> transmitted packet = 0, Received packet = 0, status register = 1
 
