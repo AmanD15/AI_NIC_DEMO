@@ -7,7 +7,7 @@ FUNCTIONLIB=$(AHIR_RELEASE)/functionLibrary/
 SRC=../../SOURCE/NIC/
 all: HW 
 
-TOPMODULES=-T ReceiveEngineDaemon -T nicRxFromMacDaemon -T transmitEngineDaemon -T SoftwareRegisterAccessDaemon -T NicRegisterAccessDaemon -T controlDaemon
+TOPMODULES=-T ReceiveEngineDaemon -T nicRxFromMacDaemon -T transmitEngineDaemon -T controlDaemon
 
 
 # five steps from C to vhdl simulator.

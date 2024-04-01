@@ -51,14 +51,15 @@ $module [transmitEngineDaemon] $in () $out () $is
 			$guard (push_pointer_back_to_free_Q)
 				$call pushIntoQueue (FREEQUEUE 0 pkt_pointer) (push_status)
 
-
+			
 			count := ($mux (tx_flag & transmitted_flag)  
 						($mux init_flag $zero<32> (count + 1))
 						count) $buffering 2
-				
-			$guard (push_pointer_back_to_free_Q)
-				$call accessRegister ($zero<1> (~$zero<4>) 
-						P_TX_PKT_COUNT_REGISTER_INDEX  count) (ignore_resp)
+			
+			// Commening these	
+			//$guard (push_pointer_back_to_free_Q)
+			//	$call accessRegister ($zero<1> (~$zero<4>) 
+			//			P_TX_PKT_COUNT_REGISTER_INDEX  count) (ignore_resp)
 
 			$rreport(transmitEngineDaemon pushed_back_to_free_queue push_status)
 			// move to next tx queue

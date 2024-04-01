@@ -130,7 +130,9 @@ $is
 
 		
 		$call pushIntoQueue (RXQUEUE q_index rx_buffer_pointer) (push_status)
-
+		$guard(~push_status)
+			$call incrementNumberOfPacketsReceived() ()
+			
 		n_q_index := ((q_index + 1) & ($bitcast ($uint<8>) (S_NUMBER_OF_SERVERS - 1)))
 		$rreport(populateRxQueue written_to_rx_queue n_q_index push_status)
 
