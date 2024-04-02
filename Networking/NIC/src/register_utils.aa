@@ -13,3 +13,10 @@ $module [incrementNumberOfPacketsReceived]
         $volatile nr := (r + 1)
 	$call accessRegister ($zero<1> 15 P_RX_PKT_COUNT_REGISTER_INDEX  nr) (ignore)
 }
+
+$module [updateLastAddressWritten]
+	$in (last_address_written : $uint<32>) $out () $is
+{
+	
+	$call accessRegister ($zero<1> 15 P_DEBUG_LAST_ADDRESS_WRITTEN_INDEX  last_address_written) (ignore)
+}

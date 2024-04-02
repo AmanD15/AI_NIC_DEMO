@@ -264,6 +264,8 @@ $is
 			$volatile nactive_addr_offset := (active_addr_offset + 8)
 
 		$while (~last_bit)
+		last_address_written := ( ($slice base_buf_pointer 31 0) + ($bitcast ($uint<32>) active_addr_offset) )
+		$call updateLastAddressWritten(last_address_written) ()
 
 	} (wdata => tdata active_addr_offset => active_addr_offset)
 
