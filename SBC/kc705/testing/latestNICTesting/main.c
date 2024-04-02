@@ -25,6 +25,8 @@ uint32_t cortos_readMessages2(CortosQueueHeader *hdr, uint8_t *msgs, uint32_t co
   if (!(hdr->misc & SINGLE_RW_QUEUE)) {
 	if(((uint32_t)hdr->lock) != RXQ_LOCK_ADDR )
 	{
+		cortos_printf("length modfied to:%08lx\n",hdr->length);
+		cortos_printf("msgSizeInBytes modfied to:%08lx\n",hdr->msgSizeInBytes);
 		cortos_printf("Lock address modfied to:0x%08lx\n",(uint32_t)hdr->lock);
 		cortos_exit(0);
 	}
@@ -56,7 +58,10 @@ uint32_t cortos_readMessages2(CortosQueueHeader *hdr, uint8_t *msgs, uint32_t co
 
 	if(((uint32_t)hdr->lock) != RXQ_LOCK_ADDR )
 	{
+		cortos_printf("length modfied to:%08lx\n",hdr->length);
+		cortos_printf("msgSizeInBytes modfied to:%08lx\n",hdr->msgSizeInBytes);
 		cortos_printf("Lock address modfied to:0x%08lx\n",(uint32_t)hdr->lock);
+		
 		cortos_exit(0);
 	}
     cortos_lock_release(hdr->lock);              // RELEASE LOCK
