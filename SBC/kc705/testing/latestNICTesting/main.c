@@ -5,6 +5,7 @@
 #define NUMBER_OF_BUFFERS 4
 #define BUFFER_SIZE_IN_BYTES 128
 #define NIC_START_ADDR 0xFF000000
+#define RXQ_LOCK_ADDR 0x40014006
 
 void findQueuePhyAddr(char*,CortosQueueHeader*,uint64_t*,uint64_t*,uint64_t*);
 
@@ -16,6 +17,52 @@ volatile uint32_t*  BufferPtrsVA[NUMBER_OF_BUFFERS];
 volatile uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
 
 //////////////////////////////////////
+uint32_t cortos_readMessages2(CortosQueueHeader *hdr, uint8_t *msgs, uint32_t count) {
+  uint8_t *dest = 0, *src = 0; // nullptr
+  uint32_t process = count;
+  uint32_t i;
+
+  if (!(hdr->misc & SINGLE_RW_QUEUE)) {
+	if(((uint32_t)hdr->lock) != RXQ_LOCK_ADDR )
+	{
+		cortos_printf("Lock address modfied to:0x%08lx\n",(uint32_t)hdr->lock);
+		cortos_exit(0);
+	}
+    cortos_lock_acquire_buzy(hdr->lock);
+  } else {
+    if (hdr->totalMsgs == 0) return 0; // read only when there are messages
+  }
+
+  uint32_t totalMsgs      = hdr->totalMsgs;
+  uint32_t readIndex      = hdr->readIndex;
+  uint32_t length         = hdr->length;
+  uint32_t msgSizeInBytes = hdr->msgSizeInBytes;
+  uint8_t* queuePtr       = (uint8_t*)(hdr + 1);
+
+  while ((process > 0) && (totalMsgs > 0)) {
+    dest = msgs + (msgSizeInBytes * (count - process));
+    src  = queuePtr + (msgSizeInBytes * readIndex);
+    for (i = 0; i < msgSizeInBytes; ++i) {
+      *(dest+i) = *(src+i);                     // READ THE MESSAGE HERE
+    }
+    readIndex = (readIndex+1) % length;
+    --totalMsgs; --process;
+  }
+
+  hdr->readIndex  = readIndex;
+  hdr->totalMsgs  = totalMsgs;
+
+  if (!(hdr->misc & SINGLE_RW_QUEUE)) {
+
+	if(((uint32_t)hdr->lock) != RXQ_LOCK_ADDR )
+	{
+		cortos_printf("Lock address modfied to:0x%08lx\n",(uint32_t)hdr->lock);
+		cortos_exit(0);
+	}
+    cortos_lock_release(hdr->lock);              // RELEASE LOCK
+  }
+  return (count - process);
+}
 
 
 //////////////////////////////////////
@@ -28,10 +75,10 @@ int main()
 	// Step 1: Allocating Cortos queues.
 	
 	uint32_t msgSizeInBytes = 8;
-	uint32_t length = 8;
+	uint32_t length = 4;
 	uint8_t nonCacheable = 1;
 
-	
+	/*
 	// Step 5 : Allocating Packet buffers
 
 	int i,status;
@@ -40,7 +87,7 @@ int main()
 		BufferPtrsVA[i] = (uint32_t*) cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
 		cortos_printf("Allocated Buffer[%d] VA = 0x%08lx\n", i,(uint32_t)BufferPtrsVA[i]);
 	}
-	
+	*/
 	free_queue = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
 	rx_queue   = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
 	tx_queue   = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
@@ -100,7 +147,7 @@ int main()
 	storedPA[6]  ,storedPA[7] ,storedPA[8]);
 
 
-	/*
+	
 	// Step 5 : Allocating Packet buffers
 
 	int i,status;
@@ -109,7 +156,7 @@ int main()
 		BufferPtrsVA[i] = (uint32_t*) cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
 		cortos_printf("Allocated Buffer[%d] VA = 0x%08lx\n", i,(uint32_t)BufferPtrsVA[i]);
 	}
-	*/
+	
 		// Converting to PA
 	
 	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
@@ -161,16 +208,28 @@ int main()
 	uint32_t tx_pkt_count;
 	uint32_t rx_pkt_count;
 	uint32_t status_reg;
+	uint32_t last_addr;
 	while(1)
 	{
 		
 
-		if(cortos_readMessages(rx_queue, (uint8_t*)(&bufptr), 1)){
-
+		if(cortos_readMessages2(rx_queue, (uint8_t*)(&bufptr), 1)){
+			last_addr=readFromNicReg (0, 220);
+			cortos_printf("last written addr ny NIC:0x%08lx\n",last_addr);
 			cortos_printf("bufferPtr(PA) red = %016llx\n",bufptr);
+			cortos_printf("rxQ: %u, %u, %u, %u, %u, %u, %u, %u \n",
+			rx_queue->totalMsgs, rx_queue->readIndex, rx_queue->writeIndex, rx_queue->length,
+			rx_queue->msgSizeInBytes, (uint32_t)rx_queue->lock, (uint32_t)rx_queue->bget_addr, rx_queue->misc);
+
 			msgs_written = cortos_writeMessages(tx_queue, (uint8_t*)(&bufptr), 1);
-			if(msgs_written)
+			if(msgs_written){
+				cortos_printf("txQ: %u, %u, %u, %u, %u, %u, %u, %u \n",
+			tx_queue->totalMsgs, tx_queue->readIndex, tx_queue->writeIndex, tx_queue->length,
+			tx_queue->msgSizeInBytes, (uint32_t)tx_queue->lock, (uint32_t)tx_queue->bget_addr, tx_queue->misc);
 				cortos_printf("bufferPtr(PA) written = %016llx\n",bufptr);
+
+			}
+				
 			message_counter++;
 			cortos_printf("message_counter:%d\n",message_counter);
 

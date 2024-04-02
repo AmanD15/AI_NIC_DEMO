@@ -79,7 +79,8 @@
 	  buffers are above ) => giving problems.
 
 	- when we are getting error, its in cortos lock release function(0x40000330: clrb  [ %i0 ],  i0 holds 0x0) 
-		or wait_for_lock. (happens in the beginning of test, when first packet is sent)
+		or wait_for_lock(0x400002c4: ldub  [ %i0 ], %l1 ,  i0 holds 0x0). 
+		(happens in the beginning of test, when first packet is sent)
 
 	Corrected TX and RX packet count register and new bitfile generated:
 
@@ -96,7 +97,7 @@
 
 
 
-
+	Corrected length of queue as 4, since using only 4 buffers.
 
 
 
