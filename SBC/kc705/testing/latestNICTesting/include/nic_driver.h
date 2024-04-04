@@ -35,6 +35,9 @@
 #define    P_RX_PKT_COUNT_REGISTER_INDEX     211
 #define    P_STATUS_REGISTER_INDEX           212
 
+#define    P_DEBUG_LAST_ADDRESS_WRITTEN_INDEX     220
+#define    P_BUFFER_SIZE_INDEX     221
+
 // flags.
 #define    F_ENABLE_NIC			      0x1
 #define    F_ENABLE_NIC_INTERRUPT	      0x2

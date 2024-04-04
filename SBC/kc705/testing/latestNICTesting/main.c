@@ -2,7 +2,7 @@
 #include "include/nic_driver.h"
 
 
-#define NUMBER_OF_BUFFERS 4
+#define NUMBER_OF_BUFFERS 1
 #define BUFFER_SIZE_IN_BYTES 128
 #define NIC_START_ADDR 0xFF000000
 #define RXQ_LOCK_ADDR 0x40014006
@@ -30,6 +30,7 @@ uint32_t cortos_readMessages2(CortosQueueHeader *hdr, uint8_t *msgs, uint32_t co
 		cortos_printf("Lock address modfied to:0x%08lx\n",(uint32_t)hdr->lock);
 		cortos_exit(0);
 	}
+
     cortos_lock_acquire_buzy(hdr->lock);
   } else {
     if (hdr->totalMsgs == 0) return 0; // read only when there are messages
@@ -64,6 +65,7 @@ uint32_t cortos_readMessages2(CortosQueueHeader *hdr, uint8_t *msgs, uint32_t co
 		
 		cortos_exit(0);
 	}
+	
     cortos_lock_release(hdr->lock);              // RELEASE LOCK
   }
   return (count - process);
@@ -80,7 +82,7 @@ int main()
 	// Step 1: Allocating Cortos queues.
 	
 	uint32_t msgSizeInBytes = 8;
-	uint32_t length = 4;
+	uint32_t length = NUMBER_OF_BUFFERS;
 	uint8_t nonCacheable = 1;
 
 	/*
@@ -161,7 +163,8 @@ int main()
 		BufferPtrsVA[i] = (uint32_t*) cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
 		cortos_printf("Allocated Buffer[%d] VA = 0x%08lx\n", i,(uint32_t)BufferPtrsVA[i]);
 	}
-	
+	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
+		memset((uint8_t*)BufferPtrsVA[i],0,BUFFER_SIZE_IN_BYTES);
 		// Converting to PA
 	
 	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
@@ -213,31 +216,57 @@ int main()
 	uint32_t tx_pkt_count;
 	uint32_t rx_pkt_count;
 	uint32_t status_reg;
-	uint32_t last_addr;
+	uint32_t last_addr,packetLen;
+	uint64_t* BufferPtr;
 	while(1)
 	{
 		
 
 		if(cortos_readMessages2(rx_queue, (uint8_t*)(&bufptr), 1)){
-			last_addr=readFromNicReg (0, 220);
-			cortos_printf("last written addr ny NIC:0x%08lx\n",last_addr);
+
+			last_addr = readFromNicReg (0, P_DEBUG_LAST_ADDRESS_WRITTEN_INDEX);
+			cortos_printf("last written addr by NIC:0x%08lx\n",last_addr);
+			
+			//Print RxQ data structure
 			cortos_printf("bufferPtr(PA) red = %016llx\n",bufptr);
 			cortos_printf("rxQ: %u, %u, %u, %u, %u, %u, %u, %u \n",
 			rx_queue->totalMsgs, rx_queue->readIndex, rx_queue->writeIndex, rx_queue->length,
 			rx_queue->msgSizeInBytes, (uint32_t)rx_queue->lock, (uint32_t)rx_queue->bget_addr, rx_queue->misc);
-
+			
+			BufferPtr = (uint64_t*)((uint32_t)bufptr);
+			packetLen = (*BufferPtr) >> 8;	
+			cortos_printf("Packet Length = %u\n",packetLen);
+			
+			
+			
+			// Print Packet Contents
+			BufferPtr++;
+			for(i=1;i<16 ;i++)
+				cortos_printf("Packet[%u]: %016llx\n",8*i,(*BufferPtr++));
+			
+			/*
 			msgs_written = cortos_writeMessages(tx_queue, (uint8_t*)(&bufptr), 1);
 			if(msgs_written){
+			//Print TxQ data structure
 				cortos_printf("txQ: %u, %u, %u, %u, %u, %u, %u, %u \n",
 			tx_queue->totalMsgs, tx_queue->readIndex, tx_queue->writeIndex, tx_queue->length,
 			tx_queue->msgSizeInBytes, (uint32_t)tx_queue->lock, (uint32_t)tx_queue->bget_addr, tx_queue->misc);
 				cortos_printf("bufferPtr(PA) written = %016llx\n",bufptr);
 
 			}
-				
+			*/
+
+		
+			msgs_written = cortos_writeMessages(free_queue, (uint8_t*)(&bufptr), 1);
+			if(msgs_written){
+				cortos_printf("freeQ replenished \n");
+				cortos_printf("*(free_queue->lock) = %x \n",*(free_queue->lock));
+			}
+			
+			
+
 			message_counter++;
 			cortos_printf("message_counter:%d\n",message_counter);
-
 			probeNic (0,&tx_pkt_count,&rx_pkt_count,&status_reg);
 			cortos_printf("transmitted packet = %u, Received packet = %u, status register = %u\n",
 			 tx_pkt_count, rx_pkt_count,status_reg);

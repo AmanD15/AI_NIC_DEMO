@@ -1,177 +1,370 @@
-13:21:00.597 -> Started
-13:21:00.597 -> Reserved queues in non cacheable region: free=0x41ffffa0, rx=0x41ffff50, tx=0x41fffef0
-13:21:00.597 -> free_queue address: VA = 0x41ffffa0 , PA = 0x0000000041ffffa0 
-13:21:00.597 -> free_queue lock address: VA = 0x40014001 , PA = 0x0000000040014001 
-13:21:00.630 -> free_queue buffer start address: VA = 0x41ffffc0 , PA = 0x0000000041ffffc0 
-13:21:00.630 -> rx_queue address: VA = 0x41ffff50 , PA = 0x0000000041ffff50 
-13:21:00.630 -> rx_queue lock address: VA = 0x40014006 , PA = 0x0000000040014006 
-13:21:00.630 -> rx_queue buffer start address: VA = 0x41ffff70 , PA = 0x0000000041ffff70 
-13:21:00.630 -> tx_queue address: VA = 0x41fffef0 , PA = 0x0000000041fffef0 
-13:21:00.630 -> tx_queue lock address: VA = 0x40014007 , PA = 0x0000000040014007 
-13:21:00.663 -> tx_queue buffer start address: VA = 0x41ffff10 , PA = 0x0000000041ffff10 
-13:21:00.663 -> free_queue addr: 0000000041ffffa0,free_queue lock addr: 0000000040014001,free_queue buffer addr: 0000000041ffffc0
-13:21:00.663 -> rx_queue addr: 0000000041ffff50,rx_queue lock addr: 0000000040014006,rx_queue buffer addr: 0000000041ffff70 
-13:21:00.663 -> tx_queue addr: 0000000041fffef0,tx_queue lock addr: 0000000040014007,tx_queue buffer addr: 0000000041ffff10 
-13:21:00.697 -> Allocated Buffer[0] VA = 0x41fffe60
-13:21:00.697 -> Allocated Buffer[1] VA = 0x41fffdd8
-13:21:00.697 -> Allocated Buffer[2] VA = 0x41fffd50
-13:21:00.697 -> Allocated Buffer[3] VA = 0x41fffcc8
-13:21:00.697 -> Allocated Buffer[0] PA = 0x0000000041fffe60
-13:21:00.697 -> Allocated Buffer[1] PA = 0x0000000041fffdd8
-13:21:00.697 -> Allocated Buffer[2] PA = 0x0000000041fffd50
-13:21:00.697 -> Allocated Buffer[3] PA = 0x0000000041fffcc8
-13:21:00.730 -> Stored Buffer[0] in free-queue = 0x0000000041fffe60
-13:21:00.730 -> Stored Buffer[1] in free-queue = 0x0000000041fffdd8
-13:21:00.730 -> Stored Buffer[2] in free-queue = 0x0000000041fffd50
-13:21:00.730 -> Stored Buffer[3] in free-queue = 0x0000000041fffcc8
-13:21:00.730 -> no. of item in free queue: 4
-13:21:00.730 -> bufferPtr(PA) stored in freeQ at : 0x41ffffc0 is 0x0000000041fffe60
-13:21:00.730 -> bufferPtr(PA) stored in freeQ at : 0x41ffffc8 is 0x0000000041fffdd8
-13:21:00.730 -> bufferPtr(PA) stored in freeQ at : 0x41ffffd0 is 0x0000000041fffd50
-13:21:00.763 -> bufferPtr(PA) stored in freeQ at : 0x41ffffd8 is 0x0000000041fffcc8
-13:21:00.763 -> Control register = 0x00000003
-13:21:00.763 -> Configuration Done. NIC has started
-13:21:13.694 -> last written addr ny NIC:0x41fffeb8
-13:21:13.694 -> bufferPtr(PA) red = 0000000041fffe60
-13:21:13.694 -> rxQ: 0, 1, 1, 4, 8, 1073823750, 1107296064, 0 
-13:21:13.694 -> txQ: 1, 0, 1, 4, 8, 1073823751, 1107295976, 0 
-13:21:13.694 -> bufferPtr(PA) written = 0000000041fffe60
-13:21:13.694 -> message_counter:1
-13:21:13.694 -> transmitted packet = 1, Received packet = 1, status register = 1
-13:21:14.693 -> last written addr ny NIC:0x41fffe30
-13:21:14.693 -> bufferPtr(PA) red = 0000000041fffdd8
-13:21:14.693 -> rxQ: 0, 2, 2, 4, 8, 1073823750, 1107296064, 0 
-13:21:14.693 -> txQ: 1, 1, 2, 4, 8, 1073823751, 1107295976, 0 
-13:21:14.693 -> bufferPtr(PA) written = 0000000041fffdd8
-13:21:14.693 -> message_counter:2
-13:21:14.693 -> transmitted packet = 2, Received packet = 2, status register = 1
-13:21:15.690 -> last written addr ny NIC:0x41fffda8
-13:21:15.690 -> bufferPtr(PA) red = 0000000041fffd50
-13:21:15.690 -> rxQ: 0, 3, 3, 4, 8, 1073823750, 1107296064, 0 
-13:21:15.690 -> txQ: 1, 2, 3, 4, 8, 1073823751, 1107295976, 0 
-13:21:15.690 -> bufferPtr(PA) written = 0000000041fffd50
-13:21:15.728 -> message_counter:3
-13:21:15.728 -> transmitted packet = 3, Received packet = 3, status register = 1
-13:21:16.694 -> last written addr ny NIC:0x41fffd20
-13:21:16.694 -> bufferPtr(PA) red = 0000000041fffcc8
-13:21:16.694 -> rxQ: 0, 0, 0, 4, 8, 1073823750, 1107296064, 0 
-13:21:16.694 -> txQ: 1, 3, 0, 4, 8, 1073823751, 1107295976, 0 
-13:21:16.694 -> bufferPtr(PA) written = 0000000041fffcc8
-13:21:16.694 -> message_counter:4
-13:21:16.724 -> transmitted packet = 4, Received packet = 4, status register = 1
-13:21:17.683 -> last written addr ny NIC:0x41fffeb8
-13:21:17.683 -> bufferPtr(PA) red = 0000000041fffe60
-13:21:17.716 -> rxQ: 0, 1, 1, 4, 8, 1073823750, 1107296064, 0 
-13:21:17.716 -> txQ: 1, 0, 1, 4, 8, 1073823751, 1107295976, 0 
-13:21:17.716 -> bufferPtr(PA) written = 0000000041fffe60
-13:21:17.716 -> message_counter:5
-13:21:17.716 -> transmitted packet = 5, Received packet = 5, status register = 1
-13:21:18.711 -> last written addr ny NIC:0x41fffe30
-13:21:18.711 -> bufferPtr(PA) red = 0000000041fffdd8
-13:21:18.711 -> rxQ: 0, 2, 2, 4, 8, 1073823750, 1107296064, 0 
-13:21:18.711 -> txQ: 1, 1, 2, 4, 8, 1073823751, 1107295976, 0 
-13:21:18.711 -> bufferPtr(PA) written = 0000000041fffdd8
-13:21:18.711 -> message_counter:6
-13:21:18.711 -> transmitted packet = 6, Received packet = 6, status register = 1
-13:21:19.703 -> last written addr ny NIC:0x41fffda8
-13:21:19.703 -> bufferPtr(PA) red = 0000000041fffd50
-13:21:19.703 -> rxQ: 0, 3, 3, 4, 8, 1073823750, 1107296064, 0 
-13:21:19.703 -> txQ: 1, 2, 3, 4, 8, 1073823751, 1107295976, 0 
-13:21:19.703 -> bufferPtr(PA) written = 0000000041fffd50
-13:21:19.703 -> message_counter:7
-13:21:19.703 -> transmitted packet = 7, Received packet = 7, status register = 1
-13:21:20.695 -> last written addr ny NIC:0x41fffd20
-13:21:20.695 -> bufferPtr(PA) red = 0000000041fffcc8
-13:21:20.695 -> rxQ: 0, 0, 0, 4, 8, 1073823750, 1107296064, 0 
-13:21:20.695 -> txQ: 1, 3, 0, 4, 8, 1073823751, 1107295976, 0 
-13:21:20.695 -> bufferPtr(PA) written = 0000000041fffcc8
-13:21:20.729 -> message_counter:8
-13:21:20.729 -> transmitted packet = 8, Received packet = 8, status register = 1
-13:21:21.687 -> last written addr ny NIC:0x41fffeb8
-13:21:21.687 -> bufferPtr(PA) red = 0000000041fffe60
-13:21:21.720 -> rxQ: 0, 1, 1, 4, 8, 1073823750, 1107296064, 0 
-13:21:21.720 -> txQ: 1, 0, 1, 4, 8, 1073823751, 1107295976, 0 
-13:21:21.720 -> bufferPtr(PA) written = 0000000041fffe60
-13:21:21.720 -> message_counter:9
-13:21:21.720 -> transmitted packet = 9, Received packet = 9, status register = 1
-13:21:22.712 -> last written addr ny NIC:0x41fffe30
-13:21:22.712 -> bufferPtr(PA) red = 0000000041fffdd8
-13:21:22.712 -> rxQ: 0, 2, 2, 4, 8, 1073823750, 1107296064, 0 
-13:21:22.712 -> txQ: 1, 1, 2, 4, 8, 1073823751, 1107295976, 0 
-13:21:22.712 -> bufferPtr(PA) written = 0000000041fffdd8
-13:21:22.712 -> message_counter:10
-13:21:22.712 -> transmitted packet = 10, Received packet = 10, status register = 1
-13:21:23.703 -> last written addr ny NIC:0x41fffda8
-13:21:23.703 -> bufferPtr(PA) red = 0000000041fffd50
-13:21:23.703 -> rxQ: 0, 3, 3, 4, 8, 1073823750, 1107296064, 0 
-13:21:23.703 -> txQ: 1, 2, 3, 4, 8, 1073823751, 1107295976, 0 
-13:21:23.703 -> bufferPtr(PA) written = 0000000041fffd50
-13:21:23.703 -> message_counter:11
-13:21:23.703 -> transmitted packet = 11, Received packet = 11, status register = 1
-13:21:24.696 -> last written addr ny NIC:0x41fffd20
-13:21:24.696 -> bufferPtr(PA) red = 0000000041fffcc8
-13:21:24.696 -> rxQ: 0, 0, 0, 4, 8, 1073823750, 1107296064, 0 
-13:21:24.696 -> txQ: 1, 3, 0, 4, 8, 1073823751, 1107295976, 0 
-13:21:24.729 -> bufferPtr(PA) written = 0000000041fffcc8
-13:21:24.729 -> message_counter:12
-13:21:24.729 -> transmitted packet = 12, Received packet = 12, status register = 1
-13:21:25.688 -> last written addr ny NIC:0x41fffeb8
-13:21:25.688 -> bufferPtr(PA) red = 0000000041fffe60
-13:21:25.721 -> rxQ: 0, 1, 1, 4, 8, 1073823750, 1107296064, 0 
-13:21:25.721 -> txQ: 1, 0, 1, 4, 8, 1073823751, 1107295976, 0 
-13:21:25.721 -> bufferPtr(PA) written = 0000000041fffe60
-13:21:25.721 -> message_counter:13
-13:21:25.721 -> transmitted packet = 13, Received packet = 13, status register = 1
-13:21:26.714 -> last written addr ny NIC:0x41fffe30
-13:21:26.714 -> bufferPtr(PA) red = 0000000041fffdd8
-13:21:26.714 -> rxQ: 0, 2, 2, 4, 8, 1073823750, 1107296064, 0 
-13:21:26.714 -> txQ: 1, 1, 2, 4, 8, 1073823751, 1107295976, 0 
-13:21:26.714 -> bufferPtr(PA) written = 0000000041fffdd8
-13:21:26.714 -> message_counter:14
-13:21:26.714 -> transmitted packet = 14, Received packet = 14, status register = 1
-13:21:27.706 -> last written addr ny NIC:0x41fffda8
-13:21:27.706 -> bufferPtr(PA) red = 0000000041fffd50
-13:21:27.706 -> rxQ: 0, 3, 3, 4, 8, 1073823750, 1107296064, 0 
-13:21:27.706 -> txQ: 1, 2, 3, 4, 8, 1073823751, 1107295976, 0 
-13:21:27.706 -> bufferPtr(PA) written = 0000000041fffd50
-13:21:27.706 -> message_counter:15
-13:21:27.706 -> transmitted packet = 15, Received packet = 15, status register = 1
-13:21:28.698 -> last written addr ny NIC:0x41fffd20
-13:21:28.698 -> bufferPtr(PA) red = 0000000041fffcc8
-13:21:28.698 -> rxQ: 0, 0, 0, 4, 8, 1073823750, 1107296064, 0 
-13:21:28.698 -> txQ: 1, 3, 0, 4, 8, 1073823751, 1107295976, 0 
-13:21:28.733 -> bufferPtr(PA) written = 0000000041fffcc8
-13:21:28.733 -> message_counter:16
-13:21:28.733 -> transmitted packet = 16, Received packet = 16, status register = 1
-13:21:29.690 -> last written addr ny NIC:0x41fffeb8
-13:21:29.724 -> bufferPtr(PA) red = 0000000041fffe60
-13:21:29.724 -> rxQ: 0, 1, 1, 4, 8, 1073823750, 1107296064, 0 
-13:21:29.724 -> txQ: 1, 0, 1, 4, 8, 1073823751, 1107295976, 0 
-13:21:29.724 -> bufferPtr(PA) written = 0000000041fffe60
-13:21:29.724 -> message_counter:17
-13:21:29.724 -> transmitted packet = 17, Received packet = 17, status register = 1
-13:21:30.716 -> last written addr ny NIC:0x41fffe30
-13:21:30.716 -> bufferPtr(PA) red = 0000000041fffdd8
-13:21:30.716 -> rxQ: 0, 2, 2, 4, 8, 1073823750, 1107296064, 0 
-13:21:30.716 -> txQ: 1, 1, 2, 4, 8, 1073823751, 1107295976, 0 
-13:21:30.716 -> bufferPtr(PA) written = 0000000041fffdd8
-13:21:30.716 -> message_counter:18
-13:21:30.716 -> transmitted packet = 18, Received packet = 18, status register = 1
-13:21:31.708 -> last written addr ny NIC:0x41fffda8
-13:21:31.708 -> bufferPtr(PA) red = 0000000041fffd50
-13:21:31.708 -> rxQ: 0, 3, 3, 4, 8, 1073823750, 1107296064, 0 
-13:21:31.708 -> txQ: 1, 2, 3, 4, 8, 1073823751, 1107295976, 0 
-13:21:31.708 -> bufferPtr(PA) written = 0000000041fffd50
-13:21:31.708 -> message_counter:19
-13:21:31.708 -> transmitted packet = 19, Received packet = 19, status register = 1
-13:21:32.700 -> last written addr ny NIC:0x41fffd20
-13:21:32.700 -> bufferPtr(PA) red = 0000000041fffcc8
-13:21:32.700 -> rxQ: 0, 0, 0, 4, 8, 1073823750, 1107296064, 0 
-13:21:32.700 -> txQ: 1, 3, 0, 4, 8, 1073823751, 1107295976, 0 
-13:21:32.733 -> bufferPtr(PA) written = 0000000041fffcc8
-13:21:32.733 -> message_counter:20
-13:21:32.733 -> transmitted packet = 20, Received packet = 20, status register = 1
-13:21:32.866 -> length modfied to:00000000
-13:21:32.866 -> msgSizeInBytes modfied to:00000000
-13:21:32.866 -> Lock address modfied to:0x00000000
+13:30:30.531 -> Started
+13:30:30.531 -> Reserved queues in non cacheable region: free=0x41ffffb0, rx=0x41ffff70, tx=0x41ffff20
+13:30:30.531 -> free_queue address: VA = 0x41ffffb0 , PA = 0x0000000041ffffb0 
+13:30:30.531 -> free_queue lock address: VA = 0x40014001 , PA = 0x0000000040014001 
+13:30:30.564 -> free_queue buffer start address: VA = 0x41ffffd0 , PA = 0x0000000041ffffd0 
+13:30:30.564 -> rx_queue address: VA = 0x41ffff70 , PA = 0x0000000041ffff70 
+13:30:30.564 -> rx_queue lock address: VA = 0x40014006 , PA = 0x0000000040014006 
+13:30:30.564 -> rx_queue buffer start address: VA = 0x41ffff90 , PA = 0x0000000041ffff90 
+13:30:30.564 -> tx_queue address: VA = 0x41ffff20 , PA = 0x0000000041ffff20 
+13:30:30.564 -> tx_queue lock address: VA = 0x40014007 , PA = 0x0000000040014007 
+13:30:30.599 -> tx_queue buffer start address: VA = 0x41ffff40 , PA = 0x0000000041ffff40 
+13:30:30.599 -> free_queue addr: 0000000041ffffb0,free_queue lock addr: 0000000040014001,free_queue buffer addr: 0000000041ffffd0
+13:30:30.599 -> rx_queue addr: 0000000041ffff70,rx_queue lock addr: 0000000040014006,rx_queue buffer addr: 0000000041ffff90 
+13:30:30.599 -> tx_queue addr: 0000000041ffff20,tx_queue lock addr: 0000000040014007,tx_queue buffer addr: 0000000041ffff40 
+13:30:30.632 -> Allocated Buffer[0] VA = 0x41fffe90
+13:30:30.632 -> Allocated Buffer[0] PA = 0x0000000041fffe90
+13:30:30.632 -> Stored Buffer[0] in free-queue = 0x0000000041fffe90
+13:30:30.632 -> no. of item in free queue: 1
+13:30:30.632 -> bufferPtr(PA) stored in freeQ at : 0x41ffffd0 is 0x0000000041fffe90
+13:30:30.632 -> Control register = 0x00000003
+13:30:30.632 -> Configuration Done. NIC has started
+13:30:47.268 -> last written addr by NIC:0x41fffee8
+13:30:47.268 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:47.268 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:47.268 -> Packet Length = 88
+13:30:47.268 -> Packet[8]: 000a35031e509cb6
+13:30:47.268 -> Packet[16]: 540ea5ac08000001
+13:30:47.268 -> Packet[24]: 000a35031e509cb6
+13:30:47.268 -> Packet[32]: 540ea5ac08000001
+13:30:47.268 -> Packet[40]: 0203040506070809
+13:30:47.268 -> Packet[48]: 0001020304050607
+13:30:47.268 -> Packet[56]: 0809000102030405
+13:30:47.301 -> Packet[64]: 0607080900010203
+13:30:47.301 -> Packet[72]: 0405060708090001
+13:30:47.301 -> Packet[80]: 0203040506070809
+13:30:47.301 -> Packet[88]: 0001000000000000
+13:30:47.301 -> Packet[96]: 0000000000000000
+13:30:47.301 -> Packet[104]: 0000000000000000
+13:30:47.301 -> Packet[112]: 0000000000000000
+13:30:47.301 -> Packet[120]: 0000000000000000
+13:30:47.301 -> freeQ replenished 
+13:30:47.301 -> *(free_queue->lock) = 0 
+13:30:47.301 -> message_counter:1
+13:30:47.301 -> transmitted packet = 0, Received packet = 1, status register = 1
+13:30:48.261 -> last written addr by NIC:0x41fffee8
+13:30:48.261 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:48.261 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:48.261 -> Packet Length = 88
+13:30:48.261 -> Packet[8]: 000a35031e509cb6
+13:30:48.261 -> Packet[16]: 540ea5ac08000001
+13:30:48.261 -> Packet[24]: 000a35031e509cb6
+13:30:48.294 -> Packet[32]: 540ea5ac08000001
+13:30:48.294 -> Packet[40]: 0203040506070809
+13:30:48.294 -> Packet[48]: 0001020304050607
+13:30:48.294 -> Packet[56]: 0809000102030405
+13:30:48.294 -> Packet[64]: 0607080900010203
+13:30:48.294 -> Packet[72]: 0405060708090001
+13:30:48.294 -> Packet[80]: 0203040506070809
+13:30:48.294 -> Packet[88]: 0001010000000000
+13:30:48.294 -> Packet[96]: 0000000000000000
+13:30:48.294 -> Packet[104]: 0000000000000000
+13:30:48.294 -> Packet[112]: 0000000000000000
+13:30:48.294 -> Packet[120]: 0000000000000000
+13:30:48.294 -> freeQ replenished 
+13:30:48.327 -> *(free_queue->lock) = 0 
+13:30:48.327 -> message_counter:2
+13:30:48.327 -> transmitted packet = 0, Received packet = 2, status register = 1
+13:30:49.257 -> last written addr by NIC:0x41fffee8
+13:30:49.257 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:49.257 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:49.257 -> Packet Length = 88
+13:30:49.257 -> Packet[8]: 000a35031e509cb6
+13:30:49.290 -> Packet[16]: 540ea5ac08000001
+13:30:49.290 -> Packet[24]: 000a35031e509cb6
+13:30:49.290 -> Packet[32]: 540ea5ac08000001
+13:30:49.290 -> Packet[40]: 0203040506070809
+13:30:49.290 -> Packet[48]: 0001020304050607
+13:30:49.290 -> Packet[56]: 0809000102030405
+13:30:49.290 -> Packet[64]: 0607080900010203
+13:30:49.290 -> Packet[72]: 0405060708090001
+13:30:49.290 -> Packet[80]: 0203040506070809
+13:30:49.290 -> Packet[88]: 0001020000000000
+13:30:49.290 -> Packet[96]: 0000000000000000
+13:30:49.290 -> Packet[104]: 0000000000000000
+13:30:49.290 -> Packet[112]: 0000000000000000
+13:30:49.290 -> Packet[120]: 0000000000000000
+13:30:49.324 -> freeQ replenished 
+13:30:49.324 -> *(free_queue->lock) = 0 
+13:30:49.324 -> message_counter:3
+13:30:49.324 -> transmitted packet = 0, Received packet = 3, status register = 1
+13:30:50.249 -> last written addr by NIC:0x41fffee8
+13:30:50.249 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:50.282 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:50.282 -> Packet Length = 88
+13:30:50.282 -> Packet[8]: 000a35031e509cb6
+13:30:50.282 -> Packet[16]: 540ea5ac08000001
+13:30:50.282 -> Packet[24]: 000a35031e509cb6
+13:30:50.282 -> Packet[32]: 540ea5ac08000001
+13:30:50.282 -> Packet[40]: 0203040506070809
+13:30:50.282 -> Packet[48]: 0001020304050607
+13:30:50.282 -> Packet[56]: 0809000102030405
+13:30:50.282 -> Packet[64]: 0607080900010203
+13:30:50.282 -> Packet[72]: 0405060708090001
+13:30:50.282 -> Packet[80]: 0203040506070809
+13:30:50.316 -> Packet[88]: 0001030000000000
+13:30:50.316 -> Packet[96]: 0000000000000000
+13:30:50.316 -> Packet[104]: 0000000000000000
+13:30:50.316 -> Packet[112]: 0000000000000000
+13:30:50.316 -> Packet[120]: 0000000000000000
+13:30:50.316 -> freeQ replenished 
+13:30:50.316 -> *(free_queue->lock) = 0 
+13:30:50.316 -> message_counter:4
+13:30:50.316 -> transmitted packet = 0, Received packet = 4, status register = 1
+13:30:51.277 -> last written addr by NIC:0x41fffee8
+13:30:51.277 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:51.277 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:51.277 -> Packet Length = 88
+13:30:51.277 -> Packet[8]: 000a35031e509cb6
+13:30:51.277 -> Packet[16]: 540ea5ac08000001
+13:30:51.277 -> Packet[24]: 000a35031e509cb6
+13:30:51.277 -> Packet[32]: 540ea5ac08000001
+13:30:51.277 -> Packet[40]: 0203040506070809
+13:30:51.277 -> Packet[48]: 0001020304050607
+13:30:51.277 -> Packet[56]: 0809000102030405
+13:30:51.277 -> Packet[64]: 0607080900010203
+13:30:51.308 -> Packet[72]: 0405060708090001
+13:30:51.308 -> Packet[80]: 0203040506070809
+13:30:51.308 -> Packet[88]: 0001040000000000
+13:30:51.308 -> Packet[96]: 0000000000000000
+13:30:51.308 -> Packet[104]: 0000000000000000
+13:30:51.308 -> Packet[112]: 0000000000000000
+13:30:51.308 -> Packet[120]: 0000000000000000
+13:30:51.308 -> freeQ replenished 
+13:30:51.308 -> *(free_queue->lock) = 0 
+13:30:51.308 -> message_counter:5
+13:30:51.308 -> transmitted packet = 0, Received packet = 5, status register = 1
+13:30:52.267 -> last written addr by NIC:0x41fffee8
+13:30:52.267 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:52.267 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:52.267 -> Packet Length = 88
+13:30:52.267 -> Packet[8]: 000a35031e509cb6
+13:30:52.267 -> Packet[16]: 540ea5ac08000001
+13:30:52.267 -> Packet[24]: 000a35031e509cb6
+13:30:52.267 -> Packet[32]: 540ea5ac08000001
+13:30:52.267 -> Packet[40]: 0203040506070809
+13:30:52.301 -> Packet[48]: 0001020304050607
+13:30:52.301 -> Packet[56]: 0809000102030405
+13:30:52.301 -> Packet[64]: 0607080900010203
+13:30:52.301 -> Packet[72]: 0405060708090001
+13:30:52.301 -> Packet[80]: 0203040506070809
+13:30:52.301 -> Packet[88]: 0001050000000000
+13:30:52.301 -> Packet[96]: 0000000000000000
+13:30:52.301 -> Packet[104]: 0000000000000000
+13:30:52.301 -> Packet[112]: 0000000000000000
+13:30:52.301 -> Packet[120]: 0000000000000000
+13:30:52.301 -> freeQ replenished 
+13:30:52.301 -> *(free_queue->lock) = 0 
+13:30:52.333 -> message_counter:6
+13:30:52.333 -> transmitted packet = 0, Received packet = 6, status register = 1
+13:30:53.259 -> last written addr by NIC:0x41fffee8
+13:30:53.259 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:53.259 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:53.259 -> Packet Length = 88
+13:30:53.259 -> Packet[8]: 000a35031e509cb6
+13:30:53.292 -> Packet[16]: 540ea5ac08000001
+13:30:53.292 -> Packet[24]: 000a35031e509cb6
+13:30:53.292 -> Packet[32]: 540ea5ac08000001
+13:30:53.292 -> Packet[40]: 0203040506070809
+13:30:53.292 -> Packet[48]: 0001020304050607
+13:30:53.292 -> Packet[56]: 0809000102030405
+13:30:53.292 -> Packet[64]: 0607080900010203
+13:30:53.292 -> Packet[72]: 0405060708090001
+13:30:53.292 -> Packet[80]: 0203040506070809
+13:30:53.292 -> Packet[88]: 0001060000000000
+13:30:53.292 -> Packet[96]: 0000000000000000
+13:30:53.292 -> Packet[104]: 0000000000000000
+13:30:53.292 -> Packet[112]: 0000000000000000
+13:30:53.292 -> Packet[120]: 0000000000000000
+13:30:53.325 -> freeQ replenished 
+13:30:53.325 -> *(free_queue->lock) = 0 
+13:30:53.325 -> message_counter:7
+13:30:53.325 -> transmitted packet = 0, Received packet = 7, status register = 1
+13:30:54.256 -> last written addr by NIC:0x41fffee8
+13:30:54.256 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:54.256 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:54.256 -> Packet Length = 88
+13:30:54.256 -> Packet[8]: 000a35031e509cb6
+13:30:54.289 -> Packet[16]: 540ea5ac08000001
+13:30:54.289 -> Packet[24]: 000a35031e509cb6
+13:30:54.289 -> Packet[32]: 540ea5ac08000001
+13:30:54.289 -> Packet[40]: 0203040506070809
+13:30:54.289 -> Packet[48]: 0001020304050607
+13:30:54.289 -> Packet[56]: 0809000102030405
+13:30:54.289 -> Packet[64]: 0607080900010203
+13:30:54.289 -> Packet[72]: 0405060708090001
+13:30:54.289 -> Packet[80]: 0203040506070809
+13:30:54.289 -> Packet[88]: 0001070000000000
+13:30:54.289 -> Packet[96]: 0000000000000000
+13:30:54.289 -> Packet[104]: 0000000000000000
+13:30:54.322 -> Packet[112]: 0000000000000000
+13:30:54.322 -> Packet[120]: 0000000000000000
+13:30:54.322 -> freeQ replenished 
+13:30:54.322 -> *(free_queue->lock) = 0 
+13:30:54.322 -> message_counter:8
+13:30:54.322 -> transmitted packet = 0, Received packet = 8, status register = 1
+13:30:55.250 -> last written addr by NIC:0x41fffee8
+13:30:55.250 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:55.283 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:55.283 -> Packet Length = 88
+13:30:55.283 -> Packet[8]: 000a35031e509cb6
+13:30:55.283 -> Packet[16]: 540ea5ac08000001
+13:30:55.283 -> Packet[24]: 000a35031e509cb6
+13:30:55.283 -> Packet[32]: 540ea5ac08000001
+13:30:55.283 -> Packet[40]: 0203040506070809
+13:30:55.283 -> Packet[48]: 0001020304050607
+13:30:55.283 -> Packet[56]: 0809000102030405
+13:30:55.283 -> Packet[64]: 0607080900010203
+13:30:55.283 -> Packet[72]: 0405060708090001
+13:30:55.283 -> Packet[80]: 0203040506070809
+13:30:55.283 -> Packet[88]: 0001080000000000
+13:30:55.317 -> Packet[96]: 0000000000000000
+13:30:55.317 -> Packet[104]: 0000000000000000
+13:30:55.317 -> Packet[112]: 0000000000000000
+13:30:55.317 -> Packet[120]: 0000000000000000
+13:30:55.317 -> freeQ replenished 
+13:30:55.317 -> *(free_queue->lock) = 0 
+13:30:55.317 -> message_counter:9
+13:30:55.317 -> transmitted packet = 0, Received packet = 9, status register = 1
+13:30:56.277 -> last written addr by NIC:0x41fffee8
+13:30:56.277 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:56.277 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:56.277 -> Packet Length = 88
+13:30:56.277 -> Packet[8]: 000a35031e509cb6
+13:30:56.277 -> Packet[16]: 540ea5ac08000001
+13:30:56.277 -> Packet[24]: 000a35031e509cb6
+13:30:56.277 -> Packet[32]: 540ea5ac08000001
+13:30:56.277 -> Packet[40]: 0203040506070809
+13:30:56.277 -> Packet[48]: 0001020304050607
+13:30:56.277 -> Packet[56]: 0809000102030405
+13:30:56.277 -> Packet[64]: 0607080900010203
+13:30:56.310 -> Packet[72]: 0405060708090001
+13:30:56.310 -> Packet[80]: 0203040506070809
+13:30:56.310 -> Packet[88]: 0001090000000000
+13:30:56.310 -> Packet[96]: 0000000000000000
+13:30:56.310 -> Packet[104]: 0000000000000000
+13:30:56.310 -> Packet[112]: 0000000000000000
+13:30:56.310 -> Packet[120]: 0000000000000000
+13:30:56.310 -> freeQ replenished 
+13:30:56.310 -> *(free_queue->lock) = 0 
+13:30:56.310 -> message_counter:10
+13:30:56.310 -> transmitted packet = 0, Received packet = 10, status register = 1
+13:30:57.245 -> last written addr by NIC:0x41fffee8
+13:30:57.278 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:57.278 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:57.278 -> Packet Length = 88
+13:30:57.278 -> Packet[8]: 000a35031e509cb6
+13:30:57.278 -> Packet[16]: 540ea5ac08000001
+13:30:57.278 -> Packet[24]: 000a35031e509cb6
+13:30:57.278 -> Packet[32]: 540ea5ac08000001
+13:30:57.278 -> Packet[40]: 0203040506070809
+13:30:57.278 -> Packet[48]: 0001020304050607
+13:30:57.278 -> Packet[56]: 0809000102030405
+13:30:57.278 -> Packet[64]: 0607080900010203
+13:30:57.311 -> Packet[72]: 0405060708090001
+13:30:57.311 -> Packet[80]: 0203040506070809
+13:30:57.311 -> Packet[88]: 00010a0000000000
+13:30:57.311 -> Packet[96]: 0000000000000000
+13:30:57.311 -> Packet[104]: 0000000000000000
+13:30:57.311 -> Packet[112]: 0000000000000000
+13:30:57.311 -> Packet[120]: 0000000000000000
+13:30:57.311 -> freeQ replenished 
+13:30:57.311 -> *(free_queue->lock) = 0 
+13:30:57.311 -> message_counter:11
+13:30:57.311 -> transmitted packet = 0, Received packet = 11, status register = 1
+13:30:58.277 -> last written addr by NIC:0x41fffee8
+13:30:58.277 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:58.277 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:58.277 -> Packet Length = 88
+13:30:58.277 -> Packet[8]: 000a35031e509cb6
+13:30:58.277 -> Packet[16]: 540ea5ac08000001
+13:30:58.277 -> Packet[24]: 000a35031e509cb6
+13:30:58.277 -> Packet[32]: 540ea5ac08000001
+13:30:58.277 -> Packet[40]: 0203040506070809
+13:30:58.277 -> Packet[48]: 0001020304050607
+13:30:58.277 -> Packet[56]: 0809000102030405
+13:30:58.277 -> Packet[64]: 0607080900010203
+13:30:58.310 -> Packet[72]: 0405060708090001
+13:30:58.310 -> Packet[80]: 0203040506070809
+13:30:58.310 -> Packet[88]: 00010b0000000000
+13:30:58.310 -> Packet[96]: 0000000000000000
+13:30:58.310 -> Packet[104]: 0000000000000000
+13:30:58.310 -> Packet[112]: 0000000000000000
+13:30:58.310 -> Packet[120]: 0000000000000000
+13:30:58.310 -> freeQ replenished 
+13:30:58.310 -> *(free_queue->lock) = 0 
+13:30:58.310 -> message_counter:12
+13:30:58.310 -> transmitted packet = 0, Received packet = 12, status register = 1
+13:30:59.274 -> last written addr by NIC:0x41fffee8
+13:30:59.274 -> bufferPtr(PA) red = 0000000041fffe90
+13:30:59.274 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:30:59.274 -> Packet Length = 88
+13:30:59.274 -> Packet[8]: 000a35031e509cb6
+13:30:59.274 -> Packet[16]: 540ea5ac08000001
+13:30:59.274 -> Packet[24]: 000a35031e509cb6
+13:30:59.274 -> Packet[32]: 540ea5ac08000001
+13:30:59.274 -> Packet[40]: 0203040506070809
+13:30:59.274 -> Packet[48]: 0001020304050607
+13:30:59.307 -> Packet[56]: 0809000102030405
+13:30:59.307 -> Packet[64]: 0607080900010203
+13:30:59.307 -> Packet[72]: 0405060708090001
+13:30:59.307 -> Packet[80]: 0203040506070809
+13:30:59.307 -> Packet[88]: 00010c0000000000
+13:30:59.307 -> Packet[96]: 0000000000000000
+13:30:59.307 -> Packet[104]: 0000000000000000
+13:30:59.307 -> Packet[112]: 0000000000000000
+13:30:59.307 -> Packet[120]: 0000000000000000
+13:30:59.307 -> freeQ replenished 
+13:30:59.307 -> *(free_queue->lock) = 0 
+13:30:59.307 -> message_counter:13
+13:30:59.307 -> transmitted packet = 0, Received packet = 13, status register = 1
+13:31:00.266 -> last written addr by NIC:0x41fffee8
+13:31:00.266 -> bufferPtr(PA) red = 0000000041fffe90
+13:31:00.266 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:31:00.266 -> Packet Length = 88
+13:31:00.266 -> Packet[8]: 000a35031e509cb6
+13:31:00.266 -> Packet[16]: 540ea5ac08000001
+13:31:00.266 -> Packet[24]: 000a35031e509cb6
+13:31:00.266 -> Packet[32]: 540ea5ac08000001
+13:31:00.299 -> Packet[40]: 0203040506070809
+13:31:00.299 -> Packet[48]: 0001020304050607
+13:31:00.299 -> Packet[56]: 0809000102030405
+13:31:00.299 -> Packet[64]: 0607080900010203
+13:31:00.299 -> Packet[72]: 0405060708090001
+13:31:00.299 -> Packet[80]: 0203040506070809
+13:31:00.299 -> Packet[88]: 00010d0000000000
+13:31:00.299 -> Packet[96]: 0000000000000000
+13:31:00.299 -> Packet[104]: 0000000000000000
+13:31:00.299 -> Packet[112]: 0000000000000000
+13:31:00.299 -> Packet[120]: 0000000000000000
+13:31:00.299 -> freeQ replenished 
+13:31:00.299 -> *(free_queue->lock) = 0 
+13:31:00.299 -> message_counter:14
+13:31:00.333 -> transmitted packet = 0, Received packet = 14, status register = 1
+13:31:01.259 -> last written addr by NIC:0x41fffee8
+13:31:01.259 -> bufferPtr(PA) red = 0000000041fffe90
+13:31:01.259 -> rxQ: 0, 0, 0, 1, 8, 1073823750, 1107296096, 0 
+13:31:01.259 -> Packet Length = 88
+13:31:01.259 -> Packet[8]: 000a35031e509cb6
+13:31:01.295 -> Packet[16]: 540ea5ac08000001
+13:31:01.295 -> Packet[24]: 000a35031e509cb6
+13:31:01.295 -> Packet[32]: 540ea5ac08000001
+13:31:01.295 -> Packet[40]: 0203040506070809
+13:31:01.295 -> Packet[48]: 0001020304050607
+13:31:01.295 -> Packet[56]: 0809000102030405
+13:31:01.295 -> Packet[64]: 0607080900010203
+13:31:01.295 -> Packet[72]: 0405060708090001
+13:31:01.295 -> Packet[80]: 0203040506070809
+13:31:01.295 -> Packet[88]: 00010e0000000000
+13:31:01.295 -> Packet[96]: 0000000000000000
+13:31:01.295 -> Packet[104]: 0000000000000000
+13:31:01.295 -> Packet[112]: 0000000000000000
+13:31:01.295 -> Packet[120]: 0000000000000000
+13:31:01.327 -> freeQ replenished 
+13:31:01.327 -> *(free_queue->lock) = 0 
+13:31:01.327 -> message_counter:15
+13:31:01.327 -> transmitted packet = 0, Received packet = 15, status register = 1
+13:31:01.923 -> length modfied to:00000000
+13:31:01.923 -> msgSizeInBytes modfied to:00000000
+13:31:01.923 -> Lock address modfied to:0x00000000
 

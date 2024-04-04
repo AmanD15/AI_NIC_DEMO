@@ -99,7 +99,8 @@
 
 	Corrected length of queue as 4, since using only 4 buffers.
 
-
+	questions gap between 2 buffers greater than their size why?
+	lock ids 2,3,4,5? used where?
 
 
 

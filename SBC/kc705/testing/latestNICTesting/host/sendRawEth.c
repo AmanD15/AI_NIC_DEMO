@@ -64,8 +64,8 @@ int main(int argc, char *argv[])
 	int saddr_len = sizeof socket_address;
 	char ifName[IFNAMSIZ];
 
-	char str[58] = "This is a dummy message for someone just check it..!";
-
+	//char str[58] = "This is a dummy message for someone just check it..!";
+	//char str[58] = "0123456789012345678901234567890123456789012345678901";
 	/* Get interface name */
 	if (argc > 1)
 		strcpy(ifName, argv[1]);
@@ -138,8 +138,8 @@ int main(int argc, char *argv[])
 
 	int i = 0;
 
-	for(i = 0; i < 55; i++) // 53
-		sendbuf[tx_len++] = str[i];
+	for(i = 0; i < 52; i++) 
+		sendbuf[tx_len++] = (i)%10;
 	//printf("Contents of sendbuf are: %s\n",sendbuf[tx_len]); 
 	//exit(0);
 	/* Send packet */
