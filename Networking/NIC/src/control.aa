@@ -36,10 +36,15 @@ $module [setGlobalSignals]
 	S_NUMBER_OF_SERVERS  := n_servers
 
 	$barrier
+	
+	$call accessRegister (READMEM _hF P_BUFFER_SIZE_INDEX 0) (buffer_size_reg)
+	S_BUFFER_SIZE := buffer_size_reg
+
 	$call accessRegister (READMEM _hF P_NIC_CONTROL_REGISTER_INDEX 0) (ctrl_reg)
 	S_CONTROL_REGISTER := ctrl_reg
 	MAC_ENABLE := (ctrl_reg [] 1)
 	NIC_INTR   := (ctrl_reg [] 2)
+
 	$attribute input_buffering 0
 	$attribute output_buffering 0
 }
@@ -62,7 +67,7 @@ $module [controlDaemon] $in () $out () $is
 	NIC_INTR   := 0
 	S_CONTROL_REGISTER := 0
 	S_NUMBER_OF_SERVERS := 0
-	
+	S_BUFFER_SIZE := 0
 	
 	$rreport(controlDaemon started_controlDaemon)
 	$branchblock[loop] {

@@ -77,7 +77,7 @@ $is
 
 			// packet is not ok, free the buffer.
 			$volatile free_flag := ((~status) & bad_packet_identifier)
-			$volatile cond := (ok_flag == 1)
+			
 		
 			// save the packet count 
 			pkt_cnt := ($mux init_flag $one<32>
@@ -86,7 +86,7 @@ $is
 			$guard(ok_flag)
 				$call accessRegister ($zero<1> (~$zero<4>) P_DEBUG_REGISTER_1 pkt_cnt) (ignore_resp1)
 
-
+			$volatile cond := (ok_flag == 1)
 			$rreport(ReceiveEngineDaemon populating_rx_queue ok_flag cond)		
 			$rreport(ReceiveEngineDaemon running_ok_flag)
 	
@@ -94,9 +94,11 @@ $is
 				$call populateRxQueue (rx_buffer_pointer) ()
 
 			$rreport(ReceiveEngineDaemon pushing_into_free_q free_flag )
+
+			// If buffer is defective, free it!
 			$guard (free_flag) 
-				// If buffer is defective, free it!
 				$call pushIntoQueue (FREEQUEUE 0 rx_buffer_pointer) (push_status) 
+				$barrier
 
 			$rreport(ReceiveEngineDaemon completed_iteration_in_receive_engine )
 		
@@ -262,22 +264,25 @@ $is
 
 
 			$volatile nactive_addr_offset := (active_addr_offset + 8)
+			memAccessViolationFlag := ( ($bitcast ($uint<32>) active_addr_offset) == (S_BUFFER_SIZE - 1) ) 
+			
+		$while ((~last_bit) & (~memAccessViolationFlag) )
+	} (wdata => tdata active_addr_offset => active_addr_offset memAccessViolationFlag => memAccessViolationFlag)
 
-		$while (~last_bit)
-		last_address_written := ( ($slice base_buf_pointer 31 0) + ($bitcast ($uint<32>) active_addr_offset) )
-		$call updateLastAddressWritten(last_address_written) ()
 
-	} (wdata => tdata active_addr_offset => active_addr_offset)
+	last_address_written := ( ($slice base_buf_pointer 31 0) + ($bitcast ($uint<32>) active_addr_offset) )
+	$call updateLastAddressWritten(last_address_written) ()
 
-	//
 	// Identify if the data is a bad packet which is identified by 
 	// data bits all 1 and bmask all zeros.
 	//
-	$volatile bad_packet_identifier := ((tdata == BAD_PACKET_DATA) & (last_keep == 0))
+
+	//$volatile bad_packet_identifier := ((tdata == BAD_PACKET_DATA) & (last_keep == 0))
+	bad_packet_identifier := ($mux memAccessViolationFlag $one<1> ((tdata == BAD_PACKET_DATA) & (last_keep == 0)))
 
 	//
 	// how many bytes in the packet (including the control word in the first dword
-	// of the buffer, and two dwords for the header.
+	// of the buffer, and two dwords for the header.)
 	//
 	$volatile packet_size_11 := ($bitcast ($uint<11>) active_addr_offset)
 }

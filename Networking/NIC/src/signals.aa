@@ -12,5 +12,5 @@ $pipe S_FREE_Q : $uint<36> $signal
 // Control Register Port // Since it is used frequently make it a speciic port and not a
 // ReQ-Resp Access
 $pipe S_CONTROL_REGISTER : $uint<32> $signal
-
+$pipe S_BUFFER_SIZE : $uint<32> $signal
 $pipe S_NUMBER_OF_SERVERS : $uint<32> $signal
