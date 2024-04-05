@@ -18,7 +18,9 @@ $system nic_subsystem $library nic_subsystem_lib
     // Local pipes 
         $pipe rx_concat_to_nic_data 73 $depth 2 
         $pipe nic_to_tx_deconcat_data 73 $depth 2
-        $pipe nic_mac_enable 1 $depth 2  
+
+	// This is now a signal!
+        $signal nic_mac_enable 1 $depth 1  
 
 /////////////////////////// MAC <--> Bridge /////////////////////////////////////////
 

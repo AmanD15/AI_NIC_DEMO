@@ -11,7 +11,7 @@ VC2VHDL: vc2vhdl  vhdlsim
 AA2VHDLSIM: aa2vc  vc2vhdl  vhdlsim
 TOVHDL:TOVC vc2vhdl
 
-TOPMODULES=-T tbAfbDaemon -T tbEnableMacDaemon  -T tbMemDaemon -T tbProcessorMemDaemon -T macRxBridgeDaemon -T macTxBridgeDaemon 
+TOPMODULES=-T tbAfbDaemon -T tbEnableMacIntrDaemon  -T tbMemDaemon -T tbProcessorMemDaemon -T macRxBridgeDaemon -T macTxBridgeDaemon 
 
 
 # five steps from C to vhdl simulator.

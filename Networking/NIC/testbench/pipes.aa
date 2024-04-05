@@ -20,6 +20,8 @@ $pipe TEST_SYSTEM_TO_TB_MEM TB_MEM_TO_TEST_SYSTEM : $uint<64> $depth 2
 $pipe MAC_ENABLE  : $uint<1> $signal
 $pipe MAC_ENABLE_8: $uint<8> $signal
 
+$pipe NIC_INTR : $uint<1> $signal
+
 $pipe tb_to_nic_slave_request: $uint<64>
 $pipe nic_slave_response_to_tb: $uint<32>
 
