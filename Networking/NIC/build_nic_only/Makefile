@@ -36,7 +36,7 @@ aa2vc: nic.linked.opt.aa
 # vC to VHDL
 vc2vhdl: nic.vc
 	#-D -O -S 4 -I 2 -v -a -C -e
-	vc2vhdl -U  -O -v -a -C -e nic -w -s ghdl $(TOPMODULES) -f nic.vc -L $(FUNCTIONLIB)/fpu.list
+	vc2vhdl -H -U  -O -v -a -C -e nic -w -s ghdl $(TOPMODULES) -f nic.vc -L $(FUNCTIONLIB)/fpu.list
 	vhdlFormat < nic_global_package.unformatted_vhdl > nic_global_package.vhdl
 	vhdlFormat < nic.unformatted_vhdl > nic.vhdl
 	vhdlFormat < nic_test_bench.unformatted_vhdl > nic_test_bench.vhdl

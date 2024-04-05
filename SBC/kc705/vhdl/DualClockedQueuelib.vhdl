@@ -702,4 +702,27 @@ begin
   
 end Behavioral ;
 
+----------------------------------------------------------------------------------------
+-- Wrappers that are consistent with HSYS 
+----------------------------------------------------------------------------------------
+entity DualClockedQueue_ACB_resp_wrap is
+  port ( 
+    -- read 
+    read_data_out_pipe_read_data : out std_logic_vector(64 DOWNTO 0);
+    read_data_out_pipe_read_req : in std_logic_vector(0 downto 0);
+    read_data_out_pipe_read_ack : out std_logic_vector(0 downto 0);
+    read_clock: in std_logic;
+    -- write 
+    write_data_in_pipe_write_data : in std_logic_vector(64 DOWNTO 0);
+    write_data_in_pipe_write_req : in std_logic_vector(0 downto 0);
+    write_data_in_pipe_write_ack : out std_logic_vector(0 downto 0);
+    write_clock: in std_logic;
+    reset: in std_logic
+  );	
+end entity;
+
+architecture WrapHsys of DualClockedQueue_ACB_resp_wrap is
+begin
+	-- TODO.
+end WrapHsys;
 

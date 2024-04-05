@@ -23,9 +23,7 @@ library nic_mac_bridge_lib;
 --<<<<<
 entity nic_mac_bridge is -- 
   port( -- 
-    ENABLE_MAC_pipe_write_data : in std_logic_vector(0 downto 0);
-    ENABLE_MAC_pipe_write_req  : in std_logic_vector(0  downto 0);
-    ENABLE_MAC_pipe_write_ack  : out std_logic_vector(0  downto 0);
+    ENABLE_MAC: in std_logic_vector(0 downto 0);
     rx_in_pipe_pipe_write_data : in std_logic_vector(9 downto 0);
     rx_in_pipe_pipe_write_req  : in std_logic_vector(0  downto 0);
     rx_in_pipe_pipe_write_ack  : out std_logic_vector(0  downto 0);
@@ -48,12 +46,8 @@ architecture struct of nic_mac_bridge is --
   component nic_mac_pipe_reset is -- 
     port( -- 
       clk: in std_logic;
-      ENABLE_MAC_pipe_data : in std_logic;
-      ENABLE_MAC_pipe_req  : in std_logic;
-      ENABLE_MAC_pipe_ack  : out std_logic;
+      ENABLE_MAC : in std_logic;
       reset : out std_logic
-      
-      -- 
     );
     --
   end component;
@@ -107,10 +101,7 @@ begin --
  
   inst_nic_mac_pipe_reset: nic_mac_pipe_reset
   port map ( --
-  
-    ENABLE_MAC_pipe_data => ENABLE_MAC_pipe_write_data(0),
-    ENABLE_MAC_pipe_req => ENABLE_MAC_pipe_write_req(0),
-    ENABLE_MAC_pipe_ack => ENABLE_MAC_pipe_write_ack(0),
+    ENABLE_MAC => ENABLE_MAC(0),
     reset => NIC_TO_MAC_RESETN_SIG(0),
     clk => clk
     ); -- 
