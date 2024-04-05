@@ -44,17 +44,11 @@ $module [setGlobalSignals]
 
 	S_CONTROL_REGISTER := ctrl_reg
 	MAC_ENABLE := (ctrl_reg [] 1)
-<<<<<<< HEAD
-	NIC_INTR   := (ctrl_reg [] 2)
-=======
 	NIC_INTR_ENABLE := (ctrl_reg [] 2)
 
 	$barrier
 
 	NIC_INTR := (NIC_INTR_ENABLE & NIC_INTR_INTERNAL)
-
-
->>>>>>> HEAD@{1}
 
 	$attribute input_buffering 0
 	$attribute output_buffering 0
