@@ -2,7 +2,7 @@
 module nic_mac_pipe_reset
 (
 input clk,
-(* MARK_DEBUG = "true" *) input ENABLE_MAC;
+(* MARK_DEBUG = "true" *) input ENABLE_MAC,
 output reg reset
 );
 

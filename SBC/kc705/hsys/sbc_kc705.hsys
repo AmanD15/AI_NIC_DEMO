@@ -58,8 +58,8 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 
 	//Processor Pipes and Signals
 	$pipe PROCESSOR_ACB_REQUEST_FIFO_IN  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
-	$pipe PROCESSOR_ACB_RESPONSE_FIFO_IN  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
-	$pipe PROCESSOR_ACB_REQUEST_FIFO_OUT  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
+	$pipe PROCESSOR_ACB_RESPONSE_FIFO_IN  $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	$pipe PROCESSOR_ACB_REQUEST_FIFO_OUT  $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 	$pipe PROCESSOR_ACB_RESPONSE_FIFO_OUT  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
 	$pipe MAIN_MEM_INVALIDATE  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
 
@@ -70,19 +70,16 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$pipe ACB_NIC_RESPONSE $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 	$signal NIC_INTERRUPT $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 
-	//DRAM Pipes
-	//$pipe ACB_DRAM_REQUEST
-	//$pipe DRAM_ACB_RESPONSE
-
+	
 	//FLASH Ctrl Pipes and Signals
 	$pipe AFB_FLASH_REQUEST $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 	$pipe FLASH_AFB_RESPONSE $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 
 
-	$pipe ACB_DRAM_REQUEST_FIFO_IN $clk => CLOCK_TO_DRAMCTRL_BRIDGE $reset => RESET_TO_DRAMCTRL_BRIDGE
+	$pipe ACB_DRAM_REQUEST_FIFO_IN $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 	$pipe ACB_DRAM_REQUEST_FIFO_OUT $clk => CLOCK_TO_DRAMCTRL_BRIDGE $reset => RESET_TO_DRAMCTRL_BRIDGE
 	$pipe DRAM_ACB_RESPONSE_FIFO_IN $clk => CLOCK_TO_DRAMCTRL_BRIDGE $reset => RESET_TO_DRAMCTRL_BRIDGE
-	$pipe DRAM_ACB_RESPONSE_FIFO_OUT $clk => CLOCK_TO_DRAMCTRL_BRIDGE $reset => RESET_TO_DRAMCTRL_BRIDGE
+	$pipe DRAM_ACB_RESPONSE_FIFO_OUT $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 
 //**** 5-SUBSYSTEMS : Processor, acb_afb_complex, spi_flash_xtrl, nic_subsystem, acb_dram_bridge ***** //
 

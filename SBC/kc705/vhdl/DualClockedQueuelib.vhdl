@@ -705,24 +705,150 @@ end Behavioral ;
 ----------------------------------------------------------------------------------------
 -- Wrappers that are consistent with HSYS 
 ----------------------------------------------------------------------------------------
-entity DualClockedQueue_ACB_resp_wrap is
-  port ( 
-    -- read 
-    read_data_out_pipe_read_data : out std_logic_vector(64 DOWNTO 0);
-    read_data_out_pipe_read_req : in std_logic_vector(0 downto 0);
-    read_data_out_pipe_read_ack : out std_logic_vector(0 downto 0);
-    read_clock: in std_logic;
-    -- write 
-    write_data_in_pipe_write_data : in std_logic_vector(64 DOWNTO 0);
-    write_data_in_pipe_write_req : in std_logic_vector(0 downto 0);
-    write_data_in_pipe_write_ack : out std_logic_vector(0 downto 0);
-    write_clock: in std_logic;
-    reset: in std_logic
-  );	
-end entity;
+LIBRARY ieee;
+LIBRARY std;
+USE ieee.std_logic_1164.ALL;
+USE ieee.std_logic_unsigned.ALL;
+USE IEEE.std_logic_arith.ALL;
 
-architecture WrapHsys of DualClockedQueue_ACB_resp_wrap is
+entity DualClockedQueue_ACB_req_wrap is -- 
+    port( -- 
+      fifo_reset : in std_logic_vector(0 downto 0);
+      read_clk : in std_logic_vector(0 downto 0);
+      write_clk : in std_logic_vector(0 downto 0);
+      write_data_pipe_write_data : in std_logic_vector(109 downto 0);
+      write_data_pipe_write_req  : in std_logic_vector(0  downto 0);
+      write_data_pipe_write_ack  : out std_logic_vector(0  downto 0);
+      read_data_pipe_read_data : out std_logic_vector(109 downto 0);
+      read_data_pipe_read_req  : in std_logic_vector(0  downto 0);
+      read_data_pipe_read_ack  : out std_logic_vector(0  downto 0);
+      clk, reset: in std_logic 
+      -- 
+    );
+    --
+  end entity;
+  
+architecture WrapHsys of DualClockedQueue_ACB_req_wrap is
+
+		component DualClockedQueue_ACB_req  is
+			  port ( 
+			    -- read 
+			    read_req_in : in std_logic;
+			    read_data_out : out std_logic_vector(109 DOWNTO 0);
+			    read_ack_out : out std_logic;
+			    -- write 
+			    write_req_out : out std_logic;
+			    write_data_in : in std_logic_vector(109 DOWNTO 0);
+			    write_ack_in : in std_logic;
+			
+			    read_clk : in std_logic;
+			    write_clk : in std_logic;
+			    
+			    reset: in std_logic);	
+		end component DualClockedQueue_ACB_req;
+		
+		signal clk1, reset1: std_logic ;
+
+
 begin
 	-- TODO.
+	clk1    <=  clk;
+	reset1  <= reset;
+	
+	inst_DualClockedQueue_ACB_req : DualClockedQueue_ACB_req
+    	port map(	
+    			reset		=> fifo_reset(0),
+    			 -- read
+    			read_clk	=> read_clk(0),
+    			read_data_out	=> read_data_pipe_read_data,
+    			read_req_in	=> read_data_pipe_read_req(0),
+             		read_ack_out	=> read_data_pipe_read_ack(0),
+             		 -- write
+             		write_clk	=> write_clk(0),
+             		write_data_in	=> write_data_pipe_write_data,
+             		write_ack_in	=> write_data_pipe_write_req(0),
+             		write_req_out	=> write_data_pipe_write_ack(0)
+	
+	
+		);
+
+
+	
 end WrapHsys;
+
+
+LIBRARY ieee;
+LIBRARY std;
+USE ieee.std_logic_1164.ALL;
+USE ieee.std_logic_unsigned.ALL;
+USE IEEE.std_logic_arith.ALL;
+
+entity DualClockedQueue_ACB_resp_wrap is -- 
+    port( -- 
+      fifo_reset : in std_logic_vector(0 downto 0);
+      read_clk : in std_logic_vector(0 downto 0);
+      write_clk : in std_logic_vector(0 downto 0);
+      write_data_pipe_write_data : in std_logic_vector(64 downto 0);
+      write_data_pipe_write_req  : in std_logic_vector(0  downto 0);
+      write_data_pipe_write_ack  : out std_logic_vector(0  downto 0);
+      read_data_pipe_read_data : out std_logic_vector(64 downto 0);
+      read_data_pipe_read_req  : in std_logic_vector(0  downto 0);
+      read_data_pipe_read_ack  : out std_logic_vector(0  downto 0);
+      clk, reset: in std_logic 
+      -- 
+    );
+    --
+  end entity;
+
+architecture WrapHsys of DualClockedQueue_ACB_resp_wrap is
+
+	
+	component DualClockedQueue_ACB_resp  is
+		  port ( 
+		    -- read 
+		    read_req_in : in std_logic;
+		    read_data_out : out std_logic_vector(64 DOWNTO 0);
+		    read_ack_out : out std_logic;
+		    -- write 
+		    write_req_out : out std_logic;
+		    write_data_in : in std_logic_vector(64 DOWNTO 0);
+		    write_ack_in : in std_logic;
+		
+		    read_clk : in std_logic;
+		    write_clk : in std_logic;
+		    
+		    reset: in std_logic);	
+	end component DualClockedQueue_ACB_resp;
+	
+	signal clk1, reset1: std_logic ;
+begin
+	-- TODO.
+	clk1    <=  clk;
+	reset1  <= reset;
+	
+	inst_DualClockedQueue_ACB_resp : DualClockedQueue_ACB_resp
+    	port map(	
+    	
+    			reset		=> fifo_reset(0),
+    			 -- read
+    			read_clk	=> read_clk(0),
+    			read_data_out	=> read_data_pipe_read_data,
+    			read_req_in	=> read_data_pipe_read_req(0),
+             		read_ack_out	=> read_data_pipe_read_ack(0),
+             		 -- write
+             		write_clk	=> write_clk(0),
+             		write_data_in	=> write_data_pipe_write_data,
+             		write_ack_in	=> write_data_pipe_write_req(0),
+             		write_req_out	=> write_data_pipe_write_ack(0)
+	
+		);
+	
+	
+end WrapHsys;
+
+
+
+
+
+
 
