@@ -264,10 +264,10 @@ $is
 
 
 			$volatile nactive_addr_offset := (active_addr_offset + 8)
-			memAccessViolationFlag := ( ($bitcast ($uint<32>) active_addr_offset) == (S_BUFFER_SIZE - 1) ) 
+		
 			
-		$while ((~last_bit) & (~memAccessViolationFlag) )
-	} (wdata => tdata active_addr_offset => active_addr_offset memAccessViolationFlag => memAccessViolationFlag)
+		$while(~last_bit)
+	} (wdata => tdata active_addr_offset => active_addr_offset)
 
 
 	last_address_written := ( ($slice base_buf_pointer 31 0) + ($bitcast ($uint<32>) active_addr_offset) )
@@ -277,9 +277,8 @@ $is
 	// data bits all 1 and bmask all zeros.
 	//
 
-	//$volatile bad_packet_identifier := ((tdata == BAD_PACKET_DATA) & (last_keep == 0))
-	bad_packet_identifier := ($mux memAccessViolationFlag $one<1> ((tdata == BAD_PACKET_DATA) & (last_keep == 0)))
-
+	$volatile bad_packet_identifier := ((tdata == BAD_PACKET_DATA) & (last_keep == 0))
+	
 	//
 	// how many bytes in the packet (including the control word in the first dword
 	// of the buffer, and two dwords for the header.)

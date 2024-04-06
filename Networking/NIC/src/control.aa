@@ -37,8 +37,6 @@ $module [setGlobalSignals]
 
 	$barrier
 	
-	$call accessRegister (READMEM _hF P_BUFFER_SIZE_INDEX 0) (buffer_size_reg)
-	S_BUFFER_SIZE := buffer_size_reg
 
 	$call accessRegister (READMEM _hF P_NIC_CONTROL_REGISTER_INDEX 0) (ctrl_reg)
 
@@ -76,7 +74,7 @@ $module [controlDaemon] $in () $out () $is
 
 	S_CONTROL_REGISTER := 0
 	S_NUMBER_OF_SERVERS := 0
-	S_BUFFER_SIZE := 0
+	
 	
 	$rreport(controlDaemon started_controlDaemon)
 	$branchblock[loop] {
