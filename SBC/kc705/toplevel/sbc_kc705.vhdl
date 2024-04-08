@@ -184,9 +184,7 @@ architecture structure of sbc_kc705 is
     THREAD_RESET : in std_logic_vector(3 downto 0);
     WRITE_PROTECT : in std_logic_vector(0 downto 0);
     ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(612 downto 0);
-    NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data : out std_logic_vector(109 downto 0);
-    NIC_ACB_REQUEST_TO_MEMORY_pipe_read_req  : in std_logic_vector(0  downto 0);
-    NIC_ACB_REQUEST_TO_MEMORY_pipe_read_ack  : out std_logic_vector(0  downto 0);
+    NIC_DEBUG_SIGNAL : out std_logic_vector(127 downto 0);
     NIC_MAC_RESETN : out std_logic_vector(0 downto 0);
     NIC_TO_MAC_pipe_read_data : out std_logic_vector(9 downto 0);
     NIC_TO_MAC_pipe_read_req  : in std_logic_vector(0  downto 0);
@@ -382,9 +380,8 @@ end component;
    signal NIC_TO_MAC_pipe_read_req  : std_logic_vector(0  downto 0);
    signal NIC_TO_MAC_pipe_read_ack  : std_logic_vector(0  downto 0);
     
-   signal NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data :  std_logic_vector(109 downto 0);
-   signal NIC_ACB_REQUEST_TO_MEMORY_pipe_read_req  :  std_logic_vector(0  downto 0);
-   signal NIC_ACB_REQUEST_TO_MEMORY_pipe_read_ack  :  std_logic_vector(0  downto 0);
+ 
+   signal  NIC_DEBUG_SIGNAL :  std_logic_vector(127 downto 0);
 
    signal MAX_ACB_TAP1_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
    signal MAX_ACB_TAP2_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
@@ -537,10 +534,8 @@ begin
     NIC_TO_MAC_pipe_read_req => NIC_TO_MAC_pipe_read_req,
     NIC_TO_MAC_pipe_read_ack => NIC_TO_MAC_pipe_read_ack,
     
-    NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data => NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data,
-    NIC_ACB_REQUEST_TO_MEMORY_pipe_read_req => NIC_ACB_REQUEST_TO_MEMORY_pipe_read_req,
-    NIC_ACB_REQUEST_TO_MEMORY_pipe_read_ack => NIC_ACB_REQUEST_TO_MEMORY_pipe_read_ack,
-    
+   NIC_DEBUG_SIGNAL => NIC_DEBUG_SIGNAL,
+   
     MAX_ACB_TAP1_ADDR => MAX_ACB_TAP1_ADDR,
     MAX_ACB_TAP2_ADDR => MAX_ACB_TAP2_ADDR,
     MIN_ACB_TAP1_ADDR => MIN_ACB_TAP1_ADDR,
@@ -707,11 +702,11 @@ begin
 
 
 
- NIC_ACB_REQUEST_TO_MEMORY_LOCK  <= (0 => NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data(109));
- NIC_ACB_REQUEST_TO_MEMORY_RWBAR <= (0 => NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data(108));
- NIC_ACB_REQUEST_TO_MEMORY_MASK  <= NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data(107 downto 100);
- NIC_ACB_REQUEST_TO_MEMORY_ADDR  <= NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data(99 downto 64);
- NIC_ACB_REQUEST_TO_MEMORY_DATA  <= NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data(63 downto 0);
+ NIC_ACB_REQUEST_TO_MEMORY_LOCK  <= (0 => NIC_DEBUG_SIGNAL(109));
+ NIC_ACB_REQUEST_TO_MEMORY_RWBAR <= (0 => NIC_DEBUG_SIGNAL(108));
+ NIC_ACB_REQUEST_TO_MEMORY_MASK  <= NIC_DEBUG_SIGNAL(107 downto 100);
+ NIC_ACB_REQUEST_TO_MEMORY_ADDR  <= NIC_DEBUG_SIGNAL(99 downto 64);
+ NIC_ACB_REQUEST_TO_MEMORY_DATA  <= NIC_DEBUG_SIGNAL(63 downto 0);
 	
 inst_ila_1 : ila_1 
   Port map( 
