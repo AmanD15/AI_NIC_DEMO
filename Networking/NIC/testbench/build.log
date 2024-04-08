@@ -1,8 +1,21 @@
 rm -rf .Aa
 mkdir .Aa
-AaLinkExtMem ../pipes.aa ./tester.aa  | vcFormat > .Aa/tester.linked.aa
+AaLinkExtMem ../../src/signals.aa ../pipes.aa ./tester.aa  | vcFormat > .Aa/tester.linked.aa
 Info:  AaLinkExtMem built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
 Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: parsed and added pipe LAST_WRITTEN_RX_QUEUE_INDEX width = 8 depth = 1
+Info: parsed and added pipe LAST_READ_TX_QUEUE_INDEX width = 8 depth = 1
+Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_ENABLE width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_INTERNAL width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: re-declaration of pipe: NIC_INTR, parameters updated.
+Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe S_FREE_Q width = 36 depth = 1
+Info: parsed and added pipe S_CONTROL_REGISTER width = 32 depth = 1
+Info: parsed and added pipe S_NUMBER_OF_SERVERS width = 32 depth = 1
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 128 depth = 1
+Info: finished parsing file ../../src/signals.aa
 Info: parsed and added pipe tb_to_mac_data width = 64 depth = 2
 Info: parsed and added pipe mac_to_tb_data width = 64 depth = 2
 Info: parsed and added pipe MERGED_ACB_REQUEST width = 110 depth = 2
@@ -15,8 +28,10 @@ Info: parsed and added pipe tb_to_mac_ctrl width = 16 depth = 2
 Info: parsed and added pipe mac_to_tb_ctrl width = 16 depth = 2
 Info: parsed and added pipe TEST_SYSTEM_TO_TB_MEM width = 64 depth = 2
 Info: parsed and added pipe TB_MEM_TO_TEST_SYSTEM width = 64 depth = 2
+Info: re-declaration of pipe: MAC_ENABLE, parameters updated.
 Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
 Info: parsed and added pipe MAC_ENABLE_8 width = 8 depth = 1
+Info: re-declaration of pipe: NIC_INTR, parameters updated.
 Info: parsed and added pipe NIC_INTR width = 1 depth = 1
 Info: parsed and added pipe tb_to_nic_slave_request width = 64 depth = 1
 Info: parsed and added pipe nic_slave_response_to_tb width = 32 depth = 1
@@ -77,17 +92,25 @@ Info:  AaOpt built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
 Info:     Date: Mon Feb 1 17:21:43 2021 +0530
 Info: parsed and added pipe AFB_NIC_REQUEST width = 74 depth = 2
 Info: parsed and added pipe AFB_NIC_RESPONSE width = 33 depth = 2
+Info: parsed and added pipe LAST_READ_TX_QUEUE_INDEX width = 8 depth = 1
+Info: parsed and added pipe LAST_WRITTEN_RX_QUEUE_INDEX width = 8 depth = 1
 Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
 Info: parsed and added pipe MAC_ENABLE_8 width = 8 depth = 1
 Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
 Info: parsed and added pipe MEM_TO_TB_PROCESSOR width = 64 depth = 2
 Info: parsed and added pipe MERGED_ACB_REQUEST width = 110 depth = 2
 Info: parsed and added pipe MERGED_ACB_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 128 depth = 1
 Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_ENABLE width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_INTERNAL width = 1 depth = 1
 Info: parsed and added pipe NIC_TO_MEMORY_REQUEST width = 110 depth = 2
 Info: parsed and added pipe PROCESSOR_ACB_MEM_REQUEST width = 110 depth = 2
 Info: parsed and added pipe PROCESSOR_ACB_MEM_RESPONSE width = 65 depth = 2
 Info: parsed and added pipe QUEUE_MONITOR_SIGNAL width = 32 depth = 1
+Info: parsed and added pipe S_CONTROL_REGISTER width = 32 depth = 1
+Info: parsed and added pipe S_FREE_Q width = 36 depth = 1
+Info: parsed and added pipe S_NUMBER_OF_SERVERS width = 32 depth = 1
 Info: parsed and added pipe TB_MEM_TO_TEST_SYSTEM width = 64 depth = 2
 Info: parsed and added pipe TB_PROCESSOR_TO_MEM width = 64 depth = 2
 Info: parsed and added pipe TEST_SYSTEM_MEM_REQUEST width = 64 depth = 2
@@ -142,10 +165,10 @@ Info: Marking foreign pointers in modules which are not called from the program
 Info: Coalescing storage from native objects..
 Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
 Info: propagating constants in the program ... 
-Info:  started equalizing paths for do-while statement do_while_stmt_50 in module macRxBridgeDaemon
-Info: Longest path in do_while_stmt_50 is 1
-Info:  started equalizing paths for do-while statement do_while_stmt_68 in module macTxBridgeDaemon
-Info: Longest path in do_while_stmt_68 is 1
+Info:  started equalizing paths for do-while statement do_while_stmt_60 in module macRxBridgeDaemon
+Info: Longest path in do_while_stmt_60 is 1
+Info:  started equalizing paths for do-while statement do_while_stmt_78 in module macTxBridgeDaemon
+Info: Longest path in do_while_stmt_78 is 1
 Info: ignored orphan statement: 		$volatile u23 := ( $slice tb_req 63 41 )  $buffering 1
 
 Info: ignored orphan statement: 		$volatile error := ( $slice afb_resp 32 32 )  $buffering 1
@@ -162,17 +185,25 @@ Info: -O option selected, will parallelize straight-line sequences
 Info: -C option selected, will generate C-stubs for mixed C-VHDL simulation
 Info: parsed and added pipe AFB_NIC_REQUEST width = 74 depth = 2
 Info: parsed and added pipe AFB_NIC_RESPONSE width = 33 depth = 2
+Info: parsed and added pipe LAST_READ_TX_QUEUE_INDEX width = 8 depth = 1
+Info: parsed and added pipe LAST_WRITTEN_RX_QUEUE_INDEX width = 8 depth = 1
 Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
 Info: parsed and added pipe MAC_ENABLE_8 width = 8 depth = 1
 Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
 Info: parsed and added pipe MEM_TO_TB_PROCESSOR width = 64 depth = 2
 Info: parsed and added pipe MERGED_ACB_REQUEST width = 110 depth = 2
 Info: parsed and added pipe MERGED_ACB_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 128 depth = 1
 Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_ENABLE width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_INTERNAL width = 1 depth = 1
 Info: parsed and added pipe NIC_TO_MEMORY_REQUEST width = 110 depth = 2
 Info: parsed and added pipe PROCESSOR_ACB_MEM_REQUEST width = 110 depth = 2
 Info: parsed and added pipe PROCESSOR_ACB_MEM_RESPONSE width = 65 depth = 2
 Info: parsed and added pipe QUEUE_MONITOR_SIGNAL width = 32 depth = 1
+Info: parsed and added pipe S_CONTROL_REGISTER width = 32 depth = 1
+Info: parsed and added pipe S_FREE_Q width = 36 depth = 1
+Info: parsed and added pipe S_NUMBER_OF_SERVERS width = 32 depth = 1
 Info: parsed and added pipe TB_MEM_TO_TEST_SYSTEM width = 64 depth = 2
 Info: parsed and added pipe TB_PROCESSOR_TO_MEM width = 64 depth = 2
 Info: parsed and added pipe TEST_SYSTEM_MEM_REQUEST width = 64 depth = 2
@@ -267,8 +298,8 @@ Info: vcSystem::Add_Function_Library: added function library module fpadd64 in V
 Info: vcSystem::Add_Function_Library: added function library module fpsub64 in VHDL library ahir with delay 14
 Info: vcSystem::Add_Function_Library: added function library module fpmul64 in VHDL library ahir with delay 14
 Warning: module global_storage_initializer_ is not reachable from a top-level module, ignored
-Warning: all elements not reachable from entry in region branch_block_stmt_49/do_while_stmt_50/do_while_stmt_50_loop_body
-Warning: exit not reachable from every element in region branch_block_stmt_49/do_while_stmt_50/do_while_stmt_50_loop_body
+Warning: all elements not reachable from entry in region branch_block_stmt_59/do_while_stmt_60/do_while_stmt_60_loop_body
+Warning: exit not reachable from every element in region branch_block_stmt_59/do_while_stmt_60/do_while_stmt_60_loop_body
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -292,9 +323,9 @@ Info: SCC 4
 Info: SCC 5
 	e_4
 Info: SCC 6
-	e_19
-Info: SCC 7
 	e_18
+Info: SCC 7
+	e_19
 Info: SCC 8
 	e_5
 Info: SCC 9
@@ -305,17 +336,17 @@ Info: SCC 11
 	e_8
 Info: SCC 12
 	e_15
-	e_11
 	e_14
-	e_12
-	e_10
-	e_13
 	e_16
+	e_13
+	e_10
+	e_12
+	e_11
 Info: SCC 13
 	e_17
 	e_9
-Warning: all elements not reachable from entry in region branch_block_stmt_67/do_while_stmt_68/do_while_stmt_68_loop_body
-Warning: exit not reachable from every element in region branch_block_stmt_67/do_while_stmt_68/do_while_stmt_68_loop_body
+Warning: all elements not reachable from entry in region branch_block_stmt_77/do_while_stmt_78/do_while_stmt_78_loop_body
+Warning: exit not reachable from every element in region branch_block_stmt_77/do_while_stmt_78/do_while_stmt_78_loop_body
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -351,17 +382,17 @@ Info: SCC 10
 Info: SCC 11
 	e_8
 Info: SCC 12
-	e_12
-	e_15
-	e_11
 	e_10
 	e_16
+	e_15
 	e_14
 	e_13
+	e_11
+	e_12
 Info: SCC 13
 	e_17
 	e_9
-Warning: exit not reachable from every element in region branch_block_stmt_88/assign_stmt_92_to_assign_stmt_140
+Warning: exit not reachable from every element in region branch_block_stmt_98/assign_stmt_102_to_assign_stmt_150
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -381,24 +412,24 @@ Info: SCC 1
 Info: SCC 2
 	e_2
 Info: SCC 3
-	e_13
-	e_10
+	e_12
+	e_11
 	e_9
-	e_8
 	e_7
 	e_6
+	e_8
+	e_13
+	e_10
 	e_5
-	e_11
-	e_12
 Info: SCC 4
 	e_0
 Info: SCC 5
 	e_1
-Warning: exit not reachable from every element in region branch_block_stmt_145/assign_stmt_153_to_assign_stmt_156
+Warning: exit not reachable from every element in region branch_block_stmt_155/assign_stmt_163_to_assign_stmt_169
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
-Info:  Total number of strongly-connected-components is 60
+Info:  Total number of strongly-connected-components is 72
 Info:  Fix_Combi pass OK
 Info: reducing Control-path 
 Info: removed CP-element $exit maybe it was dead?
@@ -406,67 +437,70 @@ Info: removed CP-element dead_transition maybe it was dead?
 Info: finding nucleii 
 Info: in CPForkblock [tbEnableMacIntrDaemon_CP], adding SCC arcs
 Info: in CPForkblock [tbEnableMacIntrDaemon_CP], added 0 SCC arcs
-Info:  Total number of strongly-connected-components is 5
+Info:  Total number of strongly-connected-components is 6
 Info: SCC 0
-	e_6
-Info: SCC 1
 	e_2
+Info: SCC 1
+	e_8
 Info: SCC 2
+	e_6
+Info: SCC 3
+	e_7
+	e_10
+	e_9
+	e_11
 	e_4
 	e_3
 	e_5
-	e_8
-	e_7
-	e_9
-Info: SCC 3
-	e_0
 Info: SCC 4
+	e_0
+Info: SCC 5
 	e_1
-Warning: exit not reachable from every element in region branch_block_stmt_161/assign_stmt_173_to_assign_stmt_231
+Warning: exit not reachable from every element in region branch_block_stmt_174/assign_stmt_186_to_assign_stmt_243
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
 Info:  Total number of strongly-connected-components is 129
 Info:  Fix_Combi pass OK
 Info: reducing Control-path 
-Info: removed CP-element $exit maybe it was dead?
 Info: removed CP-element dead_transition maybe it was dead?
+Info: removed CP-element $exit maybe it was dead?
 Info: finding nucleii 
 Info: in CPForkblock [tbMemDaemon_CP], adding SCC arcs
 Info: in CPForkblock [tbMemDaemon_CP], added 0 SCC arcs
 Info:  Total number of strongly-connected-components is 8
 Info: SCC 0
-	e_12
-Info: SCC 1
-	e_11
-Info: SCC 2
-	e_10
-Info: SCC 3
 	e_2
+Info: SCC 1
+	e_12
+Info: SCC 2
+	e_11
+Info: SCC 3
+	e_10
 Info: SCC 4
 	e_7
-	e_16
-	e_4
-	e_5
 	e_18
-	e_14
-	e_15
-	e_6
-	e_20
-	e_19
 	e_8
-	e_13
+	e_19
 	e_9
-	e_22
+	e_20
+	e_16
 	e_3
+	e_6
+	e_15
+	e_14
+	e_5
+	e_13
+	e_4
 	e_21
+	e_22
 Info: SCC 5
 	e_17
 Info: SCC 6
 	e_0
 Info: SCC 7
 	e_1
-Warning: exit not reachable from every element in region branch_block_stmt_236/assign_stmt_240_to_assign_stmt_260
+Warning: exit not reachable from every element in region branch_block_stmt_248/assign_stmt_252_to_assign_stmt_272
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -492,13 +526,13 @@ Info: SCC 4
 Info: SCC 5
 	e_13
 	e_14
-	e_15
 	e_11
-	e_7
-	e_8
 	e_9
-	e_10
 	e_12
+	e_15
+	e_8
+	e_7
+	e_10
 Info: SCC 6
 	e_0
 Info: SCC 7
@@ -508,11 +542,11 @@ Info: printing top-level system VHDL file tester.unformatted_vhdl
 Info: printing VHDL model
 Info: printing VHDL model for module macRxBridgeDaemon
 Info: resources used by CP macRxBridgeDaemon_CP_3: ff-count=8 (saved 4), mux2-count= 6, and2-count= 0
-Info: estimated buffering for operator RPIPE_tb_to_nic_mac_bridge_53_inst = 16
+Info: estimated buffering for operator RPIPE_tb_to_nic_mac_bridge_63_inst = 16
 Info: estimated buffering in module macRxBridgeDaemon is 16
 Info: printing VHDL model for module macTxBridgeDaemon
 Info: resources used by CP macTxBridgeDaemon_CP_67: ff-count=8 (saved 4), mux2-count= 6, and2-count= 0
-Info: estimated buffering for operator RPIPE_tx_out_pipe_71_inst = 10
+Info: estimated buffering for operator RPIPE_tx_out_pipe_81_inst = 10
 Info: estimated buffering in module macTxBridgeDaemon is 10
 Info: printing VHDL model for module tbAfbDaemon
 Warning: CP element 1 has no predecessors.. tie to false
@@ -523,13 +557,13 @@ Warning: CP element 1 has no predecessors.. tie to false
 
 -- CP-element group 1:  members (3) {
 -- CP-element group 1: 	 $exit
--- CP-element group 1: 	 branch_block_stmt_88/$exit
--- CP-element group 1: 	 branch_block_stmt_88/branch_block_stmt_88__exit__
+-- CP-element group 1: 	 branch_block_stmt_98/$exit
+-- CP-element group 1: 	 branch_block_stmt_98/branch_block_stmt_98__exit__
 -- }
 Info: resources used by CP tbAfbDaemon_CP_131: ff-count=2 (saved 0), mux2-count= 2, and2-count= 1
-Info: estimated buffering for operator CONCAT_u6_u74_126_inst = 74
-Info: estimated buffering for operator RPIPE_AFB_NIC_RESPONSE_132_inst = 33
-Info: estimated buffering for operator RPIPE_tb_to_nic_slave_request_91_inst = 64
+Info: estimated buffering for operator CONCAT_u6_u74_136_inst = 74
+Info: estimated buffering for operator RPIPE_AFB_NIC_RESPONSE_142_inst = 33
+Info: estimated buffering for operator RPIPE_tb_to_nic_slave_request_101_inst = 64
 Info: estimated buffering in module tbAfbDaemon is 171
 Info: printing VHDL model for module tbEnableMacIntrDaemon
 Warning: CP element 1 has no predecessors.. tie to false
@@ -540,15 +574,17 @@ Warning: CP element 1 has no predecessors.. tie to false
 
 -- CP-element group 1:  members (3) {
 -- CP-element group 1: 	 $exit
--- CP-element group 1: 	 branch_block_stmt_145/$exit
--- CP-element group 1: 	 branch_block_stmt_145/branch_block_stmt_145__exit__
+-- CP-element group 1: 	 branch_block_stmt_155/$exit
+-- CP-element group 1: 	 branch_block_stmt_155/branch_block_stmt_155__exit__
 -- }
-Info: resources used by CP tbEnableMacIntrDaemon_CP_232: ff-count=2 (saved 0), mux2-count= 2, and2-count= 1
-Info: estimated buffering for operator CONCAT_u7_u8_152_inst = 8
-Info: estimated buffering for operator RPIPE_MAC_ENABLE_151_inst = 1
-Info: estimated buffering for operator RPIPE_NIC_INTR_155_inst = 1
-Info: estimated buffering for operator W_intr_154_inst = 1
-Info: estimated buffering in module tbEnableMacIntrDaemon is 11
+Info: resources used by CP tbEnableMacIntrDaemon_CP_232: ff-count=3 (saved 0), mux2-count= 3, and2-count= 2
+Info: estimated buffering for operator CONCAT_u7_u8_162_inst = 8
+Info: estimated buffering for operator RPIPE_MAC_ENABLE_161_inst = 1
+Info: estimated buffering for operator RPIPE_NIC_DEBUG_SIGNAL_168_inst = 128
+Info: estimated buffering for operator RPIPE_NIC_INTR_165_inst = 1
+Info: estimated buffering for operator W_debug_sig_167_inst = 128
+Info: estimated buffering for operator W_intr_164_inst = 1
+Info: estimated buffering in module tbEnableMacIntrDaemon is 267
 Info: printing VHDL model for module tbMemDaemon
 Warning: CP element 1 has no predecessors.. tie to false
 -- CP-element group 1:  transition  place  bypass 
@@ -558,16 +594,16 @@ Warning: CP element 1 has no predecessors.. tie to false
 
 -- CP-element group 1:  members (3) {
 -- CP-element group 1: 	 $exit
--- CP-element group 1: 	 branch_block_stmt_161/$exit
--- CP-element group 1: 	 branch_block_stmt_161/branch_block_stmt_161__exit__
+-- CP-element group 1: 	 branch_block_stmt_174/$exit
+-- CP-element group 1: 	 branch_block_stmt_174/branch_block_stmt_174__exit__
 -- }
-Info: resources used by CP tbMemDaemon_CP_305: ff-count=5 (saved 0), mux2-count= 5, and2-count= 3
-Info: estimated buffering for operator ADD_u8_u8_172_inst = 8
-Info: estimated buffering for operator CONCAT_u1_u65_227_inst = 65
-Info: estimated buffering for operator RPIPE_MERGED_ACB_REQUEST_175_inst = 110
-Info: estimated buffering for operator RPIPE_TB_MEM_TO_TEST_SYSTEM_221_inst = 64
-Info: estimated buffering for operator nCOUNT_173_167_buf = 8
-Info: estimated buffering for operator phi_stmt_163 = 8
+Info: resources used by CP tbMemDaemon_CP_319: ff-count=5 (saved 0), mux2-count= 5, and2-count= 3
+Info: estimated buffering for operator ADD_u8_u8_185_inst = 8
+Info: estimated buffering for operator CONCAT_u1_u65_239_inst = 65
+Info: estimated buffering for operator RPIPE_MERGED_ACB_REQUEST_188_inst = 110
+Info: estimated buffering for operator RPIPE_TB_MEM_TO_TEST_SYSTEM_233_inst = 64
+Info: estimated buffering for operator nCOUNT_186_180_buf = 8
+Info: estimated buffering for operator phi_stmt_176 = 8
 Info: estimated buffering in module tbMemDaemon is 263
 Info: printing VHDL model for module tbProcessorMemDaemon
 Warning: CP element 1 has no predecessors.. tie to false
@@ -578,19 +614,26 @@ Warning: CP element 1 has no predecessors.. tie to false
 
 -- CP-element group 1:  members (3) {
 -- CP-element group 1: 	 $exit
--- CP-element group 1: 	 branch_block_stmt_236/$exit
--- CP-element group 1: 	 branch_block_stmt_236/branch_block_stmt_236__exit__
+-- CP-element group 1: 	 branch_block_stmt_248/$exit
+-- CP-element group 1: 	 branch_block_stmt_248/branch_block_stmt_248__exit__
 -- }
-Info: resources used by CP tbProcessorMemDaemon_CP_462: ff-count=2 (saved 0), mux2-count= 2, and2-count= 1
-Info: estimated buffering for operator CONCAT_u46_u110_249_inst = 110
-Info: estimated buffering for operator RPIPE_PROCESSOR_ACB_MEM_RESPONSE_252_inst = 65
-Info: estimated buffering for operator RPIPE_TB_PROCESSOR_TO_MEM_239_inst = 64
-Info: estimated buffering for operator RPIPE_TB_PROCESSOR_TO_MEM_242_inst = 64
+Info: resources used by CP tbProcessorMemDaemon_CP_476: ff-count=2 (saved 0), mux2-count= 2, and2-count= 1
+Info: estimated buffering for operator CONCAT_u46_u110_261_inst = 110
+Info: estimated buffering for operator RPIPE_PROCESSOR_ACB_MEM_RESPONSE_264_inst = 65
+Info: estimated buffering for operator RPIPE_TB_PROCESSOR_TO_MEM_251_inst = 64
+Info: estimated buffering for operator RPIPE_TB_PROCESSOR_TO_MEM_254_inst = 64
 Info: estimated buffering in module tbProcessorMemDaemon is 303
-Info: total estimated buffering in system tester is 774
+Info: total estimated buffering in system tester is 1030
+Warning: pipe LAST_READ_TX_QUEUE_INDEX not used in the system, ignored
+Warning: pipe LAST_WRITTEN_RX_QUEUE_INDEX not used in the system, ignored
 Warning: pipe MEMORY_TO_NIC_RESPONSE not used in the system, ignored
+Warning: pipe NIC_INTR_ENABLE not used in the system, ignored
+Warning: pipe NIC_INTR_INTERNAL not used in the system, ignored
 Warning: pipe NIC_TO_MEMORY_REQUEST not used in the system, ignored
 Warning: pipe QUEUE_MONITOR_SIGNAL not used in the system, ignored
+Warning: pipe S_CONTROL_REGISTER not used in the system, ignored
+Warning: pipe S_FREE_Q not used in the system, ignored
+Warning: pipe S_NUMBER_OF_SERVERS not used in the system, ignored
 Warning: pipe TEST_SYSTEM_MEM_REQUEST not used in the system, ignored
 Warning: pipe TEST_SYSTEM_MEM_RESPONSE not used in the system, ignored
 Warning: pipe debug_queue_command not used in the system, ignored
@@ -605,6 +648,7 @@ Warning: pipe tb_to_mac_data not used in the system, ignored
 Warning: pipe tx_in_pipe not used in the system, ignored
 Info: finished printing VHDL model
 Info: number of register bits used in FIFO's = 0
+Info: number of marked arcs removed during redundancy removal = 0
 vhdlFormat < tester_global_package.unformatted_vhdl > vhdl/tester_lib/tester_global_package.vhdl
 vhdlFormat < tester.unformatted_vhdl > vhdl/tester_lib/tester.vhdl
 vhdlFormat < tester_test_bench.unformatted_vhdl > vhdl/testbench/tester_test_bench.vhdl
@@ -621,17 +665,25 @@ Info: marked macTxBridgeDaemon as a top-level daemon.
 Info: C output directory set to ./. 
 Info: parsed and added pipe AFB_NIC_REQUEST width = 74 depth = 2
 Info: parsed and added pipe AFB_NIC_RESPONSE width = 33 depth = 2
+Info: parsed and added pipe LAST_READ_TX_QUEUE_INDEX width = 8 depth = 1
+Info: parsed and added pipe LAST_WRITTEN_RX_QUEUE_INDEX width = 8 depth = 1
 Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
 Info: parsed and added pipe MAC_ENABLE_8 width = 8 depth = 1
 Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
 Info: parsed and added pipe MEM_TO_TB_PROCESSOR width = 64 depth = 2
 Info: parsed and added pipe MERGED_ACB_REQUEST width = 110 depth = 2
 Info: parsed and added pipe MERGED_ACB_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 128 depth = 1
 Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_ENABLE width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_INTERNAL width = 1 depth = 1
 Info: parsed and added pipe NIC_TO_MEMORY_REQUEST width = 110 depth = 2
 Info: parsed and added pipe PROCESSOR_ACB_MEM_REQUEST width = 110 depth = 2
 Info: parsed and added pipe PROCESSOR_ACB_MEM_RESPONSE width = 65 depth = 2
 Info: parsed and added pipe QUEUE_MONITOR_SIGNAL width = 32 depth = 1
+Info: parsed and added pipe S_CONTROL_REGISTER width = 32 depth = 1
+Info: parsed and added pipe S_FREE_Q width = 36 depth = 1
+Info: parsed and added pipe S_NUMBER_OF_SERVERS width = 32 depth = 1
 Info: parsed and added pipe TB_MEM_TO_TEST_SYSTEM width = 64 depth = 2
 Info: parsed and added pipe TB_PROCESSOR_TO_MEM width = 64 depth = 2
 Info: parsed and added pipe TEST_SYSTEM_MEM_REQUEST width = 64 depth = 2
@@ -716,6 +768,7 @@ Info: parsed and added pipe NIC_INTR width = 1 depth = 1
 Info: parsed and added pipe S_FREE_Q width = 36 depth = 1
 Info: parsed and added pipe S_CONTROL_REGISTER width = 32 depth = 1
 Info: parsed and added pipe S_NUMBER_OF_SERVERS width = 32 depth = 1
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 128 depth = 1
 Info: finished parsing file ../../src/signals.aa
 Info: Added module accessRegister
 Info: Added module setGlobalSignals
@@ -779,7 +832,7 @@ Info: finished parsing file ../../src/transmit_engine.aa
 Info: Added module global_storage_initializer_
 Info: elaborating the program .... initializing the call-graph
 Info: mapping target object references..
-Warning: target of a PHI statement is an interface object! :line 202
+Warning: target of a PHI statement is an interface object! :line 204
 Info: mapping source object references..
 Info: checking for cycles in the call-graph ... 
 Info: module order:
@@ -904,6 +957,7 @@ Info: parsed and added pipe LAST_READ_TX_QUEUE_INDEX width = 8 depth = 1
 Info: parsed and added pipe LAST_WRITTEN_RX_QUEUE_INDEX width = 8 depth = 1
 Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
 Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 128 depth = 1
 Info: parsed and added pipe NIC_INTR width = 1 depth = 1
 Info: parsed and added pipe NIC_INTR_ENABLE width = 1 depth = 1
 Info: parsed and added pipe NIC_INTR_INTERNAL width = 1 depth = 1
@@ -974,7 +1028,7 @@ Info: Added module transmitPacket
 Info: Added module transmitEngineDaemon
 Info: elaborating the program .... initializing the call-graph
 Info: mapping target object references..
-Warning: target of a PHI statement is an interface object! :line 435
+Warning: target of a PHI statement is an interface object! :line 439
 Info: mapping source object references..
 Info: checking for cycles in the call-graph ... 
 Info: module order:
@@ -1118,12 +1172,12 @@ Info: added 30 buffering bits during path balancing
 Info: added 192 buffering bits during path balancing
 Info:  started path balancing for module doMemAccess
 Info: Longest path in doMemAccess is 34
-Info: added 1088 buffering bits during path balancing
-Info: added 1088 buffering bits during path balancing
+Info: added 17 buffering bits during path balancing
 Info: added 17 buffering bits during path balancing
 Info: added 17 buffering bits during path balancing
 Info: added 1 buffering bits during path balancing
-Info: added 17 buffering bits during path balancing
+Info: added 1088 buffering bits during path balancing
+Info: added 1088 buffering bits during path balancing
 Info: added 17 buffering bits during path balancing
 Info: added 17 buffering bits during path balancing
 Info: added 16 buffering bits during path balancing
@@ -1148,46 +1202,46 @@ Info: ignored orphan statement: 	$volatile err := ( $slice response 64 64 )  $bu
 
 Info: ignored orphan statement: 	$volatile err := ( $slice response 64 64 )  $buffering 1
 
-Info: ignored orphan statement: 	is_ldstub_589_delayed_17_0 := is_ldstub $buffering 17 $cut_through // bits of buffering = 17.  Orphaned statement with target is_ldstub_589_delayed_17_0 ?? 
+Info: ignored orphan statement: 	is_ldstub_601_delayed_17_0 := is_ldstub $buffering 17 $cut_through // bits of buffering = 17.  Orphaned statement with target is_ldstub_601_delayed_17_0 ?? 
 
-Info:  started equalizing paths for do-while statement do_while_stmt_1175 in module writeEthernetHeaderToMem
-Info: Longest path in do_while_stmt_1175 is 39
+Info:  started equalizing paths for do-while statement do_while_stmt_1187 in module writeEthernetHeaderToMem
+Info: Longest path in do_while_stmt_1187 is 39
 Info: added 64 buffering bits during path balancing
 Info: ignored orphan statement: 			$volatile last_bit := ( $slice ethernet_header 72 72 )  $buffering 1
 
 Info: ignored orphan statement: 			$volatile wkeep := ( $slice ethernet_header 7 0 )  $buffering 1
 
-Info:  started equalizing paths for do-while statement do_while_stmt_1238 in module writePayloadToMem
-Info: Longest path in do_while_stmt_1238 is 39
-Info:  started equalizing paths for do-while statement do_while_stmt_1486 in module delay_time
-Info: Longest path in do_while_stmt_1486 is 1
+Info:  started equalizing paths for do-while statement do_while_stmt_1250 in module writePayloadToMem
+Info: Longest path in do_while_stmt_1250 is 39
+Info:  started equalizing paths for do-while statement do_while_stmt_1498 in module delay_time
+Info: Longest path in do_while_stmt_1498 is 1
 Info: ignored orphan statement: 			selected_q_index := q_index $buffering 1// bits of buffering = 8.  Orphaned statement with target selected_q_index ?? 
 
-Info:  started equalizing paths for do-while statement do_while_stmt_1582 in module ReceiveEngineDaemon
-Info: Longest path in do_while_stmt_1582 is 10
+Info:  started equalizing paths for do-while statement do_while_stmt_1594 in module ReceiveEngineDaemon
+Info: Longest path in do_while_stmt_1594 is 10
 Info: added 1 buffering bits during path balancing
 Info: added 64 buffering bits during path balancing
-Info: added 64 buffering bits during path balancing
+Info: added 1 buffering bits during path balancing
 Info: added 1 buffering bits during path balancing
 Info: added 4 buffering bits during path balancing
 Info: added 160 buffering bits during path balancing
-Info: added 1 buffering bits during path balancing
-Info:  started equalizing paths for do-while statement do_while_stmt_1744 in module controlDaemon
-Info: Longest path in do_while_stmt_1744 is 5
+Info: added 64 buffering bits during path balancing
+Info:  started equalizing paths for do-while statement do_while_stmt_1757 in module controlDaemon
+Info: Longest path in do_while_stmt_1757 is 5
 Info: ignored orphan statement: 	$volatile tdata := ( $slice RX 71 8 )  $buffering 1
 
 Info: ignored orphan statement: 	$volatile tkeep := ( $slice RX 7 0 )  $buffering 1
 
-Info:  started equalizing paths for do-while statement do_while_stmt_1964 in module nicRxFromMacDaemon
-Info: Longest path in do_while_stmt_1964 is 5
+Info:  started equalizing paths for do-while statement do_while_stmt_1977 in module nicRxFromMacDaemon
+Info: Longest path in do_while_stmt_1977 is 5
 Info: ignored orphan statement: 		$volatile u15 := ( $slice cmd 62 48 )  $buffering 1
 
 Info: ignored orphan statement: 	$volatile unused := ( $slice control_data 63 19 )  $buffering 1
 
-Info:  started equalizing paths for do-while statement do_while_stmt_2148 in module transmitPacket
-Info: Longest path in do_while_stmt_2148 is 40
-Info:  started equalizing paths for do-while statement do_while_stmt_2238 in module transmitEngineDaemon
-Info: Longest path in do_while_stmt_2238 is 15
+Info:  started equalizing paths for do-while statement do_while_stmt_2161 in module transmitPacket
+Info: Longest path in do_while_stmt_2161 is 40
+Info:  started equalizing paths for do-while statement do_while_stmt_2251 in module transmitEngineDaemon
+Info: Longest path in do_while_stmt_2251 is 15
 Info: added 4 buffering bits during path balancing
 Info: added 256 buffering bits during path balancing
 Info: added 4 buffering bits during path balancing
@@ -1205,6 +1259,7 @@ Info: parsed and added pipe LAST_READ_TX_QUEUE_INDEX width = 8 depth = 1
 Info: parsed and added pipe LAST_WRITTEN_RX_QUEUE_INDEX width = 8 depth = 1
 Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
 Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 128 depth = 1
 Info: parsed and added pipe NIC_INTR width = 1 depth = 1
 Info: parsed and added pipe NIC_INTR_ENABLE width = 1 depth = 1
 Info: parsed and added pipe NIC_INTR_INTERNAL width = 1 depth = 1
@@ -1275,7 +1330,7 @@ Info: Added module transmitPacket
 Info: Added module transmitEngineDaemon
 Info: elaborating the program .... initializing the call-graph
 Info: mapping target object references..
-Warning: target of a PHI statement is an interface object! :line 466
+Warning: target of a PHI statement is an interface object! :line 470
 Info: mapping source object references..
 Info: checking for cycles in the call-graph ... 
 Info: module order:
@@ -1393,28 +1448,28 @@ Info: Memory space 0: nic_registers
 Info: propagating constants in the program ... 
 Info: Writing optimized VC model.. 
 Info: Writing gated clocks.. 
-Info: found $barrier statement on line 433
-Info: found $barrier statement on line 438
-Info: found $barrier statement on line 444
-Info: found $barrier statement on line 452
-Info: found $barrier statement on line 433
-Info: found $barrier statement on line 438
-Info: found $barrier statement on line 444
-Info: found $barrier statement on line 452
-Info: found $barrier statement on line 555
-Info: found $barrier statement on line 567
-Info: found $barrier statement on line 555
-Info: found $barrier statement on line 567
-Warning: Looks like you have an expression which depends only on signals/constants.. :line 613
-Warning: Looks like you have an expression which depends only on signals/constants.. :line 664
-Info: found $barrier statement on line 684
+Info: found $barrier statement on line 437
+Info: found $barrier statement on line 442
+Info: found $barrier statement on line 448
+Info: found $barrier statement on line 456
+Info: found $barrier statement on line 437
+Info: found $barrier statement on line 442
+Info: found $barrier statement on line 448
+Info: found $barrier statement on line 456
+Info: found $barrier statement on line 559
+Info: found $barrier statement on line 571
+Info: found $barrier statement on line 559
+Info: found $barrier statement on line 571
+Warning: Looks like you have an expression which depends only on signals/constants.. :line 617
+Warning: Looks like you have an expression which depends only on signals/constants.. :line 669
 Info: found $barrier statement on line 689
-Info: found $barrier statement on line 684
+Info: found $barrier statement on line 694
 Info: found $barrier statement on line 689
-Warning: Looks like you have an expression which depends only on signals/constants.. :line 804
-Warning: Looks like you have an expression which depends only on signals/constants.. :line 882
-Warning: Looks like you have an expression which depends only on signals/constants.. :line 882
-Warning: Looks like you have an expression which depends only on signals/constants.. :line 902
+Info: found $barrier statement on line 694
+Warning: Looks like you have an expression which depends only on signals/constants.. :line 809
+Warning: Looks like you have an expression which depends only on signals/constants.. :line 887
+Warning: Looks like you have an expression which depends only on signals/constants.. :line 887
+Warning: Looks like you have an expression which depends only on signals/constants.. :line 907
 Info: Done writing optimized VC model.. 
 rm -rf vhdl
 mkdir vhdl
@@ -1449,27 +1504,27 @@ Info: vcSystem::Add_Function_Library: added function library module fpu64 in VHD
 Info: vcSystem::Add_Function_Library: added function library module fpadd64 in VHDL library ahir with delay 16
 Info: vcSystem::Add_Function_Library: added function library module fpsub64 in VHDL library ahir with delay 14
 Info: vcSystem::Add_Function_Library: added function library module fpmul64 in VHDL library ahir with delay 14
-Warning: control-path links to flow-through DPE array_obj_ref_149_index_0_resize ignored,  in module accessRegister
-Warning: control-path links to flow-through DPE array_obj_ref_149_index_0_rename ignored,  in module accessRegister
-Warning: control-path links to flow-through DPE array_obj_ref_149_index_offset ignored,  in module accessRegister
-Warning: control-path links to flow-through DPE array_obj_ref_149_root_address_inst ignored,  in module accessRegister
-Warning: control-path links to flow-through DPE array_obj_ref_149_addr_0 ignored,  in module accessRegister
-Warning: control-path links to flow-through DPE array_obj_ref_149_gather_scatter ignored,  in module accessRegister
-Warning: control-path links to flow-through DPE array_obj_ref_222_index_0_resize ignored,  in module accessRegister
-Warning: control-path links to flow-through DPE array_obj_ref_222_index_0_rename ignored,  in module accessRegister
-Warning: control-path links to flow-through DPE array_obj_ref_222_index_offset ignored,  in module accessRegister
-Warning: control-path links to flow-through DPE array_obj_ref_222_root_address_inst ignored,  in module accessRegister
-Warning: control-path links to flow-through DPE array_obj_ref_222_addr_0 ignored,  in module accessRegister
-Warning: control-path links to flow-through DPE array_obj_ref_222_gather_scatter ignored,  in module accessRegister
+Warning: control-path links to flow-through DPE array_obj_ref_151_index_0_resize ignored,  in module accessRegister
+Warning: control-path links to flow-through DPE array_obj_ref_151_index_0_rename ignored,  in module accessRegister
+Warning: control-path links to flow-through DPE array_obj_ref_151_index_offset ignored,  in module accessRegister
+Warning: control-path links to flow-through DPE array_obj_ref_151_root_address_inst ignored,  in module accessRegister
+Warning: control-path links to flow-through DPE array_obj_ref_151_addr_0 ignored,  in module accessRegister
+Warning: control-path links to flow-through DPE array_obj_ref_151_gather_scatter ignored,  in module accessRegister
+Warning: control-path links to flow-through DPE array_obj_ref_224_index_0_resize ignored,  in module accessRegister
+Warning: control-path links to flow-through DPE array_obj_ref_224_index_0_rename ignored,  in module accessRegister
+Warning: control-path links to flow-through DPE array_obj_ref_224_index_offset ignored,  in module accessRegister
+Warning: control-path links to flow-through DPE array_obj_ref_224_root_address_inst ignored,  in module accessRegister
+Warning: control-path links to flow-through DPE array_obj_ref_224_addr_0 ignored,  in module accessRegister
+Warning: control-path links to flow-through DPE array_obj_ref_224_gather_scatter ignored,  in module accessRegister
 Warning: module accessQueueMsgSizeInBytes is not reachable from a top-level module, ignored
 Warning: module global_storage_initializer_ is not reachable from a top-level module, ignored
-Info: Info: transition [phi_stmt_1648_merged_reqs] is isolated, removed.
-Warning: all elements not reachable from entry in region branch_block_stmt_1637/do_while_stmt_1646/do_while_stmt_1646_loop_body
-Warning: exit not reachable from every element in region branch_block_stmt_1637/do_while_stmt_1646/do_while_stmt_1646_loop_body
+Info: Info: transition [phi_stmt_1660_merged_reqs] is isolated, removed.
+Warning: all elements not reachable from entry in region branch_block_stmt_1649/do_while_stmt_1658/do_while_stmt_1658_loop_body
+Warning: exit not reachable from every element in region branch_block_stmt_1649/do_while_stmt_1658/do_while_stmt_1658_loop_body
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
-Info:  Total number of strongly-connected-components is 309
+Info:  Total number of strongly-connected-components is 310
 Info:  Fix_Combi pass OK
 Info: reducing Control-path 
 Info: removed CP-element dead_transition maybe it was dead?
@@ -1483,7 +1538,7 @@ Info:  Total number of strongly-connected-components is 40
 Info: SCC 0
 	e_6
 Info: SCC 1
-	e_96
+	e_90
 	e_5
 Info: SCC 2
 	e_2
@@ -1498,15 +1553,15 @@ Info: SCC 6
 Info: SCC 7
 	e_7
 Info: SCC 8
-	e_95
+	e_89
 Info: SCC 9
 	e_8
 Info: SCC 10
 	e_9
 Info: SCC 11
-	e_93
+	e_87
 Info: SCC 12
-	e_94
+	e_88
 Info: SCC 13
 	e_10
 Info: SCC 14
@@ -1520,12 +1575,12 @@ Info: SCC 17
 Info: SCC 18
 	e_13
 Info: SCC 19
-	e_92
+	e_91
 Info: SCC 20
 	e_35
 	e_37
 Info: SCC 21
-	e_87
+	e_82
 	e_14
 	e_15
 	e_16
@@ -1534,8 +1589,8 @@ Info: SCC 21
 	e_19
 	e_20
 	e_21
-	e_51
-	e_53
+	e_48
+	e_50
 Info: SCC 22
 	e_23
 Info: SCC 23
@@ -1559,68 +1614,63 @@ Info: SCC 31
 Info: SCC 32
 	e_32
 Info: SCC 33
-	e_72
-	e_82
-	e_77
-	e_75
-	e_80
-	e_85
-	e_83
-	e_74
-	e_89
-	e_40
-	e_42
-	e_44
-	e_46
-	e_48
-	e_50
-	e_52
-	e_54
-	e_55
-	e_56
-	e_57
-	e_58
-	e_59
 	e_60
 	e_61
-	e_62
+	e_51
+	e_52
+	e_58
+	e_55
+	e_54
+	e_53
+	e_57
 	e_63
+	e_62
 	e_64
-	e_65
-	e_66
-	e_67
-	e_69
-Info: SCC 34
+	e_56
+	e_59
+	e_71
 	e_73
-	e_81
-	e_79
-	e_88
-	e_36
-	e_38
+	e_66
+	e_68
+	e_70
+	e_80
+	e_84
+	e_75
+	e_77
+	e_78
 	e_39
 	e_41
-	e_43
+	e_42
+	e_44
 	e_45
 	e_47
 	e_49
-	e_71
-Info: SCC 35
-	e_90
-Info: SCC 36
-	e_68
-	e_70
-Info: SCC 37
-	e_91
-Info: SCC 38
+Info: SCC 34
+	e_69
+	e_83
 	e_76
-	e_78
-Info: SCC 39
+	e_36
+	e_38
+	e_40
+	e_43
+	e_46
+Info: SCC 35
+	e_85
+Info: SCC 36
+	e_65
+	e_67
+Info: SCC 37
 	e_86
-	e_84
+Info: SCC 38
+	e_72
+	e_74
+Info: SCC 39
+	e_81
+	e_79
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
-Info:  Total number of strongly-connected-components is 34
+Info:  Total number of strongly-connected-components is 46
 Info:  Fix_Combi pass OK
 Info: reducing Control-path 
 Info: finding nucleii 
@@ -1634,20 +1684,23 @@ Info: SCC 1
 	e_8
 	e_9
 	e_10
-	e_11
+	e_14
 	e_3
 Info: SCC 2
+	e_6
+	e_11
+	e_12
+	e_13
 	e_1
 	e_2
 	e_4
 	e_5
-	e_6
 Info: SCC 3
-	e_12
+	e_15
 Info: SCC 4
-	e_13
+	e_16
 Info: SCC 5
-	e_14
+	e_17
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -1661,17 +1714,17 @@ Info:  Total number of strongly-connected-components is 9
 Info: SCC 0
 	e_0
 Info: SCC 1
-	e_7
-	e_9
 	e_1
 	e_2
 	e_3
 	e_4
 	e_5
+	e_7
+	e_9
 Info: SCC 2
+	e_6
 	e_8
 	e_10
-	e_6
 Info: SCC 3
 	e_11
 Info: SCC 4
@@ -1697,13 +1750,13 @@ Info:  Total number of strongly-connected-components is 12
 Info: SCC 0
 	e_0
 Info: SCC 1
+	e_1
+	e_2
 	e_3
 	e_4
 	e_5
 	e_6
 	e_8
-	e_1
-	e_2
 	e_10
 	e_12
 	e_14
@@ -1861,7 +1914,7 @@ Info: SCC 9
 	e_29
 Info: SCC 10
 	e_30
-Warning: exit not reachable from every element in region call_stmt_851_to_assign_stmt_855
+Warning: exit not reachable from every element in region call_stmt_863_to_assign_stmt_867
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -1988,7 +2041,7 @@ Info: SCC 10
 	e_41
 Info: SCC 11
 	e_42
-Warning: exit not reachable from every element in region assign_stmt_1027_to_call_stmt_1033
+Warning: exit not reachable from every element in region assign_stmt_1039_to_call_stmt_1045
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2005,7 +2058,7 @@ Info: SCC 1
 	e_2
 Info: SCC 2
 	e_0
-Warning: exit not reachable from every element in region call_stmt_929
+Warning: exit not reachable from every element in region call_stmt_941
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2022,7 +2075,7 @@ Info: SCC 1
 	e_2
 Info: SCC 2
 	e_0
-Warning: exit not reachable from every element in region call_stmt_806
+Warning: exit not reachable from every element in region call_stmt_818
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2039,7 +2092,7 @@ Info: SCC 1
 	e_2
 Info: SCC 2
 	e_0
-Warning: exit not reachable from every element in region call_stmt_888
+Warning: exit not reachable from every element in region call_stmt_900
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2056,7 +2109,7 @@ Info: SCC 1
 	e_2
 Info: SCC 2
 	e_0
-Warning: exit not reachable from every element in region call_stmt_951
+Warning: exit not reachable from every element in region call_stmt_963
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2073,7 +2126,7 @@ Info: SCC 1
 	e_2
 Info: SCC 2
 	e_0
-Warning: exit not reachable from every element in region call_stmt_900
+Warning: exit not reachable from every element in region call_stmt_912
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2090,7 +2143,7 @@ Info: SCC 1
 	e_2
 Info: SCC 2
 	e_0
-Warning: exit not reachable from every element in region assign_stmt_150_to_assign_stmt_224
+Warning: exit not reachable from every element in region assign_stmt_152_to_assign_stmt_226
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2115,7 +2168,7 @@ Info: SCC 5
 	e_5
 Info: SCC 6
 	e_0
-Warning: exit not reachable from every element in region branch_block_stmt_860/call_stmt_865
+Warning: exit not reachable from every element in region branch_block_stmt_872/call_stmt_877
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2170,7 +2223,7 @@ Info: SCC 5
 	e_11
 Info: SCC 6
 	e_12
-Warning: exit not reachable from every element in region assign_stmt_1802_to_assign_stmt_1826
+Warning: exit not reachable from every element in region assign_stmt_1815_to_assign_stmt_1839
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2267,8 +2320,8 @@ Info: SCC 33
 Info: SCC 34
 	e_37
 	e_39
-Info: Info: transition [phi_stmt_1555_merged_reqs] is isolated, removed.
-Warning: exit not reachable from every element in region branch_block_stmt_1552/do_while_stmt_1553/do_while_stmt_1553_loop_body
+Info: Info: transition [phi_stmt_1567_merged_reqs] is isolated, removed.
+Warning: exit not reachable from every element in region branch_block_stmt_1564/do_while_stmt_1565/do_while_stmt_1565_loop_body
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2352,39 +2405,39 @@ Info:  Total number of strongly-connected-components is 9
 Info: SCC 0
 	e_0
 Info: SCC 1
-	e_1
-	e_2
+	e_13
+	e_3
 	e_4
-	e_5
+	e_14
+	e_15
 	e_16
 	e_17
 	e_18
 	e_19
 	e_20
-	e_27
-	e_28
-	e_29
-	e_30
-	e_31
-	e_32
-	e_33
-	e_6
-	e_14
-	e_15
 	e_21
 	e_22
 	e_23
 	e_24
 	e_25
 	e_26
-	e_3
-	e_13
+	e_27
+	e_28
+	e_29
+	e_30
+	e_1
+	e_2
+	e_11
+	e_12
+	e_10
 	e_7
 	e_8
 	e_9
-	e_10
-	e_11
-	e_12
+	e_5
+	e_6
+	e_31
+	e_32
+	e_33
 	e_34
 	e_35
 	e_36
@@ -2447,7 +2500,7 @@ Info: in CPForkblock [getBaseIndex_CP], added 0 SCC arcs
 Info:  Total number of strongly-connected-components is 1
 Info: SCC 0
 	e_0
-Warning: exit not reachable from every element in region assign_stmt_971_to_assign_stmt_994
+Warning: exit not reachable from every element in region assign_stmt_983_to_assign_stmt_1006
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2482,7 +2535,7 @@ Info: SCC 10
 	e_10
 Info: SCC 11
 	e_0
-Warning: exit not reachable from every element in region call_stmt_1045
+Warning: exit not reachable from every element in region call_stmt_1057
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2499,7 +2552,7 @@ Info: SCC 1
 	e_2
 Info: SCC 2
 	e_0
-Warning: exit not reachable from every element in region call_stmt_939
+Warning: exit not reachable from every element in region call_stmt_951
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2516,7 +2569,7 @@ Info: SCC 1
 	e_2
 Info: SCC 2
 	e_0
-Warning: exit not reachable from every element in region assign_stmt_816_to_assign_stmt_839
+Warning: exit not reachable from every element in region assign_stmt_828_to_assign_stmt_851
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2528,30 +2581,30 @@ Info: in CPForkblock [getQueueLockPointer_CP], adding SCC arcs
 Info: in CPForkblock [getQueueLockPointer_CP], added 0 SCC arcs
 Info:  Total number of strongly-connected-components is 12
 Info: SCC 0
-	e_9
-Info: SCC 1
-	e_8
-Info: SCC 2
-	e_7
-Info: SCC 3
 	e_1
-Info: SCC 4
-	e_10
-Info: SCC 5
+Info: SCC 1
 	e_3
-Info: SCC 6
+Info: SCC 2
 	e_6
-Info: SCC 7
+Info: SCC 3
 	e_5
-Info: SCC 8
+Info: SCC 4
 	e_2
-Info: SCC 9
+Info: SCC 5
+	e_9
+Info: SCC 6
+	e_8
+Info: SCC 7
 	e_11
-Info: SCC 10
+Info: SCC 8
 	e_4
+Info: SCC 9
+	e_7
+Info: SCC 10
+	e_10
 Info: SCC 11
 	e_0
-Warning: exit not reachable from every element in region assign_stmt_234_to_assign_stmt_255
+Warning: exit not reachable from every element in region assign_stmt_236_to_assign_stmt_257
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2586,7 +2639,7 @@ Info: SCC 10
 	e_10
 Info: SCC 11
 	e_0
-Warning: exit not reachable from every element in region call_stmt_911_to_call_stmt_917
+Warning: exit not reachable from every element in region call_stmt_923_to_call_stmt_929
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2600,14 +2653,14 @@ Info:  Total number of strongly-connected-components is 5
 Info: SCC 0
 	e_4
 Info: SCC 1
-	e_1
-Info: SCC 2
 	e_3
-Info: SCC 3
+Info: SCC 2
 	e_2
+Info: SCC 3
+	e_1
 Info: SCC 4
 	e_0
-Warning: exit not reachable from every element in region call_stmt_961
+Warning: exit not reachable from every element in region call_stmt_973
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2654,7 +2707,7 @@ Info: SCC 5
 	e_11
 Info: SCC 6
 	e_12
-Warning: exit not reachable from every element in region call_stmt_1535_to_call_stmt_1547
+Warning: exit not reachable from every element in region call_stmt_1547_to_call_stmt_1559
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2666,18 +2719,18 @@ Info: in CPForkblock [incrementNumberOfPacketsReceived_CP], adding SCC arcs
 Info: in CPForkblock [incrementNumberOfPacketsReceived_CP], added 0 SCC arcs
 Info:  Total number of strongly-connected-components is 6
 Info: SCC 0
-	e_4
-Info: SCC 1
 	e_1
-Info: SCC 2
+Info: SCC 1
 	e_3
-Info: SCC 3
+Info: SCC 2
 	e_5
-Info: SCC 4
+Info: SCC 3
 	e_2
+Info: SCC 4
+	e_4
 Info: SCC 5
 	e_0
-Warning: exit not reachable from every element in region call_stmt_1927_to_call_stmt_1939
+Warning: exit not reachable from every element in region call_stmt_1940_to_call_stmt_1952
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2762,9 +2815,9 @@ Info: in CPForkblock [nextLSTATE_CP], added 0 SCC arcs
 Info:  Total number of strongly-connected-components is 1
 Info: SCC 0
 	e_0
-Info: Info: transition [phi_stmt_2043_merged_reqs] is isolated, removed.
-Info: Info: transition [phi_stmt_2050_merged_reqs] is isolated, removed.
-Warning: exit not reachable from every element in region branch_block_stmt_2010/call_stmt_2022
+Info: Info: transition [phi_stmt_2056_merged_reqs] is isolated, removed.
+Info: Info: transition [phi_stmt_2063_merged_reqs] is isolated, removed.
+Warning: exit not reachable from every element in region branch_block_stmt_2023/call_stmt_2035
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2892,17 +2945,17 @@ Info: SCC 36
 Info: SCC 37
 	e_55
 Info: SCC 38
-	e_56
-Info: SCC 39
 	e_58
+Info: SCC 39
+	e_56
 Info: SCC 40
 	e_59
 Info: SCC 41
 	e_57
 Info: SCC 42
-	e_62
-Info: SCC 43
 	e_60
+Info: SCC 43
+	e_62
 Info: SCC 44
 	e_63
 Info: SCC 45
@@ -2910,7 +2963,7 @@ Info: SCC 45
 Info: SCC 46
 	e_75
 	e_77
-Warning: exit not reachable from every element in region call_stmt_1115
+Warning: exit not reachable from every element in region call_stmt_1127
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -2922,7 +2975,7 @@ Info: in CPForkblock [popFromQueue_CP], adding SCC arcs
 Info: in CPForkblock [popFromQueue_CP], added 0 SCC arcs
 Info:  Total number of strongly-connected-components is 40
 Info: SCC 0
-	e_3
+	e_1
 Info: SCC 1
 	e_5
 Info: SCC 2
@@ -2932,76 +2985,76 @@ Info: SCC 3
 Info: SCC 4
 	e_4
 Info: SCC 5
-	e_6
+	e_3
 Info: SCC 6
-	e_10
+	e_6
 Info: SCC 7
-	e_12
+	e_10
 Info: SCC 8
-	e_17
+	e_12
 Info: SCC 9
-	e_16
+	e_17
 Info: SCC 10
-	e_11
+	e_16
 Info: SCC 11
-	e_14
+	e_11
 Info: SCC 12
-	e_13
+	e_14
 Info: SCC 13
-	e_22
+	e_13
 Info: SCC 14
-	e_24
+	e_22
 Info: SCC 15
-	e_23
+	e_24
 Info: SCC 16
-	e_26
+	e_23
 Info: SCC 17
-	e_25
+	e_26
 Info: SCC 18
-	e_28
+	e_25
 Info: SCC 19
-	e_27
+	e_28
 Info: SCC 20
-	e_35
+	e_27
 Info: SCC 21
-	e_39
+	e_35
 Info: SCC 22
-	e_36
+	e_39
 Info: SCC 23
-	e_37
+	e_36
 Info: SCC 24
-	e_38
+	e_37
 Info: SCC 25
-	e_34
+	e_38
 Info: SCC 26
-	e_29
+	e_34
 Info: SCC 27
-	e_30
+	e_29
 Info: SCC 28
-	e_33
+	e_30
 Info: SCC 29
-	e_32
+	e_33
 Info: SCC 30
-	e_31
+	e_32
 Info: SCC 31
-	e_21
+	e_31
 Info: SCC 32
-	e_20
+	e_21
 Info: SCC 33
-	e_19
+	e_20
 Info: SCC 34
-	e_15
+	e_19
 Info: SCC 35
-	e_18
+	e_15
 Info: SCC 36
-	e_9
+	e_18
 Info: SCC 37
-	e_2
+	e_9
 Info: SCC 38
-	e_1
+	e_2
 Info: SCC 39
 	e_0
-Warning: exit not reachable from every element in region branch_block_stmt_1578/call_stmt_1598_to_assign_stmt_1610
+Warning: exit not reachable from every element in region branch_block_stmt_1590/call_stmt_1610_to_assign_stmt_1622
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -3062,7 +3115,7 @@ Info: SCC 15
 	e_18
 Info: SCC 16
 	e_0
-Warning: exit not reachable from every element in region call_stmt_1426_to_call_stmt_1447
+Warning: exit not reachable from every element in region call_stmt_1438_to_call_stmt_1459
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -3098,11 +3151,11 @@ Info: SCC 10
 Info: SCC 11
 	e_41
 Info: SCC 12
-	e_38
-Info: SCC 13
 	e_40
-Info: SCC 14
+Info: SCC 13
 	e_37
+Info: SCC 14
+	e_38
 Info: SCC 15
 	e_36
 Info: SCC 16
@@ -3157,7 +3210,7 @@ Info: SCC 40
 	e_10
 Info: SCC 41
 	e_0
-Warning: exit not reachable from every element in region branch_block_stmt_2122/assign_stmt_2126_to_assign_stmt_2183
+Warning: exit not reachable from every element in region branch_block_stmt_2135/assign_stmt_2139_to_assign_stmt_2196
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -3191,7 +3244,7 @@ Info: SCC 5
 	e_0
 Info: SCC 6
 	e_1
-Warning: exit not reachable from every element in region call_stmt_1105
+Warning: exit not reachable from every element in region call_stmt_1117
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -3208,7 +3261,7 @@ Info: SCC 1
 	e_2
 Info: SCC 2
 	e_0
-Warning: exit not reachable from every element in region call_stmt_1768_to_assign_stmt_1771
+Warning: exit not reachable from every element in region call_stmt_1781_to_assign_stmt_1784
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -3220,50 +3273,50 @@ Info: in CPForkblock [setGlobalSignals_CP], adding SCC arcs
 Info: in CPForkblock [setGlobalSignals_CP], added 0 SCC arcs
 Info:  Total number of strongly-connected-components is 22
 Info: SCC 0
-	e_5
-Info: SCC 1
-	e_18
-Info: SCC 2
-	e_21
-Info: SCC 3
-	e_20
-Info: SCC 4
-	e_19
-Info: SCC 5
-	e_17
-Info: SCC 6
-	e_8
-Info: SCC 7
-	e_7
-Info: SCC 8
-	e_9
-Info: SCC 9
-	e_13
-Info: SCC 10
-	e_6
-Info: SCC 11
-	e_12
-Info: SCC 12
-	e_11
-Info: SCC 13
-	e_10
-Info: SCC 14
-	e_16
-Info: SCC 15
-	e_15
-Info: SCC 16
-	e_14
-Info: SCC 17
-	e_4
-Info: SCC 18
-	e_3
-Info: SCC 19
-	e_2
-Info: SCC 20
 	e_1
+Info: SCC 1
+	e_5
+Info: SCC 2
+	e_18
+Info: SCC 3
+	e_21
+Info: SCC 4
+	e_20
+Info: SCC 5
+	e_19
+Info: SCC 6
+	e_17
+Info: SCC 7
+	e_8
+Info: SCC 8
+	e_7
+Info: SCC 9
+	e_9
+Info: SCC 10
+	e_13
+Info: SCC 11
+	e_6
+Info: SCC 12
+	e_12
+Info: SCC 13
+	e_11
+Info: SCC 14
+	e_10
+Info: SCC 15
+	e_16
+Info: SCC 16
+	e_15
+Info: SCC 17
+	e_14
+Info: SCC 18
+	e_4
+Info: SCC 19
+	e_3
+Info: SCC 20
+	e_2
 Info: SCC 21
 	e_0
-Warning: exit not reachable from every element in region call_stmt_1416
+Warning: exit not reachable from every element in region call_stmt_1428
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -3280,7 +3333,7 @@ Info: SCC 1
 	e_1
 Info: SCC 2
 	e_0
-Warning: exit not reachable from every element in region call_stmt_1059_to_call_stmt_1064
+Warning: exit not reachable from every element in region call_stmt_1071_to_call_stmt_1076
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -3301,7 +3354,7 @@ Info: SCC 3
 	e_4
 Info: SCC 4
 	e_0
-Warning: exit not reachable from every element in region call_stmt_1073
+Warning: exit not reachable from every element in region call_stmt_1085
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -3318,17 +3371,17 @@ Info: SCC 1
 	e_2
 Info: SCC 2
 	e_0
-Info: Info: transition [phi_stmt_2317_merged_reqs] is isolated, removed.
-Warning: all elements not reachable from entry in region branch_block_stmt_2295/do_while_stmt_2305/do_while_stmt_2305_loop_body
-Warning: exit not reachable from every element in region branch_block_stmt_2295/do_while_stmt_2305/do_while_stmt_2305_loop_body
+Info: Info: transition [phi_stmt_2330_merged_reqs] is isolated, removed.
+Warning: all elements not reachable from entry in region branch_block_stmt_2308/do_while_stmt_2318/do_while_stmt_2318_loop_body
+Warning: exit not reachable from every element in region branch_block_stmt_2308/do_while_stmt_2318/do_while_stmt_2318_loop_body
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
 Info:  Total number of strongly-connected-components is 298
 Info:  Fix_Combi pass OK
 Info: reducing Control-path 
-Info: removed CP-element $exit maybe it was dead?
 Info: removed CP-element dead_transition maybe it was dead?
+Info: removed CP-element $exit maybe it was dead?
 Info: removed CP-element dead_transition maybe it was dead?
 Info: removed CP-element $exit maybe it was dead?
 Info: finding nucleii 
@@ -3338,7 +3391,7 @@ Info:  Total number of strongly-connected-components is 38
 Info: SCC 0
 	e_6
 Info: SCC 1
-	e_93
+	e_89
 	e_5
 Info: SCC 2
 	e_2
@@ -3353,15 +3406,15 @@ Info: SCC 6
 Info: SCC 7
 	e_7
 Info: SCC 8
-	e_92
+	e_88
 Info: SCC 9
 	e_8
 Info: SCC 10
 	e_9
 Info: SCC 11
-	e_90
+	e_86
 Info: SCC 12
-	e_91
+	e_87
 Info: SCC 13
 	e_10
 Info: SCC 14
@@ -3375,36 +3428,35 @@ Info: SCC 17
 Info: SCC 18
 	e_13
 Info: SCC 19
-	e_89
+	e_85
 Info: SCC 20
-	e_78
-	e_79
-	e_82
-	e_80
-	e_81
-	e_73
+	e_72
+	e_75
 	e_76
-	e_48
+	e_77
+	e_78
+	e_74
+	e_47
+	e_49
 	e_50
 	e_52
-	e_54
+	e_53
 	e_55
 	e_57
+	e_59
 	e_60
 	e_62
-	e_63
-	e_65
-	e_68
-	e_70
-	e_71
+	e_64
+	e_66
+	e_67
+	e_69
 Info: SCC 21
-	e_83
-	e_75
-	e_85
-	e_86
-	e_74
-	e_77
-	e_84
+	e_71
+	e_79
+	e_73
+	e_80
+	e_81
+	e_82
 	e_14
 	e_15
 	e_16
@@ -3423,7 +3475,8 @@ Info: SCC 21
 	e_29
 	e_43
 	e_45
-	e_72
+	e_68
+	e_70
 Info: SCC 22
 	e_31
 Info: SCC 23
@@ -3447,29 +3500,25 @@ Info: SCC 31
 Info: SCC 32
 	e_40
 Info: SCC 33
-	e_87
+	e_83
 Info: SCC 34
 	e_44
 	e_46
-	e_47
-	e_49
+	e_48
 	e_51
-	e_53
-	e_59
-	e_61
-	e_67
-	e_69
-Info: SCC 35
-	e_88
-Info: SCC 36
-	e_56
 	e_58
+	e_65
+Info: SCC 35
+	e_84
+Info: SCC 36
+	e_54
+	e_56
 Info: SCC 37
-	e_64
-	e_66
-Info: Info: transition [phi_stmt_2217_merged_reqs] is isolated, removed.
-Info: Info: transition [phi_stmt_2223_merged_reqs] is isolated, removed.
-Warning: exit not reachable from every element in region assign_stmt_2192_to_assign_stmt_2210
+	e_61
+	e_63
+Info: Info: transition [phi_stmt_2230_merged_reqs] is isolated, removed.
+Info: Info: transition [phi_stmt_2236_merged_reqs] is isolated, removed.
+Warning: exit not reachable from every element in region assign_stmt_2205_to_assign_stmt_2223
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -3489,25 +3538,25 @@ Info: SCC 2
 Info: SCC 3
 	e_72
 Info: SCC 4
-	e_82
-Info: SCC 5
-	e_81
-Info: SCC 6
-	e_79
-Info: SCC 7
-	e_78
-Info: SCC 8
-	e_77
-Info: SCC 9
-	e_80
-Info: SCC 10
 	e_74
-Info: SCC 11
+Info: SCC 5
+	e_80
+Info: SCC 6
 	e_73
-Info: SCC 12
+Info: SCC 7
 	e_76
-Info: SCC 13
+Info: SCC 8
 	e_75
+Info: SCC 9
+	e_82
+Info: SCC 10
+	e_79
+Info: SCC 11
+	e_78
+Info: SCC 12
+	e_77
+Info: SCC 13
+	e_81
 Info: SCC 14
 	e_3
 Info: SCC 15
@@ -3519,21 +3568,21 @@ Info: SCC 17
 Info: SCC 18
 	e_6
 Info: SCC 19
-	e_70
-Info: SCC 20
 	e_69
+Info: SCC 20
+	e_70
 Info: SCC 21
 	e_7
 Info: SCC 22
 	e_8
 Info: SCC 23
-	e_22
+	e_24
 Info: SCC 24
 	e_43
 Info: SCC 25
 	e_9
 Info: SCC 26
-	e_24
+	e_26
 Info: SCC 27
 	e_45
 Info: SCC 28
@@ -3541,19 +3590,6 @@ Info: SCC 28
 Info: SCC 29
 	e_68
 Info: SCC 30
-	e_14
-	e_15
-	e_16
-	e_17
-	e_18
-	e_19
-	e_20
-	e_21
-	e_11
-	e_12
-	e_13
-	e_37
-	e_38
 	e_39
 	e_40
 	e_41
@@ -3561,30 +3597,43 @@ Info: SCC 30
 	e_56
 	e_58
 	e_67
-Info: SCC 31
+	e_15
+	e_16
+	e_17
+	e_18
+	e_19
+	e_20
+	e_21
+	e_22
 	e_23
-Info: SCC 32
+	e_11
+	e_12
+	e_13
+	e_14
+Info: SCC 31
 	e_25
-Info: SCC 33
-	e_26
-Info: SCC 34
-	e_29
-	e_31
-Info: SCC 35
+Info: SCC 32
 	e_27
-Info: SCC 36
-	e_30
-	e_32
-Info: SCC 37
+Info: SCC 33
 	e_28
-Info: SCC 38
-	e_35
-Info: SCC 39
+Info: SCC 34
+	e_31
 	e_33
-Info: SCC 40
-	e_36
-Info: SCC 41
+Info: SCC 35
+	e_29
+Info: SCC 36
+	e_32
 	e_34
+Info: SCC 37
+	e_30
+Info: SCC 38
+	e_37
+Info: SCC 39
+	e_35
+Info: SCC 40
+	e_38
+Info: SCC 41
+	e_36
 Info: SCC 42
 	e_44
 Info: SCC 43
@@ -3613,12 +3662,12 @@ Info: SCC 53
 	e_60
 	e_62
 Info: SCC 54
+	e_61
 	e_63
 	e_64
 	e_65
-	e_61
 	e_66
-Warning: exit not reachable from every element in region call_stmt_1286
+Warning: exit not reachable from every element in region call_stmt_1298
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -3630,12 +3679,12 @@ Info: in CPForkblock [updateLastAddressWritten_CP], adding SCC arcs
 Info: in CPForkblock [updateLastAddressWritten_CP], added 0 SCC arcs
 Info:  Total number of strongly-connected-components is 3
 Info: SCC 0
-	e_1
-Info: SCC 1
 	e_2
+Info: SCC 1
+	e_1
 Info: SCC 2
 	e_0
-Warning: exit not reachable from every element in region assign_stmt_1371_to_call_stmt_1377
+Warning: exit not reachable from every element in region assign_stmt_1383_to_call_stmt_1389
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -3652,10 +3701,10 @@ Info: SCC 1
 	e_2
 Info: SCC 2
 	e_0
-Info: Info: transition [phi_stmt_1240_merged_reqs] is isolated, removed.
-Info: Info: transition [phi_stmt_1245_merged_reqs] is isolated, removed.
-Warning: all elements not reachable from entry in region branch_block_stmt_1237/do_while_stmt_1238/do_while_stmt_1238_loop_body
-Warning: exit not reachable from every element in region branch_block_stmt_1237/do_while_stmt_1238/do_while_stmt_1238_loop_body
+Info: Info: transition [phi_stmt_1252_merged_reqs] is isolated, removed.
+Info: Info: transition [phi_stmt_1257_merged_reqs] is isolated, removed.
+Warning: all elements not reachable from entry in region branch_block_stmt_1249/do_while_stmt_1250/do_while_stmt_1250_loop_body
+Warning: exit not reachable from every element in region branch_block_stmt_1249/do_while_stmt_1250/do_while_stmt_1250_loop_body
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
@@ -3673,15 +3722,15 @@ Info: SCC 1
 Info: SCC 2
 	e_2
 Info: SCC 3
-	e_69
+	e_68
 Info: SCC 4
 	e_3
 Info: SCC 5
 	e_4
 Info: SCC 6
-	e_67
+	e_66
 Info: SCC 7
-	e_68
+	e_67
 Info: SCC 8
 	e_5
 Info: SCC 9
@@ -3699,7 +3748,7 @@ Info: SCC 14
 Info: SCC 15
 	e_8
 Info: SCC 16
-	e_66
+	e_65
 Info: SCC 17
 	e_9
 	e_10
@@ -3727,9 +3776,8 @@ Info: SCC 17
 	e_58
 	e_59
 	e_60
-	e_61
-	e_63
-	e_65
+	e_62
+	e_64
 Info: SCC 18
 	e_21
 Info: SCC 19
@@ -3775,15 +3823,15 @@ Info: SCC 38
 Info: SCC 39
 	e_49
 Info: SCC 40
-	e_62
-	e_64
-Info: Info: transition [phi_stmt_1298_merged_reqs] is isolated, removed.
-Warning: all elements not reachable from entry in region branch_block_stmt_1295/do_while_stmt_1296/do_while_stmt_1296_loop_body
-Warning: exit not reachable from every element in region branch_block_stmt_1295/do_while_stmt_1296/do_while_stmt_1296_loop_body
+	e_61
+	e_63
+Info: Info: transition [phi_stmt_1310_merged_reqs] is isolated, removed.
+Warning: all elements not reachable from entry in region branch_block_stmt_1307/do_while_stmt_1308/do_while_stmt_1308_loop_body
+Warning: exit not reachable from every element in region branch_block_stmt_1307/do_while_stmt_1308/do_while_stmt_1308_loop_body
 Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
 Info: Started Fix_Combinational_Loops (pass 1)
 Info: Started will double buffer interlock-buffers if needed
-Info:  Total number of strongly-connected-components is 151
+Info:  Total number of strongly-connected-components is 147
 Info:  Fix_Combi pass OK
 Info: reducing Control-path 
 Info: finding nucleii 
@@ -3793,27 +3841,27 @@ Info:  Total number of strongly-connected-components is 33
 Info: SCC 0
 	e_0
 Info: SCC 1
-	e_56
-Info: SCC 2
-	e_53
-Info: SCC 3
 	e_55
-Info: SCC 4
+Info: SCC 2
 	e_54
+Info: SCC 3
+	e_53
+Info: SCC 4
+	e_52
 Info: SCC 5
 	e_1
 Info: SCC 6
 	e_2
 Info: SCC 7
-	e_52
+	e_51
 Info: SCC 8
 	e_3
 Info: SCC 9
 	e_4
 Info: SCC 10
-	e_50
+	e_49
 Info: SCC 11
-	e_51
+	e_50
 Info: SCC 12
 	e_5
 Info: SCC 13
@@ -3827,29 +3875,28 @@ Info: SCC 16
 Info: SCC 17
 	e_8
 Info: SCC 18
-	e_49
+	e_48
 Info: SCC 19
-	e_40
-	e_42
+	e_39
 	e_9
 	e_10
+	e_41
+	e_43
+	e_19
+	e_45
+	e_47
 	e_11
 	e_12
 	e_13
 	e_14
 	e_15
-	e_37
-	e_38
-	e_39
-	e_48
-	e_44
-	e_46
-	e_35
-	e_36
 	e_16
 	e_17
 	e_18
-	e_19
+	e_35
+	e_36
+	e_37
+	e_38
 Info: SCC 20
 	e_21
 Info: SCC 21
@@ -3857,8 +3904,8 @@ Info: SCC 21
 Info: SCC 22
 	e_24
 Info: SCC 23
-	e_29
 	e_27
+	e_29
 Info: SCC 24
 	e_25
 Info: SCC 25
@@ -3875,11 +3922,11 @@ Info: SCC 29
 Info: SCC 30
 	e_32
 Info: SCC 31
-	e_41
-	e_43
+	e_40
+	e_42
 Info: SCC 32
-	e_47
-	e_45
+	e_44
+	e_46
 Info: printing VHDL global package
 Info: printing top-level system VHDL file nic.unformatted_vhdl
 Info: printing VHDL model
@@ -3891,198 +3938,198 @@ Warning: CP element 3 has no predecessors.. tie to false
 -- CP-element group 3: successors 
 
 -- CP-element group 3:  members (3) {
+-- CP-element group 3: 	 branch_block_stmt_1649/branch_block_stmt_1649__exit__
 -- CP-element group 3: 	 $exit
--- CP-element group 3: 	 branch_block_stmt_1637/$exit
--- CP-element group 3: 	 branch_block_stmt_1637/branch_block_stmt_1637__exit__
+-- CP-element group 3: 	 branch_block_stmt_1649/$exit
 -- }
-Info: resources used by CP ReceiveEngineDaemon_CP_2997: ff-count=90 (saved 29), mux2-count= 65, and2-count= 20
-Info: estimated buffering for operator ADD_u32_u32_1696_inst = 160
-Info: estimated buffering for operator MUX_1706_inst = 64
-Info: estimated buffering for operator NOT_u1_u1_1667_inst = 1
-Info: estimated buffering for operator NOT_u1_u1_1677_inst = 1
-Info: estimated buffering for operator RPIPE_S_CONTROL_REGISTER_1640_inst = 32
-Info: estimated buffering for operator RPIPE_S_CONTROL_REGISTER_1744_inst = 32
-Info: estimated buffering for operator W_init_flag_1620_delayed_4_0_1689_inst = 4
-Info: estimated buffering for operator W_ok_flag_1632_delayed_1_0_1708_inst = 1
-Info: estimated buffering for operator W_rx_buffer_pointer_1647_delayed_1_0_1725_inst = 64
-Info: estimated buffering for operator W_rx_buffer_pointer_1654_delayed_1_0_1733_inst = 64
-Info: estimated buffering for operator call_stmt_1659_call = 75
-Info: estimated buffering for operator call_stmt_1659_call (call to popFromQueue)  = 75
-Info: estimated buffering for operator call_stmt_1664_call = 65
-Info: estimated buffering for operator call_stmt_1664_call (call to loadBuffer)  = 65
-Info: estimated buffering for operator call_stmt_1720_call = 77
-Info: estimated buffering for operator call_stmt_1720_call (call to accessRegister)  = 77
-Info: estimated buffering for operator call_stmt_1730_call = 64
-Info: estimated buffering for operator call_stmt_1730_call (call to populateRxQueue)  = 64
-Info: estimated buffering for operator call_stmt_1741_call = 75
-Info: estimated buffering for operator call_stmt_1741_call (call to pushIntoQueue)  = 75
-Info: estimated buffering for operator phi_stmt_1648 = 1
+Info: resources used by CP ReceiveEngineDaemon_CP_3006: ff-count=88 (saved 24), mux2-count= 67, and2-count= 27
+Info: estimated buffering for operator ADD_u32_u32_1703_inst = 160
+Info: estimated buffering for operator MUX_1713_inst = 64
+Info: estimated buffering for operator NOT_u1_u1_1679_inst = 1
+Info: estimated buffering for operator NOT_u1_u1_1689_inst = 1
+Info: estimated buffering for operator RPIPE_S_CONTROL_REGISTER_1652_inst = 32
+Info: estimated buffering for operator RPIPE_S_CONTROL_REGISTER_1757_inst = 32
+Info: estimated buffering for operator W_init_flag_1627_delayed_4_0_1696_inst = 4
+Info: estimated buffering for operator W_ok_flag_1639_delayed_1_0_1715_inst = 1
+Info: estimated buffering for operator W_rx_buffer_pointer_1659_delayed_1_0_1737_inst = 64
+Info: estimated buffering for operator W_rx_buffer_pointer_1666_delayed_1_0_1745_inst = 64
+Info: estimated buffering for operator call_stmt_1671_call = 75
+Info: estimated buffering for operator call_stmt_1671_call (call to popFromQueue)  = 75
+Info: estimated buffering for operator call_stmt_1676_call = 65
+Info: estimated buffering for operator call_stmt_1676_call (call to loadBuffer)  = 65
+Info: estimated buffering for operator call_stmt_1727_call = 77
+Info: estimated buffering for operator call_stmt_1727_call (call to accessRegister)  = 77
+Info: estimated buffering for operator call_stmt_1742_call = 64
+Info: estimated buffering for operator call_stmt_1742_call (call to populateRxQueue)  = 64
+Info: estimated buffering for operator call_stmt_1753_call = 75
+Info: estimated buffering for operator call_stmt_1753_call (call to pushIntoQueue)  = 75
+Info: estimated buffering for operator phi_stmt_1660 = 1
 Info: estimated buffering in module ReceiveEngineDaemon is 780
 Info: printing VHDL model for module accessMemoryBase
 Info: input buffering set to 0 in module accessMemoryBase
 Info: output buffering set to 0 in module accessMemoryBase
-Info: resources used by CP accessMemoryBase_CP_226: ff-count=13 (saved 8), mux2-count= 9, and2-count= 2
-Info: estimated buffering for operator RPIPE_MEMORY_TO_NIC_RESPONSE_276_inst = 65
+Info: resources used by CP accessMemoryBase_CP_226: ff-count=19 (saved 10), mux2-count= 13, and2-count= 3
+Info: estimated buffering for operator RPIPE_MEMORY_TO_NIC_RESPONSE_278_inst = 65
 Info: estimated buffering in module accessMemoryBase is 65
 Info: printing VHDL model for module accessMemoryByte
-Info: resources used by CP accessMemoryByte_CP_1520: ff-count=8 (saved 4), mux2-count= 7, and2-count= 0
-Info: estimated buffering for operator call_stmt_1092_call = 259
-Info: estimated buffering for operator call_stmt_1092_call (call to doMemAccess)  = 259
+Info: resources used by CP accessMemoryByte_CP_1534: ff-count=8 (saved 4), mux2-count= 7, and2-count= 0
+Info: estimated buffering for operator call_stmt_1104_call = 259
+Info: estimated buffering for operator call_stmt_1104_call (call to doMemAccess)  = 259
 Info: estimated buffering in module accessMemoryByte is 259
 Info: printing VHDL model for module accessMemoryByteBase
 Info: input buffering set to 0 in module accessMemoryByteBase
 Info: output buffering set to 0 in module accessMemoryByteBase
-Info: resources used by CP accessMemoryByteBase_CP_266: ff-count=75 (saved 48), mux2-count= 62, and2-count= 10
-Info: estimated buffering for operator CONCAT_u1_u2_328_inst = 6
-Info: estimated buffering for operator CONCAT_u8_u64_314_inst = 192
-Info: estimated buffering for operator EQ_u3_u1_377_inst = 11
-Info: estimated buffering for operator EQ_u3_u1_382_inst = 11
-Info: estimated buffering for operator EQ_u3_u1_387_inst = 11
-Info: estimated buffering for operator EQ_u3_u1_392_inst = 11
-Info: estimated buffering for operator EQ_u3_u1_397_inst = 11
-Info: estimated buffering for operator EQ_u3_u1_402_inst = 11
-Info: estimated buffering for operator EQ_u3_u1_407_inst = 11
-Info: estimated buffering for operator EQ_u3_u1_412_inst = 11
-Info: estimated buffering for operator OR_u8_u8_453_inst = 8
-Info: estimated buffering for operator call_calculateAddress36_expr_289_inst = 164
-Info: estimated buffering for operator call_calculateAddress36_expr_289_inst (call to calculateAddress36)  = 164
-Info: estimated buffering for operator call_stmt_341_call = 175
-Info: estimated buffering for operator call_stmt_341_call (call to accessMemoryBase)  = 175
+Info: resources used by CP accessMemoryByteBase_CP_280: ff-count=75 (saved 48), mux2-count= 62, and2-count= 10
+Info: estimated buffering for operator CONCAT_u1_u2_340_inst = 6
+Info: estimated buffering for operator CONCAT_u8_u64_326_inst = 192
+Info: estimated buffering for operator EQ_u3_u1_389_inst = 11
+Info: estimated buffering for operator EQ_u3_u1_394_inst = 11
+Info: estimated buffering for operator EQ_u3_u1_399_inst = 11
+Info: estimated buffering for operator EQ_u3_u1_404_inst = 11
+Info: estimated buffering for operator EQ_u3_u1_409_inst = 11
+Info: estimated buffering for operator EQ_u3_u1_414_inst = 11
+Info: estimated buffering for operator EQ_u3_u1_419_inst = 11
+Info: estimated buffering for operator EQ_u3_u1_424_inst = 11
+Info: estimated buffering for operator OR_u8_u8_465_inst = 8
+Info: estimated buffering for operator call_calculateAddress36_expr_301_inst = 164
+Info: estimated buffering for operator call_calculateAddress36_expr_301_inst (call to calculateAddress36)  = 164
+Info: estimated buffering for operator call_stmt_353_call = 175
+Info: estimated buffering for operator call_stmt_353_call (call to accessMemoryBase)  = 175
 Info: estimated buffering in module accessMemoryByteBase is 633
 Info: printing VHDL model for module accessMemoryDword
-Info: resources used by CP accessMemoryDword_CP_1391: ff-count=8 (saved 4), mux2-count= 7, and2-count= 0
-Info: estimated buffering for operator call_stmt_1010_call = 259
-Info: estimated buffering for operator call_stmt_1010_call (call to doMemAccess)  = 259
+Info: resources used by CP accessMemoryDword_CP_1405: ff-count=8 (saved 4), mux2-count= 7, and2-count= 0
+Info: estimated buffering for operator call_stmt_1022_call = 259
+Info: estimated buffering for operator call_stmt_1022_call (call to doMemAccess)  = 259
 Info: estimated buffering in module accessMemoryDword is 259
 Info: printing VHDL model for module accessMemoryDwordBase
 Info: input buffering set to 0 in module accessMemoryDwordBase
 Info: output buffering set to 0 in module accessMemoryDwordBase
-Info: resources used by CP accessMemoryDwordBase_CP_594: ff-count=23 (saved 14), mux2-count= 19, and2-count= 2
-Info: estimated buffering for operator CONCAT_u2_u10_559_inst = 30
-Info: estimated buffering for operator W_wdata_527_delayed_3_0_561_inst = 192
-Info: estimated buffering for operator call_calculateAddress36_expr_550_inst = 164
-Info: estimated buffering for operator call_calculateAddress36_expr_550_inst (call to calculateAddress36)  = 164
-Info: estimated buffering for operator call_stmt_573_call = 175
-Info: estimated buffering for operator call_stmt_573_call (call to accessMemoryBase)  = 175
+Info: resources used by CP accessMemoryDwordBase_CP_608: ff-count=23 (saved 14), mux2-count= 19, and2-count= 2
+Info: estimated buffering for operator CONCAT_u2_u10_571_inst = 30
+Info: estimated buffering for operator W_wdata_539_delayed_3_0_573_inst = 192
+Info: estimated buffering for operator call_calculateAddress36_expr_562_inst = 164
+Info: estimated buffering for operator call_calculateAddress36_expr_562_inst (call to calculateAddress36)  = 164
+Info: estimated buffering for operator call_stmt_585_call = 175
+Info: estimated buffering for operator call_stmt_585_call (call to accessMemoryBase)  = 175
 Info: estimated buffering in module accessMemoryDwordBase is 561
 Info: printing VHDL model for module accessMemoryLdStub
-Info: resources used by CP accessMemoryLdStub_CP_1054: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_851_call = 259
-Info: estimated buffering for operator call_stmt_851_call (call to doMemAccess)  = 259
-Info: estimated buffering for operator slice_854_inst = 8
+Info: resources used by CP accessMemoryLdStub_CP_1068: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_863_call = 259
+Info: estimated buffering for operator call_stmt_863_call (call to doMemAccess)  = 259
+Info: estimated buffering for operator slice_866_inst = 8
 Info: estimated buffering in module accessMemoryLdStub is 267
 Info: printing VHDL model for module accessMemoryWord
-Info: resources used by CP accessMemoryWord_CP_922: ff-count=12 (saved 6), mux2-count= 10, and2-count= 0
-Info: estimated buffering for operator call_stmt_790_call = 259
-Info: estimated buffering for operator call_stmt_790_call (call to doMemAccess)  = 259
-Info: estimated buffering for operator slice_793_inst = 32
+Info: resources used by CP accessMemoryWord_CP_936: ff-count=12 (saved 6), mux2-count= 10, and2-count= 0
+Info: estimated buffering for operator call_stmt_802_call = 259
+Info: estimated buffering for operator call_stmt_802_call (call to doMemAccess)  = 259
+Info: estimated buffering for operator slice_805_inst = 32
 Info: estimated buffering in module accessMemoryWord is 291
 Info: printing VHDL model for module accessMemoryWordBase
 Info: input buffering set to 0 in module accessMemoryWordBase
 Info: output buffering set to 0 in module accessMemoryWordBase
-Info: resources used by CP accessMemoryWordBase_CP_472: ff-count=39 (saved 24), mux2-count= 32, and2-count= 4
-Info: estimated buffering for operator CONCAT_u1_u2_508_inst = 6
-Info: estimated buffering for operator CONCAT_u32_u64_484_inst = 192
-Info: estimated buffering for operator CONCAT_u32_u64_490_inst = 192
-Info: estimated buffering for operator MUX_537_inst = 32
-Info: estimated buffering for operator W_lw_500_delayed_11_0_530_inst = 11
-Info: estimated buffering for operator call_calculateAddress36_expr_466_inst = 164
-Info: estimated buffering for operator call_calculateAddress36_expr_466_inst (call to calculateAddress36)  = 164
-Info: estimated buffering for operator call_stmt_521_call = 175
-Info: estimated buffering for operator call_stmt_521_call (call to accessMemoryBase)  = 175
+Info: resources used by CP accessMemoryWordBase_CP_486: ff-count=39 (saved 24), mux2-count= 32, and2-count= 4
+Info: estimated buffering for operator CONCAT_u1_u2_520_inst = 6
+Info: estimated buffering for operator CONCAT_u32_u64_496_inst = 192
+Info: estimated buffering for operator CONCAT_u32_u64_502_inst = 192
+Info: estimated buffering for operator MUX_549_inst = 32
+Info: estimated buffering for operator W_lw_512_delayed_11_0_542_inst = 11
+Info: estimated buffering for operator call_calculateAddress36_expr_478_inst = 164
+Info: estimated buffering for operator call_calculateAddress36_expr_478_inst (call to calculateAddress36)  = 164
+Info: estimated buffering for operator call_stmt_533_call = 175
+Info: estimated buffering for operator call_stmt_533_call (call to accessMemoryBase)  = 175
 Info: estimated buffering in module accessMemoryWordBase is 772
 Info: printing VHDL model for module accessQueueElement
 Info: input buffering set to 0 in module accessQueueElement
 Info: output buffering set to 0 in module accessQueueElement
-Info: resources used by CP accessQueueElement_CP_1426: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_1033_call = 257
-Info: estimated buffering for operator call_stmt_1033_call (call to accessMemoryDword)  = 257
+Info: resources used by CP accessQueueElement_CP_1440: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_1045_call = 257
+Info: estimated buffering for operator call_stmt_1045_call (call to accessMemoryDword)  = 257
 Info: estimated buffering in module accessQueueElement is 257
 Info: printing VHDL model for module accessQueueLength
 Info: input buffering set to 0 in module accessQueueLength
 Info: output buffering set to 0 in module accessQueueLength
-Info: resources used by CP accessQueueLength_CP_1248: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_929_call = 193
-Info: estimated buffering for operator call_stmt_929_call (call to accessMemoryWord)  = 193
+Info: resources used by CP accessQueueLength_CP_1262: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_941_call = 193
+Info: estimated buffering for operator call_stmt_941_call (call to accessMemoryWord)  = 193
 Info: estimated buffering in module accessQueueLength is 193
 Info: printing VHDL model for module accessQueueMisc
 Info: input buffering set to 0 in module accessQueueMisc
 Info: output buffering set to 0 in module accessQueueMisc
-Info: resources used by CP accessQueueMisc_CP_971: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_806_call = 193
-Info: estimated buffering for operator call_stmt_806_call (call to accessMemoryWord)  = 193
+Info: resources used by CP accessQueueMisc_CP_985: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_818_call = 193
+Info: estimated buffering for operator call_stmt_818_call (call to accessMemoryWord)  = 193
 Info: estimated buffering in module accessQueueMisc is 193
 Info: printing VHDL model for module accessQueueReadIndex
 Info: input buffering set to 0 in module accessQueueReadIndex
 Info: output buffering set to 0 in module accessQueueReadIndex
-Info: resources used by CP accessQueueReadIndex_CP_1174: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_888_call = 193
-Info: estimated buffering for operator call_stmt_888_call (call to accessMemoryWord)  = 193
+Info: resources used by CP accessQueueReadIndex_CP_1188: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_900_call = 193
+Info: estimated buffering for operator call_stmt_900_call (call to accessMemoryWord)  = 193
 Info: estimated buffering in module accessQueueReadIndex is 193
 Info: printing VHDL model for module accessQueueTotalMsgs
 Info: input buffering set to 0 in module accessQueueTotalMsgs
 Info: output buffering set to 0 in module accessQueueTotalMsgs
-Info: resources used by CP accessQueueTotalMsgs_CP_1288: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_951_call = 193
-Info: estimated buffering for operator call_stmt_951_call (call to accessMemoryWord)  = 193
+Info: resources used by CP accessQueueTotalMsgs_CP_1302: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_963_call = 193
+Info: estimated buffering for operator call_stmt_963_call (call to accessMemoryWord)  = 193
 Info: estimated buffering in module accessQueueTotalMsgs is 193
 Info: printing VHDL model for module accessQueueWriteIndex
 Info: input buffering set to 0 in module accessQueueWriteIndex
 Info: output buffering set to 0 in module accessQueueWriteIndex
-Info: resources used by CP accessQueueWriteIndex_CP_1194: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_900_call = 193
-Info: estimated buffering for operator call_stmt_900_call (call to accessMemoryWord)  = 193
+Info: resources used by CP accessQueueWriteIndex_CP_1208: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_912_call = 193
+Info: estimated buffering for operator call_stmt_912_call (call to accessMemoryWord)  = 193
 Info: estimated buffering in module accessQueueWriteIndex is 193
 Info: printing VHDL model for module accessRegister
 Info: resources used by CP accessRegister_CP_3: ff-count=3 (saved 0), mux2-count= 3, and2-count= 2
-Info: estimated buffering for operator array_obj_ref_149_load_0 = 32
+Info: estimated buffering for operator array_obj_ref_151_load_0 = 32
 Info: estimated buffering in module accessRegister is 32
 Info: printing VHDL model for module acquireLock
-Info: resources used by CP acquireLock_CP_1088: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_865_call = 136
-Info: estimated buffering for operator call_stmt_865_call (call to accessMemoryLdStub)  = 136
+Info: resources used by CP acquireLock_CP_1102: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_877_call = 136
+Info: estimated buffering for operator call_stmt_877_call (call to accessMemoryLdStub)  = 136
 Info: estimated buffering in module acquireLock is 136
 Info: printing VHDL model for module calculateAddress36
 Info: input buffering set to 0 in module calculateAddress36
 Info: resources used by CP calculateAddress36_CP_197: ff-count=6 (saved 2), mux2-count= 5, and2-count= 0
-Info: estimated buffering for operator ADD_u36_u36_266_inst = 36
+Info: estimated buffering for operator ADD_u36_u36_268_inst = 36
 Info: estimated buffering in module calculateAddress36 is 36
 Info: printing VHDL model for module controlDaemon
-Info: resources used by CP controlDaemon_CP_3538: ff-count=32 (saved 8), mux2-count= 26, and2-count= 11
-Info: estimated buffering for operator RPIPE_AFB_NIC_REQUEST_1832_inst = 74
-Info: estimated buffering for operator RPIPE_QUEUE_MONITOR_SIGNAL_1903_inst = 32
-Info: estimated buffering for operator W_ignq_1902_inst = 32
-Info: estimated buffering for operator call_stmt_1808_call = 77
-Info: estimated buffering for operator call_stmt_1808_call (call to accessRegister)  = 77
-Info: estimated buffering for operator call_stmt_1871_call = 77
-Info: estimated buffering for operator call_stmt_1871_call (call to accessRegister)  = 77
+Info: resources used by CP controlDaemon_CP_3548: ff-count=32 (saved 8), mux2-count= 26, and2-count= 11
+Info: estimated buffering for operator RPIPE_AFB_NIC_REQUEST_1845_inst = 74
+Info: estimated buffering for operator RPIPE_QUEUE_MONITOR_SIGNAL_1916_inst = 32
+Info: estimated buffering for operator W_ignq_1915_inst = 32
+Info: estimated buffering for operator call_stmt_1821_call = 77
+Info: estimated buffering for operator call_stmt_1821_call (call to accessRegister)  = 77
+Info: estimated buffering for operator call_stmt_1884_call = 77
+Info: estimated buffering for operator call_stmt_1884_call (call to accessRegister)  = 77
 Info: estimated buffering in module controlDaemon is 292
 Info: printing VHDL model for module delay_time
-Info: resources used by CP delay_time_CP_2588: ff-count=9 (saved 12), mux2-count= 8, and2-count= 2
-Info: estimated buffering for operator T_1558_buf = 10
-Info: estimated buffering for operator nR_1564_1557_buf = 10
-Info: estimated buffering for operator phi_stmt_1555 = 10
+Info: resources used by CP delay_time_CP_2597: ff-count=9 (saved 12), mux2-count= 8, and2-count= 2
+Info: estimated buffering for operator T_1570_buf = 10
+Info: estimated buffering for operator nR_1576_1569_buf = 10
+Info: estimated buffering for operator phi_stmt_1567 = 10
 Info: estimated buffering in module delay_time is 30
 Info: printing VHDL model for module doMemAccess
-Info: resources used by CP doMemAccess_CP_674: ff-count=120 (saved 165), mux2-count= 104, and2-count= 32
-Info: estimated buffering for operator MUX_745_inst = 64
-Info: estimated buffering for operator OR_u1_u1_733_inst = 17
-Info: estimated buffering for operator RPIPE_memory_access_lock_659_inst = 1
-Info: estimated buffering for operator W_base_addr_674_delayed_17_0_710_inst = 1088
-Info: estimated buffering for operator W_is_dword_access_697_delayed_16_0_738_inst = 16
-Info: estimated buffering for operator W_is_ldstub_626_delayed_1_0_662_inst = 1
-Info: estimated buffering for operator W_is_ldstub_662_delayed_17_0_700_inst = 17
-Info: estimated buffering for operator W_is_ldstub_668_delayed_17_0_716_inst = 17
-Info: estimated buffering for operator W_is_word_access_689_delayed_17_0_735_inst = 17
-Info: estimated buffering for operator W_offset_675_delayed_17_0_713_inst = 1088
-Info: estimated buffering for operator call_stmt_677_call = 146
-Info: estimated buffering for operator call_stmt_677_call (call to accessMemoryByteBase)  = 146
-Info: estimated buffering for operator call_stmt_688_call = 194
-Info: estimated buffering for operator call_stmt_688_call (call to accessMemoryWordBase)  = 194
-Info: estimated buffering for operator call_stmt_699_call = 258
-Info: estimated buffering for operator call_stmt_699_call (call to accessMemoryDwordBase)  = 258
-Info: estimated buffering for operator call_stmt_729_call = 146
-Info: estimated buffering for operator call_stmt_729_call (call to accessMemoryByteBase)  = 146
+Info: resources used by CP doMemAccess_CP_688: ff-count=120 (saved 165), mux2-count= 104, and2-count= 32
+Info: estimated buffering for operator MUX_757_inst = 64
+Info: estimated buffering for operator OR_u1_u1_745_inst = 17
+Info: estimated buffering for operator RPIPE_memory_access_lock_671_inst = 1
+Info: estimated buffering for operator W_base_addr_686_delayed_17_0_725_inst = 1088
+Info: estimated buffering for operator W_is_dword_access_709_delayed_16_0_750_inst = 16
+Info: estimated buffering for operator W_is_ldstub_638_delayed_1_0_674_inst = 1
+Info: estimated buffering for operator W_is_ldstub_674_delayed_17_0_712_inst = 17
+Info: estimated buffering for operator W_is_ldstub_680_delayed_17_0_722_inst = 17
+Info: estimated buffering for operator W_is_word_access_701_delayed_17_0_747_inst = 17
+Info: estimated buffering for operator W_offset_687_delayed_17_0_728_inst = 1088
+Info: estimated buffering for operator call_stmt_689_call = 146
+Info: estimated buffering for operator call_stmt_689_call (call to accessMemoryByteBase)  = 146
+Info: estimated buffering for operator call_stmt_700_call = 194
+Info: estimated buffering for operator call_stmt_700_call (call to accessMemoryWordBase)  = 194
+Info: estimated buffering for operator call_stmt_711_call = 258
+Info: estimated buffering for operator call_stmt_711_call (call to accessMemoryDwordBase)  = 258
+Info: estimated buffering for operator call_stmt_741_call = 146
+Info: estimated buffering for operator call_stmt_741_call (call to accessMemoryByteBase)  = 146
 Info: estimated buffering in module doMemAccess is 3070
 Warning: shared data-path element in pipelined section has buffering < 2... in data-path for module doMemAccess
 Warning: shared data-path element in pipelined section has buffering < 2... in data-path for module doMemAccess
@@ -4091,89 +4138,89 @@ Info: estimated buffering in module getBaseIndex is 0
 Info: printing VHDL model for module getQueueBufPointer
 Info: input buffering set to 0 in module getQueueBufPointer
 Info: output buffering set to 0 in module getQueueBufPointer
-Info: resources used by CP getQueueBufPointer_CP_1328: ff-count=4 (saved 0), mux2-count= 4, and2-count= 2
-Info: estimated buffering for operator CONCAT_u32_u64_993_inst = 64
-Info: estimated buffering for operator W_base_idx_967_inst = 8
-Info: estimated buffering for operator call_stmt_980_call = 77
-Info: estimated buffering for operator call_stmt_980_call (call to accessRegister)  = 77
-Info: estimated buffering for operator call_stmt_989_call = 77
-Info: estimated buffering for operator call_stmt_989_call (call to accessRegister)  = 77
+Info: resources used by CP getQueueBufPointer_CP_1342: ff-count=4 (saved 0), mux2-count= 4, and2-count= 2
+Info: estimated buffering for operator CONCAT_u32_u64_1005_inst = 64
+Info: estimated buffering for operator W_base_idx_979_inst = 8
+Info: estimated buffering for operator call_stmt_1001_call = 77
+Info: estimated buffering for operator call_stmt_1001_call (call to accessRegister)  = 77
+Info: estimated buffering for operator call_stmt_992_call = 77
+Info: estimated buffering for operator call_stmt_992_call (call to accessRegister)  = 77
 Info: estimated buffering in module getQueueBufPointer is 226
 Info: printing VHDL model for module getQueueElement
-Info: resources used by CP getQueueElement_CP_1446: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_1045_call = 225
-Info: estimated buffering for operator call_stmt_1045_call (call to accessQueueElement)  = 225
+Info: resources used by CP getQueueElement_CP_1460: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_1057_call = 225
+Info: estimated buffering for operator call_stmt_1057_call (call to accessQueueElement)  = 225
 Info: estimated buffering in module getQueueElement is 225
 Info: printing VHDL model for module getQueueLength
-Info: resources used by CP getQueueLength_CP_1268: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_939_call = 129
-Info: estimated buffering for operator call_stmt_939_call (call to accessQueueLength)  = 129
+Info: resources used by CP getQueueLength_CP_1282: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_951_call = 129
+Info: estimated buffering for operator call_stmt_951_call (call to accessQueueLength)  = 129
 Info: estimated buffering in module getQueueLength is 129
 Info: printing VHDL model for module getQueueLockPointer
 Info: input buffering set to 0 in module getQueueLockPointer
 Info: output buffering set to 0 in module getQueueLockPointer
-Info: resources used by CP getQueueLockPointer_CP_991: ff-count=4 (saved 0), mux2-count= 4, and2-count= 2
-Info: estimated buffering for operator CONCAT_u32_u64_838_inst = 64
-Info: estimated buffering for operator W_base_idx_812_inst = 8
-Info: estimated buffering for operator call_stmt_825_call = 77
-Info: estimated buffering for operator call_stmt_825_call (call to accessRegister)  = 77
-Info: estimated buffering for operator call_stmt_834_call = 77
-Info: estimated buffering for operator call_stmt_834_call (call to accessRegister)  = 77
+Info: resources used by CP getQueueLockPointer_CP_1005: ff-count=4 (saved 0), mux2-count= 4, and2-count= 2
+Info: estimated buffering for operator CONCAT_u32_u64_850_inst = 64
+Info: estimated buffering for operator W_base_idx_824_inst = 8
+Info: estimated buffering for operator call_stmt_837_call = 77
+Info: estimated buffering for operator call_stmt_837_call (call to accessRegister)  = 77
+Info: estimated buffering for operator call_stmt_846_call = 77
+Info: estimated buffering for operator call_stmt_846_call (call to accessRegister)  = 77
 Info: estimated buffering in module getQueueLockPointer is 226
 Info: printing VHDL model for module getQueuePointer
 Info: input buffering set to 0 in module getQueuePointer
 Info: output buffering set to 0 in module getQueuePointer
 Info: resources used by CP getQueuePointer_CP_134: ff-count=4 (saved 0), mux2-count= 4, and2-count= 2
-Info: estimated buffering for operator CONCAT_u32_u64_254_inst = 64
-Info: estimated buffering for operator W_base_idx_230_inst = 8
-Info: estimated buffering for operator call_stmt_241_call = 77
-Info: estimated buffering for operator call_stmt_241_call (call to accessRegister)  = 77
-Info: estimated buffering for operator call_stmt_250_call = 77
-Info: estimated buffering for operator call_stmt_250_call (call to accessRegister)  = 77
+Info: estimated buffering for operator CONCAT_u32_u64_256_inst = 64
+Info: estimated buffering for operator W_base_idx_232_inst = 8
+Info: estimated buffering for operator call_stmt_243_call = 77
+Info: estimated buffering for operator call_stmt_243_call (call to accessRegister)  = 77
+Info: estimated buffering for operator call_stmt_252_call = 77
+Info: estimated buffering for operator call_stmt_252_call (call to accessRegister)  = 77
 Info: estimated buffering in module getQueuePointer is 226
 Info: printing VHDL model for module getQueuePointers
-Info: resources used by CP getQueuePointers_CP_1214: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_911_call = 129
-Info: estimated buffering for operator call_stmt_911_call (call to accessQueueReadIndex)  = 129
-Info: estimated buffering for operator call_stmt_917_call = 129
-Info: estimated buffering for operator call_stmt_917_call (call to accessQueueWriteIndex)  = 129
+Info: resources used by CP getQueuePointers_CP_1228: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_923_call = 129
+Info: estimated buffering for operator call_stmt_923_call (call to accessQueueReadIndex)  = 129
+Info: estimated buffering for operator call_stmt_929_call = 129
+Info: estimated buffering for operator call_stmt_929_call (call to accessQueueWriteIndex)  = 129
 Info: estimated buffering in module getQueuePointers is 258
 Info: printing VHDL model for module getTotalMessages
-Info: resources used by CP getTotalMessages_CP_1308: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_961_call = 129
-Info: estimated buffering for operator call_stmt_961_call (call to accessQueueTotalMsgs)  = 129
+Info: resources used by CP getTotalMessages_CP_1322: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_973_call = 129
+Info: estimated buffering for operator call_stmt_973_call (call to accessQueueTotalMsgs)  = 129
 Info: estimated buffering in module getTotalMessages is 129
 Info: printing VHDL model for module getTxPacketPointerFromServer
 Info: input buffering set to 0 in module getTxPacketPointerFromServer
-Info: resources used by CP getTxPacketPointerFromServer_CP_3765: ff-count=6 (saved 6), mux2-count= 5, and2-count= 1
-Info: estimated buffering for operator call_stmt_1914_call = 75
-Info: estimated buffering for operator call_stmt_1914_call (call to popFromQueue)  = 75
+Info: resources used by CP getTxPacketPointerFromServer_CP_3775: ff-count=6 (saved 6), mux2-count= 5, and2-count= 1
+Info: estimated buffering for operator call_stmt_1927_call = 75
+Info: estimated buffering for operator call_stmt_1927_call (call to popFromQueue)  = 75
 Info: estimated buffering in module getTxPacketPointerFromServer is 75
 Info: printing VHDL model for module incrementNumberOfPacketsReceived
-Info: resources used by CP incrementNumberOfPacketsReceived_CP_2553: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_1535_call = 77
-Info: estimated buffering for operator call_stmt_1535_call (call to accessRegister)  = 77
+Info: resources used by CP incrementNumberOfPacketsReceived_CP_2562: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
 Info: estimated buffering for operator call_stmt_1547_call = 77
 Info: estimated buffering for operator call_stmt_1547_call (call to accessRegister)  = 77
+Info: estimated buffering for operator call_stmt_1559_call = 77
+Info: estimated buffering for operator call_stmt_1559_call (call to accessRegister)  = 77
 Info: estimated buffering in module incrementNumberOfPacketsReceived is 154
 Info: printing VHDL model for module incrementNumberOfPacketsTransmitted
-Info: resources used by CP incrementNumberOfPacketsTransmitted_CP_3797: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_1927_call = 77
-Info: estimated buffering for operator call_stmt_1927_call (call to accessRegister)  = 77
-Info: estimated buffering for operator call_stmt_1939_call = 77
-Info: estimated buffering for operator call_stmt_1939_call (call to accessRegister)  = 77
+Info: resources used by CP incrementNumberOfPacketsTransmitted_CP_3807: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_1940_call = 77
+Info: estimated buffering for operator call_stmt_1940_call (call to accessRegister)  = 77
+Info: estimated buffering for operator call_stmt_1952_call = 77
+Info: estimated buffering for operator call_stmt_1952_call (call to accessRegister)  = 77
 Info: estimated buffering in module incrementNumberOfPacketsTransmitted is 154
 Info: printing VHDL model for module loadBuffer
-Info: resources used by CP loadBuffer_CP_2213: ff-count=51 (saved 36), mux2-count= 29, and2-count= 6
-Info: estimated buffering for operator W_bad_packet_identifier_1334_delayed_8_0_1395_inst = 8
-Info: estimated buffering for operator W_rx_buffer_pointer_1328_delayed_4_0_1386_inst = 256
-Info: estimated buffering for operator W_rx_buffer_pointer_1335_delayed_8_0_1398_inst = 512
-Info: estimated buffering for operator call_stmt_1384_call = 80
-Info: estimated buffering for operator call_stmt_1384_call (call to writeEthernetHeaderToMem)  = 80
-Info: estimated buffering for operator call_stmt_1394_call = 100
-Info: estimated buffering for operator call_stmt_1394_call (call to writePayloadToMem)  = 100
-Info: estimated buffering for operator call_stmt_1405_call = 83
-Info: estimated buffering for operator call_stmt_1405_call (call to writeControlInformationToMem)  = 83
+Info: resources used by CP loadBuffer_CP_2222: ff-count=51 (saved 36), mux2-count= 29, and2-count= 6
+Info: estimated buffering for operator W_bad_packet_identifier_1346_delayed_8_0_1407_inst = 8
+Info: estimated buffering for operator W_rx_buffer_pointer_1340_delayed_4_0_1398_inst = 256
+Info: estimated buffering for operator W_rx_buffer_pointer_1347_delayed_8_0_1410_inst = 512
+Info: estimated buffering for operator call_stmt_1396_call = 80
+Info: estimated buffering for operator call_stmt_1396_call (call to writeEthernetHeaderToMem)  = 80
+Info: estimated buffering for operator call_stmt_1406_call = 100
+Info: estimated buffering for operator call_stmt_1406_call (call to writePayloadToMem)  = 100
+Info: estimated buffering for operator call_stmt_1417_call = 83
+Info: estimated buffering for operator call_stmt_1417_call (call to writeControlInformationToMem)  = 83
 Info: estimated buffering in module loadBuffer is 1039
 Info: printing VHDL model for module nextLSTATE
 Info: estimated buffering in module nextLSTATE is 0
@@ -4185,98 +4232,98 @@ Warning: CP element 1 has no predecessors.. tie to false
 -- CP-element group 1: successors 
 
 -- CP-element group 1:  members (3) {
+-- CP-element group 1: 	 branch_block_stmt_2023/$exit
 -- CP-element group 1: 	 $exit
--- CP-element group 1: 	 branch_block_stmt_2010/$exit
--- CP-element group 1: 	 branch_block_stmt_2010/branch_block_stmt_2010__exit__
+-- CP-element group 1: 	 branch_block_stmt_2023/branch_block_stmt_2023__exit__
 -- }
-Info: resources used by CP nicRxFromMacDaemon_CP_3835: ff-count=63 (saved 62), mux2-count= 51, and2-count= 18
-Info: estimated buffering for operator MUX_2082_inst = 73
-Info: estimated buffering for operator RPIPE_S_CONTROL_REGISTER_2024_inst = 32
-Info: estimated buffering for operator RPIPE_S_CONTROL_REGISTER_2115_inst = 32
-Info: estimated buffering for operator RPIPE_mac_to_nic_data_2049_inst = 73
-Info: estimated buffering for operator call_stmt_2022_call = 77
-Info: estimated buffering for operator call_stmt_2022_call (call to accessRegister)  = 77
-Info: estimated buffering for operator call_stmt_2040_call = 77
-Info: estimated buffering for operator call_stmt_2040_call (call to accessRegister)  = 77
-Info: estimated buffering for operator call_stmt_2110_call = 77
-Info: estimated buffering for operator call_stmt_2110_call (call to accessRegister)  = 77
-Info: estimated buffering for operator nLSTATE_2062_2046_buf = 2
-Info: estimated buffering for operator npkt_cnt_2100_2054_buf = 32
-Info: estimated buffering for operator phi_stmt_2043 = 2
-Info: estimated buffering for operator phi_stmt_2050 = 32
+Info: resources used by CP nicRxFromMacDaemon_CP_3845: ff-count=63 (saved 62), mux2-count= 51, and2-count= 18
+Info: estimated buffering for operator MUX_2095_inst = 73
+Info: estimated buffering for operator RPIPE_S_CONTROL_REGISTER_2037_inst = 32
+Info: estimated buffering for operator RPIPE_S_CONTROL_REGISTER_2128_inst = 32
+Info: estimated buffering for operator RPIPE_mac_to_nic_data_2062_inst = 73
+Info: estimated buffering for operator call_stmt_2035_call = 77
+Info: estimated buffering for operator call_stmt_2035_call (call to accessRegister)  = 77
+Info: estimated buffering for operator call_stmt_2053_call = 77
+Info: estimated buffering for operator call_stmt_2053_call (call to accessRegister)  = 77
+Info: estimated buffering for operator call_stmt_2123_call = 77
+Info: estimated buffering for operator call_stmt_2123_call (call to accessRegister)  = 77
+Info: estimated buffering for operator nLSTATE_2075_2059_buf = 2
+Info: estimated buffering for operator npkt_cnt_2113_2065_buf = 32
+Info: estimated buffering for operator phi_stmt_2056 = 2
+Info: estimated buffering for operator phi_stmt_2063 = 32
 Info: estimated buffering in module nicRxFromMacDaemon is 509
 Info: printing VHDL model for module popFromQueue
-Info: resources used by CP popFromQueue_CP_1575: ff-count=10 (saved 0), mux2-count= 10, and2-count= 5
-Info: estimated buffering for operator CONCAT_u16_u32_1168_inst = 32
-Info: estimated buffering for operator CONCAT_u16_u32_1224_inst = 32
-Info: estimated buffering for operator W_status_1230_inst = 1
-Info: estimated buffering for operator call_stmt_1115_call = 74
-Info: estimated buffering for operator call_stmt_1115_call (call to getQueuePointer)  = 74
-Info: estimated buffering for operator call_stmt_1122_call = 129
-Info: estimated buffering for operator call_stmt_1122_call (call to accessQueueMisc)  = 129
-Info: estimated buffering for operator call_stmt_1132_call = 74
-Info: estimated buffering for operator call_stmt_1132_call (call to getQueueLockPointer)  = 74
-Info: estimated buffering for operator call_stmt_1136_call = 65
-Info: estimated buffering for operator call_stmt_1136_call (call to acquireLock)  = 65
-Info: estimated buffering for operator call_stmt_1141_call = 128
-Info: estimated buffering for operator call_stmt_1141_call (call to getQueuePointers)  = 128
-Info: estimated buffering for operator call_stmt_1144_call = 96
-Info: estimated buffering for operator call_stmt_1144_call (call to getQueueLength)  = 96
-Info: estimated buffering for operator call_stmt_1147_call = 96
-Info: estimated buffering for operator call_stmt_1147_call (call to getTotalMessages)  = 96
-Info: estimated buffering for operator call_stmt_1190_call = 74
-Info: estimated buffering for operator call_stmt_1190_call (call to getQueueBufPointer)  = 74
-Info: estimated buffering for operator call_stmt_1195_call = 160
-Info: estimated buffering for operator call_stmt_1195_call (call to getQueueElement)  = 160
-Info: estimated buffering for operator call_stmt_1200_call = 128
-Info: estimated buffering for operator call_stmt_1200_call (call to setQueuePointers)  = 128
-Info: estimated buffering for operator call_stmt_1207_call = 96
-Info: estimated buffering for operator call_stmt_1207_call (call to setTotalMessages)  = 96
-Info: estimated buffering for operator call_stmt_1229_call = 64
-Info: estimated buffering for operator call_stmt_1229_call (call to releaseLock)  = 64
+Info: resources used by CP popFromQueue_CP_1589: ff-count=10 (saved 0), mux2-count= 10, and2-count= 5
+Info: estimated buffering for operator CONCAT_u16_u32_1180_inst = 32
+Info: estimated buffering for operator CONCAT_u16_u32_1236_inst = 32
+Info: estimated buffering for operator W_status_1242_inst = 1
+Info: estimated buffering for operator call_stmt_1127_call = 74
+Info: estimated buffering for operator call_stmt_1127_call (call to getQueuePointer)  = 74
+Info: estimated buffering for operator call_stmt_1134_call = 129
+Info: estimated buffering for operator call_stmt_1134_call (call to accessQueueMisc)  = 129
+Info: estimated buffering for operator call_stmt_1144_call = 74
+Info: estimated buffering for operator call_stmt_1144_call (call to getQueueLockPointer)  = 74
+Info: estimated buffering for operator call_stmt_1148_call = 65
+Info: estimated buffering for operator call_stmt_1148_call (call to acquireLock)  = 65
+Info: estimated buffering for operator call_stmt_1153_call = 128
+Info: estimated buffering for operator call_stmt_1153_call (call to getQueuePointers)  = 128
+Info: estimated buffering for operator call_stmt_1156_call = 96
+Info: estimated buffering for operator call_stmt_1156_call (call to getQueueLength)  = 96
+Info: estimated buffering for operator call_stmt_1159_call = 96
+Info: estimated buffering for operator call_stmt_1159_call (call to getTotalMessages)  = 96
+Info: estimated buffering for operator call_stmt_1202_call = 74
+Info: estimated buffering for operator call_stmt_1202_call (call to getQueueBufPointer)  = 74
+Info: estimated buffering for operator call_stmt_1207_call = 160
+Info: estimated buffering for operator call_stmt_1207_call (call to getQueueElement)  = 160
+Info: estimated buffering for operator call_stmt_1212_call = 128
+Info: estimated buffering for operator call_stmt_1212_call (call to setQueuePointers)  = 128
+Info: estimated buffering for operator call_stmt_1219_call = 96
+Info: estimated buffering for operator call_stmt_1219_call (call to setTotalMessages)  = 96
+Info: estimated buffering for operator call_stmt_1241_call = 64
+Info: estimated buffering for operator call_stmt_1241_call (call to releaseLock)  = 64
 Info: estimated buffering in module popFromQueue is 1249
 Info: printing VHDL model for module populateRxQueue
-Info: resources used by CP populateRxQueue_CP_2686: ff-count=6 (saved 0), mux2-count= 6, and2-count= 3
-Info: estimated buffering for operator AND_u8_u8_1589_inst = 8
-Info: estimated buffering for operator AND_u8_u8_1609_inst = 8
-Info: estimated buffering for operator RPIPE_LAST_WRITTEN_RX_QUEUE_INDEX_1582_inst = 8
-Info: estimated buffering for operator RPIPE_S_NUMBER_OF_SERVERS_1585_inst = 32
-Info: estimated buffering for operator RPIPE_S_NUMBER_OF_SERVERS_1605_inst = 32
-Info: estimated buffering for operator call_stmt_1598_call = 75
-Info: estimated buffering for operator call_stmt_1598_call (call to pushIntoQueue)  = 75
-Info: estimated buffering for operator call_stmt_1619_call = 11
-Info: estimated buffering for operator call_stmt_1619_call (call to delay_time)  = 41
-Info: estimated buffering for operator n_q_index_1610_1590_buf = 8
-Info: estimated buffering for operator phi_stmt_1580 = 8
+Info: resources used by CP populateRxQueue_CP_2695: ff-count=6 (saved 0), mux2-count= 6, and2-count= 3
+Info: estimated buffering for operator AND_u8_u8_1601_inst = 8
+Info: estimated buffering for operator AND_u8_u8_1621_inst = 8
+Info: estimated buffering for operator RPIPE_LAST_WRITTEN_RX_QUEUE_INDEX_1594_inst = 8
+Info: estimated buffering for operator RPIPE_S_NUMBER_OF_SERVERS_1597_inst = 32
+Info: estimated buffering for operator RPIPE_S_NUMBER_OF_SERVERS_1617_inst = 32
+Info: estimated buffering for operator call_stmt_1610_call = 75
+Info: estimated buffering for operator call_stmt_1610_call (call to pushIntoQueue)  = 75
+Info: estimated buffering for operator call_stmt_1631_call = 11
+Info: estimated buffering for operator call_stmt_1631_call (call to delay_time)  = 41
+Info: estimated buffering for operator n_q_index_1622_1602_buf = 8
+Info: estimated buffering for operator phi_stmt_1592 = 8
 Info: estimated buffering in module populateRxQueue is 220
 Info: printing VHDL model for module pushIntoQueue
-Info: resources used by CP pushIntoQueue_CP_2330: ff-count=27 (saved 0), mux2-count= 27, and2-count= 17
-Info: estimated buffering for operator CONCAT_u16_u32_1517_inst = 32
-Info: estimated buffering for operator W_status_1523_inst = 1
-Info: estimated buffering for operator call_stmt_1426_call = 74
-Info: estimated buffering for operator call_stmt_1426_call (call to getQueuePointer)  = 74
-Info: estimated buffering for operator call_stmt_1433_call = 193
-Info: estimated buffering for operator call_stmt_1433_call (call to accessMemoryWord)  = 193
-Info: estimated buffering for operator call_stmt_1443_call = 74
-Info: estimated buffering for operator call_stmt_1443_call (call to getQueueLockPointer)  = 74
-Info: estimated buffering for operator call_stmt_1447_call = 65
-Info: estimated buffering for operator call_stmt_1447_call (call to acquireLock)  = 65
-Info: estimated buffering for operator call_stmt_1452_call = 128
-Info: estimated buffering for operator call_stmt_1452_call (call to getQueuePointers)  = 128
-Info: estimated buffering for operator call_stmt_1455_call = 96
-Info: estimated buffering for operator call_stmt_1455_call (call to getQueueLength)  = 96
-Info: estimated buffering for operator call_stmt_1458_call = 96
-Info: estimated buffering for operator call_stmt_1458_call (call to getTotalMessages)  = 96
-Info: estimated buffering for operator call_stmt_1483_call = 74
-Info: estimated buffering for operator call_stmt_1483_call (call to getQueueBufPointer)  = 74
-Info: estimated buffering for operator call_stmt_1488_call = 160
-Info: estimated buffering for operator call_stmt_1488_call (call to setQueueElement)  = 160
-Info: estimated buffering for operator call_stmt_1493_call = 128
-Info: estimated buffering for operator call_stmt_1493_call (call to setQueuePointers)  = 128
-Info: estimated buffering for operator call_stmt_1500_call = 96
-Info: estimated buffering for operator call_stmt_1500_call (call to setTotalMessages)  = 96
-Info: estimated buffering for operator call_stmt_1522_call = 64
-Info: estimated buffering for operator call_stmt_1522_call (call to releaseLock)  = 64
+Info: resources used by CP pushIntoQueue_CP_2339: ff-count=27 (saved 0), mux2-count= 27, and2-count= 17
+Info: estimated buffering for operator CONCAT_u16_u32_1529_inst = 32
+Info: estimated buffering for operator W_status_1535_inst = 1
+Info: estimated buffering for operator call_stmt_1438_call = 74
+Info: estimated buffering for operator call_stmt_1438_call (call to getQueuePointer)  = 74
+Info: estimated buffering for operator call_stmt_1445_call = 193
+Info: estimated buffering for operator call_stmt_1445_call (call to accessMemoryWord)  = 193
+Info: estimated buffering for operator call_stmt_1455_call = 74
+Info: estimated buffering for operator call_stmt_1455_call (call to getQueueLockPointer)  = 74
+Info: estimated buffering for operator call_stmt_1459_call = 65
+Info: estimated buffering for operator call_stmt_1459_call (call to acquireLock)  = 65
+Info: estimated buffering for operator call_stmt_1464_call = 128
+Info: estimated buffering for operator call_stmt_1464_call (call to getQueuePointers)  = 128
+Info: estimated buffering for operator call_stmt_1467_call = 96
+Info: estimated buffering for operator call_stmt_1467_call (call to getQueueLength)  = 96
+Info: estimated buffering for operator call_stmt_1470_call = 96
+Info: estimated buffering for operator call_stmt_1470_call (call to getTotalMessages)  = 96
+Info: estimated buffering for operator call_stmt_1495_call = 74
+Info: estimated buffering for operator call_stmt_1495_call (call to getQueueBufPointer)  = 74
+Info: estimated buffering for operator call_stmt_1500_call = 160
+Info: estimated buffering for operator call_stmt_1500_call (call to setQueueElement)  = 160
+Info: estimated buffering for operator call_stmt_1505_call = 128
+Info: estimated buffering for operator call_stmt_1505_call (call to setQueuePointers)  = 128
+Info: estimated buffering for operator call_stmt_1512_call = 96
+Info: estimated buffering for operator call_stmt_1512_call (call to setTotalMessages)  = 96
+Info: estimated buffering for operator call_stmt_1534_call = 64
+Info: estimated buffering for operator call_stmt_1534_call (call to releaseLock)  = 64
 Info: estimated buffering in module pushIntoQueue is 1281
 Info: printing VHDL model for module queueTestDaemon
 Warning: CP element 1 has no predecessors.. tie to false
@@ -4287,51 +4334,51 @@ Warning: CP element 1 has no predecessors.. tie to false
 
 -- CP-element group 1:  members (3) {
 -- CP-element group 1: 	 $exit
--- CP-element group 1: 	 branch_block_stmt_2122/$exit
--- CP-element group 1: 	 branch_block_stmt_2122/branch_block_stmt_2122__exit__
+-- CP-element group 1: 	 branch_block_stmt_2135/$exit
+-- CP-element group 1: 	 branch_block_stmt_2135/branch_block_stmt_2135__exit__
 -- }
-Info: resources used by CP queueTestDaemon_CP_4165: ff-count=5 (saved 0), mux2-count= 5, and2-count= 3
-Info: estimated buffering for operator RPIPE_debug_queue_command_2125_inst = 64
-Info: estimated buffering for operator call_stmt_2153_call = 75
-Info: estimated buffering for operator call_stmt_2153_call (call to pushIntoQueue)  = 75
-Info: estimated buffering for operator call_stmt_2160_call = 75
-Info: estimated buffering for operator call_stmt_2160_call (call to popFromQueue)  = 75
+Info: resources used by CP queueTestDaemon_CP_4175: ff-count=5 (saved 0), mux2-count= 5, and2-count= 3
+Info: estimated buffering for operator RPIPE_debug_queue_command_2138_inst = 64
+Info: estimated buffering for operator call_stmt_2166_call = 75
+Info: estimated buffering for operator call_stmt_2166_call (call to pushIntoQueue)  = 75
+Info: estimated buffering for operator call_stmt_2173_call = 75
+Info: estimated buffering for operator call_stmt_2173_call (call to popFromQueue)  = 75
 Info: estimated buffering in module queueTestDaemon is 214
 Info: printing VHDL model for module releaseLock
-Info: resources used by CP releaseLock_CP_1555: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_1105_call = 145
-Info: estimated buffering for operator call_stmt_1105_call (call to accessMemoryByte)  = 145
+Info: resources used by CP releaseLock_CP_1569: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_1117_call = 145
+Info: estimated buffering for operator call_stmt_1117_call (call to accessMemoryByte)  = 145
 Info: estimated buffering in module releaseLock is 145
 Info: printing VHDL model for module setGlobalSignals
 Info: input buffering set to 0 in module setGlobalSignals
 Info: output buffering set to 0 in module setGlobalSignals
-Info: resources used by CP setGlobalSignals_CP_3386: ff-count=3 (saved 0), mux2-count= 3, and2-count= 2
-Info: estimated buffering for operator AND_u1_u1_1796_inst = 1
-Info: estimated buffering for operator BITSEL_u32_u1_1785_inst = 1
-Info: estimated buffering for operator BITSEL_u32_u1_1790_inst = 1
-Info: estimated buffering for operator RPIPE_NIC_INTR_ENABLE_1794_inst = 1
-Info: estimated buffering for operator RPIPE_NIC_INTR_INTERNAL_1795_inst = 1
-Info: estimated buffering for operator call_stmt_1768_call = 77
-Info: estimated buffering for operator call_stmt_1768_call (call to accessRegister)  = 77
-Info: estimated buffering for operator call_stmt_1778_call = 77
-Info: estimated buffering for operator call_stmt_1778_call (call to accessRegister)  = 77
+Info: resources used by CP setGlobalSignals_CP_3396: ff-count=3 (saved 0), mux2-count= 3, and2-count= 2
+Info: estimated buffering for operator AND_u1_u1_1809_inst = 1
+Info: estimated buffering for operator BITSEL_u32_u1_1798_inst = 1
+Info: estimated buffering for operator BITSEL_u32_u1_1803_inst = 1
+Info: estimated buffering for operator RPIPE_NIC_INTR_ENABLE_1807_inst = 1
+Info: estimated buffering for operator RPIPE_NIC_INTR_INTERNAL_1808_inst = 1
+Info: estimated buffering for operator call_stmt_1781_call = 77
+Info: estimated buffering for operator call_stmt_1781_call (call to accessRegister)  = 77
+Info: estimated buffering for operator call_stmt_1791_call = 77
+Info: estimated buffering for operator call_stmt_1791_call (call to accessRegister)  = 77
 Info: estimated buffering in module setGlobalSignals is 159
 Info: printing VHDL model for module setQueueElement
-Info: resources used by CP setQueueElement_CP_2310: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_1416_call = 225
-Info: estimated buffering for operator call_stmt_1416_call (call to accessQueueElement)  = 225
+Info: resources used by CP setQueueElement_CP_2319: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_1428_call = 225
+Info: estimated buffering for operator call_stmt_1428_call (call to accessQueueElement)  = 225
 Info: estimated buffering in module setQueueElement is 225
 Info: printing VHDL model for module setQueuePointers
-Info: resources used by CP setQueuePointers_CP_1466: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_1059_call = 129
-Info: estimated buffering for operator call_stmt_1059_call (call to accessQueueReadIndex)  = 129
-Info: estimated buffering for operator call_stmt_1064_call = 129
-Info: estimated buffering for operator call_stmt_1064_call (call to accessQueueWriteIndex)  = 129
+Info: resources used by CP setQueuePointers_CP_1480: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_1071_call = 129
+Info: estimated buffering for operator call_stmt_1071_call (call to accessQueueReadIndex)  = 129
+Info: estimated buffering for operator call_stmt_1076_call = 129
+Info: estimated buffering for operator call_stmt_1076_call (call to accessQueueWriteIndex)  = 129
 Info: estimated buffering in module setQueuePointers is 258
 Info: printing VHDL model for module setTotalMessages
-Info: resources used by CP setTotalMessages_CP_1500: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_1073_call = 129
-Info: estimated buffering for operator call_stmt_1073_call (call to accessQueueTotalMsgs)  = 129
+Info: resources used by CP setTotalMessages_CP_1514: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_1085_call = 129
+Info: estimated buffering for operator call_stmt_1085_call (call to accessQueueTotalMsgs)  = 129
 Info: estimated buffering in module setTotalMessages is 129
 Info: printing VHDL model for module transmitEngineDaemon
 Warning: CP element 3 has no predecessors.. tie to false
@@ -4342,85 +4389,86 @@ Warning: CP element 3 has no predecessors.. tie to false
 
 -- CP-element group 3:  members (3) {
 -- CP-element group 3: 	 $exit
--- CP-element group 3: 	 branch_block_stmt_2295/$exit
--- CP-element group 3: 	 branch_block_stmt_2295/branch_block_stmt_2295__exit__
+-- CP-element group 3: 	 branch_block_stmt_2308/$exit
+-- CP-element group 3: 	 branch_block_stmt_2308/branch_block_stmt_2308__exit__
 -- }
-Info: resources used by CP transmitEngineDaemon_CP_4526: ff-count=111 (saved 136), mux2-count= 66, and2-count= 19
-Info: estimated buffering for operator ADD_u32_u32_2363_inst = 32
-Info: estimated buffering for operator AND_u8_u8_2316_inst = 8
-Info: estimated buffering for operator MUX_2370_inst = 320
-Info: estimated buffering for operator MUX_2378_inst = 64
-Info: estimated buffering for operator NOT_u1_u1_2336_inst = 4
-Info: estimated buffering for operator RPIPE_LAST_READ_TX_QUEUE_INDEX_2309_inst = 8
-Info: estimated buffering for operator RPIPE_S_CONTROL_REGISTER_2298_inst = 32
-Info: estimated buffering for operator RPIPE_S_CONTROL_REGISTER_2386_inst = 32
-Info: estimated buffering for operator RPIPE_S_NUMBER_OF_SERVERS_2312_inst = 32
-Info: estimated buffering for operator W_pkt_pointer_2281_delayed_4_0_2348_inst = 256
-Info: estimated buffering for operator W_tx_flag_2285_delayed_4_0_2357_inst = 4
-Info: estimated buffering for operator call_stmt_2329_call = 73
-Info: estimated buffering for operator call_stmt_2329_call (call to getTxPacketPointerFromServer)  = 73
-Info: estimated buffering for operator call_stmt_2333_call = 65
-Info: estimated buffering for operator call_stmt_2333_call (call to transmitPacket)  = 65
-Info: estimated buffering for operator call_stmt_2356_call = 75
-Info: estimated buffering for operator call_stmt_2356_call (call to pushIntoQueue)  = 75
-Info: estimated buffering for operator phi_stmt_2317 = 1
+Info: resources used by CP transmitEngineDaemon_CP_4536: ff-count=97 (saved 120), mux2-count= 61, and2-count= 19
+Info: estimated buffering for operator ADD_u32_u32_2376_inst = 32
+Info: estimated buffering for operator AND_u8_u8_2329_inst = 8
+Info: estimated buffering for operator MUX_2383_inst = 320
+Info: estimated buffering for operator MUX_2391_inst = 64
+Info: estimated buffering for operator NOT_u1_u1_2349_inst = 4
+Info: estimated buffering for operator RPIPE_LAST_READ_TX_QUEUE_INDEX_2322_inst = 8
+Info: estimated buffering for operator RPIPE_S_CONTROL_REGISTER_2311_inst = 32
+Info: estimated buffering for operator RPIPE_S_CONTROL_REGISTER_2399_inst = 32
+Info: estimated buffering for operator RPIPE_S_NUMBER_OF_SERVERS_2325_inst = 32
+Info: estimated buffering for operator W_pkt_pointer_2294_delayed_4_0_2361_inst = 256
+Info: estimated buffering for operator W_tx_flag_2298_delayed_4_0_2370_inst = 4
+Info: estimated buffering for operator call_stmt_2342_call = 73
+Info: estimated buffering for operator call_stmt_2342_call (call to getTxPacketPointerFromServer)  = 73
+Info: estimated buffering for operator call_stmt_2346_call = 65
+Info: estimated buffering for operator call_stmt_2346_call (call to transmitPacket)  = 65
+Info: estimated buffering for operator call_stmt_2369_call = 75
+Info: estimated buffering for operator call_stmt_2369_call (call to pushIntoQueue)  = 75
+Info: estimated buffering for operator phi_stmt_2330 = 1
 Info: estimated buffering in module transmitEngineDaemon is 1006
 Info: printing VHDL model for module transmitPacket
-Info: resources used by CP transmitPacket_CP_4253: ff-count=56 (saved 76), mux2-count= 35, and2-count= 9
-Info: estimated buffering for operator CONCAT_u65_u73_2243_inst = 73
-Info: estimated buffering for operator CONCAT_u65_u73_2281_inst = 73
-Info: estimated buffering for operator EQ_u11_u1_2287_inst = 1
-Info: estimated buffering for operator SUB_u11_u11_2221_inst = 11
-Info: estimated buffering for operator W_last_offset_2262_inst = 16
-Info: estimated buffering for operator call_stmt_2202_call = 257
-Info: estimated buffering for operator call_stmt_2202_call (call to accessMemoryDword)  = 257
-Info: estimated buffering for operator call_stmt_2236_call = 257
-Info: estimated buffering for operator call_stmt_2236_call (call to accessMemoryDword)  = 257
-Info: estimated buffering for operator call_stmt_2272_call = 257
-Info: estimated buffering for operator call_stmt_2272_call (call to accessMemoryDword)  = 257
-Info: estimated buffering for operator ncount_down_2249_2222_buf = 11
-Info: estimated buffering for operator nmem_addr_offset_2254_2227_buf = 16
-Info: estimated buffering for operator phi_stmt_2217 = 11
-Info: estimated buffering for operator phi_stmt_2223 = 16
+Info: resources used by CP transmitPacket_CP_4263: ff-count=56 (saved 76), mux2-count= 35, and2-count= 9
+Info: estimated buffering for operator CONCAT_u65_u73_2256_inst = 73
+Info: estimated buffering for operator CONCAT_u65_u73_2294_inst = 73
+Info: estimated buffering for operator EQ_u11_u1_2300_inst = 1
+Info: estimated buffering for operator SUB_u11_u11_2234_inst = 11
+Info: estimated buffering for operator W_last_offset_2275_inst = 16
+Info: estimated buffering for operator call_stmt_2215_call = 257
+Info: estimated buffering for operator call_stmt_2215_call (call to accessMemoryDword)  = 257
+Info: estimated buffering for operator call_stmt_2249_call = 257
+Info: estimated buffering for operator call_stmt_2249_call (call to accessMemoryDword)  = 257
+Info: estimated buffering for operator call_stmt_2285_call = 257
+Info: estimated buffering for operator call_stmt_2285_call (call to accessMemoryDword)  = 257
+Info: estimated buffering for operator ncount_down_2262_2235_buf = 11
+Info: estimated buffering for operator nmem_addr_offset_2267_2240_buf = 16
+Info: estimated buffering for operator phi_stmt_2230 = 11
+Info: estimated buffering for operator phi_stmt_2236 = 16
 Info: estimated buffering in module transmitPacket is 999
 Info: printing VHDL model for module updateLastAddressWritten
-Info: resources used by CP updateLastAddressWritten_CP_1996: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_1286_call = 77
-Info: estimated buffering for operator call_stmt_1286_call (call to accessRegister)  = 77
+Info: resources used by CP updateLastAddressWritten_CP_2010: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_1298_call = 77
+Info: estimated buffering for operator call_stmt_1298_call (call to accessRegister)  = 77
 Info: estimated buffering in module updateLastAddressWritten is 77
 Info: printing VHDL model for module writeControlInformationToMem
-Info: resources used by CP writeControlInformationToMem_CP_2193: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
-Info: estimated buffering for operator call_stmt_1377_call = 257
-Info: estimated buffering for operator call_stmt_1377_call (call to accessMemoryDword)  = 257
+Info: resources used by CP writeControlInformationToMem_CP_2202: ff-count=0 (saved 0), mux2-count= 0, and2-count= 0
+Info: estimated buffering for operator call_stmt_1389_call = 257
+Info: estimated buffering for operator call_stmt_1389_call (call to accessMemoryDword)  = 257
 Info: estimated buffering in module writeControlInformationToMem is 257
 Info: printing VHDL model for module writeEthernetHeaderToMem
-Info: resources used by CP writeEthernetHeaderToMem_CP_1831: ff-count=45 (saved 78), mux2-count= 35, and2-count= 13
-Info: estimated buffering for operator RPIPE_nic_rx_to_header_1253_inst = 73
-Info: estimated buffering for operator call_stmt_1268_call = 257
-Info: estimated buffering for operator call_stmt_1268_call (call to accessMemoryDword)  = 257
-Info: estimated buffering for operator naddr_offset_1273_1244_buf = 16
-Info: estimated buffering for operator phi_stmt_1240 = 16
-Info: estimated buffering for operator phi_stmt_1245 = 1
-Info: estimated buffering for operator type_cast_1261_inst = 64
+Info: resources used by CP writeEthernetHeaderToMem_CP_1845: ff-count=42 (saved 75), mux2-count= 34, and2-count= 13
+Info: estimated buffering for operator RPIPE_nic_rx_to_header_1265_inst = 73
+Info: estimated buffering for operator call_stmt_1280_call = 257
+Info: estimated buffering for operator call_stmt_1280_call (call to accessMemoryDword)  = 257
+Info: estimated buffering for operator naddr_offset_1285_1256_buf = 16
+Info: estimated buffering for operator phi_stmt_1252 = 16
+Info: estimated buffering for operator phi_stmt_1257 = 1
+Info: estimated buffering for operator type_cast_1273_inst = 64
 Info: estimated buffering in module writeEthernetHeaderToMem is 427
 Info: printing VHDL model for module writePayloadToMem
-Info: resources used by CP writePayloadToMem_CP_2016: ff-count=52 (saved 60), mux2-count= 33, and2-count= 10
-Info: estimated buffering for operator ADD_u16_u16_1302_inst = 16
-Info: estimated buffering for operator ADD_u32_u32_1343_inst = 32
-Info: estimated buffering for operator RPIPE_nic_rx_to_packet_1306_inst = 73
-Info: estimated buffering for operator W_last_keep_1320_inst = 8
-Info: estimated buffering for operator call_stmt_1329_call = 257
-Info: estimated buffering for operator call_stmt_1329_call (call to accessMemoryDword)  = 257
-Info: estimated buffering for operator call_stmt_1346_call = 32
-Info: estimated buffering for operator call_stmt_1346_call (call to updateLastAddressWritten)  = 32
-Info: estimated buffering for operator nactive_addr_offset_1334_1303_buf = 16
-Info: estimated buffering for operator phi_stmt_1298 = 16
+Info: resources used by CP writePayloadToMem_CP_2030: ff-count=49 (saved 57), mux2-count= 32, and2-count= 10
+Info: estimated buffering for operator ADD_u16_u16_1314_inst = 16
+Info: estimated buffering for operator ADD_u32_u32_1356_inst = 32
+Info: estimated buffering for operator RPIPE_nic_rx_to_packet_1318_inst = 73
+Info: estimated buffering for operator W_last_keep_1332_inst = 8
+Info: estimated buffering for operator call_stmt_1341_call = 257
+Info: estimated buffering for operator call_stmt_1341_call (call to accessMemoryDword)  = 257
+Info: estimated buffering for operator call_stmt_1359_call = 32
+Info: estimated buffering for operator call_stmt_1359_call (call to updateLastAddressWritten)  = 32
+Info: estimated buffering for operator nactive_addr_offset_1346_1315_buf = 16
+Info: estimated buffering for operator phi_stmt_1310 = 16
 Info: estimated buffering in module writePayloadToMem is 450
 Info: total estimated buffering in system nic is 19121
 Warning: pipe S_FREE_Q not used in the system, ignored
 Warning: pipe enable_mac not used in the system, ignored
 Info: finished printing VHDL model
 Info: number of register bits used in FIFO's = 293
+Info: number of marked arcs removed during redundancy removal = 49
 vhdlFormat < nic_global_package.unformatted_vhdl > vhdl/nic_lib/nic_global_package.vhdl
 vhdlFormat < nic.unformatted_vhdl > vhdl/nic_lib/nic.vhdl
 vhdlFormat < nic_test_bench.unformatted_vhdl > vhdl/nic_lib/nic_test_bench.vhdl
@@ -4439,6 +4487,7 @@ Info: parsed and added pipe LAST_READ_TX_QUEUE_INDEX width = 8 depth = 1
 Info: parsed and added pipe LAST_WRITTEN_RX_QUEUE_INDEX width = 8 depth = 1
 Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
 Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 128 depth = 1
 Info: parsed and added pipe NIC_INTR width = 1 depth = 1
 Info: parsed and added pipe NIC_INTR_ENABLE width = 1 depth = 1
 Info: parsed and added pipe NIC_INTR_INTERNAL width = 1 depth = 1
@@ -4509,7 +4558,7 @@ Info: Added module transmitPacket
 Info: Added module transmitEngineDaemon
 Info: elaborating the program .... initializing the call-graph
 Info: mapping target object references..
-Warning: target of a PHI statement is an interface object! :line 466
+Warning: target of a PHI statement is an interface object! :line 470
 Info: mapping source object references..
 Info: checking for cycles in the call-graph ... 
 Info: module order:
@@ -4952,15 +5001,15 @@ Info: SCC 1
 Info: SCC 2
 	e_2
 Info: SCC 3
-	e_41
+	e_40
 Info: SCC 4
 	e_3
 Info: SCC 5
 	e_4
 Info: SCC 6
-	e_40
-Info: SCC 7
 	e_39
+Info: SCC 7
+	e_38
 Info: SCC 8
 	e_5
 Info: SCC 9
@@ -4977,11 +5026,11 @@ Info: SCC 12
 	e_20
 	e_10
 	e_31
-	e_36
+	e_35
 	e_32
 	e_11
 	e_19
-	e_37
+	e_36
 	e_29
 	e_28
 	e_27
@@ -4997,10 +5046,9 @@ Info: SCC 12
 	e_24
 	e_33
 	e_34
-	e_35
 Info: SCC 13
 	e_9
-	e_38
+	e_37
 Info: printing VHDL global package
 Info: printing top-level system VHDL file nic_mac_bridge.unformatted_vhdl
 Info: printing VHDL model
@@ -5011,7 +5059,7 @@ Info: estimated buffering for operator next_CIRCULANT_175_54_buf = 76
 Info: estimated buffering for operator phi_stmt_52 = 76
 Info: estimated buffering in module rx_concat is 162
 Info: printing VHDL model for module tx_deconcat
-Info: resources used by CP tx_deconcat_CP_120: ff-count=22 (saved 18), mux2-count= 20, and2-count= 0
+Info: resources used by CP tx_deconcat_CP_120: ff-count=20 (saved 16), mux2-count= 18, and2-count= 0
 Info: estimated buffering for operator RPIPE_tx_in_pipe_196_inst = 73
 Info: estimated buffering in module tx_deconcat is 73
 Info: total estimated buffering in system nic_mac_bridge is 235
@@ -5047,6 +5095,7 @@ Warning: pipe tb_to_nic_mac_bridge not used in the system, ignored
 Warning: pipe tb_to_nic_slave_request not used in the system, ignored
 Info: finished printing VHDL model
 Info: number of register bits used in FIFO's = 0
+Info: number of marked arcs removed during redundancy removal = 10
 vhdlFormat < nic_mac_bridge.unformatted_vhdl > vhdl/nic_mac_bridge_lib/nic_mac_bridge.vhdl
 vhdlFormat < nic_mac_bridge_global_package.unformatted_vhdl > vhdl/nic_mac_bridge_lib/nic_mac_bridge_global_package.vhdl
 vhdlFormat < nic_mac_bridge_test_bench.unformatted_vhdl > nic_mac_bridge_test_bench.vhdl
@@ -5116,6 +5165,28 @@ Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
 Info: propagating constants in the program ... 
 Info: simulator option is ghdl.
 Info: output-directory is vhdl.
+Info: adding pipe LAST_WRITTEN_RX_QUEUE_INDEX width = 8, depth = 1 to global map 
+Info: marking pipe LAST_WRITTEN_RX_QUEUE_INDEX as a signal in global set.
+Info: adding pipe LAST_READ_TX_QUEUE_INDEX width = 8, depth = 1 to global map 
+Info: marking pipe LAST_READ_TX_QUEUE_INDEX as a signal in global set.
+Info: adding pipe MAC_ENABLE width = 1, depth = 1 to global map 
+Info: marking pipe MAC_ENABLE as a signal in global set.
+Info: adding pipe NIC_INTR_ENABLE width = 1, depth = 1 to global map 
+Info: marking pipe NIC_INTR_ENABLE as a signal in global set.
+Info: adding pipe NIC_INTR_INTERNAL width = 1, depth = 1 to global map 
+Info: marking pipe NIC_INTR_INTERNAL as a signal in global set.
+Info: adding pipe NIC_INTR width = 1, depth = 1 to global map 
+Info: marking pipe NIC_INTR as a signal in global set.
+Info: adding pipe NIC_INTR width = 1, depth = 1 to global map 
+Info: marking pipe NIC_INTR as a signal in global set.
+Info: adding pipe S_FREE_Q width = 36, depth = 1 to global map 
+Info: marking pipe S_FREE_Q as a signal in global set.
+Info: adding pipe S_CONTROL_REGISTER width = 32, depth = 1 to global map 
+Info: marking pipe S_CONTROL_REGISTER as a signal in global set.
+Info: adding pipe S_NUMBER_OF_SERVERS width = 32, depth = 1 to global map 
+Info: marking pipe S_NUMBER_OF_SERVERS as a signal in global set.
+Info: adding pipe NIC_DEBUG_SIGNAL width = 128, depth = 1 to global map 
+Info: marking pipe NIC_DEBUG_SIGNAL as a signal in global set.
 Info: adding pipe tb_to_mac_data width = 64, depth = 2 to global map 
 Info: adding pipe mac_to_tb_data width = 64, depth = 2 to global map 
 Info: adding pipe MERGED_ACB_REQUEST width = 110, depth = 2 to global map 
@@ -5179,6 +5250,7 @@ Info: setting library for mem_reset_mux to GlueModules
 Info: setting library for dcache_mux to GlueModules
 Info: setting library for nic to nic_lib
 Info: Added signal MAC_ENABLE to system nic
+Info: Added signal NIC_DEBUG_SIGNAL to system nic
 Info: Added signal NIC_INTR to system nic
 Info: Added signal LAST_READ_TX_QUEUE_INDEX to system nic
 Info: Added signal LAST_WRITTEN_RX_QUEUE_INDEX to system nic
@@ -5189,6 +5261,7 @@ Info: Added signal S_CONTROL_REGISTER to system nic
 Info: Added signal S_NUMBER_OF_SERVERS to system nic
 Info: setting library for tester to tester_lib
 Info: Added signal MAC_ENABLE to system tester
+Info: Added signal NIC_DEBUG_SIGNAL to system tester
 Info: Added signal NIC_INTR to system tester
 Info: Added signal MAC_ENABLE_8 to system tester
 Info: setting library for nic_mac_bridge to nic_mac_bridge_lib
@@ -5203,6 +5276,8 @@ Warning: Added internal pipe PROCESSOR_ACB_MEM_REQUEST to test_system
 Warning: Added internal pipe PROCESSOR_ACB_MEM_RESPONSE to test_system
 Warning: Added internal pipe MERGED_ACB_REQUEST to test_system
 Warning: Added internal pipe MERGED_ACB_RESPONSE to test_system
+Warning: mapping unmapped formal in instance tester_inst to default: NIC_DEBUG_SIGNAL
+Warning: Added internal signal NIC_DEBUG_SIGNAL to test_system
 Warning: mapping unmapped formal in instance tester_inst to default: NIC_INTR
 Warning: Added internal signal NIC_INTR to test_system
 Warning: Added internal pipe NIC_TO_MEMORY_REQUEST to test_system
@@ -5210,6 +5285,7 @@ Warning: Added internal pipe MEMORY_TO_NIC_RESPONSE to test_system
 Warning: Added internal pipe nic_to_mac_transmit_pipe to test_system
 Warning: Added internal pipe mac_to_nic_data to test_system
 Warning: mapping unmapped formal in instance nic_inst to default: debug_queue_command
+Warning: mapping unmapped formal in instance nic_inst to default: NIC_DEBUG_SIGNAL
 Warning: mapping unmapped formal in instance nic_inst to default: NIC_INTR
 Warning: mapping unmapped formal in instance nic_inst to default: debug_queue_response
 
@@ -5401,6 +5477,7 @@ $in
 $out 
  $pipe AFB_NIC_RESPONSE 33 $depth 2 
  $signal MAC_ENABLE 1 $depth 1 
+ $signal NIC_DEBUG_SIGNAL 128 $depth 1 
  $signal NIC_INTR 1 $depth 1 
  $pipe NIC_TO_MEMORY_REQUEST 110 $depth 2 
  $pipe debug_queue_response 64 $depth 1 
@@ -5426,6 +5503,7 @@ $in
  $pipe AFB_NIC_RESPONSE 33 $depth 2 
  $signal MAC_ENABLE 1 $depth 1 
  $pipe MERGED_ACB_REQUEST 110 $depth 2 
+ $signal NIC_DEBUG_SIGNAL 128 $depth 1 
  $signal NIC_INTR 1 $depth 1 
  $pipe PROCESSOR_ACB_MEM_RESPONSE 65 $depth 2 
  $pipe TB_MEM_TO_TEST_SYSTEM 64 $depth 2 
@@ -5485,6 +5563,7 @@ $out
  $pipe MEMORY_TO_NIC_RESPONSE 65 $depth 2 
  $pipe MERGED_ACB_REQUEST 110 $depth 2 
  $pipe MERGED_ACB_RESPONSE 65 $depth 2 
+ $signal NIC_DEBUG_SIGNAL 128 $depth 1 
  $signal NIC_INTR 1 $depth 1 
  $pipe NIC_TO_MEMORY_REQUEST 110 $depth 2 
  $pipe PROCESSOR_ACB_MEM_REQUEST 110 $depth 2 
@@ -5509,6 +5588,7 @@ $instance nic_inst nic_lib : nic
    AFB_NIC_RESPONSE => AFB_NIC_RESPONSE 
    MAC_ENABLE => MAC_ENABLE 
    MEMORY_TO_NIC_RESPONSE => MEMORY_TO_NIC_RESPONSE 
+   NIC_DEBUG_SIGNAL => NIC_DEBUG_SIGNAL 
    NIC_INTR => NIC_INTR 
    NIC_TO_MEMORY_REQUEST => NIC_TO_MEMORY_REQUEST 
    debug_queue_command => debug_queue_command 
@@ -5532,6 +5612,7 @@ $instance tester_inst tester_lib : tester
    MEM_TO_TB_PROCESSOR => MEM_TO_TB_PROCESSOR 
    MERGED_ACB_REQUEST => MERGED_ACB_REQUEST 
    MERGED_ACB_RESPONSE => MERGED_ACB_RESPONSE 
+   NIC_DEBUG_SIGNAL => NIC_DEBUG_SIGNAL 
    NIC_INTR => NIC_INTR 
    PROCESSOR_ACB_MEM_REQUEST => PROCESSOR_ACB_MEM_REQUEST 
    PROCESSOR_ACB_MEM_RESPONSE => PROCESSOR_ACB_MEM_RESPONSE 

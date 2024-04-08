@@ -76,6 +76,7 @@ $module [tbEnableMacIntrDaemon] $in () $out () $is
 		$merge $entry loopback $endmerge
 			MAC_ENABLE_8 := ($concat $zero<7> MAC_ENABLE)
 			intr := NIC_INTR
+			debug_sig := NIC_DEBUG_SIGNAL
 		$place [loopback]
 	}	
 }

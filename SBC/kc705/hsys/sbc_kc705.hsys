@@ -34,6 +34,8 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$pipe MAC_TO_NIC $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 		
 	$out
+		$signal NIC_DEBUG_SIGNAL 128 $depth 1
+
 		// processor 
 		$pipe SOC_DEBUG_to_MONITOR  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
 		$pipe SERIAL_TX_to_CONSOLE  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
@@ -46,7 +48,6 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		// NIC
 		$pipe NIC_TO_MAC   $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 		$signal NIC_MAC_RESETN	   $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
-		$pipe NIC_ACB_REQUEST_TO_MEMORY   $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 		
 		// FLASH
 		$signal SPI_FLASH_MOSI   $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
@@ -132,6 +133,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 
 	$instance nic_subsystem_inst nic_subsystem_lib:nic_subsystem
 
+		NIC_DEBUG_SIGNAL 	    => NIC_DEBUG_SIGNAL
 		MAC_TO_NIC_DATA             => MAC_TO_NIC
 		NIC_TO_MAC_DATA             => NIC_TO_MAC
 		AFB_TO_NIC_REQUEST          => AFB_NIC_REQUEST
@@ -218,38 +220,5 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		inval => MAIN_MEM_INVALIDATE
 		$clk  => CLOCK_TO_PROCESSOR
 		$reset => RESET_TO_PROCESSOR
-		
-	// To pull out NIC_ACB_REQUEST to the top level	
-	$thread PassThroughFsm
-		$in $pipe input_data: $unsigned<110>
-		$out $pipe output_data: $unsigned<110>
-		$variable data_reg: $unsigned<110>
-		$constant z1 : $unsigned<1> := ($unsigned<1>) 0
-		$constant o1 : $unsigned<1> := ($unsigned<1>) 1
-	$default
-		
-		$now input_data$req := o1 // default value of pipe read
-		$now output_data$req := z1 // default valu of pipe write
-		<st_empty> {
-			$if input_data$ack { // input pipe has data
-				data_reg := input_data // register!
-				$goto st_full
-			}
-		}
-		<st_full> {
-			$now output_data$req := o1 // request write to pi
-			$now output_data := data_reg // data to pipe
-			$if output_data$ack { // pipe accepts..
-				$goto st_empty
-			}
-			$else { $goto st_full }
-		}
-		$now $tick
-		
-	$string PassThroughFsm_inst: PassThroughFsm
-		input_data => NIC_ACB_REQUEST
-		output_data => NIC_ACB_REQUEST_TO_MEMORY
-		$clk  => CLOCK_TO_NIC
-		$reset => RESET_TO_NIC
 		
 }
