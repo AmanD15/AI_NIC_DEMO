@@ -3,8 +3,8 @@ read_vhdl -library AhbApbLib ../vhdl_libs/AhbApbLib.vhdl
 read_vhdl -library ahir_ieee_proposed ../vhdl_libs/aHiR_ieee_proposed.vhdl
 read_vhdl -library ahir ../vhdl_libs/ahir.vhdl
 read_vhdl -library AxiBridgeLib ../vhdl_libs/AxiBridgeLib.vhdl
-read_vhdl -library DualClockedQueuelib ../vhdl_libs/DualClockedQueuelib.vhdl
-read_vhdl -library GenericCoreAddOnLib ../vhdl_libs/GenericCoreAddOnLib.vhdl
+read_vhdl -library DualClockedQueuelib ../vhdl/DualClockedQueuelib.vhdl
+read_vhdl -library GenericCoreAddOnLib ../vhdl/GenericCoreAddOnLib.vhdl
 read_vhdl -library GenericGlueStuff ../vhdl_libs/GenericGlueStuff.vhdl
 read_vhdl -library GlueModules ../vhdl_libs/GlueModules.vhdl
 read_vhdl -library simpleI2CLib  ../vhdl_libs/simpleI2CLib.vhdl
@@ -28,8 +28,8 @@ read_vhdl -library ajit_processor_lib ../hsys/processor_subsystem/vhdl/ajit_proc
 read_vhdl -library acb_dram_controller_bridge_lib ../hsys/acb_dram_controller_bridge/vhdl/acb_dram_controller_bridge_lib/acb_dram_controller_bridge.vhdl
 read_vhdl -library spi_flash_controller_lib ../hsys/spi_flash_controller/vhdl/spi_flash_controller_lib/spi_flash_controller.vhdl
 
-#read_vhdl -library sbc_kc705_core_lib ../hsys/vhdl/sbc_kc705_core_lib/sbc_kc705_core.vhdl
-read_vhdl -library sbc_kc705_core_lib ../toplevel/sbc_kc705_core_edited.vhdl
+read_vhdl -library sbc_kc705_core_lib ../hsys/vhdl/sbc_kc705_core_lib/sbc_kc705_core.vhdl
+#read_vhdl -library sbc_kc705_core_lib ../toplevel/sbc_kc705_core_edited.vhdl
 read_vhdl ../vhdl/DualClockedQueue.vhd
 ############ ADDING TOP LEVEL VHDL #########################
 read_vhdl ../toplevel/sbc_kc705.vhdl
@@ -73,7 +73,7 @@ read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_0/fifo_generator_0
 
 read_ip ../ip_consolidated/kc705_networking_ip/vio_80/vio_80.xci
 read_ip ../ip_consolidated/kc705_networking_ip/vio_125/vio_125.xci
-read_ip ../ip_consolidated/kc705_networking_ip/vio_200/vio_200.xci
+read_ip ../ip_consolidated/kc705_networking_ip/ila_1/ila_1.xci
 read_ip ../ip_consolidated/kc705_networking_ip/clk_wiz_0/clk_wiz_0.xci
 
 ## core edif file ####################################################################

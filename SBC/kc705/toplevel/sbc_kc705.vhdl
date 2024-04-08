@@ -184,6 +184,9 @@ architecture structure of sbc_kc705 is
     THREAD_RESET : in std_logic_vector(3 downto 0);
     WRITE_PROTECT : in std_logic_vector(0 downto 0);
     ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(612 downto 0);
+    NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data : out std_logic_vector(109 downto 0);
+    NIC_ACB_REQUEST_TO_MEMORY_pipe_read_req  : in std_logic_vector(0  downto 0);
+    NIC_ACB_REQUEST_TO_MEMORY_pipe_read_ack  : out std_logic_vector(0  downto 0);
     NIC_MAC_RESETN : out std_logic_vector(0 downto 0);
     NIC_TO_MAC_pipe_read_data : out std_logic_vector(9 downto 0);
     NIC_TO_MAC_pipe_read_req  : in std_logic_vector(0  downto 0);
@@ -327,7 +330,19 @@ for sbc_kc705_core_inst :  sbc_kc705_core --
 
 end component mig_7series_0;
 
+ component ila_1 is
+ 
+    Port ( 
+    clk : in STD_LOGIC;
+    probe0 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    probe1 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    probe2 : in STD_LOGIC_VECTOR ( 7 downto 0 );
+    probe3 : in STD_LOGIC_VECTOR ( 35 downto 0 );
+    probe4 : in STD_LOGIC_VECTOR ( 63 downto 0 )
+  );
+  
 
+end component;
 
 ------------------------------------------------------
 -- TODO: Signal Declaration for SBC core. (DONE!!)
@@ -366,6 +381,10 @@ end component mig_7series_0;
    signal NIC_TO_MAC_pipe_read_data : std_logic_vector(9 downto 0);
    signal NIC_TO_MAC_pipe_read_req  : std_logic_vector(0  downto 0);
    signal NIC_TO_MAC_pipe_read_ack  : std_logic_vector(0  downto 0);
+    
+   signal NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data :  std_logic_vector(109 downto 0);
+   signal NIC_ACB_REQUEST_TO_MEMORY_pipe_read_req  :  std_logic_vector(0  downto 0);
+   signal NIC_ACB_REQUEST_TO_MEMORY_pipe_read_ack  :  std_logic_vector(0  downto 0);
 
    signal MAX_ACB_TAP1_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
    signal MAX_ACB_TAP2_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
@@ -380,7 +399,7 @@ end component mig_7series_0;
    signal device_temp       :  STD_LOGIC_VECTOR ( 11 downto 0 );
    signal clk_sys_320, clk_ref_200: std_logic:='0';
    signal sys_rst: std_logic_vector(0 downto 0);
---------------------OLD SIGNALS --------------------------------------
+   --------------------OLD SIGNALS --------------------------------------
 
    signal EXTERNAL_INTERRUPT : std_logic_vector(0 downto 0);
    signal LOGGER_MODE : std_logic_vector(0 downto 0);
@@ -404,6 +423,15 @@ end component mig_7series_0;
 
 
     signal MIG7_UI_CLOCK: std_logic_vector(0 downto 0);
+    
+    --------------------DEBUG SIGNALS --------------------------------------
+    
+    signal NIC_ACB_REQUEST_TO_MEMORY_LOCK : std_logic_vector(0 downto 0);
+    signal NIC_ACB_REQUEST_TO_MEMORY_RWBAR : std_logic_vector(0 downto 0);
+    signal NIC_ACB_REQUEST_TO_MEMORY_MASK : std_logic_vector(7 downto 0);
+    signal NIC_ACB_REQUEST_TO_MEMORY_ADDR : std_logic_vector(35 downto 0);
+    signal NIC_ACB_REQUEST_TO_MEMORY_DATA : std_logic_vector(63 downto 0);
+    
    
 begin
    -- Info: Baudrate 115200 ClkFreq 65000000:  Baud-freq = 1152, Baud-limit= 39473 Baud-control=0x9a310480
@@ -508,6 +536,10 @@ begin
     NIC_TO_MAC_pipe_read_data => NIC_TO_MAC_pipe_read_data,
     NIC_TO_MAC_pipe_read_req => NIC_TO_MAC_pipe_read_req,
     NIC_TO_MAC_pipe_read_ack => NIC_TO_MAC_pipe_read_ack,
+    
+    NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data => NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data,
+    NIC_ACB_REQUEST_TO_MEMORY_pipe_read_req => NIC_ACB_REQUEST_TO_MEMORY_pipe_read_req,
+    NIC_ACB_REQUEST_TO_MEMORY_pipe_read_ack => NIC_ACB_REQUEST_TO_MEMORY_pipe_read_ack,
     
     MAX_ACB_TAP1_ADDR => MAX_ACB_TAP1_ADDR,
     MAX_ACB_TAP2_ADDR => MAX_ACB_TAP2_ADDR,
@@ -672,6 +704,34 @@ begin
     sys_rst                    => sys_rst(0)
   );
   sys_rst(0) <= clk_rst; -- MIG is at same level as clock generator.
+
+
+
+ NIC_ACB_REQUEST_TO_MEMORY_LOCK  <= (0 => NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data(109));
+ NIC_ACB_REQUEST_TO_MEMORY_RWBAR <= (0 => NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data(108));
+ NIC_ACB_REQUEST_TO_MEMORY_MASK  <= NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data(107 downto 100);
+ NIC_ACB_REQUEST_TO_MEMORY_ADDR  <= NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data(99 downto 64);
+ NIC_ACB_REQUEST_TO_MEMORY_DATA  <= NIC_ACB_REQUEST_TO_MEMORY_pipe_read_data(63 downto 0);
+	
+inst_ila_1 : ila_1 
+  Port map( 
+    clk => clk_ref_125,
+    probe0 => NIC_ACB_REQUEST_TO_MEMORY_LOCK,
+    probe1 => NIC_ACB_REQUEST_TO_MEMORY_RWBAR,
+    probe2 => NIC_ACB_REQUEST_TO_MEMORY_MASK,
+    probe3 => NIC_ACB_REQUEST_TO_MEMORY_ADDR,
+    probe4 => NIC_ACB_REQUEST_TO_MEMORY_DATA
+  );
+
+
+
+
+
+
+
+
+
+
 
   -- HACK needed to make SPI_CLK controllable on the board.
   spi_connect: STARTUPE2
