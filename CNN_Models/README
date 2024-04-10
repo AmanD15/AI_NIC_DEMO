@@ -1,4 +1,7 @@
 
+convolution_core.ipynb - python code for implementation of new convolution core
+(colab link - https://colab.research.google.com/drive/1BZA6cCWycyWE5YAzEI6NfgRfS2QNRu5x?usp=sharing)
+
 /resnet/models/ 
     - qresnet.py - Code for ResNet 18 architecture
                     [Reference: https://github.com/pytorch/vision/blob/main/torchvision/models/resnet.py]
