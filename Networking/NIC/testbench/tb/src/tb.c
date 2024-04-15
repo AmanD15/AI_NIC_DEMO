@@ -639,6 +639,10 @@ int main(int argc, char* argv[])
 		//
 		// Note: physical addresses of buffers are pushed into free queue.
 		// 
+		uint64_t max_addr_offset = 1016;
+		max_addr_offset = (max_addr_offset << 48);
+		processorAccessMemory (0, 0, 0xff, buffer_addresses[i], max_addr_offset); 
+
 		pushIntoQueue (free_queue_base_address, buffer_addresses[i]);
 	}
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");

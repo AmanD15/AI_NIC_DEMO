@@ -30,6 +30,19 @@
 
 #define    NIC_MAX_NUMBER_OF_SERVERS		8
 
+typedef __NicBuffer {
+	// format
+	// allocated_array_size_in_bytes
+	//    [63:48]
+	// packet size in bytes 
+	//    [18:8]
+	// tkeep
+	//    [7:0]
+	//
+	uint64_t  control_word;
+	uint64_t* allocated_array;
+} NicBuffer;
+
 #ifndef USE_CORTOS
 //
 // This is a mirror of the cortos-queue data
