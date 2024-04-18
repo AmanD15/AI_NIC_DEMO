@@ -164,7 +164,12 @@ int main()
 		cortos_printf("Allocated Buffer[%d] VA = 0x%08lx\n", i,(uint32_t)BufferPtrsVA[i]);
 	}
 	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
+	{
 		memset((uint8_t*)BufferPtrsVA[i],0,BUFFER_SIZE_IN_BYTES);
+		*BufferPtrsVA[0] = (BUFFER_SIZE_IN_BYTES - 8) << 16;
+		cortos_printf("control word: %016llx\n",*((uint64_t*)BufferPtrsVA[0]));
+	}
+	
 		// Converting to PA
 	
 	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
@@ -212,7 +217,7 @@ int main()
 
 	int message_counter = 0;
 	uint64_t bufptr;
-	
+	int msgsRead;
 	uint32_t tx_pkt_count;
 	uint32_t rx_pkt_count;
 	uint32_t status_reg;
@@ -221,9 +226,9 @@ int main()
 	while(1)
 	{
 		
+		msgsRead = cortos_readMessages2(rx_queue, (uint8_t*)(&bufptr), 1);
 
-		if(cortos_readMessages2(rx_queue, (uint8_t*)(&bufptr), 1)){
-
+		if(msgsRead){
 			last_addr = readFromNicReg (0, P_DEBUG_LAST_ADDRESS_WRITTEN_INDEX);
 			cortos_printf("last written addr by NIC:0x%08lx\n",last_addr);
 			
