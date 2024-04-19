@@ -18,7 +18,7 @@ SIGNALS="signals.aa ./nic_subsystem/signals.aa"
 #
 # The final model uses shift_register_lib as a prefix..
 #
-buildHierarchicalModel.py -M -u -H -s ghdl  -a  sbc_kc705_core_sbc_kc705_core_lib -J ./GlueModules/GlueModules.hsys -I$AHIR_RELEASE/include $PARAMETERS $PIPES $SIGNALS
+buildHierarchicalModel.py -M -u -H -s ghdl  -a  sbc_kc705_core_sbc_kc705_core_lib -J DualClockedFifos/DualClockedFifos.hsys -J ./GlueModules/GlueModules.hsys -I$AHIR_RELEASE/include $PARAMETERS $PIPES $SIGNALS
 
 
 

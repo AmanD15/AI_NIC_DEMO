@@ -1,12 +1,14 @@
+VHDL_LIBS=../../../../SOURCE/VHDL_LIBS
+echo $VHDL_LIBS
 ghdl --clean
 ghdl --remove
-ghdl -i --work=GhdlLink /home/madhav/AHIR/gitHub/ahir/release/vhdl/GhdlLink.vhdl
-ghdl -i --work=aHiR_ieee_proposed /home/madhav/AHIR/gitHub/ahir/release/vhdl/aHiR_ieee_proposed.vhdl
-ghdl -i --work=ahir /home/madhav/AHIR/gitHub/ahir/release/vhdl/ahir.vhdl
-ghdl -i --work=simpleUartLib /home/madhav/AjitProject/Git/AjitRepoV2/processor/vhdl/lib/simpleUartLib.vhdl
-ghdl -i --work=AjitCustom /home/madhav/AjitProject/Git/AjitRepoV2/processor/vhdl/lib/AjitCustom.vhdl
-ghdl -i --work=GenericGlueStuff /home/madhav/AjitProject/Git/AjitRepoV2/processor/Aa_v3/modules/lib/GenericGlueStuff.vhdl
-ghdl -i --work=GlueModules /home/madhav/AjitProject/Git/AjitRepoV2/processor/Aa_v3/modules/lib/GlueModules.vhdl
+ghdl -i --work=GhdlLink $VHDL_LIBS/GhdlLink.vhdl
+ghdl -i --work=aHiR_ieee_proposed $VHDL_LIBS/aHiR_ieee_proposed.vhdl
+ghdl -i --work=ahir $VHDL_LIBS/ahir.vhdl
+ghdl -i --work=simpleUartLib $VHDL_LIBS/simpleUartLib.vhdl
+ghdl -i --work=AjitCustom $VHDL_LIBS/AjitCustom.vhdl
+ghdl -i --work=GenericGlueStuff $VHDL_LIBS/GenericGlueStuff.vhdl
+ghdl -i --work=GlueModules $VHDL_LIBS/GlueModules.vhdl
 ghdl -i --work=nic_mac_bridge_lib /home/madhav/SuitcaseRepo/AI_NIC_DEMO/Networking/NIC/testbench/nic_mac_bridge/vhdl/nic_mac_bridge_lib/nic_mac_bridge_global_package.vhdl
 ghdl -i --work=nic_mac_bridge_lib /home/madhav/SuitcaseRepo/AI_NIC_DEMO/Networking/NIC/testbench/nic_mac_bridge/vhdl/nic_mac_bridge_lib/nic_mac_bridge.vhdl
 ghdl -i --work=nic_lib /home/madhav/SuitcaseRepo/AI_NIC_DEMO/Networking/NIC/testbench/nic/vhdl/nic_lib/nic.vhdl

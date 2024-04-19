@@ -73,6 +73,35 @@ package GenericGlueStuffComponents is
 		);
    end component generic_transaction_demux;
 
+   component generic_synchronizer is -- 
+	-- log_depth must be > 0
+    generic (data_width: integer := 8; log_depth: integer := 1);
+    port( -- 
+      -----------------------------------------------------------
+      -- write clock domain.
+      -----------------------------------------------------------
+      WRITE_PIPE_WRITE_DATA : in std_logic_vector(data_width-1 downto 0);
+      WRITE_PIPE_WRITE_REQ : in std_logic_vector(0 downto 0);
+      WRITE_PIPE_WRITE_ACK : out std_logic_vector(0 downto 0);
+      WRITE_CLOCK: in std_logic_vector(0 downto 0);
+      WRITE_RESET: in std_logic_vector(0 downto 0);
+      READ_PIPE_READ_DATA : out std_logic_vector(data_width-1 downto 0);
+      READ_PIPE_READ_REQ : in std_logic_vector(0 downto 0);
+      READ_PIPE_READ_ACK : out std_logic_vector(0 downto 0);
+      -----------------------------------------------------------
+      -- read_clock domain.
+      -----------------------------------------------------------
+      READ_CLOCK: in std_logic_vector(0 downto 0);
+      READ_RESET: in std_logic_vector(0 downto 0);
+      -----------------------------------------------------------
+      -- These are unused, kept for HSYS consistency.
+      -----------------------------------------------------------
+      clk, reset: in std_logic 
+      -- 
+    );
+    --
+   end component generic_synchronizer;
+
 end package;
 library ieee;
 use ieee.std_logic_1164.all;
@@ -247,6 +276,178 @@ begin
 				clk => clk,
 				reset => reset);
        end generate bbGen;
+
+end Mixed;
+-- A generic synchronizer which is useful in crossing
+-- clock domains.
+-- 
+-- Uses gray coded write/read pointer comparisons across
+-- clock domains.
+--
+-- Madhav Desai (December 8, 2023)
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+
+entity generic_synchronizer is -- 
+	-- log_depth must be > 0
+    generic (data_width: integer := 8; log_depth: integer := 1);
+    port( -- 
+      -----------------------------------------------------------
+      -- write clock domain.
+      -----------------------------------------------------------
+      WRITE_PIPE_WRITE_DATA : in std_logic_vector(data_width-1 downto 0);
+      WRITE_PIPE_WRITE_REQ : in std_logic_vector(0 downto 0);
+      WRITE_PIPE_WRITE_ACK : out std_logic_vector(0 downto 0);
+      WRITE_CLOCK: in std_logic_vector(0 downto 0);
+      WRITE_RESET: in std_logic_vector(0 downto 0);
+      READ_PIPE_READ_DATA : out std_logic_vector(data_width-1 downto 0);
+      READ_PIPE_READ_REQ : in std_logic_vector(0 downto 0);
+      READ_PIPE_READ_ACK : out std_logic_vector(0 downto 0);
+      -----------------------------------------------------------
+      -- read_clock domain.
+      -----------------------------------------------------------
+      READ_CLOCK: in std_logic_vector(0 downto 0);
+      READ_RESET: in std_logic_vector(0 downto 0);
+      -----------------------------------------------------------
+      -- These are unused, kept for HSYS consistency.
+      -----------------------------------------------------------
+      clk, reset: in std_logic 
+      -- 
+    );
+    --
+end entity;
+
+
+architecture Mixed of generic_synchronizer is
+	constant depth: integer := (2**log_depth);
+
+	subtype DataWord is std_logic_vector(data_width-1 downto 0);	
+	type DataArray is array (natural range <>) of DataWord;
+
+	signal data_array: DataArray (0 to depth-1);
+
+	signal write_pointer : unsigned(log_depth-1 downto 0);
+	signal incremented_write_pointer : unsigned(log_depth-1 downto 0);
+	signal write_pointer_gray : unsigned(log_depth-1 downto 0);
+	signal incremented_write_pointer_gray : unsigned(log_depth-1 downto 0);
+
+	signal write_pointer_gray_synched_to_read_0 : unsigned(log_depth-1 downto 0);
+	signal write_pointer_gray_synched_to_read_1 : unsigned(log_depth-1 downto 0);
+
+	signal read_pointer : unsigned(log_depth-1 downto 0);
+	signal read_pointer_gray : unsigned(log_depth-1 downto 0);
+	signal incremented_read_pointer : unsigned(log_depth-1 downto 0);
+
+	signal read_pointer_gray_synched_to_write_0 : unsigned(log_depth-1 downto 0);
+	signal read_pointer_gray_synched_to_write_1 : unsigned(log_depth-1 downto 0);
+
+	signal full_flag, empty_flag: std_logic;
+
+	function BinaryToGray (X: unsigned) return unsigned is
+		alias lx: unsigned(X'length-1 downto 0) is x;
+		variable ret_var : unsigned(X'length-1 downto 0);
+	begin
+		ret_var(ret_var'high) := lx(lx'high);
+		if(lx'length > 1) then
+			if(lx(lx'high) = '0') then
+				ret_var ((ret_var'high -1) downto 0) := 
+						BinaryToGray (lx((lx'high-1) downto 0));
+			else
+				-- reversed.
+				ret_var (ret_var'high -1 downto 0) := 
+						BinaryToGray (((2**(lx'length-1)) - 1) - 
+									lx(lx'high-1 downto 0));
+			end if;
+		end if;
+		return ret_var;
+	end function BinaryToGray;
+
+begin 
+	----------------------------------------------------------------------------------
+	-- synchronize read_pointer_gray to write clock
+	----------------------------------------------------------------------------------
+	process(WRITE_CLOCK, WRITE_RESET, write_pointer)
+	begin
+		if(WRITE_CLOCK(0)'event and (WRITE_CLOCK(0) = '1')) then 
+			if (WRITE_RESET(0) = '1') then
+				read_pointer_gray_synched_to_write_0 <= (others => '0');
+				read_pointer_gray_synched_to_write_1 <= (others => '0');
+			else
+				read_pointer_gray_synched_to_write_0 <= read_pointer_gray;
+				read_pointer_gray_synched_to_write_1 <= read_pointer_gray_synched_to_write_0;
+			end if;
+		end if;
+	end process;
+	incremented_write_pointer <= (write_pointer + 1);
+
+	----------------------------------------------------------------------------------
+	-- synchronize write_pointer_gray to read clock
+	----------------------------------------------------------------------------------
+	process(READ_CLOCK, READ_RESET)
+	begin
+		if(READ_CLOCK(0)'event and (READ_CLOCK(0) = '1')) then 
+			if (READ_RESET(0) = '1') then
+				write_pointer_gray_synched_to_read_0 <= (others => '0');
+				write_pointer_gray_synched_to_read_1 <= (others => '0');
+			else
+				write_pointer_gray_synched_to_read_0 <= write_pointer_gray;
+				write_pointer_gray_synched_to_read_1 <= write_pointer_gray_synched_to_read_0 ;
+			end if;
+		end if;
+	end process;
+	incremented_read_pointer <= (read_pointer + 1);
+
+
+	----------------------------------------------------------------------------------
+	-- on write side.
+	----------------------------------------------------------------------------------
+	full_flag <= '1' when incremented_write_pointer_gray = read_pointer_gray_synched_to_write_1 else '0'; 
+	WRITE_PIPE_WRITE_ACK(0) <= '1' when (full_flag = '0') else '0';
+	process (WRITE_CLOCK, WRITE_RESET, write_pointer, incremented_write_pointer)
+	begin
+		if(WRITE_CLOCK(0)'event and (WRITE_CLOCK(0) = '1')) then
+			if(WRITE_RESET(0) = '1') then
+				write_pointer <= (others => '0');
+			else
+				if(full_flag = '0') then
+					if(WRITE_PIPE_WRITE_REQ(0) = '1') then
+						write_pointer <= incremented_write_pointer;
+						data_array (to_integer(write_pointer)) <= WRITE_PIPE_WRITE_DATA;
+					end if;
+				end if;
+			end if;
+		end if;
+	end process;
+
+	incremented_write_pointer_gray <= BinaryToGray (incremented_write_pointer);
+	write_pointer_gray <= BinaryToGray (write_pointer);
+
+	----------------------------------------------------------------------------------
+	-- on read side.
+	----------------------------------------------------------------------------------
+	empty_flag <= '1' when (read_pointer_gray = write_pointer_gray_synched_to_read_1) else '0';
+
+	READ_PIPE_READ_ACK(0) <= '1' when (empty_flag = '0') else '0';
+	READ_PIPE_READ_DATA <=  data_array (to_integer(read_pointer));
+	process(READ_CLOCK, READ_RESET, read_pointer, incremented_read_pointer)
+	begin
+		if(READ_CLOCK(0)'event and (READ_CLOCK(0) = '1')) then
+			if(READ_RESET(0) = '1') then
+				read_pointer <= (others => '0');
+			else
+				if (empty_flag = '0')  then
+				    if (READ_PIPE_READ_REQ(0) = '1') then
+					read_pointer <= incremented_read_pointer;
+				    end if;
+				end if;
+			end if;
+		end if;
+	end process;
+
+	-- read pointer gray..				
+	read_pointer_gray <= BinaryToGray (read_pointer);
 
 end Mixed;
 library ieee;

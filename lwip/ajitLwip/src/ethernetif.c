@@ -47,6 +47,58 @@
 #include "../include/ethernetif.h"
 
 
+
+
+
+void
+low_level_init()
+{
+ 
+	uint32_t msgs_written;
+	uint32_t msgSizeInBytes = 4;
+	uint32_t length = 8;
+	uint32_t i;
+
+	// Get queues addresses
+
+	free_queue = cortos_reserveQueue(msgSizeInBytes, length, 1);
+	rx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
+	tx_queue   = cortos_reserveQueue(msgSizeInBytes, length, 1);
+		
+	cortos_printf("Reserved queues: free=0x%lx, rx=0x%lx, tx=0x%lx\n",
+				(uint32_t) free_queue,
+				(uint32_t) rx_queue,
+				(uint32_t) tx_queue);
+
+				
+	// Allocate buffers
+	
+	
+	for(i = 0; i < 8; i++)
+	{
+		Buffers[i] = (uint32_t*) cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
+		cortos_printf("Allocated Buffer[%d] = 0x%lx\n", i,(uint32_t)Buffers[i]);
+	}
+
+
+	// Preparing the allocated buffers, to push into the Q, via cortos_writeMessages
+
+	uint32_t BuffersForQ[8];
+	for(i = 0;i < 8; i++)
+	BuffersForQ[i] = (uint32_t) Buffers[i];
+	
+	// Put the four buffers onto the free-queue, so free queue has space, if Tx Q wants to push after transmission.
+
+	for(i = 0; i < 4; i++)
+	{
+		msgs_written = cortos_writeMessages(free_queue, (uint8_t*) (BuffersForQ + i), 1);
+		cortos_printf("Stored Buffer[%d] in free-queue = 0x%lx\n", i, BuffersForQ[i]);
+	}
+
+
+  /* Do whatever else is needed to initialize interface. */
+  cortos_printf ("Configuration Done. NIC has started\n");
+}
 ///////////////////////////////////////////////////////////////////////////////////////
 /* Following functions are for reception of ethernet frame 
 
@@ -60,7 +112,7 @@ ethernetif_input(){
 
 */
 
-/**
+/*
  * Should allocate a pbuf and transfer the bytes of the incoming
  * packet from the interface into the pbuf.
  *
@@ -68,24 +120,40 @@ ethernetif_input(){
  * @return a pbuf filled with the received packet (including MAC header)
  *         NULL on memory error
  */
-static struct pbuf *
+err_t
 low_level_input(struct netif *netif)
 {
   struct ethernetif *ethernetif = netif->state;
   struct pbuf *p, *q;
   u16_t len;
+  u32_t bufptr;
+  u8_t* BufPtr;
 
   /* Obtain the size of the packet and put it into the "len"
      variable. */
-  len = 30; // 14 byte header + 16 bytes data
+	      
+// Read the buffer pointer from RxQ
+  int read_ok = cortos_readMessages(rx_queue, (uint8_t*)(&bufptr), 1);
+  if(read_ok == 0){
+    cortos_printf("failed to read from RxQ\n");
+	  return NULL;
+  }
 
+  BufPtr = (u8_t*)bufptr;
+
+  if( (BufPtr[12]==0x08) && (BufPtr[13]==0x06) )
+    len = 42; // 14 byte header + 28 byte data
+  else
+    len = 48; // 14 byte header + 34 byte data
+  
 #if ETH_PAD_SIZE
   len += ETH_PAD_SIZE; /* allow room for Ethernet padding */
 #endif
 
   /* We allocate a pbuf chain of pbufs from the pool. */
+ 
   p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
-
+ 
   if (p != NULL) {
 
 #if ETH_PAD_SIZE
@@ -104,10 +172,12 @@ low_level_input(struct netif *netif)
        * pbuf is the sum of the chained pbuf len members.
        */
      // read data into(q->payload, q->len);
+        memcpy(q->payload, (uint8_t*)bufptr, q->len);
+        bufptr += q->len;
+        cortos_printf("q->len = %hu \n",q->len);
     }
    // acknowledge that packet has been read();
-
-   
+  
 #if ETH_PAD_SIZE
     pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
 #endif
@@ -115,41 +185,114 @@ low_level_input(struct netif *netif)
     
   } 
 
-  return p;
-}
-
-
-/**
- * This function should be called when a packet is ready to be read
- * from the interface. It uses the function low_level_input() that
- * should handle the actual reception of bytes from the network
- * interface. Then the type of the received packet is determined and
- * the appropriate input function is called.
- *
- * @param netif the lwip network interface structure for this ethernetif
- */
-static void
-ethernetif_input(struct netif *netif)
-{
-  struct ethernetif *ethernetif;
-  struct eth_hdr *ethhdr;
-  struct pbuf *p;
-
-  ethernetif = netif->state;
-
-  /* move received packet into a new pbuf */
-  p = low_level_input(netif);
-  /* if no packet could be read, silently ignore this */
-  if (p != NULL) {
+ if (p != NULL) {
     /* pass all packets to ethernet_input, which decides what packets it supports */
     if (netif->input(p, netif) != ERR_OK) {
+  
       LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
       pbuf_free(p);
       p = NULL;
     }
+
+    if(p != NULL){
+    return ERR_OK;
+    }
+    
   }
+
 }
 
 
 
 
+err_t
+low_level_output(struct netif *netif, struct pbuf *p)
+{
+ // struct ethernetif *ethernetif = netif->state;
+
+
+#if 0
+  struct pbuf *q;
+  uint8_t data[64];
+  uint8_t *bufptr = &data[0];
+
+#if ETH_PAD_SIZE
+  pbuf_remove_header(p, -ETH_PAD_SIZE); /* drop the padding word */
+#endif
+
+  for (q = p; q != NULL; q = q->next) {
+    /* Send the data from the pbuf to the interface, one pbuf at a
+       time. The size of the data in each pbuf is kept in the ->len
+       variable. */
+   // send data from(q->payload, q->len);
+    memcpy(bufptr,q->payload,q->len);
+    bufptr += q->len;
+  }
+
+#endif
+
+uint32_t BufPtr = (uint32_t)p->payload;  
+int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)(&BufPtr) , 1);
+ if(write_ok == 0){
+   cortos_printf("failed to wrtite to TxQ\n");
+	  return 1;
+  }
+  else
+    cortos_printf("netif->linkoutput() or low_level_output(): packet transmitted\n");
+
+ // signal that packet should be sent();
+
+#if ETH_PAD_SIZE
+  pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
+#endif
+
+ 
+
+  return ERR_OK;
+}
+
+err_t 
+netif_initialize(struct netif *netif)
+{
+
+  /* set MAC hardware address */
+  netif->hwaddr_len = ETH_HWADDR_LEN;
+  netif->hwaddr[0] = 0x00;
+  netif->hwaddr[1] = 0x0a;
+  netif->hwaddr[2] = 0x35;
+  netif->hwaddr[3] = 0x05;
+  netif->hwaddr[4] = 0x76;
+  netif->hwaddr[5] = 0xa0;
+
+  /* maximum transfer unit */
+  netif->mtu = ETHERNET_MTU; // 1500
+
+  /* device capabilities */
+  /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
+  netif->flags =  NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET ;
+
+
+  netif->state = NULL;
+  netif->name[0] = IFNAME0;
+  netif->name[1] = IFNAME1;
+
+  netif->output    =  etharp_output ; 
+  netif->linkoutput = low_level_output;
+
+  cortos_printf ("Configuration Done. NIC has started\n");
+  return ERR_OK;
+
+}
+
+
+void printEthernetFrame(uint8_t *ethernetFrame, int start,int length,int tab) {
+
+    int i,count =0;
+    for (i = start; i < length; i++) {
+        cortos_printf("0x%02X, ", ethernetFrame[i]);
+	count ++;
+        if (count%tab == 0)
+            cortos_printf("\n");
+    }
+    cortos_printf("\n");
+}

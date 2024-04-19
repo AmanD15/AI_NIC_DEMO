@@ -3,11 +3,12 @@ use ieee.std_logic_1164.all;
 package AjitCoreConfigurationPackage is
 -- sleep time for ever-spinning modules.
   constant  CORE_SLEEP_TIME 	: integer :=     100 ;
+
 -------------------------------------------- SPECIAL CONFIGURATION PARAMETERS --------------------------------
 -- These are nominal values.  If modified, they should be modified as a group. See the HOWTO on processor builds.
 --------------------------------------------------------------------------------------------------------------
-  constant  TWO_THREADS_IN_CORE		: integer :=  1 ; -- two threads in core?
-  constant  THREAD_IS_ISA_64		: integer :=  1 ; -- thread is 64-bit ISA?
+  constant  TWO_THREADS_IN_CORE		: integer :=  0 ; -- two threads in core?
+  constant  THREAD_IS_ISA_64		: integer :=  0 ; -- thread is 64-bit ISA?
 
   constant  DCACHE_BUFFER_REQUEST	: integer :=  0 ; -- buffer request inside DCACHE?  Adds one cycle to dcache hit latency!
   constant  ICACHE_BUFFER_REQUEST	: integer :=  0 ; -- buffer request inside ICACHE?  Adds one cycle to icache hit latency!
@@ -16,18 +17,27 @@ package AjitCoreConfigurationPackage is
   constant  DCACHE_HIT_LATENCY       : integer :=     (2 + (TWO_THREADS_IN_CORE + DCACHE_BUFFER_REQUEST))	; -- DCACHE hit path latency (including buffering)
   constant  ICACHE_HIT_LATENCY       : integer :=     (2 + (TWO_THREADS_IN_CORE + ICACHE_BUFFER_REQUEST))    ; -- ICACHE hit path latency (including buffering)
 
-  constant  LOG_DCACHE_SET_ASSOCIATIVITY : integer :=   2  ; -- log of set associativity.
-  constant  LOG_ICACHE_SET_ASSOCIATIVITY : integer :=   2  ;   -- log of set associativity.
+  constant  LOG_DCACHE_SET_ASSOCIATIVITY : integer :=   1  ;   -- log of set associativity.
+  constant  LOG_ICACHE_SET_ASSOCIATIVITY : integer :=   1  ;   -- log of set associativity.
+
+  constant  DCACHE_ASSOCIATIVITY         : integer :=  (2 ** LOG_DCACHE_SET_ASSOCIATIVITY) ; -- dcache associativity
+  constant  ICACHE_ASSOCIATIVITY         : integer :=  (2 ** LOG_ICACHE_SET_ASSOCIATIVITY) ; -- icache associativity
 
   constant  TREAT_NONCACHEABLE_AS_BYPASS  : integer :=  1 ; -- non-cacheables will be treated as bypasses...
 
 --------------------------------------   CONFIGURABLE DCACHE PARAMETERS ---------------------------------
-  constant  LOG_DCACHE_SIZE_IN_BLOCKS : integer :=     9  	; -- Note: can be 7,8, or 9 (9 is 32KB)
+  constant  LOG_DCACHE_SIZE_IN_BLOCKS : integer :=     7  	; -- Note: can be 7,8, or 9 (9 is 32KB)
   constant  DCACHE_SIZE_IN_BLOCKS      : integer :=     (2 ** LOG_DCACHE_SIZE_IN_BLOCKS)	;
+  constant  DCACHE_WAY_SIZE            : integer :=     (DCACHE_SIZE_IN_BLOCKS - DCACHE_ASSOCIATIVITY) ;
 
 --------------------------------------   CONFIGURABLE ICACHE PARAMETERS ---------------------------------
-  constant  LOG_ICACHE_SIZE_IN_BLOCKS : integer :=     9  ; -- Note: can be 7,8, or 9 (9 is 32KB)
+  constant  LOG_ICACHE_SIZE_IN_BLOCKS : integer :=     7  ; -- Note: can be 7,8, or 9 (9 is 32KB)
   constant  ICACHE_SIZE_IN_BLOCKS      : integer :=     (2 ** LOG_ICACHE_SIZE_IN_BLOCKS)	;
+  constant  ICACHE_WAY_SIZE            : integer :=     (ICACHE_SIZE_IN_BLOCKS - ICACHE_ASSOCIATIVITY) ;
+
+--------------------------------------   CONFIGURABLE RAS  PARAMETERS ---------------------------------
+  constant  LOG_RAS_DEPTH  : integer :=     4  ; -- small.
+  constant  RAS_DEPTH      : integer :=     (2 ** LOG_RAS_DEPTH)	;
 
 -------------------------------------------- CACHE PARAMETERS -------------------------------------------------
 -- DO NOT MODIFY UNLESS YOU KNOW WHAT YOU ARE DOING!!
@@ -43,6 +53,7 @@ package AjitCoreConfigurationPackage is
   constant  VIRTUAL_ADDR_WIDTH   : integer := 	32 ;
   constant  LOG_CACHE_LINE_SIZE  : integer :=        6 ;
   constant  CACHE_LINE_SIZE      : integer :=       (2 ** LOG_CACHE_LINE_SIZE) ;   -- bytes.
+  constant  CRITICAL_WAY_SIZE    : integer :=   (2**(LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE)) ; -- 64.
 
 ------------------------------------------------------------------------------------------------------
 
@@ -112,8 +123,9 @@ package AjitCoreConfigurationPackage is
   constant  ICACHE_RLUT_LOG_N_SETS      : integer :=   (ICACHE_RLUT_LOG_MEMORY_SIZE - ICACHE_RLUT_LOG_SET_SIZE)  ;
   constant  ICACHE_RLUT_N_SETS           : integer :=   (2 ** ICACHE_RLUT_LOG_N_SETS)  ;
   constant  ICACHE_RLUT_DATA_WIDTH       : integer :=   (VIRTUAL_ADDR_WIDTH - LOG_CACHE_LINE_SIZE) ;
-  constant  ICACHE_RLUT_REDUCED_DATA_WIDTH   : integer :=  ((LOG_ICACHE_SIZE_IN_BLOCKS + LOG_CACHE_LINE_SIZE) - LOG_BASE_PAGE_SIZE) ;
+  constant  ICACHE_RLUT_REDUCED_DATA_WIDTH   : integer :=  ((LOG_ICACHE_SIZE_IN_BLOCKS + LOG_CACHE_LINE_SIZE) - LOG_BASE_PAGE_SIZE) ; --
   constant  ICACHE_RLUT_TAG_WIDTH        : integer :=   ((PHYSICAL_ADDR_WIDTH - LOG_CACHE_LINE_SIZE) - ICACHE_RLUT_LOG_N_SETS) ;
+
 
 
 -- DCACHE RLUT.
@@ -149,6 +161,21 @@ package AjitCoreConfigurationPackage is
   constant  L2CACHE_LINE_SIZE_IN_DWORDS 		: integer :=  (2 ** L2CACHE_LOG2_LINE_SIZE_IN_DWORDS) ; -- double words.
 ------------------------------------------------------------------------------------------------
 
+
+--
+-- instruction buffer to be used in dual threaded CPU's.
+--
+  constant  ASI_FAKE_INSTRUCTION_BUFFER                : integer :=   127 ; -- whatever.
+  constant  INSTRUCTION_BUFFER_LOG_MEMORY_SIZE         : integer :=   7   ; -- 128 entries.
+  constant  INSTRUCTION_BUFFER_LOG_ASSOCIATIVITY       : integer :=   0   ; -- 1-way.. do not touch.
+  constant  INSTRUCTION_BUFFER_LOG_N_SETS              : integer :=   7   ; -- 128
+  constant  INSTRUCTION_BUFFER_TAG_WIDTH               : integer :=   (29 - INSTRUCTION_BUFFER_LOG_N_SETS) ; -- 28
+  constant  INSTRUCTION_BUFFER_DATA_WIDTH              : integer :=   (64 + 3) ; -- ipair, acc
+
+  constant  LOG_IBUF_CACHE_SIZE  : integer :=  6 ; -- instruction buffer cache in ifetch.
+  constant  IBUF_CACHE_SIZE      : integer :=  ( 2 ** LOG_IBUF_CACHE_SIZE) ; -- nominally 64 entries.
+  constant  IBUF_CACHE_TAG_WIDTH : integer :=  (29 - LOG_IBUF_CACHE_SIZE)  ; -- tag
+
 end package;
 package AjitGlobalConfigurationPackage is
 	
@@ -166,8 +193,9 @@ package AjitGlobalConfigurationPackage is
 
 	-- can customize the number of lines in the ICACHE and DCACHE.
 	-- For 180nm SCL, keep these at 8, In 65nm, 9.
-	constant icache_log_number_of_lines: integer := 9; -- 512 lines, each line has 64 bytes.
-	constant dcache_log_number_of_lines: integer := 9; -- 512 lines, each line has 64 bytes.
+	--   Superseded by entries in AjitCoreConfiguration.
+	-- constant icache_log_number_of_lines: integer := 9; -- 512 lines, each line has 64 bytes.
+	-- constant dcache_log_number_of_lines: integer := 9; -- 512 lines, each line has 64 bytes.
 
 	-- MMU TLB entries... DO NOT TOUCH THESE, BECAUSE MMU TLB
 	-- access code in AA has some hardwiring in it.  YOU WILL NEED
@@ -430,6 +458,7 @@ package AjitCustomComponents is
       invalidate_line_address: in std_logic_vector(((address_width-1) - log2_block_size_in_bytes) downto 0);
       is_hit : out  std_logic_vector(0 downto 0);
       permissions_ok : out  std_logic_vector(0 downto 0);
+      lookup_acc : out  std_logic_vector(2 downto 0);
       clk, reset: in std_logic
   );
   end component GenericCacheTagsWithInvalidate;
@@ -492,6 +521,7 @@ package AjitCustomComponents is
     invalidate_line_address: in std_logic_vector(((address_width-1) - log2_block_size_in_bytes) downto 0);
     is_hit : out  std_logic_vector(0 downto 0);
     permissions_ok : out  std_logic_vector(0 downto 0);
+    lookup_acc : out  std_logic_vector(2 downto 0);
     access_array_command : in  std_logic_vector(2 downto 0);
     access_addr : in  std_logic_vector(address_width-1 downto 0);
     access_dword : in  std_logic_vector((8*(2**log2_data_width_in_bytes))-1 downto 0);
@@ -633,6 +663,7 @@ package AjitCustomComponents is
     invalidate_line_address: in std_logic_vector(((address_width-1) - log2_block_size_in_bytes) downto 0);
     is_hit : out  std_logic_vector(0 downto 0);
     permissions_ok : out  std_logic_vector(0 downto 0);
+    lookup_acc : out  std_logic_vector(2 downto 0);
     dword_out : out  std_logic_vector((8*(2**log2_data_width_in_bytes))-1 downto 0);
     clk, reset: in std_logic
     -- 
@@ -760,7 +791,7 @@ package AjitCustomComponents is
    port ( -- 
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(120 downto 0);
+    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(142 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
@@ -770,6 +801,15 @@ package AjitCustomComponents is
     noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
+    -----------------------------------------------------------------------------------------------
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_req: out std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_ack: in std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_data: out std_logic_vector(92 downto 0);
+    -----------------------------------------------------------------------------------------------
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_req:  out std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_ack:  in std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_data: out std_logic_vector(92 downto 0);
+    -----------------------------------------------------------------------------------------------
     DCACHE_to_CPU_reset_ack_pipe_write_req : out  std_logic_vector(0 downto 0);
     DCACHE_to_CPU_reset_ack_pipe_write_ack : in   std_logic_vector(0 downto 0);
     DCACHE_to_CPU_reset_ack_pipe_write_data : out  std_logic_vector(0 downto 0);
@@ -801,11 +841,11 @@ package AjitCustomComponents is
   end component DcacheFrontendDaemon;
 
   component DcacheFrontendWithStallCoreDaemon is -- 
-   generic (tag_length : integer); 
+   generic (tag_length : integer:= 1); 
    port ( -- 
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(120 downto 0);
+    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(142 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
@@ -815,6 +855,15 @@ package AjitCustomComponents is
     noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
+    -----------------------------------------------------------------------------------------------
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_req: out std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_ack: in std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_data: out std_logic_vector(92 downto 0);
+    -----------------------------------------------------------------------------------------------
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_req:  out std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_ack:  in std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_data: out std_logic_vector(92 downto 0);
+    -----------------------------------------------------------------------------------------------
     DCACHE_to_CPU_reset_ack_pipe_write_req : out  std_logic_vector(0 downto 0);
     DCACHE_to_CPU_reset_ack_pipe_write_ack : in   std_logic_vector(0 downto 0);
     DCACHE_to_CPU_reset_ack_pipe_write_data : out  std_logic_vector(0 downto 0);
@@ -850,11 +899,11 @@ package AjitCustomComponents is
   end component DcacheFrontendWithStallCoreDaemon;
 
   component DcacheFrontendWithStallDaemon is -- 
-   generic (tag_length : integer); 
+   generic (tag_length : integer := 1); 
    port ( -- 
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(120 downto 0);
+    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(142 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
@@ -864,6 +913,15 @@ package AjitCustomComponents is
     noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
+    -----------------------------------------------------------------------------------------------
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_req: out std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_ack: in std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_data: out std_logic_vector(92 downto 0);
+    -----------------------------------------------------------------------------------------------
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_req:  out std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_ack:  in std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_data: out std_logic_vector(92 downto 0);
+    -----------------------------------------------------------------------------------------------
     DCACHE_to_CPU_reset_ack_pipe_write_req : out  std_logic_vector(0 downto 0);
     DCACHE_to_CPU_reset_ack_pipe_write_ack : in   std_logic_vector(0 downto 0);
     DCACHE_to_CPU_reset_ack_pipe_write_data : out  std_logic_vector(0 downto 0);
@@ -953,55 +1011,6 @@ package AjitCustomComponents is
   );
   -- 
   end component DcacheBypassController;
-
-  component DcacheFrontendWithRlutInvalidateDaemon is -- 
-    generic (tag_length : integer); 
-    port ( -- 
-      NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
-      NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-      NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(120 downto 0);
-      NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
-      NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
-      NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
-      NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_req : out  std_logic_vector(0 downto 0);
-      NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-      NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data : in   std_logic_vector(120 downto 0);
-      noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
-      noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-      noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
-      DCACHE_to_CPU_reset_ack_pipe_write_req : out  std_logic_vector(0 downto 0);
-      DCACHE_to_CPU_reset_ack_pipe_write_ack : in   std_logic_vector(0 downto 0);
-      DCACHE_to_CPU_reset_ack_pipe_write_data : out  std_logic_vector(0 downto 0);
-      DCACHE_to_CPU_response_pipe_write_req : out  std_logic_vector(0 downto 0);
-      DCACHE_to_CPU_response_pipe_write_ack : in   std_logic_vector(0 downto 0);
-      DCACHE_to_CPU_response_pipe_write_data : out  std_logic_vector(71 downto 0);
-      DCACHE_to_CPU_slow_response_pipe_write_req : out  std_logic_vector(0 downto 0);
-      DCACHE_to_CPU_slow_response_pipe_write_ack : in   std_logic_vector(0 downto 0);
-      DCACHE_to_CPU_slow_response_pipe_write_data : out  std_logic_vector(71 downto 0);
-      dcache_frontend_to_backend_pipe_write_req : out  std_logic_vector(0 downto 0);
-      dcache_frontend_to_backend_pipe_write_ack : in   std_logic_vector(0 downto 0);
-      dcache_frontend_to_backend_pipe_write_data : out  std_logic_vector(119 downto 0);
-      -------------------------------------------------------------------------------
-      -- RLUT 
-      -------------------------------------------------------------------------------
-      NOBLOCK_RLUT_to_DCACHE_pipe_read_req : out  std_logic_vector(0 downto 0);
-      NOBLOCK_RLUT_to_DCACHE_pipe_read_ack : in   std_logic_vector(0 downto 0);
-      NOBLOCK_RLUT_to_DCACHE_pipe_read_data : in   std_logic_vector(31 downto 0);
-      DCACHE_to_RLUT_pipe_write_req : out  std_logic_vector(0 downto 0);
-      DCACHE_to_RLUT_pipe_write_ack : in   std_logic_vector(0 downto 0);
-      DCACHE_to_RLUT_pipe_write_data : out  std_logic_vector(7 downto 0);
-      -------------------------------------------------------------------------------
-      tag_in: in std_logic_vector(tag_length-1 downto 0);
-      tag_out: out std_logic_vector(tag_length-1 downto 0) ;
-      clk : in std_logic;
-      reset : in std_logic;
-      start_req : in std_logic;
-      start_ack : out std_logic;
-      fin_req : in std_logic;
-      fin_ack   : out std_logic-- 
-    );
-  -- 
-  end component DcacheFrontendWithRlutInvalidateDaemon;
 
   component generic_single_port_memory_with_byte_mask is
    generic ( name: string; 
@@ -1273,352 +1282,27 @@ package AjitCustomComponents is
   );
   end component dcache_stub_daemon;
 
-   ------------------------------------------------------------------------------------------------------------------
-   -- SPI
-   ------------------------------------------------------------------------------------------------------------------
-
-   component spi_master is
-    port (
-    --+ CPU Interface Signals
-    clk                : in  std_logic;
-    reset              : in  std_logic;
-    cs                 : in  std_logic;
-    rw                 : in  std_logic;
-    addr               : in  std_logic_vector(1 downto 0);
-    data_in            : in  std_logic_vector(7 downto 0);
-    data_out           : out std_logic_vector(7 downto 0);
-    irq                : out std_logic;
-    done	       : out std_logic;  -- added to indicate complete of transfer MPD
-    --+ SPI Interface Signals
-    spi_miso           : in  std_logic;
-    spi_mosi           : out std_logic;
-    spi_clk            : out std_logic;
-    spi_cs_n           : out std_logic_vector(7 downto 0)
-    );
-   end component;
-   component spi_pipe_master_bridge is
-	port (
-		--
-		-- unused  read/write-bar address data 
-		--   5       1               2      8
-		--
-		master_in_data_pipe_write_data: in  std_logic_vector(15 downto 0);
-		master_in_data_pipe_write_req:  in  std_logic_vector(0 downto 0);
-		master_in_data_pipe_write_ack:  out std_logic_vector(0 downto 0);
-		--
-		-- response data 
-		--
-		master_out_data_pipe_read_data: out  std_logic_vector(7 downto 0);
-		master_out_data_pipe_read_req:  in  std_logic_vector(0 downto 0);
-		master_out_data_pipe_read_ack:  out std_logic_vector(0 downto 0);
-		-- spi-master side.
-		cs_to_spi_master: out std_logic;
-		rw_to_spi_master: out std_logic;
-		addr_to_spi_master: out std_logic_vector(1 downto 0);
-		data_to_spi_master: out std_logic_vector(7 downto 0);
-		data_from_spi_master: in std_logic_vector(7 downto 0);
-		irq_from_spi_master: in std_logic;
-		done_from_spi_master: in std_logic;
-		-- clk, reset
-		clk, reset: in std_logic
-	     );
-   end component;
-   component spi_master_stub is
-	port (
-		--
-		-- unused  read/write-bar address data 
-		--   5       1               2      8
-		--
-		master_in_data_pipe_write_data: in  std_logic_vector(15 downto 0);
-		master_in_data_pipe_write_req:  in  std_logic_vector(0 downto 0);
-		master_in_data_pipe_write_ack:  out std_logic_vector(0 downto 0);
-		--
-		-- response data 
-		--
-		master_out_data_pipe_read_data: out  std_logic_vector(7 downto 0);
-		master_out_data_pipe_read_req:  in  std_logic_vector(0 downto 0);
-		master_out_data_pipe_read_ack:  out std_logic_vector(0 downto 0);
-		-- spi-master side.
-		spi_miso: in std_logic_vector(0 downto 0);
-		spi_mosi: out std_logic_vector(0 downto 0);
-		spi_clk: out std_logic_vector(0 downto 0);
-		spi_cs_n: out std_logic_vector(7 downto 0);
-		clk, reset: in std_logic
-	     );
-   end component;
-   component spi_slave_pipe_bridge is
-	generic (ignore_zero_rx_data: boolean := true; tristate_miso_flag : boolean := true);
-	port (
-		-- SPI interface
-		spi_mosi: in std_logic;   -- master-out-slave-in
-		spi_miso: out std_logic;  -- master-in-slave-out
-		spi_ss_bar: in std_logic; -- slave-select active low
-		spi_clk  : in std_logic;  -- spi-clk
-		-- pipe interface
-		-- output pipe
-		out_data_pipe_read_data: out std_logic_vector(7 downto 0);
-		out_data_pipe_read_req : in std_logic_vector(0 downto 0);
-		out_data_pipe_read_ack : out std_logic_vector(0 downto 0);
-		-- input pipe	
-		in_data_pipe_write_data: in std_logic_vector(7 downto 0);
-		in_data_pipe_write_req : in std_logic_vector(0 downto 0);
-		in_data_pipe_write_ack : out std_logic_vector(0 downto 0);
-		--
-		clk, reset: in std_logic	
-	     );
-    end component spi_slave_pipe_bridge;
-    component spi_slave_binary_pipe_bridge is
-	port (
-		-- SPI interface
-		spi_mosi: in std_logic;   -- master-out-slave-in
-		spi_miso: out std_logic;  -- master-in-slave-out
-		spi_ss_bar: in std_logic; -- slave-select active low
-		spi_clk  : in std_logic;  -- spi-clk
-		-- pipe interface
-		-- output pipe
-		out_data_pipe_read_data: out std_logic_vector(7 downto 0);
-		out_data_pipe_read_req : in std_logic_vector(0 downto 0);
-		out_data_pipe_read_ack : out std_logic_vector(0 downto 0);
-		-- input pipe	
-		in_data_pipe_write_data: in std_logic_vector(7 downto 0);
-		in_data_pipe_write_req : in std_logic_vector(0 downto 0);
-		in_data_pipe_write_ack : out std_logic_vector(0 downto 0);
-		--
-		clk, reset: in std_logic	
-	     );
-    end component spi_slave_binary_pipe_bridge;
-    component spi_slave_pipe_bridge_simplified is
-	generic (tristate_miso_flag : boolean := true);
-	port (
-		-- SPI interface
-		spi_mosi: in std_logic;   -- master-out-slave-in
-		spi_miso: out std_logic;  -- master-in-slave-out
-		spi_ss_bar: in std_logic; -- slave-select active low
-		spi_clk  : in std_logic;  -- spi-clk
-		-- pipe interface
-		-- output pipe
-		out_data_pipe_read_data: out std_logic_vector(7 downto 0);
-		out_data_pipe_read_req : in std_logic_vector(0 downto 0);
-		out_data_pipe_read_ack : out std_logic_vector(0 downto 0);
-		-- input pipe	
-		in_data_pipe_write_data: in std_logic_vector(7 downto 0);
-		in_data_pipe_write_req : in std_logic_vector(0 downto 0);
-		in_data_pipe_write_ack : out std_logic_vector(0 downto 0);
-		--
-		clk, reset: in std_logic	
-	     );
-    end component spi_slave_pipe_bridge_simplified;
-
-    component spi_byte_ram is
-	generic (addr_width_in_bytes: integer := 2; 
-			-- to model a big ram with fewer internal memory locations.
-			internal_addr_width: integer := 16;
-			use_write_enable_control: boolean := false);
-	port (CS_L: in std_logic_vector(0 downto 0);
-			SPI_MISO: out std_logic_vector(0 downto 0);
-			SPI_MOSI: in std_logic_vector(0 downto 0);
-			SPI_CLK: in std_logic_vector(0 downto 0);
-			clk, reset: in std_logic);
-    end component spi_byte_ram;
-  
-    component spi_bootrom  is
-	port (CS_L: in std_logic;
-			SPI_MASTER_MISO: out std_logic_vector(0 downto 0);
-			SPI_MASTER_MOSI: in std_logic_vector(0 downto 0);
-			SPI_MASTER_CLK: in std_logic_vector(0 downto 0);
-			clk, reset: in std_logic);
-    end component spi_bootrom;
-
-    component spi_gpio is
-	port (CS_L: in std_logic;
-			SPI_MASTER_MISO: out std_logic_vector(0 downto 0);
-			SPI_MASTER_MOSI: in std_logic_vector(0 downto 0);
-			SPI_MASTER_CLK: in std_logic_vector(0 downto 0);
-			GPIO_IN: in std_logic_vector (7 downto 0);
-			GPIO_OUT: out std_logic_vector (7 downto 0);
-			clk, reset: in std_logic);
-    end component spi_gpio;
-
-    component spi_ping is
-	port (CS_L: in std_logic;
-			SPI_MASTER_MISO: out std_logic_vector(0 downto 0);
-			SPI_MASTER_MOSI: in std_logic_vector(0 downto 0);
-			SPI_MASTER_CLK: in std_logic_vector(0 downto 0);
-			clk, reset: in std_logic);
-    end component spi_ping;
-
-    component spi_byte_ram_with_init is
-	generic (	mmap_file_name: string;
-			addr_width_in_bytes: integer := 3; 
-			-- to model a big ram with fewer internal memory locations.
-			internal_addr_width: integer := 24;
-			use_write_enable_control: boolean := false);
-	port (CS_L: in std_logic_vector(0 downto 0);
-			SPI_MISO: out std_logic_vector(0 downto 0);
-			SPI_MOSI: in std_logic_vector(0 downto 0);
-			SPI_CLK: in std_logic_vector(0 downto 0);
-			clk, reset: in std_logic);
-   end component spi_byte_ram_with_init;
-
-    
-   ------------------------------------------------------------------------------------------------------------------
-   -- AHB bridges
-   ------------------------------------------------------------------------------------------------------------------
-
-    component ajit_ahb_lite_master is
-	port (
-		-- AJIT system bus
-		ajit_to_env_write_req: in  std_logic;
-		ajit_to_env_write_ack: out std_logic;
-		ajit_to_env_addr: in std_logic_vector(35 downto 0);
-		ajit_to_env_data: in std_logic_vector(31 downto 0);
-		ajit_to_env_transfer_size: in std_logic_vector(2 downto 0);
-		ajit_to_env_read_write_bar: in std_logic;
-		ajit_to_env_lock: in std_logic;
-		-- top-bit error, rest data.
-		env_to_ajit_error : out std_logic;
-		env_to_ajit_read_data : out std_logic_vector(31 downto 0);
-		env_to_ajit_read_req: in std_logic;
-		env_to_ajit_read_ack: out std_logic;
-		-- AHB bus signals
-		HADDR: out std_logic_vector(35 downto 0);
-		HTRANS: out std_logic_vector(1 downto 0); -- non-sequential, sequential, idle, busy
-		HWRITE: out std_logic; -- when '1' its a write.
-		HSIZE: out std_logic_vector(2 downto 0); -- transfer size in bytes.
-		HBURST: out std_logic_vector(2 downto 0); -- burst size.
-		HMASTLOCK: out std_logic; -- locked transaction.. for swap etc.
-		HPROT: out std_logic_vector(3 downto 0); -- protection bits..
-		HWDATA: out std_logic_vector(31 downto 0); -- write data.
-		HRDATA: in std_logic_vector(31 downto 0); -- read data.
-		HREADY: in std_logic; -- slave ready.
-		HRESP: in std_logic_vector(1 downto 0); -- okay, error, retry, split (slave responses).
-		-- clock, reset.
-		clk: in std_logic;
-		reset: in std_logic 
-	     );
-       end component ajit_ahb_lite_master;
+  component dual_port_u64_mem_64KB_Operator is -- 
+    port ( -- 
+     sample_req: in boolean;
+     sample_ack: out boolean;
+     update_req: in boolean;
+     update_ack: out boolean;
+     read_0 : in  std_logic_vector(0 downto 0);
+     addr_0 : in  std_logic_vector(12 downto 0);
+     read_1 : in  std_logic_vector(0 downto 0);
+     write_1 : in  std_logic_vector(0 downto 0);
+     byte_mask : in  std_logic_vector(7 downto 0);
+     addr_1 : in  std_logic_vector(12 downto 0);
+     write_data_1 : in  std_logic_vector(63 downto 0);
+     read_data_0 : out  std_logic_vector(63 downto 0);
+     read_data_1 : out  std_logic_vector(63 downto 0);
+     clk, reset: in std_logic
+     -- 
+   );
+   -- 
+ end component dual_port_u64_mem_64KB_Operator;
    
-       component ahb_splitter is -- 
-    	-- address range is specified for upper memory and for lower
-    	-- memory.  Address is not modified on the way out.  Addresses
-    	-- that do not fall in either range are just ignored.
-    	generic (
-		UPPER_ADDRESS_LOWER_BOUND, UPPER_ADDRESS_UPPER_BOUND: integer;
-		LOWER_ADDRESS_LOWER_BOUND, LOWER_ADDRESS_UPPER_BOUND: integer);
-    	port( -- 
-
-  	-- main input.. will be split..
-      	main_HADDR : in std_logic_vector(31 downto 0);
-  	-- ignored.
-      	main_HMASTLOCK : in std_logic;
-  	-- ignored.
-      	main_HPROT : in std_logic_vector(3 downto 0); 
-  	-- ignored.
-      	main_HBURST : in std_logic_vector(2 downto 0); 
-  	-- ignored.. all accesses are 32-bits wide.
-      	main_HSIZE : in std_logic_vector(2 downto 0);
-   	-- should be NONSEQ or SEQ to indicate transfer
-      	main_HTRANS : in std_logic_vector(1 downto 0);
-  	-- write data
-      	main_HWDATA : in std_logic_vector(31 downto 0); 
-  	-- "1" implies write
-      	main_HWRITE : in std_logic;
-  	-- read data
-      	main_HRDATA : out std_logic_vector(31 downto 0); 
-  	-- always "1".
-      	main_HREADY : out std_logic;
-  	-- response.
-      	main_HRESP : out std_logic_vector(1 downto 0); -- always "00"
-
-  	-- upper addr..
-      	upper_HADDR : out std_logic_vector(31 downto 0);
-  	-- ignored.
-      	upper_HMASTLOCK : out std_logic;
-  	-- ignored.
-      	upper_HPROT : out std_logic_vector(3 downto 0); 
-  	-- ignored.
-      	upper_HBURST : out std_logic_vector(2 downto 0); 
-  	-- ignored.. all accesses are 32-bits wide.
-      	upper_HSIZE : out std_logic_vector(2 downto 0);
-   	-- should be NONSEQ or SEQ to indicate transfer
-      	upper_HTRANS : out std_logic_vector(1 downto 0);
-  	-- write data
-      	upper_HWDATA : out std_logic_vector(31 downto 0); 
-  	-- "1" implies write
-      	upper_HWRITE : out std_logic;
-  	-- read data
-      	upper_HRDATA : in std_logic_vector(31 downto 0); 
-  	-- always "1".
-      	upper_HREADY : in std_logic;
-  	-- response.
-      	upper_HRESP : in std_logic_vector(1 downto 0); -- always "00"
-	
-  	-- lower addr..
-      	lower_HADDR : out std_logic_vector(31 downto 0);
-  	-- ignored.
-      	lower_HMASTLOCK : out std_logic;
-  	-- ignored.
-      	lower_HPROT : out std_logic_vector(3 downto 0); 
-  	-- ignored.
-      	lower_HBURST : out std_logic_vector(2 downto 0); 
-  	-- ignored.. all accesses are 32-bits wide.
-      	lower_HSIZE : out std_logic_vector(2 downto 0);
-   	-- should be NONSEQ or SEQ to indicate transfer
-      	lower_HTRANS : out std_logic_vector(1 downto 0);
-  	-- write data
-      	lower_HWDATA : out std_logic_vector(31 downto 0); 
-  	-- "1" implies write
-      	lower_HWRITE : out std_logic;
-  	-- read data
-      	lower_HRDATA : in std_logic_vector(31 downto 0); 
-  	-- always "1".
-      	lower_HREADY : in std_logic;
-  	-- response.
-      	lower_HRESP : in std_logic_vector(1 downto 0); -- always "00"
-  	-- positive edge of clock is used, reset is active high.
-      	clk, reset: in std_logic 
-    	);
-       end component;
-
-       component ajit_64kB_rom is                                                     
-    	port (clk  : in std_logic;                                                   
-          en   : in std_logic;                                                    
-          addr : in std_logic_vector(15 downto 0);                               
-          data : out std_logic_vector(7 downto 0));                             
-      end component ajit_64kB_rom;                                                          
-
-   ------------------------------------------------------------------------------------------------------------------
-   -- APB bridges
-   ------------------------------------------------------------------------------------------------------------------
-   component ajit_apb_master is
-	port (
-		-- AJIT system bus
-		ajit_to_env_write_req: in  std_logic;
-		ajit_to_env_write_ack: out std_logic;
-		ajit_to_env_addr: in std_logic_vector(31 downto 0);
-		ajit_to_env_data: in std_logic_vector(31 downto 0);
-		ajit_to_env_read_write_bar: in std_logic;
-		-- top-bit error, rest data.
-		env_to_ajit_error : out std_logic;
-		env_to_ajit_read_data : out std_logic_vector(31 downto 0);
-		env_to_ajit_read_req: in std_logic;
-		env_to_ajit_read_ack: out std_logic;
-		-- APB bus signals
-		PRESETn: out std_logic;
-		PCLK: out std_logic;
-		PADDR: out std_logic_vector(31 downto 0);
-		PWRITE: out std_logic; -- when '1' its a write.
-		PWDATA: out std_logic_vector(31 downto 0); -- write data.
-		PRDATA: in std_logic_vector(31 downto 0); -- read data.
-		PREADY: in std_logic; -- slave ready.
-		PENABLE: out std_logic; -- enable..
-		PSLVERR: in std_logic; -- error from slave.
-		PSEL : out std_logic; -- slave select 
-		-- clock, reset.
-		clk: in std_logic;
-		reset: in std_logic 
-	     );
-   end component ajit_apb_master;
 
 --------------------------------------------------------------------------------------------------
 -- TLB's for MMU
@@ -2104,13 +1788,13 @@ package AjitCustomComponents is
     port ( -- 
       noblock_teu_stream_corrector_to_idispatch_pipe_read_req : out  std_logic_vector(0 downto 0);
       noblock_teu_stream_corrector_to_idispatch_pipe_read_ack : in   std_logic_vector(0 downto 0);
-      noblock_teu_stream_corrector_to_idispatch_pipe_read_data : in   std_logic_vector(146 downto 0);
+      noblock_teu_stream_corrector_to_idispatch_pipe_read_data : in   std_logic_vector(147 downto 0);
       teu_iretire_to_idispatch_pipe_read_req : out  std_logic_vector(0 downto 0);
       teu_iretire_to_idispatch_pipe_read_ack : in   std_logic_vector(0 downto 0);
       teu_iretire_to_idispatch_pipe_read_data : in   std_logic_vector(0 downto 0);
       noblock_joined_iretire_sc_to_idispatch_pipe_write_req : out  std_logic_vector(0 downto 0);
       noblock_joined_iretire_sc_to_idispatch_pipe_write_ack : in   std_logic_vector(0 downto 0);
-      noblock_joined_iretire_sc_to_idispatch_pipe_write_data : out  std_logic_vector(146 downto 0);
+      noblock_joined_iretire_sc_to_idispatch_pipe_write_data : out  std_logic_vector(147 downto 0);
       tag_in: in std_logic_vector(tag_length-1 downto 0);
       tag_out: out std_logic_vector(tag_length-1 downto 0) ;
       clk : in std_logic;
@@ -2242,6 +1926,40 @@ package AjitCustomComponents is
   );
   -- 
   end component stream_corrector_in_mux_daemon;
+  
+  component stream_corrector_in_mux_daemon_v2 is -- 
+    generic (tag_length : integer := 1); 
+    port ( -- 
+      teu_idispatch_to_stream_corrector_pipe_read_req : out  std_logic_vector(0 downto 0);
+      teu_idispatch_to_stream_corrector_pipe_read_ack : in   std_logic_vector(0 downto 0);
+      teu_idispatch_to_stream_corrector_pipe_read_data : in   std_logic_vector(204 downto 0);
+      teu_fpunit_cc_to_stream_corrector_pipe_read_req : out  std_logic_vector(0 downto 0);
+      teu_fpunit_cc_to_stream_corrector_pipe_read_ack : in   std_logic_vector(0 downto 0);
+      teu_fpunit_cc_to_stream_corrector_pipe_read_data : in   std_logic_vector(14 downto 0);
+      teu_iunit_cc_to_stream_corrector_pipe_read_req : out  std_logic_vector(0 downto 0);
+      teu_iunit_cc_to_stream_corrector_pipe_read_ack : in   std_logic_vector(0 downto 0);
+      teu_iunit_cc_to_stream_corrector_pipe_read_data : in   std_logic_vector(16 downto 0);
+      teu_iunit_rs1_to_stream_corrector_pipe_read_req : out  std_logic_vector(0 downto 0);
+      teu_iunit_rs1_to_stream_corrector_pipe_read_ack : in   std_logic_vector(0 downto 0);
+      teu_iunit_rs1_to_stream_corrector_pipe_read_data : in   std_logic_vector(31 downto 0);
+      teu_iunit_to_stream_corrector_pipe_read_req : out  std_logic_vector(0 downto 0);
+      teu_iunit_to_stream_corrector_pipe_read_ack : in   std_logic_vector(0 downto 0);
+      teu_iunit_to_stream_corrector_pipe_read_data : in   std_logic_vector(89 downto 0);
+      noblock_stream_corrector_in_args_pipe_write_req : out  std_logic_vector(0 downto 0);
+      noblock_stream_corrector_in_args_pipe_write_ack : in   std_logic_vector(0 downto 0);
+      noblock_stream_corrector_in_args_pipe_write_data : out  std_logic_vector(359 downto 0);
+      tag_in: in std_logic_vector(tag_length-1 downto 0);
+      tag_out: out std_logic_vector(tag_length-1 downto 0) ;
+      clk : in std_logic;
+      reset : in std_logic;
+      start_req : in std_logic;
+      start_ack : out std_logic;
+      fin_req : in std_logic;
+      fin_ack   : out std_logic-- 
+    );
+  -- 
+  end component stream_corrector_in_mux_daemon_v2;
+
 
   component bpbV2_Operator is
     port ( 
@@ -2259,6 +1977,67 @@ package AjitCustomComponents is
   );
   end component bpbV2_Operator;
 
+  component bpbV3_dual_port_mem_Operator is -- 
+  port ( -- 
+    init : in  std_logic_vector(0 downto 0);
+    enable_0 : in  std_logic_vector(0 downto 0);
+    addr_0 : in  std_logic_vector(7 downto 0);
+    enable_1 : in  std_logic_vector(0 downto 0);
+    write_bar_1 : in  std_logic_vector(0 downto 0);
+    addr_1 : in  std_logic_vector(7 downto 0);
+    write_data_1 : in  std_logic_vector(53 downto 0);
+    read_data : out  std_logic_vector(109 downto 0);
+    clk : in std_logic;
+    reset : in std_logic;
+    sample_req : in Boolean;
+    sample_ack : out Boolean;
+    update_req : in Boolean;
+    update_ack   : out Boolean-- 
+  );
+  -- 
+  end component bpbV3_dual_port_mem_Operator;
+
+  component ibuf_cache_Operator is -- 
+  port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    ibuf_cache_init : in  std_logic_vector(0 downto 0);
+    add_entry : in  std_logic_vector(0 downto 0);
+    add_pc : in  std_logic_vector(31 downto 0);
+    add_acc : in  std_logic_vector(2 downto 0);
+    add_ipair : in  std_logic_vector(63 downto 0);
+    lookup_S : in  std_logic_vector(0 downto 0);
+    lookup_pc : in  std_logic_vector(31 downto 0);
+    ibuf_cache_result : out  std_logic_vector(64 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+  -- 
+  end component ibuf_cache_Operator;
+
+  component ras_daemon is -- 
+  generic (tag_length : integer := 1); 
+  port ( -- 
+    teu_ras_access_pipe_pipe_read_req : out  std_logic_vector(0 downto 0);
+    teu_ras_access_pipe_pipe_read_ack : in   std_logic_vector(0 downto 0);
+    teu_ras_access_pipe_pipe_read_data : in   std_logic_vector(32 downto 0);
+    teu_ras_top_of_stack_pipe_write_req : out  std_logic_vector(0 downto 0);
+    teu_ras_top_of_stack_pipe_write_ack : in   std_logic_vector(0 downto 0);
+    teu_ras_top_of_stack_pipe_write_data : out  std_logic_vector(31 downto 0);
+    tag_in: in std_logic_vector(tag_length-1 downto 0);
+    tag_out: out std_logic_vector(tag_length-1 downto 0) ;
+    clk : in std_logic;
+    reset : in std_logic;
+    start_req : in std_logic;
+    start_ack : out std_logic;
+    fin_req : in std_logic;
+    fin_ack   : out std_logic-- 
+  );
+  -- 
+  end component ras_daemon;
+  
   component asr_update_Operator is -- 
   port ( -- 
     sample_req: in boolean;
@@ -2298,8 +2077,7 @@ package AjitCustomComponents is
     access_cmd : in  std_logic_vector(43 downto 0);
     read_val : out  std_logic_vector(31 downto 0);
     clk, reset: in std_logic;
-    trigger : in std_logic;
-    done : out std_logic
+    trigger : in boolean
   );
   -- 
  end component asr_update_core;
@@ -2336,6 +2114,71 @@ package AjitCustomComponents is
   );
   -- 
  end component update_registers_Operator;
+
+  component window_address_calculator_Volatile is -- 
+  port ( -- 
+    cwp : in  std_logic_vector(4 downto 0);
+    reg_id : in  std_logic_vector(4 downto 0);
+    reg_address : out  std_logic_vector(5 downto 0)-- 
+  );
+  -- 
+  end component window_address_calculator_Volatile;
+
+  component window_registers_bank
+	generic (name : string := "anon");
+	port (trigger: in boolean; 
+		write_enable_0: in std_logic;
+		address_0, address_1: in std_logic_vector(5 downto 0);
+		read_data_1 : out std_logic_vector(31 downto 0);
+		write_data_0: in std_logic_vector(31 downto 0);
+		clk, reset: in std_logic);
+  end component window_registers_bank;
+
+  component iu_registers_3r_1w_port_register_file_inner is -- 
+  port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    rs1 : in  std_logic_vector(4 downto 0);
+    rs2 : in  std_logic_vector(4 downto 0);
+    read_rd : in  std_logic_vector(4 downto 0);
+    read_cwp : in  std_logic_vector(4 downto 0);
+    write_gpr_even : in  std_logic_vector(0 downto 0);
+    write_gpr_odd : in  std_logic_vector(0 downto 0);
+    write_rd : in  std_logic_vector(4 downto 0);
+    write_gpr_value_even : in  std_logic_vector(31 downto 0);
+    write_gpr_value_odd : in  std_logic_vector(31 downto 0);
+    write_cwp : in  std_logic_vector(4 downto 0);
+    reg_pair_values : out  std_logic_vector(191 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+  -- 
+  end component iu_registers_3r_1w_port_register_file_inner;
+
+  component iu_registers_3r_1w_port_register_file_Operator is -- 
+  port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    rs1 : in  std_logic_vector(4 downto 0);
+    rs2 : in  std_logic_vector(4 downto 0);
+    read_rd : in  std_logic_vector(4 downto 0);
+    read_cwp : in  std_logic_vector(4 downto 0);
+    write_gpr_even : in  std_logic_vector(0 downto 0);
+    write_gpr_odd : in  std_logic_vector(0 downto 0);
+    write_rd : in  std_logic_vector(4 downto 0);
+    write_gpr_value_even : in  std_logic_vector(31 downto 0);
+    write_gpr_value_odd : in  std_logic_vector(31 downto 0);
+    write_cwp : in  std_logic_vector(4 downto 0);
+    reg_pair_values : out  std_logic_vector(191 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+  -- 
+  end component iu_registers_3r_1w_port_register_file_Operator;
 
  -- NOTE: only for simulations.
  component dual_port_u64_mem_with_init_Operator is -- 
@@ -2569,7 +2412,9 @@ package AjitCustomComponents is
 			-- ignore write->lookup collisions
 			ignore_collisions: boolean := true;
 			-- use memory cuts or registers?
-			use_mem_cuts: boolean:= true);
+			use_mem_cuts: boolean:= true;
+			-- ignore data
+			g_ignore_data: boolean := false);
 	port (  start_req: in std_logic;
 		start_ack: out std_logic;
 		fin_req: in std_logic;
@@ -2618,7 +2463,9 @@ package AjitCustomComponents is
 			-- ignore write->lookup collisions
 			ignore_collisions: boolean := true;
 			-- use memory cuts or registers?
-			use_mem_cuts: boolean:= true);
+			use_mem_cuts: boolean:= true;
+			-- ignore data, behave like a set and not a map.
+			g_ignore_data: boolean := false);
 	port (  sample_req: in boolean;
 		sample_ack: out boolean;
 		update_req: in boolean;
@@ -2651,6 +2498,31 @@ package AjitCustomComponents is
 		clk,reset: in std_logic);
 
   end component genericSetAssociativeMemory_Operator;
+
+ 
+  -- direct mapped, single cycle for write and read...
+  component genericDirectMappedAssociativeMemory is -- 
+  generic (tag_width: integer := 32;
+		data_width: integer := 67;
+		log2_number_of_entries : integer := 8);
+  port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    init_flag : in  std_logic_vector(0 downto 0);
+    insert_flag : in  std_logic_vector(0 downto 0);
+    insert_tag : in  std_logic_vector(tag_width-1 downto 0);
+    insert_data : in  std_logic_vector(data_width-1 downto 0);
+    lookup_flag : in  std_logic_vector(0 downto 0);
+    lookup_tag : in  std_logic_vector(tag_width-1 downto 0);
+    lookup_match : out  std_logic_vector(0 downto 0);
+    lookup_data : out  std_logic_vector(data_width-1 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+  -- 
+  end component genericDirectMappedAssociativeMemory;
 
   component accessTlbNewMemory_0_Operator is
     port ( -- 
@@ -2788,6 +2660,33 @@ package AjitCustomComponents is
 
   end component genericDualPortMemory_Operator;
 
+  component accessRlutBase_Operator is -- 
+    generic (
+		g_LOG_BASE_PAGE_SIZE: integer;
+		g_LOG_CACHE_LINE_SIZE: integer;
+		g_CACHE_WAY_SIZE: integer;
+		g_RLUT_TAG_WIDTH : integer;
+		g_RLUT_REDUCED_DATA_WIDTH: integer;
+		g_RLUT_LOG_N_SETS: integer;
+		g_RLUT_LOG_MEMORY_SIZE: integer;
+		g_RLUT_LOG_SET_SIZE: integer
+	);
+    port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    lookup : in  std_logic_vector(0 downto 0);
+    update : in  std_logic_vector(0 downto 0);
+    clear : in  std_logic_vector(0 downto 0);
+    physical_addr_of_line : in  std_logic_vector(29 downto 0);
+    virtual_addr_of_line : in  std_logic_vector(25 downto 0);
+    syn_invalidate_word : out  std_logic_vector(26 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+  end component accessRlutBase_Operator;
+  
   component accessIcacheRlut_Operator is -- 
    port ( -- 
     sample_req: in boolean;
@@ -3169,6 +3068,14 @@ package AjitCustomComponents is
   -- 
   end component accessL2DataMemX4096X512_Operator;
 
+  component ajit_64kB_rom is
+	    port (clk  : in std_logic;
+	              en   : in std_logic;
+	              addr : in std_logic_vector(15 downto 0);
+	              data : out std_logic_vector(7 downto 0));
+  end component ajit_64kB_rom;
+
+
   component rt_clock_counter is
 	port (
 			clk, reset: in std_logic;
@@ -3303,6 +3210,70 @@ package AjitCustomComponents is
       AHB_TO_AFB_RESPONSE_pipe_write_ack : out std_logic_vector(0 downto 0)); -- 
     -- 
    end component;
+
+   -- instruction buffer...
+   component access_instruction_buffer_Operator is -- 
+   port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    clear_flag : in  std_logic_vector(0 downto 0);
+    insert_flag : in  std_logic_vector(0 downto 0);
+    insert_addr : in  std_logic_vector(28 downto 0);
+    insert_acc  : in  std_logic_vector(2 downto 0);
+    insert_ipair : in  std_logic_vector(63 downto 0);
+    lookup_flag : in  std_logic_vector(0 downto 0);
+    lookup_addr : in  std_logic_vector(28 downto 0);
+    lookup_match : out  std_logic_vector(0 downto 0);
+    lookup_acc  : out  std_logic_vector(2 downto 0);
+    lookup_ipair : out  std_logic_vector(63 downto 0);
+    clk, reset: in std_logic
+    -- 
+   );
+   -- 
+  end component access_instruction_buffer_Operator;
+
+
+  component instruction_buffer is  -- system 
+  port (-- 
+    clk : in std_logic;
+    reset : in std_logic;
+    icache_to_instruction_buffer_response_pipe_write_data: in std_logic_vector(89 downto 0);
+    icache_to_instruction_buffer_response_pipe_write_req : in std_logic_vector(0 downto 0);
+    icache_to_instruction_buffer_response_pipe_write_ack : out std_logic_vector(0 downto 0);
+    instruction_buffer_to_cpu_response_pipe_read_data: out std_logic_vector(89 downto 0);
+    instruction_buffer_to_cpu_response_pipe_read_req : in std_logic_vector(0 downto 0);
+    instruction_buffer_to_cpu_response_pipe_read_ack : out std_logic_vector(0 downto 0);
+    noblock_cpu_to_instruction_buffer_request_pipe_write_data: in std_logic_vector(40 downto 0);
+    noblock_cpu_to_instruction_buffer_request_pipe_write_req : in std_logic_vector(0 downto 0);
+    noblock_cpu_to_instruction_buffer_request_pipe_write_ack : out std_logic_vector(0 downto 0);
+    noblock_instruction_buffer_to_icache_request_pipe_read_data: out std_logic_vector(40 downto 0);
+    noblock_instruction_buffer_to_icache_request_pipe_read_req : in std_logic_vector(0 downto 0);
+    noblock_instruction_buffer_to_icache_request_pipe_read_ack : out std_logic_vector(0 downto 0)); -- 
+  -- 
+  end component; 
+
+  component instruction_buffer_optimized is  -- system 
+  port (-- 
+    clk : in std_logic;
+    reset : in std_logic;
+    icache_to_instruction_buffer_response_pipe_write_data: in std_logic_vector(89 downto 0);
+    icache_to_instruction_buffer_response_pipe_write_req : in std_logic_vector(0 downto 0);
+    icache_to_instruction_buffer_response_pipe_write_ack : out std_logic_vector(0 downto 0);
+    instruction_buffer_to_cpu_response_pipe_read_data: out std_logic_vector(89 downto 0);
+    instruction_buffer_to_cpu_response_pipe_read_req : in std_logic_vector(0 downto 0);
+    instruction_buffer_to_cpu_response_pipe_read_ack : out std_logic_vector(0 downto 0);
+    noblock_cpu_to_instruction_buffer_request_pipe_write_data: in std_logic_vector(40 downto 0);
+    noblock_cpu_to_instruction_buffer_request_pipe_write_req : in std_logic_vector(0 downto 0);
+    noblock_cpu_to_instruction_buffer_request_pipe_write_ack : out std_logic_vector(0 downto 0);
+    noblock_instruction_buffer_to_icache_request_pipe_read_data: out std_logic_vector(40 downto 0);
+    noblock_instruction_buffer_to_icache_request_pipe_read_req : in std_logic_vector(0 downto 0);
+    noblock_instruction_buffer_to_icache_request_pipe_read_ack : out std_logic_vector(0 downto 0);
+    core_id: in std_logic_vector(3 downto 0);
+    cpu_id: in std_logic_vector(3 downto 0)); -- 
+  -- 
+  end component; 
 end package;
 library ieee;
 use ieee.std_logic_1164.all;
@@ -3955,6 +3926,7 @@ entity GenericCacheTagsWithInvalidate is --
     invalidate_line_address: in std_logic_vector(((address_width-1) - log2_block_size_in_bytes) downto 0);
     is_hit : out  std_logic_vector(0 downto 0);
     permissions_ok : out  std_logic_vector(0 downto 0);
+    lookup_acc: out std_logic_vector(2 downto 0);
     clk, reset: in std_logic
     -- 
   );
@@ -4202,6 +4174,7 @@ begin --
 								lookup_acc_var);
 			end if;
 		end if;
+		lookup_acc <= lookup_acc_var;
 		is_hit_sig <= hit_var;
 		permissions_ok_sig <= perms_ok_var;
 	end process;
@@ -4271,6 +4244,7 @@ entity GenericDcacheTagsArraysWithInvalidate is --
 end entity GenericDcacheTagsArraysWithInvalidate;
 architecture Structural of GenericDcacheTagsArraysWithInvalidate is -- 
 	signal tags_done, arrays_done: std_logic;
+	signal lookup_acc: std_logic_vector(2 downto 0);
 begin --  
 	done <= tags_done and arrays_done;
 
@@ -4295,6 +4269,7 @@ begin --
 					invalidate_line_address => invalidate_line_address,
 					is_hit => is_hit,
 					permissions_ok => permissions_ok,
+					lookup_acc => lookup_acc,
 					clk => clk, reset => reset);
 
 	   arrayInst: GenericCacheArray 
@@ -4508,6 +4483,7 @@ entity GenericIcacheTagsArraysWithInvalidate is --
     invalidate_line_address: in std_logic_vector(((address_width-1) - log2_block_size_in_bytes) downto 0);
     is_hit : out  std_logic_vector(0 downto 0);
     permissions_ok : out  std_logic_vector(0 downto 0);
+    lookup_acc: out std_logic_vector(2 downto 0);
     access_array_command : in  std_logic_vector(2 downto 0);
     access_addr : in  std_logic_vector(address_width-1 downto 0);
     access_dword : in  std_logic_vector((8*(2**log2_data_width_in_bytes))-1 downto 0);
@@ -4543,6 +4519,7 @@ begin --
 					invalidate_line_address => invalidate_line_address,
 					is_hit => is_hit,
 					permissions_ok => permissions_ok,
+					lookup_acc => lookup_acc,
 					clk => clk, reset => reset);
 
 	   arrayInst: GenericIcacheArray 
@@ -4928,6 +4905,7 @@ entity GenericSetAssociativeCacheTagsArraysWithInvalidate is --
     invalidate_line_address: in std_logic_vector(((address_width-1) - log2_block_size_in_bytes) downto 0);
     is_hit : out  std_logic_vector(0 downto 0);
     permissions_ok : out  std_logic_vector(0 downto 0);
+    lookup_acc : out  std_logic_vector(2 downto 0);
     dword_out : out  std_logic_vector((8*(2**log2_data_width_in_bytes))-1 downto 0);
     clk, reset: in std_logic
     -- 
@@ -5009,6 +4987,7 @@ begin --
 	cpu_permissions_ok <= 
 		accessPermissionsOk (access_S_reg, access_is_ifetch_reg, 
 					access_is_read_reg, tags_acc) and access_tag_lookup_reg;
+	lookup_acc <= tags_acc;
 	tags_hit  <= cpu_permissions_ok and tags_done and tags_lookup_is_valid and access_tag_lookup_reg;
 	tags_miss <= tags_done and ((not cpu_permissions_ok) or (not tags_lookup_is_valid)) and access_tag_lookup_reg;
 	tags_insert_done <= tags_done and access_tag_insert_reg;
@@ -5447,6 +5426,8 @@ use AjitCustom.CachePackage.all;
 
 library ahir;
 use ahir.BaseComponents.all;
+use ahir.Subprograms.all;
+
 use ahir.mem_component_pack.all;
 use ahir.Types.all;
 use ahir.Utilities.all;
@@ -5515,8 +5496,33 @@ entity GenericSetAssociativeCacheTagsWithInvalidate is --
   -- 
 end entity GenericSetAssociativeCacheTagsWithInvalidate;
 architecture Behave of GenericSetAssociativeCacheTagsWithInvalidate is -- 
+	function isEqualSLV(x: std_logic_vector; y : std_logic_vector) return std_logic is
+		variable ret_var : std_logic;
+		variable t: std_logic_vector(1 to x'length);
+		alias lx: std_logic_vector(1 to x'length) is x;
+		alias ly: std_logic_vector(1 to y'length) is y;
+	begin
+		for I in 1 to x'length loop
+			t(I) := not (lx(I) xor ly(I));
+		end loop;
+		ret_var := AndReduce(t);
+		return(ret_var);
+	end function;
 
-
+	function OrReduceSLV(x: std_logic_vector; constant N: integer) return std_logic_vector is
+		alias lx: std_logic_vector(x'length-1 downto 0) is x;
+		variable tvar: std_logic_vector((x'length/N)-1 downto 0);
+		variable result_var : std_logic_vector(N-1 downto 0);
+	begin
+		for I in 0 to N-1 loop
+			for J in 0 to (x'length/N)-1 loop
+				tvar(J) := lx(I + (J*N));
+			end loop;
+			result_var (I) := OrReduce(tvar);
+		end loop;
+		return result_var;
+	end function;
+		
 	constant number_of_blocks : integer := (2**log2_number_of_blocks);
 	constant bytes_per_block : integer := (2**log2_block_size_in_bytes);
 	constant data_width_in_bytes : integer := (2**log2_data_width_in_bytes);
@@ -5895,40 +5901,43 @@ begin --
 	------------------------------------------------------------------------------------------------
 	--  output logic
 	------------------------------------------------------------------------------------------------
-	-- is-hit?
-	process( valid_bits, 
-			active_set_id_reg,
-			access_tag_addr_reg,
-			lookup_reg,
-			tag_mem_read_data)
-		variable valid_var: std_logic;
-		variable lookup_acc_var : std_logic_vector(2 downto 0);
-		variable tag_var: std_logic_vector(tag_width-1 downto 0);
-		variable lookup_valid_var : std_logic;
-		variable set_valids: std_logic_vector(associativity-1 downto 0);
-		variable active_lookup_index_in_set_var : std_logic_vector(log2_associativity-1 downto 0);
+
+	-- Some selection logic... needs to be fast
+	matchBlock: block
+		signal set_valids: std_logic_vector(associativity-1 downto 0);
+		signal lookup_acc_aggregate: std_logic_vector((associativity*3)-1 downto 0);
+		signal active_lookup_index_aggregate: std_logic_vector((associativity*log2_associativity)-1 downto 0);
+		signal lookup_valid_aggregate: std_logic_vector(associativity-1 downto 0);
 	begin
-		set_valids := valid_bits(active_set_id_reg);
-		lookup_valid_var := '0';
-		active_lookup_index_in_set_var := (others => '0');
-		lookup_acc_var := (others => '0');
+		set_valids <= valid_bits(active_set_id_reg);
 
-		for A in associativity-1 downto 0 loop
-			tag_var := tag_mem_read_data(A)(tag_width-1 downto 0);
-			if(set_valids(A) = '1')  and 
-				(tag_var = virtualAddressTag(access_tag_addr_reg)) and (lookup_reg = '1') then
-				lookup_acc_var := tag_mem_read_data(A)(tag_mem_data_width-1 downto tag_width);
-				lookup_valid_var := '1';
-				active_lookup_index_in_set_var := 
-					std_logic_vector(to_unsigned(A, log2_associativity));
-				exit;
-			end if;
-		end loop;
-		lookup_valid_sig           <= lookup_valid_var;
-		active_lookup_index_in_set <= active_lookup_index_in_set_var;
-		access_lookup_acc_out      <= lookup_acc_var;
+		genPar: for T in associativity-1 downto 0 generate
+			mb: block
+				signal match_sig: std_logic;
+				signal Zero3: std_logic_vector(2 downto 0);
+				signal ZeroA: std_logic_vector(log2_associativity-1 downto 0);
+			begin
 
-	end process;
+				Zero3 <= (others => '0');
+				ZeroA <= (others => '0');
+
+				match_sig <= '1' when
+						(set_valids(T) = '1') and 
+						(isEqualSLV(tag_mem_read_data(T)(tag_width-1 downto 0), virtualAddressTag(access_tag_addr_reg)) = '1') and
+						(lookup_reg = '1') else '0';
+				lookup_valid_aggregate(T) <= match_sig;
+				active_lookup_index_aggregate(((T+1)*log2_associativity)-1 downto (T*log2_associativity)) 
+						<= std_logic_vector(to_unsigned(T, log2_associativity)) when match_sig  = '1' else ZeroA;
+				lookup_acc_aggregate(((T+1)*3)-1 downto (T*3)) 
+						<= tag_mem_read_data(T)(tag_mem_data_width-1 downto tag_width) when match_sig = '1'  else Zero3;
+			end block mb;
+		end generate genPar;
+
+		lookup_valid_sig <= OrReduce(lookup_valid_aggregate);
+		access_lookup_acc_out <= OrReduceSLV (lookup_acc_aggregate, 3);
+		active_lookup_index_in_set <= OrReduceSLV (active_lookup_index_aggregate, log2_associativity);
+
+	end block matchBlock;
 
 	lookup_is_valid <= lookup_valid_sig;
 	process(lookup, active_lookup_index_in_set, 
@@ -7486,117 +7495,6 @@ begin
 end asr_daemon_arch;
 library std;
 use std.standard.all;
-library ieee;
-use ieee.std_logic_1164.all;
-library ahir;
-use ahir.BaseComponents.all;
-library AjitCustom;
-use AjitCustom.AjitCustomComponents.all;
-
-entity asr_update_64_Operator is -- 
-  port ( -- 
-    sample_req: in boolean;
-    sample_ack: out boolean;
-    update_req: in boolean;
-    update_ack: out boolean;
-    core_id: in std_logic_vector(7 downto 0);
-    thread_id: in std_logic_vector(7 downto 0);
-    access_cmd : in  std_logic_vector(43 downto 0);
-    read_val : out  std_logic_vector(31 downto 0);
-    clk, reset: in std_logic
-    -- 
-  );
-  -- 
-end entity asr_update_64_Operator;
-
-architecture MpdIsAKlutz of asr_update_64_Operator is
-	signal trigger, done: boolean;
-	signal trigger_level, done_level: std_logic;
-
-	type FsmState is (Idle, Busy);
-	signal fsm_state: FsmState;
-
-    	signal core_read_val : std_logic_vector(31 downto 0);
-    	signal core_read_val_reg : std_logic_vector(31 downto 0);
-
-	signal use_cpu_id: std_logic;
-begin
-
-   use_cpu_id <= '1';
-
-   trig_join: join2 generic map (name => "bpbV2:trig-join", bypass => true)
-			port map (pred0 => sample_req, pred1 => update_req,
-					symbol_out => trigger, clk => clk, reset => reset);
-
-    sample_ack <= done;
-    update_ack <= done;
-
-
-   process(clk, reset, trigger,done_level, fsm_state)
-	variable next_fsm_state_var: FsmState;
-	variable done_var: boolean;
-	variable trigger_level_var: std_logic;
-
-	variable latch_read_val_var: boolean;
-   begin
-	next_fsm_state_var := fsm_state;
-	latch_read_val_var := false;
-
-	done_var := false;
-
-	trigger_level_var := '0';
-	case fsm_state is
-		when Idle =>
-			if(trigger) then
-				trigger_level_var := '1';
-				next_fsm_state_var := Busy;
-			end if;
-		when Busy =>
-			if(done_level = '1') then
-				done_var := true;
-				latch_read_val_var := true;
-				if(trigger) then
-					trigger_level_var := '1';
-					next_fsm_state_var := busy;
-				else
-					next_fsm_state_var := Idle;
-				end if;
-			end if;
-	end case;
-
-	done <= done_var;
-	trigger_level <= trigger_level_var;
-
-	if(clk'event and clk='1') then
-		if(reset = '1') then
-			fsm_state <= Idle;
-		else
-			fsm_state <= next_fsm_state_var;
-			if(latch_read_val_var) then
-				core_read_val_reg <= core_read_val;
-			end if;
-		end if;
-	end if;
-
-   end process;
-  
-   core: asr_update_core
-  	port map ( -- 
-			trigger => trigger_level,
-			done => done_level,
-			core_id => core_id,
-			thread_id => thread_id,
-			access_cmd => access_cmd,
-			read_val => core_read_val,
-    			clk => clk,
-    			reset => reset
-  			);
-
-   read_val <= core_read_val when (done_level = '1') else core_read_val_reg;
-
-end architecture MpdIsAKlutz;
-library std;
-use std.standard.all;
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -7635,32 +7533,18 @@ entity asr_update_core is --
     access_cmd : in  std_logic_vector(43 downto 0);
     read_val : out  std_logic_vector(31 downto 0);
     clk, reset: in std_logic;
-    trigger : in std_logic;
-    done    : out std_logic
+    trigger : in boolean
   );
   -- 
 end entity asr_update_core;
 
 architecture asr_update_core_arch of asr_update_core is -- 
+
 	signal write_reg_id, read_reg_id, read_reg_id_reg : std_logic_vector(4 downto 0);
 	signal write_reg_value : std_logic_vector(31 downto 0);
 	signal write_valid, read_valid: std_logic;
 
-
-	type FsmState is (ResetState, IdleState, ReadState, ResponseState);
-        signal fsm_state, next_fsm_state: FsmState;
-
-	signal mem_addr: std_logic_vector(4 downto 0);
-	signal mem_write_data, mem_read_data: std_logic_vector(31 downto 0);
-	signal mem_enable, mem_read_writebar: std_logic;
-
-	signal counter_reg: integer range  0 to 31;
-
-	signal read_data, read_data_reg: std_logic_vector(31 downto 0);
-
-	-- register the trigger, if it arrives
-	-- in the reset state.
-	signal trigger_reg : std_logic;
+	signal read_data, mem_read_data: std_logic_vector(31 downto 0);
 
 	--
 	-- 64-bit cycle count will be returned in ASR30 and ASR31
@@ -7670,6 +7554,10 @@ architecture asr_update_core_arch of asr_update_core is --
 
 	signal   thread_description_value: std_logic_vector(31 downto 0);
 	constant MY_MAGIC_STRING: std_logic_vector(15 downto 0) := X"5052";
+
+	signal is_special_read, is_special_read_reg: boolean;
+	signal special_read_data, special_read_data_reg: std_logic_vector(31 downto 0);
+
 -- see comment above..
 --##decl_synopsys_sync_set_reset##
 begin
@@ -7677,186 +7565,74 @@ begin
 	-- input side unpacking.
 	-- write-reg-id write-reg-value write-valid read-reg-id read-valid
 	--     5             32             1           5          1
-	read_valid <= access_cmd(0);
+	read_valid <= access_cmd(0) when trigger else '0';
 	read_reg_id <= access_cmd(5 downto 1);
-	write_valid <= access_cmd(6);
+	write_valid <= access_cmd(6) when trigger else '0';
 	write_reg_value <= access_cmd(38 downto 7);
 	write_reg_id <= access_cmd(43 downto 39);
 
 	-- output side packing.
-	read_val <= read_data;
+	read_val <= special_read_data_reg when is_special_read_reg else mem_read_data;
 
 	-- state machine.
-	process(clk, reset, 
-			fsm_state,
-			counter_reg, cycle_count_register,
-			read_valid, read_reg_id, read_reg_id_reg, write_valid, write_reg_value, write_reg_id,
-			mem_read_data,
-			trigger)
-
-		variable next_fsm_state_var: FsmState;
-		variable mem_addr_var: std_logic_vector(4 downto 0);
-		variable mem_write_data_var: std_logic_vector(31 downto 0);
-		variable mem_enable_var, mem_read_writebar_var: std_logic;
-	
-		variable next_counter_var : integer range 0 to 31;
+	process(clk, reset, trigger, cycle_count_register)
 		variable next_cycle_count_register_var: unsigned(63 downto 0);
-
-		variable done_var : std_logic;
-
-		variable read_data_var : std_logic_vector(31 downto 0);
-		variable read_data_reg_var : std_logic_vector(31 downto 0);
-		variable next_read_reg_id_reg_var : std_logic_vector(4 downto 0);
-
-		variable next_read_valid_reg_var, next_write_valid_reg_var: std_logic;
-		
-		variable next_trigger_reg_var : std_logic;
 	begin
-
-		next_fsm_state_var := fsm_state;
-		next_counter_var := counter_reg;
-		next_read_reg_id_reg_var := read_reg_id_reg;
-		next_read_valid_reg_var := read_valid_reg;
-		next_write_valid_reg_var := write_valid_reg;
-		next_trigger_reg_var := trigger_reg;
-
-		read_data_reg_var := read_data_reg;
-
-		done_var := '0';
-
 		next_cycle_count_register_var := cycle_count_register + 1;
-
-		mem_write_data_var := (others => '0');
-		mem_addr_var := (others => '0');
-		mem_enable_var := '0';
-		mem_read_writebar_var := '1';
-
-		read_data_var := (others => '0');
-
-		case fsm_state is
-			when ResetState =>
-				mem_enable_var := '1';
-				mem_read_writebar_var 	 := '0';
-				mem_write_data_var := (others => '0');
-				mem_addr_var := std_logic_vector(to_unsigned(counter_reg, 5));
-				if (counter_reg = 31) then
-				    next_fsm_state_var := IdleState;
-				    next_counter_var := 0;
-				else
-				    next_counter_var := counter_reg + 1;
-				end if;
-				if(trigger = '1') then
-					next_trigger_reg_var := '1';
-				end if;
-			when IdleState =>
-				read_data_var := read_data_reg; -- hold the last value...
-				if((trigger = '1') or (trigger_reg = '1')) then
-					next_read_reg_id_reg_var := read_reg_id;
-					next_trigger_reg_var := '0';
-					if(write_valid = '1') then
-						mem_enable_var := '1';
-						mem_read_writebar_var := '0';
-						mem_addr_var := write_reg_id;
-						mem_write_data_var := write_reg_value;
-						next_write_valid_reg_var := '1';
-						if (read_valid = '1') then 	
-							next_fsm_state_var := ReadState;
-							next_read_valid_reg_var := '1';
-						else
-							next_fsm_state_var := ResponseState;
-							next_read_valid_reg_var := '0';
-						end if;
-					elsif (read_valid = '1') then
-						next_read_valid_reg_var := '1';
-						next_write_valid_reg_var := '0';
-						mem_enable_var := '1';
-						mem_read_writebar_var := '1';
-						mem_addr_var := read_reg_id;
-						mem_write_data_var := (others => '0');
-						next_fsm_state_var := ResponseState;
-					else
-						next_read_valid_reg_var := '0';
-						next_write_valid_reg_var := '0';
-						read_data_var := (others => '0');
-						next_fsm_state_var := ResponseState;
-					end if;
-				end if;
-			when ReadState =>
-
-				mem_enable_var := '1';
-				mem_read_writebar_var := '1';
-				mem_addr_var := read_reg_id_reg;
-				mem_write_data_var := (others => '0');
-				next_fsm_state_var := ResponseState;
-				
-			when ResponseState =>
-				done_var := '1';
-				if(read_valid_reg = '1') then
-					if(read_reg_id_reg = "11110") then
-						read_data_var := std_logic_vector(cycle_count_register(63 downto 32));
-					elsif(read_reg_id_reg = "11111") then
-						read_data_var := std_logic_vector(cycle_count_register(31 downto 0));
-					-- core_id, cpu_id mapped to asr 29 
-					elsif (read_reg_id_reg = "11101")  then
-						read_data_var := MY_MAGIC_STRING & core_id & thread_id;
-					-- thread description information register mapped to asr 28.
-					elsif (read_reg_id_reg = "11100")  then
-						read_data_var := thread_description_value;
-					else
-						read_data_var := mem_read_data;	
-					end if;
-				else
-					read_data_var := (others => '0');
-				end if;
-				read_data_reg_var := read_data_var;
-				next_fsm_state_var := IdleState;
-				
-
-		end case;
-
-		read_data <= read_data_var;
-
-		done <= done_var;
-
-		mem_addr <= mem_addr_var;
-		mem_write_data <= mem_write_data_var;
-		mem_enable <= mem_enable_var;
-		mem_read_writebar <= mem_read_writebar_var;
-
 
 		if(clk'event and clk = '1') then
 			if(reset = '1') then
-				fsm_state <= ResetState;
-				counter_reg <= 0;
-				read_reg_id_reg <= (others => '0');
 				cycle_count_register <= (others => '0');
-				read_valid_reg <= '0';
-				trigger_reg <= '0';
-				write_valid_reg <= '0';
-				read_data_reg <= (others => '0');
 			else 
-				fsm_state <= next_fsm_state_var;
-				counter_reg <= next_counter_var;
-				read_reg_id_reg <= next_read_reg_id_reg_var;
 				cycle_count_register <= next_cycle_count_register_var;
-				read_valid_reg <= next_read_valid_reg_var;
-				write_valid_reg <= next_write_valid_reg_var;
-				read_data_reg <= read_data_reg_var;
-				trigger_reg <= next_trigger_reg_var;
+				if(trigger) then
+					is_special_read_reg <= is_special_read;
+					special_read_data_reg <= special_read_data;
+				end if;
 			end if;
 		end if;
 	end process;
 	
 
-	bb: base_bank 
-		generic map (name => "asr_update_core:base_bank",
-				g_addr_width => 5, g_data_width => 32)
-		port map (datain => mem_write_data, dataout => mem_read_data,
-				addrin => mem_addr, enable => mem_enable,
-					writebar => mem_read_writebar, clk => clk, reset => reset);
+	bb: register_file_1w_1r_port
+		generic map ("asr_update_core:register_file_1w_1r_port", g_addr_width => 5, g_data_width => 32)
+			port map (
+				-- write port 0
+	 			datain_0 => write_reg_value,
+         			addrin_0 => write_reg_id,
+         			enable_0 => write_valid,
+	 			-- read port 1
+         			dataout_1 => mem_read_data,
+         			addrin_1  => read_reg_id,
+         			enable_1  => read_valid,
+         			clk => clk,
+         			reset => reset);
 
-
-	
+	process(read_reg_id, cycle_count_register, thread_description_value)
+	     variable read_data_var: std_logic_vector(31 downto 0);
+	     variable is_special_read_var : boolean;
+	begin
+	     read_data_var := (others => '0');
+	     is_special_read_var := false;
+             if(read_reg_id= "11110") then
+                   read_data_var := std_logic_vector(cycle_count_register(63 downto 32));
+		   is_special_read_var := true;
+             elsif(read_reg_id = "11111") then
+                    read_data_var := std_logic_vector(cycle_count_register(31 downto 0));
+		   is_special_read_var := true;
+             -- core_id, cpu_id mapped to asr 29 
+             elsif (read_reg_id  = "11101")  then
+                   read_data_var := MY_MAGIC_STRING & core_id & thread_id;
+		   is_special_read_var := true;
+             -- thread description information register mapped to asr 28.
+             elsif (read_reg_id = "11100")  then
+                   read_data_var := thread_description_value;
+		   is_special_read_var := true;
+	     end if;
+	     is_special_read   <= is_special_read_var;
+	     special_read_data <= read_data_var;
+	end process;
+     
 	
         -- Thread description value.....
 	thread_description_value(31 downto 30) <=
@@ -7923,91 +7699,55 @@ entity asr_update_Operator is --
 end entity asr_update_Operator;
 
 architecture MpdIsAKlutz of asr_update_Operator is
-	signal trigger, done: boolean;
-	signal trigger_level, done_level: std_logic;
-
-	type FsmState is (Idle, Busy);
-	signal fsm_state: FsmState;
+	signal trigger, trigger_reg: boolean;
 
     	signal core_read_val : std_logic_vector(31 downto 0);
     	signal core_read_val_reg : std_logic_vector(31 downto 0);
-
-	signal cpu_id: std_logic_vector(1 downto 0);
-	signal use_cpu_id: std_logic;
+    	signal access_cmd_reg, access_cmd_qualified : std_logic_vector(43 downto 0);
 begin
-
-   cpu_id <= (others => '0');
-   use_cpu_id <= '0';
 
    trig_join: join2 generic map (name => "bpbV2:trig-join", bypass => true)
 			port map (pred0 => sample_req, pred1 => update_req,
 					symbol_out => trigger, clk => clk, reset => reset);
 
-    sample_ack <= done;
-    update_ack <= done;
-
-
-   process(clk, reset, trigger,done_level, fsm_state)
-	variable next_fsm_state_var: FsmState;
-	variable done_var: boolean;
-	variable trigger_level_var: std_logic;
-
-	variable latch_read_val_var: boolean;
-   begin
-	next_fsm_state_var := fsm_state;
-	latch_read_val_var := false;
-
-	done_var := false;
-
-	trigger_level_var := '0';
-	case fsm_state is
-		when Idle =>
-			if(trigger) then
-				trigger_level_var := '1';
-				next_fsm_state_var := Busy;
-			end if;
-		when Busy =>
-			if(done_level = '1') then
-				done_var := true;
-				latch_read_val_var := true;
-				if(trigger) then
-					trigger_level_var := '1';
-					next_fsm_state_var := busy;
-				else
-					next_fsm_state_var := Idle;
-				end if;
-			end if;
-	end case;
-
-	done <= done_var;
-	trigger_level <= trigger_level_var;
-
-	if(clk'event and clk='1') then
+    sample_ack <= trigger;
+    
+    process(clk, reset)
+    begin
+	if(clk'event and (clk = '1')) then
 		if(reset = '1') then
-			fsm_state <= Idle;
+			update_ack <= false;
+			access_cmd_reg <= (others => '0');
 		else
-			fsm_state <= next_fsm_state_var;
-			if(latch_read_val_var) then
+    			update_ack <= trigger;
+			trigger_reg <= trigger;
+			if(trigger_reg) then
 				core_read_val_reg <= core_read_val;
+			end if;
+
+			if(sample_req) then
+				access_cmd_reg <= access_cmd;
 			end if;
 		end if;
 	end if;
+    end process;
 
-   end process;
+    access_cmd_qualified <= access_cmd when sample_req else access_cmd_reg;
+
+
   
    core: asr_update_core
   	port map ( -- 
 			core_id => core_id,
 			thread_id => thread_id,
-			trigger => trigger_level,
-			done => done_level,
-			access_cmd => access_cmd,
+			trigger => trigger,
+			access_cmd => access_cmd_qualified,
 			read_val => core_read_val,
     			clk => clk,
     			reset => reset
-  			);
+  		);
 
-   read_val <= core_read_val when (done_level = '1') else core_read_val_reg;
+   read_val <= core_read_val when trigger_reg else core_read_val_reg;
 
 end architecture MpdIsAKlutz;
 -- Pipe multiplexor at input end of iu-register file
@@ -8192,7 +7932,7 @@ begin --
 	data_from_ls_to_wb <= data_from_ls(65 downto 0)  when get_from_ls else (others => '0');
 
 	-- from fpunit
-	qbFP: QueueBase
+	qbFP: QueueWithBypass
 		generic map (name => "iu_wb_in_mux_qbFP", queue_depth => 3, data_width => 13)
 		port map (
 			clk => clk, reset => reset,
@@ -8417,7 +8157,7 @@ begin --
 	data_from_ls_to_wb <= data_from_ls(65 downto 0)  when get_from_ls else (others => '0');
 
 	-- from fpunit
-	qbFP: QueueBase
+	qbFP: QueueWithBypass
 		generic map (name => "iu_wb_in_mux_qbFP", queue_depth => 3, data_width => 13)
 		port map (
 			clk => clk, reset => reset,
@@ -8461,6 +8201,523 @@ begin --
     	noblock_iunit_writeback_in_args_pipe_pipe_write_data <= data_to_iuregs;
 
 end iunit_writeback_in_mux_daemon_arch;
+library std;
+use std.standard.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+
+library std;
+use std.standard.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library ahir;
+use ahir.mem_component_pack.all;
+
+library AjitCustom;
+use AjitCustom.AjitCustomComponents.all;
+
+-- two ports 
+--    port 1 for reads
+--    port 0 for writes
+--
+-- Note: on write/read collision,
+--     the written value is available as read_data_0
+--     and maintained until the next enable.
+-- 
+entity window_registers_bank is
+	generic (name : string := "anon");
+	port (trigger: in boolean; 
+		write_enable_0: in std_logic;
+		address_0, address_1: in std_logic_vector(5 downto 0);
+		read_data_1 : out std_logic_vector(31 downto 0);
+		write_data_0: in std_logic_vector(31 downto 0);
+		clk, reset: in std_logic);
+end entity window_registers_bank;
+architecture Simple of window_registers_bank is
+	signal mem_data_out_1, mem_data_in_0, bypass_data_reg, mem_data_out_1_reg: std_logic_vector(31 downto 0);
+	signal use_bypass_reg, trigger_reg, collision: boolean;
+	signal mem_enable_0, mem_enable_1: std_logic;
+begin
+	collision <= (write_enable_0 = '1') and (address_0 = address_1);
+	-- The whole bypass angle..
+	process(clk, reset, trigger, trigger_reg, collision, write_enable_0, write_data_0)
+	begin
+		if(clk'event and (clk = '1')) then
+			if(reset = '1') then
+				use_bypass_reg <= false;
+			else
+				if(trigger) then 
+					use_bypass_reg <= collision;
+					bypass_data_reg    <= write_data_0;
+				end if;
+
+				trigger_reg <= trigger;
+
+				if(trigger_reg) then
+					mem_data_out_1_reg <= mem_data_out_1;
+				end if;	
+			end if;
+		end if;
+	end process;
+
+
+	mem_data_in_0 <= write_data_0;
+	mem_enable_0  <= write_enable_0 when trigger else '0';
+	mem_enable_1  <= '1'  when (trigger and (not collision)) else '0';
+
+
+	bb: register_file_1w_1r_port
+		generic map (name & ":register_file_1w_1r_port", g_addr_width => 6, g_data_width => 32)
+			port map (
+				-- write port 0
+	 			datain_0 => mem_data_in_0,
+         			addrin_0 => address_0,
+         			enable_0 => mem_enable_0,
+	 			-- read port 1
+         			dataout_1 => mem_data_out_1,
+         			addrin_1  => address_1,
+         			enable_1  => mem_enable_1,
+         			clk => clk,
+         			reset => reset);
+
+	-- either from bypass data or from mem data (note use of mem_data_out_reg.
+	read_data_1 <= bypass_data_reg when use_bypass_reg else mem_data_out_1 when trigger_reg else 
+				mem_data_out_1_reg;
+end Simple;
+
+
+library std;
+use std.standard.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library aHiR_ieee_proposed;
+use aHiR_ieee_proposed.math_utility_pkg.all;
+use aHiR_ieee_proposed.fixed_pkg.all;
+use aHiR_ieee_proposed.float_pkg.all;
+library ahir;
+use ahir.basecomponents.all;
+library AjitCustom;
+use AjitCustom.AjitCustomComponents.all;
+entity iu_registers_3r_1w_port_register_file_inner is -- 
+  port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    rs1 : in  std_logic_vector(4 downto 0);
+    rs2 : in  std_logic_vector(4 downto 0);
+    read_rd : in  std_logic_vector(4 downto 0);
+    read_cwp : in  std_logic_vector(4 downto 0);
+    write_gpr_even : in  std_logic_vector(0 downto 0);
+    write_gpr_odd : in  std_logic_vector(0 downto 0);
+    write_rd : in  std_logic_vector(4 downto 0);
+    write_gpr_value_even : in  std_logic_vector(31 downto 0);
+    write_gpr_value_odd : in  std_logic_vector(31 downto 0);
+    write_cwp : in  std_logic_vector(4 downto 0);
+    reg_pair_values : out  std_logic_vector(191 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+  -- 
+end entity iu_registers_3r_1w_port_register_file_inner;
+architecture iu_registers_3r_1w_port_register_file_inner_arch of iu_registers_3r_1w_port_register_file_inner is -- 
+
+	signal trigger:boolean;
+
+	signal mem_enable_rs1_even, mem_enable_rs1_odd,
+			mem_enable_rs2_even, mem_enable_rs2_odd,
+				mem_enable_rd_even, mem_enable_rd_odd: std_logic;
+	signal mem_rs1_read_address, mem_rs2_read_address,
+			mem_read_rd_read_address, mem_write_rd_write_address : std_logic_vector (5 downto 0);
+
+	signal mem_rs1_read_data, mem_rs2_read_data,
+			mem_read_rd_read_data, mem_write_rd_write_data : std_logic_vector (63 downto 0);
+			
+	signal mem_writebar_rs1_even, mem_writebar_rs1_odd,
+			mem_writebar_rs2_even, mem_writebar_rs2_odd,
+				mem_writebar_rd_even, mem_writebar_rd_odd: std_logic;
+
+	type RegArray is array (natural range <>) of std_logic_vector(31 downto 0);
+
+	-- global_registers are handled separately.
+	signal global_registers : RegArray (0 to 7);
+
+
+	signal rs1_data_reg_even, 
+		rs1_data_reg_odd,
+		rs2_data_reg_even, 
+		rs2_data_reg_odd,
+		rd_data_reg_even, 
+		rd_data_reg_odd: std_logic_vector(31 downto 0);
+
+	signal g_rs1_data_reg_even, 
+		g_rs1_data_reg_odd,
+		g_rs2_data_reg_even, 
+		g_rs2_data_reg_odd,
+		g_read_rd_data_reg_even, 
+		g_read_rd_data_reg_odd: std_logic_vector(31 downto 0);
+
+
+	signal rs1_index, rs2_index, read_rd_index, write_rd_index: integer range 0 to 31;
+	signal rs1_even_index, rs2_even_index, read_rd_even_index, write_rd_even_index: integer range 0 to 31;
+	signal rs1_odd_index, rs2_odd_index, read_rd_odd_index, write_rd_odd_index: integer range 0 to 31;
+	signal rs1_pair_index, rs2_pair_index, read_rd_pair_index, write_rd_pair_index: integer range 0 to 15;
+
+	signal use_rs1_global, use_rs2_global, use_read_rd_global, use_write_rd_global: boolean;
+	signal use_rs1_global_reg, use_rs2_global_reg, use_read_rd_global_reg, use_write_rd_global_reg: boolean;
+	
+	signal write_enable_even, write_enable_odd: std_logic;
+
+	signal bypass_global_to_rs1_even, bypass_global_to_rs2_even, bypass_global_to_read_rd_even: boolean;
+	signal bypass_global_to_rs1_odd, bypass_global_to_rs2_odd, bypass_global_to_read_rd_odd: boolean;
+	
+	signal g_rs1_index_match, g_rs2_index_match, g_read_rd_index_match: boolean;
+
+	signal rs1_pair_value, rs2_pair_value, rd_pair_value: std_logic_vector(63 downto 0);
+begin --  
+
+	-------------------------------------------------------------------------------
+	-- trigger logic
+	-------------------------------------------------------------------------------
+        trig_join: join2 generic map (name => "iu_3r_1w:trig-join", bypass => true)
+			port map (pred0 => sample_req, pred1 => update_req,
+					symbol_out => trigger, clk => clk, reset => reset);
+	sample_ack <= trigger;
+	process(clk, reset)
+	begin
+		if(clk'event and (clk = '1')) then
+			if(reset = '1') then
+				update_ack <= false;
+			else
+				update_ack <= trigger;
+			end if;
+		end if;
+	end process;
+
+	-------------------------------------------------------------------------------
+	-- Globals.
+	-------------------------------------------------------------------------------
+	rs1_index          <= to_integer(unsigned(rs1));
+	rs1_even_index     <= to_integer(unsigned(rs1 and "11110"));
+	rs1_odd_index      <= to_integer(unsigned(rs1 or  "00001"));
+	rs1_pair_index     <= to_integer(unsigned(rs1(4 downto 1)));
+
+	use_rs1_global <= (rs1_index < 8);
+
+	rs2_index      <= to_integer(unsigned(rs2));
+	rs2_even_index     <= to_integer(unsigned(rs2 and "11110"));
+	rs2_odd_index      <= to_integer(unsigned(rs2 or  "00001"));
+	rs2_pair_index     <= to_integer(unsigned(rs2(4 downto 1)));
+
+	use_rs2_global <= (rs2_index < 8);
+
+	read_rd_index  <= to_integer(unsigned(read_rd));
+	read_rd_even_index     <= to_integer(unsigned(read_rd and "11110"));
+	read_rd_odd_index      <= to_integer(unsigned(read_rd or  "00001"));
+	read_rd_pair_index     <= to_integer(unsigned(read_rd(4 downto 1)));
+
+	use_read_rd_global <= (read_rd_index < 8);
+
+	write_rd_index <= to_integer(unsigned(write_rd));
+	write_rd_even_index     <= to_integer(unsigned(write_rd and "11110"));
+	write_rd_odd_index      <= to_integer(unsigned(write_rd or  "00001"));
+	write_rd_pair_index     <= to_integer(unsigned(write_rd(4 downto 1)));
+
+	use_write_rd_global <= (write_rd_index < 8);
+
+	-- bypass the global write to global read..
+	g_rs1_index_match <= (rs1_pair_index = write_rd_pair_index);
+	g_rs2_index_match <= (rs2_pair_index = write_rd_pair_index);
+	g_read_rd_index_match <= (read_rd_pair_index = write_rd_pair_index);
+
+	-- do not bypass to register 0!!
+	bypass_global_to_rs1_even     <= use_rs1_global     and  g_rs1_index_match     and (write_gpr_even(0) = '1') and (write_rd_pair_index /= 0);
+	bypass_global_to_rs2_even     <= use_rs2_global     and  g_rs2_index_match     and (write_gpr_even(0) = '1') and (write_rd_pair_index /= 0);
+	bypass_global_to_read_rd_even <= use_read_rd_global and  g_read_rd_index_match and (write_gpr_even(0) = '1') and (write_rd_pair_index /= 0);
+
+	bypass_global_to_rs1_odd     <= use_rs1_global     and g_rs1_index_match     and (write_gpr_odd(0) = '1');
+	bypass_global_to_rs2_odd     <= use_rs2_global     and g_rs2_index_match     and (write_gpr_odd(0) = '1');
+	bypass_global_to_read_rd_odd <= use_read_rd_global and g_read_rd_index_match and (write_gpr_odd(0) = '1');
+
+	-------------------------------------------------------------------------------
+	-- Mux and Reg.
+	-------------------------------------------------------------------------------
+	process(clk, reset)
+	begin
+		if(clk'event and (clk = '1')) then
+			if(reset = '1') then
+				-- register 0 is always 0!
+				global_registers(0) <= (others => '0');
+			elsif(trigger) then
+				use_rs1_global_reg  <= use_rs1_global;
+				use_rs2_global_reg  <= use_rs2_global;
+				use_read_rd_global_reg  <= use_read_rd_global;
+				use_write_rd_global_reg  <= use_write_rd_global;
+
+				if(use_rs1_global) then 
+					if(bypass_global_to_rs1_even) then
+						g_rs1_data_reg_even <= write_gpr_value_even;
+					else
+						g_rs1_data_reg_even <= global_registers(rs1_even_index);
+					end if;
+
+					if(bypass_global_to_rs1_odd) then
+						g_rs1_data_reg_odd <= write_gpr_value_odd;
+					else
+						g_rs1_data_reg_odd <= global_registers(rs1_odd_index);
+					end if;
+				end if;
+
+				if(use_rs2_global) then 
+					if(bypass_global_to_rs2_even) then
+						g_rs2_data_reg_even <= write_gpr_value_even;
+					else
+						g_rs2_data_reg_even <= global_registers(rs2_even_index);
+					end if;
+
+					if(bypass_global_to_rs2_odd) then
+						g_rs2_data_reg_odd <= write_gpr_value_odd;
+					else
+						g_rs2_data_reg_odd <= global_registers(rs2_odd_index);
+					end if;
+				end if;
+
+				if(use_read_rd_global) then 
+					if(bypass_global_to_read_rd_even) then
+						g_read_rd_data_reg_even <= write_gpr_value_even;
+					else
+						g_read_rd_data_reg_even <= global_registers(read_rd_even_index);
+					end if;
+
+					if(bypass_global_to_read_rd_odd) then
+						g_read_rd_data_reg_odd <= write_gpr_value_odd;
+					else
+						g_read_rd_data_reg_odd <= global_registers(read_rd_odd_index);
+					end if;
+				end if;
+
+				if(use_write_rd_global) then 
+					if(write_gpr_even(0) = '1') then
+						if(write_rd_even_index /= 0) then
+						    global_registers(write_rd_even_index) <= write_gpr_value_even;
+						end if;
+					end if;
+					if(write_gpr_odd(0) = '1') then
+						global_registers(write_rd_odd_index)  <= write_gpr_value_odd;
+					end if;
+				end if;
+			end if;
+		end if;
+	end process;
+	
+	-------------------------------------------------------------------------------
+	-- window bank address calculation
+	-------------------------------------------------------------------------------
+	rs1_addr_calc:
+		window_address_calculator_Volatile
+			port map (cwp => read_cwp, reg_id => rs1, reg_address => mem_rs1_read_address);
+
+	rs2_addr_calc:
+		window_address_calculator_Volatile
+			port map (cwp => read_cwp, reg_id => rs2, reg_address => mem_rs2_read_address);
+
+	read_rd_addr_calc:
+		window_address_calculator_Volatile
+			port map (cwp => read_cwp, reg_id => read_rd, reg_address => mem_read_rd_read_address);
+
+	write_rd_addr_calc:
+		window_address_calculator_Volatile
+			port map (cwp => write_cwp, reg_id => write_rd, reg_address => mem_write_rd_write_address);
+
+	-------------------------------------------------------------------------------
+	-- window banks: note that write->read bypass is already included in the bank.
+	--       also, if global_registers are used, these will not be read from.
+	-------------------------------------------------------------------------------
+	write_enable_even <= '1' when ((not use_write_rd_global) and (write_gpr_even(0) = '1')) else '0';
+	write_enable_odd  <= '1' when ((not use_write_rd_global) and (write_gpr_odd(0)  = '1')) else '0';
+
+	rs1_even_bank: window_registers_bank
+				port map (trigger => trigger,
+						write_enable_0 => write_enable_even,
+						address_0 => mem_write_rd_write_address,
+						write_data_0 => write_gpr_value_even,
+						address_1 => mem_rs1_read_address,
+						read_data_1 => mem_rs1_read_data(63 downto 32),
+						clk => clk, reset => reset);
+
+	rs1_odd_bank: window_registers_bank
+				port map (trigger => trigger,
+						write_enable_0 => write_enable_odd,
+						address_0 => mem_write_rd_write_address,
+						write_data_0 => write_gpr_value_odd,
+						address_1 => mem_rs1_read_address,
+						read_data_1 => mem_rs1_read_data(31 downto 0),
+						clk => clk, reset => reset);
+
+	rs2_even_bank: window_registers_bank
+				port map (trigger => trigger,
+						write_enable_0 => write_enable_even,
+						address_0 => mem_write_rd_write_address,
+						write_data_0 => write_gpr_value_even,
+						address_1 => mem_rs2_read_address,
+						read_data_1 => mem_rs2_read_data(63 downto 32),
+						clk => clk, reset => reset);
+
+	rs2_odd_bank: window_registers_bank
+				port map (trigger => trigger,
+						write_enable_0 => write_enable_odd,
+						address_0 => mem_write_rd_write_address,
+						write_data_0 => write_gpr_value_odd,
+						address_1 => mem_rs2_read_address,
+						read_data_1 => mem_rs2_read_data(31 downto 0),
+						clk => clk, reset => reset);
+		
+	read_rd_even_bank: window_registers_bank
+				port map (trigger => trigger,
+						write_enable_0 => write_enable_even,
+						address_0 => mem_write_rd_write_address,
+						write_data_0 => write_gpr_value_even,
+						address_1 => mem_read_rd_read_address,
+						read_data_1 => mem_read_rd_read_data(63 downto 32),
+						clk => clk, reset => reset);
+
+	read_rd_odd_bank: window_registers_bank
+				port map (trigger => trigger,
+						write_enable_0 => write_enable_odd,
+						address_0 => mem_write_rd_write_address,
+						write_data_0 => write_gpr_value_odd,
+						address_1 => mem_read_rd_read_address,
+						read_data_1 => mem_read_rd_read_data(31 downto 0),
+						clk => clk, reset => reset);
+		
+	-------------------------------------------------------------------------------
+	-- final muxing between global_registers and window banks.
+	-------------------------------------------------------------------------------
+    	rs1_pair_value(63 downto 32) <= g_rs1_data_reg_even when use_rs1_global_reg else mem_rs1_read_data (63 downto 32);
+    	rs1_pair_value(31 downto 0)  <= g_rs1_data_reg_odd  when use_rs1_global_reg else mem_rs1_read_data (31 downto 0);
+
+    	rs2_pair_value(63 downto 32) <= g_rs2_data_reg_even when use_rs2_global_reg else mem_rs2_read_data (63 downto 32);
+    	rs2_pair_value(31 downto 0)  <= g_rs2_data_reg_odd  when use_rs2_global_reg else mem_rs2_read_data (31 downto 0);
+			
+    	rd_pair_value(63 downto 32)  <= g_read_rd_data_reg_even when use_read_rd_global_reg else mem_read_rd_read_data (63 downto 32);
+    	rd_pair_value(31 downto 0)   <= g_read_rd_data_reg_odd  when use_read_rd_global_reg else mem_read_rd_read_data (31 downto 0);
+
+	reg_pair_values <= rs1_pair_value & rs2_pair_value & rd_pair_value;
+end iu_registers_3r_1w_port_register_file_inner_arch;
+
+library std;
+use std.standard.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library aHiR_ieee_proposed;
+use aHiR_ieee_proposed.math_utility_pkg.all;
+use aHiR_ieee_proposed.fixed_pkg.all;
+use aHiR_ieee_proposed.float_pkg.all;
+library ahir;
+use ahir.basecomponents.all;
+library AjitCustom;
+use AjitCustom.AjitCustomComponents.all;
+entity iu_registers_3r_1w_port_register_file_Operator is -- 
+  port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    rs1 : in  std_logic_vector(4 downto 0);
+    rs2 : in  std_logic_vector(4 downto 0);
+    read_rd : in  std_logic_vector(4 downto 0);
+    read_cwp : in  std_logic_vector(4 downto 0);
+    write_gpr_even : in  std_logic_vector(0 downto 0);
+    write_gpr_odd : in  std_logic_vector(0 downto 0);
+    write_rd : in  std_logic_vector(4 downto 0);
+    write_gpr_value_even : in  std_logic_vector(31 downto 0);
+    write_gpr_value_odd : in  std_logic_vector(31 downto 0);
+    write_cwp : in  std_logic_vector(4 downto 0);
+    reg_pair_values : out  std_logic_vector(191 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+  -- 
+end entity iu_registers_3r_1w_port_register_file_Operator;
+architecture iu_registers_3r_1w_port_register_file_Operator_arch of iu_registers_3r_1w_port_register_file_Operator is -- 
+    signal rs1_reg : std_logic_vector(4 downto 0);
+    signal rs2_reg : std_logic_vector(4 downto 0);
+    signal read_rd_reg : std_logic_vector(4 downto 0);
+    signal read_cwp_reg : std_logic_vector(4 downto 0);
+    signal write_gpr_even_reg : std_logic_vector(0 downto 0);
+    signal write_gpr_odd_reg : std_logic_vector(0 downto 0);
+    signal write_rd_reg : std_logic_vector(4 downto 0);
+    signal write_gpr_value_even_reg : std_logic_vector(31 downto 0);
+    signal write_gpr_value_odd_reg : std_logic_vector(31 downto 0);
+    signal write_cwp_reg : std_logic_vector(4 downto 0);
+
+    signal rs1_qual : std_logic_vector(4 downto 0);
+    signal rs2_qual : std_logic_vector(4 downto 0);
+    signal read_rd_qual : std_logic_vector(4 downto 0);
+    signal read_cwp_qual : std_logic_vector(4 downto 0);
+    signal write_gpr_even_qual : std_logic_vector(0 downto 0);
+    signal write_gpr_odd_qual : std_logic_vector(0 downto 0);
+    signal write_rd_qual : std_logic_vector(4 downto 0);
+    signal write_gpr_value_even_qual : std_logic_vector(31 downto 0);
+    signal write_gpr_value_odd_qual : std_logic_vector(31 downto 0);
+    signal write_cwp_qual : std_logic_vector(4 downto 0);
+
+begin --  
+	baseInst: iu_registers_3r_1w_port_register_file_inner
+		port map (clk => clk, reset => reset,
+				sample_req => sample_req, sample_ack => sample_ack,
+				update_req => update_req, update_ack => update_ack,
+    				rs1 => rs1_qual,
+    				rs2 => rs2_qual,
+    				read_rd  => read_rd_qual,
+    				read_cwp => read_cwp_qual,
+    				write_gpr_even => write_gpr_even_qual,
+    				write_gpr_odd => write_gpr_odd_qual,
+    				write_rd => write_rd_qual,
+    				write_gpr_value_even => write_gpr_value_even_qual,
+    				write_gpr_value_odd => write_gpr_value_odd_qual,
+    				write_cwp => write_cwp_qual,
+    				reg_pair_values => reg_pair_values
+			);
+
+	process(clk,reset)
+	begin
+		if(clk'event and (clk = '1')) then
+		  if(sample_req) then
+			rs1_reg <= rs1;
+			rs2_reg <= rs2;
+			read_rd_reg <= read_rd;
+			read_cwp_reg <= read_cwp;
+			write_gpr_even_reg <= write_gpr_even;
+			write_gpr_odd_reg <= write_gpr_odd;
+    			write_rd_reg <= write_rd;
+    			write_gpr_value_even_reg <= write_gpr_value_even;
+    			write_gpr_value_odd_reg <= write_gpr_value_odd;
+    			write_cwp_reg <= write_cwp;
+		  end if;
+		end if;
+	end process;
+
+	rs1_qual <= rs1 when sample_req else rs1_reg;
+	rs2_qual <= rs2 when sample_req else rs2_reg;
+	read_rd_qual <= read_rd when sample_req else read_rd_reg;
+	read_cwp_qual <= read_cwp when sample_req else read_cwp_reg;
+	write_gpr_even_qual <= write_gpr_even when sample_req else write_gpr_even_reg;
+	write_gpr_odd_qual <= write_gpr_odd when sample_req else write_gpr_odd_reg;
+	write_rd_qual <= write_rd when sample_req else write_rd_reg;
+	write_gpr_value_even_qual <= write_gpr_value_even when sample_req else write_gpr_value_even_reg;
+	write_gpr_value_odd_qual <= write_gpr_value_odd when sample_req else write_gpr_value_odd_reg;
+	write_cwp_qual <= write_cwp when sample_req else write_cwp_reg;
+				
+end iu_registers_3r_1w_port_register_file_Operator_arch;
 library std;
 use std.standard.all;
 library ieee;
@@ -8674,6 +8931,200 @@ begin
    new_cwp_and_updated_registers <= (outgoing_cwp_reg & z32 & outgoing_globals_reg((255-32) downto 0)  & outgoing_outs_reg & outgoing_locals_reg & outgoing_ins_reg);
     
 end MpdIsSometimesAKlutz;
+library std;
+use std.standard.all;
+library ieee;
+use ieee.std_logic_1164.all;
+library aHiR_ieee_proposed;
+use aHiR_ieee_proposed.math_utility_pkg.all;
+use aHiR_ieee_proposed.fixed_pkg.all;
+use aHiR_ieee_proposed.float_pkg.all;
+library ahir;
+use ahir.memory_subsystem_package.all;
+use ahir.types.all;
+use ahir.subprograms.all;
+use ahir.components.all;
+use ahir.basecomponents.all;
+use ahir.operatorpackage.all;
+use ahir.floatoperatorpackage.all;
+use ahir.utilities.all;
+use ahir.functionLibraryComponents.all;
+
+entity window_address_calculator_Volatile is -- 
+  port ( -- 
+    cwp : in  std_logic_vector(4 downto 0);
+    reg_id : in  std_logic_vector(4 downto 0);
+    reg_address : out  std_logic_vector(5 downto 0)-- 
+  );
+  -- 
+end entity window_address_calculator_Volatile;
+architecture window_address_calculator_Volatile_arch of window_address_calculator_Volatile is -- 
+  -- always true...
+  signal always_true_symbol: Boolean;
+  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(10-1 downto 0);
+  signal default_zero_sig: std_logic;
+  -- input port buffer signals
+  signal cwp_buffer :  std_logic_vector(4 downto 0);
+  signal reg_id_buffer :  std_logic_vector(4 downto 0);
+  -- output port buffer signals
+  signal reg_address_buffer :  std_logic_vector(5 downto 0);
+  -- volatile/operator module components. 
+  -- 
+begin --  
+  -- input handling ------------------------------------------------
+  cwp_buffer <= cwp;
+  reg_id_buffer <= reg_id;
+  -- output handling  -------------------------------------------------------
+  reg_address <= reg_address_buffer;
+  -- the control path --------------------------------------------------
+  default_zero_sig <= '0';
+  -- volatile module, no control path
+  -- the data path
+  data_path: Block -- 
+    signal ADD_u5_u5_25_wire : std_logic_vector(4 downto 0);
+    signal SUB_u5_u5_38_wire : std_logic_vector(4 downto 0);
+    signal ULT_u5_u1_75_wire : std_logic_vector(0 downto 0);
+    signal cwp_6_19 : std_logic_vector(5 downto 0);
+    signal incr_cwp_6_28 : std_logic_vector(5 downto 0);
+    signal ireg_addr_71 : std_logic_vector(5 downto 0);
+    signal ireg_base_61 : std_logic_vector(5 downto 0);
+    signal ireg_offset_66 : std_logic_vector(5 downto 0);
+    signal konst_24_wire_constant : std_logic_vector(4 downto 0);
+    signal konst_37_wire_constant : std_logic_vector(4 downto 0);
+    signal konst_44_wire_constant : std_logic_vector(5 downto 0);
+    signal konst_49_wire_constant : std_logic_vector(5 downto 0);
+    signal konst_59_wire_constant : std_logic_vector(5 downto 0);
+    signal konst_64_wire_constant : std_logic_vector(5 downto 0);
+    signal konst_74_wire_constant : std_logic_vector(4 downto 0);
+    signal oreg_local_addr_56 : std_logic_vector(5 downto 0);
+    signal oreg_local_base_46 : std_logic_vector(5 downto 0);
+    signal oreg_local_offset_51 : std_logic_vector(5 downto 0);
+    signal reg_pair_id_6_34 : std_logic_vector(5 downto 0);
+    signal reg_pair_id_minus_16_6_41 : std_logic_vector(5 downto 0);
+    signal slice_17_wire : std_logic_vector(2 downto 0);
+    signal slice_26_wire : std_logic_vector(2 downto 0);
+    signal slice_32_wire : std_logic_vector(3 downto 0);
+    signal slice_39_wire : std_logic_vector(3 downto 0);
+    signal type_cast_15_wire_constant : std_logic_vector(2 downto 0);
+    signal type_cast_22_wire_constant : std_logic_vector(2 downto 0);
+    -- 
+  begin -- 
+    konst_24_wire_constant <= "00001";
+    konst_37_wire_constant <= "10000";
+    konst_44_wire_constant <= "000011";
+    konst_49_wire_constant <= "000100";
+    konst_59_wire_constant <= "000011";
+    konst_64_wire_constant <= "000100";
+    konst_74_wire_constant <= "11000";
+    type_cast_15_wire_constant <= "000";
+    type_cast_22_wire_constant <= "000";
+    -- flow-through select operator MUX_79_inst
+    reg_address_buffer <= oreg_local_addr_56 when (ULT_u5_u1_75_wire(0) /=  '0') else ireg_addr_71;
+    -- flow-through slice operator slice_17_inst
+    slice_17_wire <= cwp_buffer(2 downto 0);
+    -- flow-through slice operator slice_26_inst
+    slice_26_wire <= ADD_u5_u5_25_wire(2 downto 0);
+    -- flow-through slice operator slice_32_inst
+    slice_32_wire <= reg_id_buffer(4 downto 1);
+    -- flow-through slice operator slice_39_inst
+    slice_39_wire <= SUB_u5_u5_38_wire(4 downto 1);
+    -- interlock type_cast_33_inst
+    process(slice_32_wire) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      tmp_var := (others => '0'); 
+      tmp_var( 3 downto 0) := slice_32_wire(3 downto 0);
+      reg_pair_id_6_34 <= tmp_var; -- 
+    end process;
+    -- interlock type_cast_40_inst
+    process(slice_39_wire) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      tmp_var := (others => '0'); 
+      tmp_var( 3 downto 0) := slice_39_wire(3 downto 0);
+      reg_pair_id_minus_16_6_41 <= tmp_var; -- 
+    end process;
+    -- binary operator ADD_u5_u5_25_inst
+    process(cwp_buffer) -- 
+      variable tmp_var : std_logic_vector(4 downto 0); -- 
+    begin -- 
+      ApIntAdd_proc(cwp_buffer, konst_24_wire_constant, tmp_var);
+      ADD_u5_u5_25_wire <= tmp_var; --
+    end process;
+    -- binary operator ADD_u6_u6_55_inst
+    process(oreg_local_base_46, oreg_local_offset_51) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      ApIntAdd_proc(oreg_local_base_46, oreg_local_offset_51, tmp_var);
+      oreg_local_addr_56 <= tmp_var; --
+    end process;
+    -- binary operator ADD_u6_u6_70_inst
+    process(ireg_base_61, ireg_offset_66) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      ApIntAdd_proc(ireg_base_61, ireg_offset_66, tmp_var);
+      ireg_addr_71 <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u3_u6_18_inst
+    process(type_cast_15_wire_constant, slice_17_wire) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      ApConcat_proc(type_cast_15_wire_constant, slice_17_wire, tmp_var);
+      cwp_6_19 <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u3_u6_27_inst
+    process(type_cast_22_wire_constant, slice_26_wire) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      ApConcat_proc(type_cast_22_wire_constant, slice_26_wire, tmp_var);
+      incr_cwp_6_28 <= tmp_var; --
+    end process;
+    -- binary operator SHL_u6_u6_45_inst
+    process(cwp_6_19) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      ApIntSHL_proc(cwp_6_19, konst_44_wire_constant, tmp_var);
+      oreg_local_base_46 <= tmp_var; --
+    end process;
+    -- binary operator SHL_u6_u6_60_inst
+    process(incr_cwp_6_28) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      ApIntSHL_proc(incr_cwp_6_28, konst_59_wire_constant, tmp_var);
+      ireg_base_61 <= tmp_var; --
+    end process;
+    -- binary operator SUB_u5_u5_38_inst
+    process(reg_id_buffer) -- 
+      variable tmp_var : std_logic_vector(4 downto 0); -- 
+    begin -- 
+      ApIntSub_proc(reg_id_buffer, konst_37_wire_constant, tmp_var);
+      SUB_u5_u5_38_wire <= tmp_var; --
+    end process;
+    -- binary operator SUB_u6_u6_50_inst
+    process(reg_pair_id_6_34) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      ApIntSub_proc(reg_pair_id_6_34, konst_49_wire_constant, tmp_var);
+      oreg_local_offset_51 <= tmp_var; --
+    end process;
+    -- binary operator SUB_u6_u6_65_inst
+    process(reg_pair_id_minus_16_6_41) -- 
+      variable tmp_var : std_logic_vector(5 downto 0); -- 
+    begin -- 
+      ApIntSub_proc(reg_pair_id_minus_16_6_41, konst_64_wire_constant, tmp_var);
+      ireg_offset_66 <= tmp_var; --
+    end process;
+    -- binary operator ULT_u5_u1_75_inst
+    process(reg_id_buffer) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntUlt_proc(reg_id_buffer, konst_74_wire_constant, tmp_var);
+      ULT_u5_u1_75_wire <= tmp_var; --
+    end process;
+    -- 
+  end Block; -- data_path
+  -- 
+end window_address_calculator_Volatile_arch;
 
 library std;
 use std.standard.all;
@@ -8756,7 +9207,7 @@ architecture MpdIsWhatCanISay of window_update_core is --
 	
 	function RegBlockAddress(offset: integer; cwp: std_logic_vector(4 downto 0))
 		return std_logic_vector is
-		variable ret_val : std_logic_vector(4 downto 0);
+		variable ret_val : std_logic_vector(3 downto 0);
 		variable cwp_u : unsigned(4 downto 0);
 		variable cwp_16 : unsigned (15 downto 0);
 	begin
@@ -8764,23 +9215,23 @@ architecture MpdIsWhatCanISay of window_update_core is --
 
 		cwp_16 := resize(cwp_u, 16);
 		cwp_16 := shift_right(((shift_left(cwp_16, 4) + offset) and uNWINDOWSx16_MOD_MASK_16), 3);
-		ret_val := std_logic_vector(cwp_16(4 downto 0));
+		ret_val := std_logic_vector(cwp_16(3 downto 0));
 
 		return(ret_val);
 	end function RegBlockAddress;
 
 
-	signal dpmem_address_0 : std_logic_vector( 4 downto 0);
+	signal dpmem_address_0 : std_logic_vector( 3 downto 0);
 	signal dpmem_write_data_0, dpmem_read_data_0 : std_logic_vector (255 downto 0);
 	signal dpmem_enable_0 : std_logic;
 	signal dpmem_read_writebar_0 : std_logic;
 
-	signal dpmem_address_1: std_logic_vector(4 downto 0);
+	signal dpmem_address_1: std_logic_vector(3 downto 0);
 	signal dpmem_write_data_1, dpmem_read_data_1: std_logic_vector(255 downto 0);
 	signal dpmem_enable_1: std_logic;
 	signal dpmem_read_writebar_1 : std_logic;
 		
-	signal address_0_reg, address_1_reg : std_logic_vector(4 downto 0);
+	signal address_0_reg, address_1_reg : std_logic_vector(3 downto 0);
     
 	-- tried hard to eliminate these registers, but too complicated..
 	signal incoming_outs_reg, incoming_locals_reg, incoming_ins_reg : std_logic_vector(255 downto 0);
@@ -8817,7 +9268,7 @@ begin --
 		variable latch_rd_wp_var: boolean;
 
 		-- windows memory is 32x256 dpram
-		variable address_0_var, address_1_var : std_logic_vector(4 downto 0);
+		variable address_0_var, address_1_var : std_logic_vector(3 downto 0);
 		variable enable_0_var, enable_1_var: std_logic;
 		variable read_writebar_0_var, read_writebar_1_var: std_logic;
 
@@ -9106,7 +9557,7 @@ begin --
 
 	dpmem: base_bank_dual_port
 			generic map (name => "window_update_daemon:dpmem",
-					g_addr_width => 5,
+					g_addr_width => 4,
 					g_data_width => 256)
 			port map ( datain_0 => dpmem_write_data_0,
 					dataout_0 => dpmem_read_data_0,
@@ -9578,518 +10029,6 @@ end window_update_daemon_arch;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-library ahir;
-use ahir.mem_component_pack.all;
-use ahir.Types.all;
-use ahir.Utilities.all;
-use ahir.BaseComponents.all;
-
-entity ajit_ahb_lite_master is
-	port (
-		-- AJIT system bus
-		ajit_to_env_write_req: in  std_logic;
-		ajit_to_env_write_ack: out std_logic;
-		ajit_to_env_addr: in std_logic_vector(35 downto 0);
-		ajit_to_env_data: in std_logic_vector(31 downto 0);
-		ajit_to_env_transfer_size: in std_logic_vector(2 downto 0);
-		ajit_to_env_read_write_bar: in std_logic;
-		ajit_to_env_lock: in std_logic;
-		-- top-bit error, rest data.
-		env_to_ajit_error : out std_logic;
-		env_to_ajit_read_data : out std_logic_vector(31 downto 0);
-		env_to_ajit_read_req: in std_logic;
-		env_to_ajit_read_ack: out std_logic;
-		-- AHB bus signals
-		HADDR: out std_logic_vector(35 downto 0);
-		HTRANS: out std_logic_vector(1 downto 0); -- non-sequential, sequential, idle, busy
-		HWRITE: out std_logic; -- when '1' its a write.
-		HSIZE: out std_logic_vector(2 downto 0); -- transfer size in bytes.
-		HBURST: out std_logic_vector(2 downto 0); -- burst size.
-		HMASTLOCK: out std_logic; -- locked transaction.. for swap etc.
-		HPROT: out std_logic_vector(3 downto 0); -- protection bits..
-		HWDATA: out std_logic_vector(31 downto 0); -- write data.
-		HRDATA: in std_logic_vector(31 downto 0); -- read data.
-		HREADY: in std_logic; -- slave ready.
-		HRESP: in std_logic_vector(1 downto 0); -- okay, error, retry, split (slave responses).
-		-- clock, reset.
-		clk: in std_logic;
-		reset: in std_logic 
-	     );
-end entity ajit_ahb_lite_master;
-
-
-architecture Behave of ajit_ahb_lite_master is
-
-	constant HTRANS_IDLE : std_logic_vector(1 downto 0) := "00";
-	constant HTRANS_BUSY : std_logic_vector(1 downto 0) := "01";
-	constant HTRANS_NONSEQ : std_logic_vector(1 downto 0) := "10";
-	constant HTRANS_SEQ : std_logic_vector(1 downto 0) := "11";
-	constant HSIZE_1   : std_logic_vector(2 downto 0)  := "000"; -- 1-byte transfer
-	constant HSIZE_2   : std_logic_vector(2 downto 0)  := "001"; -- 2-byte transfer
-	constant HSIZE_4   : std_logic_vector(2 downto 0)  := "010"; -- 4-byte transfer
-	constant HSIZE_8   : std_logic_vector(2 downto 0)  := "011"; -- 8-byte transfer
-
-	constant HBURST_SINGLE   : std_logic_vector(2 downto 0)  := "000"; -- 8-byte transfer
-	constant SLAVE_RESPONSE_OK   : std_logic_vector(1 downto 0)  := "00"; -- OK
-	constant SLAVE_RESPONSE_ERROR   : std_logic_vector(1 downto 0)  := "01"; -- Error
-		
-
-	signal latch_request, latch_hrdata: std_logic;
-	signal ajit_to_env_addr_d: std_logic_vector(35 downto 0);
-	signal ajit_to_env_data_d, HRDATA_d: std_logic_vector(31 downto 0);
-	signal ajit_to_env_transfer_size_d: std_logic_vector(2 downto 0);
-	signal ajit_to_env_read_write_bar_d: std_logic;
-	signal ajit_to_env_lock_d: std_logic;
-
-
-	type FsmState is (ReadyState, RequestSentState,ErrorState, WaitOnOutpipeState);
-	signal fsm_state: FsmState;
-
-	signal oqueue_data_in: std_logic_vector(32 downto 0);
-	signal oqueue_push_req: std_logic;
-	signal oqueue_push_ack: std_logic;
-	signal oqueue_data_out: std_logic_vector(32 downto 0);
-	signal oqueue_pop_req: std_logic;
-	signal oqueue_pop_ack: std_logic;
-
-begin
-	oqueue_pop_req <= env_to_ajit_read_req;
-	env_to_ajit_read_ack  <= env_to_ajit_read_req and oqueue_pop_ack; -- ack only on req!
-	env_to_ajit_read_data <= oqueue_data_out(31 downto 0);
-	env_to_ajit_error <= oqueue_data_out(32);
-
-	oQueue: QueueBase 
-			generic map (name => "ahb-master-oqueue",
-					queue_depth => 2,
-						data_width => 33)
-			port map (clk => clk, reset => reset,
-					data_in => oqueue_data_in,
-					  data_out => oqueue_data_out,
-					    push_req => oqueue_push_req,
-						push_ack => oqueue_push_ack,
-						  pop_req => oqueue_pop_req,
-						    pop_ack => oqueue_pop_ack);
-
-	-- latch last request sent out
-	process(clk, reset, ajit_to_env_addr, ajit_to_env_data, ajit_to_env_read_write_bar, ajit_to_env_lock, ajit_to_env_transfer_size)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				ajit_to_env_addr_d <= (others => '0');
-				ajit_to_env_data_d <= (others => '0');
-				ajit_to_env_read_write_bar_d <= '0';
-				ajit_to_env_lock_d <= '0';
-				ajit_to_env_transfer_size_d <= (others => '0');
-			elsif (latch_request = '1') then
-				ajit_to_env_addr_d <= ajit_to_env_addr;
-				ajit_to_env_data_d <= ajit_to_env_data;
-				ajit_to_env_read_write_bar_d <= ajit_to_env_read_write_bar;
-				ajit_to_env_lock_d <= ajit_to_env_lock;
-				ajit_to_env_transfer_size_d <= ajit_to_env_transfer_size;
-			end if;
-		end if;
-	end process;
-
-	-- HRDATA latch.. if outpipe is not ready.
-	process(clk, reset, HRDATA)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				HRDATA_d <= (others => '0');
-			elsif (latch_hrdata = '1') then
-				HRDATA_d <= HRDATA;
-			end if;
-		end if;
-	end process;
-
-	
-	
-	--
-	-- state machine: on error response, sends error flag back to 
-	-- requester.
-	--
-	process(clk, reset, fsm_state,  ajit_to_env_write_req, 
-					ajit_to_env_data, 
-					ajit_to_env_lock, 
-					ajit_to_env_addr,
-					ajit_to_env_read_write_bar, 
-					ajit_to_env_data_d,
-					ajit_to_env_addr_d,
-					ajit_to_env_lock_d, 
-					ajit_to_env_transfer_size,
-					oqueue_push_ack, 
-					HREADY, 
-					HRESP, 
-					HRDATA, HRDATA_d)
-		variable next_fsm_state : FsmState;
-		variable latch_request_var: std_logic;
-		variable HADDR_var : std_logic_vector(35 downto 0);
-		variable HTRANS_var : std_logic_vector(1 downto 0);
-		variable HWRITE_var : std_logic;
-		variable HSIZE_var : std_logic_vector(2 downto 0);
-		variable HBURST_var : std_logic_vector(2 downto 0);
-		variable HPROT_var : std_logic_vector(3 downto 0);
-		variable HWDATA_var: std_logic_vector(31 downto 0);
-		variable HMASTLOCK_var: std_logic;
-		variable ajit_to_env_write_ack_var: std_logic;
-
-		variable oqueue_push_req_var: std_logic;
-		variable oqueue_data_in_var: std_logic_vector(32 downto 0);
-
-		variable latch_hrdata_var: std_logic;
-
-	begin
-		next_fsm_state := fsm_state;
-		HTRANS_var := HTRANS_IDLE;
-		HADDR_var  := (others => '0');
-		HWRITE_var := '0';
-		HMASTLOCK_var := '0';
-		HSIZE_var := HSIZE_4;
-		HBURST_var := HBURST_SINGLE;
-		HPROT_var := (others => '0');
-		HWDATA_var := (others => '0');
-		oqueue_data_in_var := (others => '0');
-		oqueue_push_req_var := '0';
-
-		ajit_to_env_write_ack_var := '0';
-		latch_hrdata_var := '0';
-		latch_request_var := '0';
-
-		case fsm_state is 
-			when ReadyState =>
-				if(ajit_to_env_write_req = '1') then
-
-					-- present the address.. data is ignored.
-					-- slave is required to latch this information
-					-- because it is held only until the slave indicates
-					-- a ready.
-					HTRANS_var := 	HTRANS_NONSEQ;
-					HADDR_var  :=   ajit_to_env_addr;
-					HWRITE_var :=   (not ajit_to_env_read_write_bar);
-					HMASTLOCK_var := ajit_to_env_lock;
-					HSIZE_var := ajit_to_env_transfer_size;
-		
-					--
-					-- data is to be presented in the next clock cycle.
-					--
-
-
-					if(HREADY = '1') then
-						-- acknowledge the FIFO interface.
-						ajit_to_env_write_ack_var := '1';
-						next_fsm_state := RequestSentState;
-						latch_request_var := '1';
-					end if;
-				end if;
-			when RequestSentState => 
-				-- present the write data.
-				HWDATA_var := ajit_to_env_data_d;
-
-				if(HRESP = SLAVE_RESPONSE_OK) then
-				    -- slave says OK..
-				    if(HREADY = '1') then
-					-- slave says ready.. pick up response..
-					oqueue_push_req_var := '1';
-					oqueue_data_in_var := '0' & HRDATA;
-					if (oqueue_push_ack = '0') then
-						-- env is not ready to accept
-						-- the response.. go to wait, 
-						-- and latch HRDATA.
-						next_fsm_state := WaitOnOutpipeState; 
-						latch_hrdata_var := '1';
-					elsif (ajit_to_env_write_req = '1') then
-
-						-------------------------------------------------
-						-- env is ready to accept and has
-						-- a new job waiting..
-						-------------------------------------------------
-
-						ajit_to_env_write_ack_var := '1';
-						latch_request_var := '1';
-						HTRANS_var := 	HTRANS_NONSEQ;
-						HADDR_var  :=   ajit_to_env_addr;
-						HWRITE_var :=   (not ajit_to_env_read_write_bar);
-						HSIZE_var := ajit_to_env_transfer_size;
-
-						-------------------------------------------------
-						-- note: write data is sent in the next cycle...
-						-------------------------------------------------
-
-						-- stay in this state...
-
-					else    --  next request not here, go to ReadyState.
-						next_fsm_state := ReadyState;
-					end if;
-				     end if;
-				else
-						next_fsm_state := ErrorState;
-				end if;
-			when ErrorState => 
-				-- idle state on last address.
-				HADDR_var  := ajit_to_env_addr_d;
-				oqueue_data_in_var := (32 => '1', others => '0');
-				oqueue_push_req_var := '1';
-				if(oqueue_push_ack = '1') then
-					next_fsm_state := ReadyState;
-				end if;
-			when WaitOnOutpipeState => 
-				oqueue_data_in_var := '0' & HRDATA_d;
-				oqueue_push_req_var := '1';
-				if (oqueue_push_ack = '1') then
-					next_fsm_state := ReadyState;
-				end if;
-		end case;
-
-		HTRANS <= HTRANS_var;
-		HADDR <= HADDR_var;
-		HWRITE <= HWRITE_var;
-		HMASTLOCK <= HMASTLOCK_var;
-		HSIZE <= HSIZE_var;
-		HBURST <= HBURST_var;
-		HPROT <= HPROT_var;
-		HWDATA <= HWDATA_var;
-
-		latch_request <= latch_request_var;
-		oqueue_data_in <= oqueue_data_in_var;
-		oqueue_push_req  <=  oqueue_push_req_var;
-		ajit_to_env_write_ack <= ajit_to_env_write_ack_var;
-		latch_hrdata <= latch_hrdata_var;
-
-
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				fsm_state <= ReadyState;
-			else
-				fsm_state <= next_fsm_state;
-			end if;
-		end if;
-	end process;
-
-end Behave;
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-library ahir;
-use ahir.mem_component_pack.all;
-use ahir.Types.all;
-use ahir.Utilities.all;
-use ahir.BaseComponents.all;
-
-entity ajit_apb_master is
-	port (
-		-- AJIT system bus
-		ajit_to_env_write_req: in  std_logic;
-		ajit_to_env_write_ack: out std_logic;
-		ajit_to_env_addr: in std_logic_vector(31 downto 0);
-		ajit_to_env_data: in std_logic_vector(31 downto 0);
-		ajit_to_env_read_write_bar: in std_logic;
-		-- top-bit error, rest data.
-		env_to_ajit_error : out std_logic;
-		env_to_ajit_read_data : out std_logic_vector(31 downto 0);
-		env_to_ajit_read_req: in std_logic;
-		env_to_ajit_read_ack: out std_logic;
-		-- APB bus signals
-		PRESETn: out std_logic;
-		PCLK: out std_logic;
-		PADDR: out std_logic_vector(31 downto 0);
-		PWRITE: out std_logic; -- when '1' its a write.
-		PWDATA: out std_logic_vector(31 downto 0); -- write data.
-		PRDATA: in std_logic_vector(31 downto 0); -- read data.
-		PREADY: in std_logic; -- slave ready.
-		PENABLE: out std_logic; -- enable..
-		PSLVERR: in std_logic; -- error from slave.
-		--   Note: PSEL is by default for one slave..  For more,
-		--   generate by adding a decoder outside the master.
-		PSEL : out std_logic; -- slave select.
-		-- clock, reset.
-		clk: in std_logic;
-		reset: in std_logic 
-	     );
-end entity ajit_apb_master;
-
-
-architecture Behave of ajit_apb_master is
-
-	signal latch_request, latch_prdata: std_logic;
-	signal ajit_to_env_addr_d: std_logic_vector(31 downto 0);
-	signal ajit_to_env_data_d, PRDATA_d: std_logic_vector(31 downto 0);
-	signal ajit_to_env_read_write_bar_d, PSLVERR_d: std_logic;
-
-
-	type FsmState is (ReadyState, AccessState, WaitOnOutpipeState);
-	signal fsm_state: FsmState;
-
-	signal oqueue_data_in: std_logic_vector(32 downto 0);
-	signal oqueue_push_req: std_logic;
-	signal oqueue_push_ack: std_logic;
-	signal oqueue_data_out: std_logic_vector(32 downto 0);
-	signal oqueue_pop_req: std_logic;
-	signal oqueue_pop_ack: std_logic;
-
-begin
-	oqueue_pop_req <= env_to_ajit_read_req;
-	env_to_ajit_read_ack  <= env_to_ajit_read_req and oqueue_pop_ack; -- ack only on req!
-	env_to_ajit_read_data <= oqueue_data_out(31 downto 0);
-	env_to_ajit_error <= oqueue_data_out(32);
-	
-
-	PRESETn <= not reset;
-	PCLK <= clk;
-
-	oQueue: QueueBase 
-			generic map (name => "apb-master-oqueue",
-					queue_depth => 2,
-						data_width => 33)
-			port map (clk => clk, reset => reset,
-					data_in => oqueue_data_in,
-					  data_out => oqueue_data_out,
-					    push_req => oqueue_push_req,
-						push_ack => oqueue_push_ack,
-						  pop_req => oqueue_pop_req,
-						    pop_ack => oqueue_pop_ack);
-
-	-- latch last request sent out
-	process(clk, reset, ajit_to_env_addr, ajit_to_env_data, ajit_to_env_read_write_bar)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				ajit_to_env_addr_d <= (others => '0');
-				ajit_to_env_data_d <= (others => '0');
-				ajit_to_env_read_write_bar_d <= '0';
-			elsif (latch_request = '1') then
-				ajit_to_env_addr_d <= ajit_to_env_addr;
-				ajit_to_env_data_d <= ajit_to_env_data;
-				ajit_to_env_read_write_bar_d <= ajit_to_env_read_write_bar;
-			end if;
-		end if;
-	end process;
-
-	-- PRDATA latch.. if outpipe is not ready.
-	process(clk, reset, PRDATA)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				PRDATA_d <= (others => '0');
-				PSLVERR_d <= '0';
-			elsif (latch_prdata = '1') then
-				PRDATA_d <= PRDATA;
-				PSLVERR_d <= PSLVERR;
-			end if;
-		end if;
-	end process;
-
-	
-	
-	--
-	-- state machine: on error response, sends error flag back to 
-	-- requester.
-	--
-	process(clk, reset, fsm_state,  ajit_to_env_write_req, 
-					ajit_to_env_data, 
-					ajit_to_env_addr,
-					ajit_to_env_read_write_bar, 
-					ajit_to_env_data_d,
-					ajit_to_env_addr_d,
-					oqueue_push_ack, 
-					PREADY, 
-					PRDATA, PRDATA_d)
-		variable next_fsm_state : FsmState;
-		variable latch_request_var: std_logic;
-		variable PADDR_var : std_logic_vector(31 downto 0);
-		variable PWRITE_var : std_logic;
-		variable PWDATA_var: std_logic_vector(31 downto 0);
-		variable PENABLE_var: std_logic;
-
-		variable ajit_to_env_write_ack_var: std_logic;
-
-		variable oqueue_push_req_var: std_logic;
-		variable oqueue_data_in_var: std_logic_vector(32 downto 0);
-
-		variable latch_prdata_var: std_logic;
-		variable psel_var: std_logic;
-
-	begin
-		next_fsm_state := fsm_state;
-		PADDR_var  := (others => '0');
-		PWRITE_var := '0';
-		PWDATA_var := (others => '0');
-		PENABLE_var := '0';
-		psel_var := '0';
-
-		oqueue_data_in_var := (others => '0');
-		oqueue_push_req_var := '0';
-
-		ajit_to_env_write_ack_var := '0';
-		latch_prdata_var := '0';
-		latch_request_var := '0';
-
-		case fsm_state is 
-			when ReadyState =>
-				ajit_to_env_write_ack_var := '1';
-				if(ajit_to_env_write_req = '1') then
-
-					-- present the address.. data is ignored.
-					-- slave is required to latch this information
-					-- because it is held only until the slave indicates
-					-- a ready.
-					PADDR_var  :=   ajit_to_env_addr;
-					PWRITE_var :=   (not ajit_to_env_read_write_bar);
-					PWDATA_var :=   ajit_to_env_data;
-					psel_var := '1';
-		
-					next_fsm_state := AccessState;
-					latch_request_var := '1';
-				end if;
-			when AccessState => 
-
-				PADDR_var  :=   ajit_to_env_addr_d;
-				PWRITE_var :=   (not ajit_to_env_read_write_bar_d);
-				PWDATA_var :=   ajit_to_env_data_d;
-				PENABLE_var := '1';
-				psel_var := '1';
-				
-				-- stretch everything if PREADY = '0'...
-				if(PREADY = '1') then
-					next_fsm_state   := WaitOnOutpipeState;
-					latch_prdata_var := '1';
-				end if;
-
-			when WaitOnOutpipeState => 
-
-				oqueue_data_in_var :=  PSLVERR_d & PRDATA_d;
-				oqueue_push_req_var := '1';
-				if (oqueue_push_ack = '1') then
-					next_fsm_state := ReadyState;
-				end if;
-
-		end case;
-
-		PADDR <= PADDR_var;
-		PWRITE <= PWRITE_var;
-		PWDATA <= PWDATA_var;
-		PSEL <= psel_var;
-		PENABLE <= PENABLE_var;
-
-		latch_request <= latch_request_var;
-		oqueue_data_in <= oqueue_data_in_var;
-		oqueue_push_req  <=  oqueue_push_req_var;
-		ajit_to_env_write_ack <= ajit_to_env_write_ack_var;
-		latch_prdata <= latch_prdata_var;
-
-
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				fsm_state <= ReadyState;
-			else
-				fsm_state <= next_fsm_state;
-			end if;
-		end if;
-	end process;
-
-end Behave;
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
 
 
 library AjitCustom;
@@ -10533,6 +10472,97 @@ begin --
 	DCACHE_to_CPU_slow_response_pipe_write_data <= ccc_zero_8 & mem_dataout;
 
 end dcache_stub_daemon_arch;
+-- A tightly coupled memory for use in the stupid dhrystone and coremark benchmarks..
+library std;
+use std.textio.all;
+use std.standard.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library ahir;
+use ahir.BaseComponents.all;
+use ahir.mem_component_pack.all;
+use ahir.Utilities.all;
+
+entity dual_port_u64_mem_64KB_Operator is -- 
+  port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    read_0 : in  std_logic_vector(0 downto 0);
+    addr_0 : in  std_logic_vector(12 downto 0);
+    read_1 : in  std_logic_vector(0 downto 0);
+    write_1 : in  std_logic_vector(0 downto 0);
+    byte_mask : in  std_logic_vector(7 downto 0);
+    addr_1 : in  std_logic_vector(12 downto 0);
+    write_data_1 : in  std_logic_vector(63 downto 0);
+    read_data_0 : out  std_logic_vector(63 downto 0);
+    read_data_1 : out  std_logic_vector(63 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+  -- 
+end entity dual_port_u64_mem_64KB_Operator;
+
+architecture dual_port_u64_mem_64KB_Operator_arch of dual_port_u64_mem_64KB_Operator is -- 
+	signal joined_sig: boolean;	
+        signal memory_enable: std_logic;
+	signal z8: std_logic_vector(7 downto 0);
+        signal osig: std_logic;
+begin --  
+
+    trig_join: join2 generic map (name => "dual_port_u64_mem_Operator:trig-join", bypass => true)
+			port map (pred0 => sample_req, pred1 => update_req,
+					symbol_out => joined_sig, clk => clk, reset => reset);
+   
+    sample_ack <= joined_sig;
+
+    process(clk, reset)
+    begin
+	if(clk'event and clk='1') then
+		if(reset = '1') then
+			update_ack <= false;
+		else
+			update_ack <= joined_sig;
+		end if;
+	end if;
+    end process;
+
+    memory_enable <= '1' when joined_sig else '0';
+    z8 <= (others => '0');
+    osig <= '1';
+
+    -- instantiate base bank dual port....... (generate 8 banks).
+    bankgen: for B in 0 to 7 generate
+     bank: block
+         signal local_enable_0, local_enable_1: std_logic;
+	 signal writebar_1: std_logic;
+     begin
+	  writebar_1 <= not write_1(0);
+
+          local_enable_0 <= memory_enable and read_0(0);
+	  local_enable_1 <= memory_enable and (read_1(0) or (write_1(0) and byte_mask(B)));
+	
+	  bb: base_bank_dual_port
+		generic map (name => "dual_port_u64_bb", g_addr_width => 13, g_data_width => 8)
+		port map (
+	 		datain_0 => z8,
+         		dataout_0 => read_data_0((8*(B+1))-1 downto 8*B),
+         		addrin_0 => addr_0,
+         		enable_0 => local_enable_0,
+         		writebar_0 => osig,
+	 		datain_1  => write_data_1((8*(B+1))-1 downto 8*B),
+         		dataout_1 => read_data_1((8*(B+1))-1 downto 8*B),
+         		addrin_1 => addr_1,
+         		enable_1 => local_enable_1,
+         		writebar_1 => writebar_1,
+         		clk => clk, reset => reset);
+    end block;
+  end generate bankgen;
+
+end dual_port_u64_mem_64KB_Operator_arch;
 -- THIS IS TO BE USED ONLY FOR SIMULATIONS!
 library std;
 use std.textio.all;
@@ -11199,2149 +11229,6 @@ begin --
     end process;
 
 end single_port_u64_mem_Operator_arch;
-library ieee;
-use ieee.std_logic_1164.all;
-
-entity spi_master_stub is
-	port (
-		--
-		-- unused  read/write-bar address data 
-		--   5       1               2      8
-		--
-		master_in_data_pipe_write_data: in  std_logic_vector(15 downto 0);
-		master_in_data_pipe_write_req:  in  std_logic_vector(0 downto 0);
-		master_in_data_pipe_write_ack:  out std_logic_vector(0 downto 0);
-		--
-		-- response data 
-		--
-		master_out_data_pipe_read_data: out  std_logic_vector(7 downto 0);
-		master_out_data_pipe_read_req:  in  std_logic_vector(0 downto 0);
-		master_out_data_pipe_read_ack:  out std_logic_vector(0 downto 0);
-		-- spi-master side.
-		spi_miso: in std_logic_vector(0 downto 0);
-		spi_mosi: out std_logic_vector(0 downto 0);
-		spi_clk: out std_logic_vector(0 downto 0);
-		spi_cs_n: out std_logic_vector(7 downto 0);
-		clk, reset: in std_logic
-	     );
-end entity;
-
-
-architecture Struct of spi_master_stub is
-	
-	-- signals to connect to master.
-	signal cs: std_logic;
-	signal rw: std_logic;
-	signal addr: std_logic_vector(1 downto 0);
-	signal data_in: std_logic_vector(7 downto 0);
-	signal data_out: std_logic_vector(7 downto 0);
-	signal irq: std_logic;
-	signal done: std_logic;
-
-	component spi_pipe_master_bridge is
-	  port (
-		--
-		-- unused  read/write-bar address data 
-		--   5       1               2      8
-		--
-		master_in_data_pipe_write_data: in  std_logic_vector(15 downto 0);
-		master_in_data_pipe_write_req:  in  std_logic_vector(0 downto 0);
-		master_in_data_pipe_write_ack:  out std_logic_vector(0 downto 0);
-		--
-		-- response data 
-		--
-		master_out_data_pipe_read_data: out  std_logic_vector(7 downto 0);
-		master_out_data_pipe_read_req:  in  std_logic_vector(0 downto 0);
-		master_out_data_pipe_read_ack:  out std_logic_vector(0 downto 0);
-		-- spi-master side.
-		cs_to_spi_master: out std_logic;
-		rw_to_spi_master: out std_logic;
-		addr_to_spi_master: out std_logic_vector(1 downto 0);
-		data_to_spi_master: out std_logic_vector(7 downto 0);
-		data_from_spi_master: in std_logic_vector(7 downto 0);
-		irq_from_spi_master: in std_logic;
-		done_from_spi_master: in std_logic;
-		-- clk, reset
-		clk, reset: in std_logic
-	     );
-	end component;
-	component spi_master is
-  	  port (
-    	  	--+ CPU Interface Signals
-    		clk                : in  std_logic;
-    		reset              : in  std_logic;
-    		cs                 : in  std_logic;
-    		rw                 : in  std_logic;
-    		addr               : in  std_logic_vector(1 downto 0);
-    		data_in            : in  std_logic_vector(7 downto 0);
-    		data_out           : out std_logic_vector(7 downto 0);
-    		irq                : out std_logic;
-    		done	       : out std_logic;  -- added to indicate complete of transfer MPD
-    		--+ SPI Interface Signals
-    		spi_miso           : in  std_logic;
-    		spi_mosi           : out std_logic;
-    		spi_clk            : out std_logic;
-    		spi_cs_n           : out std_logic_vector(7 downto 0)
-    		);
-        end component;
-
-begin
-
-	bridgeInst: spi_pipe_master_bridge 
-		port map (
-				master_in_data_pipe_write_data => master_in_data_pipe_write_data,
-				master_in_data_pipe_write_req => master_in_data_pipe_write_req,
-				master_in_data_pipe_write_ack => master_in_data_pipe_write_ack,
-				master_out_data_pipe_read_data => master_out_data_pipe_read_data,
-				master_out_data_pipe_read_req => master_out_data_pipe_read_req,
-				master_out_data_pipe_read_ack => master_out_data_pipe_read_ack,
-				cs_to_spi_master => cs,
-				rw_to_spi_master => rw,
-				addr_to_spi_master => addr,
-				data_to_spi_master => data_in,
-				data_from_spi_master => data_out,
-				irq_from_spi_master => irq,
-				done_from_spi_master => done,
-				clk => clk, reset => reset 
-			);
-
-	spiMaster: spi_master
-		port map (
-    				clk => clk,
-    				reset => reset,
-    				cs => cs,
-    				rw => rw,
-    				addr => addr,
-    				data_in => data_in,
-    				data_out => data_out,
-    				irq => irq,
-    				done => done,
-    				--+ SPI Interface Signals
-    				spi_miso => spi_miso(0),
-    				spi_mosi => spi_mosi(0),
-    				spi_clk => spi_clk(0),
-    				spi_cs_n => spi_cs_n
-			);
-
-end Struct;
---===========================================================================--
---                                                                           --
---             Synthesizable Serial Peripheral Interface Master              --
---                                                                           --
---===========================================================================--
---
---  File name      : spi-master.vhd
---
---  Entity name    : spi-master
---
---  Purpose        : Implements a SPI Master Controller
---
---  Dependencies   : ieee.std_logic_1164
---                   ieee.std_logic_unsigned
---
---  Author         : Hans Huebner
---
---  Email          : hans at the domain huebner.org
---
---  Web            : http://opencores.org/project,system09
---
---  Description    : This core implements a SPI master interface.
---                   Transfer size is 4, 8, 12 or 16 bits.
---                   The SPI clock is 0 when idle, sampled on
---                   the rising edge of the SPI clock.
---                   The SPI clock is derived from the bus clock input
---                   divided by 2, 4, 8 or 16.
---
---                   clk, reset, cs, rw, addr, data_in, data_out and irq
---                   represent the System09 bus interface.
---                   spi_clk, spi_mosi, spi_miso and spi_cs_n are the
---                   standard SPI signals meant to be routed off-chip.
---
---                   The SPI core provides for four register addresses
---                   that the CPU can read or writen to:
---
---                   Base + $00 -> DL: Data Low LSB
---                   Base + $01 -> DH: Data High MSB
---                   Base + $02 -> CS: Command/Status
---                   Base + $03 -> CO: Config
---
---                   CS: Write bits:
---
---                   CS[0]   START : Start transfer
---                   CS[1]   END   : Deselect device after transfer
---                                   (or immediately if START = '0')
---                   CS[2]   IRQEN : Generate IRQ at end of transfer
---                   CS[6:4] SPIAD : SPI device address
---
---                   CS: Read bits
---
---                   CS[0]   BUSY  : Currently transmitting data
---
---                   CO: Write bits
---
---                   CO[3:0] DIVIDE: SPI clock divisor,
---				(27/11/2016 MPD: modified from 2 to 4 bits to provide more range for division).
---                                   0000=clk/2,
---                                   0001=clk/4,
---                                   0010=clk/8,
---                                   0011=clk/16
---                                   0100=clk/32
---                                   0101=clk/64
---                                   0110=clk/128
---                                   0111=clk/256
---                                   1000=clk/1024
---                                   1001=clk/2048
---                                   1010=clk/4096
---                                   1011=clk/8192
---                                   1100=clk/16384
---                                   1101=clk/32768
---                                   1110=clk/65536
---                                   1111=clk/131072
---                   CO[5:4] LENGTH: Transfer length,
---                                   00= 4 bits,
---                                   01= 8 bits,
---                                   10=12 bits,
---                                   11=16 bits
---
---  Copyright (C) 2009 - 2010 Hans Huebner
---
---  This program is free software: you can redistribute it and/or modify
---  it under the terms of the GNU General Public License as published by
---  the Free Software Foundation, either version 3 of the License, or
---  (at your option) any later version.
---
---  This program is distributed in the hope that it will be useful,
---  but WITHOUT ANY WARRANTY; without even the implied warranty of
---  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
---  GNU General Public License for more details.
---
---  You should have received a copy of the GNU General Public License
---  along with this program.  If not, see <http://www.gnu.org/licenses/>.
---
---
---===========================================================================--
---                                                                           --
---                              Revision  History                            --
---                                                                           --
---===========================================================================--
---
--- Version  Author        Date               Description
---
--- 0.1      Hans Huebner  23 February 2009   SPI bus master for System09
--- 0.2      John Kent     16 June 2010       Added GPL notice
---
--- 26+/11/2016: modified by Madhav P. Desai (MPD), since we will be 
--- 		using only the rising edges of clock
---
-
-library ieee;
-  use ieee.std_logic_1164.all;
-  use ieee.numeric_std.all;
-
---* @brief Synthesizable Serial Peripheral Interface Master
---*
---*
---* @author Hans Huebner and John E. Kent
---* @version 0.2 from 16 June 2010
-
-entity spi_master is
-  port (
-    --+ CPU Interface Signals
-    clk                : in  std_logic;
-    reset              : in  std_logic;
-    cs                 : in  std_logic;
-    rw                 : in  std_logic;
-    addr               : in  std_logic_vector(1 downto 0);
-    data_in            : in  std_logic_vector(7 downto 0);
-    data_out           : out std_logic_vector(7 downto 0);
-    irq                : out std_logic;
-    done	       : out std_logic;  -- added to indicate complete of transfer MPD
-    --+ SPI Interface Signals
-    spi_miso           : in  std_logic;
-    spi_mosi           : out std_logic;
-    spi_clk            : out std_logic;
-    spi_cs_n           : out std_logic_vector(7 downto 0)
-    );
-end;
-
---* @brief Implements a SPI Master Controller
---*
---* This core implements a SPI master interface.
---* Transfer size is 4, 8, 12 or 16 bits.
---* The SPI clock is 0 when idle, sampled on
---* the rising edge of the SPI clock.
---* The SPI clock is derived from the bus clock input
---* divided by 2, 4, 8 or 16. (note: added division upto 1024: MPD 27/11/2016)
-
-architecture rtl of spi_master is
-
-  --* State type of the SPI transfer state machine
-  type   state_type is (s_idle, s_running);
-  signal state           : state_type;
-  -- Shift register
-  signal shift_reg       : std_logic_vector(15 downto 0);
-  -- Buffer to hold data to be sent
-  signal spi_data_buf    : std_logic_vector(15 downto 0);
-  -- Start transmission flag
-  signal start           : std_logic;
-  -- Number of bits transfered
-  signal count           : std_logic_vector(3 downto 0);
-  -- Buffered SPI clock
-  signal spi_clk_buf     : std_logic;
-  -- Buffered SPI clock output
-  signal spi_clk_out     : std_logic;
-  -- Previous SPI clock state
-  signal prev_spi_clk    : std_logic;
-  -- Number of clk cycles-1 in this SPI clock period
-  signal spi_clk_count   : std_logic_vector(14 downto 0); -- changed by MPD 27/11/2016
-  -- SPI clock divisor
-  signal spi_clk_divide  : std_logic_vector(3 downto 0);
-  -- SPI transfer length
-  signal transfer_length : std_logic_vector(1 downto 0);
-  -- Flag to indicate that the SPI slave should be deselected after the current
-  -- transfer
-  signal deselect        : std_logic;
-  -- Flag to indicate that an IRQ should be generated at the end of a transfer
-  signal irq_enable      : std_logic;
-  -- Internal chip select signal, will be demultiplexed through the cs_mux
-  signal spi_cs          : std_logic;
-  -- Current SPI device address
-  signal spi_addr        : std_logic_vector(2 downto 0);
-begin
-
-  --* Read CPU bus into internal registers
-  cpu_write : process(clk, reset)
-  begin
-    -- elsif falling_edge(clk) then
-    if rising_edge(clk) then 
-      if reset = '1' then
-         deselect        <= '0';
-         irq_enable      <= '0';
-         start           <= '0';
-         spi_clk_divide  <= "0011"; -- divide by 16 is the default.
-         transfer_length <= "01";   -- byte transfer is the default.
-         spi_data_buf    <= (others => '0');
-      else 
-         -------------
-         start <= '0';
-         if cs = '1' and rw = '0' then
-           case addr is
-             when "00" =>
-               spi_data_buf(7 downto 0) <= data_in;
-             when "01" =>
-               spi_data_buf(15 downto 8) <= data_in;
-             when "10" =>
-               start      <= data_in(0);
-               deselect   <= data_in(1);
-               irq_enable <= data_in(2);
-               spi_addr   <= data_in(6 downto 4);
-             when "11" =>
-               spi_clk_divide  <= data_in(3 downto 0);
-               transfer_length <= data_in(5 downto 4);
-             when others =>
-               null;
-           end case;
-         end if; -- cs and write.
-      end if; -- reset
-    end if; -- rising edge of clock
-  end process;
-
-  --* Provide data for the CPU to read
-  cpu_read : process(shift_reg, addr, state, deselect, start)
-  begin
-    data_out <= (others => '0');
-    case addr is
-      when "00" =>
-        data_out <= shift_reg(7 downto 0);
-      when "01" =>
-        data_out <= shift_reg(15 downto 8);
-      when "10" =>
-        if state = s_idle then
-          data_out(0) <= '0';
-        else
-          data_out(0) <= '1';
-        end if;
-        data_out(1) <= deselect;
-      when others =>
-        null;
-    end case;
-  end process;
-
-  spi_cs_n <= "11111110" when spi_addr = "000" and spi_cs = '1' else
-              "11111101" when spi_addr = "001" and spi_cs = '1' else
-              "11111011" when spi_addr = "010" and spi_cs = '1' else
-              "11110111" when spi_addr = "011" and spi_cs = '1' else
-              "11101111" when spi_addr = "100" and spi_cs = '1' else
-              "11011111" when spi_addr = "101" and spi_cs = '1' else
-              "10111111" when spi_addr = "110" and spi_cs = '1' else
-              "01111111" when spi_addr = "111" and spi_cs = '1' else
-              "11111111";
-
-  --* SPI transfer state machine
-  spi_proc : process(clk, reset)
-  begin
-    if rising_edge(clk) then
-      if reset = '1' then
-        count        <= (others => '0');
-        shift_reg    <= (others => '0');
-        prev_spi_clk <= '0';
-        spi_clk_out  <= '0';
-        spi_cs       <= '0';
-        state        <= s_idle;
-      -- irq          <= 'Z';
-        irq          <= '0';  -- 27/11/2016 MPD: AJIT cpu will not use 'Z' internally.
-        done         <= '0';
-      else
-        prev_spi_clk <= spi_clk_buf;
-        -- irq          <= 'Z';
-        irq          <= '0'; -- 27/11/2016 MPD: AJIT cpu will not use 'Z' internally.
-        done         <= '0';
-        case state is
-          when s_idle =>
-            if start = '1' then
-              count     <= (others => '0');
-              shift_reg <= spi_data_buf;
-              spi_cs    <= '1';
-              state     <= s_running;
-            elsif deselect = '1' then
-              spi_cs <= '0';
-            end if;
-          when s_running =>
-            if prev_spi_clk = '1' and spi_clk_buf = '0' then
-	      -- sample on falling edge of spi-clk.
-              spi_clk_out <= '0';
-              count       <= std_logic_vector(unsigned(count) + "0001");
-              shift_reg   <= shift_reg(14 downto 0) & spi_miso;
-              if ((count = "0011" and transfer_length = "00")
-                    or (count = "0111" and transfer_length = "01")
-                  or (count = "1011" and transfer_length = "10")
-                  or (count = "1111" and transfer_length = "11")) then
-                if deselect = '1' then
-                  spi_cs <= '0';
-                end if;
-                if irq_enable = '1' then
-                  irq <= '1';
-                end if;
-      	        done         <= '1';
-                state <= s_idle;
-              end if;
-            elsif prev_spi_clk = '0' and spi_clk_buf = '1' then
-              spi_clk_out <= '1';
-            end if;
-          when others =>
-            null;
-        end case;
-      end if;  -- reset 
-    end if; -- rising edge of clk
-  end process;
-
-  --* Generate SPI clock
-  spi_clock_gen : process(clk, reset)
-  begin
-    -- elsif falling_edge(clk) then
-    if rising_edge(clk) then
-      if reset = '1' then
-        spi_clk_count <= (others => '0');
-        spi_clk_buf   <= '0';
-      elsif state = s_running then
-        if ((spi_clk_divide = "0000")
-            or (spi_clk_divide = "0001" and spi_clk_count = "000000000000001")
-            or (spi_clk_divide = "0010" and spi_clk_count = "000000000000011")
-            or (spi_clk_divide = "0011" and spi_clk_count = "000000000000111")
-            or (spi_clk_divide = "0100" and spi_clk_count = "000000000001111")
-            or (spi_clk_divide = "0101" and spi_clk_count = "000000000011111")
-            or (spi_clk_divide = "0110" and spi_clk_count = "000000000111111")
-            or (spi_clk_divide = "0111" and spi_clk_count = "000000001111111")
-            or (spi_clk_divide = "1000" and spi_clk_count = "000000011111111")
-            or (spi_clk_divide = "1001" and spi_clk_count = "000000111111111")
-            or (spi_clk_divide = "1010" and spi_clk_count = "000001111111111")
-            or (spi_clk_divide = "1011" and spi_clk_count = "000011111111111")
-            or (spi_clk_divide = "1100" and spi_clk_count = "000111111111111")
-            or (spi_clk_divide = "1101" and spi_clk_count = "001111111111111")
-            or (spi_clk_divide = "1110" and spi_clk_count = "011111111111111")
-            or (spi_clk_divide = "1111" and spi_clk_count = "111111111111111")
-	   ) 
-	then
-          spi_clk_buf <= not spi_clk_buf;
-          spi_clk_count <= (others => '0');
-        else
-          spi_clk_count <= std_logic_vector(unsigned(spi_clk_count) + 1);
-        end if;
-      else
-        spi_clk_buf <= '0';
-      end if;
-    end if; -- rising edge of clk.
-  end process;
-
-  spi_mosi_mux : process(shift_reg, transfer_length)
-  begin
-    case transfer_length is
-    when "00" =>
-      spi_mosi <= shift_reg(3);
-    when "01" =>
-      spi_mosi <= shift_reg(7);
-    when "10" =>
-      spi_mosi <= shift_reg(11);
-    when "11" =>
-      spi_mosi <= shift_reg(15);
-    when others =>
-      null;
-    end case;
-  end process;
-
-  spi_clk  <= spi_clk_out;
-
-end rtl;
-
---Generated on 19 Apr 2015 21:43:41 with VHDocL V0.2.5-13-g713cf52 
-library ieee;
-use ieee.std_logic_1164.all;
-
-library ahir;
-use ahir.BaseComponents.all;
-
---
--- a bridge between a pipe interface and an spi-master
---
---  The pipe interface is used to access the spi-master
---  by sending a command/data pair on the input pipe "in_data".
---
---  Each command is eventually responded to by writing a
---  return value on the output pipe "master_out_data". 
---
---  The SPI master does generate an irq, but we will ignore
---  it.  The interrupt should be generated at a higher level.
---   (for example after reading the output pipe).
---
--- Madhav Desai 27/11/2016
---
-entity spi_pipe_master_bridge is
-	port (
-		--
-		-- unused  read/write-bar address data 
-		--   5       1               2      8
-		--
-		master_in_data_pipe_write_data: in  std_logic_vector(15 downto 0);
-		master_in_data_pipe_write_req:  in  std_logic_vector(0 downto 0);
-		master_in_data_pipe_write_ack:  out std_logic_vector(0 downto 0);
-		--
-		-- response data 
-		--
-		master_out_data_pipe_read_data: out  std_logic_vector(7 downto 0);
-		master_out_data_pipe_read_req:  in  std_logic_vector(0 downto 0);
-		master_out_data_pipe_read_ack:  out std_logic_vector(0 downto 0);
-		-- spi-master side.
-		cs_to_spi_master: out std_logic;
-		rw_to_spi_master: out std_logic;
-		addr_to_spi_master: out std_logic_vector(1 downto 0);
-		data_to_spi_master: out std_logic_vector(7 downto 0);
-		data_from_spi_master: in std_logic_vector(7 downto 0);
-		irq_from_spi_master: in std_logic;
-		done_from_spi_master: in std_logic;
-		-- clk, reset
-		clk, reset: in std_logic
-	     );
-end entity;
-
-architecture Behave of spi_pipe_master_bridge is
-	signal start_transfer: std_logic;
-
-	signal cs, rw: std_logic;
-	signal addr: std_logic_vector(1 downto 0);
-	signal data_in: std_logic_vector(7 downto 0);
-
-	type BridgeState is (Idle, WriteData, WaitForDone, WaitOnPipe);
-	signal fsm_state: BridgeState;
-
-	signal master_in_datareg: std_logic_vector( 15 downto 0);
-
-	signal master_spi_rw: std_logic;
-	signal master_spi_reg_addr : std_logic_vector(1 downto 0);
-	signal master_spi_data: std_logic_vector(7 downto 0);
-
-
-	signal q_data_in, q_data_out : std_logic_vector (7 downto 0);
-	signal q_push_req, q_push_ack, q_pop_req, q_pop_ack: std_logic;
-	
-begin
-
-	master_out_data_pipe_read_data <= q_data_out;
-	q_pop_req <= master_out_data_pipe_read_req(0);
-	master_out_data_pipe_read_ack(0) <= q_pop_ack;
-
-	queueInst: QueueBase 
-			generic map (name => "SPI-MASTER-OUT-QUEUE", data_width => 8, queue_depth => 8)
-			port map (
-					clk => clk, reset => reset,
-					data_in => q_data_in, data_out => q_data_out,
-					push_req => q_push_req, push_ack => q_push_ack,	
-					pop_req => q_pop_req, pop_ack => q_pop_ack	
-				);
-
-	master_spi_data <= master_in_datareg(7 downto 0);
-	master_spi_reg_addr   <= master_in_datareg(9 downto 8);
-	master_spi_rw   <= master_in_datareg(10);
-
-
-	process(clk,reset,fsm_state, 
-			master_in_data_pipe_write_req, 
-			master_in_data_pipe_write_data, 
-			master_in_datareg,
-			data_from_spi_master,
-			q_push_ack, 
-			master_spi_data,
-			master_spi_reg_addr,
-			master_spi_rw,
-			done_from_spi_master)
-		variable next_fsm_state : BridgeState;
-		variable master_in_data_pipe_write_ack_var : std_logic;
-		variable cs_var, rw_var: std_logic;
-		variable addr_var: std_logic_vector(1 downto 0);
-		variable data_in_var: std_logic_vector(7 downto 0);
-		variable next_master_in_datareg_var: std_logic_vector(15 downto 0);
-		variable q_data_in_var : std_logic_vector(7 downto 0);
-		variable q_push_req_var : std_logic;
-	begin
-		cs_var := '0'; 
-		rw_var := '0';
-		addr_var := master_spi_reg_addr;
-		data_in_var := master_spi_data;
-		next_fsm_state := fsm_state;
-		master_in_data_pipe_write_ack_var := '0';
-		next_master_in_datareg_var := master_in_datareg;
-		q_data_in_var := (others => '0');
-		q_push_req_var := '0';
-
-		case fsm_state is
-			when Idle =>
-				-- listen on in-data pipe and register the
-				-- data.
-				master_in_data_pipe_write_ack_var := '1';
-				if(master_in_data_pipe_write_req(0) = '1') then
-					next_master_in_datareg_var := master_in_data_pipe_write_data;
-					next_fsm_state := WriteData;
-				end if;
-			when WriteData =>
-				-- do the write/read to the master.
-				cs_var := '1'; 
-				rw_var := master_spi_rw; 
-				if((master_spi_rw = '0') and (master_spi_reg_addr = "10") and
-						(master_spi_data(0) = '1')) then
-					next_fsm_state := WaitForDone;
-				else
-					next_fsm_state := WaitOnPipe;
-				end if;
-			when WaitForDone => 
-				-- if it is a transfer, wait for the done..
-				if(done_from_spi_master = '1') then
-					next_fsm_state := WaitOnPipe;
-				end if;
-			when WaitOnPipe =>
-				-- wait to write to master data-out pipe.
-				q_data_in_var := data_from_spi_master;
-				q_push_req_var := '1';
-				if(q_push_ack = '1') then
-					next_fsm_state := idle;
-				end if;
-		end case;
-
-		-- Mealy outputs..
-		master_in_data_pipe_write_ack(0) <= master_in_data_pipe_write_ack_var;
-		q_data_in <= q_data_in_var;
-		q_push_req <= q_push_req_var;
-		cs_to_spi_master <= cs_var;
-		rw_to_spi_master <= rw_var;
-		addr_to_spi_master <= addr_var;
-		data_to_spi_master <= data_in_var;
-
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				fsm_state <= idle;	
-				master_in_datareg <= (others => '0');
-			else
-				fsm_state <= next_fsm_state;
-				master_in_datareg <= next_master_in_datareg_var;
-			end if;
-		end if;
-	end process;
-		
-
-end Behave;
-library ieee;
-use ieee.std_logic_1164.all;
-library ahir;
-use ahir.BaseComponents.all;
-
-
---
--- SPI-slave to pipe bridge.
---    incoming byte on spi-data on mosi is written out to
---    out_data_pipe.
---       note: incoming byte is written to out-data-pipe only
---             if it is not a null.
---
---    incoming byte on in_data_pipe is shifted out
---    on miso.
---
---
-entity spi_slave_pipe_bridge is
-	generic (ignore_zero_rx_data: boolean := true; tristate_miso_flag : boolean := true);
-	port (
-		-- SPI interface
-		spi_mosi: in std_logic;   -- master-out-slave-in
-		spi_miso: out std_logic;  -- master-in-slave-out
-		spi_ss_bar: in std_logic; -- slave-select active low
-		spi_clk  : in std_logic;  -- spi-clk
-		-- pipe interface
-		out_data_pipe_read_data: out std_logic_vector(7 downto 0);
-		out_data_pipe_read_req : in std_logic_vector(0 downto 0);
-		out_data_pipe_read_ack : out std_logic_vector(0 downto 0);
-		-- input pipe: if the internal queue is full, writes
-		-- will be blocked.
-		in_data_pipe_write_data: in std_logic_vector(7 downto 0);
-		in_data_pipe_write_req : in std_logic_vector(0 downto 0);
-		in_data_pipe_write_ack : out std_logic_vector(0 downto 0);
-		--
-		clk, reset: in std_logic	
-	     );
-end entity spi_slave_pipe_bridge;
-
-
-architecture Behave of spi_slave_pipe_bridge is
-
-
-	signal spi_clk_rising_edge, spi_clk_falling_edge: Boolean;
-	signal last_spi_clk, spi_clk_d, spi_clk_d_d: std_logic;
-	signal mosi_d, mosi_d_d: std_logic;
-	signal spi_ss_bar_d, spi_ss_bar_d_d: std_logic;
-
-	signal in_data_count : integer range 0 to 7;
-	signal shift_completed : Boolean;
-
-	type RxState is (RxIdle, RxWaitOnPipe);
-	signal rx_state: RxState;
-	signal rx_status: std_logic_vector(1 downto 0);
-	signal rx_register: std_logic_vector(7 downto 0);
-	constant ZERO_8: std_logic_vector(7 downto 0) := (others => '0');
-
-	type TxState is (TxIdle, TxWaitOnPipe);
-	signal tx_state: TxState;
-	signal tx_status: std_logic_vector(1 downto 0);
-	signal tx_register: std_logic_vector(7 downto 0);
-
-	signal rx_queue_data_in, rx_queue_data_out: std_logic_vector(7 downto 0);
-	signal rx_queue_push_req, rx_queue_push_ack, rx_queue_pop_req, rx_queue_pop_ack: std_logic;	
-
-	signal tx_queue_data_in, tx_queue_data_out: std_logic_vector(7 downto 0);
-	signal tx_queue_push_req, tx_queue_push_ack, tx_queue_pop_req, tx_queue_pop_ack: std_logic;	
-begin
-	rxQ: QueueBase generic map (name => "spiRxQueue", queue_depth => 8, data_width => 8)
-				port map (clk => clk, reset => reset,
-						data_in => rx_queue_data_in,
-						data_out => rx_queue_data_out,
-						push_req => rx_queue_push_req,
-						push_ack => rx_queue_push_ack,
-						pop_req => rx_queue_pop_req,
-						pop_ack => rx_queue_pop_ack);
-	txQ: QueueBase generic map (name => "spiTxQueue", queue_depth => 16, data_width => 8)
-				port map (clk => clk, reset => reset,
-						data_in => tx_queue_data_in,
-						data_out => tx_queue_data_out,
-						push_req => tx_queue_push_req,
-						push_ack => tx_queue_push_ack,
-						pop_req => tx_queue_pop_req,
-						pop_ack => tx_queue_pop_ack);
-				
-	tx_queue_data_in <=  in_data_pipe_write_data;
-	tx_queue_push_req <= in_data_pipe_write_req(0);
-	in_data_pipe_write_ack(0) <= tx_queue_push_ack; 
-
-	
-	-- synchronization.. use double buffering..
-	process(clk,reset)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				last_spi_clk <= '0';
-				spi_clk_d <= '0';
-				spi_clk_d_d <= '0';
-				mosi_d <= '0';
-				mosi_d_d <= '0';
-				spi_ss_bar_d <= '1';
-				spi_ss_bar_d_d <= '1';
-			else
-				last_spi_clk <= spi_clk_d_d;
-				spi_clk_d <= spi_clk;
-				spi_clk_d_d <= spi_clk_d;
-				mosi_d <= spi_mosi;
-				mosi_d_d <= mosi_d;
-				spi_ss_bar_d <= spi_ss_bar;
-				spi_ss_bar_d_d <= spi_ss_bar_d;
-			end if;
-		end if;
-	end process;
-
-	-- assumption: clk is 4X+ faster than SPI-clk.
-	spi_clk_rising_edge <= (last_spi_clk = '0') and (spi_clk_d_d = '1');
-	spi_clk_falling_edge <= (last_spi_clk = '1') and (spi_clk_d_d = '0');
-
-	-- scan-in: sample on rising edge.
-	--		always read 8 bits
-	process(clk,reset)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then 
-				in_data_count <= 0;
-				rx_register <= (others => '0');
-			elsif(spi_ss_bar_d_d = '0') then
-				if(spi_clk_falling_edge) then
-					shift_completed <= false;
-				end if;
-				if(spi_clk_rising_edge) then 
-				-- reads on rising edge
-					if(in_data_count < 7) then
-						in_data_count <= in_data_count + 1;
-					else
-					   in_data_count <= 0;
-					   shift_completed <= true;
-					end if;
-					rx_register <= rx_register (6 downto 0) & mosi_d_d;
-				end if;
-			end if;
-		end if;
-	end process;
-
-	-- no flow control on rx-side..
-	rx_queue_data_in <= rx_register;
-	rx_queue_push_req <= '1' when (((not ignore_zero_rx_data) or (rx_register /= ZERO_8)) and shift_completed and spi_clk_falling_edge) else '0';
-	out_data_pipe_read_data <= rx_queue_data_out;
-	rx_queue_pop_req <= out_data_pipe_read_req(0);
-	out_data_pipe_read_ack(0) <= rx_queue_pop_ack;
-
-	
-	
-	-- transmit side logic: on synch (shift completed)
-	process(clk, reset, shift_completed)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				tx_register <= (others => '0');
-			elsif (shift_completed and spi_clk_falling_edge) then
-				if(tx_queue_pop_ack = '1') then
-					tx_register <= tx_queue_data_out;
-				else
-					tx_register <= (others => '0');
-				end if;
-			elsif(spi_clk_falling_edge) then
-					tx_register <= tx_register(6 downto 0) & '0';
-			end if;
-		end if;
-	end process;
-	tx_queue_pop_req <= '1' when (shift_completed and spi_clk_falling_edge) else '0';
-
-	Zgen: if tristate_miso_flag generate
-		-- miso: tristated if not selected.
-		spi_miso <= tx_register(7) when spi_ss_bar_d_d = '0' else 'Z';
-	end generate Zgen;
-	noZgen: if (not tristate_miso_flag) generate
-		-- drive to '0' if not selected (wired-and)
-		spi_miso <= tx_register(7) when spi_ss_bar_d_d = '0' else '0';
-	end generate noZgen;
-
-end Behave;
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-library ahir;
-use ahir.BaseComponents.all;
-
-
---
--- SPI-slave to pipe bridge.
---   Expects a command word followed by (optional) data.
---   If the command word is a read, then either a status-word
---   or data from in_data_pipe is returned as the second
---   byte (following the response to the command).  If the command word is
---   a write, the second byte after the command is forwarded
---   to out_data_pipe.
---
---
-entity spi_slave_pipe_bridge_simplified is
-	generic (tristate_miso_flag : boolean := true);
-	port (
-		-- SPI interface
-		spi_mosi: in std_logic;   -- master-out-slave-in
-		spi_miso: out std_logic;  -- master-in-slave-out
-		spi_ss_bar: in std_logic; -- slave-select active low
-		spi_clk  : in std_logic;  -- spi-clk
-		-- pipe interface
-		out_data_pipe_read_data: out std_logic_vector(7 downto 0);
-		out_data_pipe_read_req : in std_logic_vector(0 downto 0);
-		out_data_pipe_read_ack : out std_logic_vector(0 downto 0);
-		-- input pipe: if the internal queue is full, writes
-		-- will be blocked.
-		in_data_pipe_write_data: in std_logic_vector(7 downto 0);
-		in_data_pipe_write_req : in std_logic_vector(0 downto 0);
-		in_data_pipe_write_ack : out std_logic_vector(0 downto 0);
-		--
-		clk, reset: in std_logic	
-	     );
-end entity spi_slave_pipe_bridge_simplified;
-
-
-architecture Behave of spi_slave_pipe_bridge_simplified is
-
-
-	signal spi_clk_rising_edge, spi_clk_falling_edge: Boolean;
-	signal last_spi_clk, spi_clk_d, spi_clk_d_d: std_logic;
-	signal mosi_d, mosi_d_d: std_logic;
-	signal spi_ss_bar_d, spi_ss_bar_d_d: std_logic;
-
-
-	type RxState is (RxIdle, RxWaitOnPipe);
-	signal rx_state: RxState;
-	signal rx_status: std_logic_vector(1 downto 0);
-	signal rx_register: std_logic_vector(7 downto 0);
-	constant ZERO_8: std_logic_vector(7 downto 0) := (others => '0');
-
-	type TxState is (TxIdle, TxWaitOnPipe);
-	signal tx_state: TxState;
-	signal tx_status: std_logic_vector(1 downto 0);
-	signal tx_register: std_logic_vector(7 downto 0);
-
-	signal rx_queue_data_in, rx_queue_data_out: std_logic_vector(7 downto 0);
-	signal rx_queue_push_req, rx_queue_push_ack, rx_queue_pop_req, rx_queue_pop_ack: std_logic;	
-
-	signal tx_queue_data_in, tx_queue_data_out: std_logic_vector(7 downto 0);
-	signal tx_queue_push_req, tx_queue_push_ack, tx_queue_pop_req, tx_queue_pop_ack: std_logic;	
-
-
-	
-	-- status word
-	--    [7:4]: tx_queue_size
-	--    [3:0]: rx_available_slots
-	signal rx_available_slots, tx_queue_size : unsigned (3 downto 0);
-	signal status_word_unsigned: unsigned (7 downto 0);
-
-	--
-	-- command word
-	--  7: r/wbar
-	--  6-0: address
-	--     addr==0 is status word
-	--     addr==1 is rx word. 
-	--
-	signal command_word: std_logic_vector(7 downto 0);
-
-
-	type FsmState is (ReadCommand, WriteData, ShiftOut, LoadShiftOut);
-	signal fsm_state: FsmState;
-
-
-	signal spi_selected: Boolean;
-
-	signal shift_in_reg, shift_out_reg: std_logic_vector (7 downto 0);
-
-	signal shift_in_count, shift_out_count : unsigned (2 downto 0);
-	signal shift_in_completed, shift_out_completed : Boolean;
-
-	signal pushed_to_tx, pushed_to_rx, popped_from_tx, popped_from_rx: Boolean;
-
-	signal load_shift_out_reg: Boolean;
-	signal shift_out_reg_load_value: std_logic_vector(7 downto 0);
-
-begin
-	rxQ: QueueBase generic map (name => "spiRxQueue", queue_depth => 8, data_width => 8)
-				port map (clk => clk, reset => reset,
-						data_in => rx_queue_data_in,
-						data_out => rx_queue_data_out,
-						push_req => rx_queue_push_req,
-						push_ack => rx_queue_push_ack,
-						pop_req => rx_queue_pop_req,
-						pop_ack => rx_queue_pop_ack);
-	rx_queue_data_in <= shift_in_reg;
-	out_data_pipe_read_data <= rx_queue_data_out;
-	rx_queue_pop_req <= out_data_pipe_read_req(0);
-	out_data_pipe_read_ack(0) <= rx_queue_pop_ack;
-
-	txQ: QueueBase generic map (name => "spiTxQueue", queue_depth => 16, data_width => 8)
-				port map (clk => clk, reset => reset,
-						data_in => tx_queue_data_in,
-						data_out => tx_queue_data_out,
-						push_req => tx_queue_push_req,
-						push_ack => tx_queue_push_ack,
-						pop_req => tx_queue_pop_req,
-						pop_ack => tx_queue_pop_ack);
-				
-	tx_queue_data_in <=  in_data_pipe_write_data;
-	tx_queue_push_req <= in_data_pipe_write_req(0);
-	in_data_pipe_write_ack(0) <= tx_queue_push_ack; 
-
-	
-	-- synchronization.. use double buffering..
-	process(clk,reset)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				last_spi_clk <= '0';
-				spi_clk_d <= '0';
-				spi_clk_d_d <= '0';
-				mosi_d <= '0';
-				mosi_d_d <= '0';
-				spi_ss_bar_d <= '1';
-				spi_ss_bar_d_d <= '1';
-			else
-				last_spi_clk <= spi_clk_d_d;
-				spi_clk_d <= spi_clk;
-				spi_clk_d_d <= spi_clk_d;
-				mosi_d <= spi_mosi;
-				mosi_d_d <= mosi_d;
-				spi_ss_bar_d <= spi_ss_bar;
-				spi_ss_bar_d_d <= spi_ss_bar_d;
-			end if;
-		end if;
-	end process;
-
-	-- assumption: clk is 4X+ faster than SPI-clk.
-	spi_clk_rising_edge <= (last_spi_clk = '0') and (spi_clk_d_d = '1');
-	spi_clk_falling_edge <= (last_spi_clk = '1') and (spi_clk_d_d = '0');
-	spi_selected <= (spi_ss_bar_d_d = '0');
-
-	status_word_unsigned <= tx_queue_size & rx_available_slots;
-
-	-- available slots.
-	pushed_to_rx   <= ((rx_queue_push_req = '1') and (rx_queue_push_ack = '1'));
-	pushed_to_tx   <= ((tx_queue_push_req = '1') and (tx_queue_push_ack = '1'));
-	popped_from_rx <= ((rx_queue_pop_req = '1') and (rx_queue_pop_ack = '1'));
-	popped_from_tx <= ((tx_queue_pop_req = '1') and (tx_queue_pop_ack = '1'));
-
-	process(clk, reset, pushed_to_rx, pushed_to_tx, popped_from_rx, popped_from_tx)
-	begin
-		if(clk'event and clk = '1') then
-			if (reset = '1') then
-				rx_available_slots <= to_unsigned(8,4);
-				tx_queue_size      <= (others => '0');
-			else
-				if (pushed_to_rx and (not popped_from_rx)) then
-					rx_available_slots <= rx_available_slots - 1;
-				elsif ((not pushed_to_rx) and  popped_from_rx) then
-					rx_available_slots <= rx_available_slots + 1;
-				end if;
-				if (pushed_to_tx and (not popped_from_tx)) then
-					tx_queue_size <= tx_queue_size + 1;
-				elsif ((not pushed_to_tx) and  popped_from_tx) then
-					tx_queue_size <= tx_queue_size - 1;
-				end if;
-			end if;
-		end if;
-				
-	end process;
-
-	-- shift registers.
-	process(clk, reset, mosi_d_d, shift_in_reg, spi_clk_rising_edge, spi_clk_falling_edge, spi_selected, shift_in_count)
-	begin
-		if (clk'event and clk = '1') then
-			if((reset = '1') or (not spi_selected)) then
-				shift_in_count <= (others => '0');
-				shift_in_completed <= false;
-			else
-				if(spi_clk_rising_edge and spi_selected) then
-					if(shift_in_count = 7) then
-						shift_in_completed <= true;
-					else
-						shift_in_completed <= false;
-					end if;
-					shift_in_count <= shift_in_count + 1;
-					shift_in_reg <= shift_in_reg (6 downto 0) & mosi_d_d;
-				else
-					shift_in_completed <= false;
-				end if;
-			end if;
-		end if;
-	end process;
-
-	-- shift out register.
-	process(clk,reset, load_shift_out_reg, shift_out_reg_load_value,
-			shift_out_reg, spi_clk_falling_edge, spi_clk_rising_edge, spi_selected, shift_out_count)
-	begin
-		if(clk'event and clk = '1') then
-			if((reset = '1') or (not spi_selected)) then
-				shift_out_reg <= (others => '0');
-				shift_out_count <= (others => '0');
-				shift_out_completed <= false;
-			elsif (load_shift_out_reg and spi_clk_falling_edge) then
-				shift_out_reg <= shift_out_reg_load_value;
-				shift_out_completed <= false;
-			elsif (spi_clk_falling_edge and spi_selected) then
-				if(shift_out_count = 6) then
-					shift_out_completed <= true;
-				else
-					shift_out_completed <= false;
-				end if;
-				shift_out_count <= shift_in_count + 1;
-				shift_out_reg <= shift_out_reg(6 downto 0) & '0';
-			end if;
-		end if;
-	end process;
-
-
-
-	-- State machine.
-	process (clk, fsm_state, spi_clk_rising_edge, spi_clk_falling_edge, 
-				spi_selected, shift_in_completed, shift_out_completed,
-				tx_queue_push_ack, rx_queue_pop_req)
-		variable next_fsm_state_var: FsmState;
-		variable load_shift_out_reg_var : boolean;
-		variable shift_out_reg_load_value_var: std_logic_vector(7 downto 0);
-		variable tx_queue_pop_req_var: std_logic;
-		variable rx_queue_push_req_var: std_logic;
-		variable latch_rx_queue_in_reg_var: Boolean;
-	begin
-		next_fsm_state_var := fsm_state;
-		load_shift_out_reg_var := load_shift_out_reg;
-		shift_out_reg_load_value_var := shift_out_reg_load_value;
-		tx_queue_pop_req_var := '0';
-		rx_queue_push_req_var := '0';
-		latch_rx_queue_in_reg_var := false;
-
-		case fsm_state is 
-			when ReadCommand =>
-				if shift_in_completed then
-					if(shift_in_reg(7)  = '1') then -- read
-						load_shift_out_reg_var := true;
-
-						if (shift_in_reg(0) = '0') then -- read-status word.
-							shift_out_reg_load_value_var := std_logic_vector(status_word_unsigned);
-						else
-							tx_queue_pop_req_var := '1';
-							if(tx_queue_pop_ack = '1') then 
-								shift_out_reg_load_value_var := tx_queue_data_out; 
-							end if;
-						end if;
-
-
-						next_fsm_state_var := LoadShiftOut;
-					else -- write... read one more byte from mosi
-						next_fsm_state_var := WriteData;
-					end if;
-				end if;
-			when WriteData =>
-				if shift_in_completed then
-					rx_queue_push_req_var := '1';
-					next_fsm_state_var := ReadCommand;
-				end if;
-			when LoadShiftOut =>
-				-- on next falling edge, load this value.
-				if(spi_clk_falling_edge) then 
-					load_shift_out_reg_var := false;
-					shift_out_reg_load_value_var := (others => '0');
-					next_fsm_state_var     := ShiftOut;
-				end if;
-			when ShiftOut =>
-				if shift_in_completed then
-					next_fsm_state_var := ReadCommand;
-				end if;
-		end case;
-
-		
-		tx_queue_pop_req <= tx_queue_pop_req_var;
-		rx_queue_push_req <= rx_queue_push_req_var;
-
-		if (clk'event and clk = '1') then
-			if (reset = '1') then
-				fsm_state <= ReadCommand;
-				load_shift_out_reg <=  false;
-			else
-
-				load_shift_out_reg <=  load_shift_out_reg_var;
-				shift_out_reg_load_value <= shift_out_reg_load_value_var;
-
-				fsm_state <= next_fsm_state_var;
-			end if;
-		end if;		
- 	end process;
-						
-					
-
-	
-	
-	-- transmit side logic: on synch (shift completed)
-	Zgen: if tristate_miso_flag generate
-		-- miso: tristated if not selected.
-		spi_miso <= shift_out_reg(7) when spi_ss_bar_d_d = '0' else 'Z';
-	end generate Zgen;
-	noZgen: if (not tristate_miso_flag) generate
-		-- drive to '0' if not selected (wired-and)
-		spi_miso <= shift_out_reg(7) when spi_ss_bar_d_d = '0' else '0';
-	end generate noZgen;
-
-end Behave;
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-library AjitCustom;
-use AjitCustom.AjitCustomComponents.all;
-use AjitCustom.AjitGlobalConfigurationPackage.all;
-
---
--- an attempt to mimic a micro-chip SPI eprom.
--- Note: only uses the op-code MICROCHIP_EEPROM_READ : $uint<8> := 3
---
-entity spi_bootrom  is
-	port (CS_L: in std_logic; 
-			SPI_MASTER_MISO: out std_logic_vector(0 downto 0);
-			SPI_MASTER_MOSI: in std_logic_vector(0 downto 0);
-			SPI_MASTER_CLK: in std_logic_vector(0 downto 0);
-			clk, reset: in std_logic);
-end entity spi_bootrom;
-			
-
-architecture Mixed of spi_bootrom is
-	signal CS_L_d, spi_master_clk_d : std_logic;
-
-
-	signal rom_address: std_logic_vector(15 downto 0);
-	signal rom_data_out, data_shiftreg, command_reg: std_logic_vector(7 downto 0);
-	signal rom_enable: std_logic;
-	signal bootrom_selected, bootrom_deselected, spi_master_clk_falling, spi_master_clk_rising : Boolean;
-
-	type FsmState is (IdleState, CommandState, AddrState_1, AddrState_2, EnableState, ResponseState);
-	signal fsm_state: FsmState;
-
-
-	signal incr_counter, clear_counter: Boolean;
-	signal counter_sig: unsigned(2 downto 0);
-
-	signal MISO_REG: std_logic;
-
-begin
-	process(clk)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				CS_L_d <= '1';
-				spi_master_clk_d   <= '0';
-				counter_sig <= (others => '0');
-			else
-				CS_L_d <= CS_L;
-				spi_master_clk_d   <= SPI_MASTER_CLK(0);
-				if(clear_counter) then
-					counter_sig <= (others => '0');
-				elsif(incr_counter) then
-					counter_sig <= counter_sig + 1;
-				end if;
-			end if;
-		end if;
-	end process;	
-
-	bootrom_selected      	<=  (CS_L_d = '1') and (CS_L = '0');
-	spi_master_clk_falling  <=  (spi_master_clk_d = '1') and (SPI_MASTER_CLK(0) = '0');
-
-	bootrom_deselected      <=  (CS_L_d = '0') and (CS_L = '1');
-	spi_master_clk_rising   <=  (spi_master_clk_d = '0') and (SPI_MASTER_CLK(0) = '1');
-
-
-	
-	-- FSM
-	process(clk, reset, 
-			fsm_state, counter_sig, 
-			  SPI_MASTER_MOSI,
-			 bootrom_selected, bootrom_deselected,
-				rom_data_out, data_shiftreg, command_reg, spi_master_clk_falling)
-		variable next_fsm_state_var : FsmState;
-		variable rom_enable_var: std_logic;
-		variable next_addr_var : unsigned (15 downto 0);
-		variable next_data_shiftreg_var, next_command_reg_var : std_logic_vector(7 downto 0);
-		variable clear_counter_var, incr_counter_var: Boolean;
-		variable next_miso_var : std_logic;
-	begin
-		next_fsm_state_var := fsm_state;
-		next_addr_var := unsigned(rom_address);
-		next_command_reg_var := command_reg;
-		rom_enable_var := '0';
-		clear_counter_var := false;
-		incr_counter_var := false;
-		next_data_shiftreg_var := data_shiftreg;
-		next_miso_var := MISO_REG;
-
-		case fsm_state is
-			when IdleState =>
-				if(bootrom_selected) then
-					clear_counter_var := true;
-					next_command_reg_var := (others => '0');
-					next_fsm_state_var := CommandState;
-					next_addr_var := (others => '0');
-				end if;
-			when CommandState =>
-				if(bootrom_deselected) then
-					next_fsm_state_var := IdleState;
-				elsif(spi_master_clk_rising) then
-					-- shift in the command from lsb..
-					next_command_reg_var := command_reg(6 downto 0) & SPI_MASTER_MOSI(0);
-					if(counter_sig = "111") then
-						-- 8-bits shifted in.
-						-- check op-code
-						if(next_command_reg_var = "00000011") then
-							next_fsm_state_var := AddrState_1;
-						else
-							next_fsm_state_var := IdleState;
-						end if;
-						clear_counter_var := true;
-					else
-					   incr_counter_var := true;
-					end if;
-				end if;
-			when AddrState_1 => -- read top-byte of address
-				if(bootrom_deselected) then
-					next_fsm_state_var := IdleState;
-				elsif(spi_master_clk_rising) then
-					next_addr_var := next_addr_var (14 downto 0) & SPI_MASTER_MOSI(0);
-					if(counter_sig = "111") then
-						next_fsm_state_var := AddrState_2;
-						clear_counter_var := true;
-					else
-					   incr_counter_var := true;
-					end if;
-				end if;
-			when AddrState_2 => -- read bottom byte of address.
-				if(bootrom_deselected) then
-					next_fsm_state_var := IdleState;
-				elsif(spi_master_clk_rising) then
-					next_addr_var := next_addr_var (14 downto 0) & SPI_MASTER_MOSI(0);
-					if(counter_sig = "111") then
-						next_fsm_state_var := EnableState;
-						clear_counter_var := true;
-					else
-					   incr_counter_var := true;
-					end if;
-				end if;
-			when EnableState => -- read a byte for each rom access.
-				if(bootrom_deselected) then
-					next_fsm_state_var := IdleState;
-				else
-					rom_enable_var := '1';
-					next_fsm_state_var := ResponseState;
-					clear_counter_var := true;
-				end if;
-			when ResponseState =>
-				if(bootrom_deselected) then
-					next_fsm_state_var := IdleState;
-				elsif(spi_master_clk_rising) then
-					if(counter_sig = "000") then
-						next_miso_var := rom_data_out(7);
-						next_data_shiftreg_var := rom_data_out(6 downto 0) & '0';
-						incr_counter_var := true;
-					else
-						next_miso_var := data_shiftreg(7);
-						next_data_shiftreg_var := data_shiftreg(6 downto 0) & '0';
-						if(counter_sig = "111") then
-							next_fsm_state_var := EnableState;
-							-- increment since the burst continues..
-							next_addr_var := next_addr_var + 1;
-							clear_counter_var := true;
-						else
-							incr_counter_var := true;
-						end if;
-					end if;
-				end if;
-		end case;
-
-		rom_enable <= rom_enable_var;
-		clear_counter <= clear_counter_var;
-		incr_counter <= incr_counter_var;
-
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				rom_address <= (others => '0');
-				fsm_state <= IdleState;
-				data_shiftreg <= (others => '0');
-				command_reg <= (others => '0');
-				MISO_REG <= '0';
-			else
-				rom_address <= std_logic_vector(next_addr_var);
-				fsm_state <= next_fsm_state_var;
-				data_shiftreg <= next_data_shiftreg_var;
-				command_reg <= next_command_reg_var;
-				MISO_REG <= next_miso_var;
-			end if;
-		end if;
-	end process;
-
-	-- miso will be tristated if cs_l(0) /= '0'.
-        useZGen: if (use_tristates_flag) generate
-	  SPI_MASTER_MISO(0) <= MISO_REG when CS_L = '0' else 'Z' ;
-	end generate useZGen;
-
-	-- avoid tri-states?
-        noUseZGen: if (not use_tristates_flag) generate
-	  SPI_MASTER_MISO(0) <= MISO_REG when CS_L = '0' else '0' ;
-	end generate noUseZGen;
-
-	rom_instance: ajit_64kB_rom
-			port map (clk => clk, en => rom_enable,
-					addr => rom_address, data => rom_data_out);
-
-end Mixed;
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-library ahir;
-use ahir.BaseComponents.all;
-use ahir.mem_component_pack.all;
-
-library AjitCustom;
-use AjitCustom.AjitCustomComponents.all;
-
-entity spi_byte_ram_with_init is
-	generic (	mmap_file_name: string;
-			addr_width_in_bytes: integer := 3; 
-			-- to model a big ram with fewer internal memory locations.
-			internal_addr_width: integer := 24;
-			use_write_enable_control: boolean := false);
-	port (CS_L: in std_logic_vector(0 downto 0);
-			SPI_MISO: out std_logic_vector(0 downto 0);
-			SPI_MOSI: in std_logic_vector(0 downto 0);
-			SPI_CLK: in std_logic_vector(0 downto 0);
-			clk, reset: in std_logic);
-end entity spi_byte_ram_with_init;
-			
-
-architecture Mixed of spi_byte_ram_with_init is
-	constant addr_width_in_bits: integer := (addr_width_in_bytes*8);
-	signal spi_master_clk_d : std_logic;
-
-	signal gpio_selected, gpio_deselected: boolean;
-	signal spi_master_clk_falling, spi_master_clk_rising: boolean;
-
-	type FsmState is (INITSTATE, INITMEMACCESS,
-				IDLE, SELECTED, DECODE_OP_CODE, GET_ADDRESS, CONTINUE_ACCESS,
-				GET_WDATA, START_MEM_ACCESS, COMPLETE_MEM_ACCESS);
-	signal fsm_state : FsmState;
-
-	signal op_code, wdata, rdata: std_logic_vector(7 downto 0);
-	signal addr   : std_logic_vector((8*addr_width_in_bytes)-1 downto 0);
-	signal read_write_bar: std_logic;
-
-	signal mem_enable: std_logic;
-	signal load_mem_result_into_shift_reg: boolean;
-
-	signal init_counter, counter: integer range 0 to 255;
-	signal SHIFT_REG: std_logic_vector(7 downto 0);
-
-	signal write_enable: std_logic;
-	signal bmask: std_logic_vector(0 downto 0);
-begin
-	bmask <= (others => '0');
-	
-
-	
-
-	process(clk)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				spi_master_clk_d   <= '0';
-			else
-				spi_master_clk_d   <= SPI_CLK(0);
-			end if;
-		end if;
-	end process;	
-
-	spi_master_clk_falling  <=  (spi_master_clk_d = '1') and (SPI_CLK(0) = '0');
-	spi_master_clk_rising   <=  (spi_master_clk_d = '0') and (SPI_CLK(0) = '1');
-
-
-	
-	-- FSM
-	process(clk, reset, counter, spi_master_clk_rising, spi_master_clk_falling, fsm_state,
-			op_code, addr, wdata, read_write_bar, counter, write_enable,
-			SPI_MOSI, CS_L)
-		variable next_fsm_state_var: FsmState;
-		variable next_counter_var : integer range 0 to 255;
-		variable next_op_code_var: std_logic_vector(7 downto 0);
-		variable next_addr_var : std_logic_vector((addr_width_in_bytes*8)-1 downto 0);
-		variable next_wdata_var: std_logic_vector(7 downto 0);
-		variable next_read_write_bar_var : std_logic;
-		variable load_mem_result_into_shift_reg_var: boolean;
-		variable mem_enable_var : std_logic;
-		variable next_write_enable_var: std_logic;
-		
-		variable next_init_counter_var: integer range 0 to 255;
-	begin
-
-		next_init_counter_var := init_counter;
-		next_fsm_state_var := fsm_state;
-		next_op_code_var := op_code;
-		next_addr_var := addr;
-		next_wdata_var := wdata;
-		load_mem_result_into_shift_reg_var := false;
-		next_read_write_bar_var := read_write_bar;
-		mem_enable_var := '0';
-		next_counter_var := counter;
-		next_write_enable_var := write_enable;
-
-
-		case fsm_state is 
-			when INITSTATE =>
-				-- write a known value
-				next_write_enable_var := '1';
-
-				next_read_write_bar_var :=  '0';
-
-				next_wdata_var := std_logic_vector(to_unsigned(init_counter,8));
-				next_addr_var  := std_logic_vector(to_unsigned(init_counter,addr_width_in_bits));
-				next_init_counter_var := 1;
-
-				next_fsm_state_var := INITMEMACCESS;
-				
-
-			when INITMEMACCESS =>
-
-				mem_enable_var := '1';	
-				next_read_write_bar_var :=  '0';
-				next_wdata_var := std_logic_vector(to_unsigned(init_counter,8));
-				next_addr_var  := std_logic_vector(to_unsigned(init_counter,addr_width_in_bits));
-
-
-				-- write 8 bytes.
-				if(init_counter < 8) then
-					next_init_counter_var := (init_counter + 1);
-				else
-					if(use_write_enable_control) then
-						next_write_enable_var :=  '0';
-					end if;
-					next_fsm_state_var := IDLE;	
-				end if;
-
-			when IDLE =>
-				if(CS_L(0) = '0') then 
-					next_fsm_state_var := SELECTED;
-					next_counter_var := 0;
-				end if;
-			when SELECTED =>
-				-- read in the op-code
-				if(CS_L(0) = '1') then
-					next_fsm_state_var := IDLE;
-					next_counter_var   := 0;
-				elsif(spi_master_clk_rising) then
-					-- read in the op-code 
-					next_op_code_var := op_code(6 downto 0) & SPI_MOSI;
-					next_counter_var := (counter + 1);
-					if(counter = 7) then
-						next_fsm_state_var := DECODE_OP_CODE;
-						next_counter_var := 0;
-					end if;
-				end if;
-
-			when DECODE_OP_CODE =>
-
-				if((op_code = "00000011") or (op_code = "00000010")) then
-				   	next_fsm_state_var := GET_ADDRESS;
-				elsif(use_write_enable_control) then
-					next_fsm_state_var := IDLE;
-			        	if(op_code = "00000110") then
-					    next_fsm_state_var := IDLE;
-					    next_write_enable_var := '1';
-				        elsif (op_code = "00000100") then
-					    next_fsm_state_var := IDLE;
-					    next_write_enable_var :=  '0';
-					end if;
-				else
-				        next_fsm_state_var := IDLE;
-				end if;
-
-			when GET_ADDRESS =>
-				if(CS_L(0) = '1') then
-					next_fsm_state_var := IDLE;
-					next_counter_var := 0;
-				elsif(spi_master_clk_rising) then
-					next_counter_var := (counter + 1);
-					next_addr_var := addr((addr_width_in_bytes*8)-2 downto 0) & SPI_MOSI;
-
-					if(counter = ((addr_width_in_bytes*8)-1)) then 
-						next_counter_var := 0;
-						if(op_code = "00000011") then -- read
-							next_read_write_bar_var := '1';
-							next_fsm_state_var := START_MEM_ACCESS;
-						else -- write
-							next_fsm_state_var := 	GET_WDATA;
-						end if;
-					end if;
-				end if;
-			when GET_WDATA =>
-				if(CS_L(0) = '1') then
-					next_fsm_state_var := IDLE;
-					next_counter_var := 0;
-				elsif(spi_master_clk_rising) then
-					-- read in the address.
-					next_counter_var := (counter + 1);
-					next_wdata_var    := wdata(6 downto 0) & SPI_MOSI;
-					if(counter = 7) then
-						next_fsm_state_var := START_MEM_ACCESS;
-						next_read_write_bar_var := '0';
-					end if;
-				end if;
-			when START_MEM_ACCESS =>
-				--
-				-- access memory in this state
-				--
-				mem_enable_var := '1';
-				next_fsm_state_var := COMPLETE_MEM_ACCESS;
-			when COMPLETE_MEM_ACCESS =>
-				-- wait in this state until you see
-				-- SPI CLK falling.  At that point 
-				-- The read data is latched into the
-				-- shift register.
-				if(spi_master_clk_falling) then
-					load_mem_result_into_shift_reg_var := true;
-					next_counter_var := 0;
-					next_fsm_state_var := CONTINUE_ACCESS;
-				end if;	
-
-			when CONTINUE_ACCESS =>
-				-- in this state, we continue collecting the
-				-- write data and doing a memory access every 8 
-				-- SPI cycles.
-				if(CS_L(0) = '1') then
-					next_fsm_state_var := IDLE;
-				elsif(spi_master_clk_rising) then
-					next_counter_var := (counter + 1);	
-					next_wdata_var   := wdata (6 downto 0) & SPI_MOSI;
-					if(counter = 7) then
-						next_fsm_state_var := START_MEM_ACCESS;
-						next_counter_var := 0;
-						next_addr_var := std_logic_vector((unsigned(addr) + 1));
-					end if;
-				end if;
-		end case;
-
-		mem_enable <= mem_enable_var;
-		load_mem_result_into_shift_reg <= load_mem_result_into_shift_reg_var;
-
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				fsm_state <= INITSTATE;
-				counter <= 0;
-				read_write_bar <= '1';
-				op_code <= (others => '0');
-
-				init_counter <= 0;
-				-- write enable is zero-ed out if
-				-- we wish to control writes.
-				if(use_write_enable_control) then
-					write_enable <= '0';
-				else
-					write_enable <= '1';
-				end if;
-
-			else
-				fsm_state <= next_fsm_state_var;
-				counter <= next_counter_var;
-
-				-- if write-enable = '0' then writes do not happen.
-				read_write_bar <= ((not next_write_enable_var) or next_read_write_bar_var);
-
-				wdata <= next_wdata_var;
-				addr <= next_addr_var;
-
-				op_code <= next_op_code_var;
-				write_enable <= next_write_enable_var;
-
-				init_counter <= next_init_counter_var;
-
-			end if;
-
-		end if;
-
-	end process;
-
-	bb: byte_ram_with_mmap_init
-		generic map (	mmap_file_name => mmap_file_name,
-				g_addr_width => internal_addr_width)
-		port map (
-				datain => wdata,
-				dataout => rdata,
-				addrin => addr(internal_addr_width-1 downto 0),
-				enable => mem_enable,
-				writebar => read_write_bar,
-				clk => clk,
-				reset => reset
-			);
-
-	-- shift register.
-	process(clk, reset, spi_master_clk_falling, load_mem_result_into_shift_reg)
-	begin
-		if(clk'event and (clk = '1')) then
-			if(reset = '1') then
-				SHIFT_REG <= (others => '0');
-			else
-				if(load_mem_result_into_shift_reg) then
-					SHIFT_REG <= rdata;
-				elsif(spi_master_clk_falling) then
-					SHIFT_REG <= SHIFT_REG(6 downto 0) & '0';
-				end if;
-			end if;
-		end if;
-	end process;
-		
-        SPI_MISO(0) <= SHIFT_REG(7) when CS_L(0) = '0' else '0';
-end Mixed;
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-library ahir;
-use ahir.BaseComponents.all;
-use ahir.mem_component_pack.all;
-
-entity spi_byte_ram is
-	generic (addr_width_in_bytes: integer := 2; 
-			-- to model a big ram with fewer internal memory locations.
-			internal_addr_width: integer := 16;
-			use_write_enable_control: boolean := false);
-	port (CS_L: in std_logic_vector(0 downto 0);
-			SPI_MISO: out std_logic_vector(0 downto 0);
-			SPI_MOSI: in std_logic_vector(0 downto 0);
-			SPI_CLK: in std_logic_vector(0 downto 0);
-			clk, reset: in std_logic);
-end entity spi_byte_ram;
-			
-
-architecture Mixed of spi_byte_ram is
-	constant addr_width_in_bits: integer := (addr_width_in_bytes*8);
-	signal spi_master_clk_d : std_logic;
-
-	signal gpio_selected, gpio_deselected: boolean;
-	signal spi_master_clk_falling, spi_master_clk_rising: boolean;
-
-	type FsmState is (INITSTATE, INITMEMACCESS,
-				IDLE, SELECTED, DECODE_OP_CODE, GET_ADDRESS, CONTINUE_ACCESS,
-				GET_WDATA, START_MEM_ACCESS, COMPLETE_MEM_ACCESS);
-	signal fsm_state : FsmState;
-
-	signal op_code, wdata, rdata: std_logic_vector(7 downto 0);
-	signal addr   : std_logic_vector((8*addr_width_in_bytes)-1 downto 0);
-	signal read_write_bar: std_logic;
-
-	signal mem_enable: std_logic;
-	signal load_mem_result_into_shift_reg: boolean;
-
-	signal init_counter, counter: integer range 0 to 255;
-	signal SHIFT_REG: std_logic_vector(7 downto 0);
-
-	signal write_enable: std_logic;
-begin
-	
-
-	
-
-	process(clk)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				spi_master_clk_d   <= '0';
-			else
-				spi_master_clk_d   <= SPI_CLK(0);
-			end if;
-		end if;
-	end process;	
-
-	spi_master_clk_falling  <=  (spi_master_clk_d = '1') and (SPI_CLK(0) = '0');
-	spi_master_clk_rising   <=  (spi_master_clk_d = '0') and (SPI_CLK(0) = '1');
-
-
-	
-	-- FSM
-	process(clk, reset, counter, spi_master_clk_rising, spi_master_clk_falling, fsm_state,
-			op_code, addr, wdata, read_write_bar, counter, write_enable,
-			SPI_MOSI, CS_L)
-		variable next_fsm_state_var: FsmState;
-		variable next_counter_var : integer range 0 to 255;
-		variable next_op_code_var: std_logic_vector(7 downto 0);
-		variable next_addr_var : std_logic_vector((addr_width_in_bytes*8)-1 downto 0);
-		variable next_wdata_var: std_logic_vector(7 downto 0);
-		variable next_read_write_bar_var : std_logic;
-		variable load_mem_result_into_shift_reg_var: boolean;
-		variable mem_enable_var : std_logic;
-		variable next_write_enable_var: std_logic;
-		
-		variable next_init_counter_var: integer range 0 to 255;
-	begin
-
-		next_init_counter_var := init_counter;
-		next_fsm_state_var := fsm_state;
-		next_op_code_var := op_code;
-		next_addr_var := addr;
-		next_wdata_var := wdata;
-		load_mem_result_into_shift_reg_var := false;
-		next_read_write_bar_var := read_write_bar;
-		mem_enable_var := '0';
-		next_counter_var := counter;
-		next_write_enable_var := write_enable;
-
-
-		case fsm_state is 
-			when INITSTATE =>
-				-- write a known value
-				next_write_enable_var := '1';
-
-				next_read_write_bar_var :=  '0';
-
-				next_wdata_var := std_logic_vector(to_unsigned(init_counter,8));
-				next_addr_var  := std_logic_vector(to_unsigned(init_counter,addr_width_in_bits));
-				next_init_counter_var := 1;
-
-				next_fsm_state_var := INITMEMACCESS;
-				
-
-			when INITMEMACCESS =>
-
-				mem_enable_var := '1';	
-				next_read_write_bar_var :=  '0';
-				next_wdata_var := std_logic_vector(to_unsigned(init_counter,8));
-				next_addr_var  := std_logic_vector(to_unsigned(init_counter,addr_width_in_bits));
-
-
-				-- write 8 bytes.
-				if(init_counter < 8) then
-					next_init_counter_var := (init_counter + 1);
-				else
-					if(use_write_enable_control) then
-						next_write_enable_var :=  '0';
-					end if;
-					next_fsm_state_var := IDLE;	
-				end if;
-
-			when IDLE =>
-				if(CS_L(0) = '0') then 
-					next_fsm_state_var := SELECTED;
-					next_counter_var := 0;
-				end if;
-			when SELECTED =>
-				-- read in the op-code
-				if(CS_L(0) = '1') then
-					next_fsm_state_var := IDLE;
-					next_counter_var   := 0;
-				elsif(spi_master_clk_rising) then
-					-- read in the op-code 
-					next_op_code_var := op_code(6 downto 0) & SPI_MOSI;
-					next_counter_var := (counter + 1);
-					if(counter = 7) then
-						next_fsm_state_var := DECODE_OP_CODE;
-						next_counter_var := 0;
-					end if;
-				end if;
-
-			when DECODE_OP_CODE =>
-
-				if((op_code = "00000011") or (op_code = "00000010")) then
-				   	next_fsm_state_var := GET_ADDRESS;
-				elsif(use_write_enable_control) then
-					next_fsm_state_var := IDLE;
-			        	if(op_code = "00000110") then
-					    next_fsm_state_var := IDLE;
-					    next_write_enable_var := '1';
-				        elsif (op_code = "00000100") then
-					    next_fsm_state_var := IDLE;
-					    next_write_enable_var :=  '0';
-					end if;
-				else
-				        next_fsm_state_var := IDLE;
-				end if;
-
-			when GET_ADDRESS =>
-				if(CS_L(0) = '1') then
-					next_fsm_state_var := IDLE;
-					next_counter_var := 0;
-				elsif(spi_master_clk_rising) then
-					next_counter_var := (counter + 1);
-					next_addr_var := addr((addr_width_in_bytes*8)-2 downto 0) & SPI_MOSI;
-
-					if(counter = ((addr_width_in_bytes*8)-1)) then 
-						next_counter_var := 0;
-						if(op_code = "00000011") then -- read
-							next_read_write_bar_var := '1';
-							next_fsm_state_var := START_MEM_ACCESS;
-						else -- write
-							next_fsm_state_var := 	GET_WDATA;
-						end if;
-					end if;
-				end if;
-			when GET_WDATA =>
-				if(CS_L(0) = '1') then
-					next_fsm_state_var := IDLE;
-					next_counter_var := 0;
-				elsif(spi_master_clk_rising) then
-					-- read in the address.
-					next_counter_var := (counter + 1);
-					next_wdata_var    := wdata(6 downto 0) & SPI_MOSI;
-					if(counter = 7) then
-						next_fsm_state_var := START_MEM_ACCESS;
-						next_read_write_bar_var := '0';
-					end if;
-				end if;
-			when START_MEM_ACCESS =>
-				--
-				-- access memory in this state
-				--
-				mem_enable_var := '1';
-				next_fsm_state_var := COMPLETE_MEM_ACCESS;
-			when COMPLETE_MEM_ACCESS =>
-				-- wait in this state until you see
-				-- SPI CLK falling.  At that point 
-				-- The read data is latched into the
-				-- shift register.
-				if(spi_master_clk_falling) then
-					load_mem_result_into_shift_reg_var := true;
-					next_counter_var := 0;
-					next_fsm_state_var := CONTINUE_ACCESS;
-				end if;	
-
-			when CONTINUE_ACCESS =>
-				-- in this state, we continue collecting the
-				-- write data and doing a memory access every 8 
-				-- SPI cycles.
-				if(CS_L(0) = '1') then
-					next_fsm_state_var := IDLE;
-				elsif(spi_master_clk_rising) then
-					next_counter_var := (counter + 1);	
-					next_wdata_var   := wdata (6 downto 0) & SPI_MOSI;
-					if(counter = 7) then
-						next_fsm_state_var := START_MEM_ACCESS;
-						next_counter_var := 0;
-						next_addr_var := std_logic_vector((unsigned(addr) + 1));
-					end if;
-				end if;
-		end case;
-
-		mem_enable <= mem_enable_var;
-		load_mem_result_into_shift_reg <= load_mem_result_into_shift_reg_var;
-
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				fsm_state <= INITSTATE;
-				counter <= 0;
-				read_write_bar <= '1';
-				op_code <= (others => '0');
-
-				init_counter <= 0;
-				-- write enable is zero-ed out if
-				-- we wish to control writes.
-				if(use_write_enable_control) then
-					write_enable <= '0';
-				else
-					write_enable <= '1';
-				end if;
-
-			else
-				fsm_state <= next_fsm_state_var;
-				counter <= next_counter_var;
-
-				-- if write-enable = '0' then writes do not happen.
-				read_write_bar <= ((not next_write_enable_var) or next_read_write_bar_var);
-
-				wdata <= next_wdata_var;
-				addr <= next_addr_var;
-
-				op_code <= next_op_code_var;
-				write_enable <= next_write_enable_var;
-
-				init_counter <= next_init_counter_var;
-
-			end if;
-
-		end if;
-
-	end process;
-
-	bb: base_bank
-		generic map (name => "spi_sram_bb", 
-				g_addr_width => internal_addr_width, g_data_width => 8)
-		port map (
-				datain => wdata,
-				dataout => rdata,
-				addrin => addr(internal_addr_width-1 downto 0),
-				enable => mem_enable,
-				writebar => read_write_bar,
-				clk => clk,
-				reset => reset
-			);
-
-	-- shift register.
-	process(clk, reset, spi_master_clk_falling, load_mem_result_into_shift_reg)
-	begin
-		if(clk'event and (clk = '1')) then
-			if(reset = '1') then
-				SHIFT_REG <= (others => '0');
-			else
-				if(load_mem_result_into_shift_reg) then
-					SHIFT_REG <= rdata;
-				elsif(spi_master_clk_falling) then
-					SHIFT_REG <= SHIFT_REG(6 downto 0) & '0';
-				end if;
-			end if;
-		end if;
-	end process;
-		
-        SPI_MISO(0) <= SHIFT_REG(7) when CS_L(0) = '0' else '0';
-end Mixed;
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
-library AjitCustom;
-use AjitCustom.AjitCustomComponents.all;
-use AjitCustom.AjitGlobalConfigurationPackage.all;
-
---
--- Provide 8 GPIO-IN's and 8 GPIO-OUT's.
---   (super useful for debug!)
---
-entity spi_gpio is
-	port (CS_L: in std_logic;
-			SPI_MASTER_MISO: out std_logic_vector(0 downto 0);
-			SPI_MASTER_MOSI: in std_logic_vector(0 downto 0);
-			SPI_MASTER_CLK: in std_logic_vector(0 downto 0);
-			GPIO_IN: in std_logic_vector (7 downto 0);
-			GPIO_OUT: out std_logic_vector (7 downto 0);
-			clk, reset: in std_logic);
-end entity spi_gpio;
-			
-
-architecture Mixed of spi_gpio is
-	signal CS_L_d, spi_master_clk_d : std_logic;
-	signal GPIO_SHIFT_REG, GPIO_OUT_REG: std_logic_vector(7 downto 0);
-
-	signal gpio_selected, gpio_deselected: boolean;
-	signal spi_master_clk_falling, spi_master_clk_rising: boolean;
-begin
-	GPIO_OUT <= GPIO_OUT_REG;
-	
-
-	process(clk)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				CS_L_d <= '1';
-				spi_master_clk_d   <= '0';
-			else
-				CS_L_d <= CS_L;
-				spi_master_clk_d   <= SPI_MASTER_CLK(0);
-			end if;
-		end if;
-	end process;	
-
-	gpio_selected      	<=  (CS_L_d = '1') and (CS_L = '0');
-	spi_master_clk_falling  <=  (spi_master_clk_d = '1') and (SPI_MASTER_CLK(0) = '0');
-
-	gpio_deselected      <=  (CS_L_d = '0') and (CS_L = '1');
-	spi_master_clk_rising   <=  (spi_master_clk_d = '0') and (SPI_MASTER_CLK(0) = '1');
-
-
-	
-	-- FSM
-	process(clk, reset)
-		variable next_gpio_shift_reg_var : std_logic_vector(7 downto 0);
-		variable next_gpio_out_reg_var : std_logic_vector(7 downto 0);
-	begin
-		next_gpio_shift_reg_var := GPIO_SHIFT_REG;
-		next_gpio_out_reg_var := GPIO_OUT_REG;
-		if(gpio_selected) then
-			next_gpio_shift_reg_var := GPIO_IN;
-		elsif (gpio_deselected) then
-			next_gpio_out_reg_var := GPIO_SHIFT_REG;
-		end if;
-
-		if(spi_master_clk_rising) then
-			next_gpio_shift_reg_var := (GPIO_SHIFT_REG(6 downto 0) & SPI_MASTER_MOSI);
-		end if;
-		
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				GPIO_SHIFT_REG <= (others => '0');
-				GPIO_OUT_REG <= (others => '0');
-			else
-				GPIO_SHIFT_REG <= next_gpio_shift_reg_var;
-				GPIO_OUT_REG <= next_gpio_out_reg_var;
-			end if;
-		end if;
-	end process;
-
-	-- miso will be tristated if cs_l(0) /= '0'.
-        useZGen: if (use_tristates_flag) generate
-	  SPI_MASTER_MISO(0) <= GPIO_SHIFT_REG(7) when CS_L = '0' else 'Z';
-	end generate useZGen;
-
-	-- avoid tri-states?
-        noUseZGen: if (not use_tristates_flag) generate
-	  SPI_MASTER_MISO(0) <= GPIO_SHIFT_REG(7) when CS_L = '0' else '0';
-	end generate noUseZGen;
-
-end Mixed;
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-
---
--- write back the complement of what is received...
---
-entity spi_ping is
-	port (CS_L: in std_logic;
-			SPI_MASTER_MISO: out std_logic_vector(0 downto 0);
-			SPI_MASTER_MOSI: in std_logic_vector(0 downto 0);
-			SPI_MASTER_CLK: in std_logic_vector(0 downto 0);
-			clk, reset: in std_logic);
-end entity spi_ping;
-			
-
-architecture Mixed of spi_ping is
-	signal spi_master_clk_d : std_logic;
-	signal spi_master_clk_falling, spi_master_clk_rising: boolean;
-	signal sample_sig, update_sig: std_logic;
-	signal CS_L_D : std_logic;
-begin
-	
-
-	process(clk)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				spi_master_clk_d   <= '0';
-			else
-				spi_master_clk_d   <= SPI_MASTER_CLK(0);
-			end if;
-		end if;
-	end process;	
-
-	spi_master_clk_falling  <=  (spi_master_clk_d = '1') and (SPI_MASTER_CLK(0) = '0');
-	spi_master_clk_rising   <=  (spi_master_clk_d = '0') and (SPI_MASTER_CLK(0) = '1');
-
-
-	
-	process(clk, reset, SPI_MASTER_MOSI, CS_L, spi_master_clk_rising, spi_master_clk_falling)
-	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				sample_sig <= '0';
-				update_sig <= '0';
-				CS_L_D <= '1';
-			else
-				if(spi_master_clk_rising) then
-			    		if(CS_L = '0') then
-						sample_sig <= SPI_MASTER_MOSI(0);
-					end if;
-					CS_L_D <= CS_L;
-				end if;
-
-				-- complete the incoming bit.
-				update_sig <= not sample_sig;
-			end if;
-		end if;
-	end process;
-
-	SPI_MASTER_MISO(0) <= update_sig when CS_L = '0' else '0';
-end Mixed;
 --
 -- ROMs Using Block RAM Resources.
 -- VHDL code for a ROM with registered output (template 1)
@@ -14368,6 +12255,7 @@ architecture IcacheFrontendCoreArch  of IcacheFrontEndCoreDaemon is -- system-ar
 	constant ZERO_64 : std_logic_vector(63 downto 0) := (others => '0');
 	constant ZERO_18 : std_logic_vector(17 downto 0) := (others => '0');
 	constant ZERO_5 : std_logic_vector(4 downto 0) := (others => '0');
+	constant mZERO_1 : std_logic_vector(0 downto 0) := (others => '0');
 
 	Type IcacheState is (IDLE, CHECK_HIT_OR_MISS, SYN_INVALIDATE, SEND_WAIT_ON_CPU, SEND_WAIT_ON_BE, 
 							RECV_WAIT_ON_BE_FIRST_DWORD, 
@@ -14462,6 +12350,9 @@ architecture IcacheFrontendCoreArch  of IcacheFrontEndCoreDaemon is -- system-ar
 			instr_pair_to_cpu : std_logic_vector(63 downto 0);
 
 	signal is_a_hit, is_a_hit_registered, is_a_hit_to_cpu, mae_to_cpu, access_error_to_cpu : std_logic_vector(0 downto 0);
+	signal cacheable_to_cpu: std_logic_vector(0 downto 0);
+	signal acc_to_cpu : std_logic_vector(2 downto 0);
+
 	signal cpu_tag_lookup, cpu_tag_lookup_reg: boolean;
 
       	signal be_valid, be_valid_registered : std_logic_vector(0 downto 0);
@@ -14476,7 +12367,7 @@ architecture IcacheFrontendCoreArch  of IcacheFrontEndCoreDaemon is -- system-ar
 
 	signal access_byte_mask: std_logic_vector((2**LOG_BYTES_PER_DWORD)-1 downto 0); 
 
-	constant LOG2_NUMBER_OF_BLOCKS: integer := icache_log_number_of_lines;
+	constant LOG2_NUMBER_OF_BLOCKS: integer := LOG_ICACHE_SIZE_IN_BLOCKS;
         constant LOG2_BLOCK_SIZE_IN_BYTES: integer := 6;
 
     	signal access_mae : std_logic;
@@ -14496,6 +12387,7 @@ architecture IcacheFrontendCoreArch  of IcacheFrontEndCoreDaemon is -- system-ar
 	signal tag_invalidate_line_address : std_logic_vector(25 downto 0);
 
 	signal cpu_command_is_not_a_clear_or_flush: boolean;
+	signal lookup_acc: std_logic_vector(2 downto 0);
 
 -- see comment above..
 --##decl_synopsys_sync_set_reset##
@@ -14619,8 +12511,18 @@ begin --
 	is_a_hit_to_cpu(0) <= is_a_hit(0) when (icache_state = CHECK_HIT_OR_MISS) else '0';
 	mae_to_cpu(0)   <= be_mae(0) when first_be_response_can_be_applied else '0';
 	access_error_to_cpu(0)  <= be_access_error(0) when first_be_response_can_be_applied else '0';
+	
+	-- insert into instruction buffer if relevant ....
+	cacheable_to_cpu(0) <= 
+		'1' when ((is_a_hit_to_cpu(0) = '1') or 
+				(first_be_response_can_be_applied and (be_tag_cmd = CACHE_TAG_INSERT)))
+				 								else '0';
+	acc_to_cpu <= be_acc when first_be_response_can_be_applied else 
+				lookup_acc when (is_a_hit_to_cpu(0) = '1') else (others => '0');
 
-	mae_8_to_cpu <= (ZERO_5 & is_a_hit_to_cpu & access_error_to_cpu & mae_to_cpu);
+
+	mae_8_to_cpu <= (cacheable_to_cpu & acc_to_cpu & mZERO_1 & 
+					is_a_hit_to_cpu & access_error_to_cpu & mae_to_cpu);
 	mmu_fsr_to_cpu <= be_mmu_fsr  when first_be_response_can_be_applied else ZERO_18;
 
 	to_cpu <= (mmu_fsr_to_cpu & mae_8_to_cpu & instr_pair_to_cpu);
@@ -15032,6 +12934,7 @@ begin --
 					invalidate_line_address => tag_invalidate_line_address,
 					is_hit => is_hit,
 					permissions_ok => cpu_permissions_ok,
+					lookup_acc => lookup_acc,
     					access_array_command  => access_array_command ,
     					access_addr  => access_addr ,
     					access_dword  => access_dword ,
@@ -15076,6 +12979,7 @@ begin --
 					-- outputs.
 					is_hit => is_hit,
 					permissions_ok => cpu_permissions_ok,
+					lookup_acc => lookup_acc,
     					dword_out  => dword_out ,
     					clk => clk,
 					-- clock, reset.
@@ -17109,7 +15013,24 @@ entity DcacheBypassController is --
 end entity DcacheBypassController;
 
 architecture DcacheBypassController_arch of DcacheBypassController is -- 
+    
+	-------------------------------------------------------------------------
+	-- initial registering
+	-------------------------------------------------------------------------
+	signal cpu_fast_valid_reg		: std_logic;
+    	signal cpu_slow_valid_reg		: std_logic;
 
+    	signal is_memory_write_reg		: std_logic;
+    	signal locked_access_reg		: std_logic;
+
+    	signal cpu_asi_reg		        : std_logic_vector(7 downto 0);
+    	signal cpu_byte_mask_reg	        : std_logic_vector(7 downto 0);
+    	signal cpu_address_reg			: std_logic_vector(31 downto 0);
+    	signal cpu_write_data_reg		: std_logic_vector(63 downto 0);
+
+	-------------------------------------------------------------------------
+	-- forwarding the response...
+	-------------------------------------------------------------------------
 	signal forward_bypass_response, forward_bypass_to_fast, forward_bypass_to_slow: boolean;
 	signal forward_zero_bypass_response: boolean;
 
@@ -17130,49 +15051,108 @@ architecture DcacheBypassController_arch of DcacheBypassController is --
 	constant ZERO_1: std_logic_vector(0 downto 0) := (others => '0');
 	constant ZERO_64: std_logic_vector(63 downto 0) := (others => '0');
 	
+
+	type FsmState is (IDLE, READY_TO_SEND);
+	signal fsm_state : FsmState;
+
+	signal cpu_command_available_to_be: boolean;
     		
 
 -- see comment above..
 --##decl_synopsys_sync_set_reset##
 
 begin
+	--------------------------------------------------------------------------------------
+	-- control FSM and registering: need to delay by one cycle to ensure that
+	-- the bypass timing is aligned with the normal timing (fixing a bug!).
+	--------------------------------------------------------------------------------------
+	process(clk, reset, cpu_bypass_command_available, be_ready_for_request, 
+			bypass_queue_push_ack, fsm_state)
+		variable next_fsm_state_var: FsmState;
+		variable command_ready_var, command_accept_var: boolean;
+		variable latch_cpu_info_var: boolean;
+	begin
+		next_fsm_state_var := fsm_state;
+		command_ready_var  := false;
+		command_accept_var := false;
+		latch_cpu_info_var := false;
+
+		case fsm_state is 
+			when IDLE =>
+				command_accept_var := true;
+				if(cpu_bypass_command_available) then
+					next_fsm_state_var := READY_TO_SEND;
+					latch_cpu_info_var := true;
+				end if;
+			when READY_TO_SEND =>
+				command_ready_var := true;
+				if(be_ready_for_request and (bypass_queue_push_ack = '1')) then
+					command_accept_var := true;
+					if(cpu_bypass_command_available) then
+						latch_cpu_info_var := true;
+					else
+						next_fsm_state_var := IDLE;
+					end if;
+				end if;
+		end case;
+		
+		cpu_bypass_command_accept <= command_accept_var;
+		cpu_command_available_to_be   <= command_ready_var;
+
+
+		if (clk'event and (clk = '1')) then
+			if(reset = '1') then
+				fsm_state <= IDLE;
+			else
+				fsm_state <= next_fsm_state_var;
+				if(latch_cpu_info_var) then
+					cpu_fast_valid_reg <= cpu_fast_valid;
+					cpu_slow_valid_reg <= cpu_slow_valid;
+					is_memory_write_reg <= is_memory_write;
+					locked_access_reg <= locked_access;
+					cpu_asi_reg <= cpu_asi;
+					cpu_byte_mask_reg <= cpu_byte_mask;
+					cpu_address_reg <= cpu_address;
+					cpu_write_data_reg <= cpu_write_data;
+				end if;
+			end if;
+		end if;
+	end process;
 	
 	--------------------------------------------------------------------------------------
 	-- bypass..
 	--------------------------------------------------------------------------------------
-	bypass_response_pending <= (bypass_queue_pop_ack = '1');
+	bypass_response_pending <= (fsm_state = READY_TO_SEND) or (bypass_queue_pop_ack = '1');
 
 	-- BE, COMMAND, QUEUE interaction.
 	
 	-- push into the queue when BE, CMD are ready.
-	bypass_queue_push_req <= '1' when cpu_bypass_command_available and be_ready_for_request else '0';
-	-- accept CPU command when QUEUE, BE are ready.
-	cpu_bypass_command_accept <= (bypass_queue_push_ack = '1') and be_ready_for_request;
+	bypass_queue_push_req <= '1' when cpu_command_available_to_be and be_ready_for_request else '0';
 	-- Write to BE when CMD, Queue are ready. 
-	be_write <= cpu_bypass_command_available and (bypass_queue_push_ack = '1');
+	be_write <= cpu_command_available_to_be and (bypass_queue_push_ack = '1');
 
 
 	-- fields
 	-- [2] = cpu_fast_valid
 	-- [1] = cpu_slow_valid
 	-- [0] = send_zero_response
-	bypass_queue_push_data(2) <=  cpu_fast_valid;
-	bypass_queue_push_data(1) <=  cpu_slow_valid;
-	bypass_queue_push_data(0) <=  is_memory_write;
+	bypass_queue_push_data(2) <=  cpu_fast_valid_reg;
+	bypass_queue_push_data(1) <=  cpu_slow_valid_reg;
+	bypass_queue_push_data(0) <=  is_memory_write_reg;
 	
 	to_be_from_bypass <= 
-			( is_memory_write &
-				locked_access & 
+			( is_memory_write_reg &
+				locked_access_reg & 
 				ZERO_1 & -- read miss
 				ZERO_1 & -- write miss
 				ZERO_1 & -- write hit
-				(not is_memory_write)	&
-				is_memory_write &
+				(not is_memory_write_reg)	&
+				is_memory_write_reg &
 				ZERO_1 & -- write fsr
-				cpu_asi & 
-				cpu_byte_mask &
-				cpu_address &
-				cpu_write_data);
+				cpu_asi_reg & 
+				cpu_byte_mask_reg &
+				cpu_address_reg &
+				cpu_write_data_reg);
 
 	bypQueue: QueueBase generic map
 				(name => "DcacheBypassResponseQueue",
@@ -17232,7 +15212,7 @@ entity DcacheFrontendDaemon is --
   port ( -- 
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(120 downto 0);
+    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(142 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
@@ -17242,6 +15222,15 @@ entity DcacheFrontendDaemon is --
     noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
+    -----------------------------------------------------------------------------------------------
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_req: out std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_ack: in std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_data: out std_logic_vector(92 downto 0);
+    -----------------------------------------------------------------------------------------------
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_req:  out std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_ack:  in std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_data: out std_logic_vector(92 downto 0);
+    -----------------------------------------------------------------------------------------------
     DCACHE_to_CPU_reset_ack_pipe_write_req : out  std_logic_vector(0 downto 0);
     DCACHE_to_CPU_reset_ack_pipe_write_ack : in   std_logic_vector(0 downto 0);
     DCACHE_to_CPU_reset_ack_pipe_write_data : out  std_logic_vector(0 downto 0);
@@ -17297,6 +15286,15 @@ begin
     				noblock_dcache_backend_to_frontend_command_pipe_read_req,
     				noblock_dcache_backend_to_frontend_command_pipe_read_ack,
     				noblock_dcache_backend_to_frontend_command_pipe_read_data,
+    				-----------------------------------------------------------------------------------------------
+    				NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_req,
+    				NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_ack,
+    				NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_data,
+    				-----------------------------------------------------------------------------------------------
+    				NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_req,
+    				NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_ack,
+    				NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_data,
+    				-----------------------------------------------------------------------------------------------
     				DCACHE_to_CPU_reset_ack_pipe_write_req,
     				DCACHE_to_CPU_reset_ack_pipe_write_ack,
     				DCACHE_to_CPU_reset_ack_pipe_write_data,
@@ -17661,11 +15659,11 @@ use AjitCustom.dcache_global_package.all;
 --##decl_synopsys_attribute_lib##
 
 entity DcacheFrontendWithStallCoreDaemon is -- 
-  generic (tag_length : integer); 
+  generic (tag_length : integer := 1); 
   port ( -- 
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(120 downto 0);
+    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(142 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
@@ -17675,6 +15673,15 @@ entity DcacheFrontendWithStallCoreDaemon is --
     noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
+    -----------------------------------------------------------------------------------------------
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_req: out std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_ack: in std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_data: out std_logic_vector(92 downto 0);
+    -----------------------------------------------------------------------------------------------
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_req:  out std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_ack:  in std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_data: out std_logic_vector(92 downto 0);
+    -----------------------------------------------------------------------------------------------
     DCACHE_to_CPU_reset_ack_pipe_write_req : out  std_logic_vector(0 downto 0);
     DCACHE_to_CPU_reset_ack_pipe_write_ack : in   std_logic_vector(0 downto 0);
     DCACHE_to_CPU_reset_ack_pipe_write_data : out  std_logic_vector(0 downto 0);
@@ -17806,6 +15813,9 @@ architecture DcacheFrontendCoreDaemon_arch of DcacheFrontendWithStallCoreDaemon 
 	signal from_cpu_fast, from_cpu_slow, cpu_slow_command, 
 					cpu_fast_command : std_logic_vector(120 downto 0);
 
+	signal fast_command_bypass_control_info: std_logic_vector(21 downto 0);
+	signal fast_command_bypass_control_info_reg: std_logic_vector(21 downto 0);
+
 	signal cpu_thread_id: std_logic_vector(1 downto 0);
 	signal cpu_thread_id_registered: std_logic_vector(1 downto 0);
 	signal active_cpu_thread_id: std_logic_vector(1 downto 0);
@@ -17880,7 +15890,7 @@ architecture DcacheFrontendCoreDaemon_arch of DcacheFrontendWithStallCoreDaemon 
 
 	signal access_byte_mask: std_logic_vector(7 downto 0); 
 
-	constant LOG2_NUMBER_OF_BLOCKS: integer := dcache_log_number_of_lines;
+	constant LOG2_NUMBER_OF_BLOCKS: integer := LOG_DCACHE_SIZE_IN_BLOCKS;
         constant LOG2_BLOCK_SIZE_IN_BYTES: integer := 6;
         constant LOG2_DATA_WIDTH_IN_BYTES: integer := 3;
 
@@ -17935,12 +15945,13 @@ architecture DcacheFrontendCoreDaemon_arch of DcacheFrontendWithStallCoreDaemon 
 	signal free_invalidate_slot_count : integer range 0 to NUMBER_OF_INVALIDATE_SLOTS_PER_CORE-2;
 
 
-	signal is_mem_access_asi, is_mem_access_asi_reg : boolean;
+	signal is_pure_mem_access_asi, is_mem_access_asi, is_mem_access_asi_reg : boolean;
 
 	-- These are moved to global scope since they are used
 	-- in multiple blocks.
-	signal nc_tlb_match: std_logic;
+	signal nc_tlb_match_base, nc_tlb_match: std_logic;
 	signal access_tag_command: std_logic_vector(2 downto 0);
+	signal lookup_acc: std_logic_vector(2 downto 0);
 
 -- see comment above..
 --##decl_synopsys_sync_set_reset##
@@ -18142,6 +16153,7 @@ begin
 			dcache_in_trapped_state_reg <= (others => '0');
 			cpu_req_type_reg <= (others => '0');
 				
+			fast_command_bypass_control_info_reg <= (others => '0');
 			is_mem_access_asi_reg <= false;
 		   else
 
@@ -18177,6 +16189,8 @@ begin
 				is_ccu_request_reg <= is_ccu_request;
 
 				dcache_in_trapped_state_reg <= dcache_in_trapped_state;
+
+				fast_command_bypass_control_info_reg <= fast_command_bypass_control_info;
 			
 			elsif clear_cpu_commands then
 
@@ -18873,6 +16887,7 @@ begin
 					-- outputs.
 					is_hit => is_hit,
 					permissions_ok => cpu_permissions_ok,
+					lookup_acc => lookup_acc,
     					dword_out  => dword_out ,
     					clk => clk,
 					-- clock, reset.
@@ -18952,7 +16967,7 @@ begin
 	--
 	-- Added: do not consider fast valid if slow request has
 	--         lock.
-	cpu_fast_command_valid <= (NOBLOCK_CPU_to_DCACHE_command_pipe_read_data (120) = '1') 
+	cpu_fast_command_valid <= (NOBLOCK_CPU_to_DCACHE_command_pipe_read_data (142) = '1') 
 					and 
 					(NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack (0) = '1')
 					and 
@@ -18962,9 +16977,15 @@ begin
 					and 
 					(NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_ack (0) = '1');
 
-	cpu_fast_command <= NOBLOCK_CPU_to_DCACHE_command_pipe_read_data 
+	cpu_fast_command <= 
+		NOBLOCK_CPU_to_DCACHE_command_pipe_read_data(142 downto 142) & NOBLOCK_CPU_to_DCACHE_command_pipe_read_data (119 downto 0)
 						when cpu_fast_command_valid
 									else (others => '0');
+	fast_command_bypass_control_info <=
+		NOBLOCK_CPU_to_DCACHE_command_pipe_read_data (141 downto 120)
+						when cpu_fast_command_valid
+									else (others => '0');
+
 	cpu_slow_command <=  NOBLOCK_CPU_to_DCACHE_slow_command_pipe_read_data when cpu_slow_command_valid
 						else (others => '0');
 
@@ -19005,10 +17026,11 @@ begin
 	-- bypass controller
 	-----------------------------------------------------------------------------------------------
 	is_bypass_asi    <= (cpu_asi(7 downto 4) = "0010");
-	is_mem_access_asi <= ((cpu_asi(3 downto 0) = "1000") or
+	is_pure_mem_access_asi <= ((cpu_asi(3 downto 0) = "1000") or
 				(cpu_asi(3 downto 0) = "1001") or
 				(cpu_asi(3 downto 0) = "1010") or
-				(cpu_asi(3 downto 0) = "1011")) or is_bypass_asi;
+				(cpu_asi(3 downto 0) = "1011"));
+	is_mem_access_asi <= is_pure_mem_access_asi or is_bypass_asi;
 				
 	
 	--
@@ -19116,17 +17138,86 @@ begin
 					lookup_ifetch => nc_tlb_lookup_ifetch,
 					insert_virtual_address => cpu_addr_reg,
 					insert_acc => nc_tlb_insert_acc, 
-					match => nc_tlb_match,
+					match => nc_tlb_match_base,
 					insert => nc_tlb_insert,
 					clear => nc_tlb_clear,	
 					clk => clk, reset => reset);
+
+		-- NC TLB match only applicable to pure memory accesses!
+		nc_tlb_match <= nc_tlb_match_base when is_pure_mem_access_asi  else '0';
 	  end block;
 	end generate ncGen;
 
 	noNcGen: if (TREAT_NONCACHEABLE_AS_BYPASS = 0) generate
 		nc_tlb_match <= '0';
 	end generate noNcGen;
+
+	-- the control information is in this form..
+	--  valid thread-id stream-id slot-id do-not-bypass  rd to-iu to-fp to-cp
+	--   1     4         2         6       1              5    1    1       1 =  22
+	--
+	-- The bypass signal has the following format..
+	-- valid cpu-id thread-id stream-id slot-id signed-type byte-mask   rd  rdata
+	--   1     2      4         2         6        1          8         5   64  = 92
+	process(dcache_state, 
+			is_a_hit, 
+			dword_out,
+			cpu_byte_mask_reg,
+			fast_command_bypass_control_info_reg, 
+			tags_arrays_done,
+			cpu_valid_fast_reg,
+			cpu_thread_id_registered)
+		variable to_iu : std_logic_vector (92 downto 0);
+		variable to_fu : std_logic_vector (92 downto 0);
+		variable valid, signed_type : std_logic;
+	begin
+		valid := fast_command_bypass_control_info_reg(21);
+		signed_type := fast_command_bypass_control_info_reg(8);
+
+		to_iu(92) := (valid and fast_command_bypass_control_info_reg(2));
+		to_fu(92) := (valid and fast_command_bypass_control_info_reg(1));
+
+		to_iu(91 downto 90) := cpu_thread_id_registered;
+		to_fu(91 downto 90) := cpu_thread_id_registered;
 	
+		-- thread stream slot
+		to_iu(89 downto 78) := fast_command_bypass_control_info_reg(20 downto 9);
+		to_fu(89 downto 78) := fast_command_bypass_control_info_reg(20 downto 9);
+
+		to_iu(77) := signed_type;
+		to_fu(77) := signed_type;
+
+		-- byte-mask
+		to_iu(76 downto 69) := cpu_byte_mask_reg;
+		to_fu(76 downto 69) := cpu_byte_mask_reg;
+
+		-- rd
+		to_iu(68 downto 64) := fast_command_bypass_control_info_reg(7 downto 3);
+		to_fu(68 downto 64) := fast_command_bypass_control_info_reg(7 downto 3);
+
+		-- rdata 
+		to_iu(63 downto 0) := dword_out;
+		to_fu(63 downto 0) := dword_out;
+
+		if ((valid = '1') and
+				(cpu_valid_fast_reg(0) = '1') and 
+				(tags_arrays_done = '1') and
+				(dcache_state = CHECK_HIT_OR_MISS) and 
+				(is_a_hit(0) = '1')) then
+
+			NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_data <= to_iu;	
+			NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_req(0) <= to_iu(92);
+
+			NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_data <= to_fu;	
+			NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_req(0) <= to_fu(92);
+		else
+			NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_data <= (others => '0');	
+			NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_req(0) <= '0';
+
+			NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_data <= (others => '0');	
+			NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_req(0) <= '0';
+		end if;
+	end process;
 
 end DcacheFrontendCoreDaemon_arch;
 --
@@ -19168,11 +17259,11 @@ use AjitCustom.CachePackage.all;
 --##decl_synopsys_attribute_lib##
 
 entity DcacheFrontendWithStallDaemon is -- 
-  generic (tag_length : integer); 
+  generic (tag_length : integer := 1); 
   port ( -- 
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(120 downto 0);
+    NOBLOCK_CPU_to_DCACHE_command_pipe_read_data : in   std_logic_vector(142 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_req : out  std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_ack : in   std_logic_vector(0 downto 0);
     NOBLOCK_CPU_to_DCACHE_reset_pipe_read_data : in   std_logic_vector(0 downto 0);
@@ -19182,6 +17273,15 @@ entity DcacheFrontendWithStallDaemon is --
     noblock_dcache_backend_to_frontend_command_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_ack : in   std_logic_vector(0 downto 0);
     noblock_dcache_backend_to_frontend_command_pipe_read_data : in   std_logic_vector(83 downto 0);
+    -----------------------------------------------------------------------------------------------
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_req: out std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_ack: in std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_data: out std_logic_vector(92 downto 0);
+    -----------------------------------------------------------------------------------------------
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_req:  out std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_ack:  in std_logic_vector(0 downto 0);
+    NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_data: out std_logic_vector(92 downto 0);
+    -----------------------------------------------------------------------------------------------
     DCACHE_to_CPU_reset_ack_pipe_write_req : out  std_logic_vector(0 downto 0);
     DCACHE_to_CPU_reset_ack_pipe_write_ack : in   std_logic_vector(0 downto 0);
     DCACHE_to_CPU_reset_ack_pipe_write_data : out  std_logic_vector(0 downto 0);
@@ -19219,7 +17319,7 @@ architecture DcacheFrontendDaemon_arch of DcacheFrontendWithStallDaemon is --
 
     signal NOBLOCK_BUFFERED_CPU_to_DCACHE_command_pipe_read_req : std_logic_vector(0 downto 0);
     signal NOBLOCK_BUFFERED_CPU_to_DCACHE_command_pipe_read_ack : std_logic_vector(0 downto 0);
-    signal NOBLOCK_BUFFERED_CPU_to_DCACHE_command_pipe_read_data : std_logic_vector(120 downto 0);
+    signal NOBLOCK_BUFFERED_CPU_to_DCACHE_command_pipe_read_data : std_logic_vector(142 downto 0);
 
     signal NOBLOCK_BUFFERED_CPU_to_DCACHE_slow_command_pipe_read_req : std_logic_vector(0 downto 0);
     signal NOBLOCK_BUFFERED_CPU_to_DCACHE_slow_command_pipe_read_ack : std_logic_vector(0 downto 0);
@@ -19229,7 +17329,7 @@ begin
 	ifBuffer: if (DCACHE_BUFFER_REQUEST > 0) generate
 		qBuf: QueueBase
 			generic map (name => "DcacheRequestQueue", queue_depth => 2,
-						data_width => 121, save_one_slot => false)
+						data_width => 143, save_one_slot => false)
 			port map (
 				clk => clk,
 				reset => reset,
@@ -19282,6 +17382,15 @@ begin
     				noblock_dcache_backend_to_frontend_command_pipe_read_req,
     				noblock_dcache_backend_to_frontend_command_pipe_read_ack,
     				noblock_dcache_backend_to_frontend_command_pipe_read_data,
+    				-----------------------------------------------------------------------------------------------
+    				NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_req,
+    				NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_ack,
+    				NOBLOCK_DCACHE_TO_CPU_IU_BYPASS_pipe_write_data,
+    				-----------------------------------------------------------------------------------------------
+    				NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_req,
+    				NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_ack,
+    				NOBLOCK_DCACHE_TO_CPU_FU_BYPASS_pipe_write_data,
+    				-----------------------------------------------------------------------------------------------
     				DCACHE_to_CPU_reset_ack_pipe_write_req,
     				DCACHE_to_CPU_reset_ack_pipe_write_ack,
     				DCACHE_to_CPU_reset_ack_pipe_write_data,
@@ -20236,7 +18345,8 @@ entity analyze_dcache_response_VVP is --
     dout_h : out  std_logic_vector(31 downto 0);
     dout_l : out  std_logic_vector(31 downto 0);
     data_access_exception : out  std_logic_vector(0 downto 0);
-    data_access_error : out  std_logic_vector(0 downto 0)-- 
+    data_access_error : out  std_logic_vector(0 downto 0);
+    dcache_hit : out  std_logic_vector(0 downto 0)-- 
   );
   -- 
 end entity analyze_dcache_response_VVP;
@@ -20261,6 +18371,7 @@ architecture analyze_dcache_response_VVP_arch of analyze_dcache_response_VVP is 
   signal dout_l_buffer :  std_logic_vector(31 downto 0);
   signal data_access_exception_buffer :  std_logic_vector(0 downto 0);
   signal data_access_error_buffer :  std_logic_vector(0 downto 0);
+  signal dcache_hit_buffer :  std_logic_vector(0 downto 0);
   -- volatile/operator module components. 
   -- 
 begin --  
@@ -20280,328 +18391,338 @@ begin --
   dout_l <= dout_l_buffer;
   data_access_exception <= data_access_exception_buffer;
   data_access_error <= data_access_error_buffer;
+  dcache_hit <= dcache_hit_buffer;
   -- the control path --------------------------------------------------
   default_zero_sig <= '0';
   -- volatile module, no control path
   -- the data path
   data_path: Block -- 
-    signal BITSEL_u32_u1_1070_wire : std_logic_vector(0 downto 0);
-    signal EQ_u2_u1_1080_wire : std_logic_vector(0 downto 0);
-    signal EQ_u2_u1_1087_wire : std_logic_vector(0 downto 0);
-    signal EQ_u2_u1_1095_wire : std_logic_vector(0 downto 0);
-    signal EQ_u2_u1_1102_wire : std_logic_vector(0 downto 0);
-    signal EQ_u2_u1_1113_wire : std_logic_vector(0 downto 0);
-    signal EQ_u2_u1_1120_wire : std_logic_vector(0 downto 0);
-    signal MUX_1084_wire : std_logic_vector(7 downto 0);
-    signal MUX_1091_wire : std_logic_vector(7 downto 0);
-    signal MUX_1099_wire : std_logic_vector(7 downto 0);
-    signal MUX_1106_wire : std_logic_vector(7 downto 0);
-    signal MUX_1117_wire : std_logic_vector(15 downto 0);
-    signal MUX_1124_wire : std_logic_vector(15 downto 0);
-    signal MUX_1141_wire : std_logic_vector(31 downto 0);
-    signal MUX_1143_wire : std_logic_vector(31 downto 0);
-    signal MUX_1153_wire : std_logic_vector(31 downto 0);
-    signal MUX_1155_wire : std_logic_vector(31 downto 0);
-    signal MUX_1162_wire : std_logic_vector(31 downto 0);
-    signal OR_u1_u1_1071_wire : std_logic_vector(0 downto 0);
-    signal OR_u1_u1_1159_wire : std_logic_vector(0 downto 0);
-    signal OR_u32_u32_1156_wire : std_logic_vector(31 downto 0);
-    signal OR_u8_u8_1092_wire : std_logic_vector(7 downto 0);
-    signal OR_u8_u8_1107_wire : std_logic_vector(7 downto 0);
-    signal a10_1061 : std_logic_vector(1 downto 0);
-    signal dcache_mae_1043 : std_logic_vector(7 downto 0);
-    signal ext_byte_1109 : std_logic_vector(7 downto 0);
-    signal ext_half_word_1126 : std_logic_vector(15 downto 0);
-    signal konst_1050_wire_constant : std_logic_vector(7 downto 0);
-    signal konst_1055_wire_constant : std_logic_vector(7 downto 0);
-    signal konst_1069_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_1079_wire_constant : std_logic_vector(1 downto 0);
-    signal konst_1083_wire_constant : std_logic_vector(7 downto 0);
-    signal konst_1086_wire_constant : std_logic_vector(1 downto 0);
-    signal konst_1090_wire_constant : std_logic_vector(7 downto 0);
-    signal konst_1094_wire_constant : std_logic_vector(1 downto 0);
-    signal konst_1098_wire_constant : std_logic_vector(7 downto 0);
-    signal konst_1101_wire_constant : std_logic_vector(1 downto 0);
-    signal konst_1105_wire_constant : std_logic_vector(7 downto 0);
-    signal konst_1112_wire_constant : std_logic_vector(1 downto 0);
-    signal konst_1116_wire_constant : std_logic_vector(15 downto 0);
-    signal konst_1119_wire_constant : std_logic_vector(1 downto 0);
-    signal konst_1123_wire_constant : std_logic_vector(15 downto 0);
-    signal konst_1142_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_1154_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_1161_wire_constant : std_logic_vector(31 downto 0);
-    signal loaded_high_word_1065 : std_logic_vector(31 downto 0);
-    signal loaded_low_word_1076 : std_logic_vector(31 downto 0);
-    signal loaded_word_1047 : std_logic_vector(63 downto 0);
-    signal slice_1073_wire : std_logic_vector(31 downto 0);
-    signal slice_1082_wire : std_logic_vector(7 downto 0);
-    signal slice_1089_wire : std_logic_vector(7 downto 0);
-    signal slice_1097_wire : std_logic_vector(7 downto 0);
-    signal slice_1104_wire : std_logic_vector(7 downto 0);
-    signal slice_1115_wire : std_logic_vector(15 downto 0);
-    signal slice_1122_wire : std_logic_vector(15 downto 0);
-    signal type_cast_1136_wire : std_logic_vector(7 downto 0);
-    signal type_cast_1137_wire : std_logic_vector(31 downto 0);
-    signal type_cast_1138_wire : std_logic_vector(31 downto 0);
-    signal type_cast_1140_wire : std_logic_vector(31 downto 0);
-    signal type_cast_1148_wire : std_logic_vector(15 downto 0);
-    signal type_cast_1149_wire : std_logic_vector(31 downto 0);
-    signal type_cast_1150_wire : std_logic_vector(31 downto 0);
-    signal type_cast_1152_wire : std_logic_vector(31 downto 0);
+    signal BITSEL_u32_u1_1216_wire : std_logic_vector(0 downto 0);
+    signal EQ_u2_u1_1226_wire : std_logic_vector(0 downto 0);
+    signal EQ_u2_u1_1233_wire : std_logic_vector(0 downto 0);
+    signal EQ_u2_u1_1241_wire : std_logic_vector(0 downto 0);
+    signal EQ_u2_u1_1248_wire : std_logic_vector(0 downto 0);
+    signal EQ_u2_u1_1259_wire : std_logic_vector(0 downto 0);
+    signal EQ_u2_u1_1266_wire : std_logic_vector(0 downto 0);
+    signal MUX_1230_wire : std_logic_vector(7 downto 0);
+    signal MUX_1237_wire : std_logic_vector(7 downto 0);
+    signal MUX_1245_wire : std_logic_vector(7 downto 0);
+    signal MUX_1252_wire : std_logic_vector(7 downto 0);
+    signal MUX_1263_wire : std_logic_vector(15 downto 0);
+    signal MUX_1270_wire : std_logic_vector(15 downto 0);
+    signal MUX_1287_wire : std_logic_vector(31 downto 0);
+    signal MUX_1289_wire : std_logic_vector(31 downto 0);
+    signal MUX_1299_wire : std_logic_vector(31 downto 0);
+    signal MUX_1301_wire : std_logic_vector(31 downto 0);
+    signal MUX_1308_wire : std_logic_vector(31 downto 0);
+    signal OR_u1_u1_1217_wire : std_logic_vector(0 downto 0);
+    signal OR_u1_u1_1305_wire : std_logic_vector(0 downto 0);
+    signal OR_u32_u32_1302_wire : std_logic_vector(31 downto 0);
+    signal OR_u8_u8_1238_wire : std_logic_vector(7 downto 0);
+    signal OR_u8_u8_1253_wire : std_logic_vector(7 downto 0);
+    signal a10_1207 : std_logic_vector(1 downto 0);
+    signal dcache_mae_1184 : std_logic_vector(7 downto 0);
+    signal ext_byte_1255 : std_logic_vector(7 downto 0);
+    signal ext_half_word_1272 : std_logic_vector(15 downto 0);
+    signal konst_1191_wire_constant : std_logic_vector(7 downto 0);
+    signal konst_1196_wire_constant : std_logic_vector(7 downto 0);
+    signal konst_1201_wire_constant : std_logic_vector(7 downto 0);
+    signal konst_1215_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_1225_wire_constant : std_logic_vector(1 downto 0);
+    signal konst_1229_wire_constant : std_logic_vector(7 downto 0);
+    signal konst_1232_wire_constant : std_logic_vector(1 downto 0);
+    signal konst_1236_wire_constant : std_logic_vector(7 downto 0);
+    signal konst_1240_wire_constant : std_logic_vector(1 downto 0);
+    signal konst_1244_wire_constant : std_logic_vector(7 downto 0);
+    signal konst_1247_wire_constant : std_logic_vector(1 downto 0);
+    signal konst_1251_wire_constant : std_logic_vector(7 downto 0);
+    signal konst_1258_wire_constant : std_logic_vector(1 downto 0);
+    signal konst_1262_wire_constant : std_logic_vector(15 downto 0);
+    signal konst_1265_wire_constant : std_logic_vector(1 downto 0);
+    signal konst_1269_wire_constant : std_logic_vector(15 downto 0);
+    signal konst_1288_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_1300_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_1307_wire_constant : std_logic_vector(31 downto 0);
+    signal loaded_high_word_1211 : std_logic_vector(31 downto 0);
+    signal loaded_low_word_1222 : std_logic_vector(31 downto 0);
+    signal loaded_word_1188 : std_logic_vector(63 downto 0);
+    signal slice_1219_wire : std_logic_vector(31 downto 0);
+    signal slice_1228_wire : std_logic_vector(7 downto 0);
+    signal slice_1235_wire : std_logic_vector(7 downto 0);
+    signal slice_1243_wire : std_logic_vector(7 downto 0);
+    signal slice_1250_wire : std_logic_vector(7 downto 0);
+    signal slice_1261_wire : std_logic_vector(15 downto 0);
+    signal slice_1268_wire : std_logic_vector(15 downto 0);
+    signal type_cast_1282_wire : std_logic_vector(7 downto 0);
+    signal type_cast_1283_wire : std_logic_vector(31 downto 0);
+    signal type_cast_1284_wire : std_logic_vector(31 downto 0);
+    signal type_cast_1286_wire : std_logic_vector(31 downto 0);
+    signal type_cast_1294_wire : std_logic_vector(15 downto 0);
+    signal type_cast_1295_wire : std_logic_vector(31 downto 0);
+    signal type_cast_1296_wire : std_logic_vector(31 downto 0);
+    signal type_cast_1298_wire : std_logic_vector(31 downto 0);
     -- 
   begin -- 
-    konst_1050_wire_constant <= "00000000";
-    konst_1055_wire_constant <= "00000001";
-    konst_1069_wire_constant <= "00000000000000000000000000000010";
-    konst_1079_wire_constant <= "00";
-    konst_1083_wire_constant <= "00000000";
-    konst_1086_wire_constant <= "01";
-    konst_1090_wire_constant <= "00000000";
-    konst_1094_wire_constant <= "10";
-    konst_1098_wire_constant <= "00000000";
-    konst_1101_wire_constant <= "11";
-    konst_1105_wire_constant <= "00000000";
-    konst_1112_wire_constant <= "00";
-    konst_1116_wire_constant <= "0000000000000000";
-    konst_1119_wire_constant <= "10";
-    konst_1123_wire_constant <= "0000000000000000";
-    konst_1142_wire_constant <= "00000000000000000000000000000000";
-    konst_1154_wire_constant <= "00000000000000000000000000000000";
-    konst_1161_wire_constant <= "00000000000000000000000000000000";
-    -- flow-through select operator MUX_1075_inst
-    loaded_low_word_1076 <= slice_1073_wire when (OR_u1_u1_1071_wire(0) /=  '0') else loaded_high_word_1065;
-    -- flow-through select operator MUX_1084_inst
-    MUX_1084_wire <= slice_1082_wire when (EQ_u2_u1_1080_wire(0) /=  '0') else konst_1083_wire_constant;
-    -- flow-through select operator MUX_1091_inst
-    MUX_1091_wire <= slice_1089_wire when (EQ_u2_u1_1087_wire(0) /=  '0') else konst_1090_wire_constant;
-    -- flow-through select operator MUX_1099_inst
-    MUX_1099_wire <= slice_1097_wire when (EQ_u2_u1_1095_wire(0) /=  '0') else konst_1098_wire_constant;
-    -- flow-through select operator MUX_1106_inst
-    MUX_1106_wire <= slice_1104_wire when (EQ_u2_u1_1102_wire(0) /=  '0') else konst_1105_wire_constant;
-    -- flow-through select operator MUX_1117_inst
-    MUX_1117_wire <= slice_1115_wire when (EQ_u2_u1_1113_wire(0) /=  '0') else konst_1116_wire_constant;
-    -- flow-through select operator MUX_1124_inst
-    MUX_1124_wire <= slice_1122_wire when (EQ_u2_u1_1120_wire(0) /=  '0') else konst_1123_wire_constant;
-    -- flow-through select operator MUX_1141_inst
-    MUX_1141_wire <= type_cast_1138_wire when (signed_type_buffer(0) /=  '0') else type_cast_1140_wire;
-    -- flow-through select operator MUX_1143_inst
-    MUX_1143_wire <= MUX_1141_wire when (byte_buffer(0) /=  '0') else konst_1142_wire_constant;
-    -- flow-through select operator MUX_1153_inst
-    MUX_1153_wire <= type_cast_1150_wire when (signed_type_buffer(0) /=  '0') else type_cast_1152_wire;
-    -- flow-through select operator MUX_1155_inst
-    MUX_1155_wire <= MUX_1153_wire when (half_word_buffer(0) /=  '0') else konst_1154_wire_constant;
-    -- flow-through select operator MUX_1162_inst
-    MUX_1162_wire <= loaded_low_word_1076 when (OR_u1_u1_1159_wire(0) /=  '0') else konst_1161_wire_constant;
-    -- flow-through slice operator slice_1042_inst
-    dcache_mae_1043 <= dcache_response_buffer(71 downto 64);
-    -- flow-through slice operator slice_1046_inst
-    loaded_word_1047 <= dcache_response_buffer(63 downto 0);
-    -- flow-through slice operator slice_1060_inst
-    a10_1061 <= addr_buffer(1 downto 0);
-    -- flow-through slice operator slice_1064_inst
-    loaded_high_word_1065 <= loaded_word_1047(63 downto 32);
-    -- flow-through slice operator slice_1073_inst
-    slice_1073_wire <= loaded_word_1047(31 downto 0);
-    -- flow-through slice operator slice_1082_inst
-    slice_1082_wire <= loaded_low_word_1076(31 downto 24);
-    -- flow-through slice operator slice_1089_inst
-    slice_1089_wire <= loaded_low_word_1076(23 downto 16);
-    -- flow-through slice operator slice_1097_inst
-    slice_1097_wire <= loaded_low_word_1076(15 downto 8);
-    -- flow-through slice operator slice_1104_inst
-    slice_1104_wire <= loaded_low_word_1076(7 downto 0);
-    -- flow-through slice operator slice_1115_inst
-    slice_1115_wire <= loaded_low_word_1076(31 downto 16);
-    -- flow-through slice operator slice_1122_inst
-    slice_1122_wire <= loaded_low_word_1076(15 downto 0);
-    -- interlock W_dout_h_1127_inst
-    process(loaded_high_word_1065) -- 
+    konst_1191_wire_constant <= "00000000";
+    konst_1196_wire_constant <= "00000001";
+    konst_1201_wire_constant <= "00000010";
+    konst_1215_wire_constant <= "00000000000000000000000000000010";
+    konst_1225_wire_constant <= "00";
+    konst_1229_wire_constant <= "00000000";
+    konst_1232_wire_constant <= "01";
+    konst_1236_wire_constant <= "00000000";
+    konst_1240_wire_constant <= "10";
+    konst_1244_wire_constant <= "00000000";
+    konst_1247_wire_constant <= "11";
+    konst_1251_wire_constant <= "00000000";
+    konst_1258_wire_constant <= "00";
+    konst_1262_wire_constant <= "0000000000000000";
+    konst_1265_wire_constant <= "10";
+    konst_1269_wire_constant <= "0000000000000000";
+    konst_1288_wire_constant <= "00000000000000000000000000000000";
+    konst_1300_wire_constant <= "00000000000000000000000000000000";
+    konst_1307_wire_constant <= "00000000000000000000000000000000";
+    -- flow-through select operator MUX_1221_inst
+    loaded_low_word_1222 <= slice_1219_wire when (OR_u1_u1_1217_wire(0) /=  '0') else loaded_high_word_1211;
+    -- flow-through select operator MUX_1230_inst
+    MUX_1230_wire <= slice_1228_wire when (EQ_u2_u1_1226_wire(0) /=  '0') else konst_1229_wire_constant;
+    -- flow-through select operator MUX_1237_inst
+    MUX_1237_wire <= slice_1235_wire when (EQ_u2_u1_1233_wire(0) /=  '0') else konst_1236_wire_constant;
+    -- flow-through select operator MUX_1245_inst
+    MUX_1245_wire <= slice_1243_wire when (EQ_u2_u1_1241_wire(0) /=  '0') else konst_1244_wire_constant;
+    -- flow-through select operator MUX_1252_inst
+    MUX_1252_wire <= slice_1250_wire when (EQ_u2_u1_1248_wire(0) /=  '0') else konst_1251_wire_constant;
+    -- flow-through select operator MUX_1263_inst
+    MUX_1263_wire <= slice_1261_wire when (EQ_u2_u1_1259_wire(0) /=  '0') else konst_1262_wire_constant;
+    -- flow-through select operator MUX_1270_inst
+    MUX_1270_wire <= slice_1268_wire when (EQ_u2_u1_1266_wire(0) /=  '0') else konst_1269_wire_constant;
+    -- flow-through select operator MUX_1287_inst
+    MUX_1287_wire <= type_cast_1284_wire when (signed_type_buffer(0) /=  '0') else type_cast_1286_wire;
+    -- flow-through select operator MUX_1289_inst
+    MUX_1289_wire <= MUX_1287_wire when (byte_buffer(0) /=  '0') else konst_1288_wire_constant;
+    -- flow-through select operator MUX_1299_inst
+    MUX_1299_wire <= type_cast_1296_wire when (signed_type_buffer(0) /=  '0') else type_cast_1298_wire;
+    -- flow-through select operator MUX_1301_inst
+    MUX_1301_wire <= MUX_1299_wire when (half_word_buffer(0) /=  '0') else konst_1300_wire_constant;
+    -- flow-through select operator MUX_1308_inst
+    MUX_1308_wire <= loaded_low_word_1222 when (OR_u1_u1_1305_wire(0) /=  '0') else konst_1307_wire_constant;
+    -- flow-through slice operator slice_1183_inst
+    dcache_mae_1184 <= dcache_response_buffer(71 downto 64);
+    -- flow-through slice operator slice_1187_inst
+    loaded_word_1188 <= dcache_response_buffer(63 downto 0);
+    -- flow-through slice operator slice_1206_inst
+    a10_1207 <= addr_buffer(1 downto 0);
+    -- flow-through slice operator slice_1210_inst
+    loaded_high_word_1211 <= loaded_word_1188(63 downto 32);
+    -- flow-through slice operator slice_1219_inst
+    slice_1219_wire <= loaded_word_1188(31 downto 0);
+    -- flow-through slice operator slice_1228_inst
+    slice_1228_wire <= loaded_low_word_1222(31 downto 24);
+    -- flow-through slice operator slice_1235_inst
+    slice_1235_wire <= loaded_low_word_1222(23 downto 16);
+    -- flow-through slice operator slice_1243_inst
+    slice_1243_wire <= loaded_low_word_1222(15 downto 8);
+    -- flow-through slice operator slice_1250_inst
+    slice_1250_wire <= loaded_low_word_1222(7 downto 0);
+    -- flow-through slice operator slice_1261_inst
+    slice_1261_wire <= loaded_low_word_1222(31 downto 16);
+    -- flow-through slice operator slice_1268_inst
+    slice_1268_wire <= loaded_low_word_1222(15 downto 0);
+    -- interlock W_dout_h_1273_inst
+    process(loaded_high_word_1211) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 31 downto 0) := loaded_high_word_1065(31 downto 0);
+      tmp_var( 31 downto 0) := loaded_high_word_1211(31 downto 0);
       dout_h_buffer <= tmp_var; -- 
     end process;
-    -- interlock type_cast_1136_inst
-    process(ext_byte_1109) -- 
+    -- interlock type_cast_1282_inst
+    process(ext_byte_1255) -- 
       variable tmp_var : std_logic_vector(7 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 7 downto 0) := ext_byte_1109(7 downto 0);
-      type_cast_1136_wire <= tmp_var; -- 
+      tmp_var( 7 downto 0) := ext_byte_1255(7 downto 0);
+      type_cast_1282_wire <= tmp_var; -- 
     end process;
-    -- interlock type_cast_1138_inst
-    process(type_cast_1137_wire) -- 
+    -- interlock type_cast_1284_inst
+    process(type_cast_1283_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 31 downto 0) := type_cast_1137_wire(31 downto 0);
-      type_cast_1138_wire <= tmp_var; -- 
+      tmp_var( 31 downto 0) := type_cast_1283_wire(31 downto 0);
+      type_cast_1284_wire <= tmp_var; -- 
     end process;
-    -- interlock type_cast_1140_inst
-    process(ext_byte_1109) -- 
+    -- interlock type_cast_1286_inst
+    process(ext_byte_1255) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 7 downto 0) := ext_byte_1109(7 downto 0);
-      type_cast_1140_wire <= tmp_var; -- 
+      tmp_var( 7 downto 0) := ext_byte_1255(7 downto 0);
+      type_cast_1286_wire <= tmp_var; -- 
     end process;
-    -- interlock type_cast_1148_inst
-    process(ext_half_word_1126) -- 
+    -- interlock type_cast_1294_inst
+    process(ext_half_word_1272) -- 
       variable tmp_var : std_logic_vector(15 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 15 downto 0) := ext_half_word_1126(15 downto 0);
-      type_cast_1148_wire <= tmp_var; -- 
+      tmp_var( 15 downto 0) := ext_half_word_1272(15 downto 0);
+      type_cast_1294_wire <= tmp_var; -- 
     end process;
-    -- interlock type_cast_1150_inst
-    process(type_cast_1149_wire) -- 
+    -- interlock type_cast_1296_inst
+    process(type_cast_1295_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 31 downto 0) := type_cast_1149_wire(31 downto 0);
-      type_cast_1150_wire <= tmp_var; -- 
+      tmp_var( 31 downto 0) := type_cast_1295_wire(31 downto 0);
+      type_cast_1296_wire <= tmp_var; -- 
     end process;
-    -- interlock type_cast_1152_inst
-    process(ext_half_word_1126) -- 
+    -- interlock type_cast_1298_inst
+    process(ext_half_word_1272) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
       tmp_var := (others => '0'); 
-      tmp_var( 15 downto 0) := ext_half_word_1126(15 downto 0);
-      type_cast_1152_wire <= tmp_var; -- 
+      tmp_var( 15 downto 0) := ext_half_word_1272(15 downto 0);
+      type_cast_1298_wire <= tmp_var; -- 
     end process;
-    -- binary operator BITSEL_u32_u1_1070_inst
+    -- binary operator BITSEL_u32_u1_1216_inst
     process(addr_buffer) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApBitsel_proc(addr_buffer, konst_1069_wire_constant, tmp_var);
-      BITSEL_u32_u1_1070_wire <= tmp_var; -- 
+      ApBitsel_proc(addr_buffer, konst_1215_wire_constant, tmp_var);
+      BITSEL_u32_u1_1216_wire <= tmp_var; --
     end process;
-    -- binary operator BITSEL_u8_u1_1051_inst
-    process(dcache_mae_1043) -- 
+    -- binary operator BITSEL_u8_u1_1192_inst
+    process(dcache_mae_1184) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApBitsel_proc(dcache_mae_1043, konst_1050_wire_constant, tmp_var);
-      data_access_exception_buffer <= tmp_var; -- 
+      ApBitsel_proc(dcache_mae_1184, konst_1191_wire_constant, tmp_var);
+      data_access_exception_buffer <= tmp_var; --
     end process;
-    -- binary operator BITSEL_u8_u1_1056_inst
-    process(dcache_mae_1043) -- 
+    -- binary operator BITSEL_u8_u1_1197_inst
+    process(dcache_mae_1184) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApBitsel_proc(dcache_mae_1043, konst_1055_wire_constant, tmp_var);
-      data_access_error_buffer <= tmp_var; -- 
+      ApBitsel_proc(dcache_mae_1184, konst_1196_wire_constant, tmp_var);
+      data_access_error_buffer <= tmp_var; --
     end process;
-    -- binary operator EQ_u2_u1_1080_inst
-    process(a10_1061) -- 
+    -- binary operator BITSEL_u8_u1_1202_inst
+    process(dcache_mae_1184) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(a10_1061, konst_1079_wire_constant, tmp_var);
-      EQ_u2_u1_1080_wire <= tmp_var; -- 
+      ApBitsel_proc(dcache_mae_1184, konst_1201_wire_constant, tmp_var);
+      dcache_hit_buffer <= tmp_var; --
     end process;
-    -- binary operator EQ_u2_u1_1087_inst
-    process(a10_1061) -- 
+    -- binary operator EQ_u2_u1_1226_inst
+    process(a10_1207) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(a10_1061, konst_1086_wire_constant, tmp_var);
-      EQ_u2_u1_1087_wire <= tmp_var; -- 
+      ApIntEq_proc(a10_1207, konst_1225_wire_constant, tmp_var);
+      EQ_u2_u1_1226_wire <= tmp_var; --
     end process;
-    -- binary operator EQ_u2_u1_1095_inst
-    process(a10_1061) -- 
+    -- binary operator EQ_u2_u1_1233_inst
+    process(a10_1207) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(a10_1061, konst_1094_wire_constant, tmp_var);
-      EQ_u2_u1_1095_wire <= tmp_var; -- 
+      ApIntEq_proc(a10_1207, konst_1232_wire_constant, tmp_var);
+      EQ_u2_u1_1233_wire <= tmp_var; --
     end process;
-    -- binary operator EQ_u2_u1_1102_inst
-    process(a10_1061) -- 
+    -- binary operator EQ_u2_u1_1241_inst
+    process(a10_1207) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(a10_1061, konst_1101_wire_constant, tmp_var);
-      EQ_u2_u1_1102_wire <= tmp_var; -- 
+      ApIntEq_proc(a10_1207, konst_1240_wire_constant, tmp_var);
+      EQ_u2_u1_1241_wire <= tmp_var; --
     end process;
-    -- binary operator EQ_u2_u1_1113_inst
-    process(a10_1061) -- 
+    -- binary operator EQ_u2_u1_1248_inst
+    process(a10_1207) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(a10_1061, konst_1112_wire_constant, tmp_var);
-      EQ_u2_u1_1113_wire <= tmp_var; -- 
+      ApIntEq_proc(a10_1207, konst_1247_wire_constant, tmp_var);
+      EQ_u2_u1_1248_wire <= tmp_var; --
     end process;
-    -- binary operator EQ_u2_u1_1120_inst
-    process(a10_1061) -- 
+    -- binary operator EQ_u2_u1_1259_inst
+    process(a10_1207) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(a10_1061, konst_1119_wire_constant, tmp_var);
-      EQ_u2_u1_1120_wire <= tmp_var; -- 
+      ApIntEq_proc(a10_1207, konst_1258_wire_constant, tmp_var);
+      EQ_u2_u1_1259_wire <= tmp_var; --
     end process;
-    -- binary operator OR_u16_u16_1125_inst
-    process(MUX_1117_wire, MUX_1124_wire) -- 
+    -- binary operator EQ_u2_u1_1266_inst
+    process(a10_1207) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntEq_proc(a10_1207, konst_1265_wire_constant, tmp_var);
+      EQ_u2_u1_1266_wire <= tmp_var; --
+    end process;
+    -- binary operator OR_u16_u16_1271_inst
+    process(MUX_1263_wire, MUX_1270_wire) -- 
       variable tmp_var : std_logic_vector(15 downto 0); -- 
     begin -- 
-      ApIntOr_proc(MUX_1117_wire, MUX_1124_wire, tmp_var);
-      ext_half_word_1126 <= tmp_var; -- 
+      ApIntOr_proc(MUX_1263_wire, MUX_1270_wire, tmp_var);
+      ext_half_word_1272 <= tmp_var; --
     end process;
-    -- binary operator OR_u1_u1_1071_inst
-    process(double_word_buffer, BITSEL_u32_u1_1070_wire) -- 
+    -- binary operator OR_u1_u1_1217_inst
+    process(double_word_buffer, BITSEL_u32_u1_1216_wire) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntOr_proc(double_word_buffer, BITSEL_u32_u1_1070_wire, tmp_var);
-      OR_u1_u1_1071_wire <= tmp_var; -- 
+      ApIntOr_proc(double_word_buffer, BITSEL_u32_u1_1216_wire, tmp_var);
+      OR_u1_u1_1217_wire <= tmp_var; --
     end process;
-    -- binary operator OR_u1_u1_1159_inst
+    -- binary operator OR_u1_u1_1305_inst
     process(word_buffer, double_word_buffer) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
       ApIntOr_proc(word_buffer, double_word_buffer, tmp_var);
-      OR_u1_u1_1159_wire <= tmp_var; -- 
+      OR_u1_u1_1305_wire <= tmp_var; --
     end process;
-    -- binary operator OR_u32_u32_1156_inst
-    process(MUX_1143_wire, MUX_1155_wire) -- 
+    -- binary operator OR_u32_u32_1302_inst
+    process(MUX_1289_wire, MUX_1301_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
-      ApIntOr_proc(MUX_1143_wire, MUX_1155_wire, tmp_var);
-      OR_u32_u32_1156_wire <= tmp_var; -- 
+      ApIntOr_proc(MUX_1289_wire, MUX_1301_wire, tmp_var);
+      OR_u32_u32_1302_wire <= tmp_var; --
     end process;
-    -- binary operator OR_u32_u32_1163_inst
-    process(OR_u32_u32_1156_wire, MUX_1162_wire) -- 
+    -- binary operator OR_u32_u32_1309_inst
+    process(OR_u32_u32_1302_wire, MUX_1308_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
-      ApIntOr_proc(OR_u32_u32_1156_wire, MUX_1162_wire, tmp_var);
-      dout_l_buffer <= tmp_var; -- 
+      ApIntOr_proc(OR_u32_u32_1302_wire, MUX_1308_wire, tmp_var);
+      dout_l_buffer <= tmp_var; --
     end process;
-    -- binary operator OR_u8_u8_1092_inst
-    process(MUX_1084_wire, MUX_1091_wire) -- 
+    -- binary operator OR_u8_u8_1238_inst
+    process(MUX_1230_wire, MUX_1237_wire) -- 
       variable tmp_var : std_logic_vector(7 downto 0); -- 
     begin -- 
-      ApIntOr_proc(MUX_1084_wire, MUX_1091_wire, tmp_var);
-      OR_u8_u8_1092_wire <= tmp_var; -- 
+      ApIntOr_proc(MUX_1230_wire, MUX_1237_wire, tmp_var);
+      OR_u8_u8_1238_wire <= tmp_var; --
     end process;
-    -- binary operator OR_u8_u8_1107_inst
-    process(MUX_1099_wire, MUX_1106_wire) -- 
+    -- binary operator OR_u8_u8_1253_inst
+    process(MUX_1245_wire, MUX_1252_wire) -- 
       variable tmp_var : std_logic_vector(7 downto 0); -- 
     begin -- 
-      ApIntOr_proc(MUX_1099_wire, MUX_1106_wire, tmp_var);
-      OR_u8_u8_1107_wire <= tmp_var; -- 
+      ApIntOr_proc(MUX_1245_wire, MUX_1252_wire, tmp_var);
+      OR_u8_u8_1253_wire <= tmp_var; --
     end process;
-    -- binary operator OR_u8_u8_1108_inst
-    process(OR_u8_u8_1092_wire, OR_u8_u8_1107_wire) -- 
+    -- binary operator OR_u8_u8_1254_inst
+    process(OR_u8_u8_1238_wire, OR_u8_u8_1253_wire) -- 
       variable tmp_var : std_logic_vector(7 downto 0); -- 
     begin -- 
-      ApIntOr_proc(OR_u8_u8_1092_wire, OR_u8_u8_1107_wire, tmp_var);
-      ext_byte_1109 <= tmp_var; -- 
+      ApIntOr_proc(OR_u8_u8_1238_wire, OR_u8_u8_1253_wire, tmp_var);
+      ext_byte_1255 <= tmp_var; --
     end process;
-    -- unary operator type_cast_1137_inst
-    process(type_cast_1136_wire) -- 
+    -- unary operator type_cast_1283_inst
+    process(type_cast_1282_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
-      SingleInputOperation("ApIntToApIntSigned", type_cast_1136_wire, tmp_var);
-      type_cast_1137_wire <= tmp_var; -- 
+      SingleInputOperation("ApIntToApIntSigned", type_cast_1282_wire, tmp_var);
+      type_cast_1283_wire <= tmp_var; -- 
     end process;
-    -- unary operator type_cast_1149_inst
-    process(type_cast_1148_wire) -- 
+    -- unary operator type_cast_1295_inst
+    process(type_cast_1294_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
-      SingleInputOperation("ApIntToApIntSigned", type_cast_1148_wire, tmp_var);
-      type_cast_1149_wire <= tmp_var; -- 
+      SingleInputOperation("ApIntToApIntSigned", type_cast_1294_wire, tmp_var);
+      type_cast_1295_wire <= tmp_var; -- 
     end process;
     -- 
   end Block; -- data_path
@@ -20731,6 +18852,7 @@ begin --
   -- 
 end decode_routing_control_info_VVP_arch;
 
+
 library std;
 use std.standard.all;
 library ieee;
@@ -20797,7 +18919,8 @@ architecture loadstore_router_core_VVP_arch of loadstore_router_core_VVP is --
       dout_h : out  std_logic_vector(31 downto 0);
       dout_l : out  std_logic_vector(31 downto 0);
       data_access_exception : out  std_logic_vector(0 downto 0);
-      data_access_error : out  std_logic_vector(0 downto 0)-- 
+      data_access_error : out  std_logic_vector(0 downto 0);
+      dcache_hit : out  std_logic_vector(0 downto 0)-- 
     );
     -- 
   end component; 
@@ -20820,416 +18943,438 @@ begin --
   -- volatile module, no control path
   -- the data path
   data_path: Block -- 
-    signal AND_u1_u1_7037_wire : std_logic_vector(0 downto 0);
-    signal AND_u1_u1_7040_wire : std_logic_vector(0 downto 0);
-    signal AND_u1_u1_7046_wire : std_logic_vector(0 downto 0);
-    signal AND_u1_u1_7049_wire : std_logic_vector(0 downto 0);
-    signal CONCAT_u13_u16_7176_wire : std_logic_vector(15 downto 0);
-    signal CONCAT_u1_u2_7111_wire : std_logic_vector(1 downto 0);
-    signal CONCAT_u1_u2_7173_wire : std_logic_vector(1 downto 0);
-    signal CONCAT_u1_u2_7179_wire : std_logic_vector(1 downto 0);
-    signal CONCAT_u1_u2_7184_wire : std_logic_vector(1 downto 0);
-    signal CONCAT_u1_u33_7098_wire : std_logic_vector(32 downto 0);
-    signal CONCAT_u2_u34_7186_wire : std_logic_vector(33 downto 0);
-    signal CONCAT_u2_u3_7175_wire : std_logic_vector(2 downto 0);
-    signal CONCAT_u2_u4_7181_wire : std_logic_vector(3 downto 0);
-    signal CONCAT_u33_u65_7100_wire : std_logic_vector(64 downto 0);
-    signal CONCAT_u4_u38_7187_wire : std_logic_vector(37 downto 0);
-    signal CONCAT_u4_u6_7091_wire : std_logic_vector(5 downto 0);
-    signal CONCAT_u4_u6_7106_wire : std_logic_vector(5 downto 0);
-    signal CONCAT_u4_u6_7166_wire : std_logic_vector(5 downto 0);
-    signal CONCAT_u6_u12_7108_wire : std_logic_vector(11 downto 0);
-    signal CONCAT_u6_u13_7095_wire : std_logic_vector(12 downto 0);
-    signal CONCAT_u6_u13_7170_wire : std_logic_vector(12 downto 0);
-    signal CONCAT_u6_u7_7094_wire : std_logic_vector(6 downto 0);
-    signal CONCAT_u6_u7_7169_wire : std_logic_vector(6 downto 0);
-    signal MUX_7070_wire : std_logic_vector(31 downto 0);
-    signal MUX_7074_wire : std_logic_vector(31 downto 0);
-    signal MUX_7081_wire : std_logic_vector(31 downto 0);
-    signal MUX_7085_wire : std_logic_vector(31 downto 0);
-    signal MUX_7156_wire : std_logic_vector(31 downto 0);
-    signal MUX_7160_wire : std_logic_vector(31 downto 0);
-    signal NEQ_u3_u1_7055_wire : std_logic_vector(0 downto 0);
-    signal OR_u1_u1_7057_wire : std_logic_vector(0 downto 0);
-    signal addr_6992 : std_logic_vector(31 downto 0);
-    signal byte_6960 : std_logic_vector(0 downto 0);
-    signal data_access_error_7051 : std_logic_vector(0 downto 0);
-    signal data_access_exception_7042 : std_logic_vector(0 downto 0);
-    signal dbg_wp_hit_7065 : std_logic_vector(0 downto 0);
-    signal dbg_wp_read_hit_6980 : std_logic_vector(0 downto 0);
-    signal dbg_wp_reg_id_6976 : std_logic_vector(1 downto 0);
-    signal dbg_wp_write_hit_6984 : std_logic_vector(0 downto 0);
-    signal double_word_6972 : std_logic_vector(0 downto 0);
-    signal dout_h_7076 : std_logic_vector(31 downto 0);
-    signal dout_l_7087 : std_logic_vector(31 downto 0);
-    signal early_ls_traps_6940 : std_logic_vector(2 downto 0);
-    signal half_word_6964 : std_logic_vector(0 downto 0);
-    signal illegal_instr_trap_7147 : std_logic_vector(0 downto 0);
-    signal is_load_6944 : std_logic_vector(0 downto 0);
-    signal is_store_6948 : std_logic_vector(0 downto 0);
-    signal konst_7054_wire_constant : std_logic_vector(2 downto 0);
-    signal konst_7069_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_7073_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_7080_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_7084_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_7155_wire_constant : std_logic_vector(31 downto 0);
-    signal konst_7159_wire_constant : std_logic_vector(31 downto 0);
-    signal late_load_store_trap_7060 : std_logic_vector(0 downto 0);
-    signal mem_address_not_aligned_trap_7151 : std_logic_vector(0 downto 0);
-    signal messy_dout_h_7008 : std_logic_vector(31 downto 0);
-    signal messy_dout_l_7012 : std_logic_vector(31 downto 0);
-    signal messy_error_7000 : std_logic_vector(0 downto 0);
-    signal messy_store_signature_7004 : std_logic_vector(31 downto 0);
-    signal messy_trap_6996 : std_logic_vector(0 downto 0);
-    signal privileged_instr_trap_7143 : std_logic_vector(0 downto 0);
-    signal read_messy_6932 : std_logic_vector(0 downto 0);
-    signal read_simple_6936 : std_logic_vector(0 downto 0);
-    signal signed_type_6952 : std_logic_vector(0 downto 0);
-    signal simple_data_access_error_7027 : std_logic_vector(0 downto 0);
-    signal simple_data_access_exception_7027 : std_logic_vector(0 downto 0);
-    signal simple_dout_h_7027 : std_logic_vector(31 downto 0);
-    signal simple_dout_l_7027 : std_logic_vector(31 downto 0);
-    signal simple_store_signature_6988 : std_logic_vector(31 downto 0);
-    signal slot_id_6912 : std_logic_vector(5 downto 0);
-    signal store_signature_7162 : std_logic_vector(31 downto 0);
-    signal stream_id_6908 : std_logic_vector(1 downto 0);
-    signal thread_id_6904 : std_logic_vector(3 downto 0);
-    signal unsigned_type_6956 : std_logic_vector(0 downto 0);
-    signal word_6968 : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_9626_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_9629_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_9635_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_9638_wire : std_logic_vector(0 downto 0);
+    signal CONCAT_u13_u16_9771_wire : std_logic_vector(15 downto 0);
+    signal CONCAT_u1_u2_9700_wire : std_logic_vector(1 downto 0);
+    signal CONCAT_u1_u2_9768_wire : std_logic_vector(1 downto 0);
+    signal CONCAT_u1_u2_9774_wire : std_logic_vector(1 downto 0);
+    signal CONCAT_u1_u2_9779_wire : std_logic_vector(1 downto 0);
+    signal CONCAT_u1_u33_9687_wire : std_logic_vector(32 downto 0);
+    signal CONCAT_u2_u34_9781_wire : std_logic_vector(33 downto 0);
+    signal CONCAT_u2_u3_9746_wire : std_logic_vector(2 downto 0);
+    signal CONCAT_u2_u3_9770_wire : std_logic_vector(2 downto 0);
+    signal CONCAT_u2_u4_9776_wire : std_logic_vector(3 downto 0);
+    signal CONCAT_u33_u65_9689_wire : std_logic_vector(64 downto 0);
+    signal CONCAT_u3_u32_9749_wire : std_logic_vector(31 downto 0);
+    signal CONCAT_u4_u38_9782_wire : std_logic_vector(37 downto 0);
+    signal CONCAT_u4_u6_9680_wire : std_logic_vector(5 downto 0);
+    signal CONCAT_u4_u6_9695_wire : std_logic_vector(5 downto 0);
+    signal CONCAT_u4_u6_9761_wire : std_logic_vector(5 downto 0);
+    signal CONCAT_u6_u12_9697_wire : std_logic_vector(11 downto 0);
+    signal CONCAT_u6_u13_9684_wire : std_logic_vector(12 downto 0);
+    signal CONCAT_u6_u13_9765_wire : std_logic_vector(12 downto 0);
+    signal CONCAT_u6_u7_9683_wire : std_logic_vector(6 downto 0);
+    signal CONCAT_u6_u7_9764_wire : std_logic_vector(6 downto 0);
+    signal MUX_9659_wire : std_logic_vector(31 downto 0);
+    signal MUX_9663_wire : std_logic_vector(31 downto 0);
+    signal MUX_9670_wire : std_logic_vector(31 downto 0);
+    signal MUX_9674_wire : std_logic_vector(31 downto 0);
+    signal MUX_9751_wire : std_logic_vector(31 downto 0);
+    signal MUX_9755_wire : std_logic_vector(31 downto 0);
+    signal NEQ_u3_u1_9644_wire : std_logic_vector(0 downto 0);
+    signal OR_u1_u1_9646_wire : std_logic_vector(0 downto 0);
+    signal addr_9579 : std_logic_vector(31 downto 0);
+    signal byte_9547 : std_logic_vector(0 downto 0);
+    signal data_access_error_9640 : std_logic_vector(0 downto 0);
+    signal data_access_exception_9631 : std_logic_vector(0 downto 0);
+    signal dbg_wp_hit_9654 : std_logic_vector(0 downto 0);
+    signal dbg_wp_read_hit_9567 : std_logic_vector(0 downto 0);
+    signal dbg_wp_reg_id_9563 : std_logic_vector(1 downto 0);
+    signal dbg_wp_write_hit_9571 : std_logic_vector(0 downto 0);
+    signal double_word_9559 : std_logic_vector(0 downto 0);
+    signal dout_h_9665 : std_logic_vector(31 downto 0);
+    signal dout_l_9676 : std_logic_vector(31 downto 0);
+    signal early_ls_traps_9527 : std_logic_vector(2 downto 0);
+    signal half_word_9551 : std_logic_vector(0 downto 0);
+    signal illegal_instr_trap_9736 : std_logic_vector(0 downto 0);
+    signal is_load_9531 : std_logic_vector(0 downto 0);
+    signal is_store_9535 : std_logic_vector(0 downto 0);
+    signal konst_9643_wire_constant : std_logic_vector(2 downto 0);
+    signal konst_9658_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_9662_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_9669_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_9673_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_9750_wire_constant : std_logic_vector(31 downto 0);
+    signal konst_9754_wire_constant : std_logic_vector(31 downto 0);
+    signal late_load_store_trap_9649 : std_logic_vector(0 downto 0);
+    signal mem_address_not_aligned_trap_9740 : std_logic_vector(0 downto 0);
+    signal messy_dout_h_9595 : std_logic_vector(31 downto 0);
+    signal messy_dout_l_9599 : std_logic_vector(31 downto 0);
+    signal messy_error_9587 : std_logic_vector(0 downto 0);
+    signal messy_store_signature_9591 : std_logic_vector(31 downto 0);
+    signal messy_trap_9583 : std_logic_vector(0 downto 0);
+    signal privileged_instr_trap_9732 : std_logic_vector(0 downto 0);
+    signal read_messy_9519 : std_logic_vector(0 downto 0);
+    signal read_simple_9523 : std_logic_vector(0 downto 0);
+    signal signed_type_9539 : std_logic_vector(0 downto 0);
+    signal simple_data_access_error_9615 : std_logic_vector(0 downto 0);
+    signal simple_data_access_exception_9615 : std_logic_vector(0 downto 0);
+    signal simple_dcache_hit_9615 : std_logic_vector(0 downto 0);
+    signal simple_dout_h_9615 : std_logic_vector(31 downto 0);
+    signal simple_dout_l_9615 : std_logic_vector(31 downto 0);
+    signal simple_store_signature_9575 : std_logic_vector(31 downto 0);
+    signal slice_9744_wire : std_logic_vector(1 downto 0);
+    signal slice_9748_wire : std_logic_vector(28 downto 0);
+    signal slot_id_9499 : std_logic_vector(5 downto 0);
+    signal store_signature_9757 : std_logic_vector(31 downto 0);
+    signal stream_id_9495 : std_logic_vector(1 downto 0);
+    signal thread_id_9491 : std_logic_vector(3 downto 0);
+    signal unsigned_type_9543 : std_logic_vector(0 downto 0);
+    signal word_9555 : std_logic_vector(0 downto 0);
     -- 
   begin -- 
-    konst_7054_wire_constant <= "000";
-    konst_7069_wire_constant <= "00000000000000000000000000000000";
-    konst_7073_wire_constant <= "00000000000000000000000000000000";
-    konst_7080_wire_constant <= "00000000000000000000000000000000";
-    konst_7084_wire_constant <= "00000000000000000000000000000000";
-    konst_7155_wire_constant <= "00000000000000000000000000000000";
-    konst_7159_wire_constant <= "00000000000000000000000000000000";
-    -- flow-through select operator MUX_7070_inst
-    MUX_7070_wire <= simple_dout_h_7027 when (read_simple_6936(0) /=  '0') else konst_7069_wire_constant;
-    -- flow-through select operator MUX_7074_inst
-    MUX_7074_wire <= messy_dout_h_7008 when (read_messy_6932(0) /=  '0') else konst_7073_wire_constant;
-    -- flow-through select operator MUX_7081_inst
-    MUX_7081_wire <= simple_dout_l_7027 when (read_simple_6936(0) /=  '0') else konst_7080_wire_constant;
-    -- flow-through select operator MUX_7085_inst
-    MUX_7085_wire <= messy_dout_l_7012 when (read_messy_6932(0) /=  '0') else konst_7084_wire_constant;
-    -- flow-through select operator MUX_7156_inst
-    MUX_7156_wire <= simple_store_signature_6988 when (read_simple_6936(0) /=  '0') else konst_7155_wire_constant;
-    -- flow-through select operator MUX_7160_inst
-    MUX_7160_wire <= messy_store_signature_7004 when (read_messy_6932(0) /=  '0') else konst_7159_wire_constant;
-    -- flow-through slice operator slice_6903_inst
-    thread_id_6904 <= control_info_buffer(96 downto 93);
-    -- flow-through slice operator slice_6907_inst
-    stream_id_6908 <= control_info_buffer(92 downto 91);
-    -- flow-through slice operator slice_6911_inst
-    slot_id_6912 <= control_info_buffer(90 downto 85);
-    -- flow-through slice operator slice_6915_inst
+    konst_9643_wire_constant <= "000";
+    konst_9658_wire_constant <= "00000000000000000000000000000000";
+    konst_9662_wire_constant <= "00000000000000000000000000000000";
+    konst_9669_wire_constant <= "00000000000000000000000000000000";
+    konst_9673_wire_constant <= "00000000000000000000000000000000";
+    konst_9750_wire_constant <= "00000000000000000000000000000000";
+    konst_9754_wire_constant <= "00000000000000000000000000000000";
+    -- flow-through select operator MUX_9659_inst
+    MUX_9659_wire <= simple_dout_h_9615 when (read_simple_9523(0) /=  '0') else konst_9658_wire_constant;
+    -- flow-through select operator MUX_9663_inst
+    MUX_9663_wire <= messy_dout_h_9595 when (read_messy_9519(0) /=  '0') else konst_9662_wire_constant;
+    -- flow-through select operator MUX_9670_inst
+    MUX_9670_wire <= simple_dout_l_9615 when (read_simple_9523(0) /=  '0') else konst_9669_wire_constant;
+    -- flow-through select operator MUX_9674_inst
+    MUX_9674_wire <= messy_dout_l_9599 when (read_messy_9519(0) /=  '0') else konst_9673_wire_constant;
+    -- flow-through select operator MUX_9751_inst
+    MUX_9751_wire <= CONCAT_u3_u32_9749_wire when (read_simple_9523(0) /=  '0') else konst_9750_wire_constant;
+    -- flow-through select operator MUX_9755_inst
+    MUX_9755_wire <= messy_store_signature_9591 when (read_messy_9519(0) /=  '0') else konst_9754_wire_constant;
+    -- flow-through slice operator slice_9490_inst
+    thread_id_9491 <= control_info_buffer(96 downto 93);
+    -- flow-through slice operator slice_9494_inst
+    stream_id_9495 <= control_info_buffer(92 downto 91);
+    -- flow-through slice operator slice_9498_inst
+    slot_id_9499 <= control_info_buffer(90 downto 85);
+    -- flow-through slice operator slice_9502_inst
     to_iu_buffer <= control_info_buffer(84 downto 84);
-    -- flow-through slice operator slice_6919_inst
+    -- flow-through slice operator slice_9506_inst
     to_fu_buffer <= control_info_buffer(83 downto 83);
-    -- flow-through slice operator slice_6923_inst
+    -- flow-through slice operator slice_9510_inst
     to_cu_buffer <= control_info_buffer(82 downto 82);
-    -- flow-through slice operator slice_6927_inst
+    -- flow-through slice operator slice_9514_inst
     to_retire_buffer <= control_info_buffer(81 downto 81);
-    -- flow-through slice operator slice_6931_inst
-    read_messy_6932 <= control_info_buffer(80 downto 80);
-    -- flow-through slice operator slice_6935_inst
-    read_simple_6936 <= control_info_buffer(79 downto 79);
-    -- flow-through slice operator slice_6939_inst
-    early_ls_traps_6940 <= control_info_buffer(78 downto 76);
-    -- flow-through slice operator slice_6943_inst
-    is_load_6944 <= control_info_buffer(75 downto 75);
-    -- flow-through slice operator slice_6947_inst
-    is_store_6948 <= control_info_buffer(74 downto 74);
-    -- flow-through slice operator slice_6951_inst
-    signed_type_6952 <= control_info_buffer(73 downto 73);
-    -- flow-through slice operator slice_6955_inst
-    unsigned_type_6956 <= control_info_buffer(72 downto 72);
-    -- flow-through slice operator slice_6959_inst
-    byte_6960 <= control_info_buffer(71 downto 71);
-    -- flow-through slice operator slice_6963_inst
-    half_word_6964 <= control_info_buffer(70 downto 70);
-    -- flow-through slice operator slice_6967_inst
-    word_6968 <= control_info_buffer(69 downto 69);
-    -- flow-through slice operator slice_6971_inst
-    double_word_6972 <= control_info_buffer(68 downto 68);
-    -- flow-through slice operator slice_6975_inst
-    dbg_wp_reg_id_6976 <= control_info_buffer(67 downto 66);
-    -- flow-through slice operator slice_6979_inst
-    dbg_wp_read_hit_6980 <= control_info_buffer(65 downto 65);
-    -- flow-through slice operator slice_6983_inst
-    dbg_wp_write_hit_6984 <= control_info_buffer(64 downto 64);
-    -- flow-through slice operator slice_6987_inst
-    simple_store_signature_6988 <= control_info_buffer(63 downto 32);
-    -- flow-through slice operator slice_6991_inst
-    addr_6992 <= control_info_buffer(31 downto 0);
-    -- flow-through slice operator slice_6995_inst
-    messy_trap_6996 <= messy_info_buffer(97 downto 97);
-    -- flow-through slice operator slice_6999_inst
-    messy_error_7000 <= messy_info_buffer(96 downto 96);
-    -- flow-through slice operator slice_7003_inst
-    messy_store_signature_7004 <= messy_info_buffer(95 downto 64);
-    -- flow-through slice operator slice_7007_inst
-    messy_dout_h_7008 <= messy_info_buffer(63 downto 32);
-    -- flow-through slice operator slice_7011_inst
-    messy_dout_l_7012 <= messy_info_buffer(31 downto 0);
-    -- flow-through slice operator slice_7142_inst
-    privileged_instr_trap_7143 <= early_ls_traps_6940(2 downto 2);
-    -- flow-through slice operator slice_7146_inst
-    illegal_instr_trap_7147 <= early_ls_traps_6940(1 downto 1);
-    -- flow-through slice operator slice_7150_inst
-    mem_address_not_aligned_trap_7151 <= early_ls_traps_6940(0 downto 0);
-    -- binary operator AND_u1_u1_7037_inst
-    process(read_simple_6936, simple_data_access_exception_7027) -- 
+    -- flow-through slice operator slice_9518_inst
+    read_messy_9519 <= control_info_buffer(80 downto 80);
+    -- flow-through slice operator slice_9522_inst
+    read_simple_9523 <= control_info_buffer(79 downto 79);
+    -- flow-through slice operator slice_9526_inst
+    early_ls_traps_9527 <= control_info_buffer(78 downto 76);
+    -- flow-through slice operator slice_9530_inst
+    is_load_9531 <= control_info_buffer(75 downto 75);
+    -- flow-through slice operator slice_9534_inst
+    is_store_9535 <= control_info_buffer(74 downto 74);
+    -- flow-through slice operator slice_9538_inst
+    signed_type_9539 <= control_info_buffer(73 downto 73);
+    -- flow-through slice operator slice_9542_inst
+    unsigned_type_9543 <= control_info_buffer(72 downto 72);
+    -- flow-through slice operator slice_9546_inst
+    byte_9547 <= control_info_buffer(71 downto 71);
+    -- flow-through slice operator slice_9550_inst
+    half_word_9551 <= control_info_buffer(70 downto 70);
+    -- flow-through slice operator slice_9554_inst
+    word_9555 <= control_info_buffer(69 downto 69);
+    -- flow-through slice operator slice_9558_inst
+    double_word_9559 <= control_info_buffer(68 downto 68);
+    -- flow-through slice operator slice_9562_inst
+    dbg_wp_reg_id_9563 <= control_info_buffer(67 downto 66);
+    -- flow-through slice operator slice_9566_inst
+    dbg_wp_read_hit_9567 <= control_info_buffer(65 downto 65);
+    -- flow-through slice operator slice_9570_inst
+    dbg_wp_write_hit_9571 <= control_info_buffer(64 downto 64);
+    -- flow-through slice operator slice_9574_inst
+    simple_store_signature_9575 <= control_info_buffer(63 downto 32);
+    -- flow-through slice operator slice_9578_inst
+    addr_9579 <= control_info_buffer(31 downto 0);
+    -- flow-through slice operator slice_9582_inst
+    messy_trap_9583 <= messy_info_buffer(97 downto 97);
+    -- flow-through slice operator slice_9586_inst
+    messy_error_9587 <= messy_info_buffer(96 downto 96);
+    -- flow-through slice operator slice_9590_inst
+    messy_store_signature_9591 <= messy_info_buffer(95 downto 64);
+    -- flow-through slice operator slice_9594_inst
+    messy_dout_h_9595 <= messy_info_buffer(63 downto 32);
+    -- flow-through slice operator slice_9598_inst
+    messy_dout_l_9599 <= messy_info_buffer(31 downto 0);
+    -- flow-through slice operator slice_9731_inst
+    privileged_instr_trap_9732 <= early_ls_traps_9527(2 downto 2);
+    -- flow-through slice operator slice_9735_inst
+    illegal_instr_trap_9736 <= early_ls_traps_9527(1 downto 1);
+    -- flow-through slice operator slice_9739_inst
+    mem_address_not_aligned_trap_9740 <= early_ls_traps_9527(0 downto 0);
+    -- flow-through slice operator slice_9744_inst
+    slice_9744_wire <= simple_store_signature_9575(31 downto 30);
+    -- flow-through slice operator slice_9748_inst
+    slice_9748_wire <= simple_store_signature_9575(28 downto 0);
+    -- binary operator AND_u1_u1_9626_inst
+    process(read_simple_9523, simple_data_access_exception_9615) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntAnd_proc(read_simple_6936, simple_data_access_exception_7027, tmp_var);
-      AND_u1_u1_7037_wire <= tmp_var; -- 
+      ApIntAnd_proc(read_simple_9523, simple_data_access_exception_9615, tmp_var);
+      AND_u1_u1_9626_wire <= tmp_var; --
     end process;
-    -- binary operator AND_u1_u1_7040_inst
-    process(read_messy_6932, messy_trap_6996) -- 
+    -- binary operator AND_u1_u1_9629_inst
+    process(read_messy_9519, messy_trap_9583) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntAnd_proc(read_messy_6932, messy_trap_6996, tmp_var);
-      AND_u1_u1_7040_wire <= tmp_var; -- 
+      ApIntAnd_proc(read_messy_9519, messy_trap_9583, tmp_var);
+      AND_u1_u1_9629_wire <= tmp_var; --
     end process;
-    -- binary operator AND_u1_u1_7046_inst
-    process(read_simple_6936, simple_data_access_error_7027) -- 
+    -- binary operator AND_u1_u1_9635_inst
+    process(read_simple_9523, simple_data_access_error_9615) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntAnd_proc(read_simple_6936, simple_data_access_error_7027, tmp_var);
-      AND_u1_u1_7046_wire <= tmp_var; -- 
+      ApIntAnd_proc(read_simple_9523, simple_data_access_error_9615, tmp_var);
+      AND_u1_u1_9635_wire <= tmp_var; --
     end process;
-    -- binary operator AND_u1_u1_7049_inst
-    process(read_messy_6932, messy_error_7000) -- 
+    -- binary operator AND_u1_u1_9638_inst
+    process(read_messy_9519, messy_error_9587) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntAnd_proc(read_messy_6932, messy_error_7000, tmp_var);
-      AND_u1_u1_7049_wire <= tmp_var; -- 
+      ApIntAnd_proc(read_messy_9519, messy_error_9587, tmp_var);
+      AND_u1_u1_9638_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u12_u14_7112_inst
-    process(CONCAT_u6_u12_7108_wire, CONCAT_u1_u2_7111_wire) -- 
+    -- binary operator CONCAT_u12_u14_9701_inst
+    process(CONCAT_u6_u12_9697_wire, CONCAT_u1_u2_9700_wire) -- 
       variable tmp_var : std_logic_vector(13 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u6_u12_7108_wire, CONCAT_u1_u2_7111_wire, tmp_var);
-      to_cu_data_buffer <= tmp_var; -- 
+      ApConcat_proc(CONCAT_u6_u12_9697_wire, CONCAT_u1_u2_9700_wire, tmp_var);
+      to_cu_data_buffer <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u13_u16_7176_inst
-    process(CONCAT_u6_u13_7170_wire, CONCAT_u2_u3_7175_wire) -- 
+    -- binary operator CONCAT_u13_u16_9771_inst
+    process(CONCAT_u6_u13_9765_wire, CONCAT_u2_u3_9770_wire) -- 
       variable tmp_var : std_logic_vector(15 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u6_u13_7170_wire, CONCAT_u2_u3_7175_wire, tmp_var);
-      CONCAT_u13_u16_7176_wire <= tmp_var; -- 
+      ApConcat_proc(CONCAT_u6_u13_9765_wire, CONCAT_u2_u3_9770_wire, tmp_var);
+      CONCAT_u13_u16_9771_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u13_u78_7101_inst
-    process(CONCAT_u6_u13_7095_wire, CONCAT_u33_u65_7100_wire) -- 
+    -- binary operator CONCAT_u13_u78_9690_inst
+    process(CONCAT_u6_u13_9684_wire, CONCAT_u33_u65_9689_wire) -- 
       variable tmp_var : std_logic_vector(77 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u6_u13_7095_wire, CONCAT_u33_u65_7100_wire, tmp_var);
-      to_iu_fu_data_buffer <= tmp_var; -- 
+      ApConcat_proc(CONCAT_u6_u13_9684_wire, CONCAT_u33_u65_9689_wire, tmp_var);
+      to_iu_fu_data_buffer <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u16_u54_7188_inst
-    process(CONCAT_u13_u16_7176_wire, CONCAT_u4_u38_7187_wire) -- 
+    -- binary operator CONCAT_u16_u54_9783_inst
+    process(CONCAT_u13_u16_9771_wire, CONCAT_u4_u38_9782_wire) -- 
       variable tmp_var : std_logic_vector(53 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u13_u16_7176_wire, CONCAT_u4_u38_7187_wire, tmp_var);
-      data_to_iretire_buffer <= tmp_var; -- 
+      ApConcat_proc(CONCAT_u13_u16_9771_wire, CONCAT_u4_u38_9782_wire, tmp_var);
+      data_to_iretire_buffer <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u1_u2_7111_inst
-    process(dbg_wp_hit_7065, late_load_store_trap_7060) -- 
+    -- binary operator CONCAT_u1_u2_9700_inst
+    process(dbg_wp_hit_9654, late_load_store_trap_9649) -- 
       variable tmp_var : std_logic_vector(1 downto 0); -- 
     begin -- 
-      ApConcat_proc(dbg_wp_hit_7065, late_load_store_trap_7060, tmp_var);
-      CONCAT_u1_u2_7111_wire <= tmp_var; -- 
+      ApConcat_proc(dbg_wp_hit_9654, late_load_store_trap_9649, tmp_var);
+      CONCAT_u1_u2_9700_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u1_u2_7173_inst
-    process(illegal_instr_trap_7147, privileged_instr_trap_7143) -- 
+    -- binary operator CONCAT_u1_u2_9768_inst
+    process(illegal_instr_trap_9736, privileged_instr_trap_9732) -- 
       variable tmp_var : std_logic_vector(1 downto 0); -- 
     begin -- 
-      ApConcat_proc(illegal_instr_trap_7147, privileged_instr_trap_7143, tmp_var);
-      CONCAT_u1_u2_7173_wire <= tmp_var; -- 
+      ApConcat_proc(illegal_instr_trap_9736, privileged_instr_trap_9732, tmp_var);
+      CONCAT_u1_u2_9768_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u1_u2_7179_inst
-    process(mem_address_not_aligned_trap_7151, data_access_error_7051) -- 
+    -- binary operator CONCAT_u1_u2_9774_inst
+    process(mem_address_not_aligned_trap_9740, data_access_error_9640) -- 
       variable tmp_var : std_logic_vector(1 downto 0); -- 
     begin -- 
-      ApConcat_proc(mem_address_not_aligned_trap_7151, data_access_error_7051, tmp_var);
-      CONCAT_u1_u2_7179_wire <= tmp_var; -- 
+      ApConcat_proc(mem_address_not_aligned_trap_9740, data_access_error_9640, tmp_var);
+      CONCAT_u1_u2_9774_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u1_u2_7184_inst
-    process(dbg_wp_read_hit_6980, dbg_wp_write_hit_6984) -- 
+    -- binary operator CONCAT_u1_u2_9779_inst
+    process(dbg_wp_read_hit_9567, dbg_wp_write_hit_9571) -- 
       variable tmp_var : std_logic_vector(1 downto 0); -- 
     begin -- 
-      ApConcat_proc(dbg_wp_read_hit_6980, dbg_wp_write_hit_6984, tmp_var);
-      CONCAT_u1_u2_7184_wire <= tmp_var; -- 
+      ApConcat_proc(dbg_wp_read_hit_9567, dbg_wp_write_hit_9571, tmp_var);
+      CONCAT_u1_u2_9779_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u1_u33_7098_inst
-    process(late_load_store_trap_7060, dout_h_7076) -- 
+    -- binary operator CONCAT_u1_u33_9687_inst
+    process(late_load_store_trap_9649, dout_h_9665) -- 
       variable tmp_var : std_logic_vector(32 downto 0); -- 
     begin -- 
-      ApConcat_proc(late_load_store_trap_7060, dout_h_7076, tmp_var);
-      CONCAT_u1_u33_7098_wire <= tmp_var; -- 
+      ApConcat_proc(late_load_store_trap_9649, dout_h_9665, tmp_var);
+      CONCAT_u1_u33_9687_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u2_u34_7186_inst
-    process(CONCAT_u1_u2_7184_wire, store_signature_7162) -- 
+    -- binary operator CONCAT_u2_u34_9781_inst
+    process(CONCAT_u1_u2_9779_wire, store_signature_9757) -- 
       variable tmp_var : std_logic_vector(33 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u1_u2_7184_wire, store_signature_7162, tmp_var);
-      CONCAT_u2_u34_7186_wire <= tmp_var; -- 
+      ApConcat_proc(CONCAT_u1_u2_9779_wire, store_signature_9757, tmp_var);
+      CONCAT_u2_u34_9781_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u2_u3_7175_inst
-    process(CONCAT_u1_u2_7173_wire, data_access_exception_7042) -- 
+    -- binary operator CONCAT_u2_u3_9746_inst
+    process(slice_9744_wire, simple_dcache_hit_9615) -- 
       variable tmp_var : std_logic_vector(2 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u1_u2_7173_wire, data_access_exception_7042, tmp_var);
-      CONCAT_u2_u3_7175_wire <= tmp_var; -- 
+      ApConcat_proc(slice_9744_wire, simple_dcache_hit_9615, tmp_var);
+      CONCAT_u2_u3_9746_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u2_u4_7181_inst
-    process(CONCAT_u1_u2_7179_wire, dbg_wp_reg_id_6976) -- 
+    -- binary operator CONCAT_u2_u3_9770_inst
+    process(CONCAT_u1_u2_9768_wire, data_access_exception_9631) -- 
+      variable tmp_var : std_logic_vector(2 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u2_9768_wire, data_access_exception_9631, tmp_var);
+      CONCAT_u2_u3_9770_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u2_u4_9776_inst
+    process(CONCAT_u1_u2_9774_wire, dbg_wp_reg_id_9563) -- 
       variable tmp_var : std_logic_vector(3 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u1_u2_7179_wire, dbg_wp_reg_id_6976, tmp_var);
-      CONCAT_u2_u4_7181_wire <= tmp_var; -- 
+      ApConcat_proc(CONCAT_u1_u2_9774_wire, dbg_wp_reg_id_9563, tmp_var);
+      CONCAT_u2_u4_9776_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u33_u65_7100_inst
-    process(CONCAT_u1_u33_7098_wire, dout_l_7087) -- 
+    -- binary operator CONCAT_u33_u65_9689_inst
+    process(CONCAT_u1_u33_9687_wire, dout_l_9676) -- 
       variable tmp_var : std_logic_vector(64 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u1_u33_7098_wire, dout_l_7087, tmp_var);
-      CONCAT_u33_u65_7100_wire <= tmp_var; -- 
+      ApConcat_proc(CONCAT_u1_u33_9687_wire, dout_l_9676, tmp_var);
+      CONCAT_u33_u65_9689_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u4_u38_7187_inst
-    process(CONCAT_u2_u4_7181_wire, CONCAT_u2_u34_7186_wire) -- 
+    -- binary operator CONCAT_u3_u32_9749_inst
+    process(CONCAT_u2_u3_9746_wire, slice_9748_wire) -- 
+      variable tmp_var : std_logic_vector(31 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u2_u3_9746_wire, slice_9748_wire, tmp_var);
+      CONCAT_u3_u32_9749_wire <= tmp_var; --
+    end process;
+    -- binary operator CONCAT_u4_u38_9782_inst
+    process(CONCAT_u2_u4_9776_wire, CONCAT_u2_u34_9781_wire) -- 
       variable tmp_var : std_logic_vector(37 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u2_u4_7181_wire, CONCAT_u2_u34_7186_wire, tmp_var);
-      CONCAT_u4_u38_7187_wire <= tmp_var; -- 
+      ApConcat_proc(CONCAT_u2_u4_9776_wire, CONCAT_u2_u34_9781_wire, tmp_var);
+      CONCAT_u4_u38_9782_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u4_u6_7091_inst
-    process(thread_id_6904, stream_id_6908) -- 
+    -- binary operator CONCAT_u4_u6_9680_inst
+    process(thread_id_9491, stream_id_9495) -- 
       variable tmp_var : std_logic_vector(5 downto 0); -- 
     begin -- 
-      ApConcat_proc(thread_id_6904, stream_id_6908, tmp_var);
-      CONCAT_u4_u6_7091_wire <= tmp_var; -- 
+      ApConcat_proc(thread_id_9491, stream_id_9495, tmp_var);
+      CONCAT_u4_u6_9680_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u4_u6_7106_inst
-    process(thread_id_6904, stream_id_6908) -- 
+    -- binary operator CONCAT_u4_u6_9695_inst
+    process(thread_id_9491, stream_id_9495) -- 
       variable tmp_var : std_logic_vector(5 downto 0); -- 
     begin -- 
-      ApConcat_proc(thread_id_6904, stream_id_6908, tmp_var);
-      CONCAT_u4_u6_7106_wire <= tmp_var; -- 
+      ApConcat_proc(thread_id_9491, stream_id_9495, tmp_var);
+      CONCAT_u4_u6_9695_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u4_u6_7166_inst
-    process(thread_id_6904, stream_id_6908) -- 
+    -- binary operator CONCAT_u4_u6_9761_inst
+    process(thread_id_9491, stream_id_9495) -- 
       variable tmp_var : std_logic_vector(5 downto 0); -- 
     begin -- 
-      ApConcat_proc(thread_id_6904, stream_id_6908, tmp_var);
-      CONCAT_u4_u6_7166_wire <= tmp_var; -- 
+      ApConcat_proc(thread_id_9491, stream_id_9495, tmp_var);
+      CONCAT_u4_u6_9761_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u6_u12_7108_inst
-    process(CONCAT_u4_u6_7106_wire, slot_id_6912) -- 
+    -- binary operator CONCAT_u6_u12_9697_inst
+    process(CONCAT_u4_u6_9695_wire, slot_id_9499) -- 
       variable tmp_var : std_logic_vector(11 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u4_u6_7106_wire, slot_id_6912, tmp_var);
-      CONCAT_u6_u12_7108_wire <= tmp_var; -- 
+      ApConcat_proc(CONCAT_u4_u6_9695_wire, slot_id_9499, tmp_var);
+      CONCAT_u6_u12_9697_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u6_u13_7095_inst
-    process(CONCAT_u4_u6_7091_wire, CONCAT_u6_u7_7094_wire) -- 
+    -- binary operator CONCAT_u6_u13_9684_inst
+    process(CONCAT_u4_u6_9680_wire, CONCAT_u6_u7_9683_wire) -- 
       variable tmp_var : std_logic_vector(12 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u4_u6_7091_wire, CONCAT_u6_u7_7094_wire, tmp_var);
-      CONCAT_u6_u13_7095_wire <= tmp_var; -- 
+      ApConcat_proc(CONCAT_u4_u6_9680_wire, CONCAT_u6_u7_9683_wire, tmp_var);
+      CONCAT_u6_u13_9684_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u6_u13_7170_inst
-    process(CONCAT_u4_u6_7166_wire, CONCAT_u6_u7_7169_wire) -- 
+    -- binary operator CONCAT_u6_u13_9765_inst
+    process(CONCAT_u4_u6_9761_wire, CONCAT_u6_u7_9764_wire) -- 
       variable tmp_var : std_logic_vector(12 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u4_u6_7166_wire, CONCAT_u6_u7_7169_wire, tmp_var);
-      CONCAT_u6_u13_7170_wire <= tmp_var; -- 
+      ApConcat_proc(CONCAT_u4_u6_9761_wire, CONCAT_u6_u7_9764_wire, tmp_var);
+      CONCAT_u6_u13_9765_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u6_u7_7094_inst
-    process(slot_id_6912, dbg_wp_hit_7065) -- 
+    -- binary operator CONCAT_u6_u7_9683_inst
+    process(slot_id_9499, dbg_wp_hit_9654) -- 
       variable tmp_var : std_logic_vector(6 downto 0); -- 
     begin -- 
-      ApConcat_proc(slot_id_6912, dbg_wp_hit_7065, tmp_var);
-      CONCAT_u6_u7_7094_wire <= tmp_var; -- 
+      ApConcat_proc(slot_id_9499, dbg_wp_hit_9654, tmp_var);
+      CONCAT_u6_u7_9683_wire <= tmp_var; --
     end process;
-    -- binary operator CONCAT_u6_u7_7169_inst
-    process(slot_id_6912, late_load_store_trap_7060) -- 
+    -- binary operator CONCAT_u6_u7_9764_inst
+    process(slot_id_9499, late_load_store_trap_9649) -- 
       variable tmp_var : std_logic_vector(6 downto 0); -- 
     begin -- 
-      ApConcat_proc(slot_id_6912, late_load_store_trap_7060, tmp_var);
-      CONCAT_u6_u7_7169_wire <= tmp_var; -- 
+      ApConcat_proc(slot_id_9499, late_load_store_trap_9649, tmp_var);
+      CONCAT_u6_u7_9764_wire <= tmp_var; --
     end process;
-    -- binary operator NEQ_u3_u1_7055_inst
-    process(early_ls_traps_6940) -- 
+    -- binary operator NEQ_u3_u1_9644_inst
+    process(early_ls_traps_9527) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntNe_proc(early_ls_traps_6940, konst_7054_wire_constant, tmp_var);
-      NEQ_u3_u1_7055_wire <= tmp_var; -- 
+      ApIntNe_proc(early_ls_traps_9527, konst_9643_wire_constant, tmp_var);
+      NEQ_u3_u1_9644_wire <= tmp_var; --
     end process;
-    -- binary operator OR_u1_u1_7041_inst
-    process(AND_u1_u1_7037_wire, AND_u1_u1_7040_wire) -- 
+    -- binary operator OR_u1_u1_9630_inst
+    process(AND_u1_u1_9626_wire, AND_u1_u1_9629_wire) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntOr_proc(AND_u1_u1_7037_wire, AND_u1_u1_7040_wire, tmp_var);
-      data_access_exception_7042 <= tmp_var; -- 
+      ApIntOr_proc(AND_u1_u1_9626_wire, AND_u1_u1_9629_wire, tmp_var);
+      data_access_exception_9631 <= tmp_var; --
     end process;
-    -- binary operator OR_u1_u1_7050_inst
-    process(AND_u1_u1_7046_wire, AND_u1_u1_7049_wire) -- 
+    -- binary operator OR_u1_u1_9639_inst
+    process(AND_u1_u1_9635_wire, AND_u1_u1_9638_wire) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntOr_proc(AND_u1_u1_7046_wire, AND_u1_u1_7049_wire, tmp_var);
-      data_access_error_7051 <= tmp_var; -- 
+      ApIntOr_proc(AND_u1_u1_9635_wire, AND_u1_u1_9638_wire, tmp_var);
+      data_access_error_9640 <= tmp_var; --
     end process;
-    -- binary operator OR_u1_u1_7057_inst
-    process(NEQ_u3_u1_7055_wire, data_access_exception_7042) -- 
+    -- binary operator OR_u1_u1_9646_inst
+    process(NEQ_u3_u1_9644_wire, data_access_exception_9631) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntOr_proc(NEQ_u3_u1_7055_wire, data_access_exception_7042, tmp_var);
-      OR_u1_u1_7057_wire <= tmp_var; -- 
+      ApIntOr_proc(NEQ_u3_u1_9644_wire, data_access_exception_9631, tmp_var);
+      OR_u1_u1_9646_wire <= tmp_var; --
     end process;
-    -- binary operator OR_u1_u1_7059_inst
-    process(OR_u1_u1_7057_wire, data_access_error_7051) -- 
+    -- binary operator OR_u1_u1_9648_inst
+    process(OR_u1_u1_9646_wire, data_access_error_9640) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntOr_proc(OR_u1_u1_7057_wire, data_access_error_7051, tmp_var);
-      late_load_store_trap_7060 <= tmp_var; -- 
+      ApIntOr_proc(OR_u1_u1_9646_wire, data_access_error_9640, tmp_var);
+      late_load_store_trap_9649 <= tmp_var; --
     end process;
-    -- binary operator OR_u1_u1_7064_inst
-    process(dbg_wp_read_hit_6980, dbg_wp_write_hit_6984) -- 
+    -- binary operator OR_u1_u1_9653_inst
+    process(dbg_wp_read_hit_9567, dbg_wp_write_hit_9571) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntOr_proc(dbg_wp_read_hit_6980, dbg_wp_write_hit_6984, tmp_var);
-      dbg_wp_hit_7065 <= tmp_var; -- 
+      ApIntOr_proc(dbg_wp_read_hit_9567, dbg_wp_write_hit_9571, tmp_var);
+      dbg_wp_hit_9654 <= tmp_var; --
     end process;
-    -- binary operator OR_u32_u32_7075_inst
-    process(MUX_7070_wire, MUX_7074_wire) -- 
+    -- binary operator OR_u32_u32_9664_inst
+    process(MUX_9659_wire, MUX_9663_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
-      ApIntOr_proc(MUX_7070_wire, MUX_7074_wire, tmp_var);
-      dout_h_7076 <= tmp_var; -- 
+      ApIntOr_proc(MUX_9659_wire, MUX_9663_wire, tmp_var);
+      dout_h_9665 <= tmp_var; --
     end process;
-    -- binary operator OR_u32_u32_7086_inst
-    process(MUX_7081_wire, MUX_7085_wire) -- 
+    -- binary operator OR_u32_u32_9675_inst
+    process(MUX_9670_wire, MUX_9674_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
-      ApIntOr_proc(MUX_7081_wire, MUX_7085_wire, tmp_var);
-      dout_l_7087 <= tmp_var; -- 
+      ApIntOr_proc(MUX_9670_wire, MUX_9674_wire, tmp_var);
+      dout_l_9676 <= tmp_var; --
     end process;
-    -- binary operator OR_u32_u32_7161_inst
-    process(MUX_7156_wire, MUX_7160_wire) -- 
+    -- binary operator OR_u32_u32_9756_inst
+    process(MUX_9751_wire, MUX_9755_wire) -- 
       variable tmp_var : std_logic_vector(31 downto 0); -- 
     begin -- 
-      ApIntOr_proc(MUX_7156_wire, MUX_7160_wire, tmp_var);
-      store_signature_7162 <= tmp_var; -- 
+      ApIntOr_proc(MUX_9751_wire, MUX_9755_wire, tmp_var);
+      store_signature_9757 <= tmp_var; --
     end process;
-    volatile_operator_analyze_dcache_response_6865: analyze_dcache_response_VVP port map(addr => addr_6992, dcache_response => simple_info_buffer, is_load => is_load_6944, is_store => is_store_6948, signed_type => signed_type_6952, unsigned_type => unsigned_type_6956, byte => byte_6960, half_word => half_word_6964, word => word_6968, double_word => double_word_6972, dout_h => simple_dout_h_7027, dout_l => simple_dout_l_7027, data_access_exception => simple_data_access_exception_7027, data_access_error => simple_data_access_error_7027); 
+    volatile_operator_analyze_dcache_response_8445: analyze_dcache_response_VVP port map(addr => addr_9579, dcache_response => simple_info_buffer, is_load => is_load_9531, is_store => is_store_9535, signed_type => signed_type_9539, unsigned_type => unsigned_type_9543, byte => byte_9547, half_word => half_word_9551, word => word_9555, double_word => double_word_9559, dout_h => simple_dout_h_9615, dout_l => simple_dout_l_9615, data_access_exception => simple_data_access_exception_9615, data_access_error => simple_data_access_error_9615, dcache_hit => simple_dcache_hit_9615); 
     -- 
   end Block; -- data_path
   -- 
 end loadstore_router_core_VVP_arch;
-
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -21412,7 +19557,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 entity needSignalFromRetire_VVV is -- 
   port ( -- 
-    msg_from_sc : in  std_logic_vector(146 downto 0);
+    msg_from_sc : in  std_logic_vector(147 downto 0);
     sc_valid : out  std_logic_vector(0 downto 0);
     wait_on_iretire : out  std_logic_vector(0 downto 0)-- 
   );
@@ -21421,10 +19566,10 @@ end entity needSignalFromRetire_VVV;
 architecture needSignalFromRetire_VVV_arch of needSignalFromRetire_VVV is -- 
   -- always true...
   signal always_true_symbol: Boolean;
-  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(147-1 downto 0);
+  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(148-1 downto 0);
   signal default_zero_sig: std_logic;
   -- input port buffer signals
-  signal msg_from_sc_buffer :  std_logic_vector(146 downto 0);
+  signal msg_from_sc_buffer :  std_logic_vector(147 downto 0);
   -- output port buffer signals
   signal sc_valid_buffer :  std_logic_vector(0 downto 0);
   signal wait_on_iretire_buffer :  std_logic_vector(0 downto 0);
@@ -21441,30 +19586,26 @@ begin --
   -- volatile module, no control path
   -- the data path
   data_path: Block -- 
-    signal u12_8948 : std_logic_vector(11 downto 0);
-    signal u133_8957 : std_logic_vector(132 downto 0);
-    signal w_8952 : std_logic_vector(0 downto 0);
+    signal w_9142 : std_logic_vector(0 downto 0);
     -- 
   begin -- 
-    -- flow-through slice operator slice_8943_inst
-    sc_valid_buffer <= msg_from_sc_buffer(146 downto 146);
-    -- flow-through slice operator slice_8947_inst
-    u12_8948 <= msg_from_sc_buffer(145 downto 134);
-    -- flow-through slice operator slice_8951_inst
-    w_8952 <= msg_from_sc_buffer(133 downto 133);
-    -- flow-through slice operator slice_8956_inst
-    u133_8957 <= msg_from_sc_buffer(132 downto 0);
-    -- binary operator AND_u1_u1_8961_inst
-    process(sc_valid_buffer, w_8952) -- 
+    -- flow-through slice operator slice_9137_inst
+    sc_valid_buffer <= msg_from_sc_buffer(147 downto 147);
+    -- flow-through slice operator slice_9141_inst
+    w_9142 <= msg_from_sc_buffer(134 downto 134);
+    -- binary operator AND_u1_u1_9146_inst
+    process(sc_valid_buffer, w_9142) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      tmp_var := (sc_valid_buffer and w_8952);
-      wait_on_iretire_buffer <= tmp_var; -- 
+      -- ApIntAnd_proc(sc_valid_buffer, w_9142, tmp_var);
+      tmp_var := sc_valid_buffer and w_9142;
+      wait_on_iretire_buffer <= tmp_var; --
     end process;
     -- 
   end Block; -- data_path
   -- 
 end needSignalFromRetire_VVV_arch;
+
 library std;
 use std.standard.all;
 library ieee;
@@ -21479,13 +19620,13 @@ entity sc_iretire_join_daemon is --
   port ( -- 
     noblock_teu_stream_corrector_to_idispatch_pipe_read_req : out  std_logic_vector(0 downto 0);
     noblock_teu_stream_corrector_to_idispatch_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    noblock_teu_stream_corrector_to_idispatch_pipe_read_data : in   std_logic_vector(146 downto 0);
+    noblock_teu_stream_corrector_to_idispatch_pipe_read_data : in   std_logic_vector(147 downto 0);
     teu_iretire_to_idispatch_pipe_read_req : out  std_logic_vector(0 downto 0);
     teu_iretire_to_idispatch_pipe_read_ack : in   std_logic_vector(0 downto 0);
     teu_iretire_to_idispatch_pipe_read_data : in   std_logic_vector(0 downto 0);
     noblock_joined_iretire_sc_to_idispatch_pipe_write_req : out  std_logic_vector(0 downto 0);
     noblock_joined_iretire_sc_to_idispatch_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    noblock_joined_iretire_sc_to_idispatch_pipe_write_data : out  std_logic_vector(146 downto 0);
+    noblock_joined_iretire_sc_to_idispatch_pipe_write_data : out  std_logic_vector(147 downto 0);
     tag_in: in std_logic_vector(tag_length-1 downto 0);
     tag_out: out std_logic_vector(tag_length-1 downto 0) ;
     clk : in std_logic;
@@ -21501,21 +19642,21 @@ architecture sc_iretire_join_daemon_arch of sc_iretire_join_daemon is --
   -- volatile/operator module components. 
   component needSignalFromRetire_VVV is -- 
     port ( -- 
-      msg_from_sc : in  std_logic_vector(146 downto 0);
+      msg_from_sc : in  std_logic_vector(147 downto 0);
       sc_valid : out  std_logic_vector(0 downto 0);
       wait_on_iretire : out  std_logic_vector(0 downto 0)-- 
     );
     -- 
   end component; 
 
-  signal msg_from_sc : std_logic_vector(146 downto 0);
+  signal msg_from_sc : std_logic_vector(147 downto 0);
   signal wait_on_iretire, sc_valid: std_logic_vector(0 downto 0);
  
   signal sc_ok, iretire_ok, dest_ready: boolean;
   signal write_to_dest_valid, need_iretire: boolean;
   
   signal pop_req_to_sc, pop_ack_from_sc: std_logic;
-  signal data_from_sc: std_logic_vector(146 downto 0);
+  signal data_from_sc: std_logic_vector(147 downto 0);
 
 begin --  
 	start_ack <= '1';
@@ -21525,7 +19666,7 @@ begin --
         -- receive the data in a queue.
 	qbSC: QueueBase
 		generic map (name => "sc_iretire_join_qbSC",
-				queue_depth => 1, data_width => 147)
+				queue_depth => 1, data_width => 148)
 		port map (clk => clk, reset => reset,
 				data_in => noblock_teu_stream_corrector_to_idispatch_pipe_read_data ,
 				 push_req => noblock_teu_stream_corrector_to_idispatch_pipe_read_ack(0),
@@ -21570,6 +19711,438 @@ begin --
 
 
 end sc_iretire_join_daemon_arch;
+library std;
+use std.standard.all;
+library ieee;
+use ieee.std_logic_1164.all;
+-- Synopsys DC ($^^$@!)  needs you to declare an attribute
+-- to infer a synchronous set/reset ... unbelievable.
+--##decl_synopsys_attribute_lib##
+library aHiR_ieee_proposed;
+use aHiR_ieee_proposed.math_utility_pkg.all;
+use aHiR_ieee_proposed.fixed_pkg.all;
+use aHiR_ieee_proposed.float_pkg.all;
+library ahir;
+use ahir.memory_subsystem_package.all;
+use ahir.types.all;
+use ahir.subprograms.all;
+use ahir.components.all;
+use ahir.basecomponents.all;
+use ahir.operatorpackage.all;
+use ahir.floatoperatorpackage.all;
+use ahir.utilities.all;
+entity stream_corrector_in_mux_daemon_v2 is -- 
+  generic (tag_length : integer := 1); 
+  port ( -- 
+    teu_idispatch_to_stream_corrector_pipe_read_req : out  std_logic_vector(0 downto 0);
+    teu_idispatch_to_stream_corrector_pipe_read_ack : in   std_logic_vector(0 downto 0);
+    teu_idispatch_to_stream_corrector_pipe_read_data : in   std_logic_vector(204 downto 0);
+    teu_fpunit_cc_to_stream_corrector_pipe_read_req : out  std_logic_vector(0 downto 0);
+    teu_fpunit_cc_to_stream_corrector_pipe_read_ack : in   std_logic_vector(0 downto 0);
+    teu_fpunit_cc_to_stream_corrector_pipe_read_data : in   std_logic_vector(14 downto 0);
+    teu_iunit_cc_to_stream_corrector_pipe_read_req : out  std_logic_vector(0 downto 0);
+    teu_iunit_cc_to_stream_corrector_pipe_read_ack : in   std_logic_vector(0 downto 0);
+    teu_iunit_cc_to_stream_corrector_pipe_read_data : in   std_logic_vector(16 downto 0);
+    teu_iunit_rs1_to_stream_corrector_pipe_read_req : out  std_logic_vector(0 downto 0);
+    teu_iunit_rs1_to_stream_corrector_pipe_read_ack : in   std_logic_vector(0 downto 0);
+    teu_iunit_rs1_to_stream_corrector_pipe_read_data : in   std_logic_vector(31 downto 0);
+    teu_iunit_to_stream_corrector_pipe_read_req : out  std_logic_vector(0 downto 0);
+    teu_iunit_to_stream_corrector_pipe_read_ack : in   std_logic_vector(0 downto 0);
+    teu_iunit_to_stream_corrector_pipe_read_data : in   std_logic_vector(89 downto 0);
+    noblock_stream_corrector_in_args_pipe_write_req : out  std_logic_vector(0 downto 0);
+    noblock_stream_corrector_in_args_pipe_write_ack : in   std_logic_vector(0 downto 0);
+    noblock_stream_corrector_in_args_pipe_write_data : out  std_logic_vector(359 downto 0);
+    tag_in: in std_logic_vector(tag_length-1 downto 0);
+    tag_out: out std_logic_vector(tag_length-1 downto 0) ;
+    clk : in std_logic;
+    reset : in std_logic;
+    start_req : in std_logic;
+    start_ack : out std_logic;
+    fin_req : in std_logic;
+    fin_ack   : out std_logic-- 
+  );
+  -- 
+end entity stream_corrector_in_mux_daemon_v2;
+architecture stream_corrector_in_mux_daemon_arch of stream_corrector_in_mux_daemon_v2 is -- 
+
+   signal pop_req_to_dispatch, pop_ack_from_dispatch : std_logic;
+   signal data_from_dispatch, data_from_dispatch_reg: std_logic_vector(204 downto 0);
+
+
+   signal other_data_reg, other_data: std_logic_vector(153 downto 0);
+
+
+   signal pop_req_to_iu_cc, pop_ack_from_iu_cc : std_logic;
+   signal data_from_iu_cc : std_logic_vector(16 downto 0);
+
+   signal pop_req_to_iu_rs1, pop_ack_from_iu_rs1 : std_logic;
+   signal data_from_iu_rs1 : std_logic_vector(31 downto 0);
+
+   signal pop_req_to_fp_cc, pop_ack_from_fp_cc : std_logic;
+   signal data_from_fp_cc : std_logic_vector(14 downto 0);
+
+   signal pop_req_to_iu, pop_ack_from_iu : std_logic;
+   signal data_from_iu : std_logic_vector(89 downto 0);
+
+
+   signal dispatch_valid, read_iu, read_iu_cc, read_iu_rs1, read_fp_cc: boolean;
+   signal dest_rdy, iu_cc_rdy, iu_rs1_rdy, iu_rdy, fp_cc_rdy : boolean;
+
+   signal write_to_dest : boolean;
+
+   type FsmState is (Idle, WaitOnInputs, WaitOnDestination);
+   signal fsm_state: FsmState;
+
+   -- from FSM.
+   signal read_iu_cc_reg, read_iu_rs1_reg, read_fp_cc_reg, read_iu_reg: boolean;
+
+   signal latch_dispatch_data, latch_other_data: boolean;
+   signal clear_dispatch_data, clear_other_data: boolean;
+
+
+   signal const_one_sig: std_logic_vector(0 downto 0);
+
+   constant debug_print_flag: boolean := false;
+
+-- see comment above..
+--##decl_synopsys_sync_set_reset##
+
+
+begin --  
+
+	-- stubbing.
+	start_ack <= '1';
+	fin_ack   <= '0';
+	tag_out   <= tag_in;
+	const_one_sig(0) <= '1';
+
+	dispatch_valid <= (pop_ack_from_dispatch = '1');
+
+	read_iu_cc <= dispatch_valid and (data_from_dispatch(137) = '1');
+	iu_cc_rdy     <= (pop_ack_from_iu_cc = '1');
+
+	read_fp_cc <= dispatch_valid and (data_from_dispatch(136) = '1');
+	fp_cc_rdy     <= (pop_ack_from_fp_cc = '1');
+
+	read_iu_rs1 <= dispatch_valid and (data_from_dispatch(135) = '1');
+	iu_rs1_rdy     <= (pop_ack_from_iu_rs1 = '1');
+
+	read_iu    <= dispatch_valid and (data_from_dispatch(134) = '1');
+	iu_rdy     <= (pop_ack_from_iu = '1');
+
+	process(clk, fsm_state, dispatch_valid, read_iu_cc, read_iu_rs1, read_fp_cc, read_iu, 
+					iu_cc_rdy, iu_rs1_rdy, fp_cc_rdy, iu_rdy, dest_rdy,
+					read_iu_cc_reg, read_iu_rs1_reg, read_iu_reg, read_fp_cc_reg)
+		variable next_read_iu_cc_reg_var, next_read_iu_rs1_reg_var, next_read_fp_cc_reg_var, next_read_iu_reg_var: boolean;
+		variable next_fsm_state_var: FsmState;
+
+		variable latch_dispatch_data_var, latch_other_data_var: boolean;
+		variable clear_dispatch_data_var, clear_other_data_var: boolean;
+
+		variable iu_cc_value_var: std_logic_vector(16 downto 0);
+		variable iu_rs1_value_var: std_logic_vector(31 downto 0);
+		variable fp_cc_value_var: std_logic_vector(14 downto 0);
+		variable iu_value_var: std_logic_vector(89 downto 0);
+
+		variable write_to_dest_var: boolean;
+   		variable pop_req_to_dispatch_var,
+				pop_req_to_iu_var, pop_req_to_iu_cc_var, pop_req_to_iu_rs1_var, pop_req_to_fp_cc_var: std_logic;
+
+	begin
+		next_fsm_state_var := fsm_state;
+
+		latch_dispatch_data_var := false;
+		clear_dispatch_data_var := false;
+
+		latch_other_data_var := false;
+		clear_other_data_var := false;
+
+		write_to_dest_var := false;
+
+		-- remember what we are doing..
+		next_read_iu_cc_reg_var := read_iu_cc_reg;
+		next_read_iu_rs1_reg_var := read_iu_rs1_reg;
+		next_read_fp_cc_reg_var := read_fp_cc_reg;
+		next_read_iu_reg_var    := read_iu_reg;
+
+		pop_req_to_dispatch_var := '0';
+		pop_req_to_iu_var := '0';
+		pop_req_to_iu_cc_var := '0';
+		pop_req_to_iu_rs1_var := '0';
+		pop_req_to_fp_cc_var := '0';
+
+		case fsm_state is
+			when Idle =>
+
+				-- ready to pick up data from dispatch
+				pop_req_to_dispatch_var := '1';
+				if(dispatch_valid) then
+
+					-- dispatch is valid, latch the data from dispatch.
+					latch_dispatch_data_var := true;
+					-- clear stale old data.			
+					clear_other_data_var:= true;
+
+					-- remember the read-flags.
+					next_read_iu_cc_reg_var :=  read_iu_cc;
+					next_read_iu_rs1_reg_var :=  read_iu_rs1;
+					next_read_fp_cc_reg_var :=  read_fp_cc;
+					next_read_iu_reg_var    :=  read_iu;
+
+					next_fsm_state_var := WaitOnInputs;
+
+				end if;
+
+			when WaitOnInputs =>
+
+				--
+				-- set up the pops... exactly one of these
+				-- will be acked.
+				--
+				if(read_iu_cc_reg) then
+					pop_req_to_iu_cc_var := '1';
+				end if;
+				if(read_iu_rs1_reg) then
+					pop_req_to_iu_rs1_var := '1';
+				end if;
+				if(read_iu_reg) then
+					pop_req_to_iu_var := '1';
+				end if;
+				if(read_fp_cc_reg) then
+					pop_req_to_fp_cc_var := '1';
+				end if;
+
+				if (((not read_iu_cc_reg) or iu_cc_rdy) and
+					((not read_iu_rs1_reg) or iu_rs1_rdy) and 
+					((not read_iu_reg) or iu_rdy) and
+					((not read_fp_cc_reg) or fp_cc_rdy)) then
+
+					-- all pops are acked?  send response
+					write_to_dest_var := true;
+
+					if dest_rdy then
+					-- destination is accepting the response..
+
+						-- check if dispatch has something for us.
+						pop_req_to_dispatch_var := '1';
+
+						if(dispatch_valid) then
+						-- yes it does... 
+	
+							-- latch the dispatch-data.	
+							latch_dispatch_data_var := true;
+
+							-- clear the old-data
+							clear_other_data_var:= true;
+
+							-- register the read flags.
+							next_read_iu_cc_reg_var :=  read_iu_cc;
+							next_read_iu_rs1_reg_var :=  read_iu_rs1;
+							next_read_fp_cc_reg_var :=  read_fp_cc;
+							next_read_iu_reg_var    :=  read_iu;
+
+							-- stay in this state.
+
+						else
+							next_fsm_state_var := Idle;
+							
+							next_read_iu_cc_reg_var :=  false;
+							next_read_iu_rs1_reg_var :=  false;
+							next_read_fp_cc_reg_var :=  false;
+							next_read_iu_reg_var :=  false;
+
+							clear_other_data_var:= true;
+						end if;
+					 else
+						-- other data is ready but destination is not.
+						next_fsm_state_var := WaitOnDestination;
+
+						-- remember other data.
+						latch_other_data_var := true;
+					 end if;
+				end if;
+					
+			when WaitOnDestination =>
+				write_to_dest_var := true;
+				if dest_rdy then
+					-- same logic as before..
+					pop_req_to_dispatch_var := '1';
+					clear_other_data_var:= true;
+
+					if(dispatch_valid) then
+
+						latch_dispatch_data_var := true;
+
+						next_read_iu_cc_reg_var :=  read_iu_cc;
+						next_read_iu_rs1_reg_var :=  read_iu_rs1;
+						next_read_fp_cc_reg_var :=  read_fp_cc;
+						next_read_iu_reg_var    :=  read_iu;
+
+						next_fsm_state_var := WaitOnInputs;
+					else
+						next_fsm_state_var := Idle;
+							
+						next_read_iu_cc_reg_var :=  false;
+						next_read_iu_rs1_reg_var :=  false;
+						next_read_fp_cc_reg_var :=  false;
+						next_read_iu_reg_var :=  false;
+					end if;
+				end if;
+		end case;
+
+		latch_dispatch_data <= latch_dispatch_data_var;
+		clear_dispatch_data <= clear_dispatch_data_var;
+
+		latch_other_data <= latch_other_data_var;
+		clear_other_data <= clear_other_data_var;
+
+		write_to_dest <= write_to_dest_var;
+
+		pop_req_to_dispatch <= pop_req_to_dispatch_var;
+		pop_req_to_iu_cc <= pop_req_to_iu_cc_var;
+		pop_req_to_iu_rs1 <= pop_req_to_iu_rs1_var;
+		pop_req_to_iu    <= pop_req_to_iu_var;
+		pop_req_to_fp_cc <= pop_req_to_fp_cc_var;
+
+		if(clk'event and clk = '1') then
+			if(reset = '1') then
+				fsm_state <= Idle;
+				read_iu_cc_reg <= false;
+				read_iu_rs1_reg <= false;
+				read_fp_cc_reg <= false;
+				read_iu_reg <= false;
+			else
+				fsm_state <= next_fsm_state_var;
+				read_iu_cc_reg <= next_read_iu_cc_reg_var;
+				read_iu_rs1_reg <= next_read_iu_rs1_reg_var;
+				read_fp_cc_reg <= next_read_fp_cc_reg_var;
+				read_iu_reg <= next_read_iu_reg_var;
+			end if;
+		end if;
+	end process;
+
+
+	-- qualified other data
+	process (data_from_iu_cc, data_from_iu_rs1, data_from_iu, data_from_fp_cc,
+			read_iu_cc, read_iu_rs1, read_iu, read_fp_cc,
+			read_iu_cc_reg, read_iu_reg, read_fp_cc_reg)
+		variable data_from_iu_cc_var: std_logic_vector(16 downto 0);
+		variable data_from_iu_rs1_var: std_logic_vector(31 downto 0);
+		variable data_from_fp_cc_var: std_logic_vector(14 downto 0);
+		variable data_from_iu_var: std_logic_vector(89 downto 0);
+
+	begin
+		if(read_iu_cc_reg) then
+			data_from_iu_cc_var := data_from_iu_cc;
+		else	
+			data_from_iu_cc_var := (others => '0');
+		end if;
+		if(read_iu_rs1_reg) then
+			data_from_iu_rs1_var := data_from_iu_rs1;
+		else	
+			data_from_iu_rs1_var := (others => '0');
+		end if;
+		if(read_fp_cc_reg) then
+			data_from_fp_cc_var := data_from_fp_cc;
+		else	
+			data_from_fp_cc_var := (others => '0');
+		end if;
+		if(read_iu_reg) then
+			data_from_iu_var := data_from_iu;
+		else	
+			data_from_iu_var := (others => '0');
+		end if;
+
+		other_data <= data_from_iu_cc_var & data_from_iu_rs1_var & data_from_iu_var & data_from_fp_cc_var;
+
+	end process;
+
+
+	-- registers.
+	process (clk)
+	begin
+		if(clk'event and (clk = '1') ) then
+			if(latch_dispatch_data ) then
+				data_from_dispatch_reg <= data_from_dispatch;
+			elsif (clear_dispatch_data) then
+				data_from_dispatch_reg <= (others => '0');
+			end if;
+			if(latch_other_data) then
+				other_data_reg <= other_data;
+			elsif (clear_other_data) then
+				other_data_reg <= (others => '0');
+			end if;
+		end if;
+	end process;
+
+	-- Need to cut the long path...
+	qbDispatch: QueueBase
+		generic map (name => "sc_in_mux_qbDispatch", queue_depth => 0, data_width => 205)
+		port map (
+			clk => clk, reset => reset,
+			data_in => teu_idispatch_to_stream_corrector_pipe_read_data,
+			push_req => teu_idispatch_to_stream_corrector_pipe_read_ack(0),
+			push_ack => teu_idispatch_to_stream_corrector_pipe_read_req(0),
+			data_out => data_from_dispatch,
+			pop_req  => pop_req_to_dispatch,
+			pop_ack  => pop_ack_from_dispatch);
+
+	-- bypass..  registered downstream..
+	qbIUCC: QueueWithBypass
+		generic map (name => "sc_in_mux_qbIUCC", queue_depth => 2, data_width => 17)
+		port map (
+			clk => clk, reset => reset,
+			data_in => teu_iunit_cc_to_stream_corrector_pipe_read_data,
+			push_req => teu_iunit_cc_to_stream_corrector_pipe_read_ack(0),
+			push_ack => teu_iunit_cc_to_stream_corrector_pipe_read_req(0),
+			data_out => data_from_iu_cc,
+			pop_req  => pop_req_to_iu_cc,
+			pop_ack  => pop_ack_from_iu_cc);
+
+	qbIURS1: QueueWithBypass
+		generic map (name => "sc_in_mux_qbIURS1", queue_depth => 2, data_width => 32)
+		port map (
+			clk => clk, reset => reset,
+			data_in => teu_iunit_rs1_to_stream_corrector_pipe_read_data,
+			push_req => teu_iunit_rs1_to_stream_corrector_pipe_read_ack(0),
+			push_ack => teu_iunit_rs1_to_stream_corrector_pipe_read_req(0),
+			data_out => data_from_iu_rs1,
+			pop_req  => pop_req_to_iu_rs1,
+			pop_ack  => pop_ack_from_iu_rs1);
+
+
+	-- not critical...
+	qbIU: QueueBase
+		generic map (name => "sc_in_mux_qbIU", queue_depth => 1, data_width => 90)
+		port map (
+			clk => clk, reset => reset,
+			data_in => teu_iunit_to_stream_corrector_pipe_read_data,
+			push_req => teu_iunit_to_stream_corrector_pipe_read_ack(0),
+			push_ack => teu_iunit_to_stream_corrector_pipe_read_req(0),
+			data_out => data_from_iu,
+			pop_req  => pop_req_to_iu,
+			pop_ack  => pop_ack_from_iu);
+
+	qbFPCC: QueueWithBypass
+		generic map (name => "sc_in_mux_qbFPCC", queue_depth => 2, data_width => 15)
+		port map (
+			clk => clk, reset => reset,
+			data_in => teu_fpunit_cc_to_stream_corrector_pipe_read_data,
+			push_req => teu_fpunit_cc_to_stream_corrector_pipe_read_ack(0),
+			push_ack => teu_fpunit_cc_to_stream_corrector_pipe_read_req(0),
+			data_out => data_from_fp_cc,
+			pop_req  => pop_req_to_fp_cc,
+			pop_ack  => pop_ack_from_fp_cc);
+
+	-- destination side..
+	dest_rdy   <= (noblock_stream_corrector_in_args_pipe_write_ack(0) = '1'); 
+	noblock_stream_corrector_in_args_pipe_write_req(0) <= '1' when write_to_dest else '0';
+	noblock_stream_corrector_in_args_pipe_write_data <= 
+		(const_one_sig & data_from_dispatch_reg & other_data_reg) when (fsm_state = WaitOnDestination) 
+			else (const_one_sig & data_from_dispatch_reg & other_data);
+
+end stream_corrector_in_mux_daemon_arch;
+
 library std;
 use std.standard.all;
 library ieee;
@@ -22134,6 +20707,519 @@ begin --
 	bpb_result <= bpb_result_prereg when (trigger_reg = '1') else bpb_result_reg;
 
 end bpbV2_Operator_arch;
+library std;
+use std.standard.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+
+library ahir;
+use ahir.mem_component_pack.all;
+use ahir.basecomponents.all;
+
+entity bpbV3_dual_port_mem_Operator is -- 
+  port ( -- 
+    init : in  std_logic_vector(0 downto 0);
+    enable_0 : in  std_logic_vector(0 downto 0);
+    addr_0 : in  std_logic_vector(7 downto 0);
+    enable_1 : in  std_logic_vector(0 downto 0);
+    write_bar_1 : in  std_logic_vector(0 downto 0);
+    addr_1 : in  std_logic_vector(7 downto 0);
+    write_data_1 : in  std_logic_vector(53 downto 0);
+    read_data : out  std_logic_vector(109 downto 0);
+    clk : in std_logic;
+    reset : in std_logic;
+    sample_req : in Boolean;
+    sample_ack : out Boolean;
+    update_req : in Boolean;
+    update_ack   : out Boolean-- 
+  );
+  -- 
+end entity bpbV3_dual_port_mem_Operator;
+
+architecture bpbV3_dual_port_mem_arch of bpbV3_dual_port_mem_Operator is -- 
+    signal valids: std_logic_vector(255 downto 0);
+    signal Z54, read_data_0, read_data_1 : std_logic_vector(53 downto 0);
+
+    signal joined_sig: Boolean;
+    signal trigger, trigger_reg: Boolean;
+
+    signal One1: std_logic_vector(0 downto 0);
+    signal valid_0, valid_1: std_logic_vector(0 downto 0);
+    signal read_data_prereg, read_data_reg : std_logic_vector(109 downto 0);
+
+begin --  
+
+    One1(0)  <= '1';
+
+    Z54 <= (others => '0');
+
+    trigger <= joined_sig;
+
+    trig_join: join2 generic map (name => "bpbV2:trig-join", bypass => true)
+			port map (pred0 => sample_req, pred1 => update_req,
+					symbol_out => joined_sig, clk => clk, reset => reset);
+   
+    sample_ack <= joined_sig;
+
+    process(clk, reset)
+    begin
+	if(clk'event and clk='1') then
+		if(reset = '1') then
+			update_ack <= false;
+			trigger_reg <= false;
+		else
+			update_ack <= joined_sig;
+			trigger_reg <= trigger;
+		end if;
+	end if;
+    end process;
+
+    -- valids extraction..
+    process(clk, reset)
+    begin
+	if(clk'event and clk='1') then
+		if((reset = '1')  or (init(0) = '1')) then
+			valid_0(0) <= '0';
+			valid_1(0) <= '0';
+			valids <= (others => '0');
+		else
+
+			if(trigger and (enable_0(0) = '1')) then
+				valid_0(0) <= valids (to_integer(unsigned(addr_0)));
+			end if;
+		
+			if(trigger and (enable_1(0) = '1')) then
+			    if (write_bar_1(0) = '0') then
+				valids(to_integer(unsigned(addr_1))) <= '1';
+			    else 
+			        valid_1(0) <= valids (to_integer(unsigned(addr_1)));
+			    end if;
+			end if;
+		end if;
+	end if;
+    end process;
+
+    -- dual port mem.
+    dpram: base_bank_dual_port
+		generic map (name =>  "bpbV3:dpram",
+				g_addr_width => 8,
+					g_data_width => 54)
+		port map (
+			datain_0 => Z54,
+			dataout_0 => read_data_0,
+			addrin_0 => addr_0,
+			enable_0 => enable_0(0),
+			writebar_0 => One1(0),
+			datain_1 => write_data_1,
+			dataout_1 => read_data_1,
+			addrin_1 => addr_1,
+			enable_1   => enable_1(0),
+			writebar_1 => write_bar_1(0),
+			clk => clk , reset => reset);
+			
+
+   read_data_prereg <= valid_0 & read_data_0 & valid_1 & read_data_1;
+   process(clk, reset)
+   begin
+	if(clk'event and clk = '1') then
+		if(trigger_reg) then
+			read_data_reg <= read_data_prereg;
+		end if;
+	end if;
+   end process;
+   read_data <= read_data_prereg when trigger_reg else read_data_reg;
+
+end bpbV3_dual_port_mem_arch;
+-- VHDL global package produced by vc2vhdl from virtual circuit (vc) description 
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+library ahir;
+use ahir.BaseComponents.all;
+use ahir.mem_component_pack.all;
+
+library AjitCustom;
+use AjitCustom.AjitCoreConfigurationPackage.all; 
+
+entity ibuf_cache_Operator is -- 
+  port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    ibuf_cache_init : in  std_logic_vector(0 downto 0);
+    add_entry : in  std_logic_vector(0 downto 0);
+    add_pc : in  std_logic_vector(31 downto 0);
+    add_acc : in  std_logic_vector(2 downto 0);
+    add_ipair : in  std_logic_vector(63 downto 0);
+    lookup_S : in  std_logic_vector(0 downto 0);
+    lookup_pc : in  std_logic_vector(31 downto 0);
+    ibuf_cache_result : out  std_logic_vector(64 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+  -- 
+end entity ibuf_cache_Operator;
+architecture ibuf_cache_Operator_arch of ibuf_cache_Operator is -- 
+
+    constant data_width: integer := IBUF_CACHE_TAG_WIDTH + 67;
+
+    function ibufPermissionsOk (S: std_logic; acc: std_logic_vector(2 downto 0)) 
+	return boolean is
+	variable ret_var: boolean;
+	variable acc_int: integer range 0 to 7;
+    begin
+	acc_int := to_integer (unsigned(acc));
+	ret_var := ((acc_int > 2) and (acc_int < 5)) or
+			((S = '1') and (acc_int > 5));
+	return(ret_var);
+    end function;
+
+    signal mem_write_address: std_logic_vector(LOG_IBUF_CACHE_SIZE-1 downto 0);
+    signal mem_write_data, ignore_data_0: std_logic_vector(data_width-1 downto 0);
+    signal mem_write_enable, mem_write_enable_bar: std_logic;
+
+    signal mem_read_address: std_logic_vector(LOG_IBUF_CACHE_SIZE-1 downto 0);
+    signal mem_read_address_delayed: std_logic_vector(LOG_IBUF_CACHE_SIZE-1 downto 0);
+    signal mem_read_data, zero_data_1: std_logic_vector(data_width-1 downto 0);
+    signal mem_read_enable: std_logic;
+
+    signal valids: std_logic_vector(IBUF_CACHE_SIZE-1 downto 0);
+
+    signal joined_sig: Boolean;
+    signal trigger: std_logic;
+
+    signal lookup_pc_tag: std_logic_vector(IBUF_CACHE_TAG_WIDTH-1 downto 0);
+    signal trigger_reg  : std_logic;
+
+
+    signal const_one : std_logic;
+  
+    signal ibuf_cache_result_prereg, ibuf_cache_result_reg : std_logic_vector(64 downto 0);
+    signal write_read_clash, write_read_clash_reg : boolean;
+
+begin --  
+    zero_data_1 <= (others => '0');
+    const_one <= '1';
+
+
+    trigger <= '1' when joined_sig else '0';
+
+    trig_join: join2 generic map (name => "ibuf_cache:trig-join", bypass => true)
+			port map (pred0 => sample_req, pred1 => update_req,
+					symbol_out => joined_sig, clk => clk, reset => reset);
+   
+    sample_ack <= joined_sig;
+
+    process(clk, reset)
+    begin
+	if(clk'event and clk='1') then
+		if(reset = '1') then
+			update_ack <= false;
+			trigger_reg <= '0';
+			write_read_clash_reg <= false;
+		else
+
+			mem_read_address_delayed <= mem_read_address;
+
+			lookup_pc_tag <= lookup_pc(31 downto (3 + LOG_IBUF_CACHE_SIZE));
+			update_ack <= joined_sig;
+	
+			trigger_reg <= trigger;
+			write_read_clash_reg <= write_read_clash;
+		end if;
+	end if;
+    end process;
+
+    -- index into memory..
+    mem_write_address <= add_pc ((3 + LOG_IBUF_CACHE_SIZE -1) downto 3);
+
+    -- tag acc ipair.
+    mem_write_data    <= add_pc (31 downto (3 + LOG_IBUF_CACHE_SIZE)) & add_acc & add_ipair;
+    mem_write_enable  <= (not ibuf_cache_init(0)) and trigger and add_entry(0);
+    mem_write_enable_bar <= not mem_write_enable;
+
+    -- index into memory..
+    mem_read_address  <= lookup_pc ((3 + LOG_IBUF_CACHE_SIZE -1) downto 3);
+    mem_read_enable   <= (not ibuf_cache_init(0)) and trigger;
+
+    write_read_clash <= joined_sig and (mem_write_address = mem_read_address);
+
+    process(clk, reset)
+    begin
+        if(clk'event and (clk='1')) then
+		if((reset = '1') or ((trigger = '1') and (ibuf_cache_init(0) = '1'))) then
+			valids <= (others => '0');
+		else
+			if ((trigger = '1') and (add_entry(0) = '1')) then
+				valids(to_integer(unsigned(mem_write_address))) <= '1';
+			end if;
+		end if;
+	end if;
+    end process;
+     
+    dpram: base_bank_dual_port
+		generic map (name =>  "ibuf_cache:dpram",
+				g_addr_width => LOG_IBUF_CACHE_SIZE,
+					g_data_width => data_width)
+		port map (
+			datain_0 => mem_write_data,
+			dataout_0 => ignore_data_0,
+			addrin_0 => mem_write_address,
+			enable_0 => mem_write_enable,
+			writebar_0 => mem_write_enable_bar,
+			datain_1 => zero_data_1,
+			dataout_1 => mem_read_data,
+			addrin_1 => mem_read_address,
+			enable_1   => mem_read_enable,
+			writebar_1 => const_one,
+			clk => clk , reset => reset);
+			
+
+	process(valids, trigger_reg, mem_read_address_delayed, mem_read_data, lookup_pc_tag)
+		variable result_var: std_logic_vector(64 downto 0);
+	begin
+		result_var := (others => '0');
+		if((valids(to_integer(unsigned(mem_read_address_delayed))) = '1') and
+			(mem_read_data((IBUF_CACHE_TAG_WIDTH + 66) downto 67) = lookup_pc_tag) and (not write_read_clash_reg)
+				and ibufPermissionsOk (lookup_S(0), mem_read_data (66 downto 64))) then
+			result_var(64) := trigger_reg;
+		else
+			result_var(64) := '0';
+		end if;
+		result_var(63 downto 0) := mem_read_data(63 downto 0);
+
+		ibuf_cache_result_prereg <= result_var;
+	end process;
+
+	-- Important: need to maintain the ibuf_cache result until the next trigger..
+	process(clk, reset)
+	begin
+		if(clk'event and clk = '1') then
+			if(reset = '1') then
+				ibuf_cache_result_reg <= (others => '0');
+			elsif (trigger_reg = '1') then
+				ibuf_cache_result_reg <= ibuf_cache_result_prereg;
+			end if;
+		end if;
+	end process;
+	ibuf_cache_result <= ibuf_cache_result_prereg when (trigger_reg = '1') else ibuf_cache_result_reg;
+
+end ibuf_cache_Operator_arch;
+library std;
+use std.standard.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+library ahir;
+use ahir.mem_component_pack.all;
+library AjitCustom;
+use AjitCustom.AjitCoreConfigurationPackage.all;
+entity ras_daemon is -- 
+  generic (tag_length : integer := 1); 
+  port ( -- 
+    teu_ras_access_pipe_pipe_read_req : out  std_logic_vector(0 downto 0);
+    teu_ras_access_pipe_pipe_read_ack : in   std_logic_vector(0 downto 0);
+    teu_ras_access_pipe_pipe_read_data : in   std_logic_vector(32 downto 0);
+    teu_ras_top_of_stack_pipe_write_req : out  std_logic_vector(0 downto 0);
+    teu_ras_top_of_stack_pipe_write_ack : in   std_logic_vector(0 downto 0);
+    teu_ras_top_of_stack_pipe_write_data : out  std_logic_vector(31 downto 0);
+    tag_in: in std_logic_vector(tag_length-1 downto 0);
+    tag_out: out std_logic_vector(tag_length-1 downto 0) ;
+    clk : in std_logic;
+    reset : in std_logic;
+    start_req : in std_logic;
+    start_ack : out std_logic;
+    fin_req : in std_logic;
+    fin_ack   : out std_logic-- 
+  );
+  -- 
+end entity ras_daemon;
+architecture ras_daemon_arch of ras_daemon is -- 
+
+	signal push, pop, flush, command_available, command_available_reg, valid_bit: std_logic;
+	signal valids: std_logic_vector (RAS_DEPTH-1 downto 0);
+	
+	signal mem_address: std_logic_vector (LOG_RAS_DEPTH-1 downto 0);
+	signal mem_enable, mem_enable_reg: std_logic;
+	signal mem_write_bar, mem_write_bar_reg : std_logic;
+	signal mem_write_data, mem_read_data, mem_read_data_reg: std_logic_vector(29 downto 0);
+
+
+	-- maintains the top of the stack..
+	signal top_of_stack_pointer: unsigned(LOG_RAS_DEPTH-1 downto 0);
+	
+    	signal pop_data_qualified, push_data_qualified : std_logic_vector(31 downto 0);
+
+	signal last_is_pop, last_is_push, last_is_flush: std_logic;
+	signal command_reg: std_logic_vector(32 downto 0);
+	constant ZZ: unsigned(LOG_RAS_DEPTH-1 downto 0) := (others => '0');
+	constant OO: unsigned(LOG_RAS_DEPTH-1 downto 0) := (others => '1');
+begin --  
+
+	tag_out <= (others => '0');
+	start_ack <= '1';
+	fin_ack <= '0';
+
+	command_available <= teu_ras_access_pipe_pipe_read_ack(0);
+
+	-- always ready to read!
+	teu_ras_access_pipe_pipe_read_req(0) <= '1';
+	
+	-- commands.	
+	push <= command_available and teu_ras_access_pipe_pipe_read_data(32);
+	pop  <= command_available and teu_ras_access_pipe_pipe_read_data(31);
+	flush  <= command_available and teu_ras_access_pipe_pipe_read_data(30);
+
+	-- mem written from access command.
+	mem_write_data <= teu_ras_access_pipe_pipe_read_data(29 downto 0);
+	mem_enable <= (not flush) and (push or pop);
+	mem_write_bar <= (flush or (not push));
+
+	
+	process(clk, reset, command_available, valids, valid_bit,
+			top_of_stack_pointer,
+			push, pop, flush, teu_ras_access_pipe_pipe_read_data,
+			mem_enable,mem_write_bar, mem_enable_reg, mem_write_bar_reg,
+			mem_read_data) 
+		variable next_last_is_push, next_last_is_pop, next_last_is_flush: std_logic;
+		variable next_top_of_stack_pointer : unsigned(LOG_RAS_DEPTH-1 downto 0);
+		variable next_valids: std_logic_vector (RAS_DEPTH-1 downto 0);
+		variable next_valid_bit: std_logic;
+		variable mem_address_var: std_logic_vector (LOG_RAS_DEPTH-1 downto 0);
+	begin
+		next_last_is_push := last_is_push;
+		next_last_is_pop := last_is_pop;
+		next_last_is_flush := last_is_flush;
+		next_top_of_stack_pointer := top_of_stack_pointer;
+		next_valids := valids;
+		next_valid_bit := valid_bit;
+		mem_address_var := (others => '0');
+				
+		if(flush = '1') then
+			next_valids := (others => '0');
+			next_top_of_stack_pointer := OO;
+			next_last_is_push := '0';
+			next_last_is_pop  := '0';
+			next_last_is_flush := '1';
+			next_valid_bit := '0';
+		elsif(push = '1') then
+			next_last_is_push := '1';
+			next_last_is_pop  := '0';
+			next_last_is_flush := '0';
+			next_valid_bit := '1';
+
+			-- increment top of stack..
+			if(top_of_stack_pointer = OO) then
+				next_top_of_stack_pointer := ZZ;
+			else 
+				next_top_of_stack_pointer := top_of_stack_pointer + 1;
+			end if;
+
+			-- write to incremented slot.
+			next_valids(to_integer(next_top_of_stack_pointer)) := '1';
+			mem_address_var := std_logic_vector(next_top_of_stack_pointer);
+
+		elsif (pop = '1') then
+
+			next_last_is_push := '0';
+			next_last_is_pop  := '1';
+			next_last_is_flush := '0';
+
+			-- clear the valid for the top of stack...
+			next_valids(to_integer(top_of_stack_pointer)) := '0';
+
+			-- decrement top of stack..
+			if(top_of_stack_pointer = ZZ) then
+				next_top_of_stack_pointer := OO;
+			else 
+				next_top_of_stack_pointer := top_of_stack_pointer - 1;
+			end if;
+
+			-- capture validity of new top of stack?
+			next_valid_bit := valids(to_integer(next_top_of_stack_pointer));
+	
+			--
+			-- new top of stack data read using address as  decremented top of stack
+			--
+			mem_address_var := std_logic_vector(next_top_of_stack_pointer);
+		end if;
+
+
+		mem_address <= mem_address_var;
+		if(clk'event and clk = '1') then
+			if(reset = '1') then
+				valids <= (others => '0');
+
+				last_is_pop <= '0';
+				last_is_push <= '0';
+				last_is_flush <= '1';
+
+				command_available_reg <= '0';
+				valid_bit <= '0';
+
+				top_of_stack_pointer <= ZZ;
+
+				mem_enable_reg <='0';
+				mem_write_bar_reg <= '1';
+			else
+				mem_enable_reg <= mem_enable;
+				mem_write_bar_reg <= mem_write_bar;
+
+				valids <= next_valids;
+				valid_bit <= next_valid_bit;
+
+				command_available_reg <= command_available;
+
+				last_is_pop <= next_last_is_pop;
+				last_is_push <= next_last_is_push;
+				last_is_flush <= next_last_is_flush;
+
+				if(command_available = '1') then 
+					command_reg <= teu_ras_access_pipe_pipe_read_data;
+				end if;
+
+				top_of_stack_pointer <= next_top_of_stack_pointer;
+
+				if((mem_enable_reg = '1') and (mem_write_bar_reg = '1')) then
+					mem_read_data_reg <= mem_read_data;
+				end if;
+			end if;
+		end if;
+	end process;
+
+	bb: base_bank
+		generic map (name => "RAS-BB", g_addr_width => LOG_RAS_DEPTH, g_data_width => 30)
+		port map (clk => clk, reset => reset,
+					datain => mem_write_data,
+					dataout => mem_read_data,
+					addrin => mem_address,
+					enable => mem_enable,
+					writebar => mem_write_bar);
+		
+	-- hold for one cycle, when memory access has completed.
+	teu_ras_top_of_stack_pipe_write_req(0) <= last_is_push or last_is_pop or last_is_flush; 	
+	teu_ras_top_of_stack_pipe_write_data 	
+				<= push_data_qualified when (last_is_push = '1')
+					 else pop_data_qualified when (last_is_pop = '1')  else (others => '0');
+
+	-- push data.. from command, but with valid bit attached.
+	push_data_qualified(31 downto 2) <= command_reg (29 downto 0);
+	push_data_qualified(1) <= '0';
+	push_data_qualified(0) <= valid_bit;
+
+
+	-- pop data.. from memory, with valid bit attached.
+	pop_data_qualified(31 downto 2) <= 
+		mem_read_data(29 downto 0) when ((mem_enable_reg = '1') and (mem_write_bar_reg = '1')) 
+									else mem_read_data_reg(29 downto 0);
+	pop_data_qualified(1) <= '0';
+	pop_data_qualified(0) <= valid_bit;
+
+
+end ras_daemon_arch;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -24207,7 +23293,10 @@ entity genericSetAssociativeMemory is
 			-- ignore write->lookup collisions?
 			ignore_collisions: boolean := true;
 			-- use memory cuts or registers?
-			use_mem_cuts: boolean:= true);
+			use_mem_cuts: boolean:= true;
+			-- ignore data, behave like a set and not a map.
+			g_ignore_data: boolean := false
+		);
 	port (  start_req: in std_logic;
 		start_ack: out std_logic;
 		fin_req: in std_logic;
@@ -24857,7 +23946,8 @@ begin
 				writebar => tag_mem_write_bar,
 				clk => clk, reset => reset
 			);
-   	data_bb: base_bank 
+        UseDataGen: if (not g_ignore_data) generate 
+   	  data_bb: base_bank 
 		generic map  (name => "genericSetAssociativeMemory:data_base_bank", 
 						g_addr_width => log_number_of_entries - log_associativity,
 						g_data_width => set_data_word_length)
@@ -24869,6 +23959,12 @@ begin
 				writebar => data_mem_write_bar,
 				clk => clk, reset => reset
 			);
+         end generate UseDataGen;
+
+	IgnDataGen: if g_ignore_data generate
+		data_mem_read_data <= (others => '0');
+	end generate IgnDataGen;
+
    end generate memCutBB;
    regBB: if not use_mem_cuts generate 
    	tag_bb: base_bank_with_registers
@@ -24883,7 +23979,8 @@ begin
 				writebar => tag_mem_write_bar,
 				clk => clk, reset => reset
 			);
-   	data_bb: base_bank_with_registers
+        UseDataGen: if not g_ignore_data generate
+   	  data_bb: base_bank_with_registers
 		generic map  (name => "genericSetAssociativeMemory:data_base_bank", 
 						g_addr_width => log_number_of_entries - log_associativity,
 						g_data_width => set_data_word_length)
@@ -24894,6 +23991,11 @@ begin
 				enable => data_mem_enable,
 				writebar => data_mem_write_bar,
 				clk => clk, reset => reset);
+         end generate UseDataGen;
+
+	IgnDataGen: if g_ignore_data generate
+		data_mem_read_data <= (others => '0');
+	end generate IgnDataGen;
    end generate regBB;
  
 
@@ -24926,7 +24028,9 @@ entity genericSetAssociativeMemory_Operator is
 			-- ignore write->lookup collisions?
 			ignore_collisions: boolean := true;
 			-- use memory cuts or registers?
-			use_mem_cuts: boolean:= true);
+			use_mem_cuts: boolean:= true;
+			-- ignore data, behave like a set and not a map.
+			g_ignore_data: boolean := false);
 	port (  sample_req: in boolean;
 		sample_ack: out boolean;
 		update_req: in boolean;
@@ -25003,7 +24107,8 @@ begin
 				log_number_of_entries => log_number_of_entries,
 				log_associativity => log_associativity,
 				ignore_collisions => ignore_collisions,
-				use_mem_cuts => use_mem_cuts)
+				use_mem_cuts => use_mem_cuts,
+				g_ignore_data => g_ignore_data)
 		port map (
 		  	start_req => start_req,
 		  	start_ack => start_ack,
@@ -25025,6 +24130,193 @@ begin
 
 end SimpleTon;
 
+-- VHDL global package produced by vc2vhdl from virtual circuit (vc) description 
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+library ahir;
+use ahir.BaseComponents.all;
+use ahir.mem_component_pack.all;
+
+library AjitCustom;
+
+entity genericDirectMappedAssociativeMemory is -- 
+  generic (tag_width: integer := 32;
+		data_width: integer := 67;
+		log2_number_of_entries : integer := 8);
+  port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    init_flag : in  std_logic_vector(0 downto 0);
+    insert_flag : in  std_logic_vector(0 downto 0);
+    insert_tag : in  std_logic_vector(tag_width-1 downto 0);
+    insert_data : in  std_logic_vector(data_width-1 downto 0);
+    lookup_flag : in  std_logic_vector(0 downto 0);
+    lookup_tag : in  std_logic_vector(tag_width-1 downto 0);
+    lookup_match : out  std_logic_vector(0 downto 0);
+    lookup_data : out  std_logic_vector(data_width-1 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+  -- 
+end entity genericDirectMappedAssociativeMemory;
+architecture dm_Operator_arch of genericDirectMappedAssociativeMemory is -- 
+
+    constant number_of_entries: integer := (2**log2_number_of_entries);
+    constant reduced_tag_width : integer := (tag_width - log2_number_of_entries);
+    constant augmented_data_width : integer := (data_width + reduced_tag_width);
+
+    signal mem_write_address: std_logic_vector(log2_number_of_entries-1 downto 0);
+    signal mem_write_data, ignore_data_0: std_logic_vector(augmented_data_width-1 downto 0);
+    signal mem_write_enable, mem_write_enable_bar: std_logic;
+
+    signal mem_read_address: std_logic_vector(log2_number_of_entries-1 downto 0);
+    signal mem_read_address_delayed: std_logic_vector(log2_number_of_entries-1 downto 0);
+    signal mem_read_data, zero_data_1: std_logic_vector(augmented_data_width-1 downto 0);
+    signal mem_read_enable: std_logic;
+
+    signal valids: std_logic_vector(number_of_entries-1 downto 0);
+
+    signal joined_sig: Boolean;
+    signal trigger: std_logic;
+
+    signal insert_tag_reduced, 
+		lookup_tag_reduced: std_logic_vector((tag_width-log2_number_of_entries)-1 downto 0);
+    signal trigger_reg  : std_logic;
+
+
+    signal const_one : std_logic;
+  
+    signal aggr_result, aggr_result_prereg, aggr_result_reg : std_logic_vector(data_width downto 0);
+    signal write_read_clash, write_read_clash_reg : boolean;
+
+    signal tag_in_mem_read_data: std_logic_vector(reduced_tag_width-1 downto 0);
+    signal lookup_tag_match: boolean;
+    
+    signal init_flag_reg : std_logic_vector(0 downto 0);
+
+begin --  
+
+    insert_tag_reduced <= insert_tag(tag_width-1 downto log2_number_of_entries);
+
+    zero_data_1 <= (others => '0');
+    const_one <= '1';
+
+
+    trigger <= '1' when joined_sig else '0';
+
+    trig_join: join2 generic map (name => "bpbV2:trig-join", bypass => true)
+			port map (pred0 => sample_req, pred1 => update_req,
+					symbol_out => joined_sig, clk => clk, reset => reset);
+   
+    sample_ack <= joined_sig;
+
+    process(clk, reset)
+    begin
+	if(clk'event and clk='1') then
+		if(reset = '1') then
+			update_ack <= false;
+			trigger_reg <= '0';
+			write_read_clash_reg <= false;
+			init_flag_reg(0) <= '0';
+		else
+
+			mem_read_address_delayed <= mem_read_address;
+    		        lookup_tag_reduced <= lookup_tag(tag_width-1 downto log2_number_of_entries);
+			update_ack <= joined_sig;
+	
+			trigger_reg <= trigger;
+			write_read_clash_reg <= write_read_clash;
+			if(trigger  = '1') then
+				init_flag_reg(0) <= init_flag(0);
+			end if;
+
+		end if;
+	end if;
+    end process;
+
+    mem_write_address <= insert_tag (log2_number_of_entries-1 downto 0);
+    mem_write_data    <= insert_tag_reduced & insert_data;
+
+    mem_write_enable  <= (not init_flag(0)) and trigger and insert_flag(0);
+    mem_write_enable_bar <= not mem_write_enable;
+
+    mem_read_address  <= lookup_tag (log2_number_of_entries-1 downto 0);
+    mem_read_enable   <= (not init_flag(0)) and trigger;
+
+    write_read_clash <= joined_sig and (mem_write_address = mem_read_address);
+
+    process(clk, reset)
+    begin
+        if(clk'event and (clk='1')) then
+		if((reset = '1') or ((trigger = '1') and (init_flag(0) = '1'))) then
+			valids <= (others => '0');
+		else
+			if ((trigger = '1') and (insert_flag(0) = '1')) then
+				valids(to_integer(unsigned(mem_write_address))) <= '1';
+			end if;
+		end if;
+	end if;
+    end process;
+     
+    dpram: base_bank_dual_port
+		generic map (name =>  "bpbV2:dpram",
+				g_addr_width => log2_number_of_entries,
+					g_data_width => augmented_data_width)
+		port map (
+			datain_0 => mem_write_data,
+			dataout_0 => ignore_data_0,
+			addrin_0 => mem_write_address,
+			enable_0 => mem_write_enable,
+			writebar_0 => mem_write_enable_bar,
+			datain_1 => zero_data_1,
+			dataout_1 => mem_read_data,
+			addrin_1 => mem_read_address,
+			enable_1   => mem_read_enable,
+			writebar_1 => const_one,
+			clk => clk , reset => reset);
+			
+
+	process(valids, trigger_reg, lookup_tag_match, mem_read_data)
+		variable result_var: std_logic_vector(data_width downto 0);
+	begin
+		result_var := (others => '0');
+		if(lookup_tag_match) then 
+			result_var(data_width) := trigger_reg;
+		else
+			result_var(data_width) := '0';
+		end if;
+
+		result_var(data_width-1 downto 0) := mem_read_data(data_width-1 downto 0);
+
+		aggr_result_prereg <= result_var;
+	end process;
+
+	lookup_tag_match <= 
+		((init_flag_reg(0) = '0') and
+			(valids(to_integer(unsigned(mem_read_address_delayed))) = '1') and
+			(mem_read_data(augmented_data_width-1  downto data_width) = 
+						lookup_tag_reduced) and (not write_read_clash_reg));
+
+	-- Important: need to maintain the bpb result until the next trigger..
+	process(clk, reset)
+	begin
+		if(clk'event and clk = '1') then
+			if(reset = '1') then
+				aggr_result_reg <= (others => '0');
+			elsif (trigger_reg = '1') then
+				aggr_result_reg <= aggr_result_prereg;
+			end if;
+		end if;
+	end process;
+	aggr_result <= aggr_result_prereg when (trigger_reg = '1') else aggr_result_reg;
+
+	lookup_match(0) <= aggr_result(data_width);
+	lookup_data  <= aggr_result(data_width-1 downto 0);
+
+end dm_Operator_arch;
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -25173,7 +24465,17 @@ use AjitCustom.AjitCoreConfigurationPackage.all;
 use AjitCustom.AjitGlobalConfigurationPackage.all;
 use AjitCustom.AjitCustomComponents.all;
 
-entity accessIcacheRlut_Operator is -- 
+entity accessRlutBase_Operator is -- 
+  generic (
+		g_LOG_BASE_PAGE_SIZE: integer;
+		g_LOG_CACHE_LINE_SIZE: integer;
+		g_CACHE_WAY_SIZE: integer;
+		g_RLUT_TAG_WIDTH : integer;
+		g_RLUT_REDUCED_DATA_WIDTH: integer;
+		g_RLUT_LOG_N_SETS: integer;
+		g_RLUT_LOG_MEMORY_SIZE: integer;
+		g_RLUT_LOG_SET_SIZE: integer
+	);
   port ( -- 
     sample_req: in boolean;
     sample_ack: out boolean;
@@ -25189,30 +24491,27 @@ entity accessIcacheRlut_Operator is --
     -- 
   );
 end entity;
-architecture SimpleStruct of accessIcacheRlut_Operator  is
+
+architecture SimpleStruct of accessRlutBase_Operator  is
 	signal zero_sig: std_logic_vector(0 downto 0);
-	signal write_tag: std_logic_vector(ICACHE_RLUT_TAG_WIDTH-1 downto 0);
-	signal set_id: std_logic_vector(ICACHE_RLUT_LOG_N_SETS-1 downto 0);
+	signal write_tag: std_logic_vector(g_RLUT_TAG_WIDTH-1 downto 0);
+	signal set_id: std_logic_vector(g_RLUT_LOG_N_SETS-1 downto 0);
 	signal sample_ack_sig: boolean;
 
 	signal hit: std_logic_vector(0 downto 0);
 	signal hit_va: std_logic_vector(25 downto 0);
-	signal hit_va_reduced, va_reduced: std_logic_vector(ICACHE_RLUT_REDUCED_DATA_WIDTH-1 downto 0);
-	signal pa_reg: std_logic_vector((LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE)-1 downto 0);
+	signal pa_reg: std_logic_vector((g_LOG_BASE_PAGE_SIZE - g_LOG_CACHE_LINE_SIZE)-1 downto 0);
 
 	constant ZZSIZE : integer := 
-		(26 - (ICACHE_RLUT_REDUCED_DATA_WIDTH + (LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE)));
-	signal zz_fill: std_logic_vector(ZZSIZE -1  downto 0);
-begin
-	write_tag <= physical_addr_of_line (29 downto ICACHE_RLUT_LOG_N_SETS);
-	set_id    <= physical_addr_of_line (ICACHE_RLUT_LOG_N_SETS-1 downto 0);
+		(26 - (g_RLUT_REDUCED_DATA_WIDTH + (g_LOG_BASE_PAGE_SIZE - g_LOG_CACHE_LINE_SIZE)));
 
-	-- need to keep only 3-bits for 32KB cache.
-	va_reduced <= virtual_addr_of_line 
-		((ICACHE_RLUT_REDUCED_DATA_WIDTH + LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE)-1 downto
-					(LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE));
+	constant c_triv_threshold : integer := (2 ** (g_LOG_BASE_PAGE_SIZE - g_LOG_CACHE_LINE_SIZE));
+
+begin
+	write_tag <= physical_addr_of_line (29 downto g_RLUT_LOG_N_SETS);
+	set_id    <= physical_addr_of_line (g_RLUT_LOG_N_SETS-1 downto 0);
+
 	zero_sig(0) <= '0';
-	zz_fill <= (others => '0');
 	sample_ack <= sample_ack_sig;
 
 	process(clk, reset, sample_ack_sig)
@@ -25220,19 +24519,33 @@ begin
   	  if(clk'event and clk = '1') then
 		if(sample_ack_sig) then
 			pa_reg <= 
-				physical_addr_of_line((LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE)-1 downto 0);
+				physical_addr_of_line((g_LOG_BASE_PAGE_SIZE - g_LOG_CACHE_LINE_SIZE)-1 downto 0);
 		end if;
 	  end if;
 	end process;
 
+    NonTrivGen:  if (g_CACHE_WAY_SIZE > c_triv_threshold) generate
+     bb: block 
+	signal hit_va_reduced, va_reduced: std_logic_vector(g_RLUT_REDUCED_DATA_WIDTH-1 downto 0);
+	signal zz_fill: std_logic_vector(ZZSIZE -1  downto 0);
+     begin
+
+	zz_fill <= (others => '0');
+
+	-- need to keep only 3-bits for 32KB cache.
+	va_reduced <= virtual_addr_of_line 
+		((g_RLUT_REDUCED_DATA_WIDTH + g_LOG_BASE_PAGE_SIZE - g_LOG_CACHE_LINE_SIZE)-1 downto
+					(g_LOG_BASE_PAGE_SIZE - g_LOG_CACHE_LINE_SIZE));
+
 	basemem:genericSetAssociativeMemory_Operator
 			generic map(
-					tag_width => ICACHE_RLUT_TAG_WIDTH,
-					data_width => ICACHE_RLUT_REDUCED_DATA_WIDTH,
-					log_number_of_entries => ICACHE_RLUT_LOG_MEMORY_SIZE,
-					log_associativity     => ICACHE_RLUT_LOG_SET_SIZE,
+					tag_width => g_RLUT_TAG_WIDTH,
+					data_width => g_RLUT_REDUCED_DATA_WIDTH,
+					log_number_of_entries => g_RLUT_LOG_MEMORY_SIZE,
+					log_associativity     => g_RLUT_LOG_SET_SIZE,
 					ignore_collisions => true,
-					use_mem_cuts => true
+					use_mem_cuts => true,
+					g_ignore_data => false -- use as a map.
 				    )
 			port map(
 					sample_req => sample_req,
@@ -25255,6 +24568,114 @@ begin
         hit_va <= zz_fill & hit_va_reduced & pa_reg;
 	syn_invalidate_word <= hit & hit_va;
 
+      end block bb;
+    end generate NonTrivGen;
+
+	-- The trivial case,   hit needs to be calculated but
+	-- The bits PA[11:6] are sent as the matching VA for invalidation.
+    TrivGen:  if (g_CACHE_WAY_SIZE <= c_triv_threshold) generate
+      bb: block
+	signal hit_va_reduced, va_reduced: std_logic_vector(0 downto 0);
+      begin
+	-- 1-bit data, sacrificial..
+	va_reduced(0) <= '0';
+
+	basemem:genericSetAssociativeMemory_Operator
+			generic map(
+					tag_width => g_RLUT_TAG_WIDTH,
+					data_width => 1,
+					log_number_of_entries => g_RLUT_LOG_MEMORY_SIZE,
+					log_associativity     => g_RLUT_LOG_SET_SIZE,
+					ignore_collisions => true,
+					use_mem_cuts => true,
+					g_ignore_data => true -- use a set, not as a map
+				    )
+			port map(
+					sample_req => sample_req,
+					sample_ack => sample_ack_sig,
+					update_req => update_req,
+					update_ack => update_ack,
+					clear_flag => clear,
+					erase_flag => zero_sig,
+					write_flag => update,
+					write_data => va_reduced,
+					write_tag =>  write_tag,
+					write_set_id => set_id,
+					lookup_flag => lookup,
+					lookup_tag => write_tag,
+					lookup_set_id => set_id,
+					lookup_valid => hit,
+					lookup_data => hit_va_reduced,
+					clk => clk, reset => reset);
+	
+	-- in the trivial case, pa_reg is forwarded
+	-- as the set id..
+        process(hit, pa_reg)
+           variable siw: std_logic_vector (26 downto 0);
+        begin
+	   siw := (others => '0');
+	   siw (26) := hit(0);
+           siw (pa_reg'length-1 downto 0) := pa_reg;
+
+	   syn_invalidate_word <= siw;
+        end process;
+      end block bb;
+    end generate TrivGen;
+
+end SimpleStruct;
+
+library ieee;
+use ieee.std_logic_1164.all;
+
+library AjitCustom;
+use AjitCustom.AjitCoreConfigurationPackage.all;
+use AjitCustom.AjitGlobalConfigurationPackage.all;
+use AjitCustom.AjitCustomComponents.all;
+
+entity accessIcacheRlut_Operator is -- 
+  port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    lookup : in  std_logic_vector(0 downto 0);
+    update : in  std_logic_vector(0 downto 0);
+    clear : in  std_logic_vector(0 downto 0);
+    physical_addr_of_line : in  std_logic_vector(29 downto 0);
+    virtual_addr_of_line : in  std_logic_vector(25 downto 0);
+    syn_invalidate_word : out  std_logic_vector(26 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+end entity;
+architecture SimpleStruct of accessIcacheRlut_Operator  is
+begin
+	baseInst: accessRlutBase_Operator
+	  generic map 
+		(
+			g_LOG_BASE_PAGE_SIZE => LOG_BASE_PAGE_SIZE,
+			g_LOG_CACHE_LINE_SIZE => LOG_CACHE_LINE_SIZE,
+			g_CACHE_WAY_SIZE => ICACHE_WAY_SIZE,
+			g_RLUT_TAG_WIDTH  => ICACHE_RLUT_TAG_WIDTH,
+			g_RLUT_REDUCED_DATA_WIDTH => ICACHE_RLUT_REDUCED_DATA_WIDTH,
+			g_RLUT_LOG_N_SETS => ICACHE_RLUT_LOG_N_SETS,
+			g_RLUT_LOG_MEMORY_SIZE => ICACHE_RLUT_LOG_MEMORY_SIZE,
+			g_RLUT_LOG_SET_SIZE => ICACHE_RLUT_LOG_SET_SIZE
+		)
+	  port map 
+		(
+			sample_req => sample_req,
+			sample_ack => sample_ack,
+			update_req => update_req,
+			update_ack => update_ack,
+			lookup => lookup,
+			update => update,
+			clear => clear,
+			physical_addr_of_line => physical_addr_of_line,
+			virtual_addr_of_line => virtual_addr_of_line,
+    			syn_invalidate_word => syn_invalidate_word,
+    			clk => clk, reset => reset
+	        );
 end SimpleStruct;
 
 library ieee;
@@ -25282,71 +24703,33 @@ entity accessDcacheRlut_Operator is --
   );
 end entity;
 architecture SimpleStruct of accessDcacheRlut_Operator  is
-	signal zero_sig: std_logic_vector(0 downto 0);
-	signal write_tag: std_logic_vector(DCACHE_RLUT_TAG_WIDTH-1 downto 0);
-	signal set_id: std_logic_vector(DCACHE_RLUT_LOG_N_SETS-1 downto 0);
-	signal sample_ack_sig: boolean;
-
-	signal hit: std_logic_vector(0 downto 0);
-	signal hit_va: std_logic_vector(25 downto 0);
-	signal hit_va_reduced, va_reduced: std_logic_vector(DCACHE_RLUT_REDUCED_DATA_WIDTH-1 downto 0);
-
-	signal pa_reg: std_logic_vector((LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE)-1 downto 0);
-	constant ZZSIZE : integer := 
-		(26 - (ICACHE_RLUT_REDUCED_DATA_WIDTH + (LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE)));
-	signal zz_fill: std_logic_vector(ZZSIZE -1  downto 0);
 begin
-	write_tag <= physical_addr_of_line (29 downto DCACHE_RLUT_LOG_N_SETS);
-	set_id    <= physical_addr_of_line (DCACHE_RLUT_LOG_N_SETS-1 downto 0);
-
-	zero_sig(0) <= '0';
-	zz_fill <= (others => '0');
-	sample_ack <= sample_ack_sig;
-
-	va_reduced <= virtual_addr_of_line 
-		((DCACHE_RLUT_REDUCED_DATA_WIDTH + LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE)-1 downto
-					(LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE));
-
-	process(clk, reset, sample_ack_sig)
-	begin
-  	  if(clk'event and clk = '1') then
-		if(sample_ack_sig) then
-	     	   pa_reg <= 
-			physical_addr_of_line((LOG_BASE_PAGE_SIZE - LOG_CACHE_LINE_SIZE)-1 downto 0);
-		end if;
-	  end if;
-	end process;
-
-	basemem:genericSetAssociativeMemory_Operator
-			generic map(
-					tag_width => DCACHE_RLUT_TAG_WIDTH,
-					data_width => DCACHE_RLUT_REDUCED_DATA_WIDTH,
-					log_number_of_entries => DCACHE_RLUT_LOG_MEMORY_SIZE,
-					log_associativity     => DCACHE_RLUT_LOG_SET_SIZE,
-					ignore_collisions => true,
-					use_mem_cuts => true
-				    )
-			port map(
-					sample_req => sample_req,
-					sample_ack => sample_ack_sig,
-					update_req => update_req,
-					update_ack => update_ack,
-					clear_flag => clear,
-					erase_flag => zero_sig,
-					write_flag => update,
-					write_data => va_reduced,
-					write_tag =>  write_tag,
-					write_set_id => set_id,
-					lookup_flag => lookup,
-					lookup_tag => write_tag,
-					lookup_set_id => set_id,
-					lookup_valid => hit,
-					lookup_data => hit_va_reduced,
-					clk => clk, reset => reset);
-	
-        hit_va <= zz_fill & hit_va_reduced & pa_reg;
-	syn_invalidate_word <= hit & hit_va;
-
+	baseInst: accessRlutBase_Operator
+	  generic map 
+		(
+			g_LOG_BASE_PAGE_SIZE => LOG_BASE_PAGE_SIZE,
+			g_LOG_CACHE_LINE_SIZE => LOG_CACHE_LINE_SIZE,
+			g_CACHE_WAY_SIZE => DCACHE_WAY_SIZE,
+			g_RLUT_TAG_WIDTH  => DCACHE_RLUT_TAG_WIDTH,
+			g_RLUT_REDUCED_DATA_WIDTH => DCACHE_RLUT_REDUCED_DATA_WIDTH,
+			g_RLUT_LOG_N_SETS => DCACHE_RLUT_LOG_N_SETS,
+			g_RLUT_LOG_MEMORY_SIZE => DCACHE_RLUT_LOG_MEMORY_SIZE,
+			g_RLUT_LOG_SET_SIZE => DCACHE_RLUT_LOG_SET_SIZE
+		)
+	  port map 
+		(
+			sample_req => sample_req,
+			sample_ack => sample_ack,
+			update_req => update_req,
+			update_ack => update_ack,
+			lookup => lookup,
+			update => update,
+			clear => clear,
+			physical_addr_of_line => physical_addr_of_line,
+			virtual_addr_of_line => virtual_addr_of_line,
+    			syn_invalidate_word => syn_invalidate_word,
+    			clk => clk, reset => reset
+	        );
 end SimpleStruct;
 
 library std;
@@ -26867,6 +26250,7 @@ end Behave;
 -- VHDL global package produced by vc2vhdl from virtual circuit (vc) description 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 package baud_control_calculator_global_package is -- 
   component baud_control_calculator is -- 
     port (-- 
@@ -26886,6 +26270,7 @@ library std;
 use std.standard.all;
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 library aHiR_ieee_proposed;
 use aHiR_ieee_proposed.math_utility_pkg.all;
 use aHiR_ieee_proposed.fixed_pkg.all;
@@ -27885,7 +27270,7 @@ begin --
           reset => reset); -- 
       --
     end Block; -- branch-block
-    -- binary operator CONCAT_u16_u20_183_inst
+    -- flow through binary operator CONCAT_u16_u20_183_inst
     process(slice_180_wire) -- 
       variable tmp_var : std_logic_vector(19 downto 0); -- 
     begin -- 
@@ -28450,6 +27835,7 @@ library std;
 use std.standard.all;
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 library aHiR_ieee_proposed;
 use aHiR_ieee_proposed.math_utility_pkg.all;
 use aHiR_ieee_proposed.fixed_pkg.all;
@@ -29277,35 +28663,20 @@ begin --
           reset => reset); -- 
       --
     end Block; -- branch-block
-    -- binary operator ADD_u32_u32_116_inst
-    process(tQ_89) -- 
-      variable tmp_var : std_logic_vector(31 downto 0); -- 
-    begin -- 
-      ApIntAdd_proc(tQ_89, konst_115_wire_constant, tmp_var);
-      ADD_u32_u32_116_wire <= tmp_var; --
-    end process;
-    -- binary operator AND_u1_u1_102_inst
-    process(NEQ_u32_u1_98_wire, UGE_u32_u1_101_wire) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApIntAnd_proc(NEQ_u32_u1_98_wire, UGE_u32_u1_101_wire, tmp_var);
-      continue_flag_103 <= tmp_var; --
-    end process;
-    -- binary operator NEQ_u32_u1_98_inst
+    -- flow through binary operator ADD_u32_u32_116_inst
+    ADD_u32_u32_116_wire <= std_logic_vector(unsigned(tQ_89) + unsigned(konst_115_wire_constant));
+    -- flow through binary operator AND_u1_u1_102_inst
+    continue_flag_103 <= (NEQ_u32_u1_98_wire and UGE_u32_u1_101_wire);
+    -- flow through binary operator NEQ_u32_u1_98_inst
     process(tA_85) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
       ApIntNe_proc(tA_85, konst_97_wire_constant, tmp_var);
       NEQ_u32_u1_98_wire <= tmp_var; --
     end process;
-    -- binary operator SUB_u32_u32_108_inst
-    process(tA_85, B_buffer) -- 
-      variable tmp_var : std_logic_vector(31 downto 0); -- 
-    begin -- 
-      ApIntSub_proc(tA_85, B_buffer, tmp_var);
-      SUB_u32_u32_108_wire <= tmp_var; --
-    end process;
-    -- binary operator UGE_u32_u1_101_inst
+    -- flow through binary operator SUB_u32_u32_108_inst
+    SUB_u32_u32_108_wire <= std_logic_vector(unsigned(tA_85) - unsigned(B_buffer));
+    -- flow through binary operator UGE_u32_u1_101_inst
     process(tA_85, B_buffer) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
@@ -29320,6 +28691,7 @@ library std;
 use std.standard.all;
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 library aHiR_ieee_proposed;
 use aHiR_ieee_proposed.math_utility_pkg.all;
 use aHiR_ieee_proposed.fixed_pkg.all;
@@ -29550,8 +28922,8 @@ begin --
     -- CP-element group 1: successors 
     -- CP-element group 1: 	2 
     -- CP-element group 1: 	3 
-    -- CP-element group 1: 	4 
     -- CP-element group 1: 	5 
+    -- CP-element group 1: 	4 
     -- CP-element group 1:  members (15) 
       -- CP-element group 1: 	 branch_block_stmt_11/assign_stmt_34_to_assign_stmt_72/AND_u1_u1_33_update_start_
       -- CP-element group 1: 	 branch_block_stmt_11/assign_stmt_34_to_assign_stmt_72/AND_u1_u1_33_sample_start_
@@ -29637,8 +29009,8 @@ begin --
     -- CP-element group 6: 	3 
     -- CP-element group 6: 	5 
     -- CP-element group 6: successors 
-    -- CP-element group 6: 	8 
     -- CP-element group 6: 	7 
+    -- CP-element group 6: 	8 
     -- CP-element group 6:  members (10) 
       -- CP-element group 6: 	 branch_block_stmt_11/assign_stmt_34_to_assign_stmt_72__exit__
       -- CP-element group 6: 	 branch_block_stmt_11/if_stmt_73__entry__
@@ -29727,10 +29099,10 @@ begin --
     -- CP-element group 9: predecessors 
     -- CP-element group 9: 	0 
     -- CP-element group 9: successors 
-    -- CP-element group 9: 	11 
     -- CP-element group 9: 	10 
-    -- CP-element group 9: 	14 
+    -- CP-element group 9: 	11 
     -- CP-element group 9: 	13 
+    -- CP-element group 9: 	14 
     -- CP-element group 9:  members (15) 
       -- CP-element group 9: 	 branch_block_stmt_11/merge_stmt_12__entry___PhiReq/$entry
       -- CP-element group 9: 	 branch_block_stmt_11/merge_stmt_12__entry___PhiReq/phi_stmt_13/$entry
@@ -29787,8 +29159,8 @@ begin --
       port map(clk => clk, reset => reset, req => A_15_buf_ack_1, ack => my_gcd_CP_0_elements(11)); -- 
     -- CP-element group 12:  join  transition  output  bypass 
     -- CP-element group 12: predecessors 
-    -- CP-element group 12: 	11 
     -- CP-element group 12: 	10 
+    -- CP-element group 12: 	11 
     -- CP-element group 12: successors 
     -- CP-element group 12: 	16 
     -- CP-element group 12:  members (4) 
@@ -29807,7 +29179,7 @@ begin --
       constant joinName: string(1 to 26) := "my_gcd_cp_element_group_12"; 
       signal preds: BooleanArray(1 to 2); -- 
     begin -- 
-      preds <= my_gcd_CP_0_elements(11) & my_gcd_CP_0_elements(10);
+      preds <= my_gcd_CP_0_elements(10) & my_gcd_CP_0_elements(11);
       gj_my_gcd_cp_element_group_12 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
         port map(preds => preds, symbol_out => my_gcd_CP_0_elements(12), clk => clk, reset => reset); --
     end block;
@@ -29837,8 +29209,8 @@ begin --
       port map(clk => clk, reset => reset, req => B_19_buf_ack_1, ack => my_gcd_CP_0_elements(14)); -- 
     -- CP-element group 15:  join  transition  output  bypass 
     -- CP-element group 15: predecessors 
-    -- CP-element group 15: 	14 
     -- CP-element group 15: 	13 
+    -- CP-element group 15: 	14 
     -- CP-element group 15: successors 
     -- CP-element group 15: 	16 
     -- CP-element group 15:  members (4) 
@@ -29857,7 +29229,7 @@ begin --
       constant joinName: string(1 to 26) := "my_gcd_cp_element_group_15"; 
       signal preds: BooleanArray(1 to 2); -- 
     begin -- 
-      preds <= my_gcd_CP_0_elements(14) & my_gcd_CP_0_elements(13);
+      preds <= my_gcd_CP_0_elements(13) & my_gcd_CP_0_elements(14);
       gj_my_gcd_cp_element_group_15 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
         port map(preds => preds, symbol_out => my_gcd_CP_0_elements(15), clk => clk, reset => reset); --
     end block;
@@ -30287,13 +29659,8 @@ begin --
           reset => reset); -- 
       --
     end Block; -- branch-block
-    -- binary operator AND_u1_u1_29_inst
-    process(UGT_u32_u1_25_wire, UGT_u32_u1_28_wire) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApIntAnd_proc(UGT_u32_u1_25_wire, UGT_u32_u1_28_wire, tmp_var);
-      AND_u1_u1_29_wire <= tmp_var; --
-    end process;
+    -- flow through binary operator AND_u1_u1_29_inst
+    AND_u1_u1_29_wire <= (UGT_u32_u1_25_wire and UGT_u32_u1_28_wire);
     -- shared split operator group (1) : AND_u1_u1_33_inst 
     ApIntAnd_group_1: Block -- 
       signal data_in: std_logic_vector(1 downto 0);
@@ -30361,77 +29728,62 @@ begin --
           reset => reset); -- 
       -- 
     end Block; -- split operator group 1
-    -- binary operator EQ_u32_u1_38_inst
+    -- flow through binary operator EQ_u32_u1_38_inst
     process(tA_13, tB_17) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
       ApIntEq_proc(tA_13, tB_17, tmp_var);
       EQ_u32_u1_38_wire <= tmp_var; --
     end process;
-    -- binary operator EQ_u32_u1_42_inst
+    -- flow through binary operator EQ_u32_u1_42_inst
     process(tA_13) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
       ApIntEq_proc(tA_13, konst_41_wire_constant, tmp_var);
       EQ_u32_u1_42_wire <= tmp_var; --
     end process;
-    -- binary operator EQ_u32_u1_45_inst
+    -- flow through binary operator EQ_u32_u1_45_inst
     process(tB_17) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
       ApIntEq_proc(tB_17, konst_44_wire_constant, tmp_var);
       EQ_u32_u1_45_wire <= tmp_var; --
     end process;
-    -- binary operator NEQ_u32_u1_32_inst
+    -- flow through binary operator NEQ_u32_u1_32_inst
     process(tA_13, tB_17) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
       ApIntNe_proc(tA_13, tB_17, tmp_var);
       NEQ_u32_u1_32_wire <= tmp_var; --
     end process;
-    -- binary operator OR_u1_u1_46_inst
-    process(EQ_u32_u1_42_wire, EQ_u32_u1_45_wire) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApIntOr_proc(EQ_u32_u1_42_wire, EQ_u32_u1_45_wire, tmp_var);
-      OR_u1_u1_46_wire <= tmp_var; --
-    end process;
-    -- binary operator SUB_u32_u32_59_inst
-    process(tA_13, tB_17) -- 
-      variable tmp_var : std_logic_vector(31 downto 0); -- 
-    begin -- 
-      ApIntSub_proc(tA_13, tB_17, tmp_var);
-      SUB_u32_u32_59_wire <= tmp_var; --
-    end process;
-    -- binary operator SUB_u32_u32_69_inst
-    process(tB_17, tA_13) -- 
-      variable tmp_var : std_logic_vector(31 downto 0); -- 
-    begin -- 
-      ApIntSub_proc(tB_17, tA_13, tmp_var);
-      SUB_u32_u32_69_wire <= tmp_var; --
-    end process;
-    -- binary operator UGT_u32_u1_25_inst
+    -- flow through binary operator OR_u1_u1_46_inst
+    OR_u1_u1_46_wire <= (EQ_u32_u1_42_wire or EQ_u32_u1_45_wire);
+    -- flow through binary operator SUB_u32_u32_59_inst
+    SUB_u32_u32_59_wire <= std_logic_vector(unsigned(tA_13) - unsigned(tB_17));
+    -- flow through binary operator SUB_u32_u32_69_inst
+    SUB_u32_u32_69_wire <= std_logic_vector(unsigned(tB_17) - unsigned(tA_13));
+    -- flow through binary operator UGT_u32_u1_25_inst
     process(tA_13) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
       ApIntUgt_proc(tA_13, konst_24_wire_constant, tmp_var);
       UGT_u32_u1_25_wire <= tmp_var; --
     end process;
-    -- binary operator UGT_u32_u1_28_inst
+    -- flow through binary operator UGT_u32_u1_28_inst
     process(tB_17) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
       ApIntUgt_proc(tB_17, konst_27_wire_constant, tmp_var);
       UGT_u32_u1_28_wire <= tmp_var; --
     end process;
-    -- binary operator UGT_u32_u1_56_inst
+    -- flow through binary operator UGT_u32_u1_56_inst
     process(tA_13, tB_17) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
       ApIntUgt_proc(tA_13, tB_17, tmp_var);
       UGT_u32_u1_56_wire <= tmp_var; --
     end process;
-    -- binary operator UGT_u32_u1_66_inst
+    -- flow through binary operator UGT_u32_u1_66_inst
     process(tB_17, tA_13) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
@@ -30446,6 +29798,7 @@ library std;
 use std.standard.all;
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 library aHiR_ieee_proposed;
 use aHiR_ieee_proposed.math_utility_pkg.all;
 use aHiR_ieee_proposed.fixed_pkg.all;
@@ -30884,142 +30237,76 @@ begin
 	 			uart_tx_pipe_write_ack => TX_to_CONSOLE_pipe_write_ack
 		);
 end Struct;
+library std;
+use std.standard.all;
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-library ahir;
-use ahir.mem_component_pack.all;
-use ahir.Types.all;
-use ahir.Utilities.all;
-use ahir.BaseComponents.all;
 library AjitCustom;
 use AjitCustom.AjitCustomComponents.all;
+use AjitCustom.AjitCoreConfigurationPackage.all;
 
-entity ahblite_controller is
-	port (
-		-- connections to AFB-AHB bridge
-		AFB_TO_AHB_COMMAND_pipe_write_req: in  std_logic_vector(0 downto 0);
-		AFB_TO_AHB_COMMAND_pipe_write_ack: out std_logic_vector(0 downto 0);
-		AFB_TO_AHB_COMMAND_pipe_write_data: in std_logic_vector(72 downto 0);
-		-- 
-		AHB_TO_AFB_RESPONSE_pipe_read_req: in  std_logic_vector(0 downto 0);
-		AHB_TO_AFB_RESPONSE_pipe_read_ack: out std_logic_vector(0 downto 0);
-		AHB_TO_AFB_RESPONSE_pipe_read_data: out std_logic_vector(32 downto 0);
-		-- AHB bus signals
-		HADDR: out std_logic_vector(35 downto 0);
-		HTRANS: out std_logic_vector(1 downto 0); -- non-sequential, sequential, idle, busy
-		HWRITE: out std_logic_vector(0 downto 0); -- when '1' its a write.
-		HSIZE: out std_logic_vector(2 downto 0); -- transfer size in bytes.
-		HBURST: out std_logic_vector(2 downto 0); -- burst size.
-		HMASTLOCK: out std_logic_vector(0 downto 0); -- locked transaction.. for swap etc.
-		HPROT: out std_logic_vector(3 downto 0); -- protection bits..
-		HWDATA: out std_logic_vector(31 downto 0); -- write data.
-		HRDATA: in std_logic_vector(31 downto 0); -- read data.
-		HREADY: in std_logic_vector(0 downto 0); -- slave ready.
-		HRESP: in std_logic_vector(1 downto 0); -- okay, error, retry, split (slave responses).
-		SYS_CLK: out std_logic_vector(0 downto 0);
-		-- clock, reset.
-		clk: in std_logic;
-		reset: in std_logic 
-	     );
-end entity ahblite_controller;
-
-
-architecture struct_arch of ahblite_controller is
-
-	signal ajit_to_env_addr: std_logic_vector(35 downto 0);
-	signal ajit_to_env_write_data: std_logic_vector(31 downto 0);
-	signal ajit_to_env_read_write_bar: std_logic;
-	signal ajit_to_env_transfer_size: std_logic_vector(2 downto 0);
-	signal ajit_to_env_lock: std_logic;
-	signal ajit_to_env_write_req: std_logic;
-	signal ajit_to_env_write_ack: std_logic;
-
-	signal env_to_ajit_read_data: std_logic_vector(31 downto 0);
-	signal env_to_ajit_error: std_logic;
-	signal env_to_ajit_read_req: std_logic;
-	signal env_to_ajit_read_ack: std_logic;
+entity access_instruction_buffer_Operator is -- 
+  port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    clear_flag : in  std_logic_vector(0 downto 0);
+    insert_flag : in  std_logic_vector(0 downto 0);
+    insert_addr : in  std_logic_vector(28 downto 0);
+    insert_acc  : in  std_logic_vector(2 downto 0);
+    insert_ipair : in  std_logic_vector(63 downto 0);
+    lookup_flag : in  std_logic_vector(0 downto 0);
+    lookup_addr : in  std_logic_vector(28 downto 0);
+    lookup_match : out  std_logic_vector(0 downto 0);
+    lookup_acc  : out  std_logic_vector(2 downto 0);
+    lookup_ipair : out  std_logic_vector(63 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+  -- 
+end entity access_instruction_buffer_Operator;
+architecture access_instruction_buffer_Operator_arch of access_instruction_buffer_Operator is -- 
+	signal lookup_tag, insert_tag: std_logic_vector(28 downto 0);
+	signal lookup_data, insert_data: std_logic_vector(66 downto 0);
+begin --  
+	insert_tag  <= insert_addr (28 downto 0);
+	insert_data <= insert_acc & insert_ipair;
 	
-begin
-	SYS_CLK(0) <= clk;
-
-	-- AHB -> AFB
-	AHB_TO_AFB_RESPONSE_pipe_read_data (31 downto 0)   <= env_to_ajit_read_data;
-	AHB_TO_AFB_RESPONSE_pipe_read_data (32)   <= env_to_ajit_error;
-
-	AHB_TO_AFB_RESPONSE_pipe_read_ack(0)  <= env_to_ajit_read_ack;
-	env_to_ajit_read_req <= AHB_TO_AFB_RESPONSE_pipe_read_req(0);
-
-	-- AFB -> AHB
-	ajit_to_env_write_data <= AFB_TO_AHB_COMMAND_pipe_write_data(31 downto 0);
-	ajit_to_env_addr <= AFB_TO_AHB_COMMAND_pipe_write_data(67 downto 32);
-	ajit_to_env_transfer_size <= AFB_TO_AHB_COMMAND_pipe_write_data(70 downto 68);
-	ajit_to_env_read_write_bar <= AFB_TO_AHB_COMMAND_pipe_write_data(71);
-	ajit_to_env_lock <= AFB_TO_AHB_COMMAND_pipe_write_data(72);
-
-	ajit_to_env_write_req  <= AFB_TO_AHB_COMMAND_pipe_write_req(0);
-	AFB_TO_AHB_COMMAND_pipe_write_ack(0) <= ajit_to_env_write_ack;
-
-	ahbCtrl: ajit_ahb_lite_master 
-			port map (
-				-- AJIT system bus
-				ajit_to_env_write_req => ajit_to_env_write_req,
-				ajit_to_env_write_ack => ajit_to_env_write_ack,
-				ajit_to_env_addr => ajit_to_env_addr,
-				ajit_to_env_data => ajit_to_env_write_data,
-				ajit_to_env_transfer_size => ajit_to_env_transfer_size,
-				ajit_to_env_read_write_bar => ajit_to_env_read_write_bar,
-				ajit_to_env_lock => ajit_to_env_lock,
-				-- top-bit error, rest data.,
-				env_to_ajit_error  => env_to_ajit_error ,
-				env_to_ajit_read_data  => env_to_ajit_read_data ,
-				env_to_ajit_read_req => env_to_ajit_read_req,
-				env_to_ajit_read_ack => env_to_ajit_read_ack,
-				-- AHB bus signals,
-				HADDR => HADDR,
-				HTRANS => HTRANS,
-				HWRITE => HWRITE(0),
-				HSIZE => HSIZE,
-				HBURST => HBURST,
-				HMASTLOCK => HMASTLOCK(0),
-				HPROT => HPROT,
-				HWDATA => HWDATA,
-				HRDATA => HRDATA,
-				HREADY => HREADY(0),
-				HRESP => HRESP,
-				-- clock, reset.
-				clk  => clk ,
-				reset  => reset 
-				);
+	lookup_tag <= lookup_addr (28 downto 0);
+	basemem:genericDirectMappedAssociativeMemory
+			generic map(
+					tag_width => insert_tag'length,
+					data_width => insert_data'length,
+					log2_number_of_entries => INSTRUCTION_BUFFER_LOG_MEMORY_SIZE
+				    )
+			port map(
+					sample_req => sample_req,
+					sample_ack => sample_ack,
+					update_req => update_req,
+					update_ack => update_ack,
+					init_flag => clear_flag,
+					insert_flag => insert_flag,
+					insert_data => insert_data,
+					insert_tag =>  insert_tag,
+					lookup_flag => lookup_flag,
+					lookup_tag => lookup_tag,
+					lookup_match => lookup_match,
+					lookup_data => lookup_data,
+					clk => clk, reset => reset);
 	
-end struct_arch;
+	lookup_acc <= lookup_data (66 downto 64);
+	lookup_ipair <= lookup_data (63 downto 0);
 
--- VHDL global package produced by vc2vhdl from virtual circuit (vc) description 
-library ieee;
-use ieee.std_logic_1164.all;
-package afb_ahb_bridge_global_package is -- 
-  constant default_mem_pool_base_address : std_logic_vector(0 downto 0) := "0";
-  component afb_ahb_bridge is -- 
-    port (-- 
-      clk : in std_logic;
-      reset : in std_logic;
-      AFB_BUS_REQUEST_pipe_write_data: in std_logic_vector(73 downto 0);
-      AFB_BUS_REQUEST_pipe_write_req : in std_logic_vector(0 downto 0);
-      AFB_BUS_REQUEST_pipe_write_ack : out std_logic_vector(0 downto 0);
-      AFB_BUS_RESPONSE_pipe_read_data: out std_logic_vector(32 downto 0);
-      AFB_BUS_RESPONSE_pipe_read_req : in std_logic_vector(0 downto 0);
-      AFB_BUS_RESPONSE_pipe_read_ack : out std_logic_vector(0 downto 0);
-      AFB_TO_AHB_COMMAND_pipe_read_data: out std_logic_vector(72 downto 0);
-      AFB_TO_AHB_COMMAND_pipe_read_req : in std_logic_vector(0 downto 0);
-      AFB_TO_AHB_COMMAND_pipe_read_ack : out std_logic_vector(0 downto 0);
-      AHB_TO_AFB_RESPONSE_pipe_write_data: in std_logic_vector(32 downto 0);
-      AHB_TO_AFB_RESPONSE_pipe_write_req : in std_logic_vector(0 downto 0);
-      AHB_TO_AFB_RESPONSE_pipe_write_ack : out std_logic_vector(0 downto 0)); -- 
-    -- 
-  end component;
-  -- 
-end package afb_ahb_bridge_global_package;
--- VHDL produced by vc2vhdl from virtual circuit (vc) description 
+end access_instruction_buffer_Operator_arch;
+-- Optimized version of instruction buffer.
+-- The instruction buffer is used in the icache path of the
+-- dual threaded CPU's in order to reduce blocking on the
+-- icache (for example a tight spin-loop can be absorbed into
+-- the instruction buffer thus reducing the pressure on the shared
+-- icache)
+--
+-- Author: Madhav Desai, January 25, 2023.
 library std;
 use std.standard.all;
 library ieee;
@@ -31029,2052 +30316,390 @@ use aHiR_ieee_proposed.math_utility_pkg.all;
 use aHiR_ieee_proposed.fixed_pkg.all;
 use aHiR_ieee_proposed.float_pkg.all;
 library ahir;
-use ahir.memory_subsystem_package.all;
-use ahir.types.all;
-use ahir.subprograms.all;
-use ahir.components.all;
 use ahir.basecomponents.all;
-use ahir.operatorpackage.all;
-use ahir.floatoperatorpackage.all;
-use ahir.utilities.all;
+use ahir.Utilities.all;
 library AjitCustom;
-use AjitCustom.afb_ahb_bridge_global_package.all;
-entity afb_ahb_bridge_daemon is -- 
-  generic (tag_length : integer); 
-  port ( -- 
-    AFB_BUS_REQUEST_pipe_read_req : out  std_logic_vector(0 downto 0);
-    AFB_BUS_REQUEST_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    AFB_BUS_REQUEST_pipe_read_data : in   std_logic_vector(73 downto 0);
-    AHB_TO_AFB_RESPONSE_pipe_read_req : out  std_logic_vector(0 downto 0);
-    AHB_TO_AFB_RESPONSE_pipe_read_ack : in   std_logic_vector(0 downto 0);
-    AHB_TO_AFB_RESPONSE_pipe_read_data : in   std_logic_vector(32 downto 0);
-    AFB_BUS_RESPONSE_pipe_write_req : out  std_logic_vector(0 downto 0);
-    AFB_BUS_RESPONSE_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    AFB_BUS_RESPONSE_pipe_write_data : out  std_logic_vector(32 downto 0);
-    AFB_TO_AHB_COMMAND_pipe_write_req : out  std_logic_vector(0 downto 0);
-    AFB_TO_AHB_COMMAND_pipe_write_ack : in   std_logic_vector(0 downto 0);
-    AFB_TO_AHB_COMMAND_pipe_write_data : out  std_logic_vector(72 downto 0);
-    tag_in: in std_logic_vector(tag_length-1 downto 0);
-    tag_out: out std_logic_vector(tag_length-1 downto 0) ;
-    clk : in std_logic;
-    reset : in std_logic;
-    start_req : in std_logic;
-    start_ack : out std_logic;
-    fin_req : in std_logic;
-    fin_ack   : out std_logic-- 
-  );
-  -- 
-end entity afb_ahb_bridge_daemon;
-architecture afb_ahb_bridge_daemon_arch of afb_ahb_bridge_daemon is -- 
-  -- always true...
-  signal always_true_symbol: Boolean;
-  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector((tag_length + 0)-1 downto 0);
-  signal default_zero_sig: std_logic;
-  signal in_buffer_write_req: std_logic;
-  signal in_buffer_write_ack: std_logic;
-  signal in_buffer_unload_req_symbol: Boolean;
-  signal in_buffer_unload_ack_symbol: Boolean;
-  signal out_buffer_data_in, out_buffer_data_out: std_logic_vector((tag_length + 0)-1 downto 0);
-  signal out_buffer_read_req: std_logic;
-  signal out_buffer_read_ack: std_logic;
-  signal out_buffer_write_req_symbol: Boolean;
-  signal out_buffer_write_ack_symbol: Boolean;
-  signal tag_ub_out, tag_ilock_out: std_logic_vector(tag_length-1 downto 0);
-  signal tag_push_req, tag_push_ack, tag_pop_req, tag_pop_ack: std_logic;
-  signal tag_unload_req_symbol, tag_unload_ack_symbol, tag_write_req_symbol, tag_write_ack_symbol: Boolean;
-  signal tag_ilock_write_req_symbol, tag_ilock_write_ack_symbol, tag_ilock_read_req_symbol, tag_ilock_read_ack_symbol: Boolean;
-  signal start_req_sig, fin_req_sig, start_ack_sig, fin_ack_sig: std_logic; 
-  signal input_sample_reenable_symbol: Boolean;
-  -- input port buffer signals
-  -- output port buffer signals
-  signal afb_ahb_bridge_daemon_CP_9_start: Boolean;
-  signal afb_ahb_bridge_daemon_CP_9_symbol: Boolean;
-  -- volatile/operator module components. 
-  component create_ahb_commands_Volatile is -- 
-    port ( -- 
-      mem_adapter_command : in  std_logic_vector(73 downto 0);
-      command_to_ahb : out  std_logic_vector(72 downto 0)-- 
-    );
-    -- 
-  end component; 
-  -- links between control-path and data-path
-  signal do_while_stmt_359_branch_req_0 : boolean;
-  signal RPIPE_AFB_BUS_REQUEST_362_inst_req_0 : boolean;
-  signal RPIPE_AFB_BUS_REQUEST_362_inst_ack_0 : boolean;
-  signal RPIPE_AFB_BUS_REQUEST_362_inst_req_1 : boolean;
-  signal RPIPE_AFB_BUS_REQUEST_362_inst_ack_1 : boolean;
-  signal WPIPE_AFB_TO_AHB_COMMAND_404_inst_req_0 : boolean;
-  signal WPIPE_AFB_TO_AHB_COMMAND_404_inst_ack_0 : boolean;
-  signal WPIPE_AFB_TO_AHB_COMMAND_404_inst_req_1 : boolean;
-  signal WPIPE_AFB_TO_AHB_COMMAND_404_inst_ack_1 : boolean;
-  signal RPIPE_AHB_TO_AFB_RESPONSE_408_inst_req_0 : boolean;
-  signal RPIPE_AHB_TO_AFB_RESPONSE_408_inst_ack_0 : boolean;
-  signal RPIPE_AHB_TO_AFB_RESPONSE_408_inst_req_1 : boolean;
-  signal RPIPE_AHB_TO_AFB_RESPONSE_408_inst_ack_1 : boolean;
-  signal WPIPE_AFB_BUS_RESPONSE_423_inst_req_0 : boolean;
-  signal WPIPE_AFB_BUS_RESPONSE_423_inst_ack_0 : boolean;
-  signal WPIPE_AFB_BUS_RESPONSE_423_inst_req_1 : boolean;
-  signal WPIPE_AFB_BUS_RESPONSE_423_inst_ack_1 : boolean;
-  signal do_while_stmt_359_branch_ack_0 : boolean;
-  signal do_while_stmt_359_branch_ack_1 : boolean;
-  -- 
-begin --  
-  -- input handling ------------------------------------------------
-  in_buffer: UnloadBuffer -- 
-    generic map(name => "afb_ahb_bridge_daemon_input_buffer", -- 
-      buffer_size => 1,
-      bypass_flag => false,
-      data_width => tag_length + 0) -- 
-    port map(write_req => in_buffer_write_req, -- 
-      write_ack => in_buffer_write_ack, 
-      write_data => in_buffer_data_in,
-      unload_req => in_buffer_unload_req_symbol, 
-      unload_ack => in_buffer_unload_ack_symbol, 
-      read_data => in_buffer_data_out,
-      clk => clk, reset => reset); -- 
-  in_buffer_data_in(tag_length-1 downto 0) <= tag_in;
-  tag_ub_out <= in_buffer_data_out(tag_length-1 downto 0);
-  in_buffer_write_req <= start_req;
-  start_ack <= in_buffer_write_ack;
-  in_buffer_unload_req_symbol_join: block -- 
-    constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
-    constant place_markings: IntegerArray(0 to 1)  := (0 => 1,1 => 1);
-    constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 1);
-    constant joinName: string(1 to 32) := "in_buffer_unload_req_symbol_join"; 
-    signal preds: BooleanArray(1 to 2); -- 
-  begin -- 
-    preds <= in_buffer_unload_ack_symbol & input_sample_reenable_symbol;
-    gj_in_buffer_unload_req_symbol_join : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
-      port map(preds => preds, symbol_out => in_buffer_unload_req_symbol, clk => clk, reset => reset); --
-  end block;
-  -- join of all unload_ack_symbols.. used to trigger CP.
-  afb_ahb_bridge_daemon_CP_9_start <= in_buffer_unload_ack_symbol;
-  -- output handling  -------------------------------------------------------
-  out_buffer: ReceiveBuffer -- 
-    generic map(name => "afb_ahb_bridge_daemon_out_buffer", -- 
-      buffer_size => 1,
-      full_rate => false,
-      data_width => tag_length + 0) --
-    port map(write_req => out_buffer_write_req_symbol, -- 
-      write_ack => out_buffer_write_ack_symbol, 
-      write_data => out_buffer_data_in,
-      read_req => out_buffer_read_req, 
-      read_ack => out_buffer_read_ack, 
-      read_data => out_buffer_data_out,
-      clk => clk, reset => reset); -- 
-  out_buffer_data_in(tag_length-1 downto 0) <= tag_ilock_out;
-  tag_out <= out_buffer_data_out(tag_length-1 downto 0);
-  out_buffer_write_req_symbol_join: block -- 
-    constant place_capacities: IntegerArray(0 to 2) := (0 => 1,1 => 1,2 => 1);
-    constant place_markings: IntegerArray(0 to 2)  := (0 => 0,1 => 1,2 => 0);
-    constant place_delays: IntegerArray(0 to 2) := (0 => 0,1 => 1,2 => 0);
-    constant joinName: string(1 to 32) := "out_buffer_write_req_symbol_join"; 
-    signal preds: BooleanArray(1 to 3); -- 
-  begin -- 
-    preds <= afb_ahb_bridge_daemon_CP_9_symbol & out_buffer_write_ack_symbol & tag_ilock_read_ack_symbol;
-    gj_out_buffer_write_req_symbol_join : generic_join generic map(name => joinName, number_of_predecessors => 3, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
-      port map(preds => preds, symbol_out => out_buffer_write_req_symbol, clk => clk, reset => reset); --
-  end block;
-  -- write-to output-buffer produces  reenable input sampling
-  input_sample_reenable_symbol <= out_buffer_write_ack_symbol;
-  -- fin-req/ack level protocol..
-  out_buffer_read_req <= fin_req;
-  fin_ack <= out_buffer_read_ack;
-  ----- tag-queue --------------------------------------------------
-  -- interlock buffer for TAG.. to provide required buffering.
-  tagIlock: InterlockBuffer -- 
-    generic map(name => "tag-interlock-buffer", -- 
-      buffer_size => 1,
-      bypass_flag => false,
-      in_data_width => tag_length,
-      out_data_width => tag_length) -- 
-    port map(write_req => tag_ilock_write_req_symbol, -- 
-      write_ack => tag_ilock_write_ack_symbol, 
-      write_data => tag_ub_out,
-      read_req => tag_ilock_read_req_symbol, 
-      read_ack => tag_ilock_read_ack_symbol, 
-      read_data => tag_ilock_out, 
-      clk => clk, reset => reset); -- 
-  -- tag ilock-buffer control logic. 
-  tag_ilock_write_req_symbol_join: block -- 
-    constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
-    constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
-    constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 1);
-    constant joinName: string(1 to 31) := "tag_ilock_write_req_symbol_join"; 
-    signal preds: BooleanArray(1 to 2); -- 
-  begin -- 
-    preds <= afb_ahb_bridge_daemon_CP_9_start & tag_ilock_write_ack_symbol;
-    gj_tag_ilock_write_req_symbol_join : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
-      port map(preds => preds, symbol_out => tag_ilock_write_req_symbol, clk => clk, reset => reset); --
-  end block;
-  tag_ilock_read_req_symbol_join: block -- 
-    constant place_capacities: IntegerArray(0 to 2) := (0 => 1,1 => 1,2 => 1);
-    constant place_markings: IntegerArray(0 to 2)  := (0 => 0,1 => 1,2 => 1);
-    constant place_delays: IntegerArray(0 to 2) := (0 => 0,1 => 0,2 => 0);
-    constant joinName: string(1 to 30) := "tag_ilock_read_req_symbol_join"; 
-    signal preds: BooleanArray(1 to 3); -- 
-  begin -- 
-    preds <= afb_ahb_bridge_daemon_CP_9_start & tag_ilock_read_ack_symbol & out_buffer_write_ack_symbol;
-    gj_tag_ilock_read_req_symbol_join : generic_join generic map(name => joinName, number_of_predecessors => 3, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
-      port map(preds => preds, symbol_out => tag_ilock_read_req_symbol, clk => clk, reset => reset); --
-  end block;
-  -- the control path --------------------------------------------------
-  always_true_symbol <= true; 
-  default_zero_sig <= '0';
-  afb_ahb_bridge_daemon_CP_9: Block -- control-path 
-    signal afb_ahb_bridge_daemon_CP_9_elements: BooleanArray(28 downto 0);
-    -- 
-  begin -- 
-    afb_ahb_bridge_daemon_CP_9_elements(0) <= afb_ahb_bridge_daemon_CP_9_start;
-    afb_ahb_bridge_daemon_CP_9_symbol <= afb_ahb_bridge_daemon_CP_9_elements(1);
-    -- CP-element group 0:  transition  place  bypass 
-    -- CP-element group 0: predecessors 
-    -- CP-element group 0: successors 
-    -- CP-element group 0: 	2 
-    -- CP-element group 0:  members (4) 
-      -- CP-element group 0: 	 $entry
-      -- CP-element group 0: 	 branch_block_stmt_358/$entry
-      -- CP-element group 0: 	 branch_block_stmt_358/branch_block_stmt_358__entry__
-      -- CP-element group 0: 	 branch_block_stmt_358/do_while_stmt_359__entry__
-      -- 
-    -- CP-element group 1:  transition  place  bypass 
-    -- CP-element group 1: predecessors 
-    -- CP-element group 1: 	28 
-    -- CP-element group 1: successors 
-    -- CP-element group 1:  members (4) 
-      -- CP-element group 1: 	 $exit
-      -- CP-element group 1: 	 branch_block_stmt_358/$exit
-      -- CP-element group 1: 	 branch_block_stmt_358/branch_block_stmt_358__exit__
-      -- CP-element group 1: 	 branch_block_stmt_358/do_while_stmt_359__exit__
-      -- 
-    afb_ahb_bridge_daemon_CP_9_elements(1) <= afb_ahb_bridge_daemon_CP_9_elements(28);
-    -- CP-element group 2:  transition  place  bypass  pipeline-parent 
-    -- CP-element group 2: predecessors 
-    -- CP-element group 2: 	0 
-    -- CP-element group 2: successors 
-    -- CP-element group 2: 	8 
-    -- CP-element group 2:  members (2) 
-      -- CP-element group 2: 	 branch_block_stmt_358/do_while_stmt_359/$entry
-      -- CP-element group 2: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359__entry__
-      -- 
-    afb_ahb_bridge_daemon_CP_9_elements(2) <= afb_ahb_bridge_daemon_CP_9_elements(0);
-    -- CP-element group 3:  merge  place  bypass  pipeline-parent 
-    -- CP-element group 3: predecessors 
-    -- CP-element group 3: successors 
-    -- CP-element group 3: 	28 
-    -- CP-element group 3:  members (1) 
-      -- CP-element group 3: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359__exit__
-      -- 
-    -- Element group afb_ahb_bridge_daemon_CP_9_elements(3) is bound as output of CP function.
-    -- CP-element group 4:  merge  place  bypass  pipeline-parent 
-    -- CP-element group 4: predecessors 
-    -- CP-element group 4: successors 
-    -- CP-element group 4: 	7 
-    -- CP-element group 4:  members (1) 
-      -- CP-element group 4: 	 branch_block_stmt_358/do_while_stmt_359/loop_back
-      -- 
-    -- Element group afb_ahb_bridge_daemon_CP_9_elements(4) is bound as output of CP function.
-    -- CP-element group 5:  branch  transition  place  bypass  pipeline-parent 
-    -- CP-element group 5: predecessors 
-    -- CP-element group 5: 	24 
-    -- CP-element group 5: successors 
-    -- CP-element group 5: 	26 
-    -- CP-element group 5: 	27 
-    -- CP-element group 5:  members (3) 
-      -- CP-element group 5: 	 branch_block_stmt_358/do_while_stmt_359/condition_done
-      -- CP-element group 5: 	 branch_block_stmt_358/do_while_stmt_359/loop_exit/$entry
-      -- CP-element group 5: 	 branch_block_stmt_358/do_while_stmt_359/loop_taken/$entry
-      -- 
-    afb_ahb_bridge_daemon_CP_9_elements(5) <= afb_ahb_bridge_daemon_CP_9_elements(24);
-    -- CP-element group 6:  branch  place  bypass  pipeline-parent 
-    -- CP-element group 6: predecessors 
-    -- CP-element group 6: 	25 
-    -- CP-element group 6: successors 
-    -- CP-element group 6:  members (1) 
-      -- CP-element group 6: 	 branch_block_stmt_358/do_while_stmt_359/loop_body_done
-      -- 
-    afb_ahb_bridge_daemon_CP_9_elements(6) <= afb_ahb_bridge_daemon_CP_9_elements(25);
-    -- CP-element group 7:  transition  bypass  pipeline-parent 
-    -- CP-element group 7: predecessors 
-    -- CP-element group 7: 	4 
-    -- CP-element group 7: successors 
-    -- CP-element group 7:  members (1) 
-      -- CP-element group 7: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/back_edge_to_loop_body
-      -- 
-    afb_ahb_bridge_daemon_CP_9_elements(7) <= afb_ahb_bridge_daemon_CP_9_elements(4);
-    -- CP-element group 8:  transition  bypass  pipeline-parent 
-    -- CP-element group 8: predecessors 
-    -- CP-element group 8: 	2 
-    -- CP-element group 8: successors 
-    -- CP-element group 8:  members (1) 
-      -- CP-element group 8: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/first_time_through_loop_body
-      -- 
-    afb_ahb_bridge_daemon_CP_9_elements(8) <= afb_ahb_bridge_daemon_CP_9_elements(2);
-    -- CP-element group 9:  fork  transition  bypass  pipeline-parent 
-    -- CP-element group 9: predecessors 
-    -- CP-element group 9: successors 
-    -- CP-element group 9: 	10 
-    -- CP-element group 9: 	24 
-    -- CP-element group 9: 	17 
-    -- CP-element group 9:  members (2) 
-      -- CP-element group 9: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/$entry
-      -- CP-element group 9: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/loop_body_start
-      -- 
-    -- Element group afb_ahb_bridge_daemon_CP_9_elements(9) is bound as output of CP function.
-    -- CP-element group 10:  join  transition  output  bypass  pipeline-parent 
-    -- CP-element group 10: predecessors 
-    -- CP-element group 10: 	9 
-    -- CP-element group 10: marked-predecessors 
-    -- CP-element group 10: 	13 
-    -- CP-element group 10: successors 
-    -- CP-element group 10: 	12 
-    -- CP-element group 10:  members (3) 
-      -- CP-element group 10: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AFB_BUS_REQUEST_362_sample_start_
-      -- CP-element group 10: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AFB_BUS_REQUEST_362_Sample/$entry
-      -- CP-element group 10: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AFB_BUS_REQUEST_362_Sample/rr
-      -- 
-    rr_42_symbol_link_to_dp: control_delay_element -- 
-      generic map(name => " rr_42_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(10), ack => RPIPE_AFB_BUS_REQUEST_362_inst_req_0); -- 
-    afb_ahb_bridge_daemon_cp_element_group_10: block -- 
-      constant place_capacities: IntegerArray(0 to 1) := (0 => 15,1 => 1);
-      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
-      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
-      constant joinName: string(1 to 41) := "afb_ahb_bridge_daemon_cp_element_group_10"; 
-      signal preds: BooleanArray(1 to 2); -- 
-    begin -- 
-      preds <= afb_ahb_bridge_daemon_CP_9_elements(9) & afb_ahb_bridge_daemon_CP_9_elements(13);
-      gj_afb_ahb_bridge_daemon_cp_element_group_10 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
-        port map(preds => preds, symbol_out => afb_ahb_bridge_daemon_CP_9_elements(10), clk => clk, reset => reset); --
-    end block;
-    -- CP-element group 11:  join  transition  output  bypass  pipeline-parent 
-    -- CP-element group 11: predecessors 
-    -- CP-element group 11: 	12 
-    -- CP-element group 11: marked-predecessors 
-    -- CP-element group 11: 	15 
-    -- CP-element group 11: successors 
-    -- CP-element group 11: 	13 
-    -- CP-element group 11:  members (3) 
-      -- CP-element group 11: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AFB_BUS_REQUEST_362_update_start_
-      -- CP-element group 11: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AFB_BUS_REQUEST_362_Update/$entry
-      -- CP-element group 11: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AFB_BUS_REQUEST_362_Update/cr
-      -- 
-    cr_47_symbol_link_to_dp: control_delay_element -- 
-      generic map(name => " cr_47_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(11), ack => RPIPE_AFB_BUS_REQUEST_362_inst_req_1); -- 
-    afb_ahb_bridge_daemon_cp_element_group_11: block -- 
-      constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
-      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
-      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
-      constant joinName: string(1 to 41) := "afb_ahb_bridge_daemon_cp_element_group_11"; 
-      signal preds: BooleanArray(1 to 2); -- 
-    begin -- 
-      preds <= afb_ahb_bridge_daemon_CP_9_elements(12) & afb_ahb_bridge_daemon_CP_9_elements(15);
-      gj_afb_ahb_bridge_daemon_cp_element_group_11 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
-        port map(preds => preds, symbol_out => afb_ahb_bridge_daemon_CP_9_elements(11), clk => clk, reset => reset); --
-    end block;
-    -- CP-element group 12:  transition  input  bypass  pipeline-parent 
-    -- CP-element group 12: predecessors 
-    -- CP-element group 12: 	10 
-    -- CP-element group 12: successors 
-    -- CP-element group 12: 	11 
-    -- CP-element group 12:  members (3) 
-      -- CP-element group 12: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AFB_BUS_REQUEST_362_sample_completed_
-      -- CP-element group 12: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AFB_BUS_REQUEST_362_Sample/$exit
-      -- CP-element group 12: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AFB_BUS_REQUEST_362_Sample/ra
-      -- 
-    ra_43_symbol_link_from_dp: control_delay_element -- 
-      generic map(name => " 12_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => RPIPE_AFB_BUS_REQUEST_362_inst_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(12)); -- 
-    -- CP-element group 13:  fork  transition  input  bypass  pipeline-parent 
-    -- CP-element group 13: predecessors 
-    -- CP-element group 13: 	11 
-    -- CP-element group 13: successors 
-    -- CP-element group 13: 	14 
-    -- CP-element group 13: marked-successors 
-    -- CP-element group 13: 	10 
-    -- CP-element group 13:  members (3) 
-      -- CP-element group 13: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AFB_BUS_REQUEST_362_update_completed_
-      -- CP-element group 13: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AFB_BUS_REQUEST_362_Update/$exit
-      -- CP-element group 13: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AFB_BUS_REQUEST_362_Update/ca
-      -- 
-    ca_48_symbol_link_from_dp: control_delay_element -- 
-      generic map(name => " 13_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => RPIPE_AFB_BUS_REQUEST_362_inst_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(13)); -- 
-    -- CP-element group 14:  join  transition  output  bypass  pipeline-parent 
-    -- CP-element group 14: predecessors 
-    -- CP-element group 14: 	13 
-    -- CP-element group 14: marked-predecessors 
-    -- CP-element group 14: 	16 
-    -- CP-element group 14: successors 
-    -- CP-element group 14: 	15 
-    -- CP-element group 14:  members (3) 
-      -- CP-element group 14: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_TO_AHB_COMMAND_404_sample_start_
-      -- CP-element group 14: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_TO_AHB_COMMAND_404_Sample/$entry
-      -- CP-element group 14: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_TO_AHB_COMMAND_404_Sample/req
-      -- 
-    req_56_symbol_link_to_dp: control_delay_element -- 
-      generic map(name => " req_56_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(14), ack => WPIPE_AFB_TO_AHB_COMMAND_404_inst_req_0); -- 
-    afb_ahb_bridge_daemon_cp_element_group_14: block -- 
-      constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
-      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
-      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
-      constant joinName: string(1 to 41) := "afb_ahb_bridge_daemon_cp_element_group_14"; 
-      signal preds: BooleanArray(1 to 2); -- 
-    begin -- 
-      preds <= afb_ahb_bridge_daemon_CP_9_elements(13) & afb_ahb_bridge_daemon_CP_9_elements(16);
-      gj_afb_ahb_bridge_daemon_cp_element_group_14 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
-        port map(preds => preds, symbol_out => afb_ahb_bridge_daemon_CP_9_elements(14), clk => clk, reset => reset); --
-    end block;
-    -- CP-element group 15:  fork  transition  input  output  bypass  pipeline-parent 
-    -- CP-element group 15: predecessors 
-    -- CP-element group 15: 	14 
-    -- CP-element group 15: successors 
-    -- CP-element group 15: 	16 
-    -- CP-element group 15: marked-successors 
-    -- CP-element group 15: 	11 
-    -- CP-element group 15:  members (6) 
-      -- CP-element group 15: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_TO_AHB_COMMAND_404_sample_completed_
-      -- CP-element group 15: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_TO_AHB_COMMAND_404_update_start_
-      -- CP-element group 15: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_TO_AHB_COMMAND_404_Sample/$exit
-      -- CP-element group 15: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_TO_AHB_COMMAND_404_Sample/ack
-      -- CP-element group 15: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_TO_AHB_COMMAND_404_Update/$entry
-      -- CP-element group 15: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_TO_AHB_COMMAND_404_Update/req
-      -- 
-    ack_57_symbol_link_from_dp: control_delay_element -- 
-      generic map(name => " 15_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => WPIPE_AFB_TO_AHB_COMMAND_404_inst_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(15)); -- 
-    req_61_symbol_link_to_dp: control_delay_element -- 
-      generic map(name => " req_61_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(15), ack => WPIPE_AFB_TO_AHB_COMMAND_404_inst_req_1); -- 
-    -- CP-element group 16:  fork  transition  input  bypass  pipeline-parent 
-    -- CP-element group 16: predecessors 
-    -- CP-element group 16: 	15 
-    -- CP-element group 16: successors 
-    -- CP-element group 16: 	25 
-    -- CP-element group 16: marked-successors 
-    -- CP-element group 16: 	14 
-    -- CP-element group 16:  members (3) 
-      -- CP-element group 16: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_TO_AHB_COMMAND_404_update_completed_
-      -- CP-element group 16: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_TO_AHB_COMMAND_404_Update/$exit
-      -- CP-element group 16: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_TO_AHB_COMMAND_404_Update/ack
-      -- 
-    ack_62_symbol_link_from_dp: control_delay_element -- 
-      generic map(name => " 16_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => WPIPE_AFB_TO_AHB_COMMAND_404_inst_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(16)); -- 
-    -- CP-element group 17:  join  transition  output  bypass  pipeline-parent 
-    -- CP-element group 17: predecessors 
-    -- CP-element group 17: 	9 
-    -- CP-element group 17: marked-predecessors 
-    -- CP-element group 17: 	20 
-    -- CP-element group 17: successors 
-    -- CP-element group 17: 	19 
-    -- CP-element group 17:  members (3) 
-      -- CP-element group 17: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_408_sample_start_
-      -- CP-element group 17: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_408_Sample/$entry
-      -- CP-element group 17: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_408_Sample/rr
-      -- 
-    rr_70_symbol_link_to_dp: control_delay_element -- 
-      generic map(name => " rr_70_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(17), ack => RPIPE_AHB_TO_AFB_RESPONSE_408_inst_req_0); -- 
-    afb_ahb_bridge_daemon_cp_element_group_17: block -- 
-      constant place_capacities: IntegerArray(0 to 1) := (0 => 15,1 => 1);
-      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
-      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
-      constant joinName: string(1 to 41) := "afb_ahb_bridge_daemon_cp_element_group_17"; 
-      signal preds: BooleanArray(1 to 2); -- 
-    begin -- 
-      preds <= afb_ahb_bridge_daemon_CP_9_elements(9) & afb_ahb_bridge_daemon_CP_9_elements(20);
-      gj_afb_ahb_bridge_daemon_cp_element_group_17 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
-        port map(preds => preds, symbol_out => afb_ahb_bridge_daemon_CP_9_elements(17), clk => clk, reset => reset); --
-    end block;
-    -- CP-element group 18:  join  transition  output  bypass  pipeline-parent 
-    -- CP-element group 18: predecessors 
-    -- CP-element group 18: 	19 
-    -- CP-element group 18: marked-predecessors 
-    -- CP-element group 18: 	22 
-    -- CP-element group 18: successors 
-    -- CP-element group 18: 	20 
-    -- CP-element group 18:  members (3) 
-      -- CP-element group 18: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_408_update_start_
-      -- CP-element group 18: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_408_Update/$entry
-      -- CP-element group 18: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_408_Update/cr
-      -- 
-    cr_75_symbol_link_to_dp: control_delay_element -- 
-      generic map(name => " cr_75_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(18), ack => RPIPE_AHB_TO_AFB_RESPONSE_408_inst_req_1); -- 
-    afb_ahb_bridge_daemon_cp_element_group_18: block -- 
-      constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
-      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
-      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
-      constant joinName: string(1 to 41) := "afb_ahb_bridge_daemon_cp_element_group_18"; 
-      signal preds: BooleanArray(1 to 2); -- 
-    begin -- 
-      preds <= afb_ahb_bridge_daemon_CP_9_elements(19) & afb_ahb_bridge_daemon_CP_9_elements(22);
-      gj_afb_ahb_bridge_daemon_cp_element_group_18 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
-        port map(preds => preds, symbol_out => afb_ahb_bridge_daemon_CP_9_elements(18), clk => clk, reset => reset); --
-    end block;
-    -- CP-element group 19:  transition  input  bypass  pipeline-parent 
-    -- CP-element group 19: predecessors 
-    -- CP-element group 19: 	17 
-    -- CP-element group 19: successors 
-    -- CP-element group 19: 	18 
-    -- CP-element group 19:  members (3) 
-      -- CP-element group 19: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_408_sample_completed_
-      -- CP-element group 19: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_408_Sample/$exit
-      -- CP-element group 19: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_408_Sample/ra
-      -- 
-    ra_71_symbol_link_from_dp: control_delay_element -- 
-      generic map(name => " 19_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => RPIPE_AHB_TO_AFB_RESPONSE_408_inst_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(19)); -- 
-    -- CP-element group 20:  fork  transition  input  bypass  pipeline-parent 
-    -- CP-element group 20: predecessors 
-    -- CP-element group 20: 	18 
-    -- CP-element group 20: successors 
-    -- CP-element group 20: 	21 
-    -- CP-element group 20: marked-successors 
-    -- CP-element group 20: 	17 
-    -- CP-element group 20:  members (3) 
-      -- CP-element group 20: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_408_update_completed_
-      -- CP-element group 20: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_408_Update/$exit
-      -- CP-element group 20: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_408_Update/ca
-      -- 
-    ca_76_symbol_link_from_dp: control_delay_element -- 
-      generic map(name => " 20_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => RPIPE_AHB_TO_AFB_RESPONSE_408_inst_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(20)); -- 
-    -- CP-element group 21:  join  transition  output  bypass  pipeline-parent 
-    -- CP-element group 21: predecessors 
-    -- CP-element group 21: 	20 
-    -- CP-element group 21: marked-predecessors 
-    -- CP-element group 21: 	23 
-    -- CP-element group 21: successors 
-    -- CP-element group 21: 	22 
-    -- CP-element group 21:  members (3) 
-      -- CP-element group 21: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_BUS_RESPONSE_423_sample_start_
-      -- CP-element group 21: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_BUS_RESPONSE_423_Sample/$entry
-      -- CP-element group 21: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_BUS_RESPONSE_423_Sample/req
-      -- 
-    req_84_symbol_link_to_dp: control_delay_element -- 
-      generic map(name => " req_84_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(21), ack => WPIPE_AFB_BUS_RESPONSE_423_inst_req_0); -- 
-    afb_ahb_bridge_daemon_cp_element_group_21: block -- 
-      constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
-      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
-      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
-      constant joinName: string(1 to 41) := "afb_ahb_bridge_daemon_cp_element_group_21"; 
-      signal preds: BooleanArray(1 to 2); -- 
-    begin -- 
-      preds <= afb_ahb_bridge_daemon_CP_9_elements(20) & afb_ahb_bridge_daemon_CP_9_elements(23);
-      gj_afb_ahb_bridge_daemon_cp_element_group_21 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
-        port map(preds => preds, symbol_out => afb_ahb_bridge_daemon_CP_9_elements(21), clk => clk, reset => reset); --
-    end block;
-    -- CP-element group 22:  fork  transition  input  output  bypass  pipeline-parent 
-    -- CP-element group 22: predecessors 
-    -- CP-element group 22: 	21 
-    -- CP-element group 22: successors 
-    -- CP-element group 22: 	23 
-    -- CP-element group 22: marked-successors 
-    -- CP-element group 22: 	18 
-    -- CP-element group 22:  members (6) 
-      -- CP-element group 22: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_BUS_RESPONSE_423_sample_completed_
-      -- CP-element group 22: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_BUS_RESPONSE_423_update_start_
-      -- CP-element group 22: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_BUS_RESPONSE_423_Sample/$exit
-      -- CP-element group 22: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_BUS_RESPONSE_423_Sample/ack
-      -- CP-element group 22: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_BUS_RESPONSE_423_Update/$entry
-      -- CP-element group 22: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_BUS_RESPONSE_423_Update/req
-      -- 
-    ack_85_symbol_link_from_dp: control_delay_element -- 
-      generic map(name => " 22_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => WPIPE_AFB_BUS_RESPONSE_423_inst_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(22)); -- 
-    req_89_symbol_link_to_dp: control_delay_element -- 
-      generic map(name => " req_89_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(22), ack => WPIPE_AFB_BUS_RESPONSE_423_inst_req_1); -- 
-    -- CP-element group 23:  fork  transition  input  bypass  pipeline-parent 
-    -- CP-element group 23: predecessors 
-    -- CP-element group 23: 	22 
-    -- CP-element group 23: successors 
-    -- CP-element group 23: 	25 
-    -- CP-element group 23: marked-successors 
-    -- CP-element group 23: 	21 
-    -- CP-element group 23:  members (3) 
-      -- CP-element group 23: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_BUS_RESPONSE_423_update_completed_
-      -- CP-element group 23: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_BUS_RESPONSE_423_Update/$exit
-      -- CP-element group 23: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/WPIPE_AFB_BUS_RESPONSE_423_Update/ack
-      -- 
-    ack_90_symbol_link_from_dp: control_delay_element -- 
-      generic map(name => " 23_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => WPIPE_AFB_BUS_RESPONSE_423_inst_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(23)); -- 
-    -- CP-element group 24:  transition  output  delay-element  bypass  pipeline-parent 
-    -- CP-element group 24: predecessors 
-    -- CP-element group 24: 	9 
-    -- CP-element group 24: successors 
-    -- CP-element group 24: 	5 
-    -- CP-element group 24:  members (2) 
-      -- CP-element group 24: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/condition_evaluated
-      -- CP-element group 24: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/loop_body_delay_to_condition_start
-      -- 
-    condition_evaluated_33_symbol_link_to_dp: control_delay_element -- 
-      generic map(name => " condition_evaluated_33_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(24), ack => do_while_stmt_359_branch_req_0); -- 
-    -- Element group afb_ahb_bridge_daemon_CP_9_elements(24) is a control-delay.
-    cp_element_24_delay: control_delay_element  generic map(name => " 24_delay", delay_value => 1)  port map(req => afb_ahb_bridge_daemon_CP_9_elements(9), ack => afb_ahb_bridge_daemon_CP_9_elements(24), clk => clk, reset =>reset);
-    -- CP-element group 25:  join  transition  bypass  pipeline-parent 
-    -- CP-element group 25: predecessors 
-    -- CP-element group 25: 	23 
-    -- CP-element group 25: 	16 
-    -- CP-element group 25: successors 
-    -- CP-element group 25: 	6 
-    -- CP-element group 25:  members (1) 
-      -- CP-element group 25: 	 branch_block_stmt_358/do_while_stmt_359/do_while_stmt_359_loop_body/$exit
-      -- 
-    afb_ahb_bridge_daemon_cp_element_group_25: block -- 
-      constant place_capacities: IntegerArray(0 to 1) := (0 => 15,1 => 15);
-      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 0);
-      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
-      constant joinName: string(1 to 41) := "afb_ahb_bridge_daemon_cp_element_group_25"; 
-      signal preds: BooleanArray(1 to 2); -- 
-    begin -- 
-      preds <= afb_ahb_bridge_daemon_CP_9_elements(23) & afb_ahb_bridge_daemon_CP_9_elements(16);
-      gj_afb_ahb_bridge_daemon_cp_element_group_25 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
-        port map(preds => preds, symbol_out => afb_ahb_bridge_daemon_CP_9_elements(25), clk => clk, reset => reset); --
-    end block;
-    -- CP-element group 26:  transition  input  bypass  pipeline-parent 
-    -- CP-element group 26: predecessors 
-    -- CP-element group 26: 	5 
-    -- CP-element group 26: successors 
-    -- CP-element group 26:  members (2) 
-      -- CP-element group 26: 	 branch_block_stmt_358/do_while_stmt_359/loop_exit/$exit
-      -- CP-element group 26: 	 branch_block_stmt_358/do_while_stmt_359/loop_exit/ack
-      -- 
-    ack_95_symbol_link_from_dp: control_delay_element -- 
-      generic map(name => " 26_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => do_while_stmt_359_branch_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(26)); -- 
-    -- CP-element group 27:  transition  input  bypass  pipeline-parent 
-    -- CP-element group 27: predecessors 
-    -- CP-element group 27: 	5 
-    -- CP-element group 27: successors 
-    -- CP-element group 27:  members (2) 
-      -- CP-element group 27: 	 branch_block_stmt_358/do_while_stmt_359/loop_taken/$exit
-      -- CP-element group 27: 	 branch_block_stmt_358/do_while_stmt_359/loop_taken/ack
-      -- 
-    ack_99_symbol_link_from_dp: control_delay_element -- 
-      generic map(name => " 27_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => do_while_stmt_359_branch_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(27)); -- 
-    -- CP-element group 28:  transition  bypass  pipeline-parent 
-    -- CP-element group 28: predecessors 
-    -- CP-element group 28: 	3 
-    -- CP-element group 28: successors 
-    -- CP-element group 28: 	1 
-    -- CP-element group 28:  members (1) 
-      -- CP-element group 28: 	 branch_block_stmt_358/do_while_stmt_359/$exit
-      -- 
-    afb_ahb_bridge_daemon_CP_9_elements(28) <= afb_ahb_bridge_daemon_CP_9_elements(3);
-    afb_ahb_bridge_daemon_do_while_stmt_359_terminator_100: loop_terminator -- 
-      generic map (name => " afb_ahb_bridge_daemon_do_while_stmt_359_terminator_100", max_iterations_in_flight =>15) 
-      port map(loop_body_exit => afb_ahb_bridge_daemon_CP_9_elements(6),loop_continue => afb_ahb_bridge_daemon_CP_9_elements(27),loop_terminate => afb_ahb_bridge_daemon_CP_9_elements(26),loop_back => afb_ahb_bridge_daemon_CP_9_elements(4),loop_exit => afb_ahb_bridge_daemon_CP_9_elements(3),clk => clk, reset => reset); -- 
-    entry_tmerge_34_block : block -- 
-      signal preds : BooleanArray(0 to 1);
-      begin -- 
-        preds(0)  <= afb_ahb_bridge_daemon_CP_9_elements(7);
-        preds(1)  <= afb_ahb_bridge_daemon_CP_9_elements(8);
-        entry_tmerge_34 : transition_merge -- 
-          generic map(name => " entry_tmerge_34")
-          port map (preds => preds, symbol_out => afb_ahb_bridge_daemon_CP_9_elements(9));
-          -- 
-    end block;
-    --  hookup: inputs to control-path 
-    -- hookup: output from control-path 
-    -- 
-  end Block; -- control-path
-  -- the data path
-  data_path: Block -- 
-    signal CONCAT_u1_u2_393_wire : std_logic_vector(1 downto 0);
-    signal CONCAT_u2_u6_395_wire : std_logic_vector(5 downto 0);
-    signal CONCAT_u36_u68_398_wire : std_logic_vector(67 downto 0);
-    signal access_error_413 : std_logic_vector(0 downto 0);
-    signal addr36_379 : std_logic_vector(35 downto 0);
-    signal ahb_command_403 : std_logic_vector(72 downto 0);
-    signal ahb_response_409 : std_logic_vector(32 downto 0);
-    signal byte_mask_375 : std_logic_vector(3 downto 0);
-    signal command_363 : std_logic_vector(73 downto 0);
-    signal data_out_mem_417 : std_logic_vector(31 downto 0);
-    signal konst_427_wire_constant : std_logic_vector(0 downto 0);
-    signal lock_flag_367 : std_logic_vector(0 downto 0);
-    signal read_write_bar_371 : std_logic_vector(0 downto 0);
-    signal to_afb_422 : std_logic_vector(32 downto 0);
-    signal to_mem_adapter_400 : std_logic_vector(73 downto 0);
-    signal wdata_32_383 : std_logic_vector(31 downto 0);
-    -- 
-  begin -- 
-    konst_427_wire_constant <= "1";
-    -- flow-through slice operator slice_366_inst
-    lock_flag_367 <= command_363(73 downto 73);
-    -- flow-through slice operator slice_370_inst
-    read_write_bar_371 <= command_363(72 downto 72);
-    -- flow-through slice operator slice_374_inst
-    byte_mask_375 <= command_363(71 downto 68);
-    -- flow-through slice operator slice_378_inst
-    addr36_379 <= command_363(67 downto 32);
-    -- flow-through slice operator slice_382_inst
-    wdata_32_383 <= command_363(31 downto 0);
-    -- flow-through slice operator slice_412_inst
-    access_error_413 <= ahb_response_409(32 downto 32);
-    -- flow-through slice operator slice_416_inst
-    data_out_mem_417 <= ahb_response_409(31 downto 0);
-    do_while_stmt_359_branch: Block -- 
-      -- branch-block
-      signal condition_sig : std_logic_vector(0 downto 0);
-      begin 
-      condition_sig <= konst_427_wire_constant;
-      branch_instance: BranchBase -- 
-        generic map( name => "do_while_stmt_359_branch", condition_width => 1,  bypass_flag => true)
-        port map( -- 
-          condition => condition_sig,
-          req => do_while_stmt_359_branch_req_0,
-          ack0 => do_while_stmt_359_branch_ack_0,
-          ack1 => do_while_stmt_359_branch_ack_1,
-          clk => clk,
-          reset => reset); -- 
-      --
-    end Block; -- branch-block
-    -- binary operator CONCAT_u1_u2_393_inst
-    process(lock_flag_367, read_write_bar_371) -- 
-      variable tmp_var : std_logic_vector(1 downto 0); -- 
-    begin -- 
-      ApConcat_proc(lock_flag_367, read_write_bar_371, tmp_var);
-      CONCAT_u1_u2_393_wire <= tmp_var; --
-    end process;
-    -- binary operator CONCAT_u1_u33_421_inst
-    process(access_error_413, data_out_mem_417) -- 
-      variable tmp_var : std_logic_vector(32 downto 0); -- 
-    begin -- 
-      ApConcat_proc(access_error_413, data_out_mem_417, tmp_var);
-      to_afb_422 <= tmp_var; --
-    end process;
-    -- binary operator CONCAT_u2_u6_395_inst
-    process(CONCAT_u1_u2_393_wire, byte_mask_375) -- 
-      variable tmp_var : std_logic_vector(5 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u1_u2_393_wire, byte_mask_375, tmp_var);
-      CONCAT_u2_u6_395_wire <= tmp_var; --
-    end process;
-    -- binary operator CONCAT_u36_u68_398_inst
-    process(addr36_379, wdata_32_383) -- 
-      variable tmp_var : std_logic_vector(67 downto 0); -- 
-    begin -- 
-      ApConcat_proc(addr36_379, wdata_32_383, tmp_var);
-      CONCAT_u36_u68_398_wire <= tmp_var; --
-    end process;
-    -- binary operator CONCAT_u6_u74_399_inst
-    process(CONCAT_u2_u6_395_wire, CONCAT_u36_u68_398_wire) -- 
-      variable tmp_var : std_logic_vector(73 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u2_u6_395_wire, CONCAT_u36_u68_398_wire, tmp_var);
-      to_mem_adapter_400 <= tmp_var; --
-    end process;
-    -- shared inport operator group (0) : RPIPE_AFB_BUS_REQUEST_362_inst 
-    InportGroup_0: Block -- 
-      signal data_out: std_logic_vector(73 downto 0);
-      signal reqL, ackL, reqR, ackR : BooleanArray( 0 downto 0);
-      signal reqL_unguarded, ackL_unguarded : BooleanArray( 0 downto 0);
-      signal reqR_unguarded, ackR_unguarded : BooleanArray( 0 downto 0);
-      signal guard_vector : std_logic_vector( 0 downto 0);
-      constant outBUFs : IntegerArray(0 downto 0) := (0 => 1);
-      constant guardFlags : BooleanArray(0 downto 0) := (0 => false);
-      constant guardBuffering: IntegerArray(0 downto 0)  := (0 => 2);
-      -- 
-    begin -- 
-      reqL_unguarded(0) <= RPIPE_AFB_BUS_REQUEST_362_inst_req_0;
-      RPIPE_AFB_BUS_REQUEST_362_inst_ack_0 <= ackL_unguarded(0);
-      reqR_unguarded(0) <= RPIPE_AFB_BUS_REQUEST_362_inst_req_1;
-      RPIPE_AFB_BUS_REQUEST_362_inst_ack_1 <= ackR_unguarded(0);
-      guard_vector(0)  <=  '1';
-      command_363 <= data_out(73 downto 0);
-      AFB_BUS_REQUEST_read_0_gI: SplitGuardInterface generic map(name => "AFB_BUS_REQUEST_read_0_gI", nreqs => 1, buffering => guardBuffering, use_guards => guardFlags,  sample_only => false,  update_only => true) -- 
-        port map(clk => clk, reset => reset,
-        sr_in => reqL_unguarded,
-        sr_out => reqL,
-        sa_in => ackL,
-        sa_out => ackL_unguarded,
-        cr_in => reqR_unguarded,
-        cr_out => reqR,
-        ca_in => ackR,
-        ca_out => ackR_unguarded,
-        guards => guard_vector); -- 
-      AFB_BUS_REQUEST_read_0: InputPortRevised -- 
-        generic map ( name => "AFB_BUS_REQUEST_read_0", data_width => 74,  num_reqs => 1,  output_buffering => outBUFs,   nonblocking_read_flag => False,  no_arbitration => false)
-        port map (-- 
-          sample_req => reqL , 
-          sample_ack => ackL, 
-          update_req => reqR, 
-          update_ack => ackR, 
-          data => data_out, 
-          oreq => AFB_BUS_REQUEST_pipe_read_req(0),
-          oack => AFB_BUS_REQUEST_pipe_read_ack(0),
-          odata => AFB_BUS_REQUEST_pipe_read_data(73 downto 0),
-          clk => clk, reset => reset -- 
-        ); -- 
-      -- 
-    end Block; -- inport group 0
-    -- shared inport operator group (1) : RPIPE_AHB_TO_AFB_RESPONSE_408_inst 
-    InportGroup_1: Block -- 
-      signal data_out: std_logic_vector(32 downto 0);
-      signal reqL, ackL, reqR, ackR : BooleanArray( 0 downto 0);
-      signal reqL_unguarded, ackL_unguarded : BooleanArray( 0 downto 0);
-      signal reqR_unguarded, ackR_unguarded : BooleanArray( 0 downto 0);
-      signal guard_vector : std_logic_vector( 0 downto 0);
-      constant outBUFs : IntegerArray(0 downto 0) := (0 => 1);
-      constant guardFlags : BooleanArray(0 downto 0) := (0 => false);
-      constant guardBuffering: IntegerArray(0 downto 0)  := (0 => 2);
-      -- 
-    begin -- 
-      reqL_unguarded(0) <= RPIPE_AHB_TO_AFB_RESPONSE_408_inst_req_0;
-      RPIPE_AHB_TO_AFB_RESPONSE_408_inst_ack_0 <= ackL_unguarded(0);
-      reqR_unguarded(0) <= RPIPE_AHB_TO_AFB_RESPONSE_408_inst_req_1;
-      RPIPE_AHB_TO_AFB_RESPONSE_408_inst_ack_1 <= ackR_unguarded(0);
-      guard_vector(0)  <=  '1';
-      ahb_response_409 <= data_out(32 downto 0);
-      AHB_TO_AFB_RESPONSE_read_1_gI: SplitGuardInterface generic map(name => "AHB_TO_AFB_RESPONSE_read_1_gI", nreqs => 1, buffering => guardBuffering, use_guards => guardFlags,  sample_only => false,  update_only => true) -- 
-        port map(clk => clk, reset => reset,
-        sr_in => reqL_unguarded,
-        sr_out => reqL,
-        sa_in => ackL,
-        sa_out => ackL_unguarded,
-        cr_in => reqR_unguarded,
-        cr_out => reqR,
-        ca_in => ackR,
-        ca_out => ackR_unguarded,
-        guards => guard_vector); -- 
-      AHB_TO_AFB_RESPONSE_read_1: InputPort_P2P -- 
-        generic map ( name => "AHB_TO_AFB_RESPONSE_read_1", data_width => 33,    bypass_flag => false,   	nonblocking_read_flag => false,  barrier_flag => false,   queue_depth =>  2)
-        port map (-- 
-          sample_req => reqL(0) , 
-          sample_ack => ackL(0), 
-          update_req => reqR(0), 
-          update_ack => ackR(0), 
-          data => data_out, 
-          oreq => AHB_TO_AFB_RESPONSE_pipe_read_req(0),
-          oack => AHB_TO_AFB_RESPONSE_pipe_read_ack(0),
-          odata => AHB_TO_AFB_RESPONSE_pipe_read_data(32 downto 0),
-          clk => clk, reset => reset -- 
-        ); -- 
-      -- 
-    end Block; -- inport group 1
-    -- shared outport operator group (0) : WPIPE_AFB_BUS_RESPONSE_423_inst 
-    OutportGroup_0: Block -- 
-      signal data_in: std_logic_vector(32 downto 0);
-      signal sample_req, sample_ack : BooleanArray( 0 downto 0);
-      signal update_req, update_ack : BooleanArray( 0 downto 0);
-      signal sample_req_unguarded, sample_ack_unguarded : BooleanArray( 0 downto 0);
-      signal update_req_unguarded, update_ack_unguarded : BooleanArray( 0 downto 0);
-      signal guard_vector : std_logic_vector( 0 downto 0);
-      constant inBUFs : IntegerArray(0 downto 0) := (0 => 0);
-      constant guardFlags : BooleanArray(0 downto 0) := (0 => false);
-      constant guardBuffering: IntegerArray(0 downto 0)  := (0 => 2);
-      -- 
-    begin -- 
-      sample_req_unguarded(0) <= WPIPE_AFB_BUS_RESPONSE_423_inst_req_0;
-      WPIPE_AFB_BUS_RESPONSE_423_inst_ack_0 <= sample_ack_unguarded(0);
-      update_req_unguarded(0) <= WPIPE_AFB_BUS_RESPONSE_423_inst_req_1;
-      WPIPE_AFB_BUS_RESPONSE_423_inst_ack_1 <= update_ack_unguarded(0);
-      guard_vector(0)  <=  '1';
-      data_in <= to_afb_422;
-      AFB_BUS_RESPONSE_write_0_gI: SplitGuardInterface generic map(name => "AFB_BUS_RESPONSE_write_0_gI", nreqs => 1, buffering => guardBuffering, use_guards => guardFlags,  sample_only => true,  update_only => false) -- 
-        port map(clk => clk, reset => reset,
-        sr_in => sample_req_unguarded,
-        sr_out => sample_req,
-        sa_in => sample_ack,
-        sa_out => sample_ack_unguarded,
-        cr_in => update_req_unguarded,
-        cr_out => update_req,
-        ca_in => update_ack,
-        ca_out => update_ack_unguarded,
-        guards => guard_vector); -- 
-      AFB_BUS_RESPONSE_write_0: OutputPortRevised -- 
-        generic map ( name => "AFB_BUS_RESPONSE", data_width => 33, num_reqs => 1, input_buffering => inBUFs, full_rate => true,
-        no_arbitration => false)
-        port map (--
-          sample_req => sample_req , 
-          sample_ack => sample_ack , 
-          update_req => update_req , 
-          update_ack => update_ack , 
-          data => data_in, 
-          oreq => AFB_BUS_RESPONSE_pipe_write_req(0),
-          oack => AFB_BUS_RESPONSE_pipe_write_ack(0),
-          odata => AFB_BUS_RESPONSE_pipe_write_data(32 downto 0),
-          clk => clk, reset => reset -- 
-        );-- 
-      -- 
-    end Block; -- outport group 0
-    -- shared outport operator group (1) : WPIPE_AFB_TO_AHB_COMMAND_404_inst 
-    OutportGroup_1: Block -- 
-      signal data_in: std_logic_vector(72 downto 0);
-      signal sample_req, sample_ack : BooleanArray( 0 downto 0);
-      signal update_req, update_ack : BooleanArray( 0 downto 0);
-      signal sample_req_unguarded, sample_ack_unguarded : BooleanArray( 0 downto 0);
-      signal update_req_unguarded, update_ack_unguarded : BooleanArray( 0 downto 0);
-      signal guard_vector : std_logic_vector( 0 downto 0);
-      constant inBUFs : IntegerArray(0 downto 0) := (0 => 0);
-      constant guardFlags : BooleanArray(0 downto 0) := (0 => false);
-      constant guardBuffering: IntegerArray(0 downto 0)  := (0 => 2);
-      -- 
-    begin -- 
-      sample_req_unguarded(0) <= WPIPE_AFB_TO_AHB_COMMAND_404_inst_req_0;
-      WPIPE_AFB_TO_AHB_COMMAND_404_inst_ack_0 <= sample_ack_unguarded(0);
-      update_req_unguarded(0) <= WPIPE_AFB_TO_AHB_COMMAND_404_inst_req_1;
-      WPIPE_AFB_TO_AHB_COMMAND_404_inst_ack_1 <= update_ack_unguarded(0);
-      guard_vector(0)  <=  '1';
-      data_in <= ahb_command_403;
-      AFB_TO_AHB_COMMAND_write_1_gI: SplitGuardInterface generic map(name => "AFB_TO_AHB_COMMAND_write_1_gI", nreqs => 1, buffering => guardBuffering, use_guards => guardFlags,  sample_only => true,  update_only => false) -- 
-        port map(clk => clk, reset => reset,
-        sr_in => sample_req_unguarded,
-        sr_out => sample_req,
-        sa_in => sample_ack,
-        sa_out => sample_ack_unguarded,
-        cr_in => update_req_unguarded,
-        cr_out => update_req,
-        ca_in => update_ack,
-        ca_out => update_ack_unguarded,
-        guards => guard_vector); -- 
-      AFB_TO_AHB_COMMAND_write_1: OutputPortRevised -- 
-        generic map ( name => "AFB_TO_AHB_COMMAND", data_width => 73, num_reqs => 1, input_buffering => inBUFs, full_rate => true,
-        no_arbitration => false)
-        port map (--
-          sample_req => sample_req , 
-          sample_ack => sample_ack , 
-          update_req => update_req , 
-          update_ack => update_ack , 
-          data => data_in, 
-          oreq => AFB_TO_AHB_COMMAND_pipe_write_req(0),
-          oack => AFB_TO_AHB_COMMAND_pipe_write_ack(0),
-          odata => AFB_TO_AHB_COMMAND_pipe_write_data(72 downto 0),
-          clk => clk, reset => reset -- 
-        );-- 
-      -- 
-    end Block; -- outport group 1
-    volatile_operator_create_ahb_commands_490: create_ahb_commands_Volatile port map(mem_adapter_command => to_mem_adapter_400, command_to_ahb => ahb_command_403); 
-    -- 
-  end Block; -- data_path
-  -- 
-end afb_ahb_bridge_daemon_arch;
-library std;
-use std.standard.all;
-library ieee;
-use ieee.std_logic_1164.all;
-library aHiR_ieee_proposed;
-use aHiR_ieee_proposed.math_utility_pkg.all;
-use aHiR_ieee_proposed.fixed_pkg.all;
-use aHiR_ieee_proposed.float_pkg.all;
-library ahir;
-use ahir.memory_subsystem_package.all;
-use ahir.types.all;
-use ahir.subprograms.all;
-use ahir.components.all;
-use ahir.basecomponents.all;
-use ahir.operatorpackage.all;
-use ahir.floatoperatorpackage.all;
-use ahir.utilities.all;
-library AjitCustom;
-use AjitCustom.afb_ahb_bridge_global_package.all;
-entity create_ahb_commands_Volatile is -- 
-  port ( -- 
-    mem_adapter_command : in  std_logic_vector(73 downto 0);
-    command_to_ahb : out  std_logic_vector(72 downto 0)-- 
-  );
-  -- 
-end entity create_ahb_commands_Volatile;
-architecture create_ahb_commands_Volatile_arch of create_ahb_commands_Volatile is -- 
-  -- always true...
-  signal always_true_symbol: Boolean;
-  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(74-1 downto 0);
-  signal default_zero_sig: std_logic;
-  -- input port buffer signals
-  signal mem_adapter_command_buffer :  std_logic_vector(73 downto 0);
-  -- output port buffer signals
-  signal command_to_ahb_buffer :  std_logic_vector(72 downto 0);
-  -- volatile/operator module components. 
-  component get_byte_offset_Volatile is -- 
-    port ( -- 
-      bmask : in  std_logic_vector(3 downto 0);
-      byte_offset : out  std_logic_vector(1 downto 0)-- 
-    );
-    -- 
-  end component; 
-  component get_ahb_hsize_Volatile is -- 
-    port ( -- 
-      bmask : in  std_logic_vector(3 downto 0);
-      t_size : out  std_logic_vector(2 downto 0)-- 
-    );
-    -- 
-  end component; 
-  -- 
-begin --  
-  -- input handling ------------------------------------------------
-  mem_adapter_command_buffer <= mem_adapter_command;
-  -- output handling  -------------------------------------------------------
-  command_to_ahb <= command_to_ahb_buffer;
-  -- the control path --------------------------------------------------
-  default_zero_sig <= '0';
-  -- volatile module, no control path
-  -- the data path
-  data_path: Block -- 
-    signal CONCAT_u1_u2_344_wire : std_logic_vector(1 downto 0);
-    signal CONCAT_u2_u5_346_wire : std_logic_vector(4 downto 0);
-    signal CONCAT_u36_u68_353_wire : std_logic_vector(67 downto 0);
-    signal MUX_352_wire : std_logic_vector(31 downto 0);
-    signal addr_323 : std_logic_vector(35 downto 0);
-    signal addr_with_byte_offset_340 : std_logic_vector(35 downto 0);
-    signal ahb_transfer_size_333 : std_logic_vector(2 downto 0);
-    signal bmask_318 : std_logic_vector(3 downto 0);
-    signal byte_offset_330 : std_logic_vector(1 downto 0);
-    signal lock_flag_310 : std_logic_vector(0 downto 0);
-    signal rw_314 : std_logic_vector(0 downto 0);
-    signal slice_337_wire : std_logic_vector(33 downto 0);
-    signal type_cast_350_wire_constant : std_logic_vector(31 downto 0);
-    signal write_data_327 : std_logic_vector(31 downto 0);
-    -- 
-  begin -- 
-    type_cast_350_wire_constant <= "00000000000000000000000000000000";
-    -- flow-through select operator MUX_352_inst
-    MUX_352_wire <= type_cast_350_wire_constant when (rw_314(0) /=  '0') else write_data_327;
-    -- flow-through slice operator slice_309_inst
-    lock_flag_310 <= mem_adapter_command_buffer(73 downto 73);
-    -- flow-through slice operator slice_313_inst
-    rw_314 <= mem_adapter_command_buffer(72 downto 72);
-    -- flow-through slice operator slice_317_inst
-    bmask_318 <= mem_adapter_command_buffer(71 downto 68);
-    -- flow-through slice operator slice_322_inst
-    addr_323 <= mem_adapter_command_buffer(67 downto 32);
-    -- flow-through slice operator slice_326_inst
-    write_data_327 <= mem_adapter_command_buffer(31 downto 0);
-    -- flow-through slice operator slice_337_inst
-    slice_337_wire <= addr_323(35 downto 2);
-    -- binary operator CONCAT_u1_u2_344_inst
-    process(lock_flag_310, rw_314) -- 
-      variable tmp_var : std_logic_vector(1 downto 0); -- 
-    begin -- 
-      ApConcat_proc(lock_flag_310, rw_314, tmp_var);
-      CONCAT_u1_u2_344_wire <= tmp_var; --
-    end process;
-    -- binary operator CONCAT_u2_u5_346_inst
-    process(CONCAT_u1_u2_344_wire, ahb_transfer_size_333) -- 
-      variable tmp_var : std_logic_vector(4 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u1_u2_344_wire, ahb_transfer_size_333, tmp_var);
-      CONCAT_u2_u5_346_wire <= tmp_var; --
-    end process;
-    -- binary operator CONCAT_u34_u36_339_inst
-    process(slice_337_wire, byte_offset_330) -- 
-      variable tmp_var : std_logic_vector(35 downto 0); -- 
-    begin -- 
-      ApConcat_proc(slice_337_wire, byte_offset_330, tmp_var);
-      addr_with_byte_offset_340 <= tmp_var; --
-    end process;
-    -- binary operator CONCAT_u36_u68_353_inst
-    process(addr_with_byte_offset_340, MUX_352_wire) -- 
-      variable tmp_var : std_logic_vector(67 downto 0); -- 
-    begin -- 
-      ApConcat_proc(addr_with_byte_offset_340, MUX_352_wire, tmp_var);
-      CONCAT_u36_u68_353_wire <= tmp_var; --
-    end process;
-    -- binary operator CONCAT_u5_u73_354_inst
-    process(CONCAT_u2_u5_346_wire, CONCAT_u36_u68_353_wire) -- 
-      variable tmp_var : std_logic_vector(72 downto 0); -- 
-    begin -- 
-      ApConcat_proc(CONCAT_u2_u5_346_wire, CONCAT_u36_u68_353_wire, tmp_var);
-      command_to_ahb_buffer <= tmp_var; --
-    end process;
-    volatile_operator_get_byte_offset_357: get_byte_offset_Volatile port map(bmask => bmask_318, byte_offset => byte_offset_330); 
-    volatile_operator_get_ahb_hsize_358: get_ahb_hsize_Volatile port map(bmask => bmask_318, t_size => ahb_transfer_size_333); 
-    -- 
-  end Block; -- data_path
-  -- 
-end create_ahb_commands_Volatile_arch;
-library std;
-use std.standard.all;
-library ieee;
-use ieee.std_logic_1164.all;
-library aHiR_ieee_proposed;
-use aHiR_ieee_proposed.math_utility_pkg.all;
-use aHiR_ieee_proposed.fixed_pkg.all;
-use aHiR_ieee_proposed.float_pkg.all;
-library ahir;
-use ahir.memory_subsystem_package.all;
-use ahir.types.all;
-use ahir.subprograms.all;
-use ahir.components.all;
-use ahir.basecomponents.all;
-use ahir.operatorpackage.all;
-use ahir.floatoperatorpackage.all;
-use ahir.utilities.all;
-library AjitCustom;
-use AjitCustom.afb_ahb_bridge_global_package.all;
-entity get_ahb_hsize_Volatile is -- 
-  port ( -- 
-    bmask : in  std_logic_vector(3 downto 0);
-    t_size : out  std_logic_vector(2 downto 0)-- 
-  );
-  -- 
-end entity get_ahb_hsize_Volatile;
-architecture get_ahb_hsize_Volatile_arch of get_ahb_hsize_Volatile is -- 
-  -- always true...
-  signal always_true_symbol: Boolean;
-  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(4-1 downto 0);
-  signal default_zero_sig: std_logic;
-  -- input port buffer signals
-  signal bmask_buffer :  std_logic_vector(3 downto 0);
-  -- output port buffer signals
-  signal t_size_buffer :  std_logic_vector(2 downto 0);
-  -- volatile/operator module components. 
-  -- 
-begin --  
-  -- input handling ------------------------------------------------
-  bmask_buffer <= bmask;
-  -- output handling  -------------------------------------------------------
-  t_size <= t_size_buffer;
-  -- the control path --------------------------------------------------
-  default_zero_sig <= '0';
-  -- volatile module, no control path
-  -- the data path
-  data_path: Block -- 
-    signal EQ_u4_u1_241_wire : std_logic_vector(0 downto 0);
-    signal EQ_u4_u1_248_wire : std_logic_vector(0 downto 0);
-    signal EQ_u4_u1_256_wire : std_logic_vector(0 downto 0);
-    signal EQ_u4_u1_263_wire : std_logic_vector(0 downto 0);
-    signal EQ_u4_u1_272_wire : std_logic_vector(0 downto 0);
-    signal EQ_u4_u1_279_wire : std_logic_vector(0 downto 0);
-    signal EQ_u4_u1_287_wire : std_logic_vector(0 downto 0);
-    signal EQ_u4_u1_294_wire : std_logic_vector(0 downto 0);
-    signal MUX_245_wire : std_logic_vector(2 downto 0);
-    signal MUX_252_wire : std_logic_vector(2 downto 0);
-    signal MUX_260_wire : std_logic_vector(2 downto 0);
-    signal MUX_267_wire : std_logic_vector(2 downto 0);
-    signal MUX_276_wire : std_logic_vector(2 downto 0);
-    signal MUX_283_wire : std_logic_vector(2 downto 0);
-    signal MUX_291_wire : std_logic_vector(2 downto 0);
-    signal MUX_298_wire : std_logic_vector(2 downto 0);
-    signal OR_u3_u3_253_wire : std_logic_vector(2 downto 0);
-    signal OR_u3_u3_268_wire : std_logic_vector(2 downto 0);
-    signal OR_u3_u3_269_wire : std_logic_vector(2 downto 0);
-    signal OR_u3_u3_284_wire : std_logic_vector(2 downto 0);
-    signal OR_u3_u3_299_wire : std_logic_vector(2 downto 0);
-    signal OR_u3_u3_300_wire : std_logic_vector(2 downto 0);
-    signal konst_240_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_244_wire_constant : std_logic_vector(2 downto 0);
-    signal konst_247_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_251_wire_constant : std_logic_vector(2 downto 0);
-    signal konst_255_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_259_wire_constant : std_logic_vector(2 downto 0);
-    signal konst_262_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_266_wire_constant : std_logic_vector(2 downto 0);
-    signal konst_271_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_275_wire_constant : std_logic_vector(2 downto 0);
-    signal konst_278_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_282_wire_constant : std_logic_vector(2 downto 0);
-    signal konst_286_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_290_wire_constant : std_logic_vector(2 downto 0);
-    signal konst_293_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_297_wire_constant : std_logic_vector(2 downto 0);
-    signal type_cast_243_wire_constant : std_logic_vector(2 downto 0);
-    signal type_cast_250_wire_constant : std_logic_vector(2 downto 0);
-    signal type_cast_258_wire_constant : std_logic_vector(2 downto 0);
-    signal type_cast_265_wire_constant : std_logic_vector(2 downto 0);
-    signal type_cast_274_wire_constant : std_logic_vector(2 downto 0);
-    signal type_cast_281_wire_constant : std_logic_vector(2 downto 0);
-    signal type_cast_289_wire_constant : std_logic_vector(2 downto 0);
-    signal type_cast_296_wire_constant : std_logic_vector(2 downto 0);
-    -- 
-  begin -- 
-    konst_240_wire_constant <= "0001";
-    konst_244_wire_constant <= "000";
-    konst_247_wire_constant <= "0010";
-    konst_251_wire_constant <= "000";
-    konst_255_wire_constant <= "0100";
-    konst_259_wire_constant <= "000";
-    konst_262_wire_constant <= "1000";
-    konst_266_wire_constant <= "000";
-    konst_271_wire_constant <= "0011";
-    konst_275_wire_constant <= "000";
-    konst_278_wire_constant <= "0110";
-    konst_282_wire_constant <= "000";
-    konst_286_wire_constant <= "1100";
-    konst_290_wire_constant <= "000";
-    konst_293_wire_constant <= "1111";
-    konst_297_wire_constant <= "000";
-    type_cast_243_wire_constant <= "000";
-    type_cast_250_wire_constant <= "000";
-    type_cast_258_wire_constant <= "000";
-    type_cast_265_wire_constant <= "000";
-    type_cast_274_wire_constant <= "001";
-    type_cast_281_wire_constant <= "001";
-    type_cast_289_wire_constant <= "001";
-    type_cast_296_wire_constant <= "010";
-    -- flow-through select operator MUX_245_inst
-    MUX_245_wire <= type_cast_243_wire_constant when (EQ_u4_u1_241_wire(0) /=  '0') else konst_244_wire_constant;
-    -- flow-through select operator MUX_252_inst
-    MUX_252_wire <= type_cast_250_wire_constant when (EQ_u4_u1_248_wire(0) /=  '0') else konst_251_wire_constant;
-    -- flow-through select operator MUX_260_inst
-    MUX_260_wire <= type_cast_258_wire_constant when (EQ_u4_u1_256_wire(0) /=  '0') else konst_259_wire_constant;
-    -- flow-through select operator MUX_267_inst
-    MUX_267_wire <= type_cast_265_wire_constant when (EQ_u4_u1_263_wire(0) /=  '0') else konst_266_wire_constant;
-    -- flow-through select operator MUX_276_inst
-    MUX_276_wire <= type_cast_274_wire_constant when (EQ_u4_u1_272_wire(0) /=  '0') else konst_275_wire_constant;
-    -- flow-through select operator MUX_283_inst
-    MUX_283_wire <= type_cast_281_wire_constant when (EQ_u4_u1_279_wire(0) /=  '0') else konst_282_wire_constant;
-    -- flow-through select operator MUX_291_inst
-    MUX_291_wire <= type_cast_289_wire_constant when (EQ_u4_u1_287_wire(0) /=  '0') else konst_290_wire_constant;
-    -- flow-through select operator MUX_298_inst
-    MUX_298_wire <= type_cast_296_wire_constant when (EQ_u4_u1_294_wire(0) /=  '0') else konst_297_wire_constant;
-    -- binary operator EQ_u4_u1_241_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApIntEq_proc(bmask_buffer, konst_240_wire_constant, tmp_var);
-      EQ_u4_u1_241_wire <= tmp_var; --
-    end process;
-    -- binary operator EQ_u4_u1_248_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApIntEq_proc(bmask_buffer, konst_247_wire_constant, tmp_var);
-      EQ_u4_u1_248_wire <= tmp_var; --
-    end process;
-    -- binary operator EQ_u4_u1_256_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApIntEq_proc(bmask_buffer, konst_255_wire_constant, tmp_var);
-      EQ_u4_u1_256_wire <= tmp_var; --
-    end process;
-    -- binary operator EQ_u4_u1_263_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApIntEq_proc(bmask_buffer, konst_262_wire_constant, tmp_var);
-      EQ_u4_u1_263_wire <= tmp_var; --
-    end process;
-    -- binary operator EQ_u4_u1_272_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApIntEq_proc(bmask_buffer, konst_271_wire_constant, tmp_var);
-      EQ_u4_u1_272_wire <= tmp_var; --
-    end process;
-    -- binary operator EQ_u4_u1_279_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApIntEq_proc(bmask_buffer, konst_278_wire_constant, tmp_var);
-      EQ_u4_u1_279_wire <= tmp_var; --
-    end process;
-    -- binary operator EQ_u4_u1_287_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApIntEq_proc(bmask_buffer, konst_286_wire_constant, tmp_var);
-      EQ_u4_u1_287_wire <= tmp_var; --
-    end process;
-    -- binary operator EQ_u4_u1_294_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApIntEq_proc(bmask_buffer, konst_293_wire_constant, tmp_var);
-      EQ_u4_u1_294_wire <= tmp_var; --
-    end process;
-    -- binary operator OR_u3_u3_253_inst
-    process(MUX_245_wire, MUX_252_wire) -- 
-      variable tmp_var : std_logic_vector(2 downto 0); -- 
-    begin -- 
-      ApIntOr_proc(MUX_245_wire, MUX_252_wire, tmp_var);
-      OR_u3_u3_253_wire <= tmp_var; --
-    end process;
-    -- binary operator OR_u3_u3_268_inst
-    process(MUX_260_wire, MUX_267_wire) -- 
-      variable tmp_var : std_logic_vector(2 downto 0); -- 
-    begin -- 
-      ApIntOr_proc(MUX_260_wire, MUX_267_wire, tmp_var);
-      OR_u3_u3_268_wire <= tmp_var; --
-    end process;
-    -- binary operator OR_u3_u3_269_inst
-    process(OR_u3_u3_253_wire, OR_u3_u3_268_wire) -- 
-      variable tmp_var : std_logic_vector(2 downto 0); -- 
-    begin -- 
-      ApIntOr_proc(OR_u3_u3_253_wire, OR_u3_u3_268_wire, tmp_var);
-      OR_u3_u3_269_wire <= tmp_var; --
-    end process;
-    -- binary operator OR_u3_u3_284_inst
-    process(MUX_276_wire, MUX_283_wire) -- 
-      variable tmp_var : std_logic_vector(2 downto 0); -- 
-    begin -- 
-      ApIntOr_proc(MUX_276_wire, MUX_283_wire, tmp_var);
-      OR_u3_u3_284_wire <= tmp_var; --
-    end process;
-    -- binary operator OR_u3_u3_299_inst
-    process(MUX_291_wire, MUX_298_wire) -- 
-      variable tmp_var : std_logic_vector(2 downto 0); -- 
-    begin -- 
-      ApIntOr_proc(MUX_291_wire, MUX_298_wire, tmp_var);
-      OR_u3_u3_299_wire <= tmp_var; --
-    end process;
-    -- binary operator OR_u3_u3_300_inst
-    process(OR_u3_u3_284_wire, OR_u3_u3_299_wire) -- 
-      variable tmp_var : std_logic_vector(2 downto 0); -- 
-    begin -- 
-      ApIntOr_proc(OR_u3_u3_284_wire, OR_u3_u3_299_wire, tmp_var);
-      OR_u3_u3_300_wire <= tmp_var; --
-    end process;
-    -- binary operator OR_u3_u3_301_inst
-    process(OR_u3_u3_269_wire, OR_u3_u3_300_wire) -- 
-      variable tmp_var : std_logic_vector(2 downto 0); -- 
-    begin -- 
-      ApIntOr_proc(OR_u3_u3_269_wire, OR_u3_u3_300_wire, tmp_var);
-      t_size_buffer <= tmp_var; --
-    end process;
-    -- 
-  end Block; -- data_path
-  -- 
-end get_ahb_hsize_Volatile_arch;
-library std;
-use std.standard.all;
-library ieee;
-use ieee.std_logic_1164.all;
-library aHiR_ieee_proposed;
-use aHiR_ieee_proposed.math_utility_pkg.all;
-use aHiR_ieee_proposed.fixed_pkg.all;
-use aHiR_ieee_proposed.float_pkg.all;
-library ahir;
-use ahir.memory_subsystem_package.all;
-use ahir.types.all;
-use ahir.subprograms.all;
-use ahir.components.all;
-use ahir.basecomponents.all;
-use ahir.operatorpackage.all;
-use ahir.floatoperatorpackage.all;
-use ahir.utilities.all;
-library AjitCustom;
-use AjitCustom.afb_ahb_bridge_global_package.all;
-entity get_byte_offset_Volatile is -- 
-  port ( -- 
-    bmask : in  std_logic_vector(3 downto 0);
-    byte_offset : out  std_logic_vector(1 downto 0)-- 
-  );
-  -- 
-end entity get_byte_offset_Volatile;
-architecture get_byte_offset_Volatile_arch of get_byte_offset_Volatile is -- 
-  -- always true...
-  signal always_true_symbol: Boolean;
-  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector(4-1 downto 0);
-  signal default_zero_sig: std_logic;
-  -- input port buffer signals
-  signal bmask_buffer :  std_logic_vector(3 downto 0);
-  -- output port buffer signals
-  signal byte_offset_buffer :  std_logic_vector(1 downto 0);
-  -- volatile/operator module components. 
-  -- 
-begin --  
-  -- input handling ------------------------------------------------
-  bmask_buffer <= bmask;
-  -- output handling  -------------------------------------------------------
-  byte_offset <= byte_offset_buffer;
-  -- the control path --------------------------------------------------
-  default_zero_sig <= '0';
-  -- volatile module, no control path
-  -- the data path
-  data_path: Block -- 
-    signal BITSEL_u4_u1_208_wire : std_logic_vector(0 downto 0);
-    signal BITSEL_u4_u1_213_wire : std_logic_vector(0 downto 0);
-    signal BITSEL_u4_u1_218_wire : std_logic_vector(0 downto 0);
-    signal BITSEL_u4_u1_223_wire : std_logic_vector(0 downto 0);
-    signal MUX_228_wire : std_logic_vector(1 downto 0);
-    signal MUX_229_wire : std_logic_vector(1 downto 0);
-    signal MUX_230_wire : std_logic_vector(1 downto 0);
-    signal konst_207_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_212_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_217_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_222_wire_constant : std_logic_vector(3 downto 0);
-    signal type_cast_210_wire_constant : std_logic_vector(1 downto 0);
-    signal type_cast_215_wire_constant : std_logic_vector(1 downto 0);
-    signal type_cast_220_wire_constant : std_logic_vector(1 downto 0);
-    signal type_cast_225_wire_constant : std_logic_vector(1 downto 0);
-    signal type_cast_227_wire_constant : std_logic_vector(1 downto 0);
-    -- 
-  begin -- 
-    konst_207_wire_constant <= "0011";
-    konst_212_wire_constant <= "0010";
-    konst_217_wire_constant <= "0001";
-    konst_222_wire_constant <= "0000";
-    type_cast_210_wire_constant <= "00";
-    type_cast_215_wire_constant <= "01";
-    type_cast_220_wire_constant <= "10";
-    type_cast_225_wire_constant <= "11";
-    type_cast_227_wire_constant <= "00";
-    -- flow-through select operator MUX_228_inst
-    MUX_228_wire <= type_cast_225_wire_constant when (BITSEL_u4_u1_223_wire(0) /=  '0') else type_cast_227_wire_constant;
-    -- flow-through select operator MUX_229_inst
-    MUX_229_wire <= type_cast_220_wire_constant when (BITSEL_u4_u1_218_wire(0) /=  '0') else MUX_228_wire;
-    -- flow-through select operator MUX_230_inst
-    MUX_230_wire <= type_cast_215_wire_constant when (BITSEL_u4_u1_213_wire(0) /=  '0') else MUX_229_wire;
-    -- flow-through select operator MUX_231_inst
-    byte_offset_buffer <= type_cast_210_wire_constant when (BITSEL_u4_u1_208_wire(0) /=  '0') else MUX_230_wire;
-    -- binary operator BITSEL_u4_u1_208_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApBitsel_proc(bmask_buffer, konst_207_wire_constant, tmp_var);
-      BITSEL_u4_u1_208_wire <= tmp_var; --
-    end process;
-    -- binary operator BITSEL_u4_u1_213_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApBitsel_proc(bmask_buffer, konst_212_wire_constant, tmp_var);
-      BITSEL_u4_u1_213_wire <= tmp_var; --
-    end process;
-    -- binary operator BITSEL_u4_u1_218_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApBitsel_proc(bmask_buffer, konst_217_wire_constant, tmp_var);
-      BITSEL_u4_u1_218_wire <= tmp_var; --
-    end process;
-    -- binary operator BITSEL_u4_u1_223_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApBitsel_proc(bmask_buffer, konst_222_wire_constant, tmp_var);
-      BITSEL_u4_u1_223_wire <= tmp_var; --
-    end process;
-    -- 
-  end Block; -- data_path
-  -- 
-end get_byte_offset_Volatile_arch;
-library std;
-use std.standard.all;
-library ieee;
-use ieee.std_logic_1164.all;
-library aHiR_ieee_proposed;
-use aHiR_ieee_proposed.math_utility_pkg.all;
-use aHiR_ieee_proposed.fixed_pkg.all;
-use aHiR_ieee_proposed.float_pkg.all;
-library ahir;
-use ahir.memory_subsystem_package.all;
-use ahir.types.all;
-use ahir.subprograms.all;
-use ahir.components.all;
-use ahir.basecomponents.all;
-use ahir.operatorpackage.all;
-use ahir.floatoperatorpackage.all;
-use ahir.utilities.all;
-library AjitCustom;
-use AjitCustom.afb_ahb_bridge_global_package.all;
-entity afb_ahb_bridge is  -- system 
+use AjitCustom.AjitCustomComponents.all;
+use AjitCustom.AjitCoreConfigurationPackage.all;
+use AjitCustom.UsefulFunctions.all;
+
+entity instruction_buffer_optimized is  -- system 
   port (-- 
     clk : in std_logic;
     reset : in std_logic;
-    AFB_BUS_REQUEST_pipe_write_data: in std_logic_vector(73 downto 0);
-    AFB_BUS_REQUEST_pipe_write_req : in std_logic_vector(0 downto 0);
-    AFB_BUS_REQUEST_pipe_write_ack : out std_logic_vector(0 downto 0);
-    AFB_BUS_RESPONSE_pipe_read_data: out std_logic_vector(32 downto 0);
-    AFB_BUS_RESPONSE_pipe_read_req : in std_logic_vector(0 downto 0);
-    AFB_BUS_RESPONSE_pipe_read_ack : out std_logic_vector(0 downto 0);
-    AFB_TO_AHB_COMMAND_pipe_read_data: out std_logic_vector(72 downto 0);
-    AFB_TO_AHB_COMMAND_pipe_read_req : in std_logic_vector(0 downto 0);
-    AFB_TO_AHB_COMMAND_pipe_read_ack : out std_logic_vector(0 downto 0);
-    AHB_TO_AFB_RESPONSE_pipe_write_data: in std_logic_vector(32 downto 0);
-    AHB_TO_AFB_RESPONSE_pipe_write_req : in std_logic_vector(0 downto 0);
-    AHB_TO_AFB_RESPONSE_pipe_write_ack : out std_logic_vector(0 downto 0)); -- 
+    icache_to_instruction_buffer_response_pipe_write_data: in std_logic_vector(89 downto 0);
+    icache_to_instruction_buffer_response_pipe_write_req : in std_logic_vector(0 downto 0);
+    icache_to_instruction_buffer_response_pipe_write_ack : out std_logic_vector(0 downto 0);
+    instruction_buffer_to_cpu_response_pipe_read_data: out std_logic_vector(89 downto 0);
+    instruction_buffer_to_cpu_response_pipe_read_req : in std_logic_vector(0 downto 0);
+    instruction_buffer_to_cpu_response_pipe_read_ack : out std_logic_vector(0 downto 0);
+    noblock_cpu_to_instruction_buffer_request_pipe_write_data: in std_logic_vector(40 downto 0);
+    noblock_cpu_to_instruction_buffer_request_pipe_write_req : in std_logic_vector(0 downto 0);
+    noblock_cpu_to_instruction_buffer_request_pipe_write_ack : out std_logic_vector(0 downto 0);
+    noblock_instruction_buffer_to_icache_request_pipe_read_data: out std_logic_vector(40 downto 0);
+    noblock_instruction_buffer_to_icache_request_pipe_read_req : in std_logic_vector(0 downto 0);
+    noblock_instruction_buffer_to_icache_request_pipe_read_ack : out std_logic_vector(0 downto 0);
+    core_id: std_logic_Vector(3 downto 0);
+    cpu_id: std_logic_vector(3 downto 0)); -- 
   -- 
 end entity; 
-architecture afb_ahb_bridge_arch  of afb_ahb_bridge is -- system-architecture 
-  -- interface signals to connect to memory space memory_space_1
-  -- declarations related to module afb_ahb_bridge_daemon
-  component afb_ahb_bridge_daemon is -- 
-    generic (tag_length : integer); 
-    port ( -- 
-      AFB_BUS_REQUEST_pipe_read_req : out  std_logic_vector(0 downto 0);
-      AFB_BUS_REQUEST_pipe_read_ack : in   std_logic_vector(0 downto 0);
-      AFB_BUS_REQUEST_pipe_read_data : in   std_logic_vector(73 downto 0);
-      AHB_TO_AFB_RESPONSE_pipe_read_req : out  std_logic_vector(0 downto 0);
-      AHB_TO_AFB_RESPONSE_pipe_read_ack : in   std_logic_vector(0 downto 0);
-      AHB_TO_AFB_RESPONSE_pipe_read_data : in   std_logic_vector(32 downto 0);
-      AFB_BUS_RESPONSE_pipe_write_req : out  std_logic_vector(0 downto 0);
-      AFB_BUS_RESPONSE_pipe_write_ack : in   std_logic_vector(0 downto 0);
-      AFB_BUS_RESPONSE_pipe_write_data : out  std_logic_vector(32 downto 0);
-      AFB_TO_AHB_COMMAND_pipe_write_req : out  std_logic_vector(0 downto 0);
-      AFB_TO_AHB_COMMAND_pipe_write_ack : in   std_logic_vector(0 downto 0);
-      AFB_TO_AHB_COMMAND_pipe_write_data : out  std_logic_vector(72 downto 0);
-      tag_in: in std_logic_vector(tag_length-1 downto 0);
-      tag_out: out std_logic_vector(tag_length-1 downto 0) ;
-      clk : in std_logic;
-      reset : in std_logic;
-      start_req : in std_logic;
-      start_ack : out std_logic;
-      fin_req : in std_logic;
-      fin_ack   : out std_logic-- 
-    );
-    -- 
-  end component;
-  -- argument signals for module afb_ahb_bridge_daemon
-  signal afb_ahb_bridge_daemon_tag_in    : std_logic_vector(1 downto 0) := (others => '0');
-  signal afb_ahb_bridge_daemon_tag_out   : std_logic_vector(1 downto 0);
-  signal afb_ahb_bridge_daemon_start_req : std_logic;
-  signal afb_ahb_bridge_daemon_start_ack : std_logic;
-  signal afb_ahb_bridge_daemon_fin_req   : std_logic;
-  signal afb_ahb_bridge_daemon_fin_ack : std_logic;
-  -- declarations related to module create_ahb_commands
-  -- declarations related to module get_ahb_hsize
-  -- declarations related to module get_byte_offset
-  -- aggregate signals for read from pipe AFB_BUS_REQUEST
-  signal AFB_BUS_REQUEST_pipe_read_data: std_logic_vector(73 downto 0);
-  signal AFB_BUS_REQUEST_pipe_read_req: std_logic_vector(0 downto 0);
-  signal AFB_BUS_REQUEST_pipe_read_ack: std_logic_vector(0 downto 0);
-  -- aggregate signals for write to pipe AFB_BUS_RESPONSE
-  signal AFB_BUS_RESPONSE_pipe_write_data: std_logic_vector(32 downto 0);
-  signal AFB_BUS_RESPONSE_pipe_write_req: std_logic_vector(0 downto 0);
-  signal AFB_BUS_RESPONSE_pipe_write_ack: std_logic_vector(0 downto 0);
-  -- aggregate signals for write to pipe AFB_TO_AHB_COMMAND
-  signal AFB_TO_AHB_COMMAND_pipe_write_data: std_logic_vector(72 downto 0);
-  signal AFB_TO_AHB_COMMAND_pipe_write_req: std_logic_vector(0 downto 0);
-  signal AFB_TO_AHB_COMMAND_pipe_write_ack: std_logic_vector(0 downto 0);
-  -- aggregate signals for read from pipe AHB_TO_AFB_RESPONSE
-  signal AHB_TO_AFB_RESPONSE_pipe_read_data: std_logic_vector(32 downto 0);
-  signal AHB_TO_AFB_RESPONSE_pipe_read_req: std_logic_vector(0 downto 0);
-  signal AHB_TO_AFB_RESPONSE_pipe_read_ack: std_logic_vector(0 downto 0);
-  -- gated clock signal declarations.
-  -- 
-begin -- 
-  -- module afb_ahb_bridge_daemon
-  afb_ahb_bridge_daemon_instance:afb_ahb_bridge_daemon-- 
-    generic map(tag_length => 2)
-    port map(-- 
-      start_req => afb_ahb_bridge_daemon_start_req,
-      start_ack => afb_ahb_bridge_daemon_start_ack,
-      fin_req => afb_ahb_bridge_daemon_fin_req,
-      fin_ack => afb_ahb_bridge_daemon_fin_ack,
-      clk => clk,
-      reset => reset,
-      AFB_BUS_REQUEST_pipe_read_req => AFB_BUS_REQUEST_pipe_read_req(0 downto 0),
-      AFB_BUS_REQUEST_pipe_read_ack => AFB_BUS_REQUEST_pipe_read_ack(0 downto 0),
-      AFB_BUS_REQUEST_pipe_read_data => AFB_BUS_REQUEST_pipe_read_data(73 downto 0),
-      AHB_TO_AFB_RESPONSE_pipe_read_req => AHB_TO_AFB_RESPONSE_pipe_read_req(0 downto 0),
-      AHB_TO_AFB_RESPONSE_pipe_read_ack => AHB_TO_AFB_RESPONSE_pipe_read_ack(0 downto 0),
-      AHB_TO_AFB_RESPONSE_pipe_read_data => AHB_TO_AFB_RESPONSE_pipe_read_data(32 downto 0),
-      AFB_BUS_RESPONSE_pipe_write_req => AFB_BUS_RESPONSE_pipe_write_req(0 downto 0),
-      AFB_BUS_RESPONSE_pipe_write_ack => AFB_BUS_RESPONSE_pipe_write_ack(0 downto 0),
-      AFB_BUS_RESPONSE_pipe_write_data => AFB_BUS_RESPONSE_pipe_write_data(32 downto 0),
-      AFB_TO_AHB_COMMAND_pipe_write_req => AFB_TO_AHB_COMMAND_pipe_write_req(0 downto 0),
-      AFB_TO_AHB_COMMAND_pipe_write_ack => AFB_TO_AHB_COMMAND_pipe_write_ack(0 downto 0),
-      AFB_TO_AHB_COMMAND_pipe_write_data => AFB_TO_AHB_COMMAND_pipe_write_data(72 downto 0),
-      tag_in => afb_ahb_bridge_daemon_tag_in,
-      tag_out => afb_ahb_bridge_daemon_tag_out-- 
-    ); -- 
-  -- module will be run forever 
-  afb_ahb_bridge_daemon_tag_in <= (others => '0');
-  afb_ahb_bridge_daemon_auto_run: auto_run generic map(use_delay => true)  port map(clk => clk, reset => reset, start_req => afb_ahb_bridge_daemon_start_req, start_ack => afb_ahb_bridge_daemon_start_ack,  fin_req => afb_ahb_bridge_daemon_fin_req,  fin_ack => afb_ahb_bridge_daemon_fin_ack);
-  AFB_BUS_REQUEST_Pipe: PipeBase -- 
-    generic map( -- 
-      name => "pipe AFB_BUS_REQUEST",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 74,
-      lifo_mode => false,
-      full_rate => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 0 --
-    )
-    port map( -- 
-      read_req => AFB_BUS_REQUEST_pipe_read_req,
-      read_ack => AFB_BUS_REQUEST_pipe_read_ack,
-      read_data => AFB_BUS_REQUEST_pipe_read_data,
-      write_req => AFB_BUS_REQUEST_pipe_write_req,
-      write_ack => AFB_BUS_REQUEST_pipe_write_ack,
-      write_data => AFB_BUS_REQUEST_pipe_write_data,
-      clk => clk,reset => reset -- 
-    ); -- 
-  AFB_BUS_RESPONSE_Pipe: PipeBase -- 
-    generic map( -- 
-      name => "pipe AFB_BUS_RESPONSE",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 33,
-      lifo_mode => false,
-      full_rate => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 0 --
-    )
-    port map( -- 
-      read_req => AFB_BUS_RESPONSE_pipe_read_req,
-      read_ack => AFB_BUS_RESPONSE_pipe_read_ack,
-      read_data => AFB_BUS_RESPONSE_pipe_read_data,
-      write_req => AFB_BUS_RESPONSE_pipe_write_req,
-      write_ack => AFB_BUS_RESPONSE_pipe_write_ack,
-      write_data => AFB_BUS_RESPONSE_pipe_write_data,
-      clk => clk,reset => reset -- 
-    ); -- 
-  AFB_TO_AHB_COMMAND_Pipe: PipeBase -- 
-    generic map( -- 
-      name => "pipe AFB_TO_AHB_COMMAND",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 73,
-      lifo_mode => false,
-      full_rate => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 0 --
-    )
-    port map( -- 
-      read_req => AFB_TO_AHB_COMMAND_pipe_read_req,
-      read_ack => AFB_TO_AHB_COMMAND_pipe_read_ack,
-      read_data => AFB_TO_AHB_COMMAND_pipe_read_data,
-      write_req => AFB_TO_AHB_COMMAND_pipe_write_req,
-      write_ack => AFB_TO_AHB_COMMAND_pipe_write_ack,
-      write_data => AFB_TO_AHB_COMMAND_pipe_write_data,
-      clk => clk,reset => reset -- 
-    ); -- 
-  AHB_TO_AFB_RESPONSE_Pipe: PipeBase -- 
-    generic map( -- 
-      name => "pipe AHB_TO_AFB_RESPONSE",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 33,
-      lifo_mode => false,
-      full_rate => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 0 --
-    )
-    port map( -- 
-      read_req => AHB_TO_AFB_RESPONSE_pipe_read_req,
-      read_ack => AHB_TO_AFB_RESPONSE_pipe_read_ack,
-      read_data => AHB_TO_AFB_RESPONSE_pipe_read_data,
-      write_req => AHB_TO_AFB_RESPONSE_pipe_write_req,
-      write_ack => AHB_TO_AFB_RESPONSE_pipe_write_ack,
-      write_data => AHB_TO_AFB_RESPONSE_pipe_write_data,
-      clk => clk,reset => reset -- 
-    ); -- 
-  -- gated clock generators 
-  -- 
-end afb_ahb_bridge_arch;
-library ieee;
-use ieee.std_logic_1164.all;
-package afb_ahb_lite_master_Type_Package is -- 
-  -- 
-end package;
-library ahir;
-use ahir.BaseComponents.all;
-use ahir.Utilities.all;
-use ahir.Subprograms.all;
-use ahir.OperatorPackage.all;
-use ahir.BaseComponents.all;
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
--->>>>>
-library AjitCustom;
-use AjitCustom.afb_ahb_lite_master_Type_Package.all;
---<<<<<
--->>>>>
-library AjitCustom;
-library AjitCustom;
---<<<<<
-entity afb_ahb_lite_master is -- 
-  port( -- 
-    AFB_BUS_REQUEST_pipe_write_data : in std_logic_vector(73 downto 0);
-    AFB_BUS_REQUEST_pipe_write_req  : in std_logic_vector(0  downto 0);
-    AFB_BUS_REQUEST_pipe_write_ack  : out std_logic_vector(0  downto 0);
-    HRDATA : in std_logic_vector(31 downto 0);
-    HREADY : in std_logic_vector(0 downto 0);
-    HRESP : in std_logic_vector(1 downto 0);
-    AFB_BUS_RESPONSE_pipe_read_data : out std_logic_vector(32 downto 0);
-    AFB_BUS_RESPONSE_pipe_read_req  : in std_logic_vector(0  downto 0);
-    AFB_BUS_RESPONSE_pipe_read_ack  : out std_logic_vector(0  downto 0);
-    HADDR : out std_logic_vector(35 downto 0);
-    HBURST : out std_logic_vector(2 downto 0);
-    HMASTLOCK : out std_logic_vector(0 downto 0);
-    HPROT : out std_logic_vector(3 downto 0);
-    HSIZE : out std_logic_vector(2 downto 0);
-    HTRANS : out std_logic_vector(1 downto 0);
-    HWDATA : out std_logic_vector(31 downto 0);
-    HWRITE : out std_logic_vector(0 downto 0);
-    SYS_CLK : out std_logic_vector(0 downto 0);
-    clk, reset: in std_logic 
-    -- 
-  );
-  --
-end entity afb_ahb_lite_master;
-architecture struct of afb_ahb_lite_master is -- 
-  signal AFB_TO_AHB_COMMAND_pipe_write_data: std_logic_vector(72 downto 0);
-  signal AFB_TO_AHB_COMMAND_pipe_write_req : std_logic_vector(0  downto 0);
-  signal AFB_TO_AHB_COMMAND_pipe_write_ack : std_logic_vector(0  downto 0);
-  signal AFB_TO_AHB_COMMAND_pipe_read_data: std_logic_vector(72 downto 0);
-  signal AFB_TO_AHB_COMMAND_pipe_read_req : std_logic_vector(0  downto 0);
-  signal AFB_TO_AHB_COMMAND_pipe_read_ack : std_logic_vector(0  downto 0);
-  signal AHB_TO_AFB_RESPONSE_pipe_write_data: std_logic_vector(32 downto 0);
-  signal AHB_TO_AFB_RESPONSE_pipe_write_req : std_logic_vector(0  downto 0);
-  signal AHB_TO_AFB_RESPONSE_pipe_write_ack : std_logic_vector(0  downto 0);
-  signal AHB_TO_AFB_RESPONSE_pipe_read_data: std_logic_vector(32 downto 0);
-  signal AHB_TO_AFB_RESPONSE_pipe_read_req : std_logic_vector(0  downto 0);
-  signal AHB_TO_AFB_RESPONSE_pipe_read_ack : std_logic_vector(0  downto 0);
-  component afb_ahb_bridge is -- 
-    port( -- 
-      AFB_BUS_REQUEST_pipe_write_data : in std_logic_vector(73 downto 0);
-      AFB_BUS_REQUEST_pipe_write_req  : in std_logic_vector(0  downto 0);
-      AFB_BUS_REQUEST_pipe_write_ack  : out std_logic_vector(0  downto 0);
-      AHB_TO_AFB_RESPONSE_pipe_write_data : in std_logic_vector(32 downto 0);
-      AHB_TO_AFB_RESPONSE_pipe_write_req  : in std_logic_vector(0  downto 0);
-      AHB_TO_AFB_RESPONSE_pipe_write_ack  : out std_logic_vector(0  downto 0);
-      AFB_BUS_RESPONSE_pipe_read_data : out std_logic_vector(32 downto 0);
-      AFB_BUS_RESPONSE_pipe_read_req  : in std_logic_vector(0  downto 0);
-      AFB_BUS_RESPONSE_pipe_read_ack  : out std_logic_vector(0  downto 0);
-      AFB_TO_AHB_COMMAND_pipe_read_data : out std_logic_vector(72 downto 0);
-      AFB_TO_AHB_COMMAND_pipe_read_req  : in std_logic_vector(0  downto 0);
-      AFB_TO_AHB_COMMAND_pipe_read_ack  : out std_logic_vector(0  downto 0);
-      clk, reset: in std_logic 
-      -- 
-    );
-    --
-  end component;
-  -->>>>>
-  for bridge_inst :  afb_ahb_bridge -- 
-    use entity AjitCustom.afb_ahb_bridge; -- 
-  --<<<<<
-  component ahblite_controller is -- 
-    port( -- 
-      AFB_TO_AHB_COMMAND_pipe_write_data : in std_logic_vector(72 downto 0);
-      AFB_TO_AHB_COMMAND_pipe_write_req  : in std_logic_vector(0  downto 0);
-      AFB_TO_AHB_COMMAND_pipe_write_ack  : out std_logic_vector(0  downto 0);
-      HRDATA : in std_logic_vector(31 downto 0);
-      HREADY : in std_logic_vector(0 downto 0);
-      HRESP : in std_logic_vector(1 downto 0);
-      AHB_TO_AFB_RESPONSE_pipe_read_data : out std_logic_vector(32 downto 0);
-      AHB_TO_AFB_RESPONSE_pipe_read_req  : in std_logic_vector(0  downto 0);
-      AHB_TO_AFB_RESPONSE_pipe_read_ack  : out std_logic_vector(0  downto 0);
-      HADDR : out std_logic_vector(35 downto 0);
-      HBURST : out std_logic_vector(2 downto 0);
-      HMASTLOCK : out std_logic_vector(0 downto 0);
-      HPROT : out std_logic_vector(3 downto 0);
-      HSIZE : out std_logic_vector(2 downto 0);
-      HTRANS : out std_logic_vector(1 downto 0);
-      HWDATA : out std_logic_vector(31 downto 0);
-      HWRITE : out std_logic_vector(0 downto 0);
-      SYS_CLK : out std_logic_vector(0 downto 0);
-      clk, reset: in std_logic 
-      -- 
-    );
-    --
-  end component;
-  -->>>>>
-  for ctrl_inst :  ahblite_controller -- 
-    use entity AjitCustom.ahblite_controller; -- 
-  --<<<<<
-  -- 
-begin -- 
-  bridge_inst: afb_ahb_bridge
-  port map ( --
-    AFB_BUS_REQUEST_pipe_write_data => AFB_BUS_REQUEST_pipe_write_data,
-    AFB_BUS_REQUEST_pipe_write_req => AFB_BUS_REQUEST_pipe_write_req,
-    AFB_BUS_REQUEST_pipe_write_ack => AFB_BUS_REQUEST_pipe_write_ack,
-    AFB_BUS_RESPONSE_pipe_read_data => AFB_BUS_RESPONSE_pipe_read_data,
-    AFB_BUS_RESPONSE_pipe_read_req => AFB_BUS_RESPONSE_pipe_read_req,
-    AFB_BUS_RESPONSE_pipe_read_ack => AFB_BUS_RESPONSE_pipe_read_ack,
-    AFB_TO_AHB_COMMAND_pipe_read_data => AFB_TO_AHB_COMMAND_pipe_write_data,
-    AFB_TO_AHB_COMMAND_pipe_read_req => AFB_TO_AHB_COMMAND_pipe_write_ack,
-    AFB_TO_AHB_COMMAND_pipe_read_ack => AFB_TO_AHB_COMMAND_pipe_write_req,
-    AHB_TO_AFB_RESPONSE_pipe_write_data => AHB_TO_AFB_RESPONSE_pipe_read_data,
-    AHB_TO_AFB_RESPONSE_pipe_write_req => AHB_TO_AFB_RESPONSE_pipe_read_ack,
-    AHB_TO_AFB_RESPONSE_pipe_write_ack => AHB_TO_AFB_RESPONSE_pipe_read_req,
-    clk => clk, reset => reset 
-    ); -- 
-  ctrl_inst: ahblite_controller
-  port map ( --
-    AFB_TO_AHB_COMMAND_pipe_write_data => AFB_TO_AHB_COMMAND_pipe_read_data,
-    AFB_TO_AHB_COMMAND_pipe_write_req => AFB_TO_AHB_COMMAND_pipe_read_ack,
-    AFB_TO_AHB_COMMAND_pipe_write_ack => AFB_TO_AHB_COMMAND_pipe_read_req,
-    AHB_TO_AFB_RESPONSE_pipe_read_data => AHB_TO_AFB_RESPONSE_pipe_write_data,
-    AHB_TO_AFB_RESPONSE_pipe_read_req => AHB_TO_AFB_RESPONSE_pipe_write_ack,
-    AHB_TO_AFB_RESPONSE_pipe_read_ack => AHB_TO_AFB_RESPONSE_pipe_write_req,
-    HADDR => HADDR,
-    HBURST => HBURST,
-    HMASTLOCK => HMASTLOCK,
-    HPROT => HPROT,
-    HRDATA => HRDATA,
-    HREADY => HREADY,
-    HRESP => HRESP,
-    HSIZE => HSIZE,
-    HTRANS => HTRANS,
-    HWDATA => HWDATA,
-    HWRITE => HWRITE,
-    SYS_CLK => SYS_CLK,
-    clk => clk, reset => reset 
-    ); -- 
-  -- pipe AFB_TO_AHB_COMMAND depth set to 0 since it is a P2P pipe.
-  AFB_TO_AHB_COMMAND_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe AFB_TO_AHB_COMMAND",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 73,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 0 --
-    )
-    port map( -- 
-      read_req => AFB_TO_AHB_COMMAND_pipe_read_req,
-      read_ack => AFB_TO_AHB_COMMAND_pipe_read_ack,
-      read_data => AFB_TO_AHB_COMMAND_pipe_read_data,
-      write_req => AFB_TO_AHB_COMMAND_pipe_write_req,
-      write_ack => AFB_TO_AHB_COMMAND_pipe_write_ack,
-      write_data => AFB_TO_AHB_COMMAND_pipe_write_data,
-      clk => clk,reset => reset -- 
-    ); -- 
-  -- pipe AHB_TO_AFB_RESPONSE depth set to 0 since it is a P2P pipe.
-  AHB_TO_AFB_RESPONSE_inst:  PipeBase -- 
-    generic map( -- 
-      name => "pipe AHB_TO_AFB_RESPONSE",
-      num_reads => 1,
-      num_writes => 1,
-      data_width => 33,
-      lifo_mode => false,
-      signal_mode => false,
-      shift_register_mode => false,
-      bypass => false,
-      depth => 0 --
-    )
-    port map( -- 
-      read_req => AHB_TO_AFB_RESPONSE_pipe_read_req,
-      read_ack => AHB_TO_AFB_RESPONSE_pipe_read_ack,
-      read_data => AHB_TO_AFB_RESPONSE_pipe_read_data,
-      write_req => AHB_TO_AFB_RESPONSE_pipe_write_req,
-      write_ack => AHB_TO_AFB_RESPONSE_pipe_write_ack,
-      write_data => AHB_TO_AFB_RESPONSE_pipe_write_data,
-      clk => clk,reset => reset -- 
-    ); -- 
-  -- 
-end struct;
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-library ahir;
-use ahir.mem_component_pack.all;
-use ahir.Types.all;
-use ahir.Utilities.all;
-use ahir.BaseComponents.all;
 
-entity ajit_apb_master is
-	port (
-		-- AJIT system bus
-		ajit_to_env_write_req: in  std_logic;
-		ajit_to_env_write_ack: out std_logic;
-		ajit_to_env_addr: in std_logic_vector(31 downto 0);
-		ajit_to_env_data: in std_logic_vector(31 downto 0);
-		ajit_to_env_read_write_bar: in std_logic;
-		-- top-bit error, rest data.
-		env_to_ajit_error : out std_logic;
-		env_to_ajit_read_data : out std_logic_vector(31 downto 0);
-		env_to_ajit_read_req: in std_logic;
-		env_to_ajit_read_ack: out std_logic;
-		-- APB bus signals
-		PRESETn: out std_logic;
-		PCLK: out std_logic;
-		PADDR: out std_logic_vector(31 downto 0);
-		PWRITE: out std_logic; -- when '1' its a write.
-		PWDATA: out std_logic_vector(31 downto 0); -- write data.
-		PRDATA: in std_logic_vector(31 downto 0); -- read data.
-		PREADY: in std_logic; -- slave ready.
-		PENABLE: out std_logic; -- enable..
-		PSLVERR: in std_logic; -- error from slave.
-		--   Note: PSEL is by default for one slave..  For more,
-		--   generate by adding a decoder outside the master.
-		PSEL : out std_logic; -- slave select.
-		-- clock, reset.
-		clk: in std_logic;
-		reset: in std_logic 
-	     );
-end entity ajit_apb_master;
+architecture instruction_buffer_arch  of instruction_buffer_optimized is -- system-architecture 
+
+  	constant ASI_SUPERVISOR_INSTRUCTION : std_logic_vector(3 downto 0) := "1001";
+  	constant ASI_USER_INSTRUCTION : std_logic_vector(3 downto 0) := "1000";
 
 
-architecture Behave of ajit_apb_master is
+	signal cpu_has_request, cpu_ready_for_response: boolean;
+	signal icache_ready_for_request, icache_has_response, icache_response_is_awaited: boolean;
 
-	signal latch_request, latch_prdata: std_logic;
-	signal ajit_to_env_addr_d: std_logic_vector(31 downto 0);
-	signal ajit_to_env_data_d, PRDATA_d: std_logic_vector(31 downto 0);
-	signal ajit_to_env_read_write_bar_d, PSLVERR_d: std_logic;
+	signal pending_queue_has_room, pending_queue_has_data: boolean;
+	signal pending_queue_push_data, pending_queue_pop_data: std_logic_vector(93 downto 0);
+	signal pending_queue_push_req, pending_queue_push_ack,
+			pending_queue_pop_req, pending_queue_pop_ack: std_logic;
+
+	signal ipair_from_lookup_data, ipair_from_pending_queue, 
+		ipair_from_icache_response, ipair_to_cpu : std_logic_vector(63 downto 0);
+	signal acc_from_lookup_data, acc_from_icache_response: std_logic_vector(2 downto 0);
+	signal cacheable_from_icache_response: std_logic_vector(0 downto 0);
+
+	signal cpu_request_is_flush, is_cacheable_non_mae_icache_response: boolean;
+
+	signal cpu_request_valid, cpu_request_valid_d: std_logic;
+	signal cpu_request_asi_4_d: std_logic_vector(3 downto 0);
+	signal cpu_request_addr, cpu_request_addr_d: std_logic_vector(31 downto 0);
+
+	signal lookup_flag, insert_flag, init_flag, lookup_match:  std_logic_vector(0 downto 0);
+	signal lookup_addr, insert_addr: std_logic_vector(28 downto 0);
+	signal lookup_data, lookup_data_reg, lookup_data_qualified, insert_data: std_logic_vector(66 downto 0);
+
+	signal access_permissions_ok: std_logic;
+	signal send_to_icache, send_to_cpu: boolean;
+	signal forward_pending_to_cpu: boolean;
+	signal accept_cpu_request, accept_icache_response: boolean;
+	signal privileges_ok: boolean;
+
+	constant PENDING_QUEUE_DEPTH: integer := 4;
+
+	
+	signal is_S, is_U, is_ifetch, is_read: std_logic;
+	signal is_tlb_hit, is_tlb_hit_reg, is_tlb_hit_qualified: boolean;
+	signal fsr_from_icache_response, fsr_to_cpu: std_logic_vector(17 downto 0);
+	signal mae_8_from_icache_response, mae_8_from_lookup,  mae_8_to_cpu: std_logic_vector(7 downto 0);
+
+	signal cpu_request_started: boolean;
+
+	signal tlb_sample_req, tlb_sample_ack, tlb_update_req, tlb_update_ack: boolean;
+    
+	signal icache_response_data: std_logic_vector(89 downto 0);
+	signal icache_response_ready, icache_response_accept: boolean;
+    
+	signal cpu_response_data: std_logic_vector(89 downto 0);
+    	signal cpu_response_ready, cpu_hit_response_ready, cpu_miss_response_ready : boolean;
+
+    	signal cpu_request_data, cpu_request_data_reg: std_logic_vector(40 downto 0);
+    	signal cpu_request_ready, cpu_request_accept: boolean;
+
+   	signal icache_request_data: std_logic_vector(40 downto 0);
+    	signal icache_request_ready: boolean;
+
+	signal exec_tlb_lookup, exec_tlb_insert, exec_tlb_clear: boolean;
 
 
-	type FsmState is (ReadyState, AccessState, WaitOnOutpipeState);
+	type FsmState is (IDLE, RUNNING, STALLED);
 	signal fsm_state: FsmState;
 
-	signal oqueue_data_in: std_logic_vector(32 downto 0);
-	signal oqueue_push_req: std_logic;
-	signal oqueue_push_ack: std_logic;
-	signal oqueue_data_out: std_logic_vector(32 downto 0);
-	signal oqueue_pop_req: std_logic;
-	signal oqueue_pop_ack: std_logic;
+	signal save_lookup_results: boolean;
 
-begin
-	oqueue_pop_req <= env_to_ajit_read_req;
-	env_to_ajit_read_ack  <= env_to_ajit_read_req and oqueue_pop_ack; -- ack only on req!
-	env_to_ajit_read_data <= oqueue_data_out(31 downto 0);
-	env_to_ajit_error <= oqueue_data_out(32);
+begin -- 
+	-----------------------------------------------------------------------
+	-- handles.
+	-----------------------------------------------------------------------
+
+	-- icache response to instruction buffer.
+	icache_response_data <= icache_to_instruction_buffer_response_pipe_write_data;
+	icache_response_ready <= icache_to_instruction_buffer_response_pipe_write_req(0) = '1';
+	icache_to_instruction_buffer_response_pipe_write_ack(0) <= '1' when icache_response_accept else '0';
+
+	-- instruction buffer response to cpu.
+    	instruction_buffer_to_cpu_response_pipe_read_data <= cpu_response_data;
+    	cpu_ready_for_response <= instruction_buffer_to_cpu_response_pipe_read_req(0) = '1';
+    	instruction_buffer_to_cpu_response_pipe_read_ack(0) <= '1' when cpu_response_ready else '0';
+
+	-- request data from the cpu.
+    	cpu_request_data <= noblock_cpu_to_instruction_buffer_request_pipe_write_data;
+    	cpu_request_ready <= noblock_cpu_to_instruction_buffer_request_pipe_write_req(0) = '1' and
+    				noblock_cpu_to_instruction_buffer_request_pipe_write_data(40) = '1';
+	noblock_cpu_to_instruction_buffer_request_pipe_write_ack(0) <= '1' when cpu_request_accept else '0';
 	
+	-- instruction buffer request to icache.
+    	noblock_instruction_buffer_to_icache_request_pipe_read_data <= icache_request_data;
+    	icache_ready_for_request <= (noblock_instruction_buffer_to_icache_request_pipe_read_req(0) = '1');
+    	noblock_instruction_buffer_to_icache_request_pipe_read_ack(0) <= '1' when icache_request_ready else '0';
 
-	PRESETn <= not reset;
-	PCLK <= clk;
+	-- is the cpu request a flush?
+    	cpu_request_is_flush <= (cpu_request_data(39) = '1');
 
-	oQueue: QueueBase 
-			generic map (name => "apb-master-oqueue",
-					queue_depth => 2,
-						data_width => 33)
-			port map (clk => clk, reset => reset,
-					data_in => oqueue_data_in,
-					  data_out => oqueue_data_out,
-					    push_req => oqueue_push_req,
-						push_ack => oqueue_push_ack,
-						  pop_req => oqueue_pop_req,
-						    pop_ack => oqueue_pop_ack);
 
-	-- latch last request sent out
-	process(clk, reset, ajit_to_env_addr, ajit_to_env_data, ajit_to_env_read_write_bar)
+	-- delayed version of cpu request updated whenever cpu request is accepted.
+	process(clk, cpu_request_data, cpu_request_started)
 	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				ajit_to_env_addr_d <= (others => '0');
-				ajit_to_env_data_d <= (others => '0');
-				ajit_to_env_read_write_bar_d <= '0';
-			elsif (latch_request = '1') then
-				ajit_to_env_addr_d <= ajit_to_env_addr;
-				ajit_to_env_data_d <= ajit_to_env_data;
-				ajit_to_env_read_write_bar_d <= ajit_to_env_read_write_bar;
+		if(clk'event and (clk = '1')) then
+			if(cpu_request_started) then
+				cpu_request_data_reg <= cpu_request_data;
 			end if;
 		end if;
 	end process;
 
-	-- PRDATA latch.. if outpipe is not ready.
-	process(clk, reset, PRDATA)
+
+	cpu_request_started <= cpu_request_ready and cpu_request_accept;
+
+	--------------------------------------------------------------------------------
+	-- FSM to determine when a cpu request can be accepted.
+	--------------------------------------------------------------------------------
+	process(clk, reset, fsm_state, 
+			cpu_request_ready, 
+			icache_ready_for_request,
+			pending_queue_has_room)
+		variable next_fsm_state_var: FsmState;
+		variable cpu_request_accept_var: boolean;
+		variable exec_tlb_lookup_var: boolean;
+		variable save_lookup_results_var: boolean;
+		variable icache_request_ready_var : boolean;
+		variable pending_queue_push_req_var: std_logic;
+		variable stall_var: boolean;
 	begin
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				PRDATA_d <= (others => '0');
-				PSLVERR_d <= '0';
-			elsif (latch_prdata = '1') then
-				PRDATA_d <= PRDATA;
-				PSLVERR_d <= PSLVERR;
-			end if;
-		end if;
-	end process;
-
+		next_fsm_state_var := fsm_state;
+		cpu_request_accept_var := false;
+		exec_tlb_lookup_var := false;
+		save_lookup_results_var := false;
+		icache_request_ready_var := false;
+		pending_queue_push_req_var := '0';
+		stall_var := false;
 	
-	
-	--
-	-- state machine: on error response, sends error flag back to 
-	-- requester.
-	--
-	process(clk, reset, fsm_state,  ajit_to_env_write_req, 
-					ajit_to_env_data, 
-					ajit_to_env_addr,
-					ajit_to_env_read_write_bar, 
-					ajit_to_env_data_d,
-					ajit_to_env_addr_d,
-					oqueue_push_ack, 
-					PREADY, 
-					PRDATA, PRDATA_d)
-		variable next_fsm_state : FsmState;
-		variable latch_request_var: std_logic;
-		variable PADDR_var : std_logic_vector(31 downto 0);
-		variable PWRITE_var : std_logic;
-		variable PWDATA_var: std_logic_vector(31 downto 0);
-		variable PENABLE_var: std_logic;
-
-		variable ajit_to_env_write_ack_var: std_logic;
-
-		variable oqueue_push_req_var: std_logic;
-		variable oqueue_data_in_var: std_logic_vector(32 downto 0);
-
-		variable latch_prdata_var: std_logic;
-		variable psel_var: std_logic;
-
-	begin
-		next_fsm_state := fsm_state;
-		PADDR_var  := (others => '0');
-		PWRITE_var := '0';
-		PWDATA_var := (others => '0');
-		PENABLE_var := '0';
-		psel_var := '0';
-
-		oqueue_data_in_var := (others => '0');
-		oqueue_push_req_var := '0';
-
-		ajit_to_env_write_ack_var := '0';
-		latch_prdata_var := '0';
-		latch_request_var := '0';
 
 		case fsm_state is 
-			when ReadyState =>
-				ajit_to_env_write_ack_var := '1';
-				if(ajit_to_env_write_req = '1') then
-
-					-- present the address.. data is ignored.
-					-- slave is required to latch this information
-					-- because it is held only until the slave indicates
-					-- a ready.
-					PADDR_var  :=   ajit_to_env_addr;
-					PWRITE_var :=   (not ajit_to_env_read_write_bar);
-					PWDATA_var :=   ajit_to_env_data;
-					psel_var := '1';
-		
-					next_fsm_state := AccessState;
-					latch_request_var := '1';
+			when IDLE =>
+				cpu_request_accept_var := true;
+				if(cpu_request_ready) then 
+					exec_tlb_lookup_var := true;
+					next_fsm_state_var := RUNNING;
 				end if;
-			when AccessState => 
+			when RUNNING =>
+				-- pending queue must have room... and if needed,
+				-- icache must be ready to accept request..
+				stall_var := (not pending_queue_has_room) or
+							((not is_tlb_hit) and (not icache_ready_for_request));
+							
+				icache_request_ready_var := (not is_tlb_hit) and pending_queue_has_room;
 
-				PADDR_var  :=   ajit_to_env_addr_d;
-				PWRITE_var :=   (not ajit_to_env_read_write_bar_d);
-				PWDATA_var :=   ajit_to_env_data_d;
-				PENABLE_var := '1';
-				psel_var := '1';
-				
-				-- stretch everything if PREADY = '0'...
-				if(PREADY = '1') then
-					next_fsm_state   := WaitOnOutpipeState;
-					latch_prdata_var := '1';
+				if(stall_var) then
+					save_lookup_results_var := true;
+					next_fsm_state_var := STALLED;
+				else
+					pending_queue_push_req_var := '1';
+					cpu_request_accept_var := true;
+
+					if(cpu_request_ready) then 
+						exec_tlb_lookup_var := true;
+					else
+						next_fsm_state_var := IDLE;
+					end if;
 				end if;
+			when STALLED =>
+				stall_var := (not pending_queue_has_room) or
+							((not is_tlb_hit_reg) and (not icache_ready_for_request));
+				icache_request_ready_var := (not is_tlb_hit_reg) and pending_queue_has_room;
 
-			when WaitOnOutpipeState => 
-
-				oqueue_data_in_var :=  PSLVERR_d & PRDATA_d;
-				oqueue_push_req_var := '1';
-				if (oqueue_push_ack = '1') then
-					next_fsm_state := ReadyState;
+				if(not stall_var) then
+					next_fsm_state_var := IDLE;
+					pending_queue_push_req_var := '1';
 				end if;
-
 		end case;
 
-		PADDR <= PADDR_var;
-		PWRITE <= PWRITE_var;
-		PWDATA <= PWDATA_var;
-		PSEL <= psel_var;
-		PENABLE <= PENABLE_var;
+		exec_tlb_lookup <= exec_tlb_lookup_var;
+		save_lookup_results <= save_lookup_results_var;
+		cpu_request_accept <= cpu_request_accept_var;
+		icache_request_ready <= icache_request_ready_var;
+		pending_queue_push_req <= pending_queue_push_req_var;
 
-		latch_request <= latch_request_var;
-		oqueue_data_in <= oqueue_data_in_var;
-		oqueue_push_req  <=  oqueue_push_req_var;
-		ajit_to_env_write_ack <= ajit_to_env_write_ack_var;
-		latch_prdata <= latch_prdata_var;
-
-
-		if(clk'event and clk = '1') then
+		if(clk'event and (clk = '1')) then
 			if(reset = '1') then
-				fsm_state <= ReadyState;
+				fsm_state <= IDLE;
 			else
-				fsm_state <= next_fsm_state;
+				fsm_state <= next_fsm_state_var;
 			end if;
 		end if;
 	end process;
 
-end Behave;
+	--------------------------------------------------------------------------------
+	-- TLB... 
+	--------------------------------------------------------------------------------
+	exec_tlb_clear <= cpu_request_is_flush and cpu_request_started;
+	exec_tlb_insert <= 
+		(icache_response_ready and icache_response_accept and is_cacheable_non_mae_icache_response);
+	insert_flag(0) <= '1' when exec_tlb_insert else '0';
+
+
+	process(clk, reset, is_tlb_hit, lookup_data, save_lookup_results)
+	begin
+		if(clk'event and (clk = '1')) then
+			if(reset ='1') then
+				is_tlb_hit_reg <= is_tlb_hit;
+				lookup_data_reg  <= (others => '0');
+			else
+				if(save_lookup_results) then
+					is_tlb_hit_reg <= is_tlb_hit;
+					lookup_data_reg <= lookup_data;
+				end if;
+			end if;
+		end if;
+	end process;
+
+	-- lookup if cpu request started and cpu request is not a flush.
+	lookup_flag(0) <= '1' when exec_tlb_lookup else '0';
+	lookup_addr <= cpu_request_data(31 downto 3);
+
+
+	-- clear all when it is a flush.
+	init_flag(0) <= '1' when exec_tlb_clear else '0';
+
+	-- trigger the tlb.
+	tlb_sample_req <= (exec_tlb_lookup or exec_tlb_insert or exec_tlb_clear);
+	tlb_update_req <= tlb_sample_req;
+	
+	tlb_inst:
+		genericDirectMappedAssociativeMemory
+			generic map (data_width => 67, tag_width => 29,
+						log2_number_of_entries => INSTRUCTION_BUFFER_LOG_MEMORY_SIZE)
+			port map (
+					sample_req => tlb_sample_req,
+					sample_ack => tlb_sample_ack,
+					update_req => tlb_update_req,
+					update_ack => tlb_update_ack,
+					init_flag => init_flag,
+					insert_flag => insert_flag,
+					insert_tag => insert_addr,
+					insert_data => insert_data,
+					lookup_flag => lookup_flag,
+					lookup_tag => lookup_addr, 
+					lookup_match => lookup_match,
+					lookup_data => lookup_data,
+					clk => clk, reset => reset
+				);
+					
+
+	lookup_data_qualified  <= lookup_data  when (fsm_state = RUNNING) else lookup_data_reg;
+	is_tlb_hit_qualified   <= is_tlb_hit   when (fsm_state = RUNNING) else is_tlb_hit_reg;
+
+
+	acc_from_lookup_data <= lookup_data_qualified(66 downto 64);
+	ipair_from_lookup_data <= lookup_data_qualified(63 downto 0);
+
+	-- the cpu request asi (delayed!).
+	cpu_request_asi_4_d <= cpu_request_data_reg(35 downto 32);
+
+	is_S <= '1' when (cpu_request_asi_4_d = ASI_SUPERVISOR_INSTRUCTION) else '0';
+	is_U <= '1' when (cpu_request_asi_4_d = ASI_USER_INSTRUCTION) else '0';
+
+	is_ifetch <= '1';
+	is_read   <= '0';
+
+	access_permissions_ok <= accessPermissionsOk(is_S, is_ifetch, is_read, acc_from_lookup_data); 
+
+	is_tlb_hit <= (lookup_match(0) = '1') and (access_permissions_ok = '1');
+	icache_request_data <= cpu_request_data_reg;
+
+	--------------------------------------------------------------------------------
+	-- Pending queue
+	--      is-hit lookup-ipair addr
+	--         1       64        29
+	--------------------------------------------------------------------------------
+	pq: QueueWithBypass
+		generic map (name => "pending_queue", data_width => 94, queue_depth => PENDING_QUEUE_DEPTH)
+		port map (
+			data_in => pending_queue_push_data,
+			push_req => pending_queue_push_req,
+			push_ack => pending_queue_push_ack,
+			data_out => pending_queue_pop_data,
+			pop_req => pending_queue_pop_req,
+			pop_ack => pending_queue_pop_ack,
+			clk => clk, reset => reset
+		);
+
+	pending_queue_push_data(93)  <=  '1' when is_tlb_hit_qualified else '0';
+	pending_queue_push_data(92 downto 0)  <=  (cpu_request_data_reg(31 downto 3) & ipair_from_lookup_data);
+
+	pending_queue_has_room <= (pending_queue_push_ack = '1');
+	pending_queue_has_data <= (pending_queue_pop_ack  = '1');
+
+	pending_queue_pop_req  <= '1' when 
+				(pending_queue_has_data and cpu_ready_for_response and 
+						((not icache_response_is_awaited) or icache_response_ready))  else '0';
+
+	
+	--------------------------------------------------------------------------------
+	-- reverse path logic.
+	--------------------------------------------------------------------------------
+	icache_response_accept <=  pending_queue_has_data and cpu_ready_for_response and icache_response_is_awaited;
+	cpu_response_ready <= (pending_queue_has_data and 
+						((not icache_response_is_awaited) or icache_response_ready));
+
+	process(clk, reset)
+		variable a32: std_logic_vector(31 downto 0);
+	begin
+
+		if(clk'event and clk = '1') then
+			if((reset = '0') and cpu_response_ready and cpu_ready_for_response) then
+				a32(2 downto 0) := (others => '0');
+				a32(31 downto 3) := insert_addr;
+				assert false report "IBUFFER " & Convert_SLV_To_Hex_String (core_id) & " " 
+						& Convert_SLV_To_Hex_String(cpu_id) & " " 
+						& Convert_SLV_To_Hex_String(a32) & " "
+						& Convert_SLV_to_Hex_String(ipair_to_cpu) & " " 
+						& Convert_To_String(is_tlb_hit_qualified)
+					severity note;
+			end if;
+		end if;
+	end process;
+
+	-- insert information..
+	-- 18     1          3   2        1  1     64
+	-- fsr   cacheable  acc unused   err mae   ipair
+	acc_from_icache_response <= icache_response_data (70 downto 68);
+	ipair_from_icache_response <= icache_response_data (63 downto 0);
+	fsr_from_icache_response <= icache_response_data (89 downto 72);
+	mae_8_from_icache_response <= icache_response_data (71 downto 64);
+
+	-- insert addr indicated by pending queue.
+	insert_addr <= pending_queue_pop_data((64 + 29 - 1)  downto 64);
+
+	-- acc ipair from the icache response..
+	insert_data <= acc_from_icache_response & ipair_from_icache_response;
+
+	icache_response_is_awaited <= pending_queue_has_data and (pending_queue_pop_data(93) = '0');
+	ipair_from_pending_queue <= pending_queue_pop_data (63 downto 0);
+
+	-- icache response must be cacheable, without mae.
+	is_cacheable_non_mae_icache_response <= 
+		(icache_response_data (71) = '1') and
+			(icache_response_data (65) = '0') and
+			(icache_response_data (64) = '0');
+			
+
+	-- Response is either from icache or from pending queue..
+
+	-- fsr? non-zero only from icache.
+	fsr_to_cpu <= fsr_from_icache_response when  icache_response_is_awaited else (others => '0');
+
+	-- mae? from icache or indicate ibuf hit and cache hit from lookup.
+	mae_8_from_lookup <= "00001100";
+	mae_8_to_cpu <= mae_8_from_icache_response when icache_response_is_awaited else mae_8_from_lookup;
+
+	-- ipair? from icache or from pending queue.
+	ipair_to_cpu <= ipair_from_icache_response when icache_response_is_awaited else ipair_from_pending_queue;
+
+    	cpu_response_data <= fsr_to_cpu & mae_8_to_cpu & ipair_to_cpu;
+			
+	
+end instruction_buffer_arch;

@@ -318,7 +318,7 @@ and files in which they are changed */
 
 Options         Value   File    
 
-ETH_PAD_SIZE    2       opt.h
+ETH_PAD_SIZE    2       lwipopts.h
 
 /* Constructing the main function */
     - initialize the LwIP
@@ -392,6 +392,11 @@ what is LWIP_HAVE_LOOPIF flag in LwIP lwipopts.h file?
         save some code space and resources if you don't need loopback
         functionality in your application.
 
+
+
+
+
+
 what is loopback network interface?
 
         A loopback network interface, often referred to simply as "loopback interface,"
@@ -426,6 +431,35 @@ what is loopback network interface?
             components to communicate with each other within the same computer system, without 
             the need for physical network hardware.
 
+
+LWIP_HAVE_LOOPIF and LWIP_NETIF_LOOPBACK  parameters use in Lwip?
+
+
+    LWIP_HAVE_LOOPIF: 
+    This parameter is typically used to indicate whether
+    the lwIP stack includes support for loopback interfaces (netif_loop).
+    When this parameter is enabled, lwIP includes support for loopback
+    interfaces, allowing packets to be sent and received within the same 
+    device without actually going through physical interfaces. This is 
+    particularly useful for testing, debugging, and for certain networking 
+    applications where data needs to be looped back internally.
+
+
+    LWIP_NETIF_LOOPBACK: 
+    This parameter is related to the loopback interface
+    functionality. When enabled, it allows lwIP to create a loopback network
+    interface (netif_loop) which represents the loopback functionality. This 
+    interface behaves similarly to other network interfaces in lwIP, but it 
+    operates entirely in software, allowing packets to be sent and received 
+    internally within the lwIP stack without involving physical network 
+    interfaces.
+
+
+
+
+
+
+
 lwip_init() inside init.c contents explanation?
 lwip_cyclic_timer() inside timeouts.c explanation?
 
@@ -459,3 +493,84 @@ lwipopts.h vs opt.h file in lwIP what is the difference in their role in overall
     application needs, while opt.h provides default configuration options that users 
     can override if needed. Both files work together to tailor the lwIP stack's 
     behavior to the requirements of a particular project.
+
+what is the use of netif ->output and netif->linkoutput, and difference between their overall use?
+
+
+    The netif->output function operates at a higher level and is responsible for transmitting 
+    IP packets, handling routing decisions, and selecting the appropriate network interface 
+    based on the destination IP address.
+
+    The netif->linkoutput function operates at a lower level and is responsible for the actual 
+    transmission of link-layer frames onto the physical network medium, such as Ethernet frames.
+
+
+
+    /*********************** Making sense of it all **************************************/
+
+    Reception:
+        - ethernetif_input(&netif); // will get packet from hardware
+        - netif->input(p,netif) will be called inside ethernetif_input()
+          which will call ethernet_input(), because of the flags set in netif struct.
+
+    Transmission:
+       
+/*********************** Basics **************************************/
+
+PPP:
+    Point-to-Point Protocol (PPP) is a TCP/IP protocol that is used to connect one computer 
+    system to another. Computers use PPP to communicate over the telephone network or the Internet.
+
+PPPoE:
+
+
+    Point-to-Point Protocol over Ethernet (PPPoE) is a network protocol that facilitates 
+    communication between network endpoints. PPPoE encapsulates Point-to-Point Protocol 
+    (PPP) frames inside Ethernet frames, offering the same benefits as PPP, while providing 
+    connectivity across Ethernet networks.
+
+    PPPoE is commonly used by internet service providers (ISPs) to deliver internet access 
+    services to their customers, typically over broadband connections. PPPoE is implemented 
+    extensively by providers offering digital subscriber line (DSL) services. Providers that 
+    use PPPoE can connect multiple hosts on a single Ethernet local area network to a remote 
+    site via a common device such as a cable or DSL modem. The protocol can also support 
+    wireless connections to the internet.
+
+
+
+PLAN:
+    can only give input (decide which packet to give)
+    how to bring pbuf into picture : pbuf_take()
+
+    pbuf_init() called inside pbuf_alloc():
+    static void
+    pbuf_init_alloced_pbuf(struct pbuf *p, void *payload, 
+                            u16_t tot_len, u16_t len, 
+                            pbuf_type type, u8_t flags)
+    {
+        p->next = NULL;
+        p->payload = payload;
+        p->tot_len = tot_len;
+        p->len = len;
+        p->type_internal = (u8_t)type;
+        p->flags = flags;
+        p->ref = 1;
+        p->if_idx = NETIF_NO_INDEX;
+
+        LWIP_PBUF_CUSTOM_DATA_INIT(p);
+    }
+
+    
+
+
+
+
+    deal with pbuf data
+    check snmp stuff and perf counters
+
+    loopback interface enable once you do this.
+
+    PLAN:
+    add ip addr to netif
+    push packet all the way to icmp
+    ip4.c line no. 1041 reached.

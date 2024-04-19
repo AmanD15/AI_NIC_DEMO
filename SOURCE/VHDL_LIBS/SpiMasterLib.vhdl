@@ -176,6 +176,14 @@ package SpiMasterLibComponents is
 			clk, reset: in std_logic);
     end component spi_ping;
 
+    component spi_ping_v2 is
+	port (SPI_CS_L: in std_logic_vector(0 downto 0);
+			SPI_MASTER_MISO: out std_logic_vector(0 downto 0);
+			SPI_MASTER_MOSI: in std_logic_vector(0 downto 0);
+			SPI_MASTER_CLK: in std_logic_vector(0 downto 0);
+			clk, reset: in std_logic);
+    end component spi_ping_v2;
+
     component spi_byte_ram_with_init is
 	generic (	mmap_file_name: string;
 			addr_width_in_bytes: integer := 3; 
@@ -1605,7 +1613,7 @@ architecture Mixed of spi_byte_ram_with_init is
 	signal gpio_selected, gpio_deselected: boolean;
 	signal spi_master_clk_falling, spi_master_clk_rising: boolean;
 
-	type FsmState is (INITSTATE, INITMEMACCESS,
+	type FsmState is (INITSTATE, 
 				IDLE, SELECTED, DECODE_OP_CODE, GET_ADDRESS, CONTINUE_ACCESS,
 				GET_WDATA, START_MEM_ACCESS, COMPLETE_MEM_ACCESS);
 	signal fsm_state : FsmState;
@@ -1621,12 +1629,7 @@ architecture Mixed of spi_byte_ram_with_init is
 	signal SHIFT_REG: std_logic_vector(7 downto 0);
 
 	signal write_enable: std_logic;
-	signal bmask: std_logic_vector(0 downto 0);
 begin
-	bmask <= (others => '0');
-	
-
-	
 
 	process(clk)
 	begin
@@ -1675,35 +1678,8 @@ begin
 
 		case fsm_state is 
 			when INITSTATE =>
-				-- write a known value
-				next_write_enable_var := '1';
 
-				next_read_write_bar_var :=  '0';
-
-				next_wdata_var := std_logic_vector(to_unsigned(init_counter,8));
-				next_addr_var  := std_logic_vector(to_unsigned(init_counter,addr_width_in_bits));
-				next_init_counter_var := 1;
-
-				next_fsm_state_var := INITMEMACCESS;
-				
-
-			when INITMEMACCESS =>
-
-				mem_enable_var := '1';	
-				next_read_write_bar_var :=  '0';
-				next_wdata_var := std_logic_vector(to_unsigned(init_counter,8));
-				next_addr_var  := std_logic_vector(to_unsigned(init_counter,addr_width_in_bits));
-
-
-				-- write 8 bytes.
-				if(init_counter < 8) then
-					next_init_counter_var := (init_counter + 1);
-				else
-					if(use_write_enable_control) then
-						next_write_enable_var :=  '0';
-					end if;
-					next_fsm_state_var := IDLE;	
-				end if;
+				next_fsm_state_var := IDLE;
 
 			when IDLE =>
 				if(CS_L(0) = '0') then 
@@ -2274,6 +2250,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+
 --
 -- write back the complement of what is received...
 --
@@ -2333,3 +2310,31 @@ begin
 
 	SPI_MASTER_MISO(0) <= update_sig when CS_L = '0' else '0';
 end Mixed;
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library SpiMasterLib;
+use SpiMasterLib.SpiMasterLibComponents.all;
+
+entity spi_ping_v2 is
+	port (SPI_CS_L: in std_logic_vector(0 downto 0);
+			SPI_MASTER_MISO: out std_logic_vector(0 downto 0);
+			SPI_MASTER_MOSI: in std_logic_vector(0 downto 0);
+			SPI_MASTER_CLK: in std_logic_vector(0 downto 0);
+			clk, reset: in std_logic);
+end entity spi_ping_v2;
+
+architecture TrivialSpiPingV2 of spi_ping_v2 is
+begin
+
+	base: spi_ping
+		port map (CS_L => SPI_CS_L(0),
+				SPI_MASTER_MISO => SPI_MASTER_MISO,
+				SPI_MASTER_MOSI => SPI_MASTER_MOSI,
+				SPI_MASTER_CLK => SPI_MASTER_CLK,
+				clk => clk, reset => reset);
+
+end TrivialSpiPingV2;
+			

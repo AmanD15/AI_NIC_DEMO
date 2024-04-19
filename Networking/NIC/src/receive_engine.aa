@@ -55,7 +55,7 @@ $is
 			$place [not_enabled_yet_loopback]
 		$endif
 
-
+		rx_tag := ($bitcast ($uint<8>) P_RX_ENGINE_TAG )
 		/////////////////////////////////////////////////////////////////////
 		//  Receive loop
 		/////////////////////////////////////////////////////////////////////
@@ -65,18 +65,22 @@ $is
 		$endmerge
 
 			// get a buffer from free queue.
-			$call popFromQueue (FREEQUEUE 0) (rx_buffer_pointer status)
+			$call popFromQueue (rx_tag FREEQUEUE 0) (rx_buffer_pointer status)
+			$barrier
 
+			// Read the control word of the buffer.
+			$call accessMemoryDword (rx_tag READMEM rx_buffer_pointer $zero<64> $zero<64>) (control_dword)
+			$volatile max_buffer_addr_offset := ($slice control_dword 63 48)
 
 			$guard (~status)// 0 = success
-				$call loadBuffer (rx_buffer_pointer) (bad_packet_identifier)
+				$call loadBuffer (rx_tag max_buffer_addr_offset rx_buffer_pointer) (bad_packet_identifier)
 
 			// packet is ok, push into rx queue
 			$volatile ok_flag := ((~status) & (~bad_packet_identifier))
 
 			// packet is not ok, free the buffer.
 			$volatile free_flag := ((~status) & bad_packet_identifier)
-			$volatile cond := (ok_flag == 1)
+			
 		
 			// save the packet count 
 			pkt_cnt := ($mux init_flag $one<32>
@@ -85,17 +89,19 @@ $is
 			$guard(ok_flag)
 				$call accessRegister ($zero<1> (~$zero<4>) P_DEBUG_REGISTER_1 pkt_cnt) (ignore_resp1)
 
-
+			$volatile cond := (ok_flag == 1)
 			$rreport(ReceiveEngineDaemon populating_rx_queue ok_flag cond)		
 			$rreport(ReceiveEngineDaemon running_ok_flag)
 	
 			$guard (ok_flag) 
-				$call populateRxQueue (rx_buffer_pointer) ()
+				$call populateRxQueue (rx_tag rx_buffer_pointer) ()
 
 			$rreport(ReceiveEngineDaemon pushing_into_free_q free_flag )
+
+			// If buffer is defective, free it!
 			$guard (free_flag) 
-				// If buffer is defective, free it!
-				$call pushIntoQueue (FREEQUEUE 0 rx_buffer_pointer) (push_status) 
+				$call pushIntoQueue (rx_tag FREEQUEUE 0 rx_buffer_pointer) (push_status) 
+				$barrier
 
 			$rreport(ReceiveEngineDaemon completed_iteration_in_receive_engine )
 		
@@ -109,7 +115,7 @@ $is
 
 // Writes into the RX_Queue of server "q_index" the buffer pointer  
 // "rx_buffer_pointer"   
-$module [populateRxQueue] $in (rx_buffer_pointer : $uint<64>) $out ()
+$module [populateRxQueue] $in (tag :$uint<8> rx_buffer_pointer :$uint<64>) $out ()
 $is
 {
 	$rreport(populateRxQueue started_populate_rx_queue_module LAST_WRITTEN_RX_QUEUE_INDEX)
@@ -128,8 +134,10 @@ $is
 		$rreport(populateRxQueue in_loop q_index)
 
 		
-		$call pushIntoQueue (RXQUEUE q_index rx_buffer_pointer) (push_status)
-
+		$call pushIntoQueue (tag RXQUEUE q_index rx_buffer_pointer) (push_status)
+		$guard(~push_status)
+			$call incrementNumberOfPacketsReceived() ()
+			
 		n_q_index := ((q_index + 1) & ($bitcast ($uint<8>) (S_NUMBER_OF_SERVERS - 1)))
 		$rreport(populateRxQueue written_to_rx_queue n_q_index push_status)
 
@@ -157,37 +165,43 @@ $is
 //     Finally Add the Control Information at the base address pointer (index = 0) if the packet
 //     currently being stored is not a bad packet
 $pipeline $depth 31 
-	$module [loadBuffer] $in (rx_buffer_pointer : $uint<64>) $out(bad_packet_identifier : $uint<1>)
+	$module [loadBuffer] $in (tag :$uint<8> max_addr_offset: $uint<16>  rx_buffer_pointer : $uint<64>) $out(bad_packet_identifier : $uint<1>)
 $is
 {
 	// Read from Ethernet Header Pipe and stores into memory 
 	// Returns the last pointer location which was written to
-	$call writeEthernetHeaderToMem (rx_buffer_pointer) (addr_offset_after_eth_header)
+	
+	
+	$call writeEthernetHeaderToMem (tag rx_buffer_pointer) (addr_offset_after_eth_header)
 
 	// Read from Ethernet Payload Pipe and stores in memory starting from the last written
 	// pointer location
 	// Returns the Control information like -> Packet Size, BAd packet Status and 
 	// byte mask of last word
+	
 	$call writePayloadToMem 
-		(rx_buffer_pointer addr_offset_after_eth_header)
+		(tag max_addr_offset rx_buffer_pointer addr_offset_after_eth_header)
 				(packet_size bad_packet_identifier last_keep)
 
 	// Write Control Information to Memory if not a bad packet
 	// If it IS a bad packet don't bother writing since the buffer will be repurposed
 	// for the next packet 
 	$guard(~bad_packet_identifier)
-		$call writeControlInformationToMem (rx_buffer_pointer packet_size last_keep) ()
+		$call writeControlInformationToMem (tag rx_buffer_pointer max_addr_offset packet_size last_keep) ()
 
 	$attribute delay 1
 }
 
 // Write Ethernet Header to Buffer.. up to 16 bytes.
 $module [writeEthernetHeaderToMem]
-	$in (buf_pointer : $uint<64>) $out(addr_offset : $uint<16>)
+	$in (tag :$uint<8> buf_pointer : $uint<64>) $out(addr_offset : $uint<16>)
 $is
 {
 	$branchblock [main]
 	{
+
+		$volatile ethHeaderTag := ((tag << 2) | ($bitcast ($uint<8>) 1))
+
 		$dopipeline $depth 15 $fullrate
 		$merge $entry $loopback
 			//
@@ -207,9 +221,7 @@ $is
 		// Extract individual components of the word 
 		$volatile $split (ethernet_header 1 64 8)(last_bit wdata wkeep)
 	
-
-
-		$call accessMemoryDword (WRITEMEM buf_pointer 
+		$call accessMemoryDword (ethHeaderTag WRITEMEM buf_pointer 
 					($bitcast ($uint<64>) addr_offset)  wdata)  (ignore_return) 
 
 			
@@ -228,11 +240,14 @@ $is
 $module [writePayloadToMem]
 	// Base buffer pointer is used to calculate the packet size
 	// buf_pointer -> Consists of last written buffer location
-	$in (base_buf_pointer : $uint<64> addr_offset : $uint<16>)
+	$in (tag :$uint<8> max_addr_offset : $uint<16> base_buf_pointer : $uint<64> addr_offset : $uint<16>)
 	$out(packet_size_11:$uint<11> bad_packet_identifier : $uint<1> last_keep : $uint<8>)
 $is
 {
 	$branchblock[loop] {
+
+		$volatile payloadTag := ((tag << 2) | ($bitcast ($uint<8>) 2))
+
 		$dopipeline $depth 15 $fullrate
 			$merge $entry $loopback
 				// Begin loading from buf_pointer + 8 since buf_pointer
@@ -247,48 +262,52 @@ $is
 
 			// Extract payload word components
 			$volatile $split (payload_data 1 64 8)(last_bit wdata wkeep)
-			last_keep := wkeep
+			$volatile last_keep := wkeep
 
+			$volatile nactive_addr_offset := (active_addr_offset + 8)
+			$volatile overflow := ((~last_bit) & (active_addr_offset == max_addr_offset))
+			$volatile continue_flag := ((~overflow) & (~last_bit))	
 
 			// Load wdata to memory with wkeep = bmask
 			$call accessMemoryDword 
-					(WRITEMEM base_buf_pointer 
+					(payloadTag WRITEMEM base_buf_pointer 
 						($bitcast ($uint<64>) active_addr_offset)  wdata) (ignore_return) 
 
+		$while continue_flag
 
-			$volatile nactive_addr_offset := (active_addr_offset + 8)
+	} (wdata => tdata active_addr_offset => active_addr_offset overflow => overflow)
 
-		$while (~last_bit)
 
-	} (wdata => tdata active_addr_offset => active_addr_offset)
+	last_address_written := ( ($slice base_buf_pointer 31 0) + ($bitcast ($uint<32>) active_addr_offset) )
+	$call updateLastAddressWritten(last_address_written) ()
 
-	//
 	// Identify if the data is a bad packet which is identified by 
 	// data bits all 1 and bmask all zeros.
 	//
-	$volatile bad_packet_identifier := ((tdata == BAD_PACKET_DATA) & (last_keep == 0))
 
+	$volatile bad_packet_identifier := (overflow | ((tdata == BAD_PACKET_DATA) & (last_keep == 0)))
+	
 	//
 	// how many bytes in the packet (including the control word in the first dword
-	// of the buffer, and two dwords for the header.
+	// of the buffer, and two dwords for the header.)
 	//
 	$volatile packet_size_11 := ($bitcast ($uint<11>) active_addr_offset)
 }
 
 // Write the Control Information of stored packet into buffer location 0
 $module [writeControlInformationToMem]
-$in (base_buffer_pointer : $uint<64> packet_size:$uint<11>  last_keep : $uint<8>)
+$in (tag :$uint<8> base_buffer_pointer : $uint<64> max_addr_offset: $uint<16> packet_size:$uint<11>  last_keep : $uint<8>)
 $out()
 $is
 {
 	// Concatenate the control information to create control_data
 	// This control data is a work in progress.... (Can add other information like 
 	// stored by NIC so and so and send to NIC so and so etc.. 
-	$volatile control_data := ($bitcast ($uint<64>) ($concat packet_size last_keep))
+	$volatile control_data :=  ($concat max_addr_offset $zero<29> packet_size last_keep)
 
-
+	$volatile ctrlInfoTag := ((tag << 2) | ($bitcast ($uint<8>) 3))
 	// Write this control data with bmask set to all 1s to base_buffer_pointer location
-	$call accessMemoryDword (WRITEMEM base_buffer_pointer 0 control_data) (ignore_return)
+	$call accessMemoryDword (ctrlInfoTag WRITEMEM base_buffer_pointer 0 control_data) (ignore_return)
 
 }
 

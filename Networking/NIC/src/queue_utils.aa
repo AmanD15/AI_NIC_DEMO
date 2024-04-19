@@ -80,63 +80,63 @@ $module [getQueueBufPointer] $in (queue_type: $uint<2> server_id: $uint<8>) $out
 }
 
 $module [accessQueueTotalMsgs] 
-	$in (rwbar: $uint<1> qptr: $uint<64> wdata: $uint<32>) $out (rdata: $uint<32>) $is
+	$in (tag: $uint<8> rwbar: $uint<1> qptr: $uint<64> wdata: $uint<32>) $out (rdata: $uint<32>) $is
 {
-	$call accessMemoryWord (rwbar qptr 0 wdata) (rdata)
+	$call accessMemoryWord (tag rwbar qptr 0 wdata) (rdata)
 
 	$attribute input_buffering 0
 	$attribute output_buffering 0
 }
 $module [accessQueueReadIndex] 
-	$in (rwbar: $uint<1> qptr: $uint<64> wdata: $uint<32>) $out (rdata: $uint<32>) $is
+	$in (tag: $uint<8> rwbar: $uint<1> qptr: $uint<64> wdata: $uint<32>) $out (rdata: $uint<32>) $is
 {
-	$call accessMemoryWord (rwbar qptr 4 wdata) (rdata)
+	$call accessMemoryWord (tag rwbar qptr 4 wdata) (rdata)
 
 	$attribute input_buffering 0
 	$attribute output_buffering 0
 }
 $module [accessQueueWriteIndex] 
-	$in (rwbar: $uint<1> qptr: $uint<64> wdata: $uint<32>) $out (rdata: $uint<32>) $is
+	$in (tag: $uint<8> rwbar: $uint<1> qptr: $uint<64> wdata: $uint<32>) $out (rdata: $uint<32>) $is
 {
-	$call accessMemoryWord (rwbar qptr 8 wdata) (rdata)
+	$call accessMemoryWord (tag rwbar qptr 8 wdata) (rdata)
 
 	$attribute input_buffering 0
 	$attribute output_buffering 0
 }
 
 $module [accessQueueLength] 
-	$in (rwbar: $uint<1> qptr: $uint<64> wdata: $uint<32>) $out (rdata: $uint<32>) $is
+	$in (tag: $uint<8> rwbar: $uint<1> qptr: $uint<64> wdata: $uint<32>) $out (rdata: $uint<32>) $is
 {
 	// Note: address is qptr + offset.
-	$call accessMemoryWord (rwbar qptr 12 wdata) (rdata)
+	$call accessMemoryWord (tag rwbar qptr 12 wdata) (rdata)
 
 	$attribute input_buffering 0
 	$attribute output_buffering 0
 }
 $module [accessQueueMsgSizeInBytes] 
-	$in (rwbar: $uint<1> qptr: $uint<64> wdata: $uint<32>) $out (rdata: $uint<32>) $is
+	$in (tag: $uint<8> rwbar: $uint<1> qptr: $uint<64> wdata: $uint<32>) $out (rdata: $uint<32>) $is
 {
-	$call accessMemoryWord (rwbar qptr 16 wdata) (rdata)
+	$call accessMemoryWord (tag rwbar qptr 16 wdata) (rdata)
 
 	$attribute input_buffering 0
 	$attribute output_buffering 0
 }
 $module [accessQueueMisc] 
-	$in (rwbar: $uint<1> qptr: $uint<64> wdata: $uint<32>) $out (rdata: $uint<32>) $is
+	$in (tag: $uint<8> rwbar: $uint<1> qptr: $uint<64> wdata: $uint<32>) $out (rdata: $uint<32>) $is
 {
-	$call accessMemoryWord (rwbar qptr 28 wdata) (rdata)
+	$call accessMemoryWord (tag rwbar qptr 28 wdata) (rdata)
 
 	$attribute input_buffering 0
 	$attribute output_buffering 0
 }
 $module [accessQueueElement] 
-	$in (rwbar: $uint<1> base_addr: $uint<64> index: $uint<32> wdata: $uint<64>) 
+	$in (tag : $uint<8> rwbar: $uint<1> base_addr: $uint<64> index: $uint<32> wdata: $uint<64>) 
 		$out (rdata: $uint<64>) $is
 {
 	// base + (8*index)
 	$volatile offset := ($concat $zero<29> index $zero<3>)
 
-	$call accessMemoryDword (rwbar base_addr offset wdata) (rdata)
+	$call accessMemoryDword (tag rwbar base_addr offset wdata) (rdata)
 
 	$attribute input_buffering 0
 	$attribute output_buffering 0
@@ -154,7 +154,7 @@ $module [accessQueueElement]
 //	5. update queue indices
 //	6. release lock
 $module [popFromQueue]
-	$in (queue_type: $uint<2> server_id : $uint<8>) $out (q_r_data: $uint<64> status: $uint<1>)
+	$in (tag: $uint<8> queue_type: $uint<2> server_id : $uint<8>) $out (q_r_data: $uint<64> status: $uint<1>)
 $is
 {
 	// get the physical address of the queue in memory.
@@ -166,7 +166,7 @@ $is
 	//   when 1 pop data
 	// if misc is 0 
 	// follow old method
-	$call accessQueueMisc (READMEM q_base_address $zero<32>) (misc)
+	$call accessQueueMisc (tag READMEM q_base_address $zero<32>) (misc)
 
 	// misc & 0x1 means don't lock.
 	$volatile lock_n  := (misc [] 0)
@@ -177,17 +177,17 @@ $is
 
 	// acquire lock.
 	$guard (~lock_n) 
-		$call acquireLock(q_lock_address) (m_ok)
+		$call acquireLock(tag q_lock_address) (m_ok)
 
 	// do not proceed unless lock
 	// is obtained.
 	$barrier
 	
 	// Read from the CORTOS2 data srtucture.
-	$call getQueuePointers (q_base_address) (write_index read_index)
+	$call getQueuePointers (tag q_base_address) (write_index read_index)
 
-	$call getQueueLength(q_base_address) (queue_length)
-	$call getTotalMessages(q_base_address) (total_msgs)
+	$call getQueueLength(tag q_base_address) (queue_length)
+	$call getTotalMessages(tag q_base_address) (total_msgs)
 
 	$volatile q_empty := (total_msgs == 0)
 	$guard (~q_empty)
@@ -204,10 +204,10 @@ $is
 	$guard (~q_empty) $call getQueueBufPointer (queue_type server_id) (q_buf_address)
 	
 	// From the CORTOS2 data structure.
-	$guard (~q_empty) $call getQueueElement     (q_buf_address read_index) (q_r_data)
+	$guard (~q_empty) $call getQueueElement     (tag q_buf_address read_index) (q_r_data)
 
-	$guard (~q_empty) $call setQueuePointers    (q_base_address write_index next_ri) ()
-	$guard (~q_empty) $call setTotalMessages (q_base_address (total_msgs - $one<32>)) ()
+	$guard (~q_empty) $call setQueuePointers    (tag q_base_address write_index next_ri) ()
+	$guard (~q_empty) $call setTotalMessages (tag q_base_address (total_msgs - $one<32>)) ()
 
 	$guard (~q_empty)
 		QUEUE_MONITOR_SIGNAL := 
@@ -219,7 +219,7 @@ $is
 	// ensure that all updates have been completed, before releasing the lock.
 	$barrier
 
-	$guard(~lock_n) $call releaseLock (q_lock_address) ()
+	$guard(~lock_n) $call releaseLock (tag q_lock_address) ()
 	status := q_empty // 0 = success, 1 = Fail
 	
 }
@@ -237,7 +237,7 @@ $is
 //	6. release lock
 //
 $module [pushIntoQueue] 
-	$in  (queue_type: $uint<2> server_id: $uint<8> q_w_data: $uint<64>) $out (status: $uint<1>)
+	$in  (tag: $uint<8> queue_type: $uint<2> server_id: $uint<8> q_w_data: $uint<64>) $out (status: $uint<1>)
 $is
 {
 	// check if misc is 1,
@@ -252,7 +252,7 @@ $is
 
 
 	// buffer-addr and misc field.
-	$call accessMemoryWord (READMEM q_base_address 28 $zero<32>) (misc)
+	$call accessMemoryWord (tag READMEM q_base_address 28 $zero<32>) (misc)
 
 
 	// if misc is 0, then acquire lock
@@ -263,15 +263,15 @@ $is
 
 
 	$guard (~lock_n) 
-		$call acquireLock (q_lock_address) (m_ok) 
+		$call acquireLock (tag q_lock_address) (m_ok) 
 
 	// do not proceed without acquiring the lock.
 	$barrier
 
 	// access and manipulate cortos2 data structure
-	$call getQueuePointers (q_base_address) (write_index read_index)
-	$call getQueueLength(q_base_address) (queue_length)
-	$call getTotalMessages(q_base_address) (total_msgs)
+	$call getQueuePointers (tag q_base_address) (write_index read_index)
+	$call getQueueLength(tag q_base_address) (queue_length)
+	$call getTotalMessages(tag q_base_address) (total_msgs)
 	$volatile round_off := (write_index == (queue_length - 1))
 	$volatile next_wi := ($mux round_off 0 (write_index + 1))
 	
@@ -282,11 +282,11 @@ $is
 		$call getQueueBufPointer (queue_type server_id) (q_buf_address)
 
 	// update the element in the queue buf.
-	$guard (~q_full) $call setQueueElement  (q_buf_address write_index q_w_data) ()
+	$guard (~q_full) $call setQueueElement  (tag q_buf_address write_index q_w_data) ()
 
 	// update pointers, size in the queue struct.
-	$guard (~q_full) $call setQueuePointers (q_base_address next_wi read_index) ()
-	$guard (~q_full) $call setTotalMessages (q_base_address (total_msgs + $one<32>)) ()
+	$guard (~q_full) $call setQueuePointers (tag q_base_address next_wi read_index) ()
+	$guard (~q_full) $call setTotalMessages (tag q_base_address (total_msgs + $one<32>)) ()
 
 
 	$guard (~q_full)
@@ -299,7 +299,7 @@ $is
 	// ensure all done before releasing the queue lock.
 	$barrier
 
-	$guard (~lock_n) $call releaseLock (q_lock_address) ()
+	$guard (~lock_n) $call releaseLock (tag q_lock_address) ()
 	status := q_full
 }
 
@@ -307,10 +307,10 @@ $is
 // to get queue length from the CORTOS2 data structure.
 //
 $module [getQueueLength]
-	$in (q_base_address : $uint<64>) $out (queue_length : $uint<32>)
+	$in (tag: $uint<8> q_base_address : $uint<64>) $out (queue_length : $uint<32>)
 $is
 {
-	$call accessQueueLength (READMEM q_base_address $zero<32>) (queue_length)
+	$call accessQueueLength (tag READMEM q_base_address $zero<32>) (queue_length)
 }
 
 //
@@ -320,14 +320,14 @@ $is
 //	2. get 8bit lock data from 64bit read data
 //	3. if lock = FF -> keep checking (release mem lock and acquire again)
 //	     else set lock(queue) = FF aalong with releasing memory lock
-$module [acquireLock] $in (lock_address_pointer: $uint<64>) $out (m_ok: $uint<1>) 
+$module [acquireLock] $in (tag: $uint<8> lock_address_pointer: $uint<64>) $out (m_ok: $uint<1>) 
 $is
 {
 	$branchblock[loop] {
 		$merge $entry loopback $endmerge
 		
 		// read the lock (note that this is a locked read followed by an unlocked access).
-		$call accessMemoryLdStub (lock_address_pointer 0) (lock_val)
+		$call accessMemoryLdStub (tag lock_address_pointer 0) (lock_val)
 
 		$if (lock_val == _hFF) $then
 			$place [loopback]
@@ -344,12 +344,12 @@ $is
 //	1. read lock pointer from queue
 //	2. create bmask(which will only update corresponding locks bits)
 //	3. write 0 to lock address with bamsk.
-$module [releaseLock] $in (lock_address_pointer: $uint<64>) $out () $is
+$module [releaseLock] $in (tag: $uint<8> lock_address_pointer: $uint<64>) $out () $is
 {
 		
 	// write 0x0 into lock location..  (also unlock the memory path).
 	$call accessMemoryByte 
-		(WRITEMEM lock_address_pointer 0 0) (ignore)
+		(tag WRITEMEM lock_address_pointer 0 0) (ignore)
 }
 
 	
@@ -357,23 +357,23 @@ $module [releaseLock] $in (lock_address_pointer: $uint<64>) $out () $is
 //
 // get wp, rp pair from the CORTOS2 data structure.
 //
-$module [getQueuePointers] $in (q_base_address: $uint<64>)
+$module [getQueuePointers] $in (tag: $uint<8> q_base_address: $uint<64>)
 		$out (wp rp: $uint<32>) $is
 {
-    $call accessQueueReadIndex  (READMEM q_base_address $zero<32>) (rp)
-    $call accessQueueWriteIndex (READMEM q_base_address $zero<32>) (wp)
+    $call accessQueueReadIndex  (tag READMEM q_base_address $zero<32>) (rp)
+    $call accessQueueWriteIndex (tag READMEM q_base_address $zero<32>) (wp)
 }
 
 //
 // set wp, rp pair in the CORTOS2 data structure.
 //
-$module [setQueuePointers] $in (q_base_address: $uint<64> wp rp: $uint<32>) $out ()  $is
+$module [setQueuePointers] $in (tag: $uint<8> q_base_address: $uint<64> wp rp: $uint<32>) $out ()  $is
 {
 
     $rreport(setQueuePointers set q_base_address wp rp)
 
-    $call accessQueueReadIndex  (WRITEMEM q_base_address rp) (ign_rp)
-    $call accessQueueWriteIndex (WRITEMEM q_base_address wp) (ign_wp)
+    $call accessQueueReadIndex  (tag WRITEMEM q_base_address rp) (ign_rp)
+    $call accessQueueWriteIndex (tag WRITEMEM q_base_address wp) (ign_wp)
 }
 
 	
@@ -382,11 +382,11 @@ $module [setQueuePointers] $in (q_base_address: $uint<64> wp rp: $uint<32>) $out
 // inside queue.
 //
 $module  [getQueueElement]
-	$in (buf_base_addr: $uint<64> read_index: $uint<32>) 
+	$in (tag : $uint<8> buf_base_addr: $uint<64> read_index: $uint<32>) 
 	$out (q_r_data : $uint<64>)
 $is
 {
-	$call accessQueueElement  (READMEM buf_base_addr read_index $zero<64>) (q_r_data)
+	$call accessQueueElement  (tag READMEM buf_base_addr read_index $zero<64>) (q_r_data)
 }
 
 //
@@ -394,29 +394,29 @@ $is
 // index.
 //
 $module  [setQueueElement]
-	$in (buf_base_address: $uint<64> write_index: $uint<32> q_w_data : $uint<64>)
+	$in (tag: $uint<8> buf_base_address: $uint<64> write_index: $uint<32> q_w_data : $uint<64>)
 	$out () 
 $is
 {
-	$call accessQueueElement  (WRITEMEM buf_base_address write_index q_w_data) (q_r_data)
+	$call accessQueueElement  (tag WRITEMEM buf_base_address write_index q_w_data) (q_r_data)
 }
 
 // from the cortos2 data structure.
 $module [getTotalMessages]
-	$in (q_base_address : $uint<64>)
+	$in (tag: $uint<8> q_base_address : $uint<64>)
 	$out(total_msgs : $uint<32>)
 $is
 {	
-	$call accessQueueTotalMsgs (READMEM q_base_address $zero<32>) (total_msgs)
+	$call accessQueueTotalMsgs (tag READMEM q_base_address $zero<32>) (total_msgs)
 }
 
 // to the cortos2 data structure.
 $module [setTotalMessages]
-	$in (q_base_address : $uint<64> updated_total_msgs : $uint<32>)
+	$in (tag: $uint<8> q_base_address : $uint<64> updated_total_msgs : $uint<32>)
 	$out()
 $is
 {	
-	$call accessQueueTotalMsgs (WRITEMEM q_base_address updated_total_msgs) (ignore)
+	$call accessQueueTotalMsgs (tag WRITEMEM q_base_address updated_total_msgs) (ignore)
 }
 
 $module [queueTestDaemon] $in () $out () $is
@@ -426,11 +426,11 @@ $module [queueTestDaemon] $in () $out () $is
 
 		cmd := debug_queue_command 
 		$volatile $split (cmd 1 15 8 8 32) (rwbar u15 queue_id server_id val)
-		
+		debug_tag := 255
 		$guard (~rwbar)
-			$call pushIntoQueue (($slice queue_id 1 0) server_id ($concat (val + 1) val) ) (push_ok)
+			$call pushIntoQueue (debug_tag ($slice queue_id 1 0) server_id ($concat (val + 1) val) ) (push_ok)
 		$guard (rwbar)
-			$call popFromQueue (($slice queue_id 1 0) server_id) (pop_val pop_ok)
+			$call popFromQueue (debug_tag ($slice queue_id 1 0) server_id) (pop_val pop_ok)
 
 		$volatile not_ok := ($mux rwbar pop_ok push_ok)
 		$volatile ret_data := ($mux rwbar ($slice pop_val 62 0) $zero<63>)

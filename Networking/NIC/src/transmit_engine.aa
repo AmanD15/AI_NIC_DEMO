@@ -18,6 +18,8 @@ $module [transmitEngineDaemon] $in () $out () $is
 		$if (~(S_CONTROL_REGISTER [] 0)) $then
 			$place [not_enabled_yet_loopback]
 		$endif
+
+		tx_tag := P_TX_ENGINE_TAG
 		$rreport(transmitEngineDaemon got_control)
 	
 			$dopipeline $depth 31 $fullrate
@@ -33,10 +35,10 @@ $module [transmitEngineDaemon] $in () $out () $is
 			$rreport(transmitEngineDaemon trying_to_get_pointer_from_tx_queue tx_q_index)
 
 			// Get packet pointer for server tx_q_index
-			$call getTxPacketPointerFromServer (tx_q_index) (pkt_pointer tx_flag)
+			$call getTxPacketPointerFromServer (tx_tag tx_q_index) (pkt_pointer tx_flag)
 				
 			// if ok...
-			$guard (~tx_flag) $call transmitPacket (pkt_pointer) (transmitted_flag)
+			$guard (~tx_flag) $call transmitPacket (tx_tag pkt_pointer) (transmitted_flag)
 
 			
 			$volatile push_pointer_back_to_free_Q := ((~tx_flag) & transmitted_flag)
@@ -49,16 +51,17 @@ $module [transmitEngineDaemon] $in () $out () $is
 			
 			// push packet pointer to free queue
 			$guard (push_pointer_back_to_free_Q)
-				$call pushIntoQueue (FREEQUEUE 0 pkt_pointer) (push_status)
+				$call pushIntoQueue (tx_tag FREEQUEUE 0 pkt_pointer) (push_status)
 
-
+			
 			count := ($mux (tx_flag & transmitted_flag)  
 						($mux init_flag $zero<32> (count + 1))
 						count) $buffering 2
-				
-			$guard (push_pointer_back_to_free_Q)
-				$call accessRegister ($zero<1> (~$zero<4>) 
-						P_TX_PKT_COUNT_REGISTER_INDEX  count) (ignore_resp)
+			
+			// Commening these	
+			//$guard (push_pointer_back_to_free_Q)
+			//	$call accessRegister ($zero<1> (~$zero<4>) 
+			//			P_TX_PKT_COUNT_REGISTER_INDEX  count) (ignore_resp)
 
 			$rreport(transmitEngineDaemon pushed_back_to_free_queue push_status)
 			// move to next tx queue
@@ -76,11 +79,11 @@ $module [transmitEngineDaemon] $in () $out () $is
 //
 $pipeline $depth 7
 $module [getTxPacketPointerFromServer] 
-	$in (server_index : $uint<8>)
+	$in (tag :$uint<8> server_index : $uint<8>)
 	$out (pkt_pointer : $uint<64> status : $uint<1>) $is
 {
 
-	$call popFromQueue    (TXQUEUE server_index)  (pkt_pointer status)
+	$call popFromQueue    (tag TXQUEUE server_index)  (pkt_pointer status)
 
 	$attribute input_buffering 0
 }
@@ -90,13 +93,13 @@ $module [getTxPacketPointerFromServer]
 // Transmit packet, given the pointer to the
 // packet. and return 1 if success.
 $module [transmitPacket]
-	$in (packet_pointer: $uint<64>) $out (status: $uint<1>) $is
+	$in (tag :$uint<8> packet_pointer: $uint<64>) $out (status: $uint<1>) $is
 {
 	// read packet information from packet buffer.
 	$volatile control_data_addr := packet_pointer
 
 	$rreport(transmitPacket control_data_addr_is packet_pointer control_data_addr)	
-	$call accessMemoryDword (READMEM control_data_addr  0 $zero<64>) (control_data)
+	$call accessMemoryDword (tag READMEM control_data_addr  0 $zero<64>) (control_data)
 	
 	
 	// get packet_size and tkeep(bytemask) of last word
@@ -116,7 +119,7 @@ $module [transmitPacket]
 		$endmerge
 
 		// read packet data
-		$call accessMemoryDword (READMEM control_data_addr 
+		$call accessMemoryDword (tag READMEM control_data_addr 
 							($bitcast ($uint<64>) mem_addr_offset) $zero<64>) (data)
 		
 		// TODO: will need to calculate IP-header checksum in future
@@ -137,7 +140,7 @@ $module [transmitPacket]
 		last_offset := nmem_addr_offset
 	
 		//last word
-		$call accessMemoryDword (READMEM control_data_addr 
+		$call accessMemoryDword (tag READMEM control_data_addr 
 						($bitcast ($uint<64>) last_offset) $zero<64>) (last_word)
 		
 		// transmit last word

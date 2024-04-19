@@ -11,7 +11,7 @@ VC2VHDL: vc2vhdl  vhdlsim
 AA2VHDLSIM: aa2vc  vc2vhdl  vhdlsim
 TOVHDL:TOVC vc2vhdl
 
-TOPMODULES=-T tbAfbDaemon -T tbEnableMacDaemon  -T tbMemDaemon -T tbProcessorMemDaemon -T macRxBridgeDaemon -T macTxBridgeDaemon 
+TOPMODULES=-T tbAfbDaemon -T tbEnableMacIntrDaemon  -T tbMemDaemon -T tbProcessorMemDaemon -T macRxBridgeDaemon -T macTxBridgeDaemon 
 
 
 # five steps from C to vhdl simulator.
@@ -23,7 +23,7 @@ AA2VHDL: aa2vc vc2vhdl
 aalink: ../pipes.aa ./tester.aa 
 	rm -rf .Aa
 	mkdir .Aa
-	AaLinkExtMem ../pipes.aa ./tester.aa  | vcFormat > .Aa/tester.linked.aa
+	AaLinkExtMem ../../src/signals.aa ../pipes.aa ./tester.aa  | vcFormat > .Aa/tester.linked.aa
 	AaOpt -B .Aa/tester.linked.aa | vcFormat > .Aa/tester.linked.opt.aa
 
 aa2c : .Aa/tester.linked.opt.aa

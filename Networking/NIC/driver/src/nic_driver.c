@@ -179,3 +179,17 @@ void initNicCortosQueue (NicCortosQueue* cqueue,
 }
 
 
+int translateVaToPa (uint32_t va, uint64_t* pa)
+{
+	uint32_t context               = __ajit_load_word_mmu_reg__ (MMU_REG_CONTEXT);
+	uint64_t ctp_rval = __ajit_load_word_mmu_reg__ (MMU_REG_CONTEXT_TABLE_PTR);
+
+	uint64_t context_table_pointer  =  ((uint64_t) (ctp_rval >> 2)) << 6;
+
+	uint8_t level, uint64_t ptde_a, uint32_t ptde;
+
+	int status = ajit_lookup_mmap (context, context_table_pointer,
+						va, &level, pa, &ptde_a, &ptde);	
+	return(status);
+}
+

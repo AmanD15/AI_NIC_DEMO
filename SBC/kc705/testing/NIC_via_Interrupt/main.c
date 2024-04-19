@@ -11,6 +11,20 @@
 #define BUFFER_SIZE_IN_BYTES 32
 #define QUEUE_LENGTH (16 + 4 * NUMBER_OF_BUFFERS)
 
+#define X8_F  "02x" 
+#define X16_F "hx"
+/** MAC Addr */
+struct eth_addr {
+ uint8_t addr[6];
+};
+
+/** Ethernet header */
+struct eth_hdr {
+ struct eth_addr dest;
+ struct eth_addr src;
+ uint16_t type;
+};
+
 
 
 CortosQueueHeader* free_queue;
@@ -26,7 +40,23 @@ int message_counter;
 #define TIMERCOUNT 100000
 #define COUNT TIMERCOUNT
 #define TIMERINITVAL ((COUNT << 1) | 1)
-
+#define ETHER_FRAME_LEN 32
+ 
+ 
+ // Ethernet frame structure: Destination MAC (6 bytes), Source MAC (6 bytes), Type (2 bytes), Payload (Variable bytes), CRC (4 bytes)
+ 
+    uint8_t ethernet_frame[ETHER_FRAME_LEN] = {
+        // Destination MAC Address: 0xAAAAAAAAAAAA
+        0x00, 0x0a, 0x35, 0x05, 0x76, 0xa0,
+        // Source MAC Address: 0xBBBBBBBBBBBB
+        0xBB, 0xBB, 0xBB, 0xBB, 0xBB, 0xBB,
+        // Ethernet Type (Assuming IPv4 for example, 0x0800)
+        0x08, 0x00,
+	// Payload Data:0123456789
+	'0','1','2','3','4','5','6','7','8','9'
+    };
+    
+    
 void my_timer_interrupt_handler()
 {
 
@@ -40,8 +70,6 @@ void my_timer_interrupt_handler()
 	// above.
 	
 
-	int i;
-	char packetData[16]="012345678912345";
 	cortos_printf ("no. of messages forwarded by main(): %d\n",message_counter);
 
 	/* TRANSMISSION EMULATION*/
@@ -78,11 +106,15 @@ void my_timer_interrupt_handler()
 		
 		// Copying data to free buffer
 		uint8_t* ptrToBuffer =(uint8_t*) ptrToDataRx;
-
-		for(i = 0 ; i < 16 ; i++)
-			*(ptrToBuffer + i) = packetData[i];
+		int i;
+		for(i = 0 ; i < 24 ; i++){
+			
+			*(ptrToBuffer + i) = ethernet_frame[i];
 		
+		}
+
 		// Pushing the buffer to RxQ
+		cortos_printf("IN NIC :bufptr written = %lx \n", ptrToDataRx);
 		int RxQpush = cortos_writeMessages(rx_queue, (uint8_t*)(&ptrToDataRx), 1);
 	
 		if(RxQpush)
@@ -94,7 +126,7 @@ void my_timer_interrupt_handler()
 	else
 		cortos_printf ("no free buffer available for NIC!\n");
 		
-
+    
 
 	// clear timer control register.
 	__ajit_write_timer_control_register_via_vmap__ (0x0);
@@ -103,7 +135,6 @@ void my_timer_interrupt_handler()
 	__ajit_write_timer_control_register_via_vmap__ (TIMERINITVAL);
 
 }
-
 /*************************** main begins ********************************/
 
 int main()
@@ -118,7 +149,8 @@ int main()
 	length = 8;
 	int I = 0;
 	
-	uint32_t data[1];
+	uint32_t bufptr;
+	
 	uint32_t controlRegister;
 	// Get queues.
 
@@ -186,14 +218,25 @@ int main()
 		
 
 		// Read the buffer pointer from RxQ
-		int read_ok = cortos_readMessages(rx_queue, (uint8_t*)data, 1);
 		
+		int read_ok = cortos_readMessages(rx_queue, (uint8_t*)(&bufptr), 1);
+		cortos_printf("IN MAIN :bufptr red = %lx \n",bufptr);
 	
 		if(read_ok) {
 
 			
+
+			struct eth_hdr *ethhdr = (struct eth_hdr *)bufptr;
+	 cortos_printf("ethernet_input: dest:%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F", src:%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F":%"X8_F", 				type:%"X16_F"\n",
+		       (unsigned char)ethhdr->dest.addr[0], (unsigned char)ethhdr->dest.addr[1], (unsigned char)ethhdr->dest.addr[2],
+		       (unsigned char)ethhdr->dest.addr[3], (unsigned char)ethhdr->dest.addr[4], (unsigned char)ethhdr->dest.addr[5],
+		       (unsigned char)ethhdr->src.addr[0],  (unsigned char)ethhdr->src.addr[1],  (unsigned char)ethhdr->src.addr[2],
+		       (unsigned char)ethhdr->src.addr[3],  (unsigned char)ethhdr->src.addr[4],  (unsigned char)ethhdr->src.addr[5],
+		       (uint16_t)(ethhdr->type) );
+
+			
 			// Write the buffer pointer to TxQ
-			int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)data, 1);
+			int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)(&bufptr), 1);
 			message_counter++;
 			// just enable the interrupt by writing to the interrupt control register..
 			//__TURN_ON_INTERRUPTS;
@@ -209,7 +252,12 @@ int main()
 		}
 
 
-		if(message_counter == 512) break;
+		if(message_counter == 16) {	
+		
+			disableInterrupt(0, 0, 10);
+			controlRegister = readInterruptControlRegister(0, 0);
+			break;
+			}
 	}
 	
 

@@ -57,11 +57,37 @@
 #include "lwip/pbuf.h"
 #include "lwip/stats.h"
 #include "lwip/snmp.h"
-
 #include "lwip/etharp.h"
-#include "netif/ppp/pppoe.h"
+
+#include "netif/ethernet.h"
+
+#include <cortos.h>
+#include <ajit_access_routines.h>
+#include <ajit_mt_irc.h>
+#include <core_portme.h>
+
+#define BUFFER_SIZE_IN_BYTES 64
+#define IFNAME0 'e'
+#define IFNAME1 'n'
+#define ETHERNET_MTU 1500
+#define ETHER_FRAME_LEN 64
+
+// The Qs
+CortosQueueHeader* free_queue;
+CortosQueueHeader* rx_queue;
+CortosQueueHeader* tx_queue;
 
 
+
+  
+
+
+// The array to store ptr to buffers
+
+volatile uint32_t* volatile Buffers[8];
+
+void 
+low_level_init();
 
 /**
  * Helper struct to hold private data used to operate your ethernet interface.
@@ -86,24 +112,16 @@ struct ethernetif {
  * @return a pbuf filled with the received packet (including MAC header)
  *         NULL on memory error
  */
-static struct pbuf *
+err_t
 low_level_input(struct netif *netif);
 
+err_t
+low_level_output(struct netif *netif, struct pbuf *p);
 
-/**
- * This function should be called when a packet is ready to be read
- * from the interface. It uses the function low_level_input() that
- * should handle the actual reception of bytes from the network
- * interface. Then the type of the received packet is determined and
- * the appropriate input function is called.
- *
- * @param netif the lwip network interface structure for this ethernetif
- */
-static void
-ethernetif_input(struct netif *netif);
+err_t 
+netif_initialize(struct netif *netif);
 
-
-
+void printEthernetFrame(uint8_t *ethernetFrame, int start,int length,int tab);
 
 #endif /* LWIP_HDR_ETHERNETIF_H */
 

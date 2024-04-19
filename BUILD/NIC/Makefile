@@ -7,7 +7,7 @@ FUNCTIONLIB=$(AHIR_RELEASE)/functionLibrary/
 SRC=../../SOURCE/NIC/
 all: HW 
 
-TOPMODULES=-T ReceiveEngineDaemon -T nicRxFromMacDaemon -T transmitEngineDaemon -T SoftwareRegisterAccessDaemon -T NicRegisterAccessDaemon
+TOPMODULES=-T ReceiveEngineDaemon -T nicRxFromMacDaemon -T transmitEngineDaemon -T controlDaemon
 
 
 # five steps from C to vhdl simulator.
@@ -17,7 +17,7 @@ HW: aalink aa2vc  vc2vhdl
 aalink: $(SRC)/*.aa 
 	rm -rf .Aa
 	mkdir .Aa
-	AaLinkExtMem $(SRC)/decls.aa $(SRC)/pipes.aa $(SRC)/signals.aa $(SRC)/control.aa $(SRC)/general_utils.aa $(SRC)/memory_utils.aa $(SRC)/queue_utils.aa $(SRC)/register_utils.aa $(SRC)/rx_from_mac.aa $(SRC)/receive_engine.aa $(SRC)/transmit_engine.aa | vcFormat > .Aa/nic.linked.aa
+	AaLinkExtMem $(SRC)/decls.aa $(SRC)/parameters.aa $(SRC)/pipes.aa $(SRC)/signals.aa $(SRC)/control.aa $(SRC)/general_utils.aa $(SRC)/memory_utils.aa $(SRC)/queue_utils.aa $(SRC)/register_utils.aa $(SRC)/rx_from_mac.aa $(SRC)/receive_engine.aa $(SRC)/transmit_engine.aa | vcFormat > .Aa/nic.linked.aa
 	AaOpt -B .Aa/nic.linked.aa | vcFormat > .Aa/nic.linked.opt.aa
 
 aa2vc: .Aa/nic.linked.opt.aa

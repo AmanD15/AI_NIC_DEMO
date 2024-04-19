@@ -60,7 +60,7 @@
 #define LWIP_NUM_NETIF_CLIENT_DATA (LWIP_MDNS_RESPONDER)
 
 #define LWIP_HAVE_LOOPIF           0
-#define LWIP_NETIF_LOOPBACK        1
+#define LWIP_NETIF_LOOPBACK        0
 #define LWIP_LOOPBACK_MAX_PBUFS    10
 
 #define TCP_LISTEN_BACKLOG         1
@@ -71,28 +71,30 @@
 
 #define LWIP_TCPIP_CORE_LOCKING    1
 
-#define LWIP_NETIF_LINK_CALLBACK        1
-#define LWIP_NETIF_STATUS_CALLBACK      1
-#define LWIP_NETIF_EXT_STATUS_CALLBACK  1
+#define LWIP_NETIF_LINK_CALLBACK        0
+#define LWIP_NETIF_STATUS_CALLBACK      0
+#define LWIP_NETIF_EXT_STATUS_CALLBACK  0
 
+#define LWIP_DEBUG 
 #ifdef LWIP_DEBUG
 
-#define LWIP_DBG_MIN_LEVEL         0
+#define LWIP_DBG_MIN_LEVEL         LWIP_DBG_LEVEL_ALL
 #define PPP_DEBUG                  LWIP_DBG_OFF
-#define MEM_DEBUG                  LWIP_DBG_OFF
-#define MEMP_DEBUG                 LWIP_DBG_OFF
-#define PBUF_DEBUG                 LWIP_DBG_OFF
+#define MEM_DEBUG                  LWIP_DBG_ON
+#define MEMP_DEBUG                 LWIP_DBG_ON
+#define PBUF_DEBUG                 LWIP_DBG_ON
+#define ETHARP_DEBUG               LWIP_DBG_ON
 #define API_LIB_DEBUG              LWIP_DBG_OFF
 #define API_MSG_DEBUG              LWIP_DBG_OFF
 #define TCPIP_DEBUG                LWIP_DBG_OFF
-#define NETIF_DEBUG                LWIP_DBG_OFF
+#define NETIF_DEBUG                LWIP_DBG_ON
 #define SOCKETS_DEBUG              LWIP_DBG_OFF
 #define DNS_DEBUG                  LWIP_DBG_OFF
 #define AUTOIP_DEBUG               LWIP_DBG_OFF
 #define DHCP_DEBUG                 LWIP_DBG_OFF
-#define IP_DEBUG                   LWIP_DBG_OFF
+#define IP_DEBUG                   LWIP_DBG_ON
 #define IP_REASS_DEBUG             LWIP_DBG_OFF
-#define ICMP_DEBUG                 LWIP_DBG_OFF
+#define ICMP_DEBUG                 LWIP_DBG_ON
 #define IGMP_DEBUG                 LWIP_DBG_OFF
 #define UDP_DEBUG                  LWIP_DBG_OFF
 #define TCP_DEBUG                  LWIP_DBG_OFF
@@ -106,9 +108,8 @@
 #define TCP_RST_DEBUG              LWIP_DBG_OFF
 #endif
 
-#define LWIP_DBG_TYPES_ON         (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT)
-
-
+//#define LWIP_DBG_TYPES_ON         (LWIP_DBG_ON|LWIP_DBG_TRACE|LWIP_DBG_STATE|LWIP_DBG_FRESH|LWIP_DBG_HALT)
+#define LWIP_DBG_TYPES_ON         (LWIP_DBG_ON|LWIP_DBG_TRACE)
 /* ---------- Memory options ---------- */
 /* MEM_ALIGNMENT: should be set to the alignment of the CPU for which
    lwIP is compiled. 4 byte alignment -> define MEM_ALIGNMENT to 4, 2
@@ -212,17 +213,22 @@ a lot of data that needs to be copied, this should be set high. */
 #define TCP_SYNMAXRTX           4
 
 
+/* ---------- ETHERNET options ---------- */
+#define LWIP_ETHERNET           1
+#define ETH_PAD_SIZE            0
+
+
 /* ---------- ARP options ---------- */
 #define LWIP_ARP                1
 #define ARP_TABLE_SIZE          10
-#define ARP_QUEUEING            1
+#define ARP_QUEUEING            0
 
 
 /* ---------- IP options ---------- */
 /* Define IP_FORWARD to 1 if you wish to have the ability to forward
    IP packets across network interfaces. If you are going to run lwIP
    on a device with only one network interface, define this to 0. */
-#define IP_FORWARD              1
+#define IP_FORWARD              0
 
 /* IP reassembly and segmentation.These are orthogonal even
  * if they both deal with IP fragments */
@@ -316,14 +322,6 @@ a lot of data that needs to be copied, this should be set high. */
 #if !defined(NO_SYS) || !NO_SYS /* default is 0 */
 void sys_check_core_locking(void);
 #define LWIP_ASSERT_CORE_LOCKED()  sys_check_core_locking()
-#endif
-
-#if 0
-#ifndef LWIP_PLATFORM_ASSERT
-/* Define LWIP_PLATFORM_ASSERT to something to catch missing stdio.h includes */
-void lwip_example_app_platform_assert(const char *msg, int line, const char *file);
-#define LWIP_PLATFORM_ASSERT(x) lwip_example_app_platform_assert(x, __LINE__, __FILE__)
-#endif
 #endif
 
 #endif /* LWIP_LWIPOPTS_H */

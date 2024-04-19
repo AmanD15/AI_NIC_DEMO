@@ -20,8 +20,9 @@ $pipe NIC_AFB_RESPONSE: $uint<33> $depth 2
 $pipe NIC_ACB_REQUEST: $uint<110> $depth 2
 $pipe ACB_NIC_RESPONSE: $uint<65> $depth 2
 $pipe MAC_TO_NIC: $uint<10> $depth 2  
-$pipe NIC_TO_MAC: $uint<10> $depth 2  
- 
+$pipe NIC_TO_MAC: $uint<10> $depth 2 
+$pipe NIC_ACB_REQUEST_TO_MEMORY: $uint<110> $depth 2 
+
 
 // DRAM subsystem pipes
 

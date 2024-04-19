@@ -154,23 +154,15 @@ architecture structure of sbc_kc705 is
 
     end component;
 
-    component vio_200 is
-      Port ( 
-        clk : in STD_LOGIC;
-        probe_in0 : in STD_LOGIC_VECTOR ( 0 to 0 );
-        probe_out0 : out STD_LOGIC_VECTOR ( 0 to 0 )
-      );
-
-    end component;
 
 
 -------------------------------------------------------------------------
 
   component sbc_kc705_core is -- 
   port( -- 
-    CLOCK_TO_DRAMCTRL_BRIDGE : in std_logic;
-    CLOCK_TO_NIC : in std_logic;
-    CLOCK_TO_PROCESSOR : in std_logic;
+    CLOCK_TO_DRAMCTRL_BRIDGE : in std_logic_vector(0 downto 0);
+    CLOCK_TO_NIC : in std_logic_vector(0 downto 0);
+    CLOCK_TO_PROCESSOR : in std_logic_vector(0 downto 0);
     CONSOLE_to_SERIAL_RX_pipe_write_data : in std_logic_vector(7 downto 0);
     CONSOLE_to_SERIAL_RX_pipe_write_req  : in std_logic_vector(0  downto 0);
     CONSOLE_to_SERIAL_RX_pipe_write_ack  : out std_logic_vector(0  downto 0);
@@ -182,9 +174,9 @@ architecture structure of sbc_kc705 is
     MAX_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
     MIN_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
     MIN_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
-    RESET_TO_DRAMCTRL_BRIDGE : in std_logic;
-    RESET_TO_NIC : in std_logic;
-    RESET_TO_PROCESSOR : in std_logic;
+    RESET_TO_DRAMCTRL_BRIDGE : in std_logic_vector(0 downto 0);
+    RESET_TO_NIC : in std_logic_vector(0 downto 0);
+    RESET_TO_PROCESSOR : in std_logic_vector(0 downto 0);
     SOC_MONITOR_to_DEBUG_pipe_write_data : in std_logic_vector(7 downto 0);
     SOC_MONITOR_to_DEBUG_pipe_write_req  : in std_logic_vector(0  downto 0);
     SOC_MONITOR_to_DEBUG_pipe_write_ack  : out std_logic_vector(0  downto 0);
@@ -192,6 +184,7 @@ architecture structure of sbc_kc705 is
     THREAD_RESET : in std_logic_vector(3 downto 0);
     WRITE_PROTECT : in std_logic_vector(0 downto 0);
     ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(612 downto 0);
+    NIC_DEBUG_SIGNAL : out std_logic_vector(127 downto 0);
     NIC_MAC_RESETN : out std_logic_vector(0 downto 0);
     NIC_TO_MAC_pipe_read_data : out std_logic_vector(9 downto 0);
     NIC_TO_MAC_pipe_read_req  : in std_logic_vector(0  downto 0);
@@ -205,9 +198,8 @@ architecture structure of sbc_kc705 is
     SOC_DEBUG_to_MONITOR_pipe_read_ack  : out std_logic_vector(0  downto 0);
     SPI_FLASH_CLK : out std_logic_vector(0 downto 0);
     SPI_FLASH_CS_L : out std_logic_vector(7 downto 0);
-    SPI_FLASH_MOSI : out std_logic_vector(0 downto 0)
-    --clk, reset: in std_logic 
-
+    SPI_FLASH_MOSI : out std_logic_vector(0 downto 0);
+    clk, reset: in std_logic 
     -- 
   );
   --
@@ -336,14 +328,26 @@ for sbc_kc705_core_inst :  sbc_kc705_core --
 
 end component mig_7series_0;
 
+ component ila_1 is
+ 
+    Port ( 
+    clk : in STD_LOGIC;
+    probe0 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    probe1 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    probe2 : in STD_LOGIC_VECTOR ( 7 downto 0 );
+    probe3 : in STD_LOGIC_VECTOR ( 35 downto 0 );
+    probe4 : in STD_LOGIC_VECTOR ( 63 downto 0 )
+  );
+  
 
+end component;
 
 ------------------------------------------------------
 -- TODO: Signal Declaration for SBC core. (DONE!!)
 ------------------------------------------------------
           
-   signal CLOCK_TO_DRAMCTRL_BRIDGE, CLOCK_TO_NIC, CLOCK_TO_PROCESSOR : std_logic;
-   signal RESET_TO_DRAMCTRL_BRIDGE, RESET_TO_NIC, RESET_TO_PROCESSOR,RESET_TO_MIG_DO_NOT_USE : std_logic_vector(0 downto 0);
+   signal CLOCK_TO_DRAMCTRL_BRIDGE, CLOCK_TO_NIC, CLOCK_TO_PROCESSOR : std_logic_vector(0 downto 0);
+   signal RESET_TO_DRAMCTRL_BRIDGE, RESET_TO_NIC, RESET_TO_PROCESSOR : std_logic_vector(0 downto 0);
 
    signal PROCESSOR_MODE : std_logic_vector(15 downto 0);
    signal THREAD_RESET : std_logic_vector(3 downto 0);
@@ -375,6 +379,9 @@ end component mig_7series_0;
    signal NIC_TO_MAC_pipe_read_data : std_logic_vector(9 downto 0);
    signal NIC_TO_MAC_pipe_read_req  : std_logic_vector(0  downto 0);
    signal NIC_TO_MAC_pipe_read_ack  : std_logic_vector(0  downto 0);
+    
+ 
+   signal  NIC_DEBUG_SIGNAL :  std_logic_vector(127 downto 0);
 
    signal MAX_ACB_TAP1_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
    signal MAX_ACB_TAP2_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
@@ -383,12 +390,13 @@ end component mig_7series_0;
 
    signal CONFIG_UART_BAUD_CONTROL_WORD: std_logic_vector(31 downto 0);
    signal CPU_MODE_SIG : std_logic_vector(1 downto 0); 
-   signal clk_ref_125, clk_ref_100: std_logic:='0';
+   signal clk_ref_100,clk_ref_125: std_logic:='0';
+   signal clk_ref_125_vector : std_logic_vector(0 downto 0); 
    -------------------- ADDITIONAL DRAM SIGNAL --------------------------------------
    signal device_temp       :  STD_LOGIC_VECTOR ( 11 downto 0 );
    signal clk_sys_320, clk_ref_200: std_logic:='0';
    signal sys_rst: std_logic_vector(0 downto 0);
---------------------OLD SIGNALS --------------------------------------
+   --------------------OLD SIGNALS --------------------------------------
 
    signal EXTERNAL_INTERRUPT : std_logic_vector(0 downto 0);
    signal LOGGER_MODE : std_logic_vector(0 downto 0);
@@ -411,7 +419,16 @@ end component mig_7series_0;
     signal SPI_FLASH_CLK_SIG: std_logic_vector(0 downto 0);
 
 
-    signal MIG7_UI_CLOCK: std_logic;
+    signal MIG7_UI_CLOCK: std_logic_vector(0 downto 0);
+    
+    --------------------DEBUG SIGNALS --------------------------------------
+    
+    signal NIC_ACB_REQUEST_TO_MEMORY_LOCK : std_logic_vector(0 downto 0);
+    signal NIC_ACB_REQUEST_TO_MEMORY_RWBAR : std_logic_vector(0 downto 0);
+    signal NIC_ACB_REQUEST_TO_MEMORY_MASK : std_logic_vector(7 downto 0);
+    signal NIC_ACB_REQUEST_TO_MEMORY_ADDR : std_logic_vector(35 downto 0);
+    signal NIC_ACB_REQUEST_TO_MEMORY_DATA : std_logic_vector(63 downto 0);
+    
    
 begin
    -- Info: Baudrate 115200 ClkFreq 65000000:  Baud-freq = 1152, Baud-limit= 39473 Baud-control=0x9a310480
@@ -448,7 +465,7 @@ begin
 
     virtual_reset_processor : vio_80
         port map (
-                        clk         => MIG7_UI_CLOCK, --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
+                        clk         => MIG7_UI_CLOCK(0), --CLOCK_TO_PROCESSOR  ui_clk, 80MHz,
                         probe_in0   => CPU_MODE_SIG,
                         probe_out0  => RESET_TO_PROCESSOR,
 			probe_out1  => CPU_RESET, 
@@ -464,20 +481,7 @@ begin
                         probe_out0  => RESET_TO_NIC
           );
 
-    -- VIO for MIG reset 
-
-
-    -- Since clk_reset is going to MIG, there is no 
-    -- need of RESET_TO_MIG_DO_NOT_USE.  In fact, asserting it
-    -- causes the clk_wizard_locked signal to go to 0! ^%#&!Q
-    virtual_reset_mig       : vio_200
-        port map (
-                        clk         => clk_ref_200,
-			probe_in0   => sys_rst,				
-                        probe_out0  => RESET_TO_MIG_DO_NOT_USE
-                        
-                );
-
+ 
 
    CPU_MODE_SIG <= PROCESSOR_MODE(1 downto 0);
    CPU_MODE <= CPU_MODE_SIG;
@@ -487,18 +491,19 @@ begin
    THREAD_RESET(2) <= '0';
    THREAD_RESET(3) <= '0';
 
-
-   MIG7_UI_CLOCK <= DRAM_CONTROLLER_TO_ACB_BRIDGE(521); -- 80MHz
+   clk_ref_125_vector	<= (0 => clk_ref_125);
+   
+   MIG7_UI_CLOCK <= DRAM_CONTROLLER_TO_ACB_BRIDGE(521 downto 521); -- 80MHz
 
    sbc_kc705_core_inst: sbc_kc705_core
      port map ( --
     CLOCK_TO_DRAMCTRL_BRIDGE =>  MIG7_UI_CLOCK, --  ui_clk, 80MHz
-    CLOCK_TO_NIC => clk_ref_125,
+    CLOCK_TO_NIC => clk_ref_125_vector,
     CLOCK_TO_PROCESSOR => MIG7_UI_CLOCK,        --  ui_clk, 80MHz
 
-    RESET_TO_DRAMCTRL_BRIDGE => RESET_TO_PROCESSOR(0),    
-    RESET_TO_NIC => RESET_TO_NIC(0),
-    RESET_TO_PROCESSOR => RESET_TO_PROCESSOR(0),
+    RESET_TO_DRAMCTRL_BRIDGE => RESET_TO_PROCESSOR,    
+    RESET_TO_NIC => RESET_TO_NIC,
+    RESET_TO_PROCESSOR => RESET_TO_PROCESSOR,
     
     THREAD_RESET => THREAD_RESET,
     WRITE_PROTECT => WRITE_PROTECT,
@@ -529,6 +534,8 @@ begin
     NIC_TO_MAC_pipe_read_req => NIC_TO_MAC_pipe_read_req,
     NIC_TO_MAC_pipe_read_ack => NIC_TO_MAC_pipe_read_ack,
     
+   NIC_DEBUG_SIGNAL => NIC_DEBUG_SIGNAL,
+   
     MAX_ACB_TAP1_ADDR => MAX_ACB_TAP1_ADDR,
     MAX_ACB_TAP2_ADDR => MAX_ACB_TAP2_ADDR,
     MIN_ACB_TAP1_ADDR => MIN_ACB_TAP1_ADDR,
@@ -537,7 +544,9 @@ begin
     SPI_FLASH_MISO => SPI_FLASH_MISO,
     SPI_FLASH_CLK => SPI_FLASH_CLK_SIG,
     SPI_FLASH_CS_L => SPI_FLASH_CS_L,
-    SPI_FLASH_MOSI => SPI_FLASH_MOSI
+    SPI_FLASH_MOSI => SPI_FLASH_MOSI,
+    clk => '0',
+    reset =>'0'
     ); -- 
   -- 
     SPI_FLASH_CS_TOP(0) <= SPI_FLASH_CS_L(0);
@@ -626,7 +635,7 @@ begin
     TX_to_CONSOLE_pipe_write_ack => SOC_DEBUG_to_MONITOR_pipe_read_req, -- out
     UART_RX => DEBUG_UART_RX, -- in
     UART_TX => DEBUG_UART_TX, -- out
-    clk => MIG7_UI_CLOCK, reset => RESET_TO_PROCESSOR(0)
+    clk => MIG7_UI_CLOCK(0), reset => RESET_TO_PROCESSOR(0)
     ); -- 
 
   serial_uart_inst: configurable_uart
@@ -640,7 +649,7 @@ begin
     TX_to_CONSOLE_pipe_write_ack => SERIAL_TX_to_CONSOLE_pipe_read_req, -- out
     UART_RX => SERIAL_UART_RX, -- in
     UART_TX => SERIAL_UART_TX, -- out
-    clk => MIG7_UI_CLOCK, reset => RESET_TO_PROCESSOR(0)
+    clk => MIG7_UI_CLOCK(0), reset => RESET_TO_PROCESSOR(0)
     ); -- 
 
    -----------------------------------------------------------------------------
@@ -690,6 +699,34 @@ begin
     sys_rst                    => sys_rst(0)
   );
   sys_rst(0) <= clk_rst; -- MIG is at same level as clock generator.
+
+
+
+ NIC_ACB_REQUEST_TO_MEMORY_LOCK  <= (0 => NIC_DEBUG_SIGNAL(109));
+ NIC_ACB_REQUEST_TO_MEMORY_RWBAR <= (0 => NIC_DEBUG_SIGNAL(108));
+ NIC_ACB_REQUEST_TO_MEMORY_MASK  <= NIC_DEBUG_SIGNAL(107 downto 100);
+ NIC_ACB_REQUEST_TO_MEMORY_ADDR  <= NIC_DEBUG_SIGNAL(99 downto 64);
+ NIC_ACB_REQUEST_TO_MEMORY_DATA  <= NIC_DEBUG_SIGNAL(63 downto 0);
+	
+inst_ila_1 : ila_1 
+  Port map( 
+    clk => clk_ref_125,
+    probe0 => NIC_ACB_REQUEST_TO_MEMORY_LOCK,
+    probe1 => NIC_ACB_REQUEST_TO_MEMORY_RWBAR,
+    probe2 => NIC_ACB_REQUEST_TO_MEMORY_MASK,
+    probe3 => NIC_ACB_REQUEST_TO_MEMORY_ADDR,
+    probe4 => NIC_ACB_REQUEST_TO_MEMORY_DATA
+  );
+
+
+
+
+
+
+
+
+
+
 
   -- HACK needed to make SPI_CLK controllable on the board.
   spi_connect: STARTUPE2
