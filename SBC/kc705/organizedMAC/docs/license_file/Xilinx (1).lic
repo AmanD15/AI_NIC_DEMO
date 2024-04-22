@@ -1,0 +1,253 @@
+# ----- REMOVE LINES ABOVE HERE --------------------------
+#
+# This license is valid from Sun Apr 21 04:22:16 UTC 2024.
+#
+# This is license NODELOCKED to HOSTID=04421aeee727;
+# there is no need to run lmgrd for this license.
+#
+#
+#  This license is valid for evaluation ( 120 days ) from Sun Apr 21 04:22:16 UTC 2024
+INCREMENT plb_temac xilinxd 2025.04 20-aug-2024 uncounted \
+D3EC29AEE834 \
+VENDOR_STRING=License_Type:Hardware_Evaluation;siddhant23tomar@gmail.com,plb_temac,ip,evaluation,_212679755_0_0_165 \
+HOSTID=04421aeee727 ISSUER="Xilinx Inc" NOTICE="The license \
+for this core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." START=21-Apr-2024 \
+TS_OK
+#
+# Licenses for plb_temac_v1
+FEATURE plb_temac_v1 xilinxd 1.0 20-aug-2024 uncounted 115050325226 \
+VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+#  This license is valid for evaluation ( 120 days ) from Sun Apr 21 04:22:16 UTC 2024
+INCREMENT xps_ll_temac xilinxd 2025.04 20-aug-2024 uncounted \
+3045D4BE29E7 \
+VENDOR_STRING="License_Type:Hardware_Evaluation;siddhant23tomar@gmail.com, \
+xps_ll_temac,ip,evaluation,_212679755_0_0_720" \
+HOSTID=04421aeee727 ISSUER="Xilinx Inc" NOTICE="The license \
+for this core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." START=21-Apr-2024 \
+TS_OK
+#
+# Licenses for xps_ll_temac_v2
+FEATURE xps_ll_temac_v2 xilinxd 1.0 20-aug-2024 uncounted \
+ADBF245A14C9 VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+# Licenses for xps_ll_temac_v1
+FEATURE xps_ll_temac_v1 xilinxd 1.0 20-aug-2024 uncounted \
+7B1D6DD97496 VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+#  This license is valid for evaluation ( 120 days ) from Sun Apr 21 04:22:16 UTC 2024
+INCREMENT soft_temac_wrap xilinxd 2025.04 20-aug-2024 uncounted \
+231C69326A5F \
+VENDOR_STRING=License_Type:Hardware_Evaluation;siddhant23tomar@gmail.com,soft_temac_wrap,ip,evaluation,_212679755_0_0_505 \
+HOSTID=04421aeee727 ISSUER="Xilinx Inc" NOTICE="The license \
+for this core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." START=21-Apr-2024 \
+TS_OK
+#
+# Licenses for soft_temac_wrap_v2
+FEATURE soft_temac_wrap_v2 xilinxd 1.0 20-aug-2024 uncounted \
+73E80D5D272D VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+#  This license is valid for evaluation ( 120 days ) from Sun Apr 21 04:22:16 UTC 2024
+INCREMENT 10_100_mb_eth_mac xilinxd 2025.04 20-aug-2024 uncounted \
+1A46733B324A \
+VENDOR_STRING=License_Type:Hardware_Evaluation;siddhant23tomar@gmail.com,10_100_mb_eth_mac,ip,evaluation,_212679755_0_0_901 \
+HOSTID=04421aeee727 ISSUER="Xilinx Inc" NOTICE="The license \
+for this core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." START=21-Apr-2024 \
+TS_OK
+#
+#  This license is valid for evaluation ( 120 days ) from Sun Apr 21 04:22:16 UTC 2024
+INCREMENT opb_ethernet xilinxd 2025.04 20-aug-2024 uncounted \
+CB7B15F46213 \
+VENDOR_STRING=License_Type:Hardware_Evaluation;siddhant23tomar@gmail.com,opb_ethernet,ip,evaluation,_212679755_0_0_829 \
+HOSTID=04421aeee727 ISSUER="Xilinx Inc" NOTICE="The license \
+for this core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." START=21-Apr-2024 \
+TS_OK
+#
+# Licenses for opb_ethernet_v1
+FEATURE opb_ethernet_v1 xilinxd 1.0 20-aug-2024 uncounted \
+0332D641F7D4 VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+# Licenses for opb_ethernet_v1_00_j
+FEATURE opb_ethernet_v1_00_j xilinxd 1.0 20-aug-2024 uncounted \
+B0A83F4A640B VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+# Licenses for opb_ethernet_v1_00_k
+FEATURE opb_ethernet_v1_00_k xilinxd 1.0 20-aug-2024 uncounted \
+A1318C6AE78A VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+# Licenses for opb_ethernet_v1_00_l
+FEATURE opb_ethernet_v1_00_l xilinxd 1.0 20-aug-2024 uncounted \
+0C06711AAE05 VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+# Licenses for opb_ethernet_v1_00_m
+FEATURE opb_ethernet_v1_00_m xilinxd 1.0 20-aug-2024 uncounted \
+17D3CE4299B4 VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+# Licenses for opb_ethernet_v1_01_a
+FEATURE opb_ethernet_v1_01_a xilinxd 1.0 20-aug-2024 uncounted \
+4EDB3F854B46 VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+#  This license is valid for evaluation ( 120 days ) from Sun Apr 21 04:22:16 UTC 2024
+INCREMENT plb_ethernet xilinxd 2025.04 20-aug-2024 uncounted \
+ED767522C00B \
+VENDOR_STRING=License_Type:Hardware_Evaluation;siddhant23tomar@gmail.com,plb_ethernet,ip,evaluation,_212679755_0_0_966 \
+HOSTID=04421aeee727 ISSUER="Xilinx Inc" NOTICE="The license \
+for this core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." START=21-Apr-2024 \
+TS_OK
+#
+# Licenses for plb_ethernet_v1_00_a
+FEATURE plb_ethernet_v1_00_a xilinxd 1.0 20-aug-2024 uncounted \
+D514EFA4E9E8 VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+# Licenses for plb_ethernet_v1
+FEATURE plb_ethernet_v1 xilinxd 1.0 20-aug-2024 uncounted \
+F0E5615D2974 VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+#  This license is valid for evaluation ( 120 days ) from Sun Apr 21 04:22:16 UTC 2024
+INCREMENT tri_mode_eth_mac xilinxd 2025.04 20-aug-2024 uncounted \
+634892F569CF \
+VENDOR_STRING=License_Type:Hardware_Evaluation;siddhant23tomar@gmail.com,tri_mode_eth_mac,ip,evaluation,_212679755_0_0_126 \
+HOSTID=04421aeee727 ISSUER="Xilinx Inc" NOTICE="The license \
+for this core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." START=21-Apr-2024 \
+TS_OK
+#
+# Licenses for tri_mode_eth_mac_v3
+FEATURE tri_mode_eth_mac_v3 xilinxd 1.0 20-aug-2024 uncounted \
+F6090E4C797C VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+# Licenses for tri_mode_eth_mac_v1_1
+FEATURE tri_mode_eth_mac_v1_1 xilinxd 1.0 20-aug-2024 uncounted \
+869610DA8102 VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+# Licenses for tri_mode_eth_mac_v4
+FEATURE tri_mode_eth_mac_v4 xilinxd 1.0 20-aug-2024 uncounted \
+EE1D6BFFE616 VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+# Licenses for tri_mode_eth_mac_v2
+FEATURE tri_mode_eth_mac_v2 xilinxd 1.0 20-aug-2024 uncounted \
+2671B101104E VENDOR_STRING=License_Type:Hardware_Evaluation \
+HOSTID=04421aeee727 ISSUER=Xilinx NOTICE="The license for this \
+core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." TS_OK
+#
+#  This license is valid for evaluation ( 120 days ) from Sun Apr 21 04:22:16 UTC 2024
+INCREMENT axi_ethernet_soft_10_100 xilinxd 2025.04 20-aug-2024 \
+uncounted 54B17201B8DE \
+VENDOR_STRING=License_Type:Hardware_Evaluation;siddhant23tomar@gmail.com,axi_ethernet_soft_10_100,ip,evaluation,_212679755_0_0_647 \
+HOSTID=04421aeee727 ISSUER="Xilinx Inc" NOTICE="The license \
+for this core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." START=21-Apr-2024 \
+TS_OK
+#
+#  This license is valid for evaluation ( 120 days ) from Sun Apr 21 04:22:16 UTC 2024
+INCREMENT axi_ethernet_soft_tri_mode xilinxd 2025.04 20-aug-2024 \
+uncounted F3C8AB9302C3 \
+VENDOR_STRING=License_Type:Hardware_Evaluation;siddhant23tomar@gmail.com,axi_ethernet_soft_tri_mode,ip,evaluation,_212679755_0_0_020 \
+HOSTID=04421aeee727 ISSUER="Xilinx Inc" NOTICE="The license \
+for this core was generated for siddhant23tomar@gmail.com on \
+04/22/2024It is the responsibility of the Licensee of this \
+core to adhere to all terms and conditions of the applicable \
+license agreement when using this core." START=21-Apr-2024 \
+TS_OK
+#
+# ----- REMOVE LINES BELOW HERE --------------------------

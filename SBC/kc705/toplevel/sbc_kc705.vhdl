@@ -119,19 +119,40 @@ architecture structure of sbc_kc705 is
 
 --------- NEW CLOCK WIZ AND VIOS ----------------------------------------
 
-    component clk_wiz_0 is
-      Port ( 
-        clk_320 : out STD_LOGIC;
-        clk_200 : out STD_LOGIC;
-        clk_125 : out STD_LOGIC;
-        clk_100 : out STD_LOGIC;
-        reset : in STD_LOGIC;
-        locked : out STD_LOGIC;
-        clk_in1_p : in STD_LOGIC;
-        clk_in1_n : in STD_LOGIC
-      );
+--    component clk_wiz_0 is
+--      Port ( 
+--        clk_320 : out STD_LOGIC;
+--        clk_200 : out STD_LOGIC;
+--        clk_125 : out STD_LOGIC;
+--        clk_100 : out STD_LOGIC;
+--        reset : in STD_LOGIC;
+--        locked : out STD_LOGIC;
+--        clk_in1_p : in STD_LOGIC;
+--        clk_in1_n : in STD_LOGIC
+--      );
 
-    end component;
+--    end component;
+
+
+component tri_mode_ethernet_mac_0_example_design_clocks is
+
+    Port(
+	--differential clock inputs
+	clk_in_p: in STD_LOGIC;
+	clk_in_n: in STD_LOGIC;
+
+	--asynchronous control/resets
+	glbl_rst: in STD_LOGIC;
+	dcm_locked: out STD_LOGIC;
+
+	--clock outputs
+	gtx_clk_bufg: out STD_LOGIC;
+	refclk_bufg: out STD_LOGIC;
+	s_axi_aclk: out STD_LOGIC;
+	dram_sys_clk: out STD_LOGIC
+   );
+   
+end component;
 
 -- To generate synchronous reset to processor.
     component vio_80 is
@@ -184,7 +205,7 @@ architecture structure of sbc_kc705 is
     THREAD_RESET : in std_logic_vector(3 downto 0);
     WRITE_PROTECT : in std_logic_vector(0 downto 0);
     ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(612 downto 0);
-    NIC_DEBUG_SIGNAL : out std_logic_vector(127 downto 0);
+    NIC_DEBUG_SIGNAL : out std_logic_vector(255 downto 0);
     NIC_MAC_RESETN : out std_logic_vector(0 downto 0);
     NIC_TO_MAC_pipe_read_data : out std_logic_vector(9 downto 0);
     NIC_TO_MAC_pipe_read_req  : in std_logic_vector(0  downto 0);
@@ -210,7 +231,7 @@ for sbc_kc705_core_inst :  sbc_kc705_core --
     use entity sbc_kc705_core_lib.sbc_kc705_core; -- 
 
 
-  component ETH_KC is
+  component tri_mode_ethernet_mac_0_example_design is
   port
   (
       
@@ -221,6 +242,7 @@ for sbc_kc705_core_inst :  sbc_kc705_core --
        gtx_clk_bufg : in std_logic;
        refclk_bufg : in std_logic;
        s_axi_aclk : in std_logic;
+       dcm_locked : in std_logic;
        
        -- 125 MHz clock from MMCM
        gtx_clk_bufg_out : out std_logic;
@@ -240,20 +262,7 @@ for sbc_kc705_core_inst :  sbc_kc705_core --
        -----------------
        mdio : inout std_logic;
        mdc : out std_logic;
-  
-       -- NIC side interfaces
-       rx_pipe_data : out std_logic_vector(9 downto 0);
-       rx_pipe_ack : out std_logic_vector(0 downto 0);
-       rx_pipe_req : in std_logic_vector(0 downto 0);
-         
-       tx_pipe_data : in std_logic_vector(9 downto 0);
-       tx_pipe_ack : in std_logic_vector(0 downto 0);
-       tx_pipe_req : out std_logic_vector(0 downto 0);
-       
-       gtx_clk_reset : out std_logic;
-       dcm_locked : in std_logic;
-            
-  
+     
        -- Serialised statistics vectors
        --------------------------------
        tx_statistics_s : out std_logic;
@@ -275,7 +284,18 @@ for sbc_kc705_core_inst :  sbc_kc705_core --
        frame_error : out std_logic;
        frame_errorn : out std_logic;
        activity_flash : out std_logic;
-       activity_flashn : out std_logic
+       activity_flashn : out std_logic;
+       
+       -- NIC side interfaces
+       --------------------------------
+       rx_pipe_data : out std_logic_vector(9 downto 0);
+       rx_pipe_ack : out std_logic_vector(0 downto 0);
+       rx_pipe_req : in std_logic_vector(0 downto 0);
+         
+       tx_pipe_data : in std_logic_vector(9 downto 0);
+       tx_pipe_ack : in std_logic_vector(0 downto 0);
+       tx_pipe_req : out std_logic_vector(0 downto 0)
+     
        );
        end component;  
 
@@ -328,7 +348,7 @@ for sbc_kc705_core_inst :  sbc_kc705_core --
 
 end component mig_7series_0;
 
- component ila_1 is
+ component ila_2 is
  
     Port ( 
     clk : in STD_LOGIC;
@@ -336,7 +356,12 @@ end component mig_7series_0;
     probe1 : in STD_LOGIC_VECTOR ( 0 to 0 );
     probe2 : in STD_LOGIC_VECTOR ( 7 downto 0 );
     probe3 : in STD_LOGIC_VECTOR ( 35 downto 0 );
-    probe4 : in STD_LOGIC_VECTOR ( 63 downto 0 )
+    probe4 : in STD_LOGIC_VECTOR ( 63 downto 0 );
+    probe5 : in STD_LOGIC_VECTOR ( 7 downto 0 );
+    probe6 : in STD_LOGIC_VECTOR ( 64 downto 0 );
+    probe7 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    probe8 : in STD_LOGIC_VECTOR ( 0 to 0 );
+    probe9 : in STD_LOGIC_VECTOR ( 7 downto 0 )
   );
   
 
@@ -381,7 +406,7 @@ end component;
    signal NIC_TO_MAC_pipe_read_ack  : std_logic_vector(0  downto 0);
     
  
-   signal  NIC_DEBUG_SIGNAL :  std_logic_vector(127 downto 0);
+   signal  NIC_DEBUG_SIGNAL :  std_logic_vector(255 downto 0);
 
    signal MAX_ACB_TAP1_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
    signal MAX_ACB_TAP2_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
@@ -408,8 +433,8 @@ end component;
    
 
    signal enable_reset : std_logic_vector (0 downto 0);
-   signal clk_wizard_locked : STD_LOGIC_VECTOR ( 0 to 0 );
-   signal dcm_locked, gtx_clk_reset :std_logic;
+   signal clk_wizard_locked: std_logic_vector (0 downto 0);
+   
 
 
    signal  CPU_RESET, DEBUG_MODE: std_logic_vector (0 downto 0);
@@ -429,6 +454,14 @@ end component;
     signal NIC_ACB_REQUEST_TO_MEMORY_ADDR : std_logic_vector(35 downto 0);
     signal NIC_ACB_REQUEST_TO_MEMORY_DATA : std_logic_vector(63 downto 0);
     
+    signal NIC_ACB_REQUEST_TO_MEMORY_TAG : std_logic_vector(7 downto 0);
+    
+    signal MEMORY_TO_NIC_RESPONSE : std_logic_vector(64 downto 0);
+    
+    --signal  MAC_TVALID : std_logic_vector(0 downto 0);
+    --signal  MAC_TLAST  : std_logic_vector(0 downto 0);
+    --signal  MAC_TDATA  : std_logic_vector(7 downto 0);
+    
    
 begin
    -- Info: Baudrate 115200 ClkFreq 65000000:  Baud-freq = 1152, Baud-limit= 39473 Baud-control=0x9a310480
@@ -446,20 +479,43 @@ begin
      -- For second ACB TAP goes to RAM.
      MIN_ACB_TAP2_ADDR <= X"0_3000_0000";
      MAX_ACB_TAP2_ADDR <= X"0_FEFF_FFFF"; -- 0_FEFF_FFFF + 1 = 0_FF00_0000
-       
-    clk_wiz_0_inst: clk_wiz_0 
-        Port map( 
-          clk_320       => clk_sys_320, -- goes to the DRAM controller
-          clk_200       => clk_ref_200, -- goes to the DRAM controller
-	  clk_125       => clk_ref_125, -- To ethernet mac
-	  clk_100       => clk_ref_100, -- To axi (in mac)
-          reset         => clk_rst, 
-          locked        => clk_wizard_locked(0), -- goes to the VIO
-          clk_in1_p     => clk_in_p,
-          clk_in1_n     => clk_in_n);
+     
+    -- clocking wizard 
+      
+--    clk_wiz_0_inst: clk_wiz_0 
+--        Port map( 
+--          clk_320       => clk_sys_320, -- goes to the DRAM controller
+--          clk_200       => clk_ref_200, -- goes to the DRAM controller and Trimode MAC IP as reference clock.
+--	  clk_125       => clk_ref_125, -- To GTX transceiver in Trimode MAC IP as gtx_clk.
+--	  clk_100       => clk_ref_100, -- To AXI lite state machine in Trimode MAC IP.
+--          reset         => clk_rst, 
+--          locked        => clk_wizard_locked(0), -- goes to the VIO
+--          clk_in1_p     => clk_in_p,
+--          clk_in1_n     => clk_in_n
+--          );
 
-    -- used by ETH	
-    dcm_locked <= clk_wizard_locked(0);
+
+	
+
+
+    example_clocks: tri_mode_ethernet_mac_0_example_design_clocks
+	Port map(
+		--differential clock inputs
+		clk_in_p     => clk_in_p,
+		clk_in_n     => clk_in_n,
+
+		--asynchronous control/resets
+		glbl_rst         => clk_rst,
+		dcm_locked        => clk_wizard_locked(0),
+
+		--clock outputs
+		dram_sys_clk       => clk_sys_320, -- goes to the DRAM controller
+		refclk_bufg       => clk_ref_200, -- goes to the DRAM controller and Trimode MAC IP as reference clock.
+		gtx_clk_bufg       => clk_ref_125, -- To GTX transceiver in Trimode MAC IP as gtx_clk.
+		s_axi_aclk       => clk_ref_100 -- To AXI lite state machine in Trimode MAC IP.
+	   );
+
+
 
     -- VIO for processor reset 
 
@@ -554,10 +610,9 @@ begin
     WRITE_PROTECT(0) <= '0';
 
 
-    ETH_KC_inst : ETH_KC
+   tri_mode_ethernet_mac_0_example_design_inst : tri_mode_ethernet_mac_0_example_design
     port map
     (
-    
      --asynchronous reset
      glbl_rst => NIC_MAC_RESETN(0), --in std_logic;
 
@@ -565,7 +620,8 @@ begin
      gtx_clk_bufg => clk_ref_125 , --in std_logic;   //125MHz
      refclk_bufg => clk_ref_200 , --in std_logic; //200MHz
      s_axi_aclk => clk_ref_100, --in std_logic;    //100MHz
-     
+     dcm_locked => clk_wizard_locked(0), --in std_logic;
+      
      -- 125 MHz clock from MMCM
      gtx_clk_bufg_out => gtx_clk_bufg_out, --out std_logic;
      phy_resetn => phy_resetn, --out std_logic;
@@ -580,23 +636,10 @@ begin
      rgmii_rx_ctl => rgmii_rx_ctl, --in std_logic;
      rgmii_rxc => rgmii_rxc, --in std_logic;
 
-     
      -- MDIO Interface
      -----------------
      mdio => mdio, --in std_logic;
      mdc => mdc, --out std_logic;
-
-    -- nic side
-    rx_pipe_data => MAC_TO_NIC_pipe_write_data, --out std_logic_vector(9 downto 0);
-    rx_pipe_ack => MAC_TO_NIC_pipe_write_req, --out std_logic;
-    rx_pipe_req => MAC_TO_NIC_pipe_write_ack, --in std_logic;
-         
-    tx_pipe_data => NIC_TO_MAC_pipe_read_data, --in std_logic_vector(9 downto 0);
-    tx_pipe_ack => NIC_TO_MAC_pipe_read_ack, --in std_logic;
-    tx_pipe_req => NIC_TO_MAC_pipe_read_req, --out std_logic;
-    
-    gtx_clk_reset => gtx_clk_reset, -- out std logic;
-    dcm_locked => dcm_locked,
 
      -- Serialised statistics vectors
      --------------------------------
@@ -619,8 +662,19 @@ begin
      frame_error => frame_error, --out std_logic;
      frame_errorn => frame_errorn, --out std_logic;
      activity_flash => activity_flash, --out std_logic;
-     activity_flashn => activity_flashn --out std_logic
-);
+     activity_flashn => activity_flashn, --out std_logic
+     
+    -- nic side
+    -------------------------------
+    rx_pipe_data => MAC_TO_NIC_pipe_write_data, --out std_logic_vector(9 downto 0);
+    rx_pipe_ack => MAC_TO_NIC_pipe_write_req, --out std_logic;
+    rx_pipe_req => MAC_TO_NIC_pipe_write_ack, --in std_logic;
+         
+    tx_pipe_data => NIC_TO_MAC_pipe_read_data, --in std_logic_vector(9 downto 0);
+    tx_pipe_ack => NIC_TO_MAC_pipe_read_ack, --in std_logic;
+    tx_pipe_req => NIC_TO_MAC_pipe_read_req --out std_logic;
+     
+    );
 
 
 
@@ -701,21 +755,28 @@ begin
   sys_rst(0) <= clk_rst; -- MIG is at same level as clock generator.
 
 
+	NIC_ACB_REQUEST_TO_MEMORY_TAG   <= NIC_DEBUG_SIGNAL(182 downto 175); 
+	NIC_ACB_REQUEST_TO_MEMORY_LOCK  <= (0 => NIC_DEBUG_SIGNAL(174));
+	NIC_ACB_REQUEST_TO_MEMORY_RWBAR <= (0 => NIC_DEBUG_SIGNAL(173));
+	NIC_ACB_REQUEST_TO_MEMORY_MASK  <= NIC_DEBUG_SIGNAL(172 downto 165);
+	NIC_ACB_REQUEST_TO_MEMORY_ADDR  <= NIC_DEBUG_SIGNAL(164 downto 129);
+	NIC_ACB_REQUEST_TO_MEMORY_DATA  <= NIC_DEBUG_SIGNAL(128 downto 65);
+	MEMORY_TO_NIC_RESPONSE	<= NIC_DEBUG_SIGNAL(64 downto 0); 
+ 
 
- NIC_ACB_REQUEST_TO_MEMORY_LOCK  <= (0 => NIC_DEBUG_SIGNAL(109));
- NIC_ACB_REQUEST_TO_MEMORY_RWBAR <= (0 => NIC_DEBUG_SIGNAL(108));
- NIC_ACB_REQUEST_TO_MEMORY_MASK  <= NIC_DEBUG_SIGNAL(107 downto 100);
- NIC_ACB_REQUEST_TO_MEMORY_ADDR  <= NIC_DEBUG_SIGNAL(99 downto 64);
- NIC_ACB_REQUEST_TO_MEMORY_DATA  <= NIC_DEBUG_SIGNAL(63 downto 0);
-	
-inst_ila_1 : ila_1 
+inst_ila_2 : ila_2 
   Port map( 
     clk => clk_ref_125,
     probe0 => NIC_ACB_REQUEST_TO_MEMORY_LOCK,
     probe1 => NIC_ACB_REQUEST_TO_MEMORY_RWBAR,
     probe2 => NIC_ACB_REQUEST_TO_MEMORY_MASK,
     probe3 => NIC_ACB_REQUEST_TO_MEMORY_ADDR,
-    probe4 => NIC_ACB_REQUEST_TO_MEMORY_DATA
+    probe4 => NIC_ACB_REQUEST_TO_MEMORY_DATA,
+    probe5 => NIC_ACB_REQUEST_TO_MEMORY_TAG,
+    probe6 => MEMORY_TO_NIC_RESPONSE,
+    probe7 =>  NIC_TO_MAC_pipe_read_req,
+    probe8 =>  NIC_TO_MAC_pipe_read_ack,
+    probe9 =>  MAC_TO_NIC_pipe_write_data(8 downto 1)    
   );
 
 
