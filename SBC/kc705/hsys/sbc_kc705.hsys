@@ -34,7 +34,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$pipe MAC_TO_NIC $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 		
 	$out
-		$signal NIC_DEBUG_SIGNAL 128 $depth 1
+		$signal NIC_DEBUG_SIGNAL 256 $depth 1
 
 		// processor 
 		$pipe SOC_DEBUG_to_MONITOR  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR

@@ -18,7 +18,7 @@ $pipeline $depth 7 $fullrate $module [accessMemoryBase]
 	NIC_TO_MEMORY_REQUEST := request $mark REQ
 	response := MEMORY_TO_NIC_RESPONSE  $delay (REQ 8)
 
-	$volatile debug_sig := ($concat $zero<10> tag request)
+	$volatile debug_sig := ($concat $zero<73> tag request response)
 	NIC_DEBUG_SIGNAL := debug_sig
 
 	$attribute input_buffering 0
