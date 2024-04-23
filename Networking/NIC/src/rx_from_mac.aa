@@ -77,11 +77,11 @@ $module [nicRxFromMacDaemon] $in () $out () $is
 			// send to packet pipe
 			nic_rx_to_packet := RX
 
-				// for Debug
-				$volatile pkt_complete := (nLSTATE == S0)
-				$volatile npkt_cnt := ($mux pkt_complete (pkt_cnt + $one<32>) pkt_cnt)			
-				$guard(pkt_complete)
-					$call accessRegister ($zero<1> (~$zero<4>) 23 pkt_cnt) (ignore_resp2)
+			// for Debug
+			$volatile pkt_complete := (nLSTATE == S0)
+			$volatile npkt_cnt := ($mux pkt_complete (pkt_cnt + $one<32>) pkt_cnt)			
+			$guard(pkt_complete)
+				$call accessRegister ($zero<1> (~$zero<4>) 23 pkt_cnt) (ignore_resp2)
 					
 			$rreport(nicRxFromMacDaemon data_written_is RX nLSTATE)
 			$while (S_CONTROL_REGISTER [] 0)
