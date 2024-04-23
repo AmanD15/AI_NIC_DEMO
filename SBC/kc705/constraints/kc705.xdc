@@ -226,7 +226,7 @@ set_input_jitter clk_in_p 0.050
 
 #set to use clock backbone - this uses a long route to allow the MMCM to be placed in the other half of the device
 #set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_nets -of [get_pins example_clocks/clkin1_buf/O]]
-set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_nets -of [get_pins example_clocks/clock_generator/inst/mmcm_adv_inst/CLKIN1]]
+#set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_nets -of [get_pins example_clocks/clock_generator/inst/mmcm_adv_inst/CLKIN1]]
 
 
 
@@ -234,7 +234,9 @@ set_property CLOCK_DEDICATED_ROUTE BACKBONE [get_nets -of [get_pins example_cloc
 ############################################################
 # Get auto-generated clock names                           #
 ############################################################
-set axi_clk_name [get_clocks -of [get_pins example_clocks/clock_generator/inst/mmcm_adv_inst/CLKOUT3]]
+
+
+set axi_clk_name [get_clocks -of [get_pins clk_wiz_0_inst/inst/mmcm_adv_inst/CLKOUT3]]
 
 
 ############################################################

@@ -119,19 +119,19 @@ architecture structure of sbc_kc705 is
 
 --------- NEW CLOCK WIZ AND VIOS ----------------------------------------
 
---    component clk_wiz_0 is
---      Port ( 
---        clk_320 : out STD_LOGIC;
---        clk_200 : out STD_LOGIC;
---        clk_125 : out STD_LOGIC;
---        clk_100 : out STD_LOGIC;
---        reset : in STD_LOGIC;
---        locked : out STD_LOGIC;
---        clk_in1_p : in STD_LOGIC;
---        clk_in1_n : in STD_LOGIC
---      );
+    component clk_wiz_0 is
+      Port ( 
+        clk_320 : out STD_LOGIC;
+        clk_200 : out STD_LOGIC;
+        clk_125 : out STD_LOGIC;
+        clk_100 : out STD_LOGIC;
+        reset : in STD_LOGIC;
+        locked : out STD_LOGIC;
+        clk_in1_p : in STD_LOGIC;
+        clk_in1_n : in STD_LOGIC
+      );
 
---    end component;
+    end component;
 
 
 component tri_mode_ethernet_mac_0_example_design_clocks is
@@ -482,38 +482,37 @@ begin
      
     -- clocking wizard 
       
---    clk_wiz_0_inst: clk_wiz_0 
---        Port map( 
---          clk_320       => clk_sys_320, -- goes to the DRAM controller
---          clk_200       => clk_ref_200, -- goes to the DRAM controller and Trimode MAC IP as reference clock.
---	  clk_125       => clk_ref_125, -- To GTX transceiver in Trimode MAC IP as gtx_clk.
---	  clk_100       => clk_ref_100, -- To AXI lite state machine in Trimode MAC IP.
---          reset         => clk_rst, 
---          locked        => clk_wizard_locked(0), -- goes to the VIO
---          clk_in1_p     => clk_in_p,
---          clk_in1_n     => clk_in_n
---          );
+    clk_wiz_0_inst: clk_wiz_0 
+        Port map( 
+          clk_320       => clk_sys_320, -- goes to the DRAM controller
+          clk_200       => clk_ref_200, -- goes to the DRAM controller and Trimode MAC IP as reference clock.
+	  clk_125       => clk_ref_125, -- To GTX transceiver in Trimode MAC IP as gtx_clk.
+	  clk_100       => clk_ref_100, -- To AXI lite state machine in Trimode MAC IP.
+          reset         => clk_rst, 
+          locked        => clk_wizard_locked(0), -- goes to the VIO
+          clk_in1_p     => clk_in_p,
+          clk_in1_n     => clk_in_n
+          );
 
 
 	
 
-
-    example_clocks: tri_mode_ethernet_mac_0_example_design_clocks
-	Port map(
+--   example_clocks: tri_mode_ethernet_mac_0_example_design_clocks
+--	Port map(
 		--differential clock inputs
-		clk_in_p     => clk_in_p,
-		clk_in_n     => clk_in_n,
+--		clk_in_p     => clk_in_p,
+--		clk_in_n     => clk_in_n,
 
 		--asynchronous control/resets
-		glbl_rst         => clk_rst,
-		dcm_locked        => clk_wizard_locked(0),
+--		glbl_rst         => clk_rst,
+--		dcm_locked        => clk_wizard_locked(0),
 
 		--clock outputs
-		dram_sys_clk       => clk_sys_320, -- goes to the DRAM controller
-		refclk_bufg       => clk_ref_200, -- goes to the DRAM controller and Trimode MAC IP as reference clock.
-		gtx_clk_bufg       => clk_ref_125, -- To GTX transceiver in Trimode MAC IP as gtx_clk.
-		s_axi_aclk       => clk_ref_100 -- To AXI lite state machine in Trimode MAC IP.
-	   );
+--		dram_sys_clk       => clk_sys_320, -- goes to the DRAM controller
+--		refclk_bufg       => clk_ref_200, -- goes to the DRAM controller and Trimode MAC IP as reference clock.
+--		gtx_clk_bufg       => clk_ref_125, -- To GTX transceiver in Trimode MAC IP as gtx_clk.
+--		s_axi_aclk       => clk_ref_100 -- To AXI lite state machine in Trimode MAC IP.
+--	   );
 
 
 
