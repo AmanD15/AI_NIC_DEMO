@@ -1,6 +1,6 @@
 
-convolution_core.ipynb - python code for implementation of new convolution core
-(colab link - https://colab.research.google.com/drive/1BZA6cCWycyWE5YAzEI6NfgRfS2QNRu5x?usp=sharing)
+ml_accelerator.ipynb - python code for implementation of AI ML Accelerator
+(colab link - https://colab.research.google.com/drive/1XG1G2dvrd-cqx1Fp8GrEZdEWh5RBzqGE?usp=sharing)
 
 /resnet/models/ 
     - qresnet.py - Code for ResNet 18 architecture
