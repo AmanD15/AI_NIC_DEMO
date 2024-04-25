@@ -1,7 +1,7 @@
 
 $system nic_mac_bridge $library nic_mac_bridge_lib
     $in 
-	    $pipe ENABLE_MAC
+	    $signal ENABLE_MAC
         $pipe rx_in_pipe
 	    $pipe tx_in_pipe 
         

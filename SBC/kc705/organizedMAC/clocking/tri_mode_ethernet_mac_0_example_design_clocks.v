@@ -67,8 +67,7 @@ module tri_mode_ethernet_mac_0_example_design_clocks
    output         gtx_clk_bufg,
    
    output         refclk_bufg,
-   output         s_axi_aclk,
-   output         dram_sys_clk
+   output         s_axi_aclk
    );
 
 
@@ -118,9 +117,8 @@ module tri_mode_ethernet_mac_0_example_design_clocks
   //----------------------------------------------------------------------------
   // Generate clocks using the clock wizard
   //----------------------------------------------------------------------------
-  
-  /*
-   tri_mode_ethernet_mac_0_clk_wiz clock_generator
+
+  tri_mode_ethernet_mac_0_clk_wiz clock_generator
   (
       // Clock in ports
       .CLK_IN1       (clkin1),
@@ -131,21 +129,6 @@ module tri_mode_ethernet_mac_0_example_design_clocks
       // Status and control signals
       .RESET         (mmcm_rst),
       .LOCKED        (dcm_locked_int)
- );
- */
- 
-  clk_wiz_0 clock_generator
-  (
-      // Clock in ports
-      .clk_in1       (clkin1),
-      // Clock out ports
-      .clk_125      (gtx_clk_bufg),
-      .clk_100      (s_axi_aclk),
-      .clk_200      (refclk_bufg),
-      .clk_320      (dram_sys_clk),
-      // Status and control signals
-      .reset         (mmcm_rst),
-      .locked        (dcm_locked_int)
  );
 
  assign dcm_locked = dcm_locked_int;

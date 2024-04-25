@@ -19,6 +19,7 @@ read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/rx_co
 
 #read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/vhdl/nic_mac_bridge_lib/nic_mac_bridge.vhdl
 read_vhdl -library nic_mac_bridge_lib ../toplevel/nic_mac_bridge_edited.vhdl
+#read_vhdl -library nic_mac_bridge_lib ../toplevel/nic_mac_bridge.vhdl
 
 read_vhdl -library nic_lib ../hsys/nic_subsystem/nic/vhdl/nic_lib/nic.vhdl
 read_vhdl -library nic_lib ../hsys/nic_subsystem/nic/vhdl/nic_lib/nic_global_package.vhdl
@@ -36,14 +37,33 @@ read_vhdl ../toplevel/sbc_kc705.vhdl
 
 ###########################################################
 # verilog files..
-read_verilog ../verilog/axi_lite_controller.v
-read_verilog ../verilog/nic_mac_pipe_reset.v
-read_verilog ../verilog/ETH_KC.v
+#read_verilog ../verilog/axi_lite_controller.v
+#read_verilog ../verilog/ETH_KC.v
+#read_verilog ../verilog/reset_gen.v
+#read_verilog ../verilog/tri_mode_ethernet_mac_0_clk_wiz.v
+#read_verilog ../verilog/tri_mode_ethernet_mac_0_reset_sync.v
+#read_verilog ../verilog/tri_mode_ethernet_mac_0_sync_block.v
+
+# verilog files for MAC
+read_verilog ../organizedMAC/example_design_top_level/tri_mode_ethernet_mac_0_example_design.v
+read_verilog ../organizedMAC/AXI_stateMachine/tri_mode_ethernet_mac_0_axi_lite_sm.v
+read_verilog ../organizedMAC/reset_sync/tri_mode_ethernet_mac_0_example_design_resets.v
+read_verilog ../organizedMAC/reset_sync/tri_mode_ethernet_mac_0_reset_sync.v
+read_verilog ../organizedMAC/sync_block/tri_mode_ethernet_mac_0_sync_block.v
+
+
+read_verilog ../organizedMAC/AXI_fifos/tri_mode_ethernet_mac_0_bram_tdp.v
+read_verilog ../organizedMAC/AXI_fifos/tri_mode_ethernet_mac_0_fifo_block.v
+read_verilog ../organizedMAC/AXI_fifos/tri_mode_ethernet_mac_0_rx_client_fifo.v
+read_verilog ../organizedMAC/AXI_fifos/tri_mode_ethernet_mac_0_support.v
+read_verilog ../organizedMAC/AXI_fifos/tri_mode_ethernet_mac_0_support_clocking.v
+read_verilog ../organizedMAC/AXI_fifos/tri_mode_ethernet_mac_0_support_resets.v
+read_verilog ../organizedMAC/AXI_fifos/tri_mode_ethernet_mac_0_ten_100_1g_eth_fifo.v
+read_verilog ../organizedMAC/AXI_fifos/tri_mode_ethernet_mac_0_tx_client_fifo.v
+
+
 read_verilog ../verilog/queueMac.v
-read_verilog ../verilog/reset_gen.v
-read_verilog ../verilog/tri_mode_ethernet_mac_0_clk_wiz.v
-read_verilog ../verilog/tri_mode_ethernet_mac_0_reset_sync.v
-read_verilog ../verilog/tri_mode_ethernet_mac_0_sync_block.v
+read_verilog ../verilog/nic_mac_pipe_reset.v
 read_verilog ../hsys/acb_dram_controller_bridge/verilog/ACB_to_UI_EA.v
 
 ############# CONSTRAINT FILE ###########
@@ -61,19 +81,19 @@ read_ip ../ip_consolidated/kc705_dram_ip/fifo_generator_4/fifo_generator_4.xci
 read_ip ../ip_consolidated/kc705_dram_ip/fifo_generator_3/fifo_generator_3.xci
 
 ################### Networking IPs ##################################################33
-read_ip ../ip_consolidated/kc705_networking_ip/tri_mode_ethernet_mac_0/tri_mode_ethernet_mac_0.xci
+#read_ip ../ip_consolidated/kc705_networking_ip/tri_mode_ethernet_mac_0/tri_mode_ethernet_mac_0.xci
+read_ip ../organizedMAC/tri_mode_ethernet_mac_ip/tri_mode_ethernet_mac_0/tri_mode_ethernet_mac_0.xci
 read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_acb_resp/fifo_generator_acb_resp.xci
 read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_acb_req/fifo_generator_acb_req.xci
 
 # afb dual-clocked fifos are not used.
 #read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_resp/fifo_generator_afb_resp.xci
 #read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_afb_req/fifo_generator_afb_req.xci
-#
-read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_0/fifo_generator_0.xci
 
+read_ip ../ip_consolidated/kc705_networking_ip/fifo_generator_0/fifo_generator_0.xci
 read_ip ../ip_consolidated/kc705_networking_ip/vio_80/vio_80.xci
 read_ip ../ip_consolidated/kc705_networking_ip/vio_125/vio_125.xci
-read_ip ../ip_consolidated/kc705_networking_ip/ila_1/ila_1.xci
+read_ip ../ip_consolidated/kc705_networking_ip/ila_2/ila_2.xci
 read_ip ../ip_consolidated/kc705_networking_ip/clk_wiz_0/clk_wiz_0.xci
 
 ## core edif file ####################################################################

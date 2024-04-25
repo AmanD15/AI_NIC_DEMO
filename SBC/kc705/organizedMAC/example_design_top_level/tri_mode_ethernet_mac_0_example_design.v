@@ -200,6 +200,8 @@ module tri_mode_ethernet_mac_0_example_design
      input  [9:0]  tx_pipe_data,
      input         tx_pipe_ack,
      output         tx_pipe_req
+     
+     
 
     );
 
@@ -672,41 +674,33 @@ module tri_mode_ethernet_mac_0_example_design
   //  ADDED NEW LOGIC HERE
   //----------------------------------------------------------------------------
   
- wire [9:0]  tx_pipe_pipe_read_data_queue;//out
- wire        tx_pipe_pipe_read_req_queue;//in
- wire        tx_pipe_pipe_read_ack_queue;    
- wire loopback_reset;
- wire tx_fifo_reset;
- wire rx_fifo_reset;
- 
- assign loopback_reset = !glbl_rst_intn;  //for gtx_clk_bufg clk
- assign tx_fifo_reset = !tx_fifo_resetn;
- assign rx_fifo_reset = !rx_fifo_resetn;
- 
- DualClockedQueue  DualClockedQueue_rx_loopback
-    (
-        // read 
-        .read_req_in(rx_pipe_req), 
-        .read_data_out(rx_pipe_data), 
-        .read_ack_out(rx_pipe_ack), 
-         // write
-        .write_req_out(rx_axis_fifo_tready),   
-        .write_data_in({rx_axis_fifo_tlast, rx_axis_fifo_tdata,1'b0}),
-        .write_ack_in(rx_axis_fifo_tvalid), 
-         
-        .read_clk(gtx_clk_bufg),
-        .write_clk(rx_fifo_clock),
-    
-        .reset(rx_fifo_reset)
-    );
+     wire [9:0]  tx_pipe_pipe_read_data_queue;//out
+     wire        tx_pipe_pipe_read_req_queue;//in
+     wire        tx_pipe_pipe_read_ack_queue;    
 
+     wire tx_fifo_reset;
+     wire rx_fifo_reset;
+ 
+    assign tx_fifo_reset = !tx_fifo_resetn;
+    assign rx_fifo_reset = !rx_fifo_resetn;
+	 
+// Receiving From AXI-S FIFO : AXI stream to Ahir pipes
+
+    assign rx_pipe_ack = rx_axis_fifo_tvalid;
+    assign rx_pipe_data = {rx_axis_fifo_tlast, rx_axis_fifo_tdata,1'b0};
+    assign rx_axis_fifo_tready = rx_pipe_req;
+    
+    
+// Transmitting TO AXI-S FIFO : Ahir pipes to AXI stream 
+
+	// TODO: yet to check transmit path, see if it can be simplified.
+	
     DualClockedQueue  DualClockedQueue_tx_loopback
     (
         .read_req_in(tx_pipe_pipe_read_ack_queue),   
         .read_data_out(tx_pipe_pipe_read_data_queue), 
         .read_ack_out(tx_pipe_pipe_read_req_queue),
         
-        // write 
         .write_req_out(tx_pipe_req), 
         .write_data_in(tx_pipe_data), 
         .write_ack_in(tx_pipe_ack),          
@@ -714,21 +708,21 @@ module tri_mode_ethernet_mac_0_example_design
         .read_clk(tx_fifo_clock),
         .write_clk(gtx_clk_bufg),
     
-        .reset(loopback_reset)
+        .reset(tx_fifo_reset)
     );
     
     queueMac queueMac_inst(
         
-            .clk(tx_fifo_clock),
-            .reset(tx_fifo_reset),
-        
-            .push_req(tx_pipe_pipe_read_req_queue), // in
-            .push_data(tx_pipe_pipe_read_data_queue), // in
-            .push_ack(tx_pipe_pipe_read_ack_queue), // out
-            
-            .pop_req(tx_axis_fifo_tready), // in
-            .pop_data({tx_axis_fifo_tlast, tx_axis_fifo_tdata, 1'b0}), // out
-            .pop_ack(tx_axis_mac_tvalid) // out
+	.clk(tx_fifo_clock),
+	.reset(tx_fifo_reset),
+
+	.push_req(tx_pipe_pipe_read_req_queue), // in
+	.push_data(tx_pipe_pipe_read_data_queue), // in
+	.push_ack(tx_pipe_pipe_read_ack_queue), // out
+
+	.pop_req(tx_axis_fifo_tready), // in
+	.pop_data({tx_axis_fifo_tlast, tx_axis_fifo_tdata, 1'b0}), // out
+	.pop_ack(tx_axis_mac_tvalid) // out
     
         );
 

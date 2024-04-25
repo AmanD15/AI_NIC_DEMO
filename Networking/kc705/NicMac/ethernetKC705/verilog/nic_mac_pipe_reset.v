@@ -1,4 +1,10 @@
 
+//Description: This modules holds the MAC in reset state. 
+//		sends an active high reset to the example  
+//		design top level (obs: reset_reg = 0, initially), 
+//		once NIC is enabled, it makes ENABLE_MAC = 1,
+//		bringing out MAC from reset state and link becomes active.
+
 module nic_mac_pipe_reset
 (
 input clk,

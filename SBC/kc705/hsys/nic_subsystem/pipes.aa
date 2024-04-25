@@ -15,7 +15,7 @@ $pipe rx_out_pipe: $uint<73> $depth 2
 
 $pipe tx_in_pipe: $uint<73> $depth 2  
 $pipe tx_out_pipe: $uint<10> $depth 2 
-$pipe ENABLE_MAC: $uint<1> $signal
+
 
 
 // nic pipes

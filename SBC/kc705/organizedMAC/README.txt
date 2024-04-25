@@ -12,9 +12,9 @@ Date  : 22/04/2024
 	  AHIR pipes and clocks have been introduced to the interface.
 
 	- Clocking: 
-	  This has been moved to the top level, and within it, 
-	  the clocking wizard for the SBC_core has been incorporated.
-	  
+	  This is not used instead, Clock wizard is used at the toplevel
+	  in sbc_kc705.vhdl 
+	  	  
 	- tri_mode_ethernet_mac_ip: 
 	  Contains the trimode_ethernet_mac IP.	  
 	  	  

@@ -3,7 +3,7 @@
 
 
 #define NUMBER_OF_BUFFERS 1
-#define BUFFER_SIZE_IN_BYTES 128
+#define BUFFER_SIZE_IN_BYTES 1024
 #define NIC_START_ADDR 0xFF000000
 #define RXQ_LOCK_ADDR 0x40014006
 
@@ -239,7 +239,7 @@ int main()
 			rx_queue->msgSizeInBytes, (uint32_t)rx_queue->lock, (uint32_t)rx_queue->bget_addr, rx_queue->misc);
 			
 			BufferPtr = (uint64_t*)((uint32_t)bufptr);
-			packetLen = (*BufferPtr) >> 8;	
+			packetLen = (uint32_t)((0x00000000FFFFFFFF & (*BufferPtr)) >> 8);	
 			cortos_printf("Packet Length = %u\n",packetLen);
 			
 			

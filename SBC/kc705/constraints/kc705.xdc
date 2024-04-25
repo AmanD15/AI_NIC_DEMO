@@ -237,7 +237,7 @@ set_input_jitter clk_in_p 0.050
 
 
 set axi_clk_name [get_clocks -of [get_pins clk_wiz_0_inst/inst/mmcm_adv_inst/CLKOUT3]]
-
+#set axi_clk_name [get_clocks -of [get_pins example_clocks/clock_generator/inst/mmcm_adv_inst/CLKOUT3]]
 
 ############################################################
 # 5.2 Input Delay constraints

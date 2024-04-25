@@ -133,27 +133,6 @@ architecture structure of sbc_kc705 is
 
     end component;
 
-
-component tri_mode_ethernet_mac_0_example_design_clocks is
-
-    Port(
-	--differential clock inputs
-	clk_in_p: in STD_LOGIC;
-	clk_in_n: in STD_LOGIC;
-
-	--asynchronous control/resets
-	glbl_rst: in STD_LOGIC;
-	dcm_locked: out STD_LOGIC;
-
-	--clock outputs
-	gtx_clk_bufg: out STD_LOGIC;
-	refclk_bufg: out STD_LOGIC;
-	s_axi_aclk: out STD_LOGIC;
-	dram_sys_clk: out STD_LOGIC
-   );
-   
-end component;
-
 -- To generate synchronous reset to processor.
     component vio_80 is
       Port ( 
@@ -295,6 +274,7 @@ for sbc_kc705_core_inst :  sbc_kc705_core --
        tx_pipe_data : in std_logic_vector(9 downto 0);
        tx_pipe_ack : in std_logic_vector(0 downto 0);
        tx_pipe_req : out std_logic_vector(0 downto 0)
+       
      
        );
        end component;  
@@ -457,6 +437,7 @@ end component;
     signal NIC_ACB_REQUEST_TO_MEMORY_TAG : std_logic_vector(7 downto 0);
     
     signal MEMORY_TO_NIC_RESPONSE : std_logic_vector(64 downto 0);
+  
     
     --signal  MAC_TVALID : std_logic_vector(0 downto 0);
     --signal  MAC_TLAST  : std_logic_vector(0 downto 0);
@@ -484,36 +465,15 @@ begin
       
     clk_wiz_0_inst: clk_wiz_0 
         Port map( 
-          clk_320       => clk_sys_320, -- goes to the DRAM controller
+         clk_320       => clk_sys_320, -- goes to the DRAM controller
           clk_200       => clk_ref_200, -- goes to the DRAM controller and Trimode MAC IP as reference clock.
 	  clk_125       => clk_ref_125, -- To GTX transceiver in Trimode MAC IP as gtx_clk.
 	  clk_100       => clk_ref_100, -- To AXI lite state machine in Trimode MAC IP.
-          reset         => clk_rst, 
+        reset         => clk_rst, 
           locked        => clk_wizard_locked(0), -- goes to the VIO
           clk_in1_p     => clk_in_p,
           clk_in1_n     => clk_in_n
           );
-
-
-	
-
---   example_clocks: tri_mode_ethernet_mac_0_example_design_clocks
---	Port map(
-		--differential clock inputs
---		clk_in_p     => clk_in_p,
---		clk_in_n     => clk_in_n,
-
-		--asynchronous control/resets
---		glbl_rst         => clk_rst,
---		dcm_locked        => clk_wizard_locked(0),
-
-		--clock outputs
---		dram_sys_clk       => clk_sys_320, -- goes to the DRAM controller
---		refclk_bufg       => clk_ref_200, -- goes to the DRAM controller and Trimode MAC IP as reference clock.
---		gtx_clk_bufg       => clk_ref_125, -- To GTX transceiver in Trimode MAC IP as gtx_clk.
---		s_axi_aclk       => clk_ref_100 -- To AXI lite state machine in Trimode MAC IP.
---	   );
-
 
 
     -- VIO for processor reset 
@@ -601,19 +561,20 @@ begin
     SPI_FLASH_CS_L => SPI_FLASH_CS_L,
     SPI_FLASH_MOSI => SPI_FLASH_MOSI,
     clk => '0',
-    reset =>'0'
+    reset => '0'
+  
     ); -- 
   -- 
     SPI_FLASH_CS_TOP(0) <= SPI_FLASH_CS_L(0);
     SPI_FLASH_CLK <= SPI_FLASH_CLK_SIG;
     WRITE_PROTECT(0) <= '0';
 
-
+	
    tri_mode_ethernet_mac_0_example_design_inst : tri_mode_ethernet_mac_0_example_design
     port map
     (
      --asynchronous reset
-     glbl_rst => NIC_MAC_RESETN(0), --in std_logic;
+     glbl_rst => NIC_MAC_RESETN(0) , --in std_logic;
 
      -- 3 clocks (buffered with bufg's)
      gtx_clk_bufg => clk_ref_125 , --in std_logic;   //125MHz
@@ -672,9 +633,12 @@ begin
     tx_pipe_data => NIC_TO_MAC_pipe_read_data, --in std_logic_vector(9 downto 0);
     tx_pipe_ack => NIC_TO_MAC_pipe_read_ack, --in std_logic;
     tx_pipe_req => NIC_TO_MAC_pipe_read_req --out std_logic;
+    
+
      
     );
-
+	
+ 
 
 
   debug_uart_inst: configurable_uart
@@ -773,18 +737,10 @@ inst_ila_2 : ila_2
     probe4 => NIC_ACB_REQUEST_TO_MEMORY_DATA,
     probe5 => NIC_ACB_REQUEST_TO_MEMORY_TAG,
     probe6 => MEMORY_TO_NIC_RESPONSE,
-    probe7 =>  NIC_TO_MAC_pipe_read_req,
-    probe8 =>  NIC_TO_MAC_pipe_read_ack,
+    probe7 =>  MAC_TO_NIC_pipe_write_req,
+    probe8 =>  MAC_TO_NIC_pipe_write_ack,
     probe9 =>  MAC_TO_NIC_pipe_write_data(8 downto 1)    
   );
-
-
-
-
-
-
-
-
 
 
 
