@@ -1,0 +1,576 @@
+Title : Porting LwIP for AJIT.
+Author : Siddhant Singh Tomar
+Date   : 12/1/2024
+
+    1. include folder
+        contains various configuration file for LwIP
+            - cc.h :
+            - sys_arch.h:
+            - lwipopts.h:
+    2. src folder
+            - contains mainloop code for baremetal use of LwIP.
+            - ethernetif.c contanis low level drivers
+            - sys_arch.c mainly contains sys_now() function
+                needed for internal timers of TCP/IP stack.
+
+
+
+/* Following contains important functions and their descriptions */
+
+    1.  struct pbuf *pbuf_alloc(pbuf_layer l, u16_t length, pbuf_type type);
+    
+            - First arg: Takes one of the following enum "pbuf_layer" literals,
+                         before each literal, its description is given. 
+                            typedef enum {
+
+                            /** Includes spare room for transport layer header, e.g. UDP header.
+                             * Use this if you intend to pass the pbuf to functions like udp_send().
+                             */
+                            PBUF_TRANSPORT = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN,
+
+                            /** Includes spare room for IP header.
+                             * Use this if you intend to pass the pbuf to functions like raw_send().
+                             */
+                            PBUF_IP = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN,
+
+                            /** Includes spare room for link layer header (ethernet header).
+                             * Use this if you intend to pass the pbuf to functions like ethernet_output().
+                             * @see PBUF_LINK_HLEN
+                             */
+                            PBUF_LINK = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN,
+
+                            /** Includes spare room for additional encapsulation header before ethernet
+                             * headers (e.g. 802.11).
+                             * Use this if you intend to pass the pbuf to functions like netif->linkoutput().
+                             * @see PBUF_LINK_ENCAPSULATION_HLEN
+                             */
+                            PBUF_RAW_TX = PBUF_LINK_ENCAPSULATION_HLEN,
+
+                            /** Use this for input packets in a netif driver when calling netif->input()
+                             * in the most common case - ethernet-layer netif driver. */
+                            PBUF_RAW = 0
+
+                            } pbuf_layer;   
+            
+            - Second arg: Takes length of the packet including headers,
+                          before each literal, its description is given.
+
+            - Third arg : Takes one of the following enum "pbuf_layer" literal,
+                          before each literal, its description is given.
+
+                            typedef enum {
+                            /** pbuf data is stored in RAM, used for TX mostly, struct pbuf and its payload
+                                 are allocated in one piece of contiguous memory (so the first payload byte
+                                can be calculated from struct pbuf).
+                                pbuf_alloc() allocates PBUF_RAM pbufs as unchained pbufs (although that might
+                                change in future versions).
+                                This should be used for all OUTGOING packets (TX).*/
+                            PBUF_RAM = (PBUF_ALLOC_FLAG_DATA_CONTIGUOUS | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_HEAP),
+
+                            /** pbuf data is stored in ROM, i.e. struct pbuf and its payload are located in
+                                 totally different memory areas. Since it points to ROM, payload does not
+                                have to be copied when queued for transmission. */
+                            PBUF_ROM = PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF,
+
+                            /** pbuf comes from the pbuf pool. Much like PBUF_ROM but payload might change
+                                 so it has to be duplicated when queued before transmitting, depending on
+                                who has a 'ref' to it. */
+                            PBUF_REF = (PBUF_TYPE_FLAG_DATA_VOLATILE | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF),
+
+                            /** pbuf payload refers to RAM. This one comes from a pool and should be used
+                                 for RX. Payload can be chained (scatter-gather RX) but like PBUF_RAM, struct
+                                pbuf and its payload are allocated in one piece of contiguous memory (so
+                                the first payload byte can be calculated from struct pbuf).
+                                Don't use this for TX, if the pool becomes empty e.g. because of TCP queuing,
+                                you are unable to receive TCP acks! */
+                            PBUF_POOL = (PBUF_ALLOC_FLAG_RX | PBUF_TYPE_FLAG_STRUCT_DATA_CONTIGUOUS | PBUF_TYPE_ALLOC_SRC_MASK_STD_MEMP_PBUF_POOL)
+
+                            } pbuf_type;
+
+
+
+    2.  
+
+
+
+
+
+
+
+
+/* Following contains important structures used in low level driver functions */
+
+    1.  netif (as given in netif.h)
+
+            /** Generic data structure used for all lwIP network interfaces.
+             *  The following fields should be filled in by the initialization
+             *  function for the device driver: hwaddr_len, hwaddr[], mtu, flags */
+            struct netif {    
+                
+                /** This function is called by the network device driver
+                 *  to pass a packet up the TCP/IP stack. */
+                netif_input_fn input;
+
+                /** This function is called by ethernet_output() when it wants
+                 *  to send a packet on the interface. This function outputs
+                 *  the pbuf as-is on the link medium. */
+                netif_linkoutput_fn linkoutput;
+
+                /** link level hardware address of this interface */
+                u8_t hwaddr[NETIF_MAX_HWADDR_LEN];
+                /** number of bytes used in hwaddr */
+                u8_t hwaddr_len;
+                /** flags (@see @ref netif_flags) */
+                u8_t flags;
+                /** descriptive abbreviation */
+                char name[2];
+                /** number of this interface. Used for @ref if_api and @ref netifapi_netif,
+                 * as well as for IPv6 zones */
+                u8_t num;
+                /** maximum transfer unit (in bytes) */
+                u16_t mtu;
+                /** This field can be set by the device driver and could point
+                 *  to state information for the device. */
+                void *state;
+
+
+                #if !LWIP_SINGLE_NETIF
+                /** pointer to next in linked list */
+                struct netif *next;
+                #endif
+
+                #if LWIP_IPV4
+                /** IP address configuration in network byte order */
+                ip_addr_t ip_addr;
+                ip_addr_t netmask;
+                ip_addr_t gw;
+                #endif /* LWIP_IPV4 */
+                #if LWIP_IPV6
+                /** Array of IPv6 addresses for this netif. */
+                ip_addr_t ip6_addr[LWIP_IPV6_NUM_ADDRESSES];
+                /** The state of each IPv6 address (Tentative, Preferred, etc).
+                 * @see ip6_addr.h */
+                u8_t ip6_addr_state[LWIP_IPV6_NUM_ADDRESSES];
+                #if LWIP_IPV6_ADDRESS_LIFETIMES
+                /** Remaining valid and preferred lifetime of each IPv6 address, in seconds.
+                 * For valid lifetimes, the special value of IP6_ADDR_LIFE_STATIC (0)
+                 * indicates the address is static and has no lifetimes. */
+                u32_t ip6_addr_valid_life[LWIP_IPV6_NUM_ADDRESSES];
+                u32_t ip6_addr_pref_life[LWIP_IPV6_NUM_ADDRESSES];
+                #endif /* LWIP_IPV6_ADDRESS_LIFETIMES */
+                #endif /* LWIP_IPV6 */
+                #if LWIP_IPV4
+                /** This function is called by the IP module when it wants
+                 *  to send a packet on the interface. This function typically
+                 *  first resolves the hardware address, then sends the packet.
+                 *  For ethernet physical layer, this is usually etharp_output() */
+                netif_output_fn output;
+                #endif /* LWIP_IPV4 */
+                #if LWIP_IPV6
+                /** This function is called by the IPv6 module when it wants
+                 *  to send a packet on the interface. This function typically
+                 *  first resolves the hardware address, then sends the packet.
+                 *  For ethernet physical layer, this is usually ethip6_output() */
+                netif_output_ip6_fn output_ip6;
+                #endif /* LWIP_IPV6 */
+                #if LWIP_NETIF_STATUS_CALLBACK
+                /** This function is called when the netif state is set to up or down
+                 */
+                netif_status_callback_fn status_callback;
+                #endif /* LWIP_NETIF_STATUS_CALLBACK */
+                #if LWIP_NETIF_LINK_CALLBACK
+                /** This function is called when the netif link is set to up or down
+                 */
+                netif_status_callback_fn link_callback;
+                #endif /* LWIP_NETIF_LINK_CALLBACK */
+                #if LWIP_NETIF_REMOVE_CALLBACK
+                /** This function is called when the netif has been removed */
+                netif_status_callback_fn remove_callback;
+                #endif /* LWIP_NETIF_REMOVE_CALLBACK */
+                #ifdef netif_get_client_data
+                void* client_data[LWIP_NETIF_CLIENT_DATA_INDEX_MAX + LWIP_NUM_NETIF_CLIENT_DATA];
+                #endif
+                #if LWIP_NETIF_HOSTNAME
+                /* the hostname for this netif, NULL is a valid value */
+                const char*  hostname;
+                #endif /* LWIP_NETIF_HOSTNAME */
+                #if LWIP_CHECKSUM_CTRL_PER_NETIF
+                u16_t chksum_flags;
+                #endif /* LWIP_CHECKSUM_CTRL_PER_NETIF*/
+                #if LWIP_IPV6 && LWIP_ND6_ALLOW_RA_UPDATES
+                /** maximum transfer unit (in bytes), updated by RA */
+                u16_t mtu6;
+                #endif /* LWIP_IPV6 && LWIP_ND6_ALLOW_RA_UPDATES */
+                #if LWIP_IPV6_AUTOCONFIG
+                /** is this netif enabled for IPv6 autoconfiguration */
+                u8_t ip6_autoconfig_enabled;
+                #endif /* LWIP_IPV6_AUTOCONFIG */
+                #if LWIP_IPV6_SEND_ROUTER_SOLICIT
+                /** Number of Router Solicitation messages that remain to be sent. */
+                u8_t rs_count;
+                #endif /* LWIP_IPV6_SEND_ROUTER_SOLICIT */
+                #if MIB2_STATS
+                /** link type (from "snmp_ifType" enum from snmp_mib2.h) */
+                u8_t link_type;
+                /** (estimate) link speed */
+                u32_t link_speed;
+                /** timestamp at last change made (up/down) */
+                u32_t ts;
+                /** counters */
+                struct stats_mib2_netif_ctrs mib2_counters;
+                #endif /* MIB2_STATS */
+                #if LWIP_IPV4 && LWIP_IGMP
+                /** This function could be called to add or delete an entry in the multicast
+                     filter table of the ethernet MAC.*/
+                netif_igmp_mac_filter_fn igmp_mac_filter;
+                #endif /* LWIP_IPV4 && LWIP_IGMP */
+                #if LWIP_IPV6 && LWIP_IPV6_MLD
+                /** This function could be called to add or delete an entry in the IPv6 multicast
+                     filter table of the ethernet MAC. */
+                netif_mld_mac_filter_fn mld_mac_filter;
+                #endif /* LWIP_IPV6 && LWIP_IPV6_MLD */
+                #if LWIP_ACD
+                struct acd *acd_list;
+                #endif /* LWIP_ACD */
+                #if LWIP_NETIF_USE_HINTS
+                struct netif_hint *hints;
+                #endif /* LWIP_NETIF_USE_HINTS */
+                #if ENABLE_LOOPBACK
+                /* List of packets to be queued for ourselves. */
+                struct pbuf *loop_first;
+                struct pbuf *loop_last;
+                #if LWIP_LOOPBACK_MAX_PBUFS
+                u16_t loop_cnt_current;
+                #endif /* LWIP_LOOPBACK_MAX_PBUFS */
+                #if LWIP_NETIF_LOOPBACK_MULTITHREADING
+                /* Used if the original scheduling failed. */
+                u8_t reschedule_poll;
+                #endif /* LWIP_NETIF_LOOPBACK_MULTITHREADING */
+                #endif /* ENABLE_LOOPBACK */
+            };
+
+            - The following contains information about netif_flags.
+                /**
+                 * @defgroup netif_flags Flags
+                 * @ingroup netif
+                 * @{
+                 */
+
+                /** Whether the network interface is 'up'. This is
+                 * a software flag used to control whether this network
+                 * interface is enabled and processes traffic.
+                 * It must be set by the startup code before this netif can be used
+                 * (also for dhcp/autoip).
+                 */
+                #define NETIF_FLAG_UP           0x01U
+                /** If set, the netif has broadcast capability.
+                 * Set by the netif driver in its init function. */
+                #define NETIF_FLAG_BROADCAST    0x02U
+                /** If set, the interface has an active link
+                 *  (set by the network interface driver).
+                 * Either set by the netif driver in its init function (if the link
+                 * is up at that time) or at a later point once the link comes up
+                 * (if link detection is supported by the hardware). */
+                #define NETIF_FLAG_LINK_UP      0x04U
+                /** If set, the netif is an ethernet device using ARP.
+                 * Set by the netif driver in its init function.
+                 * Used to check input packet types and use of DHCP. */
+                #define NETIF_FLAG_ETHARP       0x08U
+                /** If set, the netif is an ethernet device. It might not use
+                 * ARP or TCP/IP if it is used for PPPoE only.
+                 */
+                #define NETIF_FLAG_ETHERNET     0x10U
+                /** If set, the netif has IGMP capability.
+                 * Set by the netif driver in its init function. */
+                #define NETIF_FLAG_IGMP         0x20U
+                /** If set, the netif has MLD6 capability.
+                 * Set by the netif driver in its init function. */
+                #define NETIF_FLAG_MLD6         0x40U
+
+                /**
+                 * @}
+                 */
+
+    2.  eth_addr and eth_hdr (as given in ethernet.h)
+
+           
+                /** An Ethernet MAC address */
+                struct eth_addr {
+                PACK_STRUCT_FLD_8(u8_t addr[ETH_HWADDR_LEN]);
+                } PACK_STRUCT_STRUCT;
+           
+
+                /** Ethernet header */
+                struct eth_hdr {
+                #if ETH_PAD_SIZE
+                PACK_STRUCT_FLD_8(u8_t padding[ETH_PAD_SIZE]);
+                #endif
+                PACK_STRUCT_FLD_S(struct eth_addr dest);
+                PACK_STRUCT_FLD_S(struct eth_addr src);
+                PACK_STRUCT_FIELD(u16_t type);
+                } PACK_STRUCT_STRUCT;
+          
+
+
+
+/* Following tables contains options changed 
+and files in which they are changed */
+
+Options         Value   File    
+
+ETH_PAD_SIZE    2       lwipopts.h
+
+/* Constructing the main function */
+    - initialize the LwIP
+    - initialize the timer
+    - install your driver into LwIP using netif_add
+        - physical network hardware are represented by 
+          a network interface structure.
+
+          Step One: Add the interface
+
+            use the following function:
+            struct netif *netif_add(struct netif *netif, void *state, netif_init_fn init, netif_input_fn input);
+
+            The "state" parameter is a driver-specific structure 
+            that defines any other "state" information necessary 
+            for the driver to function. Some drivers may require 
+            the state variable to be set prior to calling netif_add,
+            but many require this argument to be NULL.Check your 
+            driver for more information.
+
+            The "init" parameter specifies a driver-initialization
+            function that should be called once the netif structure
+            has been prepared by netif_add. This parameter may
+            be NULL if the driver has already been initialized
+            in your code elsewhere.
+
+
+        
+        Step Two: Bring the interface up
+
+            An interface that is "up" is available to your application
+            for input and output, and "down" is the opposite state. 
+            Therefore, before you can use the interface, you must bring it up.
+
+            use netif_set_up(&netif) and netif_set_down(&netif) 
+            
+            
+
+
+
+when you specify gcc -I /home/header_file_folder, 
+GCC will search for header files not only in the 
+/home/header_file_folder, but also in its subdirectories.
+
+Header files are not compiled. Instead, header files are 
+included at the top of source-code files using the “#include” 
+preprocessor directive, then the source-code files are 
+compiled by feeding them to a compiler. 
+
+
+what is LWIP_HAVE_LOOPIF flag in LwIP lwipopts.h file?
+
+        The LWIP_HAVE_LOOPIF flag in the lwipopts.h file of the lwIP 
+        (lightweight IP) stack is a configuration option that determines 
+        whether lwIP includes support for a loopback network interface (netif).
+
+        The loopback interface is a virtual interface that allows network 
+        communication between different protocols or between different parts 
+        of the same protocol stack within the same device. It is typically 
+        used for testing and optimization purposes, allowing packets to be 
+        sent and received without involving physical network interfaces.
+
+        When LWIP_HAVE_LOOPIF is defined or enabled, lwIP includes support
+        for the loopback interface. This means that you can create and
+        use a loopback netif in your lwIP-based application for various
+        purposes, such as inter-process communication or local testing.
+
+        If LWIP_HAVE_LOOPIF is not defined or disabled, lwIP does not 
+        include support for the loopback interface, and you won't be
+        able to use it in your application. Disabling this feature can
+        save some code space and resources if you don't need loopback
+        functionality in your application.
+
+
+
+
+
+
+what is loopback network interface?
+
+        A loopback network interface, often referred to simply as "loopback interface,"
+        is a virtual network interface in a computer system. Unlike physical network
+        interfaces that are associated with physical network hardware (such as Ethernet adapters)
+        , a loopback interface exists entirely within the software of the operating system.
+
+        The loopback interface is assigned a special IP address, usually 127.0.0.1, which
+        is known as the loopback address. This address is reserved for communication within
+        the same device and is commonly referred to as the "localhost" address.
+
+        The main purpose of the loopback interface is to allow processes within the same 
+        computer to communicate with each other as if they were communicating over a physical 
+        network. When a program sends data to the loopback address (127.0.0.1), the operating 
+        system's network stack routes the data internally, bypassing any physical network 
+        hardware. This allows for efficient communication between different processes or 
+        software components running on the same computer.
+
+        Some common uses of the loopback interface include:
+
+            Testing network functionality: Developers can use the loopback interface to
+            test networking software without needing physical network connections.
+
+            Inter-process communication: Processes running on the same computer can communicate
+            with each other through the loopback interface, enabling IPC 
+            (Inter-Process Communication) mechanisms.
+
+            Server testing: Software developers can run server applications locally and 
+            test client-server communication by connecting to the server using the loopback address.
+
+            Overall, the loopback interface provides a convenient and efficient way for software 
+            components to communicate with each other within the same computer system, without 
+            the need for physical network hardware.
+
+
+LWIP_HAVE_LOOPIF and LWIP_NETIF_LOOPBACK  parameters use in Lwip?
+
+
+    LWIP_HAVE_LOOPIF: 
+    This parameter is typically used to indicate whether
+    the lwIP stack includes support for loopback interfaces (netif_loop).
+    When this parameter is enabled, lwIP includes support for loopback
+    interfaces, allowing packets to be sent and received within the same 
+    device without actually going through physical interfaces. This is 
+    particularly useful for testing, debugging, and for certain networking 
+    applications where data needs to be looped back internally.
+
+
+    LWIP_NETIF_LOOPBACK: 
+    This parameter is related to the loopback interface
+    functionality. When enabled, it allows lwIP to create a loopback network
+    interface (netif_loop) which represents the loopback functionality. This 
+    interface behaves similarly to other network interfaces in lwIP, but it 
+    operates entirely in software, allowing packets to be sent and received 
+    internally within the lwIP stack without involving physical network 
+    interfaces.
+
+
+
+
+
+
+
+lwip_init() inside init.c contents explanation?
+lwip_cyclic_timer() inside timeouts.c explanation?
+
+lwipopts.h vs opt.h file in lwIP what is the difference in their role in overall usage?
+
+    lwipopts.h:
+
+        This file typically contains user-configurable options and settings for lwIP. 
+        It's where you define various parameters such as buffer sizes, the number of 
+        connections, memory allocation scheme, and other settings specific to your 
+        application's requirements.
+
+        lwipopts.h is often provided as a template or a starting point for customization. 
+        Users can modify it directly to tailor lwIP's behavior to their needs.
+        Changes made in lwipopts.h directly affect the configuration of the lwIP stack 
+        and are usually specific to a particular project or application.
+
+    opt.h:
+
+        opt.h is a file within the lwIP source code hierarchy that contains default
+        configuration options for lwIP. These options serve as a baseline configuration
+        for the lwIP stack.
+
+        While lwipopts.h is for user-specific customization, opt.h provides defaults that
+        can be overridden by the user's configuration in lwipopts.h.
+        opt.h is part of the lwIP source code distribution and is not typically meant to be
+        modified directly by users. Instead, users can refer to it to understand the available
+        configuration options and their default values.
+
+    In summary, lwipopts.h is where users directly configure lwIP for their specific 
+    application needs, while opt.h provides default configuration options that users 
+    can override if needed. Both files work together to tailor the lwIP stack's 
+    behavior to the requirements of a particular project.
+
+what is the use of netif ->output and netif->linkoutput, and difference between their overall use?
+
+
+    The netif->output function operates at a higher level and is responsible for transmitting 
+    IP packets, handling routing decisions, and selecting the appropriate network interface 
+    based on the destination IP address.
+
+    The netif->linkoutput function operates at a lower level and is responsible for the actual 
+    transmission of link-layer frames onto the physical network medium, such as Ethernet frames.
+
+
+
+    /*********************** Making sense of it all **************************************/
+
+    Reception:
+        - ethernetif_input(&netif); // will get packet from hardware
+        - netif->input(p,netif) will be called inside ethernetif_input()
+          which will call ethernet_input(), because of the flags set in netif struct.
+
+    Transmission:
+       
+/*********************** Basics **************************************/
+
+PPP:
+    Point-to-Point Protocol (PPP) is a TCP/IP protocol that is used to connect one computer 
+    system to another. Computers use PPP to communicate over the telephone network or the Internet.
+
+PPPoE:
+
+
+    Point-to-Point Protocol over Ethernet (PPPoE) is a network protocol that facilitates 
+    communication between network endpoints. PPPoE encapsulates Point-to-Point Protocol 
+    (PPP) frames inside Ethernet frames, offering the same benefits as PPP, while providing 
+    connectivity across Ethernet networks.
+
+    PPPoE is commonly used by internet service providers (ISPs) to deliver internet access 
+    services to their customers, typically over broadband connections. PPPoE is implemented 
+    extensively by providers offering digital subscriber line (DSL) services. Providers that 
+    use PPPoE can connect multiple hosts on a single Ethernet local area network to a remote 
+    site via a common device such as a cable or DSL modem. The protocol can also support 
+    wireless connections to the internet.
+
+
+
+PLAN:
+    can only give input (decide which packet to give)
+    how to bring pbuf into picture : pbuf_take()
+
+    pbuf_init() called inside pbuf_alloc():
+    static void
+    pbuf_init_alloced_pbuf(struct pbuf *p, void *payload, 
+                            u16_t tot_len, u16_t len, 
+                            pbuf_type type, u8_t flags)
+    {
+        p->next = NULL;
+        p->payload = payload;
+        p->tot_len = tot_len;
+        p->len = len;
+        p->type_internal = (u8_t)type;
+        p->flags = flags;
+        p->ref = 1;
+        p->if_idx = NETIF_NO_INDEX;
+
+        LWIP_PBUF_CUSTOM_DATA_INIT(p);
+    }
+
+    
+
+
+
+
+    deal with pbuf data
+    check snmp stuff and perf counters
+
+    loopback interface enable once you do this.
+
+    PLAN:
+    add ip addr to netif
+    push packet all the way to icmp
+    ip4.c line no. 1041 reached.

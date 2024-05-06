@@ -22,12 +22,12 @@ Hardware:
       StartAddr: 0x40000000
       # EndAddr: ...
       # SizeInBytes: ...
-      SizeInMegaBytes: 16
+      SizeInMegaBytes: 64
       Permissions: RWXC
     NCRAM:
-      StartAddr: 0x41000000  # physical address
+      StartAddr: 0x50000000  # physical address
       # SizeInBytes: ...
-      SizeInMegaBytes: 16
+      SizeInMegaBytes: 32
       Permissions: RW
     MMIO: # Memory Mapped IO
       StartAddr: 0xFF000000  # physical address
@@ -70,7 +70,7 @@ Hardware:
     - Name: NIC
       MemoryRegion:
         StartAddr: 0xFF000000
-        SizeInBytes: 1024 # 256 * 4 bytes
+        SizeInBytes: 512 # 128 * 4 bytes
         Permissions: RW
 Software:
   BuildAndExecute:
@@ -82,11 +82,18 @@ Software:
     EnableSerial: Yes # Yes/No (Default: Yes)
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
-    BuildArgs: "-D USE_VMAP -D USE_CORTOS  
-    -c $AJIT_HOME/AI_NIC_DEMO/SBC/kc705/testing/latestNICTesting/main.c
+    BuildArgs: "-D USE_CORTOS -D USE_VMAP -D CLK_FREQUENCY=80000000 
+    -c $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip+NIC/main.c
+    -I $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip+NIC/include
+    -I $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip+NIC/include/arch
+    -I $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/include
     -I $AJIT_HOME/AI_NIC_DEMO/Networking/NIC/driver/include
-    -C $AJIT_HOME/AI_NIC_DEMO/Networking/NIC/driver/src"
-
+    -C $AJIT_HOME/AI_NIC_DEMO/Networking/NIC/driver/src
+    -c $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/netif/ethernet.c
+    -c $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/api/err.c 
+    -C $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/core 
+    -C $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/core/ipv4
+    -C $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip+NIC/src"
 
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:
@@ -96,7 +103,7 @@ Software:
   #   CortosLoopCalls:
   #     - main1
       StackSize:
-        SizeInKiloBytes: 16 #1048576
+        SizeInKiloBytes: 64 #1048576
 
   DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...
@@ -118,8 +125,8 @@ Software:
 #       MessageSizeInBytes: 8
 #       TotalMessageCapacity: 256 # num. of messages
 #
-#   InterruptHandler:
-#     - TypeCode: 0x4
-#       Function: functionName4
-#     - TypeCode: 0x5
-#       Function: functionName5
+     # interrupt handler for timer.
+#  Interrupts: # hardware interrupts
+#    - Index: 10 # timer
+#      Function: my_timer_interrupt_handler
+

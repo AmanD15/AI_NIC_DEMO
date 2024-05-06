@@ -692,37 +692,19 @@ module tri_mode_ethernet_mac_0_example_design
     
     
 // Transmitting TO AXI-S FIFO : Ahir pipes to AXI stream 
-
-	// TODO: yet to check transmit path, see if it can be simplified.
 	
-    DualClockedQueue  DualClockedQueue_tx_loopback
-    (
-        .read_req_in(tx_pipe_pipe_read_ack_queue),   
-        .read_data_out(tx_pipe_pipe_read_data_queue), 
-        .read_ack_out(tx_pipe_pipe_read_req_queue),
-        
-        .write_req_out(tx_pipe_req), 
-        .write_data_in(tx_pipe_data), 
-        .write_ack_in(tx_pipe_ack),          
-    
-        .read_clk(tx_fifo_clock),
-        .write_clk(gtx_clk_bufg),
-    
-        .reset(tx_fifo_reset)
-    );
-    
     queueMac queueMac_inst(
         
 	.clk(tx_fifo_clock),
 	.reset(tx_fifo_reset),
 
-	.push_req(tx_pipe_pipe_read_req_queue), // in
-	.push_data(tx_pipe_pipe_read_data_queue), // in
-	.push_ack(tx_pipe_pipe_read_ack_queue), // out
+	.push_req(tx_pipe_ack), // in
+	.push_data(tx_pipe_data), // in
+	.push_ack(tx_pipe_req), // out
 
 	.pop_req(tx_axis_fifo_tready), // in
 	.pop_data({tx_axis_fifo_tlast, tx_axis_fifo_tdata, 1'b0}), // out
-	.pop_ack(tx_axis_mac_tvalid) // out
+	.pop_ack(tx_axis_fifo_tvalid) // out
     
         );
 

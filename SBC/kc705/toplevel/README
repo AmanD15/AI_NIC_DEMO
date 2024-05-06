@@ -1,0 +1,7 @@
+	sbc_kc705.vhdl : 
+		Top level vhdl file
+
+	nic_mac_bridge_edited.vhdl : 
+		this file is needed, because output reset signal from
+		nic_mac_pipe_reset.v, is sent to rx_concat and tx_deconcat blocks  
+				
