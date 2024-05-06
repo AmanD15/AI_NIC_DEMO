@@ -1,6 +1,6 @@
 
-ml_accelerator.ipynb - python code for implementation of AI ML Accelerator
-(colab link - https://colab.research.google.com/drive/1XG1G2dvrd-cqx1Fp8GrEZdEWh5RBzqGE?usp=sharing)
+py_ahir_convolution.ipynb - python code for implementation of AI ML Accelerator
+(colab link - https://colab.research.google.com/drive/1P47d1V_sEBoMZYmkSyUxW3K5jeOcJc2p?usp=sharing)
 
 /resnet/models/ 
     - qresnet.py - Code for ResNet 18 architecture
