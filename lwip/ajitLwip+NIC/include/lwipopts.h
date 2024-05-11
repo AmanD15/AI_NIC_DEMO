@@ -261,7 +261,7 @@ a lot of data that needs to be copied, this should be set high. */
 #define LWIP_UDP                0
 #define LWIP_UDPLITE            LWIP_UDP
 #define UDP_TTL                 255
-
+#define LWIP_RAND() (lwip_port_rand())
 
 /* ---------- RAW options ---------- */
 #define LWIP_RAW                1

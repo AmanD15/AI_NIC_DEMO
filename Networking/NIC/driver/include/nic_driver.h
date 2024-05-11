@@ -205,4 +205,9 @@ void initTranslationTable(uint64_t,uint32_t*);
 uint32_t* translatePAtoVA(uint64_t pa);
 
 
+uint32_t getPacketLenInDW(uint32_t lenInBytes);
+
+uint32_t getLastTkeep(uint32_t lenInBytes);
+
+
 #endif

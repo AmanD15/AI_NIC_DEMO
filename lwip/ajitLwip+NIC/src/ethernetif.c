@@ -264,37 +264,54 @@ low_level_input(struct netif *netif)
 err_t
 low_level_output(struct netif *netif, struct pbuf *p)
 {
- // struct ethernetif *ethernetif = netif->state;
+ 
+  uint32_t lengthInBytes; 
+  uint32_t* bufptrVA;
+  uint64_t bufptrPA;
 
+// pop free q for available buffer.(since not available, overwriting packets in rxQ) 
+// NEED SEPARATE TX AND RX RINGS!!
+	int read_ok = cortos_readMessages(rx_queue, (uint8_t*)(&bufptrPA) , 1);
+ 	if(read_ok == 0){
+		cortos_printf("low_level_output: failed to read free buffer\n");
+		return 1;
+	 }
 
-#if 0
-  struct pbuf *q;
-  uint8_t data[64];
-  uint8_t *bufptr = &data[0];
+// Preparing the Buffer for transmit Engine
 
-#if ETH_PAD_SIZE
-  pbuf_remove_header(p, -ETH_PAD_SIZE); /* drop the padding word */
-#endif
+	// reverse table PA -> VA access
+	 bufptrVA = translatePAtoVA(bufptrPA);
+	 if (bufptrVA == NULL){
 
-  for (q = p; q != NULL; q = q->next) {
+		cortos_printf("low_level_output:failed to find PA to VA translation!\n");
+		cortos_exit(0); 
+
+	}
+
+	// getting the length of packet to transmit.
+lengthInBytes = 0;
+struct pbuf *q;
+ for (q = p; q != NULL; q = q->next) {
+    lengthInBytes += q->len;
+  }
+uint32_t len = getPacketLenInDW(lengthInBytes);
+uint32_t lastTkeep = getLastTkeep(lengthInBytes);
+*(bufptrVA + 1)  = (len << 11) | (lastTkeep) ;
+
+// Pushing the contents to transmit in this buffer.
+uint8_t* BufPtr = ((uint8_t*)bufptrVA) + 24;
+for (q = p; q != NULL; q = q->next) {
     /* Send the data from the pbuf to the interface, one pbuf at a
        time. The size of the data in each pbuf is kept in the ->len
        variable. */
    // send data from(q->payload, q->len);
-    memcpy(bufptr,q->payload,q->len);
-    bufptr += q->len;
+    memcpy(BufPtr,q->payload,q->len);
+    q->payload = (uint8_t*)q->payload + q->len;
   }
 
-#endif
-uint32_t bufptrVA = (uint32_t)p->payload;
-uint64_t bufptrPA; 
-uint8_t status;
-status = translateVaToPa(bufptrVA, &bufptrPA);
-if (status != 0){
-	cortos_printf("Translation not found\n");
-	cortos_exit(0);
-}
-	
+
+
+// Pushing the PA to transmit queue
  
 int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)(&bufptrPA) , 1);
  if(write_ok == 0){

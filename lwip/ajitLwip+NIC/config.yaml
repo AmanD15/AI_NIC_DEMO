@@ -70,7 +70,7 @@ Hardware:
     - Name: NIC
       MemoryRegion:
         StartAddr: 0xFF000000
-        SizeInBytes: 512 # 128 * 4 bytes
+        SizeInBytes: 1024 # 256 * 4 bytes
         Permissions: RW
 Software:
   BuildAndExecute:
@@ -103,7 +103,7 @@ Software:
   #   CortosLoopCalls:
   #     - main1
       StackSize:
-        SizeInKiloBytes: 64 #1048576
+        SizeInKiloBytes: 128 #1048576
 
   DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...

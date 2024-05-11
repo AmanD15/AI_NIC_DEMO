@@ -281,3 +281,34 @@ uint32_t* translatePAtoVA(uint64_t pa) {
 
 
 
+uint32_t getPacketLenInDW(uint32_t lenInBytes)
+{
+	
+	uint32_t rem = lenInBytes % 8;
+	if(rem == 0)
+		return lenInBytes;
+	else
+		return (lenInBytes+1);
+
+}
+
+uint32_t getLastTkeep(uint32_t lenInBytes)
+{
+
+	uint32_t rem = lenInBytes % 8;
+	uint32_t lastTkeep;
+	switch(rem)
+	{
+		case 0 : lastTkeep = 0xFF; break;
+		case 7 : lastTkeep = 0xFE; break;
+		case 6 : lastTkeep = 0xFC; break;
+		case 5 : lastTkeep = 0xF8; break;
+		case 4 : lastTkeep = 0xF0; break;
+		case 3 : lastTkeep = 0xE0; break;
+		case 2 : lastTkeep = 0xC0; break;
+		case 1 : lastTkeep = 0x80; break;
+	}
+
+	return lastTkeep;
+
+}

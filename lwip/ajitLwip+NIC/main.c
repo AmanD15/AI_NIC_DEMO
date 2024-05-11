@@ -37,7 +37,7 @@ int main()
 
 			message_counter++;
 			cortos_printf ("main(): no. of messages recieved: %d\n",message_counter);
-			
+			sys_check_timeouts();
 			
 		}
 		else
@@ -46,7 +46,7 @@ int main()
 			__ajit_sleep__ (1024);
 		}
 	
-		sys_check_timeouts();
+		
 		if(message_counter == 2048) {	
 				break;
 			}

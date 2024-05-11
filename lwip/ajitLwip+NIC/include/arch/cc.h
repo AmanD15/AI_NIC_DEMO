@@ -17,6 +17,7 @@ typedef int32_t     s32_t;
 
 typedef uintptr_t   mem_ptr_t;
 
+
 #define LWIP_ERR_T  int
 
 /* Define (sn)printf formatters for these lwIP types */
