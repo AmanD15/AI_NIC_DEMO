@@ -1,0 +1,17 @@
+// register 21 holds the packet count.
+$module [incrementNumberOfPacketsTransmitted]
+	$in () $out () $is
+{
+	$call accessRegister ($one<1> 15 P_TX_PKT_COUNT_REGISTER_INDEX $zero<32>) (r)
+        $volatile nr := (r + 1)
+	$call accessRegister ($zero<1> 15 P_TX_PKT_COUNT_REGISTER_INDEX  nr) (ignore)
+}
+$module [incrementNumberOfPacketsReceived]
+	$in () $out () $is
+{
+	$call accessRegister ($one<1> 15 P_RX_PKT_COUNT_REGISTER_INDEX $zero<32>) (r)
+        $volatile nr := (r + 1)
+	$call accessRegister ($zero<1> 15 P_RX_PKT_COUNT_REGISTER_INDEX  nr) (ignore)
+}
+
+

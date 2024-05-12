@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 
+
 #ifdef USE_CORTOS
 // Following stuff is used with lwip and baremetal testing
 // not useful while compiling testbench
@@ -31,23 +32,24 @@ volatile uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
 #endif
 
 
+
 //  Register definitions..  These must be consistent
 //  with the parameters.aa file in the NIC AA source
 #define    P_NIC_CONTROL_REGISTER_INDEX      0
 #define    P_N_SERVERS_REGISTER_INDEX        1 
 #define    P_DEBUG_REGISTER_0	             2 
 #define    P_DEBUG_REGISTER_1	             3 
-#define    P_RX_QUEUE_REGISTER_BASE_INDEX    8
-#define    P_TX_QUEUE_REGISTER_BASE_INDEX    128
-#define    P_FREE_QUEUE_REGISTER_BASE_INDEX  200
 #define    P_MAC_REGISTER_H_INDEX            208
 #define    P_MAC_REGISTER_L_INDEX            209
 #define    P_TX_PKT_COUNT_REGISTER_INDEX     210
 #define    P_RX_PKT_COUNT_REGISTER_INDEX     211
 #define    P_STATUS_REGISTER_INDEX           212
 
-#define    P_DEBUG_LAST_ADDRESS_WRITTEN_INDEX     220
-#define    P_BUFFER_SIZE_INDEX     221
+	// Base index for queue's registers
+#define    P_RX_QUEUE_REGISTER_BASE_INDEX    8
+#define    P_TX_QUEUE_REGISTER_BASE_INDEX    128
+#define    P_FREE_QUEUE_REGISTER_BASE_INDEX  200
+#define    P_FREE_QUEUE_TX_REGISTER_BASE_INDEX     213
 
 // flags.
 #define    F_ENABLE_NIC			      0x1
@@ -56,6 +58,7 @@ volatile uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
 #define    FREEQUEUE				0
 #define    TXQUEUE				1
 #define    RXQUEUE				2
+#define    FREEQUEUE_TX			3
 
 #define    NIC_MAX_NUMBER_OF_SERVERS		8
 
@@ -91,6 +94,7 @@ typedef CortosQueueHeader NicCortosQueue;
 #endif
 
 
+
 void initNicCortosQueue (NicCortosQueue* cqueue,
 				uint32_t queue_capacity,
 				uint32_t message_size_in_bytes,
@@ -110,6 +114,10 @@ typedef struct __NicConfiguration {
 	uint64_t  free_queue_address;
 	uint64_t  free_queue_lock_address; 
 	uint64_t  free_queue_buffer_address; 
+
+	uint64_t  free_queue_tx_address;
+	uint64_t  free_queue_tx_lock_address; 
+	uint64_t  free_queue_tx_buffer_address; 
 
 	uint64_t  rx_queue_addresses[NIC_MAX_NUMBER_OF_SERVERS];
 	uint64_t  rx_queue_lock_addresses[NIC_MAX_NUMBER_OF_SERVERS];
@@ -171,7 +179,6 @@ void configureNic (NicConfiguration* config);
 void enableNic  (uint32_t nic_id, uint8_t enable_interrupt, uint8_t enable_mac, uint8_t enable_nic);
 void disableNic (uint32_t nic_id);
 
-
 #ifdef USE_CORTOS
 // The following routine gives the PA for the specified VA
 // returns 0 if translation is successful (*pa holds the return value)
@@ -202,8 +209,9 @@ void initTranslationTable(uint64_t,uint32_t*);
 // Function to translate physical address to virtual address
 uint32_t* translatePAtoVA(uint64_t pa);
 
-// These functions are used in low_level_output driver
+
 uint32_t getPacketLenInDW(uint32_t lenInBytes);
+
 uint32_t getLastTkeep(uint32_t lenInBytes);
 #endif
 

@@ -102,10 +102,22 @@ void setNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 								   uint32_t queue_type,  uint64_t queue_addr, 
 								   uint64_t queue_lock_addr, uint64_t queue_buffer_addr)
 {
+	/*
 	uint32_t base_index = ((queue_type == FREEQUEUE) ? P_FREE_QUEUE_REGISTER_BASE_INDEX :
 			((queue_type  == RXQUEUE) ?
 			 (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)) :
 			 (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)) ));
+	*/
+
+	uint32_t base_index;		 
+	switch(queue_type)
+	{
+		case FREEQUEUE     : base_index = P_FREE_QUEUE_REGISTER_BASE_INDEX;    break;
+		case FREEQUEUE_TX  : base_index = P_FREE_QUEUE_TX_REGISTER_BASE_INDEX; break;
+		case RXQUEUE       : base_index = (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;
+		case TXQUEUE       : base_index = (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;	
+	}	
+
 	setPhysicalAddressInNicRegPair (nic_id, base_index, queue_addr); 
 	setPhysicalAddressInNicRegPair (nic_id, base_index+2, queue_lock_addr); 
 	setPhysicalAddressInNicRegPair (nic_id, base_index+4, queue_buffer_addr); 
@@ -115,13 +127,24 @@ void getNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 		uint32_t queue_type,  uint64_t *queue_addr, 
 		uint64_t *queue_lock_addr, uint64_t *queue_buffer_addr)
 {
-
+	/*
 	uint32_t base_index = (
 			(queue_type == FREEQUEUE) ? P_FREE_QUEUE_REGISTER_BASE_INDEX :
 			((queue_type  == RXQUEUE) ?
 			 (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)) :
 			 (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)) )
 			 );
+	*/
+
+	uint32_t base_index;		 
+	switch(queue_type)
+	{
+		case FREEQUEUE     : base_index = P_FREE_QUEUE_REGISTER_BASE_INDEX;    break;
+		case FREEQUEUE_TX  : base_index = P_FREE_QUEUE_TX_REGISTER_BASE_INDEX; break;
+		case RXQUEUE       : base_index = (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;
+		case TXQUEUE       : base_index = (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;	
+	}	
+
 	*queue_addr = getPhysicalAddressInNicRegPair (nic_id, base_index);
 	*queue_lock_addr = getPhysicalAddressInNicRegPair (nic_id, base_index+2);
 	*queue_buffer_addr = getPhysicalAddressInNicRegPair (nic_id, base_index+4);
@@ -144,6 +167,15 @@ void configureNic (NicConfiguration* config)
 			config->free_queue_address,	
 			config->free_queue_lock_address,	
 			config->free_queue_buffer_address);	
+
+	// free-queue_TX.
+	setNicQueuePhysicalAddresses (config->nic_id, 
+			0,
+			FREEQUEUE_TX,
+			config->free_queue_tx_address,	
+			config->free_queue_tx_lock_address,	
+			config->free_queue_tx_buffer_address);	
+
 	for(I = 0; I  < config->number_of_servers; I++)
 	{
 		setNicQueuePhysicalAddresses (config->nic_id, 
@@ -314,5 +346,4 @@ uint32_t getLastTkeep(uint32_t lenInBytes)
 	return lastTkeep;
 
 }
-
 #endif
