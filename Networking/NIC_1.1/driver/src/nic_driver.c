@@ -302,7 +302,7 @@ void initTranslationTable(uint64_t pa, uint32_t* va)
 uint32_t* translatePAtoVA(uint64_t pa) {
     // Search the translation table for the physical address
     int i;
-    for (i = 0; i < NUMBER_OF_BUFFERS; i++) {
+    for (i = 0; i < 2*NUMBER_OF_BUFFERS; i++) {
         if (translationTable[i].pa == pa) {
             return translationTable[i].va;  // Return virtual address if physical address is found
         }

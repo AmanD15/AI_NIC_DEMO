@@ -22,12 +22,13 @@
 
 // The Qs
 CortosQueueHeader* free_queue;
+CortosQueueHeader* free_queue_tx;
 CortosQueueHeader* rx_queue;
 CortosQueueHeader* tx_queue;
 
 // The array to store ptr to buffers
-volatile uint32_t*  BufferPtrsVA[NUMBER_OF_BUFFERS];
-volatile uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
+volatile uint32_t*  BufferPtrsVA[2*NUMBER_OF_BUFFERS];
+volatile uint64_t   BufferPtrsPA[2*NUMBER_OF_BUFFERS];
 
 #endif
 
@@ -201,7 +202,7 @@ typedef struct {
 
 
 // Define the translation table with eight entries
-TranslationEntry translationTable[NUMBER_OF_BUFFERS];
+TranslationEntry translationTable[2*NUMBER_OF_BUFFERS];
 
 // For initialsing the translation Table 
 void initTranslationTable(uint64_t,uint32_t*);
