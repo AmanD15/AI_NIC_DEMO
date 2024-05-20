@@ -26,12 +26,12 @@ int number_of_packets = 16;
 uint64_t  mem_array [16*4096];
 int 	  err_flag = 0;
 
-uint32_t  free_queue_base_address = 0;      // includes 128-bytes for buffer.
+uint32_t  free_queue_rx_base_address = 0;      // includes 128-bytes for buffer.
 uint32_t  rx_queue_base_address   = 256;    // includes 128-bytes for buffer.
 uint32_t  tx_queue_base_address   = 512;    // includes 128-bytes for buffer.
 uint32_t  free_queue_tx_base_address   = 768;    // includes 128-bytes for buffer.
 
-uint32_t  free_queue_bget_address = 128;  
+uint32_t  free_queue_rx_bget_address = 128;  
 uint32_t  rx_queue_bget_address   = 256 + 128;    
 uint32_t  tx_queue_bget_address   = 512 + 128;   
 uint32_t  free_queue_tx_bget_address   = 768 +128;    
@@ -42,7 +42,7 @@ uint32_t  free_queue_tx_bget_address   = 768 +128;
 uint32_t  buffer_addresses[4]     = {1024, 2048, 3072, 4096};
 
 // lock addresses
-uint32_t free_queue_lock_address = 8092;
+uint32_t free_queue_rx_lock_address = 8092;
 uint32_t rx_queue_lock_address   = 8093;
 uint32_t tx_queue_lock_address   = 8094;
 uint32_t free_queue_tx_lock_address   = 8095; 
@@ -143,7 +143,7 @@ void setNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 	uint32_t base_index;		 
 	switch(queue_type)
 	{
-		case FREEQUEUE     : base_index = P_FREE_QUEUE_REGISTER_BASE_INDEX;    break;
+		case FREEQUEUE_RX  : base_index = P_FREE_QUEUE_RX_REGISTER_BASE_INDEX;    break;
 		case FREEQUEUE_TX  : base_index = P_FREE_QUEUE_TX_REGISTER_BASE_INDEX; break;
 		case RXQUEUE       : base_index = (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;
 		case TXQUEUE       : base_index = (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;	
@@ -168,7 +168,7 @@ void getNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 	uint32_t base_index;		 
 	switch(queue_type)
 	{
-		case FREEQUEUE     : base_index = P_FREE_QUEUE_REGISTER_BASE_INDEX;    break;
+		case FREEQUEUE_RX  : base_index = P_FREE_QUEUE_RX_REGISTER_BASE_INDEX;    break;
 		case FREEQUEUE_TX  : base_index = P_FREE_QUEUE_TX_REGISTER_BASE_INDEX; break;
 		case RXQUEUE       : base_index = (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;
 		case TXQUEUE       : base_index = (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;	
@@ -498,41 +498,41 @@ int main(int argc, char* argv[])
 	PTHREAD_CREATE(memoryDaemon);
 
 	//-------------------------------------------------------------------------------------//
-	//  First setup and check the free queue.
+	//  First setup and check the free queue rx.
 	//-------------------------------------------------------------------------------------//
 
 	//-------------------------------------------------------------------------------------//
-	// setup free queue in memory from the tb-side.
+	// setup free queue rx in memory from the tb-side.
 	//-------------------------------------------------------------------------------------//
-	setUpEmptyQueueInMemory (free_queue_base_address, free_queue_lock_address, 
-				free_queue_bget_address,       QUEUE_SIZE_IN_MSGS, QUEUE_MSG_SIZE_IN_BYTES);
+	setUpEmptyQueueInMemory (free_queue_rx_base_address, free_queue_rx_lock_address, 
+				free_queue_rx_bget_address,       QUEUE_SIZE_IN_MSGS, QUEUE_MSG_SIZE_IN_BYTES);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf(stderr,"Info: setup empty free queue in memory.\n");
+	fprintf(stderr,"Info: setup empty free queue rx in memory.\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 
 	// initialize lock to '0' in free-queue.
-	releaseLock (free_queue_base_address);
+	releaseLock (free_queue_rx_base_address);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf(stderr,"Info: cleared free queue locks.\n");
+	fprintf(stderr,"Info: cleared free queue rx locks.\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 
-	setNumberOfMessages (free_queue_base_address, 0);
+	setNumberOfMessages (free_queue_rx_base_address, 0);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf(stderr,"Info: set num-messages = 0 in  free queue.\n");
+	fprintf(stderr,"Info: set num-messages = 0 in  free queue rx.\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	
 	// confirm
 	uint64_t b,l,g;
 	// Set up the queues in the NIC
-	setNicQueuePhysicalAddresses (0,0, FREEQUEUE,  free_queue_base_address, 
-							free_queue_lock_address, free_queue_bget_address);
-	getNicQueuePhysicalAddresses (0,0, FREEQUEUE,  &b, &l, &g);
+	setNicQueuePhysicalAddresses (0,0, FREEQUEUE_RX,  free_queue_rx_base_address,
+							free_queue_rx_lock_address, free_queue_rx_bget_address); 
+	getNicQueuePhysicalAddresses (0,0, FREEQUEUE_RX,  &b, &l, &g);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf (stderr,"Info: finished setting physical addresses of free queue into NIC \n");
+	fprintf (stderr,"Info: finished setting physical addresses of free queue rx into NIC \n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 
 
@@ -702,13 +702,13 @@ int main(int argc, char* argv[])
 	for(i = 0; i < NBUFFERS; i++)
 	{
 		//
-		// Note: physical addresses of buffers are pushed into free queue.
+		// Note: physical addresses of buffers are pushed into "FREEQUEUE_RX".
 		// 
 		uint64_t max_addr_offset = 1016;
 		max_addr_offset = (max_addr_offset << 48);
 		processorAccessMemory (0, 0, 0xff, buffer_addresses[i], max_addr_offset); 
 
-		pushIntoQueue (free_queue_base_address, buffer_addresses[i]);
+		pushIntoQueue (free_queue_rx_base_address, buffer_addresses[i]);
 	}
 	
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");

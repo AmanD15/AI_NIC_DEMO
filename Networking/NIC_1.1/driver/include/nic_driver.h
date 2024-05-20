@@ -49,14 +49,14 @@ volatile uint64_t   BufferPtrsPA[2*NUMBER_OF_BUFFERS];
 	// Base index for queue's registers
 #define    P_RX_QUEUE_REGISTER_BASE_INDEX    8
 #define    P_TX_QUEUE_REGISTER_BASE_INDEX    128
-#define    P_FREE_QUEUE_REGISTER_BASE_INDEX  200
-#define    P_FREE_QUEUE_TX_REGISTER_BASE_INDEX     213
+#define    P_FREE_QUEUE_RX_REGISTER_BASE_INDEX  200
+#define    P_FREE_QUEUE_TX_REGISTER_BASE_INDEX  213
 
 // flags.
 #define    F_ENABLE_NIC			      0x1
 #define    F_ENABLE_NIC_INTERRUPT	      0x2
 
-#define    FREEQUEUE				0
+#define    FREEQUEUE_RX			0
 #define    TXQUEUE				1
 #define    RXQUEUE				2
 #define    FREEQUEUE_TX			3
