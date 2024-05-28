@@ -1,0 +1,7 @@
+
+$pipe NIC_TO_MAC_RESETN : $uint<1> $signal
+$pipe nic_to_mac_resetn : $uint<1> $signal
+$pipe NIC_INTERRUPT_TO_PROCESSOR : $uint<1> $signal
+$pipe nic_intr : $uint<1> $signal
+$pipe ENABLE_MAC: $uint<1> $signal
+$pipe NIC_DEBUG_SIGNAL: $uint<256>  $signal

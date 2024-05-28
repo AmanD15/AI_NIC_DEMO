@@ -1,0 +1,243 @@
+$system sbc_kc705_core $library sbc_kc705_core_lib
+	$in
+
+		// processor connections..
+		$signal THREAD_RESET 
+		$pipe   SOC_MONITOR_to_DEBUG
+		$pipe   CONSOLE_to_SERIAL_RX
+		
+
+		// Flash
+		$signal SPI_FLASH_MISO
+		$signal WRITE_PROTECT
+
+		// Clocks! 
+		$signal $clk CLOCK_TO_PROCESSOR
+		$signal $clk CLOCK_TO_NIC
+		$signal $clk CLOCK_TO_DRAMCTRL_BRIDGE
+
+		// Resets! 
+		$signal $reset RESET_TO_PROCESSOR
+		$signal $reset RESET_TO_NIC
+        	$signal $reset RESET_TO_DRAMCTRL_BRIDGE
+     
+		// DRAM controller IP 
+		$signal DRAM_CONTROLLER_TO_ACB_BRIDGE
+
+		// TAP signals
+        	$signal MIN_ACB_TAP1_ADDR
+	    	$signal MAX_ACB_TAP1_ADDR
+	    	
+	        $signal MIN_ACB_TAP2_ADDR
+	    	$signal MAX_ACB_TAP2_ADDR
+	    	
+	    	$signal MIN_ACB_TAP3_ADDR
+	    	$signal MAX_ACB_TAP3_ADDR
+
+		// NIC
+		$pipe MAC_TO_NIC $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+		
+	$out
+		$signal NIC_DEBUG_SIGNAL 256 $depth 1
+
+		// processor 
+		$pipe SOC_DEBUG_to_MONITOR  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
+		$pipe SERIAL_TX_to_CONSOLE  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
+
+		$signal PROCESSOR_MODE  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
+
+		// To ethernet-phy port map 
+		//$signal SBC_TO_ETHERNET_PHY
+
+		// NIC
+		$pipe NIC_TO_MAC   $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+		$signal NIC_MAC_RESETN	   $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+		
+		// FLASH
+		$signal SPI_FLASH_MOSI   $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+		$signal SPI_FLASH_CLK   $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+		$signal SPI_FLASH_CS_L   $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+
+		// DRAM controller IP
+		$signal ACB_BRIDGE_TO_DRAM_CONTROLLER   $clk => CLOCK_TO_DRAMCTRL_BRIDGE $reset => RESET_TO_DRAMCTRL_BRIDGE
+
+{
+
+	//Processor Pipes and Signals
+	$pipe PROCESSOR_ACB_REQUEST_FIFO_IN  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
+	$pipe PROCESSOR_ACB_RESPONSE_FIFO_IN  $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	$pipe PROCESSOR_ACB_REQUEST_FIFO_OUT  $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	$pipe PROCESSOR_ACB_RESPONSE_FIFO_OUT  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
+	$pipe MAIN_MEM_INVALIDATE  $clk => CLOCK_TO_PROCESSOR $reset => RESET_TO_PROCESSOR
+
+	//NIC Pipes and Signals
+	$pipe AFB_NIC_REQUEST $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	$pipe NIC_AFB_RESPONSE $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	$pipe NIC_ACB_REQUEST $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	$pipe ACB_NIC_RESPONSE $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	$signal NIC_INTERRUPT $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+
+	
+	//FLASH Ctrl Pipes and Signals
+	$pipe AFB_FLASH_REQUEST $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	$pipe FLASH_AFB_RESPONSE $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	
+	//ACB SRAM pipes
+	$pipe REQUEST_TO_ACB_SRAM $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	$pipe RESPONSE_FROM_ACB_SRAM $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+
+
+	$pipe ACB_DRAM_REQUEST_FIFO_IN $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	$pipe ACB_DRAM_REQUEST_FIFO_OUT $clk => CLOCK_TO_DRAMCTRL_BRIDGE $reset => RESET_TO_DRAMCTRL_BRIDGE
+	$pipe DRAM_ACB_RESPONSE_FIFO_IN $clk => CLOCK_TO_DRAMCTRL_BRIDGE $reset => RESET_TO_DRAMCTRL_BRIDGE
+	$pipe DRAM_ACB_RESPONSE_FIFO_OUT $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+
+//**** 5-SUBSYSTEMS : Processor, acb_afb_complex, spi_flash_xtrl, nic_subsystem, acb_dram_bridge ***** //
+
+	$instance processor_inst ajit_processor_lib:processor_1x1x32
+		THREAD_RESET               => THREAD_RESET
+		SOC_MONITOR_to_DEBUG       => SOC_MONITOR_to_DEBUG
+		SOC_DEBUG_to_MONITOR       => SOC_DEBUG_to_MONITOR
+		CONSOLE_to_SERIAL_RX       => CONSOLE_to_SERIAL_RX
+		SERIAL_TX_to_CONSOLE       => SERIAL_TX_to_CONSOLE
+		MAIN_MEM_REQUEST           => PROCESSOR_ACB_REQUEST_FIFO_IN
+		MAIN_MEM_RESPONSE          => PROCESSOR_ACB_RESPONSE_FIFO_OUT
+		MAIN_MEM_INVALIDATE        => MAIN_MEM_INVALIDATE
+		EXTERNAL_INTERRUPT         => NIC_INTERRUPT
+		PROCESSOR_MODE             => PROCESSOR_MODE
+		$clk => CLOCK_TO_PROCESSOR
+		$reset => RESET_TO_PROCESSOR
+
+	$instance acb_afb_complex_inst acb_afb_complex_lib: acb_afb_complex
+		ACB_REQUEST_FROM_PROCESSOR => PROCESSOR_ACB_REQUEST_FIFO_OUT
+		ACB_RESPONSE_TO_PROCESSOR  => PROCESSOR_ACB_RESPONSE_FIFO_IN
+		ACB_REQUEST_FROM_NIC       => NIC_ACB_REQUEST
+		ACB_RESPONSE_TO_NIC        => ACB_NIC_RESPONSE
+		ACB_REQUEST_TO_DRAM        => ACB_DRAM_REQUEST_FIFO_IN
+		ACB_RESPONSE_FROM_DRAM     => DRAM_ACB_RESPONSE_FIFO_OUT
+		AFB_REQUEST_TO_NIC         => AFB_NIC_REQUEST
+		AFB_RESPONSE_FROM_NIC      => NIC_AFB_RESPONSE
+		AFB_REQUEST_TO_FLASH       => AFB_FLASH_REQUEST
+		AFB_RESPONSE_FROM_FLASH    => FLASH_AFB_RESPONSE
+		MIN_ACB_TAP1_ADDR           => MIN_ACB_TAP1_ADDR
+		MAX_ACB_TAP1_ADDR           => MAX_ACB_TAP1_ADDR
+		MIN_ACB_TAP2_ADDR           => MIN_ACB_TAP2_ADDR
+		MAX_ACB_TAP2_ADDR           => MAX_ACB_TAP2_ADDR
+		MIN_ACB_TAP3_ADDR           => MIN_ACB_TAP3_ADDR
+		MAX_ACB_TAP3_ADDR           => MAX_ACB_TAP3_ADDR
+		REQUEST_TO_ACB_SRAM	     => REQUEST_TO_ACB_SRAM
+		RESPONSE_FROM_ACB_SRAM	     => RESPONSE_FROM_ACB_SRAM
+		$clk => CLOCK_TO_NIC
+		$reset => RESET_TO_NIC
+		
+	$instance spi_flash_controller_inst spi_flash_controller_lib:spi_flash_controller
+
+		AFB_REQUEST_TO_FLASH        => AFB_FLASH_REQUEST
+		AFB_RESPONSE_FROM_FLASH     => FLASH_AFB_RESPONSE
+		WRITE_PROTECT               => WRITE_PROTECT
+		SPI_FLASH_MISO              => SPI_FLASH_MISO
+		SPI_FLASH_CLK               => SPI_FLASH_CLK
+		SPI_FLASH_CS_L              => SPI_FLASH_CS_L
+		SPI_FLASH_MOSI              => SPI_FLASH_MOSI
+		$clk => CLOCK_TO_NIC
+		$reset => RESET_TO_NIC
+
+
+	$instance nic_subsystem_inst nic_subsystem_lib:nic_subsystem
+
+		NIC_DEBUG_SIGNAL 	    => NIC_DEBUG_SIGNAL
+		MAC_TO_NIC_DATA             => MAC_TO_NIC
+		NIC_TO_MAC_DATA             => NIC_TO_MAC
+		AFB_TO_NIC_REQUEST          => AFB_NIC_REQUEST
+		NIC_TO_AFB_RESPONSE         => NIC_AFB_RESPONSE
+		NIC_TO_ACB_REQUEST          => NIC_ACB_REQUEST
+		ACB_TO_NIC_RESPONSE         => ACB_NIC_RESPONSE
+		NIC_INTERRUPT_TO_PROCESSOR  => NIC_INTERRUPT
+		NIC_TO_MAC_RESETN           => NIC_MAC_RESETN
+		$clk => CLOCK_TO_NIC
+		$reset => RESET_TO_NIC
+
+	$instance acb_dram_controller_bridge_inst  acb_dram_controller_bridge_lib:acb_dram_controller_bridge
+		// signals to/from dram controller ip.
+		DRAM_CONTROLLER_TO_ACB_BRIDGE => DRAM_CONTROLLER_TO_ACB_BRIDGE
+		ACB_BRIDGE_TO_DRAM_CONTROLLER => ACB_BRIDGE_TO_DRAM_CONTROLLER
+
+		// acb bus interface (slave)
+		CORE_BUS_REQUEST            => ACB_DRAM_REQUEST_FIFO_OUT
+		CORE_BUS_RESPONSE           => DRAM_ACB_RESPONSE_FIFO_IN
+
+		$clk => CLOCK_TO_DRAMCTRL_BRIDGE
+		$reset => RESET_TO_DRAMCTRL_BRIDGE
+		
+	$instance acb_sram_inst acb_sram_lib:acb_sram
+		ACB_SRAM_REQUEST      => REQUEST_TO_ACB_SRAM
+		ACB_SRAM_RESPONSE     => RESPONSE_FROM_ACB_SRAM
+		$clk => CLOCK_TO_NIC
+		$reset => RESET_TO_NIC	
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//   Dual clocked Fifos!  Note the use of two clocks, and reset 
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	$instance DualClockedQueue_ACB_Proc_req_inst DualClockedQueue_lib:DualClockedQueue_ACB_req_wrap
+	
+		write_data              => PROCESSOR_ACB_REQUEST_FIFO_IN
+		read_data               => PROCESSOR_ACB_REQUEST_FIFO_OUT
+		write_clk               => CLOCK_TO_PROCESSOR
+		read_clk                => CLOCK_TO_NIC
+		fifo_reset              => RESET_TO_PROCESSOR
+		$clk => $null
+		$reset => $null
+
+	$instance DualClockedQueue_ACB_Proc_resp_inst DualClockedQueue_lib:DualClockedQueue_ACB_resp_wrap
+
+		write_data             => PROCESSOR_ACB_RESPONSE_FIFO_IN
+		read_data              => PROCESSOR_ACB_RESPONSE_FIFO_OUT
+		write_clk              => CLOCK_TO_NIC
+		read_clk               => CLOCK_TO_PROCESSOR
+		fifo_reset              => RESET_TO_NIC
+		$clk => $null
+		$reset => $null
+
+	$instance DualClockedQueue_ACB_Dram_Bridge_req_inst DualClockedQueue_lib:DualClockedQueue_ACB_req_wrap
+	
+		write_data             => ACB_DRAM_REQUEST_FIFO_IN
+		read_data              => ACB_DRAM_REQUEST_FIFO_OUT
+		write_clk              => CLOCK_TO_NIC
+		read_clk               => CLOCK_TO_DRAMCTRL_BRIDGE
+		fifo_reset              => RESET_TO_NIC
+		$clk => $null
+		$reset => $null
+
+	$instance DualClockedQueue_Dram_Bridge_ACB_resp_inst DualClockedQueue_lib:DualClockedQueue_ACB_resp_wrap
+
+		write_data	=> DRAM_ACB_RESPONSE_FIFO_IN
+		read_data	=> DRAM_ACB_RESPONSE_FIFO_OUT
+		write_clk       => CLOCK_TO_DRAMCTRL_BRIDGE
+		read_clk        => CLOCK_TO_NIC
+		fifo_reset      => RESET_TO_DRAMCTRL_BRIDGE
+		$clk => $null
+		$reset => $null
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//   End Dual clocked Fifos!  Note the use of two clocks, and reset 
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// Generate a dummy invalidate to the processor
+	$thread invalidateDummy
+		$out $pipe   inval: $unsigned<30>
+	$default
+		$now inval$req := ($unsigned<1>) 0
+		$now inval     := ($unsigned<30>) 0
+		<inval_rst_state> {
+			$goto inval_rst_state
+		}
+	$now $tick
+
+	$string inval_str: invalidateDummy
+		inval => MAIN_MEM_INVALIDATE
+		$clk  => CLOCK_TO_PROCESSOR
+		$reset => RESET_TO_PROCESSOR
+		
+}
