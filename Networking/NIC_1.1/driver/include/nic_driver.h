@@ -21,7 +21,7 @@
 #define NIC_START_ADDR 0xFF000000
 
 // The Qs
-CortosQueueHeader* free_queue;
+CortosQueueHeader* free_queue_rx;
 CortosQueueHeader* free_queue_tx;
 CortosQueueHeader* rx_queue;
 CortosQueueHeader* tx_queue;
@@ -50,16 +50,16 @@ volatile uint64_t   BufferPtrsPA[2*NUMBER_OF_BUFFERS];
 #define    P_RX_QUEUE_REGISTER_BASE_INDEX    8
 #define    P_TX_QUEUE_REGISTER_BASE_INDEX    128
 #define    P_FREE_QUEUE_RX_REGISTER_BASE_INDEX  200
-#define    P_FREE_QUEUE_TX_REGISTER_BASE_INDEX  213
+#define    P_FREE_QUEUE_TX_REGISTER_BASE_INDEX     213
 
 // flags.
 #define    F_ENABLE_NIC			      0x1
 #define    F_ENABLE_NIC_INTERRUPT	      0x2
 
-#define    FREEQUEUE_RX			0
+#define    FREEQUEUE_RX				0
 #define    TXQUEUE				1
 #define    RXQUEUE				2
-#define    FREEQUEUE_TX			3
+#define    FREEQUEUE_TX			        3
 
 #define    NIC_MAX_NUMBER_OF_SERVERS		8
 
@@ -112,9 +112,9 @@ typedef struct __NicConfiguration {
 	
 	// Physical addresses, all!
 	//    need to be double-word aligned.
-	uint64_t  free_queue_address;
-	uint64_t  free_queue_lock_address; 
-	uint64_t  free_queue_buffer_address; 
+	uint64_t  free_queue_rx_address;
+	uint64_t  free_queue_rx_lock_address; 
+	uint64_t  free_queue_rx_buffer_address; 
 
 	uint64_t  free_queue_tx_address;
 	uint64_t  free_queue_tx_lock_address; 

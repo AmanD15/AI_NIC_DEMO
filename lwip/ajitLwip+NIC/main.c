@@ -1,5 +1,6 @@
 #include "include/ethernetif.h"
 #include "nic_driver.h"
+#include "tcpecho_raw.h"
 int main()
 {
 	__ajit_write_serial_control_register__ (TX_ENABLE); 
@@ -8,7 +9,7 @@ int main()
 	cortos_printf ("Started\n");
 	const ip4_addr_t ipaddr  =  {{LWIP_MAKEU32(10,107,90,23)}}  ;
 	const ip4_addr_t netmask  = {{LWIP_MAKEU32(255,255,240,0)}}  ; 
-	const ip4_addr_t gw       = {{LWIP_MAKEU32(10,200,1,11)}}  ; 
+	const ip4_addr_t gw       = {{LWIP_MAKEU32(10,107,95,120)}}  ; 
 
 	struct netif netif;
 	lwip_init();
@@ -21,6 +22,7 @@ int main()
 	netif_set_default(&netif);
 	netif_set_up(&netif);
 	
+	tcpecho_raw_init();
 
 	low_level_init();
 
@@ -62,8 +64,8 @@ int main()
 
 	cortos_freeQueue(rx_queue);	
 	cortos_freeQueue(tx_queue);	
-	cortos_freeQueue(free_queue);
-
+	cortos_freeQueue(free_queue_rx);
+	cortos_freeQueue(free_queue_tx);
 	// release buffers
 	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
 	{

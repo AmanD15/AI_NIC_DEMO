@@ -1,7 +1,11 @@
-	The Ping test
+	The Raw Ping test
 
-			Authors: Siddhant Singh Tomar and Indrahas Reddy.
-
+			Authors: Siddhant Singh Tomar.
+			
+	(cortos_build_ACB_SRAM should be used, 
+	if ACB SRAM of 256KB is used,
+	in yaml file NCRAM start address should be 0x5000_1000)
+	
 1. Overview
 -------------------------
 
@@ -66,43 +70,7 @@
         - 2. Send frames of increasing size, e.g., ./run.sh 2 64 (mode, number of packets)
 
   
-5. Observations
--------------------------------
-	Problem:
 
-	- Transmit Led is always on
-	- Reason for junk bufferPtr: wrong buffer start address configured in NIC reg.
 
-	Fixed buffer addresses:
 	
-	- In the main program queues allocated first, then buffers (Queues allocated in lower region of NCRAM and 
-	  buffers are above ) => giving problems.
-
-	- when we are getting error, its in cortos lock release function(0x40000330: clrb  [ %i0 ],  i0 holds 0x0) 
-		or wait_for_lock(0x400002c4: ldub  [ %i0 ], %l1 ,  i0 holds 0x0). 
-		(happens in the beginning of test, when first packet is sent)
-
-	Corrected TX and RX packet count register and new bitfile generated:
-
-	- In the main program still queues allocated first, then buffers (Queues allocated in lower region of NCRAM and 
-	  buffers are above ) => works ok in short test, in long test gives problem.
-
-	- when we are getting error, its in cortos lock release function(0x40000330: clrb  [ %i0 ], i0 holds 0x0) 
-		or wait_for_lock.(happens later in the test)
-		
-	Current Status:
-
-   	- In the main program, now buffers allocated first, Queues later (buffer allocated in lower region of NCRAM and 
-	   queues are above ) => works fine in long test (40 min: 2048 packets loopbacked)
-
-
-
-	Corrected length of queue as 4, since using only 4 buffers.
-
-	questions gap between 2 buffers greater than their size why?
-	lock ids 2,3,4,5? used where?
-
-
-
-
 
