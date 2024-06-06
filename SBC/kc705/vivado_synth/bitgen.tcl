@@ -11,32 +11,34 @@ read_vhdl -library simpleI2CLib  ../vhdl_libs/simpleI2CLib.vhdl
 read_vhdl -library simpleUartLib ../vhdl_libs/simpleUartLib.vhdl
 read_vhdl -library SpiMasterLib  ../vhdl_libs/SpiMasterLib.vhdl
 read_vhdl -library AjitCustom  ../vhdl_libs/AjitCustom.vhdl
-# the SBC core vhdl files.
-read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system_global_package.vhdl
-read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system.vhdl
-read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/rx_concat_system/vhdl/nic_mac_bridge_lib/rx_concat_system.vhdl
-read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/rx_concat_system/vhdl/nic_mac_bridge_lib/rx_concat_system_global_package.vhdl
 
+# the SBC core vhdl files.
+read_vhdl -library nic_mac_bridge_lib ../hsys_1.1/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system_global_package.vhdl
+read_vhdl -library nic_mac_bridge_lib ../hsys_1.1/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system.vhdl
+read_vhdl -library nic_mac_bridge_lib ../hsys_1.1/nic_subsystem/nic_mac_bridge/rx_concat_system/vhdl/nic_mac_bridge_lib/rx_concat_system.vhdl
+read_vhdl -library nic_mac_bridge_lib ../hsys_1.1/nic_subsystem/nic_mac_bridge/rx_concat_system/vhdl/nic_mac_bridge_lib/rx_concat_system_global_package.vhdl
 #read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/vhdl/nic_mac_bridge_lib/nic_mac_bridge.vhdl
 read_vhdl -library nic_mac_bridge_lib ../toplevel/nic_mac_bridge_edited.vhdl
-#read_vhdl -library nic_mac_bridge_lib ../toplevel/nic_mac_bridge.vhdl
+read_vhdl -library nic_lib ../hsys_1.1/nic_subsystem/nic/vhdl/nic_lib/nic.vhdl
+read_vhdl -library nic_lib ../hsys_1.1/nic_subsystem/nic/vhdl/nic_lib/nic_global_package.vhdl
+read_vhdl -library nic_subsystem_lib ../hsys_1.1/nic_subsystem/vhdl/nic_subsystem_lib/nic_subsystem.vhdl
 
-read_vhdl -library nic_lib ../hsys/nic_subsystem/nic/vhdl/nic_lib/nic.vhdl
-read_vhdl -library nic_lib ../hsys/nic_subsystem/nic/vhdl/nic_lib/nic_global_package.vhdl
-read_vhdl -library nic_subsystem_lib ../hsys/nic_subsystem/vhdl/nic_subsystem_lib/nic_subsystem.vhdl
-read_vhdl -library acb_afb_complex_lib ../hsys/acb_afb_complex/vhdl/acb_afb_complex_lib/acb_afb_complex.vhdl
-read_vhdl -library ajit_processor_lib ../hsys/processor_subsystem/vhdl/ajit_processor_lib/processor_1x1x32.vhdl
-read_vhdl -library acb_dram_controller_bridge_lib ../hsys/acb_dram_controller_bridge/vhdl/acb_dram_controller_bridge_lib/acb_dram_controller_bridge.vhdl
-read_vhdl -library spi_flash_controller_lib ../hsys/spi_flash_controller/vhdl/spi_flash_controller_lib/spi_flash_controller.vhdl
 
-read_vhdl -library sbc_kc705_core_lib ../hsys/vhdl/sbc_kc705_core_lib/sbc_kc705_core.vhdl
-#read_vhdl -library sbc_kc705_core_lib ../toplevel/sbc_kc705_core_edited.vhdl
+read_vhdl -library acb_afb_complex_lib ../hsys_1.1/acb_afb_complex/vhdl/acb_afb_complex_lib/acb_afb_complex.vhdl
+read_vhdl -library ajit_processor_lib ../hsys_1.1/processor_subsystem/vhdl/ajit_processor_lib/processor_1x1x32.vhdl
+read_vhdl -library acb_dram_controller_bridge_lib ../hsys_1.1/acb_dram_controller_bridge/vhdl/acb_dram_controller_bridge_lib/acb_dram_controller_bridge.vhdl
+read_vhdl -library spi_flash_controller_lib ../hsys_1.1/spi_flash_controller/vhdl/spi_flash_controller_lib/spi_flash_controller.vhdl
+read_vhdl -library sbc_kc705_core_lib ../hsys_1.1/vhdl/sbc_kc705_core_lib/sbc_kc705_core.vhdl
 read_vhdl ../vhdl/DualClockedQueue.vhd
+
+read_vhdl ../hsys_1.1/acb_sram/vhdl/acb_sram_lib/acb_sram.vhdl
+
 ############ ADDING TOP LEVEL VHDL #########################
-read_vhdl ../toplevel/sbc_kc705.vhdl
+
+read_vhdl ../toplevel/SBC_FASTMEM/sbc_kc705.vhdl
 
 ###########################################################
-# verilog files..
+# verilog files for old MAC
 #read_verilog ../verilog/axi_lite_controller.v
 #read_verilog ../verilog/ETH_KC.v
 #read_verilog ../verilog/reset_gen.v
@@ -50,8 +52,6 @@ read_verilog ../organizedMAC/AXI_stateMachine/tri_mode_ethernet_mac_0_axi_lite_s
 read_verilog ../organizedMAC/reset_sync/tri_mode_ethernet_mac_0_example_design_resets.v
 read_verilog ../organizedMAC/reset_sync/tri_mode_ethernet_mac_0_reset_sync.v
 read_verilog ../organizedMAC/sync_block/tri_mode_ethernet_mac_0_sync_block.v
-
-
 read_verilog ../organizedMAC/AXI_fifos/tri_mode_ethernet_mac_0_bram_tdp.v
 read_verilog ../organizedMAC/AXI_fifos/tri_mode_ethernet_mac_0_fifo_block.v
 read_verilog ../organizedMAC/AXI_fifos/tri_mode_ethernet_mac_0_rx_client_fifo.v

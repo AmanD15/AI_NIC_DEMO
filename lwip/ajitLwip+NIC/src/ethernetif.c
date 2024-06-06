@@ -226,11 +226,12 @@ low_level_input(struct netif *netif)
 		cortos_exit(0); 
 
 		}
-
+	/*
 	// Print Packet Contents
 	uint64_t*  BufferPtr = (uint64_t*)(bufptrVA);
 	for(i=0;i<16 ;i++)
-		cortos_printf("Packet[%u]: %016llx\n",8*i,(*BufferPtr++));	
+		cortos_printf("Packet[%u]: %016llx\n",8*i,(*BufferPtr++));
+	*/	
 
 	// Calculating packet length
 
@@ -263,13 +264,10 @@ low_level_input(struct netif *netif)
     for (q = p; q != NULL; q = q->next) {
       /* Read enough bytes to fill this pbuf in the chain. The
        * available data in the pbuf is given by the q->len
-       * variable.
-       * This does not necessarily have to be a memcpy, you can also preallocate
-       * pbufs for a DMA-enabled MAC and after receiving truncate it to the
-       * actually received size. In this case, ensure the tot_len member of the
-       * pbuf is the sum of the chained pbuf len members.
-       */
+       * variable.*/
+
      // read data into(q->payload, q->len);
+
         memcpy(q->payload, BufPtr, q->len);
         BufPtr += q->len;
         cortos_printf("q->len = %hu \n",q->len);
@@ -316,15 +314,15 @@ low_level_output(struct netif *netif, struct pbuf *p)
   uint32_t* bufptrVA;
   uint64_t bufptrPA;
 
-// pop free q for available buffer.(since not available, overwriting packets in rxQ) 
-// NEED SEPARATE TX AND RX RINGS!!
+	// pop free_queue_tx for available buffer.
+
 	int read_ok = cortos_readMessages(free_queue_tx, (uint8_t*)(&bufptrPA) , 1);
  	if(read_ok == 0){
 		cortos_printf("low_level_output: failed to read free buffer\n");
 		return 1;
 	 }
 
-// Preparing the Buffer for transmit Engine
+	// Preparing the Buffer for transmit Engine
 
 	// reverse table PA -> VA access
 	 bufptrVA = translatePAtoVA(bufptrPA);
@@ -336,41 +334,40 @@ low_level_output(struct netif *netif, struct pbuf *p)
 	}
 
 	// getting the length of packet to transmit.
-uint32_t lengthInBytes = p->tot_len;
-uint32_t lenInDW = getPacketLenInDW(lengthInBytes);
-uint32_t lastTkeep = getLastTkeep(lengthInBytes);
-*(bufptrVA + 1)  = (lenInDW << 11) | (lastTkeep) ;
 
-// Pushing the contents to transmit in this buffer.
-uint8_t* BufPtr = ((uint8_t*)bufptrVA) + 24;
-for (q = p; q != NULL; q = q->next) {
-    /* Send the data from the pbuf to the interface, one pbuf at a
-       time. The size of the data in each pbuf is kept in the ->len
-       variable. */
-   // send data from(q->payload, q->len);
-    memcpy(BufPtr,q->payload,q->len);
-    q->payload = (uint8_t*)q->payload + q->len;
-  }
+	uint32_t lengthInBytes = p->tot_len;
+	uint32_t lenInDW = getPacketLenInDW(lengthInBytes);
+	uint32_t lastTkeep = getLastTkeep(lengthInBytes);
+	*(bufptrVA + 1)  = (lenInDW << 11) | (lastTkeep) ;
+
+	// Pushing the contents to transmit in this buffer.
+	// Transmit engine sends after 3 8 byte words, see src code
+	uint8_t* BufPtr = ((uint8_t*)bufptrVA) + 24; 
+	for (q = p; q != NULL; q = q->next) {
+	    /* Send the data from the pbuf to the interface, one pbuf at a
+	       time. The size of the data in each pbuf is kept in the ->len
+	       variable. */
+	   // send data from(q->payload, q->len);
+	    memcpy(BufPtr,q->payload,q->len);
+	    q->payload = (uint8_t*)q->payload + q->len;
+	  }
 
 
 
-// Pushing the PA to transmit queue
+	// Pushing the PA to transmit queue
  
-int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)(&bufptrPA) , 1);
- if(write_ok == 0){
-   cortos_printf("failed to wrtite to TxQ\n");
-	  return 1;
-  }
-  else
-    cortos_printf("netif->linkoutput() or low_level_output(): packet transmitted\n");
-
- // signal that packet should be sent();
+	int write_ok = cortos_writeMessages(tx_queue, (uint8_t*)(&bufptrPA) , 1);
+	 if(write_ok == 0){
+	   cortos_printf("failed to wrtite to TxQ\n");
+		  return 1;
+	  }
+	  else
+	    cortos_printf("netif->linkoutput() or low_level_output(): packet transmitted\n");
 
 #if ETH_PAD_SIZE
   pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
 #endif
 
- 
 
   return ERR_OK;
 }
@@ -409,14 +406,3 @@ netif_initialize(struct netif *netif)
 }
 
 
-void printEthernetFrame(uint8_t *ethernetFrame, int start,int length,int tab) {
-
-    int i,count =0;
-    for (i = start; i < length; i++) {
-        cortos_printf("0x%02X, ", ethernetFrame[i]);
-	count ++;
-        if (count%tab == 0)
-            cortos_printf("\n");
-    }
-    cortos_printf("\n");
-}
