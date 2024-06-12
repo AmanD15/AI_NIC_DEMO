@@ -328,24 +328,7 @@ for sbc_kc705_core_inst :  sbc_kc705_core --
 
 end component mig_7series_0;
 
- component ila_2 is
- 
-    Port ( 
-    clk : in STD_LOGIC;
-    probe0 : in STD_LOGIC_VECTOR ( 0 to 0 );
-    probe1 : in STD_LOGIC_VECTOR ( 0 to 0 );
-    probe2 : in STD_LOGIC_VECTOR ( 7 downto 0 );
-    probe3 : in STD_LOGIC_VECTOR ( 35 downto 0 );
-    probe4 : in STD_LOGIC_VECTOR ( 63 downto 0 );
-    probe5 : in STD_LOGIC_VECTOR ( 7 downto 0 );
-    probe6 : in STD_LOGIC_VECTOR ( 64 downto 0 );
-    probe7 : in STD_LOGIC_VECTOR ( 0 to 0 );
-    probe8 : in STD_LOGIC_VECTOR ( 0 to 0 );
-    probe9 : in STD_LOGIC_VECTOR ( 7 downto 0 )
-  );
-  
 
-end component;
 
 ------------------------------------------------------
 -- TODO: Signal Declaration for SBC core. (DONE!!)
@@ -426,22 +409,6 @@ end component;
 
     signal MIG7_UI_CLOCK: std_logic_vector(0 downto 0);
     
-    --------------------DEBUG SIGNALS --------------------------------------
-    
-    signal NIC_ACB_REQUEST_TO_MEMORY_LOCK : std_logic_vector(0 downto 0);
-    signal NIC_ACB_REQUEST_TO_MEMORY_RWBAR : std_logic_vector(0 downto 0);
-    signal NIC_ACB_REQUEST_TO_MEMORY_MASK : std_logic_vector(7 downto 0);
-    signal NIC_ACB_REQUEST_TO_MEMORY_ADDR : std_logic_vector(35 downto 0);
-    signal NIC_ACB_REQUEST_TO_MEMORY_DATA : std_logic_vector(63 downto 0);
-    
-    signal NIC_ACB_REQUEST_TO_MEMORY_TAG : std_logic_vector(7 downto 0);
-    
-    signal MEMORY_TO_NIC_RESPONSE : std_logic_vector(64 downto 0);
-  
-    
-    --signal  MAC_TVALID : std_logic_vector(0 downto 0);
-    --signal  MAC_TLAST  : std_logic_vector(0 downto 0);
-    --signal  MAC_TDATA  : std_logic_vector(7 downto 0);
     
    
 begin
@@ -453,13 +420,13 @@ begin
    -- CONFIG_UART_BAUD_CONTROL_WORD <= X"3b890180";
 
       
-     -- For first ACB Tap goes to only NIC.
+     -- For first ACB Tap goes to NIC.
      MIN_ACB_TAP1_ADDR <= X"0_FF00_0000";
      MAX_ACB_TAP1_ADDR <= X"0_FFFF_FFFF";
 
-     -- For second ACB TAP goes to RAM.
-     MIN_ACB_TAP2_ADDR <= X"0_3000_0000";
-     MAX_ACB_TAP2_ADDR <= X"0_FEFF_FFFF"; -- 0_FEFF_FFFF + 1 = 0_FF00_0000
+     -- For second ACB TAP goes to FLASH.
+     MIN_ACB_TAP2_ADDR <= X"0_0000_0000";
+     MAX_ACB_TAP2_ADDR <= X"0_2FFF_FFFF"; 
      
     -- clocking wizard 
       
@@ -716,31 +683,6 @@ begin
     sys_rst                    => sys_rst(0)
   );
   sys_rst(0) <= clk_rst; -- MIG is at same level as clock generator.
-
-
-	NIC_ACB_REQUEST_TO_MEMORY_TAG   <= NIC_DEBUG_SIGNAL(182 downto 175); 
-	NIC_ACB_REQUEST_TO_MEMORY_LOCK  <= (0 => NIC_DEBUG_SIGNAL(174));
-	NIC_ACB_REQUEST_TO_MEMORY_RWBAR <= (0 => NIC_DEBUG_SIGNAL(173));
-	NIC_ACB_REQUEST_TO_MEMORY_MASK  <= NIC_DEBUG_SIGNAL(172 downto 165);
-	NIC_ACB_REQUEST_TO_MEMORY_ADDR  <= NIC_DEBUG_SIGNAL(164 downto 129);
-	NIC_ACB_REQUEST_TO_MEMORY_DATA  <= NIC_DEBUG_SIGNAL(128 downto 65);
-	MEMORY_TO_NIC_RESPONSE	<= NIC_DEBUG_SIGNAL(64 downto 0); 
- 
-
-inst_ila_2 : ila_2 
-  Port map( 
-    clk => clk_ref_125,
-    probe0 => NIC_ACB_REQUEST_TO_MEMORY_LOCK,
-    probe1 => NIC_ACB_REQUEST_TO_MEMORY_RWBAR,
-    probe2 => NIC_ACB_REQUEST_TO_MEMORY_MASK,
-    probe3 => NIC_ACB_REQUEST_TO_MEMORY_ADDR,
-    probe4 => NIC_ACB_REQUEST_TO_MEMORY_DATA,
-    probe5 => NIC_ACB_REQUEST_TO_MEMORY_TAG,
-    probe6 => MEMORY_TO_NIC_RESPONSE,
-    probe7 =>  MAC_TO_NIC_pipe_write_req,
-    probe8 =>  MAC_TO_NIC_pipe_write_ack,
-    probe9 =>  MAC_TO_NIC_pipe_write_data(8 downto 1)    
-  );
 
 
 
