@@ -23,7 +23,7 @@
 #define IFNAME0 'e'
 #define IFNAME1 'n'
 #define ETHERNET_MTU 1500
-#define ETHER_FRAME_LEN 512
+
 
 
 void 
@@ -40,6 +40,9 @@ struct ethernetif {
   /* Add whatever per-interface state that is needed here. */
 
 };
+
+int
+ZeroCopyRx_input(struct netif *netif);
 
 int
 low_level_input(struct netif *netif);
