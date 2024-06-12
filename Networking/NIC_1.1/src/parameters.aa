@@ -1,0 +1,17 @@
+$parameter    P_NIC_CONTROL_REGISTER_INDEX      0
+$parameter    P_N_SERVERS_REGISTER_INDEX        1 
+$parameter    P_DEBUG_REGISTER_0	            2 
+$parameter    P_DEBUG_REGISTER_1	            3  
+$parameter    P_MAC_REGISTER_H_INDEX            208
+$parameter    P_MAC_REGISTER_L_INDEX            209
+$parameter    P_TX_PKT_COUNT_REGISTER_INDEX     210
+$parameter    P_RX_PKT_COUNT_REGISTER_INDEX     211
+$parameter    P_STATUS_REGISTER_INDEX           212
+$parameter    P_RX_ENGINE_TAG                   1
+$parameter    P_TX_ENGINE_TAG                   2
+
+//  Base index for queue's registers
+$parameter    P_RX_QUEUE_REGISTER_BASE_INDEX       8
+$parameter    P_TX_QUEUE_REGISTER_BASE_INDEX       128
+$parameter    P_FREE_QUEUE_RX_REGISTER_BASE_INDEX  200
+$parameter    P_FREE_QUEUE_TX_REGISTER_BASE_INDEX  213  

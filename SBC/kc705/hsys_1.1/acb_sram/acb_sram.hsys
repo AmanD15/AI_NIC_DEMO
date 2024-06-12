@@ -1,0 +1,13 @@
+$system acb_sram $library acb_sram_lib
+    $in
+        $pipe ACB_SRAM_REQUEST 110 $depth 2    
+        
+    $out
+
+        $pipe ACB_SRAM_RESPONSE 65 $depth 2
+
+{
+
+
+
+}

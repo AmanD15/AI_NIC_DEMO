@@ -1,9 +1,35 @@
 #ifndef NIC_DRIVER_H___
 #define NIC_DRIVER_H___
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
+
 
 #ifdef USE_CORTOS
-#include "cortos.h"
+// Following stuff is used with lwip and baremetal testing
+// not useful while compiling testbench
+
+#include <ajit_access_routines.h>
+#include <ajit_mmap.h>
+#include <cortos.h>
+
+// Buffer parameters
+#define NUMBER_OF_BUFFERS 4
+#define BUFFER_SIZE_IN_BYTES 1500
+#define NIC_START_ADDR 0xFF000000
+
+// The Qs
+CortosQueueHeader* free_queue;
+CortosQueueHeader* rx_queue;
+CortosQueueHeader* tx_queue;
+
+// The array to store ptr to buffers
+volatile uint32_t*  BufferPtrsVA[NUMBER_OF_BUFFERS];
+volatile uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
+
 #endif
+
 
 //  Register definitions..  These must be consistent
 //  with the parameters.aa file in the NIC AA source
@@ -20,6 +46,9 @@
 #define    P_RX_PKT_COUNT_REGISTER_INDEX     211
 #define    P_STATUS_REGISTER_INDEX           212
 
+#define    P_DEBUG_LAST_ADDRESS_WRITTEN_INDEX     220
+#define    P_BUFFER_SIZE_INDEX     221
+
 // flags.
 #define    F_ENABLE_NIC			      0x1
 #define    F_ENABLE_NIC_INTERRUPT	      0x2
@@ -29,19 +58,6 @@
 #define    RXQUEUE				2
 
 #define    NIC_MAX_NUMBER_OF_SERVERS		8
-
-typedef __NicBuffer {
-	// format
-	// allocated_array_size_in_bytes
-	//    [63:48]
-	// packet size in bytes 
-	//    [18:8]
-	// tkeep
-	//    [7:0]
-	//
-	uint64_t  control_word;
-	uint64_t* allocated_array;
-} NicBuffer;
 
 #ifndef USE_CORTOS
 //
@@ -73,6 +89,7 @@ typedef struct __NicCortosQueue {
 #else
 typedef CortosQueueHeader NicCortosQueue;
 #endif
+
 
 void initNicCortosQueue (NicCortosQueue* cqueue,
 				uint32_t queue_capacity,
@@ -151,12 +168,43 @@ void getNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 		uint64_t *queue_lock_addr, uint64_t *queue_buffer_addr);
 
 void configureNic (NicConfiguration* config);
-void enableNic  (uint32_t nic_id, uint8_t enable_interrupt, uint8_t enable_nic);
+void enableNic  (uint32_t nic_id, uint8_t enable_interrupt, uint8_t enable_mac, uint8_t enable_nic);
 void disableNic (uint32_t nic_id);
 
+
+#ifdef USE_CORTOS
 // The following routine gives the PA for the specified VA
-// 
 // returns 0 if translation is successful (*pa holds the return value)
 int translateVaToPa (uint32_t va, uint64_t* pa);
+
+// The following function gives various physical address for Queues: 
+// Queue struct addr, packet buffer addr and lock addr.
+void findQueuePhyAddr(char*,CortosQueueHeader*,uint64_t*,uint64_t*,uint64_t*);
+
+// The following function gives actual packet length, used by LwIP: 
+uint32_t getPacketLen(uint32_t* controlWord);
 		
+// Define the structure for the translation table entry
+
+typedef struct {
+    uint64_t pa;  // Physical address
+    uint32_t* va;  // Virtual address
+} TranslationEntry;
+
+
+
+// Define the translation table with eight entries
+TranslationEntry translationTable[NUMBER_OF_BUFFERS];
+
+// For initialsing the translation Table 
+void initTranslationTable(uint64_t,uint32_t*);
+
+// Function to translate physical address to virtual address
+uint32_t* translatePAtoVA(uint64_t pa);
+
+// These functions are used in low_level_output driver
+uint32_t getPacketLenInDW(uint32_t lenInBytes);
+uint32_t getLastTkeep(uint32_t lenInBytes);
+#endif
+
 #endif

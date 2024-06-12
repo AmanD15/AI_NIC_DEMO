@@ -1,0 +1,34 @@
+// these are constants used in the code at various places..
+$constant WAIT_TIME		: $uint<10> := 10 			// Wait for WAIT_TIME number of clock cycles
+$constant FULL_BYTE_MASK 	: $uint<8>  := _b11111111 		// Byte Mask to write entire word
+$constant BAD_PACKET_DATA 	: $uint<64> := _hffffffffffffffff 	// Data Identifier of Bad packet
+$constant QUEUE_SIZE_MASK 	: $uint<32> := 4
+
+// memory access constants.
+$constant READMEM  : $uint<1> := 1
+$constant WRITEMEM : $uint<1> := 0
+$constant LOCKMEM  : $uint<1> := 1
+$constant UNLOCKMEM: $uint<1> := 0
+
+// queue related
+$constant FREEQUEUE_RX : $uint<2>  := 0
+$constant TXQUEUE   : $uint<2>  := 1
+$constant RXQUEUE   : $uint<2>  := 2
+$constant FREEQUEUE_TX : $uint<2>  := 3
+
+// memory access instructions.
+$constant ST:     $uint<3> := 1
+$constant STD:    $uint<3> := 2
+$constant STB:    $uint<3> := 3
+$constant LD:     $uint<3> := 4
+$constant LDD:    $uint<3> := 5
+$constant LDB:    $uint<3> := 6
+$constant LDSTUB: $uint<3> := 7
+
+
+// monitor 
+$constant POPQ  : $uint<4> := 1
+$constant PUSHQ : $uint<4> := 2
+$constant PREPOPQ  : $uint<4> := 3
+$constant PREPUSHQ : $uint<4> := 4
+

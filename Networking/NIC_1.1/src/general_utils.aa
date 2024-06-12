@@ -1,0 +1,17 @@
+//Delay Block
+// Adds T number of clock cycles of delay
+$operator $module [delay_time]
+	$in (T: $uint<10>) $out (delay_done : $uint<1>) $is
+{
+	$branchblock[loop] {
+	    $dopipeline $depth 7 $fullrate
+		$merge $entry $loopback
+			$phi R := T $on $entry nR $on $loopback
+		$endmerge
+
+		$volatile nR := (R - 1)
+	   $while (R > 0)
+	}
+	delay_done := 1
+}
+

@@ -1,13 +1,11 @@
 
-#include "include/nic_driver.h"
+#include "nic_driver.h"
 
 
-#define NUMBER_OF_BUFFERS 1
-#define BUFFER_SIZE_IN_BYTES 128
+#define NUMBER_OF_BUFFERS 4
+#define BUFFER_SIZE_IN_BYTES 512
 #define NIC_START_ADDR 0xFF000000
-#define RXQ_LOCK_ADDR 0x40014006
 
-void findQueuePhyAddr(char*,CortosQueueHeader*,uint64_t*,uint64_t*,uint64_t*);
 
 CortosQueueHeader* free_queue;
 CortosQueueHeader* rx_queue;
@@ -17,59 +15,7 @@ volatile uint32_t*  BufferPtrsVA[NUMBER_OF_BUFFERS];
 volatile uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
 
 //////////////////////////////////////
-uint32_t cortos_readMessages2(CortosQueueHeader *hdr, uint8_t *msgs, uint32_t count) {
-  uint8_t *dest = 0, *src = 0; // nullptr
-  uint32_t process = count;
-  uint32_t i;
 
-  if (!(hdr->misc & SINGLE_RW_QUEUE)) {
-	if(((uint32_t)hdr->lock) != RXQ_LOCK_ADDR )
-	{
-		cortos_printf("length modfied to:%08lx\n",hdr->length);
-		cortos_printf("msgSizeInBytes modfied to:%08lx\n",hdr->msgSizeInBytes);
-		cortos_printf("Lock address modfied to:0x%08lx\n",(uint32_t)hdr->lock);
-		cortos_exit(0);
-	}
-
-    cortos_lock_acquire_buzy(hdr->lock);
-  } else {
-    if (hdr->totalMsgs == 0) return 0; // read only when there are messages
-  }
-
-  uint32_t totalMsgs      = hdr->totalMsgs;
-  uint32_t readIndex      = hdr->readIndex;
-  uint32_t length         = hdr->length;
-  uint32_t msgSizeInBytes = hdr->msgSizeInBytes;
-  uint8_t* queuePtr       = (uint8_t*)(hdr + 1);
-
-  while ((process > 0) && (totalMsgs > 0)) {
-    dest = msgs + (msgSizeInBytes * (count - process));
-    src  = queuePtr + (msgSizeInBytes * readIndex);
-    for (i = 0; i < msgSizeInBytes; ++i) {
-      *(dest+i) = *(src+i);                     // READ THE MESSAGE HERE
-    }
-    readIndex = (readIndex+1) % length;
-    --totalMsgs; --process;
-  }
-
-  hdr->readIndex  = readIndex;
-  hdr->totalMsgs  = totalMsgs;
-
-  if (!(hdr->misc & SINGLE_RW_QUEUE)) {
-
-	if(((uint32_t)hdr->lock) != RXQ_LOCK_ADDR )
-	{
-		cortos_printf("length modfied to:%08lx\n",hdr->length);
-		cortos_printf("msgSizeInBytes modfied to:%08lx\n",hdr->msgSizeInBytes);
-		cortos_printf("Lock address modfied to:0x%08lx\n",(uint32_t)hdr->lock);
-		
-		cortos_exit(0);
-	}
-	
-    cortos_lock_release(hdr->lock);              // RELEASE LOCK
-  }
-  return (count - process);
-}
 
 
 //////////////////////////////////////
@@ -85,16 +31,7 @@ int main()
 	uint32_t length = NUMBER_OF_BUFFERS;
 	uint8_t nonCacheable = 1;
 
-	/*
-	// Step 5 : Allocating Packet buffers
-
-	int i,status;
-	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
-	{
-		BufferPtrsVA[i] = (uint32_t*) cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
-		cortos_printf("Allocated Buffer[%d] VA = 0x%08lx\n", i,(uint32_t)BufferPtrsVA[i]);
-	}
-	*/
+	
 	free_queue = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
 	rx_queue   = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
 	tx_queue   = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
@@ -163,12 +100,16 @@ int main()
 		BufferPtrsVA[i] = (uint32_t*) cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
 		cortos_printf("Allocated Buffer[%d] VA = 0x%08lx\n", i,(uint32_t)BufferPtrsVA[i]);
 	}
-	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
-	{
-		memset((uint8_t*)BufferPtrsVA[i],0,BUFFER_SIZE_IN_BYTES);
-		*BufferPtrsVA[0] = (BUFFER_SIZE_IN_BYTES - 8) << 16;
-		cortos_printf("control word: %016llx\n",*((uint64_t*)BufferPtrsVA[0]));
-	}
+
+		// initialsing buffers with zero, and configuring buffer size
+		// in the control word, top 16 bits.
+
+		for(i = 0; i < NUMBER_OF_BUFFERS; i++)
+		{
+			memset((uint8_t*)BufferPtrsVA[i],0,BUFFER_SIZE_IN_BYTES);
+			*BufferPtrsVA[i] = (BUFFER_SIZE_IN_BYTES - 8) << 16;
+			cortos_printf("control word: %016llx\n",*((uint64_t*)BufferPtrsVA[i]));
+		}
 	
 		// Converting to PA
 	
@@ -226,7 +167,7 @@ int main()
 	while(1)
 	{
 		
-		msgsRead = cortos_readMessages2(rx_queue, (uint8_t*)(&bufptr), 1);
+		msgsRead = cortos_readMessages(rx_queue, (uint8_t*)(&bufptr), 1);
 
 		if(msgsRead){
 			last_addr = readFromNicReg (0, P_DEBUG_LAST_ADDRESS_WRITTEN_INDEX);
@@ -239,17 +180,16 @@ int main()
 			rx_queue->msgSizeInBytes, (uint32_t)rx_queue->lock, (uint32_t)rx_queue->bget_addr, rx_queue->misc);
 			
 			BufferPtr = (uint64_t*)((uint32_t)bufptr);
-			packetLen = (*BufferPtr) >> 8;	
-			cortos_printf("Packet Length = %u\n",packetLen);
+			packetLen = (uint32_t)((0xFFFFFFFF & (*BufferPtr)) >> 8);	
+			cortos_printf("Packet Length in Double words = %u\n",packetLen);
 			
 			
 			
 			// Print Packet Contents
-			BufferPtr++;
-			for(i=1;i<16 ;i++)
+			for(i=0;i<16 ;i++)
 				cortos_printf("Packet[%u]: %016llx\n",8*i,(*BufferPtr++));
 			
-			/*
+			
 			msgs_written = cortos_writeMessages(tx_queue, (uint8_t*)(&bufptr), 1);
 			if(msgs_written){
 			//Print TxQ data structure
@@ -259,16 +199,16 @@ int main()
 				cortos_printf("bufferPtr(PA) written = %016llx\n",bufptr);
 
 			}
-			*/
+			
 
-		
+			/*
 			msgs_written = cortos_writeMessages(free_queue, (uint8_t*)(&bufptr), 1);
 			if(msgs_written){
 				cortos_printf("freeQ replenished \n");
 				cortos_printf("*(free_queue->lock) = %x \n",*(free_queue->lock));
 			}
 			
-			
+			*/
 
 			message_counter++;
 			cortos_printf("message_counter:%d\n",message_counter);
@@ -315,37 +255,6 @@ int main()
 
 		cortos_exit(0);	
 }
-
-
-
-
-void findQueuePhyAddr(char *s,CortosQueueHeader* Q_VA,
-						uint64_t* Q_PA,uint64_t* Qlock_PA,uint64_t* Qbuf_PA)
-{
-
-	int foundPTE;
-
-	foundPTE = translateVaToPa( (uint32_t)Q_VA, Q_PA);
-	if(foundPTE == 0)
-		cortos_printf("%s address: VA = 0x%lx , PA = 0x%016llx \n",s,(uint32_t)Q_VA,*Q_PA);
-	else
-		cortos_printf("%s address translation not found\n", s);
-
-	foundPTE = translateVaToPa((uint32_t)(Q_VA->lock), Qlock_PA);
-	if(foundPTE == 0)
-		cortos_printf("%s lock address: VA = 0x%lx , PA = 0x%016llx \n",s,(uint32_t)(Q_VA->lock),*Qlock_PA);
-	else
-		cortos_printf("%s lock address translation not found\n", s);
-
-	foundPTE = translateVaToPa((uint32_t)(Q_VA + 1), Qbuf_PA);
-	if(foundPTE == 0)
-		cortos_printf("%s buffer start address: VA = 0x%lx , PA = 0x%016llx \n",s,(uint32_t)(Q_VA + 1),*Qbuf_PA);
-	else
-		cortos_printf("%s buffer address translation not found\n", s);
-
-}
-
-
 
 
 

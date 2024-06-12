@@ -1,0 +1,15 @@
+Author: Siddhant Singh Tomar
+	
+	original_SBC : original SBC according to hsys, with NIC_1.1
+		sbc_kc705.vhdl : Top level vhdl file
+		
+	SBC_FASTMEM : SBC with 256KB SRAM according to hsys_1.1, with NIC_1.1
+		sbc_kc705.vhdl : Top level vhdl file
+			
+	nic_mac_bridge_edited.vhdl : 
+		this file is needed, because output reset signal from
+		nic_mac_pipe_reset.v, is sent to rx_concat and tx_deconcat blocks  
+				
+NOTE: To build the system, with NIC or NIC_1.1 one has to 
+	make changes in ../hsys or hsys_1.1/nic_subsystem/nic/Makefile
+	modify SRC variable

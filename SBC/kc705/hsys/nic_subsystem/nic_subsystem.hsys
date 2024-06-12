@@ -12,7 +12,7 @@ $system nic_subsystem $library nic_subsystem_lib
         $pipe NIC_TO_MAC_DATA           // NIC->MAC pipe going out.
         $signal NIC_TO_MAC_RESETN
         $signal NIC_INTERRUPT_TO_PROCESSOR
-	$signal NIC_DEBUG_SIGNAL 128 $depth 1
+	$signal NIC_DEBUG_SIGNAL 256 $depth 1
 {
 
 
@@ -44,6 +44,7 @@ $system nic_subsystem $library nic_subsystem_lib
                 mac_to_nic_data             => rx_concat_to_nic_data //input
                 nic_to_mac_transmit_pipe    => nic_to_tx_deconcat_data //output
                 NIC_INTR                    => NIC_INTERRUPT_TO_PROCESSOR
+		NIC_DEBUG_SIGNAL 	    => NIC_DEBUG_SIGNAL
 
 	// tie the interrupt off for now.
 	$thread tie_interrupt_off
