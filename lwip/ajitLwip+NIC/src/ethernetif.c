@@ -2,6 +2,20 @@
 
 #include "../include/ethernetif.h"
 #include "nic_driver.h"
+#include "lwip/sys.h"
+
+
+
+typedef struct my_custom_pbuf
+{
+   struct pbuf_custom p;
+   uint64_t bufferPA;  
+} my_custom_pbuf_t;
+
+
+
+//LWIP_MEMPOOL_DECLARE(RX_POOL, 10, sizeof(my_custom_pbuf_t), "Zero-copy RX PBUF pool");
+
 
 void
 low_level_init()
@@ -197,7 +211,106 @@ low_level_init()
 	cortos_printf("Control register = 0x%08lx\n",controlReg);
 	cortos_printf ("Configuration Done. NIC has started\n");
 
+
+
+        // Step 8 : Initialize the custom memory pool, used in ZeroCopyRx_input()
+	//LWIP_MEMPOOL_INIT(RX_POOL);
+
 }
+
+
+/******************************/
+
+
+
+void my_pbuf_free_custom(void* p)
+{
+  SYS_ARCH_DECL_PROTECT(old_level);
+
+  my_custom_pbuf_t* my_pbuf = (my_custom_pbuf_t*)p;
+
+
+  /* Since NCRAM region is used, this is not required for now*/
+	
+  // invalidate data cache here - lwIP and/or application may have written into buffer!
+  // (invalidate is faster than flushing, and no one needs the correct data in the buffer)
+  // invalidate_cpu_cache(p->payload, p->tot_len);
+
+  SYS_ARCH_PROTECT(old_level);
+
+ 	 /* free_rx_dma_descriptor(my_pbuf->dma_descriptor); */
+	uint64_t bufptrPA = my_pbuf->bufferPA ;
+	// replenshing free q after buffer has been passed to top layers for processing
+	int write_ok = cortos_writeMessages(free_queue_rx, (uint8_t*)(&bufptrPA) , 1);
+ 	if(write_ok == 0){
+   		cortos_printf("failed to wrtite to freexQ\n");
+	        cortos_exit(0);
+	 }
+
+  //LWIP_MEMPOOL_FREE(RX_POOL, my_pbuf);
+  SYS_ARCH_UNPROTECT(old_level);
+}
+
+
+int
+ZeroCopyRx_input(struct netif *netif)
+{
+
+  uint16_t packetLenInBytes;
+  uint32_t* bufptrVA;
+  uint64_t bufptrPA;
+  uint8_t* BufPtr;
+
+
+	// Read the buffer pointer from RxQ
+	  int read_ok = cortos_readMessages(rx_queue, (uint8_t*)(&bufptrPA), 1);
+	  if(read_ok == 0){
+		  return 1;
+	  }
+	
+	// reverse table PA -> VA access
+	 bufptrVA = translatePAtoVA(bufptrPA);
+	 if (bufptrVA == NULL){
+
+		cortos_printf("failed to find PA to VA translation!\n");
+		cortos_exit(0); 
+
+		}
+	
+	// Calculating packet length in bytes
+
+	 packetLenInBytes = getPacketLen(bufptrVA);
+	 //cortos_printf("len = %u\n",packetLenInBytes);
+
+	/* zero copy receive */
+       
+	//my_custom_pbuf_t* my_pbuf  = (my_custom_pbuf_t*)LWIP_MEMPOOL_ALLOC(RX_POOL);
+        my_custom_pbuf_t my_pbuf;
+	my_pbuf.p.custom_free_function = my_pbuf_free_custom;
+	my_pbuf.bufferPA         = bufptrPA;
+
+	BufPtr =(uint8_t*) bufptrVA +24; // packet starts after 3 double words
+
+	/* Since NCRAM region is used, this is not required for now*/
+	//invalidate_cpu_cache(dma_desc->rx_data, dma_desc->rx_length);
+	  
+	  struct pbuf* p = pbuf_alloced_custom(PBUF_RAW,
+	     packetLenInBytes,
+	     PBUF_REF,
+	     &my_pbuf.p,
+	     BufPtr,
+	     BUFFER_SIZE_IN_BYTES);
+
+	  if(netif->input(p, netif) != ERR_OK) {
+	    pbuf_free(p);
+	  }
+       /* end of zero copy receive*/
+    return 0;  
+  }
+
+
+/******************************/
+
 
 int
 low_level_input(struct netif *netif)
@@ -236,7 +349,7 @@ low_level_input(struct netif *netif)
 	// Calculating packet length
 
 	 len = getPacketLen(bufptrVA);
-	 cortos_printf("len = %u\n",len);	
+	 //cortos_printf("len = %u\n",len);	
 
 #if ETH_PAD_SIZE
   len += ETH_PAD_SIZE; /* allow room for Ethernet padding */
@@ -270,9 +383,9 @@ low_level_input(struct netif *netif)
 
         memcpy(q->payload, BufPtr, q->len);
         BufPtr += q->len;
-        cortos_printf("q->len = %hu \n",q->len);
+        //cortos_printf("q->len = %hu \n",q->len);
     }
-	cortos_printf("p->tot_len = %hu \n",p->tot_len);
+	//cortos_printf("p->tot_len = %hu \n",p->tot_len);
    // acknowledge that packet has been read();
   
 #if ETH_PAD_SIZE
@@ -361,8 +474,8 @@ low_level_output(struct netif *netif, struct pbuf *p)
 	   cortos_printf("failed to wrtite to TxQ\n");
 		  return 1;
 	  }
-	  else
-	    cortos_printf("netif->linkoutput() or low_level_output(): packet transmitted\n");
+	 // else
+	  //  cortos_printf("netif->linkoutput() or low_level_output(): packet transmitted\n");
 
 #if ETH_PAD_SIZE
   pbuf_add_header(p, ETH_PAD_SIZE); /* reclaim the padding word */

@@ -57,6 +57,7 @@ enum tcpecho_raw_states
   ES_RECEIVED,
   ES_CLOSING,
   ES_DATA,
+  ES_STORE,
   ES_CONTROL
 
 };
@@ -221,7 +222,7 @@ tcp_CONTROL_STATE(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
  /* enqueue address for transmission, after receiving data */
 
 
-    char message1[128] = "CONTROL STATE: Enter IP and port (A.B.C.D<space>WXYZ):";
+    char message1[128] = "CONTROL STATE: Enter IP and port (A.B.C.D<space>WXYZ): ";
  
     wr_err = tcp_write(tpcb, message1, strlen(message1), 1);
     if (wr_err == ERR_OK) {
@@ -270,7 +271,7 @@ tcp_DATA_STATE(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
  /* enqueue address for transmission, after receiving data */
 
 
-    char message1[64] = "DATA STATE: Start data transmission\n";
+    char message1[128] = "DATA STATE: Enter the offset,data size (<offset>,<num_of_bytes>): ";
  
     wr_err = tcp_write(tpcb, message1, strlen(message1), 1);
     if (wr_err == ERR_OK) {
@@ -282,9 +283,93 @@ tcp_DATA_STATE(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
 
 }
 
-//***************************************************//
+
+
 uint32_t* blockAddr;
+uint64_t offset=0,numBytes=0;
 uint32_t recvdBytes =0;
+
+static void
+tcp_STORE_STATE(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
+{
+  struct pbuf *ptr;
+  uint16_t plen;
+  err_t wr_err = ERR_OK;
+  char offst[32];
+  char nbytes[32];
+  char *ch;
+  int i=0,j=0;
+
+
+
+	ch = (char*)es->p->payload;
+
+	/* get offset*/
+        while(*ch != ',')
+		offst[i++] = *ch++;
+        offst[i] = '\0';
+
+        ch++;
+        /* get Port no. */ 
+        while(*ch != '\0')
+		nbytes[j++] = *ch++;
+        nbytes[j] = '\0';
+
+
+	offset = atoi(offst);
+	numBytes = atoi(nbytes);
+  
+ /* start receiving data */
+  while (es->p != NULL){
+
+	ptr = es->p;
+
+	/* Do Nothing */
+      
+	plen = ptr->len;
+
+
+	/* continue with next pbuf in chain (if any) */
+	es->p = ptr->next;
+
+	if(es->p != NULL) {
+	/* new reference! */
+	pbuf_ref(es->p);
+	}
+
+	/* chop first pbuf from chain */
+	pbuf_free(ptr);
+
+	/* we can read more data now */
+	tcp_recved(tpcb, plen);
+
+	}
+
+
+ /* enqueue address for transmission, after receiving data */
+
+
+    char message1[128] = "STORE STATE: Ready to receive data at offset: ";
+    strcat(message1,offst);
+    strcat(message1,"\n");
+    wr_err = tcp_write(tpcb, message1, strlen(message1), 1);
+    if (wr_err == ERR_OK) {
+	
+        /* we can read more data now */
+	tcp_recved(tpcb, plen);
+
+	}
+
+}
+
+
+
+
+//***************************************************//
+
+
+
+
 static void
 tcp_raw_store(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
 {
@@ -292,19 +377,17 @@ tcp_raw_store(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
 
 
   uint16_t plen;
-  
   err_t wr_err = ERR_OK;
+  
+  uint8_t* baseAddr = ((uint8_t*)blockAddr) + offset;
 
- /* start receiving data */
-
-  blockAddr = (uint32_t*)cortos_bget(1024);
   while (es->p != NULL){
 
 	ptr = es->p;
 
 	/* copy data to memory */
       
-	memcpy(((uint8_t*)blockAddr) + recvdBytes, ptr->payload, ptr->len);
+	memcpy(baseAddr + recvdBytes, ptr->payload, ptr->len);
 	recvdBytes += ptr->len;
 	plen = ptr->len;
 
@@ -335,9 +418,9 @@ tcp_raw_store(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
     char message2[32];
     char message3[32];
     lwip_itoa(message2,32,recvdBytes);
-    lwip_itoa(message3,32,Addr);
+    lwip_itoa(message3,32,offset);
     strcat(message1,message2);
-    strcat(message1," bytes stored at ");	
+    strcat(message1," bytes stored, starting from offset: ");	
     strcat(message1,message3);
     strcat(message1,"\nRECEIVED STATE: Enter 'C' or 'D', to go to Control or Data state: "); 
 
@@ -370,9 +453,8 @@ static err_t tcp_client_send(struct tcp_pcb *tpcb, char* data){
 		cortos_printf("tcp_client_send: error sending output \n");
 		return ;
 		}
-
+	recvdBytes = 0;
 	cortos_printf("tcp_client_send: data sent\n");
-	cortos_brel(blockAddr);
 	tcp_close(tpcb);	
    
 
@@ -392,7 +474,7 @@ static err_t tcp_client_connected(void *arg, struct tcp_pcb *tpcb,err_t err){
 
 
 	// USE BLOCK ADDRESS TO SEND DATA
-	char *data = (char*)blockAddr;
+	char *data = (char*)blockAddr + offset;
 	tcp_client_send(tpcb,data);
 	return ERR_OK;
 
@@ -417,7 +499,7 @@ tcp_raw_forward(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
 
   while (es->p != NULL){
 
-	ptr = es->p;
+	
         ch = (char*)es->p->payload;
 
 	/* get IP address*/
@@ -432,6 +514,7 @@ tcp_raw_forward(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
         Port[j] = '\0';
 
 	/* continue with next pbuf in chain (if any) */
+        ptr = es->p;
 	es->p = ptr->next;
 
 	if(es->p != NULL) {
@@ -452,7 +535,7 @@ tcp_raw_forward(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
     strcat(message1,IPaddr);
     strcat(message1," Port = ");
     strcat(message1,Port); 
-    char message2[128] ="\nRECEIVED STATE: Enter 'C' or 'D', to go to Control or Data state: ";
+    char message2[128] ="RECEIVED STATE: Enter 'C' or 'D', to go to Control or Data state: ";
     strcat(message1,message2);
 
     wr_err = tcp_write(tpcb, message1, strlen(message1), 1);
@@ -568,6 +651,10 @@ tcpecho_raw_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
     es->state = ES_RECEIVED;
     /* store reference to incoming pbuf (chain) */
     es->p = p;
+
+    /* Allocating cache */
+    blockAddr = (uint32_t*)cortos_bget(16*1024*1024);
+
     tcp_RECEIVED_STATE(tpcb, es);
     ret_err = ERR_OK;
   } 
@@ -621,6 +708,28 @@ tcpecho_raw_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
   else if (es->state == ES_DATA) {
 
     cortos_printf("tcp_raw_recv():DATA state\n");
+    es->state = ES_STORE;
+
+   
+    if(es->p == NULL) {
+       
+      es->p = p;
+      tcp_STORE_STATE(tpcb, es);
+      
+
+    } else {
+      struct pbuf *ptr;
+     
+      /* chain pbufs to the end of what we recv'ed previously  */
+      ptr = es->p;
+      pbuf_cat(ptr,p);
+    }
+    ret_err = ERR_OK;
+  } 
+
+  else if (es->state == ES_STORE) {
+
+    cortos_printf("tcp_raw_recv():DATA state\n");
     es->state = ES_RECEIVED;
 
    
@@ -639,6 +748,10 @@ tcpecho_raw_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
     }
     ret_err = ERR_OK;
   } 
+
+
+
+
 
   else if (es->state == ES_CONTROL) {
 
