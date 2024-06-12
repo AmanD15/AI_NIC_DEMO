@@ -1,0 +1,69 @@
+1. Overview
+--------------------
+
+	The  L2 cache is 
+		- a write-back cache, 8-way set associative.
+
+	It is based on phsyical addresses (36-bits)
+
+	It acts as a bridge between the memory and the processor
+	(requester).
+
+2. Interfaces
+-------------------
+
+
+	On the processor side,  the processor request is 
+	supplied by the input pipe:
+
+    	  $noblock      $pipe  NOBLOCK_L2_REQUEST 111 $depth 2
+	
+	with a response to the processor
+
+          $pipe  L2_RESPONSE 65 $depth 2
+
+	On the memory side, the cache makes a request to memory
+	using 
+
+          $pipe  L2CACHE_TO_MEM_REQUEST 110 $depth 2
+
+	and gets a response from memory using
+
+          $pipe  MEM_TO_L2CACHE_RESPONSE 65 $depth 2
+
+
+3. Invalidation
+--------------------
+
+	From the memory side, there can be a request to
+	invalidate the l2 cache.
+
+    	  $noblock      $pipe  NOBLOCK_L2_INVALIDATE 31 $depth 4
+
+	The top-bit of this pipe is set to '1', and the bottom
+	30-bits give the physical address of the line to be
+	invalidated (bits [35:6] are specified).
+
+	The l2 cache will forward this invalidation up to the
+	processor (and l1-cache) using 
+
+          $pipe  L2_TO_L1_INVALIDATE 30 $depth 4
+
+4. Hsys.
+-----------------
+
+$system l2_cache $library l2_cache_lib
+   $in 
+	  
+          $pipe  MEM_TO_L2CACHE_RESPONSE 65 $depth 2
+    	  $noblock      $pipe  NOBLOCK_L2_INVALIDATE 31 $depth 4
+    	  $noblock      $pipe  NOBLOCK_L2_REQUEST 111 $depth 2
+   $out 
+          $pipe  L2CACHE_TO_MEM_REQUEST 110 $depth 2
+          $pipe  L2_RESPONSE 65 $depth 2
+          $pipe  L2_TO_L1_INVALIDATE 30 $depth 4
+{ 
+          $pipe  L2_TAGS_RESPONSE 34 $depth 2
+    	  $noblock      $pipe  NOBLOCK_L2_TAGS_REQUEST 45 $depth 2
+          $pipe  sys_mem_lock 1 $depth 1
+} 
