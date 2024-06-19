@@ -1,0 +1,7 @@
+Author: Siddhant Singh Tomar
+	
+	hsys		:	original_SBC 
+	hsys_1.1	:	SBC_FASTMEM 
+	hsys_1.2	:	SBC_L2CACHE 
+			
+	

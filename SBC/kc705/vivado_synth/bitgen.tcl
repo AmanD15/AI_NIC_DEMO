@@ -15,25 +15,23 @@ read_vhdl ../vhdl/DualClockedQueue.vhd
 read_vhdl -library nic_mac_bridge_lib ../toplevel/nic_mac_bridge_edited.vhdl
 
 
-# the SBC core vhdl files for hsys
+# the SBC core vhdl files for hsys (original SBC)
 
-read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system_global_package.vhdl
-read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system.vhdl
-read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/rx_concat_system/vhdl/nic_mac_bridge_lib/rx_concat_system.vhdl
-read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/rx_concat_system/vhdl/nic_mac_bridge_lib/rx_concat_system_global_package.vhdl
-read_vhdl -library nic_lib ../hsys/nic_subsystem/nic/vhdl/nic_lib/nic.vhdl
-read_vhdl -library nic_lib ../hsys/nic_subsystem/nic/vhdl/nic_lib/nic_global_package.vhdl
-read_vhdl -library nic_subsystem_lib ../hsys/nic_subsystem/vhdl/nic_subsystem_lib/nic_subsystem.vhdl
-read_vhdl -library acb_afb_complex_lib ../hsys/acb_afb_complex/vhdl/acb_afb_complex_lib/acb_afb_complex.vhdl
-read_vhdl -library ajit_processor_lib ../hsys/processor_subsystem/vhdl/ajit_processor_lib/processor_1x1x32.vhdl
-read_vhdl -library acb_dram_controller_bridge_lib ../hsys/acb_dram_controller_bridge/vhdl/acb_dram_controller_bridge_lib/acb_dram_controller_bridge.vhdl
-read_vhdl -library spi_flash_controller_lib ../hsys/spi_flash_controller/vhdl/spi_flash_controller_lib/spi_flash_controller.vhdl
-read_vhdl -library sbc_kc705_core_lib ../hsys/vhdl/sbc_kc705_core_lib/sbc_kc705_core.vhdl
-
-
+#read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system_global_package.vhdl
+#read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system.vhdl
+#read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/rx_concat_system/vhdl/nic_mac_bridge_lib/rx_concat_system.vhdl
+#read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/rx_concat_system/vhdl/nic_mac_bridge_lib/rx_concat_system_global_package.vhdl
+#read_vhdl -library nic_lib ../hsys/nic_subsystem/nic/vhdl/nic_lib/nic.vhdl
+#read_vhdl -library nic_lib ../hsys/nic_subsystem/nic/vhdl/nic_lib/nic_global_package.vhdl
+#read_vhdl -library nic_subsystem_lib ../hsys/nic_subsystem/vhdl/nic_subsystem_lib/nic_subsystem.vhdl
+#read_vhdl -library acb_afb_complex_lib ../hsys/acb_afb_complex/vhdl/acb_afb_complex_lib/acb_afb_complex.vhdl
+#read_vhdl -library ajit_processor_lib ../hsys/processor_subsystem/vhdl/ajit_processor_lib/processor_1x1x32.vhdl
+#read_vhdl -library acb_dram_controller_bridge_lib ../hsys/acb_dram_controller_bridge/vhdl/acb_dram_controller_bridge_lib/acb_dram_controller_bridge.vhdl
+#read_vhdl -library spi_flash_controller_lib ../hsys/spi_flash_controller/vhdl/spi_flash_controller_lib/spi_flash_controller.vhdl
+#read_vhdl -library sbc_kc705_core_lib ../hsys/vhdl/sbc_kc705_core_lib/sbc_kc705_core.vhdl
 
 
-# the SBC core vhdl files for hsys_1.1
+# the SBC core vhdl files for hsys_1.1 (SBC with ACB SRAM)
 
 # read_vhdl -library nic_mac_bridge_lib ../hsys_1.1/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system_global_package.vhdl
 # read_vhdl -library nic_mac_bridge_lib ../hsys_1.1/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system.vhdl
@@ -48,16 +46,36 @@ read_vhdl -library sbc_kc705_core_lib ../hsys/vhdl/sbc_kc705_core_lib/sbc_kc705_
 # read_vhdl -library spi_flash_controller_lib ../hsys_1.1/spi_flash_controller/vhdl/spi_flash_controller_lib/spi_flash_controller.vhdl
 # read_vhdl -library sbc_kc705_core_lib ../hsys_1.1/vhdl/sbc_kc705_core_lib/sbc_kc705_core.vhdl
 
+# the SBC core vhdl files for hsys_1.2 (SBC with L2CACHE)
 
+read_vhdl -library nic_mac_bridge_lib ../hsys_1.2/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system_global_package.vhdl
+read_vhdl -library nic_mac_bridge_lib ../hsys_1.2/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system.vhdl
+read_vhdl -library nic_mac_bridge_lib ../hsys_1.2/nic_subsystem/nic_mac_bridge/rx_concat_system/vhdl/nic_mac_bridge_lib/rx_concat_system.vhdl
+read_vhdl -library nic_mac_bridge_lib ../hsys_1.2/nic_subsystem/nic_mac_bridge/rx_concat_system/vhdl/nic_mac_bridge_lib/rx_concat_system_global_package.vhdl
+read_vhdl -library nic_lib ../hsys_1.2/nic_subsystem/nic/vhdl/nic_lib/nic.vhdl
+read_vhdl -library nic_lib ../hsys_1.2/nic_subsystem/nic/vhdl/nic_lib/nic_global_package.vhdl
+read_vhdl -library nic_subsystem_lib ../hsys_1.2/nic_subsystem/vhdl/nic_subsystem_lib/nic_subsystem.vhdl
+read_vhdl -library acb_afb_complex_lib ../hsys_1.2/acb_afb_complex/vhdl/acb_afb_complex_lib/acb_afb_complex.vhdl
+read_vhdl -library ajit_processor_lib ../hsys_1.2/processor_subsystem/vhdl/ajit_processor_lib/processor_1x1x32.vhdl
+read_vhdl -library acb_dram_controller_bridge_lib ../hsys_1.2/acb_dram_controller_bridge/vhdl/acb_dram_controller_bridge_lib/acb_dram_controller_bridge.vhdl
+read_vhdl -library spi_flash_controller_lib ../hsys_1.2/spi_flash_controller/vhdl/spi_flash_controller_lib/spi_flash_controller.vhdl
+read_vhdl -library sbc_kc705_core_lib ../hsys_1.2/vhdl/sbc_kc705_core_lib/sbc_kc705_core.vhdl
 
 
 ############ ADDING TOP LEVEL VHDL #########################
-# toplevel file for hsys
-read_vhdl ../toplevel/original_SBC/sbc_kc705.vhdl
+# toplevel file for hsys (original SBC)
+# read_vhdl ../toplevel/orignal_SBC/sbc_kc705.vhdl
 
-# toplevel file for hsys_1.1
+# toplevel file for hsys_1.1 (SBC with ACB SRAM)
 # read_vhdl ../toplevel/SBC_FASTMEM/sbc_kc705.vhdl
 # read_vhdl ../hsys_1.1/acb_sram/vhdl/acb_sram_lib/acb_sram.vhdl
+
+# toplevel file for hsys_1.2 (SBC with L2CACHE)
+read_vhdl -library l2_cache_lib ../../../SOURCE/L2CACHE/vhdl/l2_cache_lib/l2_cache.vhdl
+read_vhdl -library l2_cache_lib ../../../SOURCE/L2CACHE/vhdl/l2_cache_lib/l2_cache_global_package.vhdl
+read_vhdl ../toplevel/SBC_L2CACHE/sbc_kc705.vhdl
+
+
 ###########################################################
 # verilog files for old MAC
 #read_verilog ../verilog/axi_lite_controller.v

@@ -2,8 +2,11 @@ Author: Siddhant Singh Tomar
 	
 	original_SBC : original SBC according to hsys, with NIC_1.1
 		sbc_kc705.vhdl : Top level vhdl file
-		
+				
 	SBC_FASTMEM : SBC with 256KB SRAM according to hsys_1.1, with NIC_1.1
+		sbc_kc705.vhdl : Top level vhdl file
+		
+	SBC_L2CACHE : original SBC + L2CACHE according to hsys_1.2, with NIC_1.1
 		sbc_kc705.vhdl : Top level vhdl file
 			
 	nic_mac_bridge_edited.vhdl : 
