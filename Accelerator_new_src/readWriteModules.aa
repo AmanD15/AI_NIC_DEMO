@@ -1,0 +1,70 @@
+$opaque $module [readModule1]
+$in (address : $uint<32>)
+$out (data : $uint<64>)
+$is
+{
+	$call memoryModule (1 (T1_base + address) 0 255) (data)
+}
+
+$opaque $module [writeModule1]
+$in (base_address : $uint<32> address : $uint<32> data : $uint<64>)
+$out ()
+$is
+{
+	addr := (base_address + address)
+	$call memoryModule (0 addr data 255) (out)
+}
+
+$pipeline $depth 7 $buffering 1 $fullrate
+$opaque $module [readModule_convolution]
+$in (base_address : $uint<32> address : $uint<32>)
+$out (data : $uint<64>)
+$is
+{
+	addr := (base_address + address)
+	$call readModule_convolution2 (addr) (done)
+	data := READ_T_RESP_QUEUE
+
+}
+
+$pipeline $depth 7 $buffering 1 $fullrate
+$opaque $module [readModule_convolution2]
+$in (addr : $uint<32>) $out (done : $uint<1>)
+$is
+{
+	$call memoryModule (1 addr 0 255) (data)
+	READ_T_RESP_QUEUE := data
+	done := (data [] 0)
+}
+
+$pipeline $depth 7 $buffering 1 $fullrate
+$opaque $module [readModule_convolutionk]
+$in (base_address : $uint<32> address : $uint<32>)
+$out (data : $uint<64>)
+$is
+{
+	addr := (base_address + address)
+	$call readModule_convolutionk2 (addr) (done)
+	data := READ_K_RESP_QUEUE
+}
+
+$pipeline $depth 7 $buffering 1 $fullrate
+$opaque $module [readModule_convolutionk2]
+$in (addr : $uint<32>) $out (done : $uint<1>)
+$is
+{
+	$call memoryModule (1 addr 0 255) (data)
+	READ_K_RESP_QUEUE := data
+	done := (data [] 0)
+}
+
+$pipeline $depth 7 $buffering 1 $fullrate
+$opaque $module [writeModule_convolution]
+$in (base_address : $uint<32> address : $uint<32> data : $uint<64> bm : $uint<8>)
+$out (done : $uint<1>)
+$is
+{
+	addr := (base_address + address)
+	$call memoryModule (0 addr data bm) (out)
+	done := (base_address [] 0)
+}

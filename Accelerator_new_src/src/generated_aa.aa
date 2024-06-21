@@ -1,0 +1,3243 @@
+// Aa code produced by llvm2aa (version 2.0)
+$pipe accumulator_pipe_even : $uint<32> $depth 4000
+$pipe accumulator_pipe_odd : $uint<32> $depth 4000
+$pipe in_data_0 : $uint<32> $depth 4000
+$pipe in_data_1 : $uint<32> $depth 4000
+$pipe in_data_2 : $uint<32> $depth 4000
+$pipe in_data_3 : $uint<32> $depth 4000
+$pipe in_data_4 : $uint<32> $depth 4000
+$pipe ker_data : $uint<32> $depth 4000
+$pipe out_data : $uint<8> $depth 4000
+$pipe pool_data_fifo_r0 : $uint<8> $depth 4000
+$lifo $pipe pool_data_lifo_r1 : $uint<8> $depth 4000
+$pipe pool_out_data : $uint<8> $depth 4000
+$module [generated_llvmx_xbc_storage_initializer_] $in () $out () $is {
+$null
+$attribute initializer
+}
+// $module [fp32_mul_for_ecg] 
+//  $in (number1 : $float<8,23> number2 : $float<8,23> )
+//  $out (ret_val__ : $float<8,23>)
+//  $is 
+// {
+// $branchblock [body] {
+// //begin: basic-block vars
+// ret_val__ := (number1 * number2)
+// $place [return__]
+// $merge return__ $endmerge
+// }
+// }
+// $module [fp32_add_for_ecg] 
+//  $in (number1 : $float<8,23> number2 : $float<8,23> )
+//  $out (ret_val__ : $float<8,23>)
+//  $is 
+// {
+// $branchblock [body] {
+// //begin: basic-block vars
+// ret_val__ := (number1 + number2)
+// $place [return__]
+// $merge return__ $endmerge
+// }
+// }
+// $module [fp32_sub_for_ecg] 
+//  $in (number1 : $float<8,23> number2 : $float<8,23> )
+//  $out (ret_val__ : $float<8,23>)
+//  $is 
+// {
+// $branchblock [body] {
+// //begin: basic-block vars
+// ret_val__ := (number1 - number2)
+// $place [return__]
+// $merge return__ $endmerge
+// }
+// }
+// $module [fpcmp32] 
+//  $in (number1 : $float<8,23> number2 : $float<8,23> flag : $uint<1> )
+//  $out (ret_val__ : $uint<2>)
+//  $is 
+// {
+// $branchblock [body] {
+// //begin: basic-block vars
+// // compare instruction
+// xx_x10 := (number1 == number2 )
+// $if xx_x10 $then  $place [vars_if_true] $else $place [vars_if_false] $endif 
+// //begin: basic-block if_true
+// $merge vars_if_true
+// $endmerge
+// $place [if_true_if_nextx_x2]
+// //begin: basic-block if_false
+// $merge vars_if_false
+// $endmerge
+// // compare instruction
+// xx_x16 := (number1 < number2 )
+// $if xx_x16 $then  $place [if_false_if_truex_x1] $else $place [if_false_if_falsex_x1] $endif 
+// //begin: basic-block if_truex_x1
+// $merge if_false_if_truex_x1
+// $endmerge
+// $place [if_truex_x1_if_nextx_x1]
+// //begin: basic-block if_falsex_x1
+// $merge if_false_if_falsex_x1
+// $endmerge
+// // compare instruction
+// xx_x22 := (number1 > number2 )
+// $if xx_x22 $then  $place [if_falsex_x1_if_truex_x2] $else $place [if_falsex_x1_if_falsex_x2] $endif 
+// //begin: basic-block if_truex_x2
+// $merge if_falsex_x1_if_truex_x2
+// $endmerge
+// $place [if_truex_x2_if_next]
+// //begin: basic-block if_falsex_x2
+// $merge if_falsex_x1_if_falsex_x2
+// $endmerge
+// $place [if_falsex_x2_if_next]
+// //begin: basic-block if_next
+// $merge if_falsex_x2_if_next if_truex_x2_if_next
+// $phi xx_x303x_xoff0 :=  ( $cast ($uint<2>) ( $bitcast ($uint<2> ) _b11 ) ) $on if_falsex_x2_if_next ( $cast ($uint<2>) ( $bitcast ($uint<2> ) _b10 ) ) $on if_truex_x2_if_next 
+// $endmerge
+// $place [if_next_if_nextx_x1]
+// //begin: basic-block if_nextx_x1
+// $merge if_next_if_nextx_x1 if_truex_x1_if_nextx_x1
+// $phi xx_x302x_xoff0 :=  ( $cast ($uint<2>) xx_x303x_xoff0) $on if_next_if_nextx_x1 ( $cast ($uint<2>) ( $bitcast ($uint<2> ) _b01 ) ) $on if_truex_x1_if_nextx_x1 
+// $endmerge
+// $place [if_nextx_x1_if_nextx_x2]
+// //begin: basic-block if_nextx_x2
+// $merge if_nextx_x1_if_nextx_x2 if_true_if_nextx_x2
+// $phi ret_val__ :=  ( $cast ($uint<2>) xx_x302x_xoff0) $on if_nextx_x1_if_nextx_x2 ( $cast ($uint<2>) ( $bitcast ($uint<2> ) _b00 ) ) $on if_true_if_nextx_x2 
+// $endmerge
+// $place [return__]
+// $merge return__ $endmerge
+// }
+// }
+// $module [fstoi_for_ecg] 
+//  $in (number1 : $float<8,23> )
+//  $out (ret_val__ : $uint<32>)
+//  $is 
+// {
+// $branchblock [body] {
+// //begin: basic-block vars
+// xx_x5 := ( $bitcast ($uint<8> ) ( $cast ( $int< 8 > ) number1) )
+// ret_val__ :=  ($bitcast ($uint<32>) ( $cast ($int< 32 > ) xx_x5) )
+// $place [return__]
+// $merge return__ $endmerge
+// }
+// }
+// $module [fitos32_for_ecg] 
+//  $in (number1 : $uint<32> )
+//  $out (ret_val__ : $float<8,23>)
+//  $is 
+// {
+// $branchblock [body] {
+// //begin: basic-block vars
+// ret_val__ := ($cast ($float<8,23>) number1)
+// $place [return__]
+// $merge return__ $endmerge
+// }
+// }
+// $module [round_half_even] 
+//  $in (number : $float<8,23> )
+//  $out (ret_val__ : $uint<8>)
+//  $is 
+// {
+// $branchblock [body] {
+// //begin: basic-block vars
+// $call fstoi_for_ecg (number )  (xx_x5)
+// $call fitos32_for_ecg (($bitcast ($uint<32>) xx_x5) )  (xx_x8)
+// $call fp32_sub_for_ecg (number xx_x8 )  (xx_x12)
+// $volatile $call fpcmp32 (xx_x12 ( $bitcast ($float<8,23> ) _f5.000000e-01 )  ( $bitcast ($uint<1> ) _b1 )  )  (xx_x15)
+// // compare instruction
+// xx_x18 := (xx_x15 == ( $bitcast ($uint<2> ) _b01 )  )
+// $if xx_x18 $then  $place [vars_if_true] $else $place [vars_if_false] $endif 
+// //begin: basic-block if_true
+// $merge vars_if_true
+// $endmerge
+// $place [if_true_if_nextx_x2]
+// //begin: basic-block if_false
+// $merge vars_if_false
+// $endmerge
+// // compare instruction
+// xx_x24 := (xx_x15 == ( $bitcast ($uint<2> ) _b10 )  )
+// $if xx_x24 $then  $place [if_false_if_truex_x1] $else $place [if_false_if_falsex_x1] $endif 
+// //begin: basic-block if_truex_x1
+// $merge if_false_if_truex_x1
+// $endmerge
+// xx_x27 := (xx_x8 + ( $bitcast ($float<8,23> ) _f1.000000e+00 ) )
+// $place [if_truex_x1_if_nextx_x1]
+// //begin: basic-block if_falsex_x1
+// $merge if_false_if_falsex_x1
+// $endmerge
+// iNsTr_5 := (($bitcast ($uint<32>) xx_x5) & ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// // compare instruction
+// xx_x32 := (iNsTr_5 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+// $if xx_x32 $then  $place [if_falsex_x1_if_truex_x2] $else $place [if_falsex_x1_if_falsex_x2] $endif 
+// //begin: basic-block if_truex_x2
+// $merge if_falsex_x1_if_truex_x2
+// $endmerge
+// $place [if_truex_x2_if_next]
+// //begin: basic-block if_falsex_x2
+// $merge if_falsex_x1_if_falsex_x2
+// $endmerge
+// xx_x38 := (xx_x8 + ( $bitcast ($float<8,23> ) _f1.000000e+00 ) )
+// $place [if_falsex_x2_if_next]
+// //begin: basic-block if_next
+// $merge if_falsex_x2_if_next if_truex_x2_if_next
+// $phi xx_x433 :=  ( $cast ($float<8,23>) xx_x38) $on if_falsex_x2_if_next ( $cast ($float<8,23>) xx_x8) $on if_truex_x2_if_next 
+// $endmerge
+// $place [if_next_if_nextx_x1]
+// //begin: basic-block if_nextx_x1
+// $merge if_next_if_nextx_x1 if_truex_x1_if_nextx_x1
+// $phi xx_x432 :=  ( $cast ($float<8,23>) xx_x433) $on if_next_if_nextx_x1 ( $cast ($float<8,23>) xx_x27) $on if_truex_x1_if_nextx_x1 
+// $endmerge
+// $place [if_nextx_x1_if_nextx_x2]
+// //begin: basic-block if_nextx_x2
+// $merge if_nextx_x1_if_nextx_x2 if_true_if_nextx_x2
+// $phi xx_x43 :=  ( $cast ($float<8,23>) xx_x432) $on if_nextx_x1_if_nextx_x2 ( $cast ($float<8,23>) xx_x8) $on if_true_if_nextx_x2 
+// $endmerge
+// ret_val__ := ( $bitcast ($uint<8> ) ( $cast ( $int< 8 > ) xx_x43) )
+// $place [return__]
+// $merge return__ $endmerge
+// }
+// }
+// $module [uint_quant] 
+//  $in (val : $float<8,23> scale_inv : $float<8,23> zero_point : $float<8,23> )
+//  $out (ret_val__ : $uint<8>)
+//  $is 
+// {
+// $branchblock [body] {
+// //begin: basic-block vars
+// $call fp32_mul_for_ecg (val scale_inv )  (xx_x10)
+// $call fp32_add_for_ecg (xx_x10 zero_point )  (xx_x12)
+// // compare instruction
+// xx_x15 := (xx_x12 > ( $bitcast ($float<8,23> ) _f2.550000e+02 )  )
+// $if xx_x15 $then  $place [vars_if_true] $else $place [vars_if_false] $endif 
+// //begin: basic-block if_true
+// $merge vars_if_true
+// $endmerge
+// $place [if_true_if_next]
+// //begin: basic-block if_false
+// $merge vars_if_false
+// $endmerge
+// $place [if_false_if_next]
+// //begin: basic-block if_next
+// $merge if_false_if_next if_true_if_next
+// $phi xx_x20 :=  ( $cast ($float<8,23>) xx_x12) $on if_false_if_next ( $cast ($float<8,23>) ( $bitcast ($float<8,23> ) _f2.550000e+02 ) ) $on if_true_if_next 
+// $endmerge
+// // compare instruction
+// xx_x21 := (xx_x20 < ( $bitcast ($float<8,23> ) _h0 )  )
+// $if xx_x21 $then  $place [if_next_if_truex_x1] $else $place [if_next_if_falsex_x1] $endif 
+// //begin: basic-block if_truex_x1
+// $merge if_next_if_truex_x1
+// $endmerge
+// $place [if_truex_x1_if_nextx_x1]
+// //begin: basic-block if_falsex_x1
+// $merge if_next_if_falsex_x1
+// $endmerge
+// $place [if_falsex_x1_if_nextx_x1]
+// //begin: basic-block if_nextx_x1
+// $merge if_falsex_x1_if_nextx_x1 if_truex_x1_if_nextx_x1
+// $phi xx_x26 :=  ( $cast ($float<8,23>) xx_x20) $on if_falsex_x1_if_nextx_x1 ( $cast ($float<8,23>) ( $bitcast ($float<8,23> ) _h0 ) ) $on if_truex_x1_if_nextx_x1 
+// $endmerge
+// $call round_half_even (xx_x26 )  (ret_val__)
+// $place [return__]
+// $merge return__ $endmerge
+// }
+// }
+
+$module [round_half_even] 
+ $in (number : $float<8,23> )
+ $out (ret_val__ : $uint<8>)
+ $is 
+{
+$branchblock [body] {
+$storage temp_out: $uint<8>
+//begin: basic-block vars
+$call fstoi_for_ecg (number)  (int_part)
+
+$call fitos32_for_ecg (($bitcast ($uint<32>) int_part) )  (xx_x8)
+
+$call fp32_sub_for_ecg (number xx_x8 )  (frac_part)
+
+$volatile $call fpcmp32 (frac_part ( $bitcast ($float<8,23> ) _f0.5e+0 ) 0) (chk)
+
+$if (chk == 1) $then
+	temp_out := ( $bitcast ( $uint<8> ) int_part)
+	$place [return__] 
+// $else 
+// 	$place [false1] 
+$endif 
+
+$if (chk == 2) $then
+	temp_out := ( $bitcast ( $uint<8> ) ( int_part + 1))
+	$place [return__] 
+// $else 
+// 	$place [false1] 
+$endif 
+
+first_bit := (int_part [] 0)
+$if (first_bit == 0) $then
+	temp_out := ( $bitcast ( $uint<8> ) int_part)
+	$place [return__] 
+// $else 
+// 	$place [false1] 
+$endif 
+
+temp_out := ( $bitcast ( $uint<8> ) ( int_part + 1))
+$place [return__] 
+$merge return__ $endmerge
+
+ret_val__ := temp_out
+
+}
+}
+
+$module [uint_quant] 
+ $in (val : $float<8,23> scale : $float<8,23> zero_point : $float<8,23> )
+ $out (ret_val__ : $uint<8>)
+ $is 
+{
+$branchblock [body] {
+//begin: basic-block vars
+$storage temp_out: $uint<8>
+$call fp32_mul_for_ecg (val scale )  (xx_x10)
+$call fp32_add_for_ecg (xx_x10 zero_point )  (quant_float)
+
+// compare instruction
+// chk1 := (quant_float > ( $bitcast ($float<8,23> ) _f2.550e+02 )  )
+$volatile $call fpcmp32 (quant_float ( $bitcast ($float<8,23> ) _f2.550e+02 ) 0) (chk)
+$volatile $call fpcmp32 (quant_float ( $bitcast ($float<8,23> ) _f0.0e+0 ) 0) (chk1)
+
+$if (chk == 2) $then
+	temp_out := ( $cast ( $uint<8> ) 255)
+	$place [return__] 
+$endif
+
+// chk2 := (quant_float < ( $cast ($float<8,23> ) _f0.0e+0 )  )
+
+$if (chk1 == 1) $then
+	temp_out := ( $cast ( $uint<8> ) 0)
+	$place [return__] 
+$endif
+
+$call round_half_even(quant_float) (round_val)
+temp_out := round_val
+// $place [return__]
+$place [return__] 
+
+$merge return__ $endmerge
+
+ret_val__ :=  temp_out
+}
+}
+$module [dequant_inp] 
+ $in (val : $uint<8> scale : $float<8,23> zero_point : $float<8,23> )
+ $out (ret_val__ : $float<8,23>)
+ $is 
+{
+$branchblock [body] {
+//begin: basic-block vars
+xx_x13 := ($cast ($float<8,23>) val)
+$call fp32_sub_for_ecg (xx_x13 zero_point )  (xx_x14)
+$call fp32_mul_for_ecg (scale xx_x14 )  (ret_val__)
+$place [return__]
+$merge return__ $endmerge
+}
+}
+$module [dequant_ker] 
+ $in (val : $uint<8> scale : $float<8,23> zero_point : $float<8,23> )
+ $out (ret_val__ : $float<8,23>)
+ $is 
+{
+$branchblock [body] {
+//begin: basic-block vars
+xx_x13 :=  ( $cast ($float<8,23>)  ( $cast ( $int< 32 > ) val) ) 
+
+$call fp32_sub_for_ecg (xx_x13 zero_point )  (xx_x14)
+$call fp32_mul_for_ecg (scale xx_x14 )  (ret_val__)
+$place [return__]
+$merge return__ $endmerge
+}
+}
+$module [relu] 
+ $in (val : $float<8,23> )
+ $out (ret_val__ : $float<8,23>)
+ $is 
+{
+$storage stored_ret_val__ : $float<8,23>
+$branchblock [body] {
+//begin: basic-block vars
+// compare instruction
+xx_x5 := (val > ( $bitcast ($float<8,23> ) _h0 )  )
+$if xx_x5 $then  $place [vars_if_true] $else $place [vars_if_false] $endif 
+//begin: basic-block if_true
+$merge vars_if_true
+$endmerge
+stored_ret_val__ := val
+$place [return__]
+//begin: basic-block if_false
+$merge vars_if_false
+$endmerge
+stored_ret_val__ := ( $bitcast ($float<8,23> ) _h0 ) 
+$place [return__]
+$merge return__ $endmerge
+ret_val__ := stored_ret_val__ 
+}
+}
+$module [convolution_new] 
+ $in (groups : $uint<32> reuseInp : $uint<32> reuseData : $uint<1> ker_size : $uint<32> inp_scale : $float<8,23> inp_zero_point : $float<8,23> ker_scale : $float<8,23> ker_zero_point : $float<8,23> conv_scale : $float<8,23> conv_zero_point : $float<8,23> isLinear : $uint<1> in_channels : $uint<32> isActivation : $uint<1> )
+ $out ()
+ $is 
+{
+$storage start_time_new1: $uint<64>
+$storage start_time_new2: $uint<64>
+$storage end_time_new1: $uint<64>
+$storage end_time_new2: $uint<64>
+$storage time_taken_new1: $uint<64>
+$storage time_taken_new2: $uint<64>
+$branchblock [body] {
+//begin: basic-block vars
+time_taken_new1 := 0
+time_taken_new2 := 0
+$if isLinear $then  $place [vars_if_true] $else $place [vars_if_falsex_x3] $endif 
+//begin: basic-block if_true
+$merge vars_if_true
+$endmerge
+// compare instruction
+xx_x3654 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < groups )
+$if xx_x3654 $then  $place [if_true_for_bodyx_xlrx_xph] $else $place [if_true_for_outx_x1] $endif 
+//begin: basic-block for_bodyx_xlrx_xph
+$merge if_true_for_bodyx_xlrx_xph
+$endmerge
+$place [for_bodyx_xlrx_xph_for_body]
+//begin: basic-block for_body
+$merge for_bodyx_xlrx_xph_for_body for_out_for_body
+$phi xx_x9856 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x40) $on for_out_for_body 
+$phi xx_x793555 :=  ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<64>) xx_x91x_xlcssa) $on for_out_for_body 
+$endmerge
+xx_x40 := (xx_x9856 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+xx_x41 := (xx_x40 << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+// compare instruction
+xx_x42x_xnot := ( ($bitcast ( $int<32>) xx_x41) >  ($bitcast ( $int<32>) in_channels ) )
+$if xx_x42x_xnot $then  $place [for_body_if_false] $else $place [for_body_if_truex_x1] $endif 
+//begin: basic-block if_truex_x1
+$merge for_body_if_truex_x1
+$endmerge
+$place [if_truex_x1_if_next]
+//begin: basic-block if_false
+$merge for_body_if_false
+$endmerge
+xx_x47 := (xx_x9856 << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x48 := (in_channels - xx_x47)
+xx_x49 := ($cast ($uint<64>) xx_x48)
+$place [if_false_if_next]
+//begin: basic-block if_next
+$merge if_false_if_next if_truex_x1_if_next
+$phi xx_x52 :=  ( $cast ($uint<64>) xx_x49) $on if_false_if_next ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000001000 ) ) $on if_truex_x1_if_next 
+$endmerge
+// compare instruction
+xx_x5651 := (( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  < xx_x52 )
+$if xx_x5651 $then  $place [if_next_for_bodyx_x1x_xlrx_xph] $else $place [if_next_for_out] $endif 
+//begin: basic-block for_bodyx_x1x_xlrx_xph
+$merge if_next_for_bodyx_x1x_xlrx_xph
+$endmerge
+$place [for_bodyx_x1x_xlrx_xph_for_bodyx_x1]
+//begin: basic-block for_bodyx_x1
+//   this is a do-while loop.
+$merge for_bodyx_x1x_xlrx_xph_for_bodyx_x1
+$endmerge
+$dopipeline $depth 31 $buffering 7 
+$fullrate
+$merge $entry $loopback
+$phi xx_x9453 :=  ( $cast ($uint<64>) xx_x95) $on $loopback ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 ) ) $on $entry
+$phi xx_x9152 :=  ( $cast ($uint<64>) xx_x92) $on $loopback ( $cast ($uint<64>) xx_x793555) $on $entry
+$endmerge
+start_time_new1 := time_val
+xx_x59 := in_data_0
+xx_x61 := ker_data
+for_bodyx_x1_if_truex_x2_taken := reuseData
+for_bodyx_x1_if_falsex_x1_taken := ( ~reuseData)
+if_falsex_x1_exec_guard := for_bodyx_x1_if_falsex_x1_taken
+//begin: basic-block if_falsex_x1
+if_falsex_x1_if_nextx_x1_taken := if_falsex_x1_exec_guard
+if_truex_x2_exec_guard := for_bodyx_x1_if_truex_x2_taken
+//begin: basic-block if_truex_x2
+$guard (if_truex_x2_exec_guard) in_data_0 := xx_x59
+if_truex_x2_if_nextx_x1_taken := if_truex_x2_exec_guard
+if_nextx_x1_exec_guard := (if_falsex_x1_if_nextx_x1_taken | if_truex_x2_if_nextx_x1_taken )
+//begin: basic-block if_nextx_x1
+$guard (if_nextx_x1_exec_guard) xx_x75 :=  ( $bitcast ($float<8,23>)  ( $bitcast ( $uint< 32 > ) xx_x59) ) 
+$guard (if_nextx_x1_exec_guard) xx_x76 :=  ( $bitcast ($float<8,23>)  ( $bitcast ( $uint< 32 > ) xx_x61) ) 
+
+
+$guard (if_nextx_x1_exec_guard) $call fp32_mul_for_ecg (xx_x75 xx_x76 )  (xx_x77)
+
+$guard (if_nextx_x1_exec_guard) iNsTr_28 := (xx_x9152 & ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 ) )
+// compare instruction
+$guard (if_nextx_x1_exec_guard) xx_x81 := (iNsTr_28 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  )
+if_nextx_x1_if_truex_x3_taken := (if_nextx_x1_exec_guard & xx_x81)
+if_nextx_x1_if_falsex_x2_taken := (if_nextx_x1_exec_guard & (~xx_x81))
+if_falsex_x2_exec_guard := if_nextx_x1_if_falsex_x2_taken
+//begin: basic-block if_falsex_x2
+$guard (if_falsex_x2_exec_guard) xx_x88 := ( $bitcast ($uint<32> )  xx_x77) 
+$guard (if_falsex_x2_exec_guard) accumulator_pipe_odd := xx_x88
+if_falsex_x2_if_nextx_x2_taken := if_falsex_x2_exec_guard
+if_truex_x3_exec_guard := if_nextx_x1_if_truex_x3_taken
+//begin: basic-block if_truex_x3
+$guard (if_truex_x3_exec_guard) xx_x84 := ( $bitcast ($uint<32> )  xx_x77) 
+$guard (if_truex_x3_exec_guard) accumulator_pipe_even := xx_x84
+if_truex_x3_if_nextx_x2_taken := if_truex_x3_exec_guard
+//begin: basic-block if_nextx_x2
+xx_x92 := (xx_x9152 + ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 ) )
+xx_x95 := (xx_x9453 + ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 ) )
+// compare instruction
+xx_x56 := (xx_x95 < xx_x52 )
+if_nextx_x2_forx_x1x_xfor_out_crit_edge_taken := ( ~xx_x56)
+end_time_new1 := time_val
+time_taken_new1 := (time_taken_new1+(end_time_new1 - start_time_new1))
+$while xx_x56
+$if if_nextx_x2_forx_x1x_xfor_out_crit_edge_taken $then 
+  $place [if_nextx_x2_forx_x1x_xfor_out_crit_edge]
+$endif
+//begin: basic-block forx_x1x_xfor_out_crit_edge
+$merge if_nextx_x2_forx_x1x_xfor_out_crit_edge
+$phi split :=  ( $cast ($uint<64>) xx_x92) $on if_nextx_x2_forx_x1x_xfor_out_crit_edge 
+$endmerge
+$place [forx_x1x_xfor_out_crit_edge_for_out]
+//begin: basic-block for_out
+$merge forx_x1x_xfor_out_crit_edge_for_out if_next_for_out
+$phi xx_x91x_xlcssa :=  ( $cast ($uint<64>) split) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<64>) xx_x793555) $on if_next_for_out 
+$endmerge
+// compare instruction
+xx_x36 := (xx_x40 < groups )
+$if xx_x36 $then  $place [for_out_for_body] $else $place [for_out_forx_xfor_outx_x1_crit_edge] $endif 
+//begin: basic-block forx_xfor_outx_x1_crit_edge
+$merge for_out_forx_xfor_outx_x1_crit_edge
+$endmerge
+$place [forx_xfor_outx_x1_crit_edge_for_outx_x1]
+//begin: basic-block for_outx_x1
+$merge forx_xfor_outx_x1_crit_edge_for_outx_x1 if_true_for_outx_x1
+$endmerge
+$place [return__]
+//begin: basic-block if_falsex_x3
+$merge vars_if_falsex_x3
+$endmerge
+// compare instruction
+xx_x236 := (reuseInp == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+// compare instruction
+xx_x10887 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < groups )
+$if xx_x10887 $then  $place [if_falsex_x3_for_bodyx_x2x_xlrx_xph] $else $place [if_falsex_x3_for_outx_x5] $endif 
+//begin: basic-block for_bodyx_x2x_xlrx_xph
+$merge if_falsex_x3_for_bodyx_x2x_xlrx_xph
+$endmerge
+$place [for_bodyx_x2x_xlrx_xph_for_bodyx_x2]
+//begin: basic-block for_bodyx_x2
+$merge for_bodyx_x2x_xlrx_xph_for_bodyx_x2 for_outx_x4_for_bodyx_x2
+$phi xx_x31592 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x2x_xlrx_xph_for_bodyx_x2 ( $cast ($uint<32>) xx_x316) $on for_outx_x4_for_bodyx_x2 
+$phi xx_x1791791 :=  ( $cast ($uint<32>) reuseInp) $on for_bodyx_x2x_xlrx_xph_for_bodyx_x2 ( $cast ($uint<32>) xx_x17916x_xlcssa) $on for_outx_x4_for_bodyx_x2 
+$phi xx_x2072590 :=  ( $cast ($uint<32>) reuseInp) $on for_bodyx_x2x_xlrx_xph_for_bodyx_x2 ( $cast ($uint<32>) xx_x20724x_xlcssa) $on for_outx_x4_for_bodyx_x2 
+$phi xx_x2882689 :=  ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 ) ) $on for_bodyx_x2x_xlrx_xph_for_bodyx_x2 ( $cast ($uint<64>) xx_x28827x_xlcssa) $on for_outx_x4_for_bodyx_x2 
+$phi inp_valx_x088 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b0 ) ) $on for_bodyx_x2x_xlrx_xph_for_bodyx_x2 ( $cast ($uint<32>) inp_valx_x1x_xlcssa) $on for_outx_x4_for_bodyx_x2 
+$endmerge
+xx_x124 := (xx_x31592 << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x125 := (xx_x124 + ( $bitcast ($uint<32> ) _b00000000000000000000000000001000 ) )
+// compare instruction
+xx_x126x_xnot := ( ($bitcast ( $int<32>) xx_x125) >  ($bitcast ( $int<32>) in_channels ) )
+xx_x131 := (xx_x31592 << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x132 := (in_channels - xx_x131)
+xx_x133 := ($cast ($uint<64>) xx_x132)
+// compare instruction
+xx_x11477 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < ker_size )
+$if xx_x11477 $then  $place [for_bodyx_x2_for_bodyx_x3x_xlrx_xph] $else $place [for_bodyx_x2_for_outx_x4] $endif 
+//begin: basic-block for_bodyx_x3x_xlrx_xph
+$merge for_bodyx_x2_for_bodyx_x3x_xlrx_xph
+$endmerge
+$place [for_bodyx_x3x_xlrx_xph_for_bodyx_x3]
+//begin: basic-block for_bodyx_x3
+$merge for_bodyx_x3x_xlrx_xph_for_bodyx_x3 for_outx_x3_for_bodyx_x3
+$phi xx_x31182 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<32>) xx_x312) $on for_outx_x3_for_bodyx_x3 
+$phi xx_x1791681 :=  ( $cast ($uint<32>) xx_x1791791) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<32>) xx_x17915x_xlcssa) $on for_outx_x3_for_bodyx_x3 
+$phi xx_x2072480 :=  ( $cast ($uint<32>) xx_x2072590) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<32>) xx_x20723x_xlcssa) $on for_outx_x3_for_bodyx_x3 
+$phi xx_x2882779 :=  ( $cast ($uint<64>) xx_x2882689) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<64>) xx_x28828x_xlcssa) $on for_outx_x3_for_bodyx_x3 
+$phi inp_valx_x178 :=  ( $cast ($uint<32>) inp_valx_x088) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<32>) inp_valx_x2x_xlcssa) $on for_outx_x3_for_bodyx_x3 
+$endmerge
+// compare instruction
+xx_x143 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+// compare instruction
+xx_x148 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 )  )
+// compare instruction
+xx_x153 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 )  )
+// compare instruction
+xx_x158 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 )  )
+// compare instruction
+xx_x163 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000100 )  )
+// compare instruction
+xx_x245 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 )  )
+// compare instruction
+xx_x250 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 )  )
+// compare instruction
+xx_x255 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 )  )
+// compare instruction
+xx_x260 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000100 )  )
+// compare instruction
+xx_x215 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 )  )
+// compare instruction
+xx_x220 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 )  )
+// compare instruction
+xx_x225 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 )  )
+// compare instruction
+xx_x182 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 )  )
+// compare instruction
+xx_x187 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 )  )
+// compare instruction
+xx_x192 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 )  )
+// compare instruction
+xx_x197 := (xx_x31182 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000100 )  )
+// compare instruction
+xx_x12067 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < ker_size )
+$if xx_x12067 $then  $place [for_bodyx_x3_for_bodyx_x4x_xlrx_xph] $else $place [for_bodyx_x3_for_outx_x3] $endif 
+//begin: basic-block for_bodyx_x4x_xlrx_xph
+$merge for_bodyx_x3_for_bodyx_x4x_xlrx_xph
+$endmerge
+$place [for_bodyx_x4x_xlrx_xph_for_bodyx_x4]
+//begin: basic-block for_bodyx_x4
+$merge for_bodyx_x4x_xlrx_xph_for_bodyx_x4 for_outx_x2_for_bodyx_x4
+$phi xx_x30772 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x4x_xlrx_xph_for_bodyx_x4 ( $cast ($uint<32>) xx_x308) $on for_outx_x2_for_bodyx_x4 
+$phi xx_x1791571 :=  ( $cast ($uint<32>) xx_x1791681) $on for_bodyx_x4x_xlrx_xph_for_bodyx_x4 ( $cast ($uint<32>) xx_x179x_xlcssa) $on for_outx_x2_for_bodyx_x4 
+$phi xx_x2072370 :=  ( $cast ($uint<32>) xx_x2072480) $on for_bodyx_x4x_xlrx_xph_for_bodyx_x4 ( $cast ($uint<32>) xx_x207x_xlcssa) $on for_outx_x2_for_bodyx_x4 
+$phi xx_x2882869 :=  ( $cast ($uint<64>) xx_x2882779) $on for_bodyx_x4x_xlrx_xph_for_bodyx_x4 ( $cast ($uint<64>) xx_x300x_xlcssa) $on for_outx_x2_for_bodyx_x4 
+$phi inp_valx_x268 :=  ( $cast ($uint<32>) inp_valx_x178) $on for_bodyx_x4x_xlrx_xph_for_bodyx_x4 ( $cast ($uint<32>) inp_valx_x3x_xlcssa) $on for_outx_x2_for_bodyx_x4 
+$endmerge
+$if xx_x126x_xnot $then  $place [for_bodyx_x4_if_falsex_x4] $else $place [for_bodyx_x4_if_truex_x4] $endif 
+//begin: basic-block if_truex_x4
+$merge for_bodyx_x4_if_truex_x4
+$endmerge
+$place [if_truex_x4_if_nextx_x4]
+//begin: basic-block if_falsex_x4
+$merge for_bodyx_x4_if_falsex_x4
+$endmerge
+$place [if_falsex_x4_if_nextx_x4]
+//begin: basic-block if_nextx_x4
+$merge if_falsex_x4_if_nextx_x4 if_truex_x4_if_nextx_x4
+$phi xx_x136 :=  ( $cast ($uint<64>) xx_x133) $on if_falsex_x4_if_nextx_x4 ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000001000 ) ) $on if_truex_x4_if_nextx_x4 
+$endmerge
+// compare instruction
+xx_x238 := ( ($bitcast ( $int<32>) xx_x30772) >  ($bitcast ( $int<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  ) )
+// compare instruction
+xx_x14057 := (( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  < xx_x136 )
+$if xx_x14057 $then  $place [if_nextx_x4_for_bodyx_x5x_xlrx_xph] $else $place [if_nextx_x4_for_outx_x2] $endif 
+//begin: basic-block for_bodyx_x5x_xlrx_xph
+$merge if_nextx_x4_for_bodyx_x5x_xlrx_xph
+$endmerge
+$place [for_bodyx_x5x_xlrx_xph_for_bodyx_x5]
+//begin: basic-block for_bodyx_x5
+//   this is a do-while loop.
+$merge for_bodyx_x5x_xlrx_xph_for_bodyx_x5
+$endmerge
+$dopipeline $depth 31 $buffering 7 
+$fullrate
+$merge $entry $loopback
+$phi xx_x30362 :=  ( $cast ($uint<64>) xx_x304) $on $loopback ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 ) ) $on $entry
+$phi xx_x17961 :=  ( $cast ($uint<32>) xx_x17912) $on $loopback ( $cast ($uint<32>) xx_x1791571) $on $entry
+$phi xx_x20760 :=  ( $cast ($uint<32>) xx_x20719) $on $loopback ( $cast ($uint<32>) xx_x2072370) $on $entry
+$phi xx_x30059 :=  ( $cast ($uint<64>) xx_x301) $on $loopback ( $cast ($uint<64>) xx_x2882869) $on $entry
+$phi inp_valx_x358 :=  ( $cast ($uint<32>) inp_valx_x8) $on $loopback ( $cast ($uint<32>) inp_valx_x268) $on $entry
+$endmerge
+for_bodyx_x5_if_truex_x5_taken := xx_x143
+for_bodyx_x5_if_falsex_x5_taken := ( ~xx_x143)
+if_falsex_x5_exec_guard := for_bodyx_x5_if_falsex_x5_taken
+//begin: basic-block if_falsex_x5
+if_falsex_x5_if_truex_x6_taken := (if_falsex_x5_exec_guard & xx_x148)
+if_falsex_x5_if_falsex_x6_taken := (if_falsex_x5_exec_guard & (~xx_x148))
+if_falsex_x6_exec_guard := if_falsex_x5_if_falsex_x6_taken
+//begin: basic-block if_falsex_x6
+if_falsex_x6_if_truex_x7_taken := (if_falsex_x6_exec_guard & xx_x153)
+if_falsex_x6_if_falsex_x7_taken := (if_falsex_x6_exec_guard & (~xx_x153))
+if_falsex_x7_exec_guard := if_falsex_x6_if_falsex_x7_taken
+//begin: basic-block if_falsex_x7
+if_falsex_x7_if_truex_x8_taken := (if_falsex_x7_exec_guard & xx_x158)
+if_falsex_x7_if_falsex_x8_taken := (if_falsex_x7_exec_guard & (~xx_x158))
+if_falsex_x8_exec_guard := if_falsex_x7_if_falsex_x8_taken
+//begin: basic-block if_falsex_x8
+if_falsex_x8_if_truex_x9_taken := (if_falsex_x8_exec_guard & xx_x163)
+if_falsex_x8_if_falsex_x9_taken := (if_falsex_x8_exec_guard & (~xx_x163))
+if_falsex_x9_exec_guard := if_falsex_x8_if_falsex_x9_taken
+//begin: basic-block if_falsex_x9
+if_falsex_x9_if_nextx_x5_taken := if_falsex_x9_exec_guard
+if_truex_x9_exec_guard := if_falsex_x8_if_truex_x9_taken
+//begin: basic-block if_truex_x9
+$guard (if_truex_x9_exec_guard) xx_x165 := in_data_4
+if_truex_x9_if_nextx_x5_taken := if_truex_x9_exec_guard
+if_nextx_x5_exec_guard := (if_falsex_x9_if_nextx_x5_taken | if_truex_x9_if_nextx_x5_taken )
+//begin: basic-block if_nextx_x5
+inp_valx_x4 := ($mux if_truex_x9_if_nextx_x5_taken ( $bitcast ($uint<32>) xx_x165) ($mux if_falsex_x9_if_nextx_x5_taken ( $bitcast ($uint<32>) inp_valx_x358) ($bitcast ($uint<32>) 0)))
+if_nextx_x5_if_nextx_x6_taken := if_nextx_x5_exec_guard
+if_truex_x8_exec_guard := if_falsex_x7_if_truex_x8_taken
+//begin: basic-block if_truex_x8
+$guard (if_truex_x8_exec_guard) xx_x160 := in_data_3
+if_truex_x8_if_nextx_x6_taken := if_truex_x8_exec_guard
+if_nextx_x6_exec_guard := (if_nextx_x5_if_nextx_x6_taken | if_truex_x8_if_nextx_x6_taken )
+//begin: basic-block if_nextx_x6
+inp_valx_x5 := ($mux if_truex_x8_if_nextx_x6_taken ( $bitcast ($uint<32>) xx_x160) ($mux if_nextx_x5_if_nextx_x6_taken ( $bitcast ($uint<32>) inp_valx_x4) ($bitcast ($uint<32>) 0)))
+if_nextx_x6_if_nextx_x7_taken := if_nextx_x6_exec_guard
+if_truex_x7_exec_guard := if_falsex_x6_if_truex_x7_taken
+//begin: basic-block if_truex_x7
+$guard (if_truex_x7_exec_guard) xx_x155 := in_data_2
+if_truex_x7_if_nextx_x7_taken := if_truex_x7_exec_guard
+if_nextx_x7_exec_guard := (if_nextx_x6_if_nextx_x7_taken | if_truex_x7_if_nextx_x7_taken )
+//begin: basic-block if_nextx_x7
+inp_valx_x6 := ($mux if_truex_x7_if_nextx_x7_taken ( $bitcast ($uint<32>) xx_x155) ($mux if_nextx_x6_if_nextx_x7_taken ( $bitcast ($uint<32>) inp_valx_x5) ($bitcast ($uint<32>) 0)))
+if_nextx_x7_if_nextx_x8_taken := if_nextx_x7_exec_guard
+if_truex_x6_exec_guard := if_falsex_x5_if_truex_x6_taken
+//begin: basic-block if_truex_x6
+$guard (if_truex_x6_exec_guard) xx_x150 := in_data_1
+if_truex_x6_if_nextx_x8_taken := if_truex_x6_exec_guard
+if_nextx_x8_exec_guard := (if_nextx_x7_if_nextx_x8_taken | if_truex_x6_if_nextx_x8_taken )
+//begin: basic-block if_nextx_x8
+inp_valx_x7 := ($mux if_truex_x6_if_nextx_x8_taken ( $bitcast ($uint<32>) xx_x150) ($mux if_nextx_x7_if_nextx_x8_taken ( $bitcast ($uint<32>) inp_valx_x6) ($bitcast ($uint<32>) 0)))
+if_nextx_x8_if_nextx_x9_taken := if_nextx_x8_exec_guard
+if_truex_x5_exec_guard := for_bodyx_x5_if_truex_x5_taken
+//begin: basic-block if_truex_x5
+$guard (if_truex_x5_exec_guard) xx_x145 := in_data_0
+if_truex_x5_if_nextx_x9_taken := if_truex_x5_exec_guard
+if_nextx_x9_exec_guard := (if_nextx_x8_if_nextx_x9_taken | if_truex_x5_if_nextx_x9_taken )
+//begin: basic-block if_nextx_x9
+inp_valx_x8 := ($mux if_truex_x5_if_nextx_x9_taken ( $bitcast ($uint<32>) xx_x145) ($mux if_nextx_x8_if_nextx_x9_taken ( $bitcast ($uint<32>) inp_valx_x7) ($bitcast ($uint<32>) 0)))
+$guard (if_nextx_x9_exec_guard) xx_x173 := ker_data
+if_nextx_x9_if_truex_x10_taken := (if_nextx_x9_exec_guard & reuseData)
+if_nextx_x9_if_falsex_x27_taken := (if_nextx_x9_exec_guard & (~reuseData))
+if_falsex_x27_exec_guard := if_nextx_x9_if_falsex_x27_taken
+//begin: basic-block if_falsex_x27
+if_falsex_x27_if_nextx_x27_taken := if_falsex_x27_exec_guard
+if_truex_x10_exec_guard := if_nextx_x9_if_truex_x10_taken
+//begin: basic-block if_truex_x10
+$guard (if_truex_x10_exec_guard) ker_data := xx_x173
+// compare instruction
+$guard (if_truex_x10_exec_guard) xx_x180 := (xx_x17961 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 )  )
+if_truex_x10_if_truex_x11_taken := (if_truex_x10_exec_guard & xx_x180)
+if_truex_x10_if_falsex_x14_taken := (if_truex_x10_exec_guard & (~xx_x180))
+if_falsex_x14_exec_guard := if_truex_x10_if_falsex_x14_taken
+//begin: basic-block if_falsex_x14
+// compare instruction
+$guard (if_falsex_x14_exec_guard) xx_x208 := (xx_x20760 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 )  )
+if_falsex_x14_if_truex_x16_taken := (if_falsex_x14_exec_guard & xx_x208)
+if_falsex_x14_if_falsex_x19_taken := (if_falsex_x14_exec_guard & (~xx_x208))
+if_falsex_x19_exec_guard := if_falsex_x14_if_falsex_x19_taken
+//begin: basic-block if_falsex_x19
+if_falsex_x19_if_truex_x21_taken := (if_falsex_x19_exec_guard & xx_x236)
+if_falsex_x19_if_falsex_x26_taken := (if_falsex_x19_exec_guard & (~xx_x236))
+if_falsex_x26_exec_guard := if_falsex_x19_if_falsex_x26_taken
+//begin: basic-block if_falsex_x26
+if_falsex_x26_if_nextx_x24_taken := if_falsex_x26_exec_guard
+if_truex_x21_exec_guard := if_falsex_x19_if_truex_x21_taken
+//begin: basic-block if_truex_x21
+if_truex_x21_if_truex_x22_taken := (if_truex_x21_exec_guard & xx_x238)
+if_truex_x21_if_falsex_x25_taken := (if_truex_x21_exec_guard & (~xx_x238))
+if_falsex_x25_exec_guard := if_truex_x21_if_falsex_x25_taken
+//begin: basic-block if_falsex_x25
+if_falsex_x25_if_nextx_x23_taken := if_falsex_x25_exec_guard
+if_truex_x22_exec_guard := if_truex_x21_if_truex_x22_taken
+//begin: basic-block if_truex_x22
+if_truex_x22_if_truex_x23_taken := (if_truex_x22_exec_guard & xx_x143)
+if_truex_x22_if_falsex_x20_taken := (if_truex_x22_exec_guard & (~xx_x143))
+if_falsex_x20_exec_guard := if_truex_x22_if_falsex_x20_taken
+//begin: basic-block if_falsex_x20
+if_falsex_x20_if_truex_x24_taken := (if_falsex_x20_exec_guard & xx_x245)
+if_falsex_x20_if_falsex_x21_taken := (if_falsex_x20_exec_guard & (~xx_x245))
+if_falsex_x21_exec_guard := if_falsex_x20_if_falsex_x21_taken
+//begin: basic-block if_falsex_x21
+if_falsex_x21_if_truex_x25_taken := (if_falsex_x21_exec_guard & xx_x250)
+if_falsex_x21_if_falsex_x22_taken := (if_falsex_x21_exec_guard & (~xx_x250))
+if_falsex_x22_exec_guard := if_falsex_x21_if_falsex_x22_taken
+//begin: basic-block if_falsex_x22
+if_falsex_x22_if_truex_x26_taken := (if_falsex_x22_exec_guard & xx_x255)
+if_falsex_x22_if_falsex_x23_taken := (if_falsex_x22_exec_guard & (~xx_x255))
+if_falsex_x23_exec_guard := if_falsex_x22_if_falsex_x23_taken
+//begin: basic-block if_falsex_x23
+if_falsex_x23_if_truex_x27_taken := (if_falsex_x23_exec_guard & xx_x260)
+if_falsex_x23_if_falsex_x24_taken := (if_falsex_x23_exec_guard & (~xx_x260))
+if_falsex_x24_exec_guard := if_falsex_x23_if_falsex_x24_taken
+//begin: basic-block if_falsex_x24
+if_falsex_x24_if_nextx_x18_taken := if_falsex_x24_exec_guard
+if_truex_x27_exec_guard := if_falsex_x23_if_truex_x27_taken
+//begin: basic-block if_truex_x27
+$guard (if_truex_x27_exec_guard) in_data_4 := inp_valx_x8
+if_truex_x27_if_nextx_x18_taken := if_truex_x27_exec_guard
+if_nextx_x18_exec_guard := (if_falsex_x24_if_nextx_x18_taken | if_truex_x27_if_nextx_x18_taken )
+//begin: basic-block if_nextx_x18
+if_nextx_x18_if_nextx_x19_taken := if_nextx_x18_exec_guard
+if_truex_x26_exec_guard := if_falsex_x22_if_truex_x26_taken
+//begin: basic-block if_truex_x26
+$guard (if_truex_x26_exec_guard) in_data_3 := inp_valx_x8
+if_truex_x26_if_nextx_x19_taken := if_truex_x26_exec_guard
+if_nextx_x19_exec_guard := (if_nextx_x18_if_nextx_x19_taken | if_truex_x26_if_nextx_x19_taken )
+//begin: basic-block if_nextx_x19
+if_nextx_x19_if_nextx_x20_taken := if_nextx_x19_exec_guard
+if_truex_x25_exec_guard := if_falsex_x21_if_truex_x25_taken
+//begin: basic-block if_truex_x25
+$guard (if_truex_x25_exec_guard) in_data_2 := inp_valx_x8
+if_truex_x25_if_nextx_x20_taken := if_truex_x25_exec_guard
+if_nextx_x20_exec_guard := (if_nextx_x19_if_nextx_x20_taken | if_truex_x25_if_nextx_x20_taken )
+//begin: basic-block if_nextx_x20
+if_nextx_x20_if_nextx_x21_taken := if_nextx_x20_exec_guard
+if_truex_x24_exec_guard := if_falsex_x20_if_truex_x24_taken
+//begin: basic-block if_truex_x24
+$guard (if_truex_x24_exec_guard) in_data_1 := inp_valx_x8
+if_truex_x24_if_nextx_x21_taken := if_truex_x24_exec_guard
+if_nextx_x21_exec_guard := (if_nextx_x20_if_nextx_x21_taken | if_truex_x24_if_nextx_x21_taken )
+//begin: basic-block if_nextx_x21
+if_nextx_x21_if_nextx_x22_taken := if_nextx_x21_exec_guard
+if_truex_x23_exec_guard := if_truex_x22_if_truex_x23_taken
+//begin: basic-block if_truex_x23
+$guard (if_truex_x23_exec_guard) in_data_0 := inp_valx_x8
+if_truex_x23_if_nextx_x22_taken := if_truex_x23_exec_guard
+if_nextx_x22_exec_guard := (if_nextx_x21_if_nextx_x22_taken | if_truex_x23_if_nextx_x22_taken )
+//begin: basic-block if_nextx_x22
+if_nextx_x22_if_nextx_x23_taken := if_nextx_x22_exec_guard
+if_nextx_x23_exec_guard := (if_falsex_x25_if_nextx_x23_taken | if_nextx_x22_if_nextx_x23_taken )
+//begin: basic-block if_nextx_x23
+if_nextx_x23_if_nextx_x24_taken := if_nextx_x23_exec_guard
+if_nextx_x24_exec_guard := (if_falsex_x26_if_nextx_x24_taken | if_nextx_x23_if_nextx_x24_taken )
+//begin: basic-block if_nextx_x24
+if_nextx_x24_if_nextx_x25_taken := if_nextx_x24_exec_guard
+if_truex_x16_exec_guard := if_falsex_x14_if_truex_x16_taken
+//begin: basic-block if_truex_x16
+if_truex_x16_if_truex_x17_taken := (if_truex_x16_exec_guard & xx_x143)
+if_truex_x16_if_falsex_x15_taken := (if_truex_x16_exec_guard & (~xx_x143))
+if_falsex_x15_exec_guard := if_truex_x16_if_falsex_x15_taken
+//begin: basic-block if_falsex_x15
+if_falsex_x15_if_truex_x18_taken := (if_falsex_x15_exec_guard & xx_x215)
+if_falsex_x15_if_falsex_x16_taken := (if_falsex_x15_exec_guard & (~xx_x215))
+if_falsex_x16_exec_guard := if_falsex_x15_if_falsex_x16_taken
+//begin: basic-block if_falsex_x16
+if_falsex_x16_if_truex_x19_taken := (if_falsex_x16_exec_guard & xx_x220)
+if_falsex_x16_if_falsex_x17_taken := (if_falsex_x16_exec_guard & (~xx_x220))
+if_falsex_x17_exec_guard := if_falsex_x16_if_falsex_x17_taken
+//begin: basic-block if_falsex_x17
+if_falsex_x17_if_truex_x20_taken := (if_falsex_x17_exec_guard & xx_x225)
+if_falsex_x17_if_falsex_x18_taken := (if_falsex_x17_exec_guard & (~xx_x225))
+if_falsex_x18_exec_guard := if_falsex_x17_if_falsex_x18_taken
+//begin: basic-block if_falsex_x18
+if_falsex_x18_if_nextx_x14_taken := if_falsex_x18_exec_guard
+if_truex_x20_exec_guard := if_falsex_x17_if_truex_x20_taken
+//begin: basic-block if_truex_x20
+$guard (if_truex_x20_exec_guard) in_data_4 := inp_valx_x8
+if_truex_x20_if_nextx_x14_taken := if_truex_x20_exec_guard
+if_nextx_x14_exec_guard := (if_falsex_x18_if_nextx_x14_taken | if_truex_x20_if_nextx_x14_taken )
+//begin: basic-block if_nextx_x14
+if_nextx_x14_if_nextx_x15_taken := if_nextx_x14_exec_guard
+if_truex_x19_exec_guard := if_falsex_x16_if_truex_x19_taken
+//begin: basic-block if_truex_x19
+$guard (if_truex_x19_exec_guard) in_data_3 := inp_valx_x8
+if_truex_x19_if_nextx_x15_taken := if_truex_x19_exec_guard
+if_nextx_x15_exec_guard := (if_nextx_x14_if_nextx_x15_taken | if_truex_x19_if_nextx_x15_taken )
+//begin: basic-block if_nextx_x15
+if_nextx_x15_if_nextx_x16_taken := if_nextx_x15_exec_guard
+if_truex_x18_exec_guard := if_falsex_x15_if_truex_x18_taken
+//begin: basic-block if_truex_x18
+$guard (if_truex_x18_exec_guard) in_data_2 := inp_valx_x8
+if_truex_x18_if_nextx_x16_taken := if_truex_x18_exec_guard
+if_nextx_x16_exec_guard := (if_nextx_x15_if_nextx_x16_taken | if_truex_x18_if_nextx_x16_taken )
+//begin: basic-block if_nextx_x16
+if_nextx_x16_if_nextx_x17_taken := if_nextx_x16_exec_guard
+if_truex_x17_exec_guard := if_truex_x16_if_truex_x17_taken
+//begin: basic-block if_truex_x17
+$guard (if_truex_x17_exec_guard) in_data_1 := inp_valx_x8
+if_truex_x17_if_nextx_x17_taken := if_truex_x17_exec_guard
+if_nextx_x17_exec_guard := (if_nextx_x16_if_nextx_x17_taken | if_truex_x17_if_nextx_x17_taken )
+//begin: basic-block if_nextx_x17
+if_nextx_x17_if_nextx_x25_taken := if_nextx_x17_exec_guard
+if_nextx_x25_exec_guard := (if_nextx_x17_if_nextx_x25_taken | if_nextx_x24_if_nextx_x25_taken )
+//begin: basic-block if_nextx_x25
+xx_x20721 := ($mux if_nextx_x24_if_nextx_x25_taken ( $bitcast ($uint<32>) reuseInp) ($mux if_nextx_x17_if_nextx_x25_taken ( $bitcast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 ) ) ($bitcast ($uint<32>) 0)))
+xx_x17918 := ($mux if_nextx_x24_if_nextx_x25_taken ( $bitcast ($uint<32>) reuseInp) ($mux if_nextx_x17_if_nextx_x25_taken ( $bitcast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 ) ) ($bitcast ($uint<32>) 0)))
+if_nextx_x25_if_nextx_x26_taken := if_nextx_x25_exec_guard
+if_truex_x11_exec_guard := if_truex_x10_if_truex_x11_taken
+//begin: basic-block if_truex_x11
+if_truex_x11_if_truex_x12_taken := (if_truex_x11_exec_guard & xx_x182)
+if_truex_x11_if_falsex_x10_taken := (if_truex_x11_exec_guard & (~xx_x182))
+if_falsex_x10_exec_guard := if_truex_x11_if_falsex_x10_taken
+//begin: basic-block if_falsex_x10
+if_falsex_x10_if_truex_x13_taken := (if_falsex_x10_exec_guard & xx_x187)
+if_falsex_x10_if_falsex_x11_taken := (if_falsex_x10_exec_guard & (~xx_x187))
+if_falsex_x11_exec_guard := if_falsex_x10_if_falsex_x11_taken
+//begin: basic-block if_falsex_x11
+if_falsex_x11_if_truex_x14_taken := (if_falsex_x11_exec_guard & xx_x192)
+if_falsex_x11_if_falsex_x12_taken := (if_falsex_x11_exec_guard & (~xx_x192))
+if_falsex_x12_exec_guard := if_falsex_x11_if_falsex_x12_taken
+//begin: basic-block if_falsex_x12
+if_falsex_x12_if_truex_x15_taken := (if_falsex_x12_exec_guard & xx_x197)
+if_falsex_x12_if_falsex_x13_taken := (if_falsex_x12_exec_guard & (~xx_x197))
+if_falsex_x13_exec_guard := if_falsex_x12_if_falsex_x13_taken
+//begin: basic-block if_falsex_x13
+if_falsex_x13_if_nextx_x10_taken := if_falsex_x13_exec_guard
+if_truex_x15_exec_guard := if_falsex_x12_if_truex_x15_taken
+//begin: basic-block if_truex_x15
+$guard (if_truex_x15_exec_guard) in_data_3 := inp_valx_x8
+if_truex_x15_if_nextx_x10_taken := if_truex_x15_exec_guard
+if_nextx_x10_exec_guard := (if_falsex_x13_if_nextx_x10_taken | if_truex_x15_if_nextx_x10_taken )
+//begin: basic-block if_nextx_x10
+if_nextx_x10_if_nextx_x11_taken := if_nextx_x10_exec_guard
+if_truex_x14_exec_guard := if_falsex_x11_if_truex_x14_taken
+//begin: basic-block if_truex_x14
+$guard (if_truex_x14_exec_guard) in_data_2 := inp_valx_x8
+if_truex_x14_if_nextx_x11_taken := if_truex_x14_exec_guard
+if_nextx_x11_exec_guard := (if_nextx_x10_if_nextx_x11_taken | if_truex_x14_if_nextx_x11_taken )
+//begin: basic-block if_nextx_x11
+if_nextx_x11_if_nextx_x12_taken := if_nextx_x11_exec_guard
+if_truex_x13_exec_guard := if_falsex_x10_if_truex_x13_taken
+//begin: basic-block if_truex_x13
+$guard (if_truex_x13_exec_guard) in_data_1 := inp_valx_x8
+if_truex_x13_if_nextx_x12_taken := if_truex_x13_exec_guard
+if_nextx_x12_exec_guard := (if_nextx_x11_if_nextx_x12_taken | if_truex_x13_if_nextx_x12_taken )
+//begin: basic-block if_nextx_x12
+if_nextx_x12_if_nextx_x13_taken := if_nextx_x12_exec_guard
+if_truex_x12_exec_guard := if_truex_x11_if_truex_x12_taken
+//begin: basic-block if_truex_x12
+$guard (if_truex_x12_exec_guard) in_data_0 := inp_valx_x8
+start_time_new2 := time_val
+if_truex_x12_if_nextx_x13_taken := if_truex_x12_exec_guard
+if_nextx_x13_exec_guard := (if_nextx_x12_if_nextx_x13_taken | if_truex_x12_if_nextx_x13_taken )
+//begin: basic-block if_nextx_x13
+if_nextx_x13_if_nextx_x26_taken := if_nextx_x13_exec_guard
+if_nextx_x26_exec_guard := (if_nextx_x13_if_nextx_x26_taken | if_nextx_x25_if_nextx_x26_taken )
+//begin: basic-block if_nextx_x26
+xx_x20720 := ($mux if_nextx_x25_if_nextx_x26_taken ( $bitcast ($uint<32>) xx_x20721) ($mux if_nextx_x13_if_nextx_x26_taken ( $bitcast ($uint<32>) xx_x20760) ($bitcast ($uint<32>) 0)))
+xx_x17913 := ($mux if_nextx_x25_if_nextx_x26_taken ( $bitcast ($uint<32>) xx_x17918) ($mux if_nextx_x13_if_nextx_x26_taken ( $bitcast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) ) ($bitcast ($uint<32>) 0)))
+if_nextx_x26_if_nextx_x27_taken := if_nextx_x26_exec_guard
+if_nextx_x27_exec_guard := (if_falsex_x27_if_nextx_x27_taken | if_nextx_x26_if_nextx_x27_taken )
+//begin: basic-block if_nextx_x27
+xx_x20719 := ($mux if_falsex_x27_if_nextx_x27_taken ( $bitcast ($uint<32>) xx_x20760) ($mux if_nextx_x26_if_nextx_x27_taken ( $bitcast ($uint<32>) xx_x20720) ($bitcast ($uint<32>) 0)))
+xx_x17912 := ($mux if_falsex_x27_if_nextx_x27_taken ( $bitcast ($uint<32>) xx_x17961) ($mux if_nextx_x26_if_nextx_x27_taken ( $bitcast ($uint<32>) xx_x17913) ($bitcast ($uint<32>) 0)))
+
+$guard (if_nextx_x27_exec_guard) xx_x284 :=  ( $bitcast ($float<8,23>)  ( $bitcast ( $uint< 32 > ) inp_valx_x8) ) 
+$guard (if_nextx_x27_exec_guard) xx_x285 :=  ( $bitcast ($float<8,23>)  ( $bitcast ( $uint< 32 > ) xx_x173) ) 
+
+$guard (if_nextx_x27_exec_guard) $call fp32_mul_for_ecg (xx_x284 xx_x285 )  (xx_x286)
+
+$guard (if_nextx_x27_exec_guard) iNsTr_51 := (xx_x30059 & ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 ) )
+
+// compare instruction
+$guard (if_nextx_x27_exec_guard) xx_x290 := (iNsTr_51 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  )
+if_nextx_x27_if_truex_x28_taken := (if_nextx_x27_exec_guard & xx_x290)
+if_nextx_x27_if_falsex_x28_taken := (if_nextx_x27_exec_guard & (~xx_x290))
+if_falsex_x28_exec_guard := if_nextx_x27_if_falsex_x28_taken
+//begin: basic-block if_falsex_x28
+$guard (if_falsex_x28_exec_guard) xx_x297 := ( $bitcast ($uint<32> ) xx_x286) 
+$guard (if_falsex_x28_exec_guard) accumulator_pipe_odd := xx_x297
+if_falsex_x28_if_nextx_x28_taken := if_falsex_x28_exec_guard
+if_truex_x28_exec_guard := if_nextx_x27_if_truex_x28_taken
+//begin: basic-block if_truex_x28
+$guard (if_truex_x28_exec_guard) xx_x293 := ( $bitcast ($uint<32> )  xx_x286) 
+$guard (if_truex_x28_exec_guard) accumulator_pipe_even := xx_x293
+if_truex_x28_if_nextx_x28_taken := if_truex_x28_exec_guard
+//begin: basic-block if_nextx_x28
+xx_x301 := (xx_x30059 + ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 ) )
+xx_x304 := (xx_x30362 + ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 ) )
+// compare instruction
+xx_x140 := (xx_x304 < xx_x136 )
+if_nextx_x28_forx_x5x_xfor_outx_x2_crit_edge_taken := ( ~xx_x140)
+end_time_new2 := time_val
+time_taken_new2 := (time_taken_new2+(end_time_new2 - start_time_new2))
+$while xx_x140
+$if if_nextx_x28_forx_x5x_xfor_outx_x2_crit_edge_taken $then 
+  $place [if_nextx_x28_forx_x5x_xfor_outx_x2_crit_edge]
+$endif
+//begin: basic-block forx_x5x_xfor_outx_x2_crit_edge
+$merge if_nextx_x28_forx_x5x_xfor_outx_x2_crit_edge
+$phi split63 :=  ( $cast ($uint<32>) inp_valx_x8) $on if_nextx_x28_forx_x5x_xfor_outx_x2_crit_edge 
+$phi split64 :=  ( $cast ($uint<64>) xx_x301) $on if_nextx_x28_forx_x5x_xfor_outx_x2_crit_edge 
+$phi split65 :=  ( $cast ($uint<32>) xx_x20719) $on if_nextx_x28_forx_x5x_xfor_outx_x2_crit_edge 
+$phi split66 :=  ( $cast ($uint<32>) xx_x17912) $on if_nextx_x28_forx_x5x_xfor_outx_x2_crit_edge 
+$endmerge
+$place [forx_x5x_xfor_outx_x2_crit_edge_for_outx_x2]
+//begin: basic-block for_outx_x2
+$merge forx_x5x_xfor_outx_x2_crit_edge_for_outx_x2 if_nextx_x4_for_outx_x2
+$phi inp_valx_x3x_xlcssa :=  ( $cast ($uint<32>) split63) $on forx_x5x_xfor_outx_x2_crit_edge_for_outx_x2 ( $cast ($uint<32>) inp_valx_x268) $on if_nextx_x4_for_outx_x2 
+$phi xx_x300x_xlcssa :=  ( $cast ($uint<64>) split64) $on forx_x5x_xfor_outx_x2_crit_edge_for_outx_x2 ( $cast ($uint<64>) xx_x2882869) $on if_nextx_x4_for_outx_x2 
+$phi xx_x207x_xlcssa :=  ( $cast ($uint<32>) split65) $on forx_x5x_xfor_outx_x2_crit_edge_for_outx_x2 ( $cast ($uint<32>) xx_x2072370) $on if_nextx_x4_for_outx_x2 
+$phi xx_x179x_xlcssa :=  ( $cast ($uint<32>) split66) $on forx_x5x_xfor_outx_x2_crit_edge_for_outx_x2 ( $cast ($uint<32>) xx_x1791571) $on if_nextx_x4_for_outx_x2 
+$endmerge
+xx_x308 := (xx_x30772 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x120 := (xx_x308 < ker_size )
+$if xx_x120 $then  $place [for_outx_x2_for_bodyx_x4] $else $place [for_outx_x2_forx_x4x_xfor_outx_x3_crit_edge] $endif 
+//begin: basic-block forx_x4x_xfor_outx_x3_crit_edge
+$merge for_outx_x2_forx_x4x_xfor_outx_x3_crit_edge
+$phi split73 :=  ( $cast ($uint<32>) inp_valx_x3x_xlcssa) $on for_outx_x2_forx_x4x_xfor_outx_x3_crit_edge 
+$phi split74 :=  ( $cast ($uint<64>) xx_x300x_xlcssa) $on for_outx_x2_forx_x4x_xfor_outx_x3_crit_edge 
+$phi split75 :=  ( $cast ($uint<32>) xx_x207x_xlcssa) $on for_outx_x2_forx_x4x_xfor_outx_x3_crit_edge 
+$phi split76 :=  ( $cast ($uint<32>) xx_x179x_xlcssa) $on for_outx_x2_forx_x4x_xfor_outx_x3_crit_edge 
+$endmerge
+$place [forx_x4x_xfor_outx_x3_crit_edge_for_outx_x3]
+//begin: basic-block for_outx_x3
+$merge for_bodyx_x3_for_outx_x3 forx_x4x_xfor_outx_x3_crit_edge_for_outx_x3
+$phi inp_valx_x2x_xlcssa :=  ( $cast ($uint<32>) split73) $on forx_x4x_xfor_outx_x3_crit_edge_for_outx_x3 ( $cast ($uint<32>) inp_valx_x178) $on for_bodyx_x3_for_outx_x3 
+$phi xx_x28828x_xlcssa :=  ( $cast ($uint<64>) split74) $on forx_x4x_xfor_outx_x3_crit_edge_for_outx_x3 ( $cast ($uint<64>) xx_x2882779) $on for_bodyx_x3_for_outx_x3 
+$phi xx_x20723x_xlcssa :=  ( $cast ($uint<32>) split75) $on forx_x4x_xfor_outx_x3_crit_edge_for_outx_x3 ( $cast ($uint<32>) xx_x2072480) $on for_bodyx_x3_for_outx_x3 
+$phi xx_x17915x_xlcssa :=  ( $cast ($uint<32>) split76) $on forx_x4x_xfor_outx_x3_crit_edge_for_outx_x3 ( $cast ($uint<32>) xx_x1791681) $on for_bodyx_x3_for_outx_x3 
+$endmerge
+xx_x312 := (xx_x31182 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x114 := (xx_x312 < ker_size )
+$if xx_x114 $then  $place [for_outx_x3_for_bodyx_x3] $else $place [for_outx_x3_forx_x3x_xfor_outx_x4_crit_edge] $endif 
+//begin: basic-block forx_x3x_xfor_outx_x4_crit_edge
+$merge for_outx_x3_forx_x3x_xfor_outx_x4_crit_edge
+$phi split83 :=  ( $cast ($uint<32>) inp_valx_x2x_xlcssa) $on for_outx_x3_forx_x3x_xfor_outx_x4_crit_edge 
+$phi split84 :=  ( $cast ($uint<64>) xx_x28828x_xlcssa) $on for_outx_x3_forx_x3x_xfor_outx_x4_crit_edge 
+$phi split85 :=  ( $cast ($uint<32>) xx_x20723x_xlcssa) $on for_outx_x3_forx_x3x_xfor_outx_x4_crit_edge 
+$phi split86 :=  ( $cast ($uint<32>) xx_x17915x_xlcssa) $on for_outx_x3_forx_x3x_xfor_outx_x4_crit_edge 
+$endmerge
+$place [forx_x3x_xfor_outx_x4_crit_edge_for_outx_x4]
+//begin: basic-block for_outx_x4
+$merge for_bodyx_x2_for_outx_x4 forx_x3x_xfor_outx_x4_crit_edge_for_outx_x4
+$phi inp_valx_x1x_xlcssa :=  ( $cast ($uint<32>) split83) $on forx_x3x_xfor_outx_x4_crit_edge_for_outx_x4 ( $cast ($uint<32>) inp_valx_x088) $on for_bodyx_x2_for_outx_x4 
+$phi xx_x28827x_xlcssa :=  ( $cast ($uint<64>) split84) $on forx_x3x_xfor_outx_x4_crit_edge_for_outx_x4 ( $cast ($uint<64>) xx_x2882689) $on for_bodyx_x2_for_outx_x4 
+$phi xx_x20724x_xlcssa :=  ( $cast ($uint<32>) split85) $on forx_x3x_xfor_outx_x4_crit_edge_for_outx_x4 ( $cast ($uint<32>) xx_x2072590) $on for_bodyx_x2_for_outx_x4 
+$phi xx_x17916x_xlcssa :=  ( $cast ($uint<32>) split86) $on forx_x3x_xfor_outx_x4_crit_edge_for_outx_x4 ( $cast ($uint<32>) xx_x1791791) $on for_bodyx_x2_for_outx_x4 
+$endmerge
+xx_x316 := (xx_x31592 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x108 := (xx_x316 < groups )
+$if xx_x108 $then  $place [for_outx_x4_for_bodyx_x2] $else $place [for_outx_x4_forx_x2x_xfor_outx_x5_crit_edge] $endif 
+//begin: basic-block forx_x2x_xfor_outx_x5_crit_edge
+$merge for_outx_x4_forx_x2x_xfor_outx_x5_crit_edge
+$endmerge
+$place [forx_x2x_xfor_outx_x5_crit_edge_for_outx_x5]
+//begin: basic-block for_outx_x5
+$merge forx_x2x_xfor_outx_x5_crit_edge_for_outx_x5 if_falsex_x3_for_outx_x5
+$endmerge
+$place [return__]
+$merge return__ $endmerge
+accelerator_reg[7] := ($slice (end_time_new1-start_time_new1) 31 0)
+accelerator_reg[8] := ($slice time_taken_new1 31 0)
+
+accelerator_reg[9] := ($slice (end_time_new2-start_time_new2) 31 0)
+accelerator_reg[10] := ($slice time_taken_new2 31 0)
+}
+}
+$module [accumulator] 
+ $in (in_channels : $uint<32> ker_size : $uint<32> conv_scale : $float<8,23> conv_zero_point : $float<8,23> isActivation : $uint<1> isLinear : $uint<1> )
+ $out (ret_val__ : $uint<8>)
+ $is 
+{
+$branchblock [body] {
+//begin: basic-block vars
+$if isLinear $then  $place [vars_if_true] $else $place [vars_if_false] $endif 
+//begin: basic-block if_true
+$merge vars_if_true
+$endmerge
+$place [if_true_if_next]
+//begin: basic-block if_false
+$merge vars_if_false
+$endmerge
+xx_x21 := (in_channels * ker_size)
+xx_x23 := (xx_x21 * ker_size)
+$place [if_false_if_next]
+//begin: basic-block if_next
+$merge if_false_if_next if_true_if_next
+$phi xx_x40 :=  ( $cast ($uint<32>) xx_x23) $on if_false_if_next ( $cast ($uint<32>) in_channels) $on if_true_if_next 
+$endmerge
+xx_x31 := ($cast ($uint<64>) xx_x40)
+// compare instruction
+xx_x327 := ( ($bitcast ( $int<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 ) ) <   ($bitcast ( $int<64>) xx_x31 ) )
+$if xx_x327 $then  $place [if_next_while_bodyx_xlrx_xph] $else $place [if_next_while_out] $endif 
+//begin: basic-block while_bodyx_xlrx_xph
+$merge if_next_while_bodyx_xlrx_xph
+$endmerge
+$place [while_bodyx_xlrx_xph_while_body]
+//begin: basic-block while_body
+$merge if_nextx_x1_while_body while_bodyx_xlrx_xph_while_body
+$phi xx_x369 :=  ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 ) ) $on while_bodyx_xlrx_xph_while_body ( $cast ($uint<64>) xx_x59) $on if_nextx_x1_while_body 
+$phi xx_x508 :=  ( $cast ($float<8,23>) ( $bitcast ($float<8,23> ) _h0 ) ) $on while_bodyx_xlrx_xph_while_body ( $cast ($float<8,23>) xx_x56) $on if_nextx_x1_while_body 
+$endmerge
+xx_x34 := accumulator_pipe_even
+xx_x37 := (xx_x369 | ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 ) )
+// compare instruction
+xx_x42 := ( ($bitcast ( $int<64>) xx_x37) <   ($bitcast ( $int<64>) xx_x31 ) )
+$if xx_x42 $then  $place [while_body_if_truex_x1] $else $place [while_body_if_falsex_x1] $endif 
+//begin: basic-block if_truex_x1
+$merge while_body_if_truex_x1
+$endmerge
+xx_x44 := accumulator_pipe_odd
+$place [if_truex_x1_if_nextx_x1]
+//begin: basic-block if_falsex_x1
+$merge while_body_if_falsex_x1
+$endmerge
+$place [if_falsex_x1_if_nextx_x1]
+//begin: basic-block if_nextx_x1
+$merge if_falsex_x1_if_nextx_x1 if_truex_x1_if_nextx_x1
+$phi xx_x52 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_falsex_x1_if_nextx_x1 ( $cast ($uint<32>) xx_x44) $on if_truex_x1_if_nextx_x1 
+$endmerge
+xx_x53 :=  ( $bitcast ($float<8,23>)  ( $bitcast ( $uint< 32 > ) xx_x34) ) 
+xx_x54 :=  ( $bitcast ($float<8,23>)  ( $bitcast ( $uint< 32 > ) xx_x52) ) 
+$call fp32_add_for_ecg (xx_x53 xx_x54 )  (xx_x55)
+$call fp32_add_for_ecg (xx_x508 xx_x55 )  (xx_x56)
+xx_x59 := (xx_x369 + ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000010 ) )
+// compare instruction
+xx_x32 := ( ($bitcast ( $int<64>) xx_x59) <   ($bitcast ( $int<64>) xx_x31 ) )
+$if xx_x32 $then  $place [if_nextx_x1_while_body] $else $place [if_nextx_x1_whilex_xwhile_out_crit_edge] $endif 
+//begin: basic-block whilex_xwhile_out_crit_edge
+$merge if_nextx_x1_whilex_xwhile_out_crit_edge
+$phi split :=  ( $cast ($float<8,23>) xx_x56) $on if_nextx_x1_whilex_xwhile_out_crit_edge 
+$endmerge
+$place [whilex_xwhile_out_crit_edge_while_out]
+//begin: basic-block while_out
+$merge if_next_while_out whilex_xwhile_out_crit_edge_while_out
+$phi xx_x50x_xlcssa :=  ( $cast ($float<8,23>) split) $on whilex_xwhile_out_crit_edge_while_out ( $cast ($float<8,23>) ( $bitcast ($float<8,23> ) _h0 ) ) $on if_next_while_out 
+$endmerge
+$if isActivation $then  $place [while_out_if_truex_x2] $else $place [while_out_if_falsex_x2] $endif 
+//begin: basic-block if_truex_x2
+$merge while_out_if_truex_x2
+$endmerge
+$call relu (xx_x50x_xlcssa )  (xx_x65)
+$place [if_truex_x2_if_nextx_x2]
+//begin: basic-block if_falsex_x2
+$merge while_out_if_falsex_x2
+$endmerge
+$place [if_falsex_x2_if_nextx_x2]
+//begin: basic-block if_nextx_x2
+$merge if_falsex_x2_if_nextx_x2 if_truex_x2_if_nextx_x2
+$phi xx_x69 :=  ( $cast ($float<8,23>) xx_x50x_xlcssa) $on if_falsex_x2_if_nextx_x2 ( $cast ($float<8,23>) xx_x65) $on if_truex_x2_if_nextx_x2 
+$endmerge
+$call uint_quant (xx_x69 conv_scale conv_zero_point )  (ret_val__)
+out_data := ret_val__
+$place [return__]
+$merge return__ $endmerge
+}
+}
+// $module [readModule_convolution] 
+//  $in (base_address : $uint<32> addr : $uint<32> )
+//  $out (ret_val__ : $uint<64>)
+//  $is 
+// {
+// $branchblock [body] {
+// //begin: basic-block vars
+// ret_val__ := ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 ) 
+// $place [return__]
+// $merge return__ $endmerge
+// }
+// }
+// $module [writeModule_convolution] 
+//  $in (base_address : $uint<32> addr : $uint<32> data : $uint<64> byte_mask : $uint<8> )
+//  $out ()
+//  $is 
+// {
+// $branchblock [body] {
+// //begin: basic-block vars
+// ker_data := ($bitcast ( $uint<32> ) data )
+// $place [return__]
+// $merge return__ $endmerge
+// }
+// }
+$module [fetchKernelLinear] 
+ $in (base_addr : $uint<32> groups : $uint<32> chn_no : $uint<32> in_channels : $uint<32> ker_scale : $float<8,23> ker_zero_point : $float<8,23> )
+ $out ()
+ $is 
+{
+$branchblock [body] {
+//begin: basic-block vars
+xx_x24 := (groups * chn_no)
+xx_x25 := (xx_x24 << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+// compare instruction
+xx_x1854 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < groups )
+$if xx_x1854 $then  $place [vars_for_bodyx_xlrx_xph] $else $place [vars_for_outx_x1] $endif 
+//begin: basic-block for_bodyx_xlrx_xph
+$merge vars_for_bodyx_xlrx_xph
+$endmerge
+$place [for_bodyx_xlrx_xph_for_body]
+//begin: basic-block for_body
+$merge for_bodyx_xlrx_xph_for_body for_out_for_body
+$phi xx_x11756 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x31) $on for_out_for_body 
+$phi xx_x1054155 :=  ( $cast ($uint<8>) ( $bitcast ($uint<8> ) _b0 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<8>) xx_x10549x_xlcssa) $on for_out_for_body 
+$endmerge
+xx_x21 := (xx_x11756 << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x26 := (xx_x21 + xx_x25)
+$call readModule_convolution (base_addr xx_x26 )  (xx_x27)
+xx_x31 := (xx_x11756 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+xx_x32 := (xx_x31 << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+// compare instruction
+xx_x33x_xnot := ( ($bitcast ( $int<32>) xx_x32) >  ($bitcast ( $int<32>) in_channels ) )
+$if xx_x33x_xnot $then  $place [for_body_if_false] $else $place [for_body_if_true] $endif 
+//begin: basic-block if_true
+$merge for_body_if_true
+$endmerge
+$place [if_true_if_next]
+//begin: basic-block if_false
+$merge for_body_if_false
+$endmerge
+xx_x39 := (in_channels - xx_x21)
+xx_x40 := ($cast ($uint<64>) xx_x39)
+$place [if_false_if_next]
+//begin: basic-block if_next
+$merge if_false_if_next if_true_if_next
+$phi xx_x43 :=  ( $cast ($uint<64>) xx_x40) $on if_false_if_next ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000001000 ) ) $on if_true_if_next 
+$endmerge
+// compare instruction
+xx_x4751 := (( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  < xx_x43 )
+$if xx_x4751 $then  $place [if_next_for_bodyx_x1x_xlrx_xph] $else $place [if_next_for_out] $endif 
+//begin: basic-block for_bodyx_x1x_xlrx_xph
+$merge if_next_for_bodyx_x1x_xlrx_xph
+$endmerge
+$place [for_bodyx_x1x_xlrx_xph_for_bodyx_x1]
+//begin: basic-block for_bodyx_x1
+$merge for_bodyx_x1x_xlrx_xph_for_bodyx_x1 if_nextx_x8_for_bodyx_x1
+$phi xx_x11353 :=  ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 ) ) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<64>) xx_x114) $on if_nextx_x8_for_bodyx_x1 
+$phi xx_x1054952 :=  ( $cast ($uint<8>) xx_x1054155) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<8>) xx_x105) $on if_nextx_x8_for_bodyx_x1 
+$endmerge
+// compare instruction
+xx_x49 := (xx_x11353 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  )
+$if xx_x49 $then  $place [for_bodyx_x1_if_truex_x1] $else $place [for_bodyx_x1_if_falsex_x1] $endif 
+//begin: basic-block if_truex_x1
+$merge for_bodyx_x1_if_truex_x1
+$endmerge
+xx_x52 := ($slice xx_x27 63 56)
+$place [if_truex_x1_if_nextx_x8]
+//begin: basic-block if_falsex_x1
+$merge for_bodyx_x1_if_falsex_x1
+$endmerge
+// compare instruction
+xx_x55 := (xx_x11353 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 )  )
+$if xx_x55 $then  $place [if_falsex_x1_if_truex_x2] $else $place [if_falsex_x1_if_falsex_x2] $endif 
+//begin: basic-block if_truex_x2
+$merge if_falsex_x1_if_truex_x2
+$endmerge
+xx_x58 := ($slice xx_x27 55 48)
+$place [if_truex_x2_if_nextx_x7]
+//begin: basic-block if_falsex_x2
+$merge if_falsex_x1_if_falsex_x2
+$endmerge
+// compare instruction
+xx_x61 := (xx_x11353 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000010 )  )
+$if xx_x61 $then  $place [if_falsex_x2_if_truex_x3] $else $place [if_falsex_x2_if_falsex_x3] $endif 
+//begin: basic-block if_truex_x3
+$merge if_falsex_x2_if_truex_x3
+$endmerge
+xx_x64 := ($slice xx_x27 47 40)
+$place [if_truex_x3_if_nextx_x6]
+//begin: basic-block if_falsex_x3
+$merge if_falsex_x2_if_falsex_x3
+$endmerge
+// compare instruction
+xx_x67 := (xx_x11353 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000011 )  )
+$if xx_x67 $then  $place [if_falsex_x3_if_truex_x4] $else $place [if_falsex_x3_if_falsex_x4] $endif 
+//begin: basic-block if_truex_x4
+$merge if_falsex_x3_if_truex_x4
+$endmerge
+xx_x70 := ($slice xx_x27 39 32)
+$place [if_truex_x4_if_nextx_x5]
+//begin: basic-block if_falsex_x4
+$merge if_falsex_x3_if_falsex_x4
+$endmerge
+// compare instruction
+xx_x73 := (xx_x11353 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000100 )  )
+$if xx_x73 $then  $place [if_falsex_x4_if_truex_x5] $else $place [if_falsex_x4_if_falsex_x5] $endif 
+//begin: basic-block if_truex_x5
+$merge if_falsex_x4_if_truex_x5
+$endmerge
+xx_x76 := ($slice xx_x27 31 24)
+$place [if_truex_x5_if_nextx_x4]
+//begin: basic-block if_falsex_x5
+$merge if_falsex_x4_if_falsex_x5
+$endmerge
+// compare instruction
+xx_x79 := (xx_x11353 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000101 )  )
+$if xx_x79 $then  $place [if_falsex_x5_if_truex_x6] $else $place [if_falsex_x5_if_falsex_x6] $endif 
+//begin: basic-block if_truex_x6
+$merge if_falsex_x5_if_truex_x6
+$endmerge
+xx_x82 := ($slice xx_x27 23 16)
+$place [if_truex_x6_if_nextx_x3]
+//begin: basic-block if_falsex_x6
+$merge if_falsex_x5_if_falsex_x6
+$endmerge
+// compare instruction
+xx_x85 := (xx_x11353 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000110 )  )
+$if xx_x85 $then  $place [if_falsex_x6_if_truex_x7] $else $place [if_falsex_x6_if_falsex_x7] $endif 
+//begin: basic-block if_truex_x7
+$merge if_falsex_x6_if_truex_x7
+$endmerge
+xx_x88 := ($slice xx_x27 15 8)
+$place [if_truex_x7_if_nextx_x2]
+//begin: basic-block if_falsex_x7
+$merge if_falsex_x6_if_falsex_x7
+$endmerge
+// compare instruction
+xx_x91 := (xx_x11353 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000111 )  )
+$if xx_x91 $then  $place [if_falsex_x7_if_truex_x8] $else $place [if_falsex_x7_if_falsex_x8] $endif 
+//begin: basic-block if_truex_x8
+$merge if_falsex_x7_if_truex_x8
+$endmerge
+xx_x94 := ($slice xx_x27 7 0)
+$place [if_truex_x8_if_nextx_x1]
+//begin: basic-block if_falsex_x8
+$merge if_falsex_x7_if_falsex_x8
+$endmerge
+$place [if_falsex_x8_if_nextx_x1]
+//begin: basic-block if_nextx_x1
+$merge if_falsex_x8_if_nextx_x1 if_truex_x8_if_nextx_x1
+$phi xx_x10548 :=  ( $cast ($uint<8>) xx_x1054952) $on if_falsex_x8_if_nextx_x1 ( $cast ($uint<8>) xx_x94) $on if_truex_x8_if_nextx_x1 
+$endmerge
+$place [if_nextx_x1_if_nextx_x2]
+//begin: basic-block if_nextx_x2
+$merge if_nextx_x1_if_nextx_x2 if_truex_x7_if_nextx_x2
+$phi xx_x10547 :=  ( $cast ($uint<8>) xx_x10548) $on if_nextx_x1_if_nextx_x2 ( $cast ($uint<8>) xx_x88) $on if_truex_x7_if_nextx_x2 
+$endmerge
+$place [if_nextx_x2_if_nextx_x3]
+//begin: basic-block if_nextx_x3
+$merge if_nextx_x2_if_nextx_x3 if_truex_x6_if_nextx_x3
+$phi xx_x10546 :=  ( $cast ($uint<8>) xx_x10547) $on if_nextx_x2_if_nextx_x3 ( $cast ($uint<8>) xx_x82) $on if_truex_x6_if_nextx_x3 
+$endmerge
+$place [if_nextx_x3_if_nextx_x4]
+//begin: basic-block if_nextx_x4
+$merge if_nextx_x3_if_nextx_x4 if_truex_x5_if_nextx_x4
+$phi xx_x10545 :=  ( $cast ($uint<8>) xx_x10546) $on if_nextx_x3_if_nextx_x4 ( $cast ($uint<8>) xx_x76) $on if_truex_x5_if_nextx_x4 
+$endmerge
+$place [if_nextx_x4_if_nextx_x5]
+//begin: basic-block if_nextx_x5
+$merge if_nextx_x4_if_nextx_x5 if_truex_x4_if_nextx_x5
+$phi xx_x10544 :=  ( $cast ($uint<8>) xx_x10545) $on if_nextx_x4_if_nextx_x5 ( $cast ($uint<8>) xx_x70) $on if_truex_x4_if_nextx_x5 
+$endmerge
+$place [if_nextx_x5_if_nextx_x6]
+//begin: basic-block if_nextx_x6
+$merge if_nextx_x5_if_nextx_x6 if_truex_x3_if_nextx_x6
+$phi xx_x10543 :=  ( $cast ($uint<8>) xx_x10544) $on if_nextx_x5_if_nextx_x6 ( $cast ($uint<8>) xx_x64) $on if_truex_x3_if_nextx_x6 
+$endmerge
+$place [if_nextx_x6_if_nextx_x7]
+//begin: basic-block if_nextx_x7
+$merge if_nextx_x6_if_nextx_x7 if_truex_x2_if_nextx_x7
+$phi xx_x10542 :=  ( $cast ($uint<8>) xx_x10543) $on if_nextx_x6_if_nextx_x7 ( $cast ($uint<8>) xx_x58) $on if_truex_x2_if_nextx_x7 
+$endmerge
+$place [if_nextx_x7_if_nextx_x8]
+//begin: basic-block if_nextx_x8
+$merge if_nextx_x7_if_nextx_x8 if_truex_x1_if_nextx_x8
+$phi xx_x105 :=  ( $cast ($uint<8>) xx_x10542) $on if_nextx_x7_if_nextx_x8 ( $cast ($uint<8>) xx_x52) $on if_truex_x1_if_nextx_x8 
+$endmerge
+$call dequant_ker (xx_x105 ker_scale ker_zero_point )  (xx_x108)
+xx_x111 := ( $bitcast ($uint<32> )  xx_x108) 
+ker_data := xx_x111
+xx_x114 := (xx_x11353 + ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 ) )
+// compare instruction
+xx_x47 := (xx_x114 < xx_x43 )
+$if xx_x47 $then  $place [if_nextx_x8_for_bodyx_x1] $else $place [if_nextx_x8_forx_x1x_xfor_out_crit_edge] $endif 
+//begin: basic-block forx_x1x_xfor_out_crit_edge
+$merge if_nextx_x8_forx_x1x_xfor_out_crit_edge
+$phi split :=  ( $cast ($uint<8>) xx_x105) $on if_nextx_x8_forx_x1x_xfor_out_crit_edge 
+$endmerge
+$place [forx_x1x_xfor_out_crit_edge_for_out]
+//begin: basic-block for_out
+$merge forx_x1x_xfor_out_crit_edge_for_out if_next_for_out
+$phi xx_x10549x_xlcssa :=  ( $cast ($uint<8>) split) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<8>) xx_x1054155) $on if_next_for_out 
+$endmerge
+// compare instruction
+xx_x18 := (xx_x31 < groups )
+$if xx_x18 $then  $place [for_out_for_body] $else $place [for_out_forx_xfor_outx_x1_crit_edge] $endif 
+//begin: basic-block forx_xfor_outx_x1_crit_edge
+$merge for_out_forx_xfor_outx_x1_crit_edge
+$endmerge
+$place [forx_xfor_outx_x1_crit_edge_for_outx_x1]
+//begin: basic-block for_outx_x1
+$merge forx_xfor_outx_x1_crit_edge_for_outx_x1 vars_for_outx_x1
+$endmerge
+$place [return__]
+$merge return__ $endmerge
+}
+}
+$module [fetchInputLinear] 
+ $in (base_addr : $uint<32> groups : $uint<32> in_channels : $uint<32> inp_scale : $float<8,23> inp_zero_point : $float<8,23> )
+ $out ()
+ $is 
+{
+$branchblock [body] {
+//begin: basic-block vars
+// compare instruction
+xx_x1654 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < groups )
+$if xx_x1654 $then  $place [vars_for_bodyx_xlrx_xph] $else $place [vars_for_outx_x1] $endif 
+//begin: basic-block for_bodyx_xlrx_xph
+$merge vars_for_bodyx_xlrx_xph
+$endmerge
+$place [for_bodyx_xlrx_xph_for_body]
+//begin: basic-block for_body
+$merge for_bodyx_xlrx_xph_for_body for_out_for_body
+$phi xx_x11056 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x24) $on for_out_for_body 
+$phi xx_x984155 :=  ( $cast ($uint<8>) ( $bitcast ($uint<8> ) _b0 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<8>) xx_x9849x_xlcssa) $on for_out_for_body 
+$endmerge
+xx_x19 := (xx_x11056 << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+$call readModule_convolution (base_addr xx_x19 )  (xx_x20)
+xx_x24 := (xx_x11056 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+xx_x25 := (xx_x24 << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+// compare instruction
+xx_x26x_xnot := ( ($bitcast ( $int<32>) xx_x25) >  ($bitcast ( $int<32>) in_channels ) )
+$if xx_x26x_xnot $then  $place [for_body_if_false] $else $place [for_body_if_true] $endif 
+//begin: basic-block if_true
+$merge for_body_if_true
+$endmerge
+$place [if_true_if_next]
+//begin: basic-block if_false
+$merge for_body_if_false
+$endmerge
+xx_x32 := (in_channels - xx_x19)
+xx_x33 := ($cast ($uint<64>) xx_x32)
+$place [if_false_if_next]
+//begin: basic-block if_next
+$merge if_false_if_next if_true_if_next
+$phi xx_x36 :=  ( $cast ($uint<64>) xx_x33) $on if_false_if_next ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000001000 ) ) $on if_true_if_next 
+$endmerge
+// compare instruction
+xx_x4051 := (( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  < xx_x36 )
+$if xx_x4051 $then  $place [if_next_for_bodyx_x1x_xlrx_xph] $else $place [if_next_for_out] $endif 
+//begin: basic-block for_bodyx_x1x_xlrx_xph
+$merge if_next_for_bodyx_x1x_xlrx_xph
+$endmerge
+$place [for_bodyx_x1x_xlrx_xph_for_bodyx_x1]
+//begin: basic-block for_bodyx_x1
+$merge for_bodyx_x1x_xlrx_xph_for_bodyx_x1 if_nextx_x8_for_bodyx_x1
+$phi xx_x10653 :=  ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 ) ) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<64>) xx_x107) $on if_nextx_x8_for_bodyx_x1 
+$phi xx_x984952 :=  ( $cast ($uint<8>) xx_x984155) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<8>) xx_x98) $on if_nextx_x8_for_bodyx_x1 
+$endmerge
+// compare instruction
+xx_x42 := (xx_x10653 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  )
+$if xx_x42 $then  $place [for_bodyx_x1_if_truex_x1] $else $place [for_bodyx_x1_if_falsex_x1] $endif 
+//begin: basic-block if_truex_x1
+$merge for_bodyx_x1_if_truex_x1
+$endmerge
+xx_x45 := ($slice xx_x20 63 56)
+$place [if_truex_x1_if_nextx_x8]
+//begin: basic-block if_falsex_x1
+$merge for_bodyx_x1_if_falsex_x1
+$endmerge
+// compare instruction
+xx_x48 := (xx_x10653 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 )  )
+$if xx_x48 $then  $place [if_falsex_x1_if_truex_x2] $else $place [if_falsex_x1_if_falsex_x2] $endif 
+//begin: basic-block if_truex_x2
+$merge if_falsex_x1_if_truex_x2
+$endmerge
+xx_x51 := ($slice xx_x20 55 48)
+$place [if_truex_x2_if_nextx_x7]
+//begin: basic-block if_falsex_x2
+$merge if_falsex_x1_if_falsex_x2
+$endmerge
+// compare instruction
+xx_x54 := (xx_x10653 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000010 )  )
+$if xx_x54 $then  $place [if_falsex_x2_if_truex_x3] $else $place [if_falsex_x2_if_falsex_x3] $endif 
+//begin: basic-block if_truex_x3
+$merge if_falsex_x2_if_truex_x3
+$endmerge
+xx_x57 := ($slice xx_x20 47 40)
+$place [if_truex_x3_if_nextx_x6]
+//begin: basic-block if_falsex_x3
+$merge if_falsex_x2_if_falsex_x3
+$endmerge
+// compare instruction
+xx_x60 := (xx_x10653 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000011 )  )
+$if xx_x60 $then  $place [if_falsex_x3_if_truex_x4] $else $place [if_falsex_x3_if_falsex_x4] $endif 
+//begin: basic-block if_truex_x4
+$merge if_falsex_x3_if_truex_x4
+$endmerge
+xx_x63 := ($slice xx_x20 39 32)
+$place [if_truex_x4_if_nextx_x5]
+//begin: basic-block if_falsex_x4
+$merge if_falsex_x3_if_falsex_x4
+$endmerge
+// compare instruction
+xx_x66 := (xx_x10653 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000100 )  )
+$if xx_x66 $then  $place [if_falsex_x4_if_truex_x5] $else $place [if_falsex_x4_if_falsex_x5] $endif 
+//begin: basic-block if_truex_x5
+$merge if_falsex_x4_if_truex_x5
+$endmerge
+xx_x69 := ($slice xx_x20 31 24)
+$place [if_truex_x5_if_nextx_x4]
+//begin: basic-block if_falsex_x5
+$merge if_falsex_x4_if_falsex_x5
+$endmerge
+// compare instruction
+xx_x72 := (xx_x10653 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000101 )  )
+$if xx_x72 $then  $place [if_falsex_x5_if_truex_x6] $else $place [if_falsex_x5_if_falsex_x6] $endif 
+//begin: basic-block if_truex_x6
+$merge if_falsex_x5_if_truex_x6
+$endmerge
+xx_x75 := ($slice xx_x20 23 16)
+$place [if_truex_x6_if_nextx_x3]
+//begin: basic-block if_falsex_x6
+$merge if_falsex_x5_if_falsex_x6
+$endmerge
+// compare instruction
+xx_x78 := (xx_x10653 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000110 )  )
+$if xx_x78 $then  $place [if_falsex_x6_if_truex_x7] $else $place [if_falsex_x6_if_falsex_x7] $endif 
+//begin: basic-block if_truex_x7
+$merge if_falsex_x6_if_truex_x7
+$endmerge
+xx_x81 := ($slice xx_x20 15 8)
+$place [if_truex_x7_if_nextx_x2]
+//begin: basic-block if_falsex_x7
+$merge if_falsex_x6_if_falsex_x7
+$endmerge
+// compare instruction
+xx_x84 := (xx_x10653 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000111 )  )
+$if xx_x84 $then  $place [if_falsex_x7_if_truex_x8] $else $place [if_falsex_x7_if_falsex_x8] $endif 
+//begin: basic-block if_truex_x8
+$merge if_falsex_x7_if_truex_x8
+$endmerge
+xx_x87 := ($slice xx_x20 7 0)
+$place [if_truex_x8_if_nextx_x1]
+//begin: basic-block if_falsex_x8
+$merge if_falsex_x7_if_falsex_x8
+$endmerge
+$place [if_falsex_x8_if_nextx_x1]
+//begin: basic-block if_nextx_x1
+$merge if_falsex_x8_if_nextx_x1 if_truex_x8_if_nextx_x1
+$phi xx_x9848 :=  ( $cast ($uint<8>) xx_x984952) $on if_falsex_x8_if_nextx_x1 ( $cast ($uint<8>) xx_x87) $on if_truex_x8_if_nextx_x1 
+$endmerge
+$place [if_nextx_x1_if_nextx_x2]
+//begin: basic-block if_nextx_x2
+$merge if_nextx_x1_if_nextx_x2 if_truex_x7_if_nextx_x2
+$phi xx_x9847 :=  ( $cast ($uint<8>) xx_x9848) $on if_nextx_x1_if_nextx_x2 ( $cast ($uint<8>) xx_x81) $on if_truex_x7_if_nextx_x2 
+$endmerge
+$place [if_nextx_x2_if_nextx_x3]
+//begin: basic-block if_nextx_x3
+$merge if_nextx_x2_if_nextx_x3 if_truex_x6_if_nextx_x3
+$phi xx_x9846 :=  ( $cast ($uint<8>) xx_x9847) $on if_nextx_x2_if_nextx_x3 ( $cast ($uint<8>) xx_x75) $on if_truex_x6_if_nextx_x3 
+$endmerge
+$place [if_nextx_x3_if_nextx_x4]
+//begin: basic-block if_nextx_x4
+$merge if_nextx_x3_if_nextx_x4 if_truex_x5_if_nextx_x4
+$phi xx_x9845 :=  ( $cast ($uint<8>) xx_x9846) $on if_nextx_x3_if_nextx_x4 ( $cast ($uint<8>) xx_x69) $on if_truex_x5_if_nextx_x4 
+$endmerge
+$place [if_nextx_x4_if_nextx_x5]
+//begin: basic-block if_nextx_x5
+$merge if_nextx_x4_if_nextx_x5 if_truex_x4_if_nextx_x5
+$phi xx_x9844 :=  ( $cast ($uint<8>) xx_x9845) $on if_nextx_x4_if_nextx_x5 ( $cast ($uint<8>) xx_x63) $on if_truex_x4_if_nextx_x5 
+$endmerge
+$place [if_nextx_x5_if_nextx_x6]
+//begin: basic-block if_nextx_x6
+$merge if_nextx_x5_if_nextx_x6 if_truex_x3_if_nextx_x6
+$phi xx_x9843 :=  ( $cast ($uint<8>) xx_x9844) $on if_nextx_x5_if_nextx_x6 ( $cast ($uint<8>) xx_x57) $on if_truex_x3_if_nextx_x6 
+$endmerge
+$place [if_nextx_x6_if_nextx_x7]
+//begin: basic-block if_nextx_x7
+$merge if_nextx_x6_if_nextx_x7 if_truex_x2_if_nextx_x7
+$phi xx_x9842 :=  ( $cast ($uint<8>) xx_x9843) $on if_nextx_x6_if_nextx_x7 ( $cast ($uint<8>) xx_x51) $on if_truex_x2_if_nextx_x7 
+$endmerge
+$place [if_nextx_x7_if_nextx_x8]
+//begin: basic-block if_nextx_x8
+$merge if_nextx_x7_if_nextx_x8 if_truex_x1_if_nextx_x8
+$phi xx_x98 :=  ( $cast ($uint<8>) xx_x9842) $on if_nextx_x7_if_nextx_x8 ( $cast ($uint<8>) xx_x45) $on if_truex_x1_if_nextx_x8 
+$endmerge
+$call dequant_inp (xx_x98 inp_scale inp_zero_point )  (xx_x101)
+xx_x104 := ( $bitcast ($uint<32> )  xx_x101) 
+in_data_0 := xx_x104
+xx_x107 := (xx_x10653 + ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 ) )
+// compare instruction
+xx_x40 := (xx_x107 < xx_x36 )
+$if xx_x40 $then  $place [if_nextx_x8_for_bodyx_x1] $else $place [if_nextx_x8_forx_x1x_xfor_out_crit_edge] $endif 
+//begin: basic-block forx_x1x_xfor_out_crit_edge
+$merge if_nextx_x8_forx_x1x_xfor_out_crit_edge
+$phi split :=  ( $cast ($uint<8>) xx_x98) $on if_nextx_x8_forx_x1x_xfor_out_crit_edge 
+$endmerge
+$place [forx_x1x_xfor_out_crit_edge_for_out]
+//begin: basic-block for_out
+$merge forx_x1x_xfor_out_crit_edge_for_out if_next_for_out
+$phi xx_x9849x_xlcssa :=  ( $cast ($uint<8>) split) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<8>) xx_x984155) $on if_next_for_out 
+$endmerge
+// compare instruction
+xx_x16 := (xx_x24 < groups )
+$if xx_x16 $then  $place [for_out_for_body] $else $place [for_out_forx_xfor_outx_x1_crit_edge] $endif 
+//begin: basic-block forx_xfor_outx_x1_crit_edge
+$merge for_out_forx_xfor_outx_x1_crit_edge
+$endmerge
+$place [forx_xfor_outx_x1_crit_edge_for_outx_x1]
+//begin: basic-block for_outx_x1
+$merge forx_xfor_outx_x1_crit_edge_for_outx_x1 vars_for_outx_x1
+$endmerge
+$place [return__]
+$merge return__ $endmerge
+}
+}
+$module [fetchKernel] 
+ $in (base_addr : $uint<32> groups : $uint<32> ker_size : $uint<32> in_channels : $uint<32> ker_scale : $float<8,23> ker_zero_point : $float<8,23> )
+ $out ()
+ $is 
+{
+$branchblock [body] {
+//begin: basic-block vars
+xx_x33 := (groups << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x35 := (xx_x33 * ker_size)
+xx_x38 := (groups << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+// compare instruction
+xx_x1877 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < groups )
+$if xx_x1877 $then  $place [vars_for_bodyx_xlrx_xph] $else $place [vars_for_outx_x3] $endif 
+//begin: basic-block for_bodyx_xlrx_xph
+$merge vars_for_bodyx_xlrx_xph
+$endmerge
+$place [for_bodyx_xlrx_xph_for_body]
+//begin: basic-block for_body
+$merge for_bodyx_xlrx_xph_for_body for_outx_x2_for_body
+$phi xx_x14479 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x145) $on for_outx_x2_for_body 
+$phi xx_x1245478 :=  ( $cast ($uint<8>) ( $bitcast ($uint<8> ) _b0 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<8>) xx_x12455x_xlcssa) $on for_outx_x2_for_body 
+$endmerge
+xx_x41 := (xx_x14479 << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x50 := (xx_x14479 << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x51 := (xx_x50 + ( $bitcast ($uint<32> ) _b00000000000000000000000000001000 ) )
+// compare instruction
+xx_x52x_xnot := ( ($bitcast ( $int<32>) xx_x51) >  ($bitcast ( $int<32>) in_channels ) )
+xx_x58 := (in_channels - xx_x41)
+xx_x59 := ($cast ($uint<64>) xx_x58)
+// compare instruction
+xx_x2473 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < ker_size )
+$if xx_x2473 $then  $place [for_body_for_bodyx_x1x_xlrx_xph] $else $place [for_body_for_outx_x2] $endif 
+//begin: basic-block for_bodyx_x1x_xlrx_xph
+$merge for_body_for_bodyx_x1x_xlrx_xph
+$endmerge
+$place [for_bodyx_x1x_xlrx_xph_for_bodyx_x1]
+//begin: basic-block for_bodyx_x1
+$merge for_bodyx_x1x_xlrx_xph_for_bodyx_x1 for_outx_x1_for_bodyx_x1
+$phi xx_x14075 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<32>) xx_x141) $on for_outx_x1_for_bodyx_x1 
+$phi xx_x1245574 :=  ( $cast ($uint<8>) xx_x1245478) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<8>) xx_x12456x_xlcssa) $on for_outx_x1_for_bodyx_x1 
+$endmerge
+xx_x39 := (xx_x38 * xx_x14075)
+// compare instruction
+xx_x3069 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < ker_size )
+$if xx_x3069 $then  $place [for_bodyx_x1_for_bodyx_x2x_xlrx_xph] $else $place [for_bodyx_x1_for_outx_x1] $endif 
+//begin: basic-block for_bodyx_x2x_xlrx_xph
+$merge for_bodyx_x1_for_bodyx_x2x_xlrx_xph
+$endmerge
+$place [for_bodyx_x2x_xlrx_xph_for_bodyx_x2]
+//begin: basic-block for_bodyx_x2
+$merge for_bodyx_x2x_xlrx_xph_for_bodyx_x2 for_out_for_bodyx_x2
+$phi xx_x13671 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x2x_xlrx_xph_for_bodyx_x2 ( $cast ($uint<32>) xx_x137) $on for_out_for_bodyx_x2 
+$phi xx_x1245670 :=  ( $cast ($uint<8>) xx_x1245574) $on for_bodyx_x2x_xlrx_xph_for_bodyx_x2 ( $cast ($uint<8>) xx_x12464x_xlcssa) $on for_out_for_bodyx_x2 
+$endmerge
+xx_x36 := (xx_x35 * xx_x13671)
+xx_x40 := (xx_x36 + xx_x39)
+xx_x42 := (xx_x40 + xx_x41)
+$call readModule_convolution (base_addr xx_x42 )  (xx_x46)
+$if xx_x52x_xnot $then  $place [for_bodyx_x2_if_false] $else $place [for_bodyx_x2_if_true] $endif 
+//begin: basic-block if_true
+$merge for_bodyx_x2_if_true
+$endmerge
+$place [if_true_if_next]
+//begin: basic-block if_false
+$merge for_bodyx_x2_if_false
+$endmerge
+$place [if_false_if_next]
+//begin: basic-block if_next
+$merge if_false_if_next if_true_if_next
+$phi xx_x62 :=  ( $cast ($uint<64>) xx_x59) $on if_false_if_next ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000001000 ) ) $on if_true_if_next 
+$endmerge
+// compare instruction
+xx_x6666 := (( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  < xx_x62 )
+$if xx_x6666 $then  $place [if_next_for_bodyx_x3x_xlrx_xph] $else $place [if_next_for_out] $endif 
+//begin: basic-block for_bodyx_x3x_xlrx_xph
+$merge if_next_for_bodyx_x3x_xlrx_xph
+$endmerge
+$place [for_bodyx_x3x_xlrx_xph_for_bodyx_x3]
+//begin: basic-block for_bodyx_x3
+$merge for_bodyx_x3x_xlrx_xph_for_bodyx_x3 if_nextx_x8_for_bodyx_x3
+$phi xx_x13268 :=  ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 ) ) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<64>) xx_x133) $on if_nextx_x8_for_bodyx_x3 
+$phi xx_x1246467 :=  ( $cast ($uint<8>) xx_x1245670) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<8>) xx_x124) $on if_nextx_x8_for_bodyx_x3 
+$endmerge
+// compare instruction
+xx_x68 := (xx_x13268 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  )
+$if xx_x68 $then  $place [for_bodyx_x3_if_truex_x1] $else $place [for_bodyx_x3_if_falsex_x1] $endif 
+//begin: basic-block if_truex_x1
+$merge for_bodyx_x3_if_truex_x1
+$endmerge
+xx_x71 := ($slice xx_x46 63 56)
+$place [if_truex_x1_if_nextx_x8]
+//begin: basic-block if_falsex_x1
+$merge for_bodyx_x3_if_falsex_x1
+$endmerge
+// compare instruction
+xx_x74 := (xx_x13268 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 )  )
+$if xx_x74 $then  $place [if_falsex_x1_if_truex_x2] $else $place [if_falsex_x1_if_falsex_x2] $endif 
+//begin: basic-block if_truex_x2
+$merge if_falsex_x1_if_truex_x2
+$endmerge
+xx_x77 := ($slice xx_x46 55 48)
+$place [if_truex_x2_if_nextx_x7]
+//begin: basic-block if_falsex_x2
+$merge if_falsex_x1_if_falsex_x2
+$endmerge
+// compare instruction
+xx_x80 := (xx_x13268 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000010 )  )
+$if xx_x80 $then  $place [if_falsex_x2_if_truex_x3] $else $place [if_falsex_x2_if_falsex_x3] $endif 
+//begin: basic-block if_truex_x3
+$merge if_falsex_x2_if_truex_x3
+$endmerge
+xx_x83 := ($slice xx_x46 47 40)
+$place [if_truex_x3_if_nextx_x6]
+//begin: basic-block if_falsex_x3
+$merge if_falsex_x2_if_falsex_x3
+$endmerge
+// compare instruction
+xx_x86 := (xx_x13268 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000011 )  )
+$if xx_x86 $then  $place [if_falsex_x3_if_truex_x4] $else $place [if_falsex_x3_if_falsex_x4] $endif 
+//begin: basic-block if_truex_x4
+$merge if_falsex_x3_if_truex_x4
+$endmerge
+xx_x89 := ($slice xx_x46 39 32)
+$place [if_truex_x4_if_nextx_x5]
+//begin: basic-block if_falsex_x4
+$merge if_falsex_x3_if_falsex_x4
+$endmerge
+// compare instruction
+xx_x92 := (xx_x13268 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000100 )  )
+$if xx_x92 $then  $place [if_falsex_x4_if_truex_x5] $else $place [if_falsex_x4_if_falsex_x5] $endif 
+//begin: basic-block if_truex_x5
+$merge if_falsex_x4_if_truex_x5
+$endmerge
+xx_x95 := ($slice xx_x46 31 24)
+$place [if_truex_x5_if_nextx_x4]
+//begin: basic-block if_falsex_x5
+$merge if_falsex_x4_if_falsex_x5
+$endmerge
+// compare instruction
+xx_x98 := (xx_x13268 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000101 )  )
+$if xx_x98 $then  $place [if_falsex_x5_if_truex_x6] $else $place [if_falsex_x5_if_falsex_x6] $endif 
+//begin: basic-block if_truex_x6
+$merge if_falsex_x5_if_truex_x6
+$endmerge
+xx_x101 := ($slice xx_x46 23 16)
+$place [if_truex_x6_if_nextx_x3]
+//begin: basic-block if_falsex_x6
+$merge if_falsex_x5_if_falsex_x6
+$endmerge
+// compare instruction
+xx_x104 := (xx_x13268 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000110 )  )
+$if xx_x104 $then  $place [if_falsex_x6_if_truex_x7] $else $place [if_falsex_x6_if_falsex_x7] $endif 
+//begin: basic-block if_truex_x7
+$merge if_falsex_x6_if_truex_x7
+$endmerge
+xx_x107 := ($slice xx_x46 15 8)
+$place [if_truex_x7_if_nextx_x2]
+//begin: basic-block if_falsex_x7
+$merge if_falsex_x6_if_falsex_x7
+$endmerge
+// compare instruction
+xx_x110 := (xx_x13268 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000111 )  )
+$if xx_x110 $then  $place [if_falsex_x7_if_truex_x8] $else $place [if_falsex_x7_if_falsex_x8] $endif 
+//begin: basic-block if_truex_x8
+$merge if_falsex_x7_if_truex_x8
+$endmerge
+xx_x113 := ($slice xx_x46 7 0)
+$place [if_truex_x8_if_nextx_x1]
+//begin: basic-block if_falsex_x8
+$merge if_falsex_x7_if_falsex_x8
+$endmerge
+$place [if_falsex_x8_if_nextx_x1]
+//begin: basic-block if_nextx_x1
+$merge if_falsex_x8_if_nextx_x1 if_truex_x8_if_nextx_x1
+$phi xx_x12463 :=  ( $cast ($uint<8>) xx_x1246467) $on if_falsex_x8_if_nextx_x1 ( $cast ($uint<8>) xx_x113) $on if_truex_x8_if_nextx_x1 
+$endmerge
+$place [if_nextx_x1_if_nextx_x2]
+//begin: basic-block if_nextx_x2
+$merge if_nextx_x1_if_nextx_x2 if_truex_x7_if_nextx_x2
+$phi xx_x12462 :=  ( $cast ($uint<8>) xx_x12463) $on if_nextx_x1_if_nextx_x2 ( $cast ($uint<8>) xx_x107) $on if_truex_x7_if_nextx_x2 
+$endmerge
+$place [if_nextx_x2_if_nextx_x3]
+//begin: basic-block if_nextx_x3
+$merge if_nextx_x2_if_nextx_x3 if_truex_x6_if_nextx_x3
+$phi xx_x12461 :=  ( $cast ($uint<8>) xx_x12462) $on if_nextx_x2_if_nextx_x3 ( $cast ($uint<8>) xx_x101) $on if_truex_x6_if_nextx_x3 
+$endmerge
+$place [if_nextx_x3_if_nextx_x4]
+//begin: basic-block if_nextx_x4
+$merge if_nextx_x3_if_nextx_x4 if_truex_x5_if_nextx_x4
+$phi xx_x12460 :=  ( $cast ($uint<8>) xx_x12461) $on if_nextx_x3_if_nextx_x4 ( $cast ($uint<8>) xx_x95) $on if_truex_x5_if_nextx_x4 
+$endmerge
+$place [if_nextx_x4_if_nextx_x5]
+//begin: basic-block if_nextx_x5
+$merge if_nextx_x4_if_nextx_x5 if_truex_x4_if_nextx_x5
+$phi xx_x12459 :=  ( $cast ($uint<8>) xx_x12460) $on if_nextx_x4_if_nextx_x5 ( $cast ($uint<8>) xx_x89) $on if_truex_x4_if_nextx_x5 
+$endmerge
+$place [if_nextx_x5_if_nextx_x6]
+//begin: basic-block if_nextx_x6
+$merge if_nextx_x5_if_nextx_x6 if_truex_x3_if_nextx_x6
+$phi xx_x12458 :=  ( $cast ($uint<8>) xx_x12459) $on if_nextx_x5_if_nextx_x6 ( $cast ($uint<8>) xx_x83) $on if_truex_x3_if_nextx_x6 
+$endmerge
+$place [if_nextx_x6_if_nextx_x7]
+//begin: basic-block if_nextx_x7
+$merge if_nextx_x6_if_nextx_x7 if_truex_x2_if_nextx_x7
+$phi xx_x12457 :=  ( $cast ($uint<8>) xx_x12458) $on if_nextx_x6_if_nextx_x7 ( $cast ($uint<8>) xx_x77) $on if_truex_x2_if_nextx_x7 
+$endmerge
+$place [if_nextx_x7_if_nextx_x8]
+//begin: basic-block if_nextx_x8
+$merge if_nextx_x7_if_nextx_x8 if_truex_x1_if_nextx_x8
+$phi xx_x124 :=  ( $cast ($uint<8>) xx_x12457) $on if_nextx_x7_if_nextx_x8 ( $cast ($uint<8>) xx_x71) $on if_truex_x1_if_nextx_x8 
+$endmerge
+$call dequant_ker (xx_x124 ker_scale ker_zero_point )  (xx_x127)
+xx_x130 := ( $bitcast ($uint<32> )  xx_x127) 
+ker_data := xx_x130
+xx_x133 := (xx_x13268 + ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 ) )
+// compare instruction
+xx_x66 := (xx_x133 < xx_x62 )
+$if xx_x66 $then  $place [if_nextx_x8_for_bodyx_x3] $else $place [if_nextx_x8_forx_x3x_xfor_out_crit_edge] $endif 
+//begin: basic-block forx_x3x_xfor_out_crit_edge
+$merge if_nextx_x8_forx_x3x_xfor_out_crit_edge
+$phi split :=  ( $cast ($uint<8>) xx_x124) $on if_nextx_x8_forx_x3x_xfor_out_crit_edge 
+$endmerge
+$place [forx_x3x_xfor_out_crit_edge_for_out]
+//begin: basic-block for_out
+$merge forx_x3x_xfor_out_crit_edge_for_out if_next_for_out
+$phi xx_x12464x_xlcssa :=  ( $cast ($uint<8>) split) $on forx_x3x_xfor_out_crit_edge_for_out ( $cast ($uint<8>) xx_x1245670) $on if_next_for_out 
+$endmerge
+xx_x137 := (xx_x13671 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x30 := (xx_x137 < ker_size )
+$if xx_x30 $then  $place [for_out_for_bodyx_x2] $else $place [for_out_forx_x2x_xfor_outx_x1_crit_edge] $endif 
+//begin: basic-block forx_x2x_xfor_outx_x1_crit_edge
+$merge for_out_forx_x2x_xfor_outx_x1_crit_edge
+$phi split72 :=  ( $cast ($uint<8>) xx_x12464x_xlcssa) $on for_out_forx_x2x_xfor_outx_x1_crit_edge 
+$endmerge
+$place [forx_x2x_xfor_outx_x1_crit_edge_for_outx_x1]
+//begin: basic-block for_outx_x1
+$merge for_bodyx_x1_for_outx_x1 forx_x2x_xfor_outx_x1_crit_edge_for_outx_x1
+$phi xx_x12456x_xlcssa :=  ( $cast ($uint<8>) split72) $on forx_x2x_xfor_outx_x1_crit_edge_for_outx_x1 ( $cast ($uint<8>) xx_x1245574) $on for_bodyx_x1_for_outx_x1 
+$endmerge
+xx_x141 := (xx_x14075 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x24 := (xx_x141 < ker_size )
+$if xx_x24 $then  $place [for_outx_x1_for_bodyx_x1] $else $place [for_outx_x1_forx_x1x_xfor_outx_x2_crit_edge] $endif 
+//begin: basic-block forx_x1x_xfor_outx_x2_crit_edge
+$merge for_outx_x1_forx_x1x_xfor_outx_x2_crit_edge
+$phi split76 :=  ( $cast ($uint<8>) xx_x12456x_xlcssa) $on for_outx_x1_forx_x1x_xfor_outx_x2_crit_edge 
+$endmerge
+$place [forx_x1x_xfor_outx_x2_crit_edge_for_outx_x2]
+//begin: basic-block for_outx_x2
+$merge for_body_for_outx_x2 forx_x1x_xfor_outx_x2_crit_edge_for_outx_x2
+$phi xx_x12455x_xlcssa :=  ( $cast ($uint<8>) split76) $on forx_x1x_xfor_outx_x2_crit_edge_for_outx_x2 ( $cast ($uint<8>) xx_x1245478) $on for_body_for_outx_x2 
+$endmerge
+xx_x145 := (xx_x14479 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x18 := (xx_x145 < groups )
+$if xx_x18 $then  $place [for_outx_x2_for_body] $else $place [for_outx_x2_forx_xfor_outx_x3_crit_edge] $endif 
+//begin: basic-block forx_xfor_outx_x3_crit_edge
+$merge for_outx_x2_forx_xfor_outx_x3_crit_edge
+$endmerge
+$place [forx_xfor_outx_x3_crit_edge_for_outx_x3]
+//begin: basic-block for_outx_x3
+$merge forx_xfor_outx_x3_crit_edge_for_outx_x3 vars_for_outx_x3
+$endmerge
+$place [return__]
+$merge return__ $endmerge
+}
+}
+$module [fetchInpVerSlice] 
+ $in (base_addr : $uint<32> groups : $uint<32> startRowIndex : $uint<32> startColIndex : $uint<32> grp_no : $uint<32> ker_size : $uint<32> padReq : $uint<1> in_rows : $uint<32> in_cols : $uint<32> in_channels : $uint<32> inp_scale : $float<8,23> inp_zero_point : $float<8,23> )
+ $out ()
+ $is 
+{
+$branchblock [body] {
+//begin: basic-block vars
+xx_x34 := (groups << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x36 := (xx_x34 * in_cols)
+xx_x51 := (grp_no << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x63 := (grp_no << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x64 := (xx_x63 + ( $bitcast ($uint<32> ) _b00000000000000000000000000001000 ) )
+// compare instruction
+xx_x65x_xnot := ( ($bitcast ( $int<32>) xx_x64) >  ($bitcast ( $int<32>) in_channels ) )
+xx_x71 := (grp_no << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x72 := (in_channels - xx_x71)
+xx_x73 := ($cast ($uint<64>) xx_x72)
+// compare instruction
+xx_x176 := (startColIndex == ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 )  )
+iNsTr_0 := (startRowIndex & ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x185 := (iNsTr_0 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+// compare instruction
+xx_x31116 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < ker_size )
+$if xx_x31116 $then  $place [vars_for_bodyx_xlrx_xph] $else $place [vars_for_outx_x1] $endif 
+//begin: basic-block for_bodyx_xlrx_xph
+$merge vars_for_bodyx_xlrx_xph
+$endmerge
+$place [for_bodyx_xlrx_xph_for_body]
+//begin: basic-block for_body
+$merge for_bodyx_xlrx_xph_for_body for_out_for_body
+$phi xx_x203127 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x204) $on for_out_for_body 
+$phi xx_x37126 :=  ( $cast ($uint<32>) startRowIndex) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x373x_xlcssa) $on for_out_for_body 
+$phi xx_x42125 :=  ( $cast ($uint<32>) startColIndex) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x429x_xlcssa) $on for_out_for_body 
+$phi xx_x13857124 :=  ( $cast ($uint<8>) ( $bitcast ($uint<8> ) _b0 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<8>) xx_x13865x_xlcssa) $on for_out_for_body 
+$phi xx_x14369123 :=  ( $cast ($uint<32>) startRowIndex) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x143x_xlcssa) $on for_out_for_body 
+$phi xx_x14572122 :=  ( $cast ($uint<32>) startColIndex) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x145x_xlcssa) $on for_out_for_body 
+$phi xx_x15376121 :=  ( $cast ($uint<32>) startRowIndex) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x153x_xlcssa) $on for_out_for_body 
+$phi xx_x15580120 :=  ( $cast ($uint<32>) startColIndex) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x155x_xlcssa) $on for_out_for_body 
+$phi xx_x16385119 :=  ( $cast ($uint<32>) startRowIndex) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x163x_xlcssa) $on for_out_for_body 
+$phi xx_x16590118 :=  ( $cast ($uint<32>) startColIndex) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x165x_xlcssa) $on for_out_for_body 
+$phi xx_x17396117 :=  ( $cast ($uint<32>) startRowIndex) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x173x_xlcssa) $on for_out_for_body 
+$endmerge
+xx_x38 := (xx_x37126 + xx_x203127)
+xx_x39 := (xx_x36 * xx_x38)
+xx_x47 := (xx_x34 * xx_x42125)
+xx_x49 := (xx_x47 + xx_x39)
+xx_x53 := (xx_x49 + xx_x51)
+$call readModule_convolution (base_addr xx_x53 )  (xx_x58)
+$if xx_x65x_xnot $then  $place [for_body_if_false] $else $place [for_body_if_true] $endif 
+//begin: basic-block if_true
+$merge for_body_if_true
+$endmerge
+$place [if_true_if_next]
+//begin: basic-block if_false
+$merge for_body_if_false
+$endmerge
+$place [if_false_if_next]
+//begin: basic-block if_next
+$merge if_false_if_next if_true_if_next
+$phi xx_x76 :=  ( $cast ($uint<64>) xx_x73) $on if_false_if_next ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000001000 ) ) $on if_true_if_next 
+$endmerge
+// compare instruction
+xx_x8097 := (( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  < xx_x76 )
+$if xx_x8097 $then  $place [if_next_for_bodyx_x1x_xlrx_xph] $else $place [if_next_for_out] $endif 
+//begin: basic-block for_bodyx_x1x_xlrx_xph
+$merge if_next_for_bodyx_x1x_xlrx_xph
+$endmerge
+$place [for_bodyx_x1x_xlrx_xph_for_bodyx_x1]
+//begin: basic-block for_bodyx_x1
+$merge for_bodyx_x1x_xlrx_xph_for_bodyx_x1 if_nextx_x13_for_bodyx_x1
+$phi xx_x199106 :=  ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 ) ) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<64>) xx_x200) $on if_nextx_x13_for_bodyx_x1 
+$phi xx_x13865105 :=  ( $cast ($uint<8>) xx_x13857124) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<8>) xx_x138) $on if_nextx_x13_for_bodyx_x1 
+$phi xx_x143104 :=  ( $cast ($uint<32>) xx_x14369123) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<32>) xx_x14367) $on if_nextx_x13_for_bodyx_x1 
+$phi xx_x145103 :=  ( $cast ($uint<32>) xx_x14572122) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<32>) xx_x14570) $on if_nextx_x13_for_bodyx_x1 
+$phi xx_x153102 :=  ( $cast ($uint<32>) xx_x15376121) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<32>) xx_x15373) $on if_nextx_x13_for_bodyx_x1 
+$phi xx_x155101 :=  ( $cast ($uint<32>) xx_x15580120) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<32>) xx_x15577) $on if_nextx_x13_for_bodyx_x1 
+$phi xx_x163100 :=  ( $cast ($uint<32>) xx_x16385119) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<32>) xx_x16381) $on if_nextx_x13_for_bodyx_x1 
+$phi xx_x16599 :=  ( $cast ($uint<32>) xx_x16590118) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<32>) xx_x16586) $on if_nextx_x13_for_bodyx_x1 
+$phi xx_x17398 :=  ( $cast ($uint<32>) xx_x17396117) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<32>) xx_x17391) $on if_nextx_x13_for_bodyx_x1 
+$endmerge
+// compare instruction
+xx_x82 := (xx_x199106 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  )
+$if xx_x82 $then  $place [for_bodyx_x1_if_truex_x1] $else $place [for_bodyx_x1_if_falsex_x1] $endif 
+//begin: basic-block if_truex_x1
+$merge for_bodyx_x1_if_truex_x1
+$endmerge
+xx_x85 := ($slice xx_x58 63 56)
+$place [if_truex_x1_if_nextx_x8]
+//begin: basic-block if_falsex_x1
+$merge for_bodyx_x1_if_falsex_x1
+$endmerge
+// compare instruction
+xx_x88 := (xx_x199106 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 )  )
+$if xx_x88 $then  $place [if_falsex_x1_if_truex_x2] $else $place [if_falsex_x1_if_falsex_x2] $endif 
+//begin: basic-block if_truex_x2
+$merge if_falsex_x1_if_truex_x2
+$endmerge
+xx_x91 := ($slice xx_x58 55 48)
+$place [if_truex_x2_if_nextx_x7]
+//begin: basic-block if_falsex_x2
+$merge if_falsex_x1_if_falsex_x2
+$endmerge
+// compare instruction
+xx_x94 := (xx_x199106 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000010 )  )
+$if xx_x94 $then  $place [if_falsex_x2_if_truex_x3] $else $place [if_falsex_x2_if_falsex_x3] $endif 
+//begin: basic-block if_truex_x3
+$merge if_falsex_x2_if_truex_x3
+$endmerge
+xx_x97 := ($slice xx_x58 47 40)
+$place [if_truex_x3_if_nextx_x6]
+//begin: basic-block if_falsex_x3
+$merge if_falsex_x2_if_falsex_x3
+$endmerge
+// compare instruction
+xx_x100 := (xx_x199106 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000011 )  )
+$if xx_x100 $then  $place [if_falsex_x3_if_truex_x4] $else $place [if_falsex_x3_if_falsex_x4] $endif 
+//begin: basic-block if_truex_x4
+$merge if_falsex_x3_if_truex_x4
+$endmerge
+xx_x103 := ($slice xx_x58 39 32)
+$place [if_truex_x4_if_nextx_x5]
+//begin: basic-block if_falsex_x4
+$merge if_falsex_x3_if_falsex_x4
+$endmerge
+// compare instruction
+xx_x106 := (xx_x199106 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000100 )  )
+$if xx_x106 $then  $place [if_falsex_x4_if_truex_x5] $else $place [if_falsex_x4_if_falsex_x5] $endif 
+//begin: basic-block if_truex_x5
+$merge if_falsex_x4_if_truex_x5
+$endmerge
+xx_x109 := ($slice xx_x58 31 24)
+$place [if_truex_x5_if_nextx_x4]
+//begin: basic-block if_falsex_x5
+$merge if_falsex_x4_if_falsex_x5
+$endmerge
+// compare instruction
+xx_x112 := (xx_x199106 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000101 )  )
+$if xx_x112 $then  $place [if_falsex_x5_if_truex_x6] $else $place [if_falsex_x5_if_falsex_x6] $endif 
+//begin: basic-block if_truex_x6
+$merge if_falsex_x5_if_truex_x6
+$endmerge
+xx_x115 := ($slice xx_x58 23 16)
+$place [if_truex_x6_if_nextx_x3]
+//begin: basic-block if_falsex_x6
+$merge if_falsex_x5_if_falsex_x6
+$endmerge
+// compare instruction
+xx_x118 := (xx_x199106 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000110 )  )
+$if xx_x118 $then  $place [if_falsex_x6_if_truex_x7] $else $place [if_falsex_x6_if_falsex_x7] $endif 
+//begin: basic-block if_truex_x7
+$merge if_falsex_x6_if_truex_x7
+$endmerge
+xx_x121 := ($slice xx_x58 15 8)
+$place [if_truex_x7_if_nextx_x2]
+//begin: basic-block if_falsex_x7
+$merge if_falsex_x6_if_falsex_x7
+$endmerge
+// compare instruction
+xx_x124 := (xx_x199106 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000111 )  )
+$if xx_x124 $then  $place [if_falsex_x7_if_truex_x8] $else $place [if_falsex_x7_if_falsex_x8] $endif 
+//begin: basic-block if_truex_x8
+$merge if_falsex_x7_if_truex_x8
+$endmerge
+xx_x127 := ($slice xx_x58 7 0)
+$place [if_truex_x8_if_nextx_x1]
+//begin: basic-block if_falsex_x8
+$merge if_falsex_x7_if_falsex_x8
+$endmerge
+$place [if_falsex_x8_if_nextx_x1]
+//begin: basic-block if_nextx_x1
+$merge if_falsex_x8_if_nextx_x1 if_truex_x8_if_nextx_x1
+$phi xx_x13864 :=  ( $cast ($uint<8>) xx_x13865105) $on if_falsex_x8_if_nextx_x1 ( $cast ($uint<8>) xx_x127) $on if_truex_x8_if_nextx_x1 
+$endmerge
+$place [if_nextx_x1_if_nextx_x2]
+//begin: basic-block if_nextx_x2
+$merge if_nextx_x1_if_nextx_x2 if_truex_x7_if_nextx_x2
+$phi xx_x13863 :=  ( $cast ($uint<8>) xx_x13864) $on if_nextx_x1_if_nextx_x2 ( $cast ($uint<8>) xx_x121) $on if_truex_x7_if_nextx_x2 
+$endmerge
+$place [if_nextx_x2_if_nextx_x3]
+//begin: basic-block if_nextx_x3
+$merge if_nextx_x2_if_nextx_x3 if_truex_x6_if_nextx_x3
+$phi xx_x13862 :=  ( $cast ($uint<8>) xx_x13863) $on if_nextx_x2_if_nextx_x3 ( $cast ($uint<8>) xx_x115) $on if_truex_x6_if_nextx_x3 
+$endmerge
+$place [if_nextx_x3_if_nextx_x4]
+//begin: basic-block if_nextx_x4
+$merge if_nextx_x3_if_nextx_x4 if_truex_x5_if_nextx_x4
+$phi xx_x13861 :=  ( $cast ($uint<8>) xx_x13862) $on if_nextx_x3_if_nextx_x4 ( $cast ($uint<8>) xx_x109) $on if_truex_x5_if_nextx_x4 
+$endmerge
+$place [if_nextx_x4_if_nextx_x5]
+//begin: basic-block if_nextx_x5
+$merge if_nextx_x4_if_nextx_x5 if_truex_x4_if_nextx_x5
+$phi xx_x13860 :=  ( $cast ($uint<8>) xx_x13861) $on if_nextx_x4_if_nextx_x5 ( $cast ($uint<8>) xx_x103) $on if_truex_x4_if_nextx_x5 
+$endmerge
+$place [if_nextx_x5_if_nextx_x6]
+//begin: basic-block if_nextx_x6
+$merge if_nextx_x5_if_nextx_x6 if_truex_x3_if_nextx_x6
+$phi xx_x13859 :=  ( $cast ($uint<8>) xx_x13860) $on if_nextx_x5_if_nextx_x6 ( $cast ($uint<8>) xx_x97) $on if_truex_x3_if_nextx_x6 
+$endmerge
+$place [if_nextx_x6_if_nextx_x7]
+//begin: basic-block if_nextx_x7
+$merge if_nextx_x6_if_nextx_x7 if_truex_x2_if_nextx_x7
+$phi xx_x13858 :=  ( $cast ($uint<8>) xx_x13859) $on if_nextx_x6_if_nextx_x7 ( $cast ($uint<8>) xx_x91) $on if_truex_x2_if_nextx_x7 
+$endmerge
+$place [if_nextx_x7_if_nextx_x8]
+//begin: basic-block if_nextx_x8
+$merge if_nextx_x7_if_nextx_x8 if_truex_x1_if_nextx_x8
+$phi xx_x138 :=  ( $cast ($uint<8>) xx_x13858) $on if_nextx_x7_if_nextx_x8 ( $cast ($uint<8>) xx_x85) $on if_truex_x1_if_nextx_x8 
+$endmerge
+$call dequant_inp (xx_x138 inp_scale inp_zero_point )  (xx_x141)
+iNsTr_14 := (xx_x143104 | xx_x145103)
+// compare instruction
+iNsTr_15 := (iNsTr_14 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+$if iNsTr_15 $then  $place [if_nextx_x8_if_truex_x9] $else $place [if_nextx_x8_if_falsex_x9] $endif 
+//begin: basic-block if_truex_x9
+$merge if_nextx_x8_if_truex_x9
+$endmerge
+xx_x150 := ( $bitcast ($uint<32> ) xx_x141) 
+in_data_0 := xx_x150
+$place [if_truex_x9_if_nextx_x13]
+//begin: basic-block if_falsex_x9
+$merge if_nextx_x8_if_falsex_x9
+$endmerge
+// compare instruction
+xx_x154 := (xx_x153102 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+// compare instruction
+xx_x156 := (xx_x155101 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 )  )
+xx_x157 := (xx_x154 & xx_x156)
+$if xx_x157 $then  $place [if_falsex_x9_if_truex_x10] $else $place [if_falsex_x9_if_falsex_x10] $endif 
+//begin: basic-block if_truex_x10
+$merge if_falsex_x9_if_truex_x10
+$endmerge
+xx_x160 := ( $bitcast ($uint<32> ) xx_x141) 
+in_data_1 := xx_x160
+$place [if_truex_x10_if_nextx_x12]
+//begin: basic-block if_falsex_x10
+$merge if_falsex_x9_if_falsex_x10
+$endmerge
+// compare instruction
+xx_x164 := (xx_x163100 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+// compare instruction
+xx_x166 := (xx_x16599 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 )  )
+xx_x167 := (xx_x164 & xx_x166)
+$if xx_x167 $then  $place [if_falsex_x10_if_truex_x11] $else $place [if_falsex_x10_if_falsex_x11] $endif 
+//begin: basic-block if_truex_x11
+$merge if_falsex_x10_if_truex_x11
+$endmerge
+xx_x170 := ( $bitcast ($uint<32> )  xx_x141) 
+in_data_2 := xx_x170
+$place [if_truex_x11_if_nextx_x11]
+//begin: basic-block if_falsex_x11
+$merge if_falsex_x10_if_falsex_x11
+$endmerge
+// compare instruction
+xx_x174 := (xx_x17398 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+xx_x177 := (xx_x174 & xx_x176)
+$if xx_x177 $then  $place [if_falsex_x11_if_truex_x12] $else $place [if_falsex_x11_if_falsex_x12] $endif 
+//begin: basic-block if_truex_x12
+$merge if_falsex_x11_if_truex_x12
+$endmerge
+xx_x180 := ( $bitcast ($uint<32> )  xx_x141) 
+in_data_3 := xx_x180
+$place [if_truex_x12_if_nextx_x10]
+//begin: basic-block if_falsex_x12
+$merge if_falsex_x11_if_falsex_x12
+$endmerge
+$if xx_x185 $then  $place [if_falsex_x12_if_truex_x13] $else $place [if_falsex_x12_if_falsex_x13] $endif 
+//begin: basic-block if_truex_x13
+$merge if_falsex_x12_if_truex_x13
+$endmerge
+xx_x188 := ( $bitcast ($uint<32> )  xx_x141) 
+in_data_4 := xx_x188
+$place [if_truex_x13_if_nextx_x9]
+//begin: basic-block if_falsex_x13
+$merge if_falsex_x12_if_falsex_x13
+$endmerge
+xx_x192 := ( $bitcast ($uint<32> ) xx_x141) 
+in_data_0 := xx_x192
+$place [if_falsex_x13_if_nextx_x9]
+//begin: basic-block if_nextx_x9
+$merge if_falsex_x13_if_nextx_x9 if_truex_x13_if_nextx_x9
+$endmerge
+$place [if_nextx_x9_if_nextx_x10]
+//begin: basic-block if_nextx_x10
+$merge if_nextx_x9_if_nextx_x10 if_truex_x12_if_nextx_x10
+$phi xx_x17394 :=  ( $cast ($uint<32>) startRowIndex) $on if_nextx_x9_if_nextx_x10 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_truex_x12_if_nextx_x10 
+$phi xx_x378 :=  ( $cast ($uint<32>) startRowIndex) $on if_nextx_x9_if_nextx_x10 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_truex_x12_if_nextx_x10 
+$endmerge
+$place [if_nextx_x10_if_nextx_x11]
+//begin: basic-block if_nextx_x11
+$merge if_nextx_x10_if_nextx_x11 if_truex_x11_if_nextx_x11
+$phi xx_x17393 :=  ( $cast ($uint<32>) xx_x17394) $on if_nextx_x10_if_nextx_x11 ( $cast ($uint<32>) xx_x17398) $on if_truex_x11_if_nextx_x11 
+$phi xx_x16588 :=  ( $cast ($uint<32>) startColIndex) $on if_nextx_x10_if_nextx_x11 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 ) ) $on if_truex_x11_if_nextx_x11 
+$phi xx_x16383 :=  ( $cast ($uint<32>) xx_x378) $on if_nextx_x10_if_nextx_x11 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_truex_x11_if_nextx_x11 
+$phi xx_x4213 :=  ( $cast ($uint<32>) startColIndex) $on if_nextx_x10_if_nextx_x11 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 ) ) $on if_truex_x11_if_nextx_x11 
+$phi xx_x377 :=  ( $cast ($uint<32>) xx_x378) $on if_nextx_x10_if_nextx_x11 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_truex_x11_if_nextx_x11 
+$endmerge
+$place [if_nextx_x11_if_nextx_x12]
+//begin: basic-block if_nextx_x12
+$merge if_nextx_x11_if_nextx_x12 if_truex_x10_if_nextx_x12
+$phi xx_x17392 :=  ( $cast ($uint<32>) xx_x17393) $on if_nextx_x11_if_nextx_x12 ( $cast ($uint<32>) xx_x17398) $on if_truex_x10_if_nextx_x12 
+$phi xx_x16587 :=  ( $cast ($uint<32>) xx_x16588) $on if_nextx_x11_if_nextx_x12 ( $cast ($uint<32>) xx_x16599) $on if_truex_x10_if_nextx_x12 
+$phi xx_x16382 :=  ( $cast ($uint<32>) xx_x16383) $on if_nextx_x11_if_nextx_x12 ( $cast ($uint<32>) xx_x163100) $on if_truex_x10_if_nextx_x12 
+$phi xx_x15578 :=  ( $cast ($uint<32>) xx_x4213) $on if_nextx_x11_if_nextx_x12 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) ) $on if_truex_x10_if_nextx_x12 
+$phi xx_x15374 :=  ( $cast ($uint<32>) xx_x377) $on if_nextx_x11_if_nextx_x12 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_truex_x10_if_nextx_x12 
+$phi xx_x4212 :=  ( $cast ($uint<32>) xx_x4213) $on if_nextx_x11_if_nextx_x12 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) ) $on if_truex_x10_if_nextx_x12 
+$phi xx_x376 :=  ( $cast ($uint<32>) xx_x377) $on if_nextx_x11_if_nextx_x12 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_truex_x10_if_nextx_x12 
+$endmerge
+$place [if_nextx_x12_if_nextx_x13]
+//begin: basic-block if_nextx_x13
+$merge if_nextx_x12_if_nextx_x13 if_truex_x9_if_nextx_x13
+$phi xx_x17391 :=  ( $cast ($uint<32>) xx_x17392) $on if_nextx_x12_if_nextx_x13 ( $cast ($uint<32>) xx_x17398) $on if_truex_x9_if_nextx_x13 
+$phi xx_x16586 :=  ( $cast ($uint<32>) xx_x16587) $on if_nextx_x12_if_nextx_x13 ( $cast ($uint<32>) xx_x16599) $on if_truex_x9_if_nextx_x13 
+$phi xx_x16381 :=  ( $cast ($uint<32>) xx_x16382) $on if_nextx_x12_if_nextx_x13 ( $cast ($uint<32>) xx_x163100) $on if_truex_x9_if_nextx_x13 
+$phi xx_x15577 :=  ( $cast ($uint<32>) xx_x15578) $on if_nextx_x12_if_nextx_x13 ( $cast ($uint<32>) xx_x155101) $on if_truex_x9_if_nextx_x13 
+$phi xx_x15373 :=  ( $cast ($uint<32>) xx_x15374) $on if_nextx_x12_if_nextx_x13 ( $cast ($uint<32>) xx_x153102) $on if_truex_x9_if_nextx_x13 
+$phi xx_x14570 :=  ( $cast ($uint<32>) xx_x4212) $on if_nextx_x12_if_nextx_x13 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_truex_x9_if_nextx_x13 
+$phi xx_x14367 :=  ( $cast ($uint<32>) xx_x376) $on if_nextx_x12_if_nextx_x13 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_truex_x9_if_nextx_x13 
+$phi xx_x4211 :=  ( $cast ($uint<32>) xx_x4212) $on if_nextx_x12_if_nextx_x13 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_truex_x9_if_nextx_x13 
+$phi xx_x375 :=  ( $cast ($uint<32>) xx_x376) $on if_nextx_x12_if_nextx_x13 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_truex_x9_if_nextx_x13 
+$endmerge
+xx_x200 := (xx_x199106 + ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 ) )
+// compare instruction
+xx_x80 := (xx_x200 < xx_x76 )
+$if xx_x80 $then  $place [if_nextx_x13_for_bodyx_x1] $else $place [if_nextx_x13_forx_x1x_xfor_out_crit_edge] $endif 
+//begin: basic-block forx_x1x_xfor_out_crit_edge
+$merge if_nextx_x13_forx_x1x_xfor_out_crit_edge
+$phi split :=  ( $cast ($uint<32>) xx_x17391) $on if_nextx_x13_forx_x1x_xfor_out_crit_edge 
+$phi split107 :=  ( $cast ($uint<32>) xx_x16586) $on if_nextx_x13_forx_x1x_xfor_out_crit_edge 
+$phi split108 :=  ( $cast ($uint<32>) xx_x16381) $on if_nextx_x13_forx_x1x_xfor_out_crit_edge 
+$phi split109 :=  ( $cast ($uint<32>) xx_x15577) $on if_nextx_x13_forx_x1x_xfor_out_crit_edge 
+$phi split110 :=  ( $cast ($uint<32>) xx_x15373) $on if_nextx_x13_forx_x1x_xfor_out_crit_edge 
+$phi split111 :=  ( $cast ($uint<32>) xx_x14570) $on if_nextx_x13_forx_x1x_xfor_out_crit_edge 
+$phi split112 :=  ( $cast ($uint<32>) xx_x14367) $on if_nextx_x13_forx_x1x_xfor_out_crit_edge 
+$phi split113 :=  ( $cast ($uint<8>) xx_x138) $on if_nextx_x13_forx_x1x_xfor_out_crit_edge 
+$phi split114 :=  ( $cast ($uint<32>) xx_x4211) $on if_nextx_x13_forx_x1x_xfor_out_crit_edge 
+$phi split115 :=  ( $cast ($uint<32>) xx_x375) $on if_nextx_x13_forx_x1x_xfor_out_crit_edge 
+$endmerge
+$place [forx_x1x_xfor_out_crit_edge_for_out]
+//begin: basic-block for_out
+$merge forx_x1x_xfor_out_crit_edge_for_out if_next_for_out
+$phi xx_x173x_xlcssa :=  ( $cast ($uint<32>) split) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<32>) xx_x17396117) $on if_next_for_out 
+$phi xx_x165x_xlcssa :=  ( $cast ($uint<32>) split107) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<32>) xx_x16590118) $on if_next_for_out 
+$phi xx_x163x_xlcssa :=  ( $cast ($uint<32>) split108) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<32>) xx_x16385119) $on if_next_for_out 
+$phi xx_x155x_xlcssa :=  ( $cast ($uint<32>) split109) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<32>) xx_x15580120) $on if_next_for_out 
+$phi xx_x153x_xlcssa :=  ( $cast ($uint<32>) split110) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<32>) xx_x15376121) $on if_next_for_out 
+$phi xx_x145x_xlcssa :=  ( $cast ($uint<32>) split111) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<32>) xx_x14572122) $on if_next_for_out 
+$phi xx_x143x_xlcssa :=  ( $cast ($uint<32>) split112) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<32>) xx_x14369123) $on if_next_for_out 
+$phi xx_x13865x_xlcssa :=  ( $cast ($uint<8>) split113) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<8>) xx_x13857124) $on if_next_for_out 
+$phi xx_x429x_xlcssa :=  ( $cast ($uint<32>) split114) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<32>) xx_x42125) $on if_next_for_out 
+$phi xx_x373x_xlcssa :=  ( $cast ($uint<32>) split115) $on forx_x1x_xfor_out_crit_edge_for_out ( $cast ($uint<32>) xx_x37126) $on if_next_for_out 
+$endmerge
+xx_x204 := (xx_x203127 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x31 := (xx_x204 < ker_size )
+$if xx_x31 $then  $place [for_out_for_body] $else $place [for_out_forx_xfor_outx_x1_crit_edge] $endif 
+//begin: basic-block forx_xfor_outx_x1_crit_edge
+$merge for_out_forx_xfor_outx_x1_crit_edge
+$endmerge
+$place [forx_xfor_outx_x1_crit_edge_for_outx_x1]
+//begin: basic-block for_outx_x1
+$merge forx_xfor_outx_x1_crit_edge_for_outx_x1 vars_for_outx_x1
+$endmerge
+$place [return__]
+$merge return__ $endmerge
+}
+}
+$module [fetchInpHorSlice] 
+ $in (base_addr : $uint<32> groups : $uint<32> startRowIndex : $uint<32> grp_no : $uint<32> ker_size : $uint<32> padReq : $uint<1> in_rows : $uint<32> in_cols : $uint<32> in_channels : $uint<32> out_cols : $uint<32> inp_scale : $float<8,23> inp_zero_point : $float<8,23> )
+ $out ()
+ $is 
+{
+$branchblock [body] {
+//begin: basic-block vars
+iNsTr_0 := (startRowIndex & ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x30 := (iNsTr_0 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+$if xx_x30 $then  $place [vars_if_true] $else $place [vars_if_false] $endif 
+//begin: basic-block if_true
+$merge vars_if_true
+$endmerge
+xx_x33 := (out_cols + ( $bitcast ($uint<32> ) _b11111111111111111111111111111111 ) )
+$place [if_true_if_next]
+//begin: basic-block if_false
+$merge vars_if_false
+$endmerge
+$place [if_false_if_next]
+//begin: basic-block if_next
+$merge if_false_if_next if_true_if_next
+$phi xx_x106 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_false_if_next ( $cast ($uint<32>) xx_x33) $on if_true_if_next 
+$endmerge
+xx_x45 := (ker_size << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x46 := (xx_x45 + ( $bitcast ($uint<32> ) _b11111111111111111111111111111000 ) )
+xx_x97 := (groups << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x99 := (xx_x97 * in_cols)
+xx_x102 := (startRowIndex + ker_size)
+xx_x103 := (xx_x99 * xx_x102)
+xx_x111 := (grp_no << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x121 := (grp_no << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x122 := (xx_x121 + ( $bitcast ($uint<32> ) _b00000000000000000000000000001000 ) )
+// compare instruction
+xx_x123x_xnot := ( ($bitcast ( $int<32>) xx_x122) >  ($bitcast ( $int<32>) in_channels ) )
+xx_x129 := (grp_no << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x130 := (in_channels - xx_x129)
+xx_x131 := ($cast ($uint<64>) xx_x130)
+// compare instruction
+xx_x4263 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < ker_size )
+$if xx_x4263 $then  $place [if_next_for_bodyx_xlrx_xph] $else $place [if_next_for_outx_x2] $endif 
+//begin: basic-block for_bodyx_xlrx_xph
+$merge if_next_for_bodyx_xlrx_xph
+$endmerge
+$place [for_bodyx_xlrx_xph_for_body]
+//begin: basic-block for_body
+$merge for_bodyx_xlrx_xph_for_body for_outx_x1_for_body
+$phi xx_x24065 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x241) $on for_outx_x1_for_body 
+$phi xx_x1964864 :=  ( $cast ($uint<8>) ( $bitcast ($uint<8> ) _b0 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<8>) xx_x19656x_xlcssa) $on for_outx_x1_for_body 
+$endmerge
+// compare instruction
+xx_x52 := (xx_x24065 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+// compare instruction
+xx_x59 := (xx_x24065 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 )  )
+// compare instruction
+xx_x66 := (xx_x24065 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 )  )
+// compare instruction
+xx_x73 := (xx_x24065 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 )  )
+// compare instruction
+xx_x80 := (xx_x24065 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000100 )  )
+// compare instruction
+xx_x5058 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < xx_x46 )
+$if xx_x5058 $then  $place [for_body_for_bodyx_x1x_xlrx_xph] $else $place [for_body_for_out] $endif 
+//begin: basic-block for_bodyx_x1x_xlrx_xph
+$merge for_body_for_bodyx_x1x_xlrx_xph
+$endmerge
+$place [for_bodyx_x1x_xlrx_xph_for_bodyx_x1]
+//begin: basic-block for_bodyx_x1
+$merge for_bodyx_x1x_xlrx_xph_for_bodyx_x1 if_nextx_x5_for_bodyx_x1
+$phi xx_x9259 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<32>) xx_x93) $on if_nextx_x5_for_bodyx_x1 
+$endmerge
+$if xx_x52 $then  $place [for_bodyx_x1_if_truex_x1] $else $place [for_bodyx_x1_if_falsex_x1] $endif 
+//begin: basic-block if_truex_x1
+$merge for_bodyx_x1_if_truex_x1
+$endmerge
+xx_x54 := in_data_0
+in_data_0 := xx_x54
+$place [if_truex_x1_if_nextx_x5]
+//begin: basic-block if_falsex_x1
+$merge for_bodyx_x1_if_falsex_x1
+$endmerge
+$if xx_x59 $then  $place [if_falsex_x1_if_truex_x2] $else $place [if_falsex_x1_if_falsex_x2] $endif 
+//begin: basic-block if_truex_x2
+$merge if_falsex_x1_if_truex_x2
+$endmerge
+xx_x61 := in_data_1
+in_data_1 := xx_x61
+$place [if_truex_x2_if_nextx_x4]
+//begin: basic-block if_falsex_x2
+$merge if_falsex_x1_if_falsex_x2
+$endmerge
+$if xx_x66 $then  $place [if_falsex_x2_if_truex_x3] $else $place [if_falsex_x2_if_falsex_x3] $endif 
+//begin: basic-block if_truex_x3
+$merge if_falsex_x2_if_truex_x3
+$endmerge
+xx_x68 := in_data_2
+in_data_2 := xx_x68
+$place [if_truex_x3_if_nextx_x3]
+//begin: basic-block if_falsex_x3
+$merge if_falsex_x2_if_falsex_x3
+$endmerge
+$if xx_x73 $then  $place [if_falsex_x3_if_truex_x4] $else $place [if_falsex_x3_if_falsex_x4] $endif 
+//begin: basic-block if_truex_x4
+$merge if_falsex_x3_if_truex_x4
+$endmerge
+xx_x75 := in_data_3
+in_data_3 := xx_x75
+$place [if_truex_x4_if_nextx_x2]
+//begin: basic-block if_falsex_x4
+$merge if_falsex_x3_if_falsex_x4
+$endmerge
+$if xx_x80 $then  $place [if_falsex_x4_if_truex_x5] $else $place [if_falsex_x4_if_falsex_x5] $endif 
+//begin: basic-block if_truex_x5
+$merge if_falsex_x4_if_truex_x5
+$endmerge
+xx_x82 := in_data_4
+in_data_4 := xx_x82
+$place [if_truex_x5_if_nextx_x1]
+//begin: basic-block if_falsex_x5
+$merge if_falsex_x4_if_falsex_x5
+$endmerge
+$place [if_falsex_x5_if_nextx_x1]
+//begin: basic-block if_nextx_x1
+$merge if_falsex_x5_if_nextx_x1 if_truex_x5_if_nextx_x1
+$endmerge
+$place [if_nextx_x1_if_nextx_x2]
+//begin: basic-block if_nextx_x2
+$merge if_nextx_x1_if_nextx_x2 if_truex_x4_if_nextx_x2
+$endmerge
+$place [if_nextx_x2_if_nextx_x3]
+//begin: basic-block if_nextx_x3
+$merge if_nextx_x2_if_nextx_x3 if_truex_x3_if_nextx_x3
+$endmerge
+$place [if_nextx_x3_if_nextx_x4]
+//begin: basic-block if_nextx_x4
+$merge if_nextx_x3_if_nextx_x4 if_truex_x2_if_nextx_x4
+$endmerge
+$place [if_nextx_x4_if_nextx_x5]
+//begin: basic-block if_nextx_x5
+$merge if_nextx_x4_if_nextx_x5 if_truex_x1_if_nextx_x5
+$endmerge
+xx_x93 := (xx_x9259 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x50 := (xx_x93 < xx_x46 )
+$if xx_x50 $then  $place [if_nextx_x5_for_bodyx_x1] $else $place [if_nextx_x5_forx_x1x_xfor_out_crit_edge] $endif 
+//begin: basic-block forx_x1x_xfor_out_crit_edge
+$merge if_nextx_x5_forx_x1x_xfor_out_crit_edge
+$endmerge
+$place [forx_x1x_xfor_out_crit_edge_for_out]
+//begin: basic-block for_out
+$merge for_body_for_out forx_x1x_xfor_out_crit_edge_for_out
+$endmerge
+xx_x107 := (xx_x106 + xx_x24065)
+xx_x108 := (xx_x97 * xx_x107)
+xx_x109 := (xx_x103 + xx_x108)
+xx_x112 := (xx_x109 + xx_x111)
+$call readModule_convolution (base_addr xx_x112 )  (xx_x116)
+$if xx_x123x_xnot $then  $place [for_out_if_falsex_x6] $else $place [for_out_if_truex_x6] $endif 
+//begin: basic-block if_truex_x6
+$merge for_out_if_truex_x6
+$endmerge
+$place [if_truex_x6_if_nextx_x6]
+//begin: basic-block if_falsex_x6
+$merge for_out_if_falsex_x6
+$endmerge
+$place [if_falsex_x6_if_nextx_x6]
+//begin: basic-block if_nextx_x6
+$merge if_falsex_x6_if_nextx_x6 if_truex_x6_if_nextx_x6
+$phi xx_x134 :=  ( $cast ($uint<64>) xx_x131) $on if_falsex_x6_if_nextx_x6 ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000001000 ) ) $on if_truex_x6_if_nextx_x6 
+$endmerge
+// compare instruction
+xx_x201 := (xx_x24065 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+// compare instruction
+xx_x207 := (xx_x24065 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 )  )
+// compare instruction
+xx_x213 := (xx_x24065 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 )  )
+// compare instruction
+xx_x219 := (xx_x24065 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 )  )
+// compare instruction
+xx_x225 := (xx_x24065 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000100 )  )
+// compare instruction
+xx_x13860 := (( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  < xx_x134 )
+$if xx_x13860 $then  $place [if_nextx_x6_for_bodyx_x2x_xlrx_xph] $else $place [if_nextx_x6_for_outx_x1] $endif 
+//begin: basic-block for_bodyx_x2x_xlrx_xph
+$merge if_nextx_x6_for_bodyx_x2x_xlrx_xph
+$endmerge
+$place [for_bodyx_x2x_xlrx_xph_for_bodyx_x2]
+//begin: basic-block for_bodyx_x2
+$merge for_bodyx_x2x_xlrx_xph_for_bodyx_x2 if_nextx_x19_for_bodyx_x2
+$phi xx_x23662 :=  ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 ) ) $on for_bodyx_x2x_xlrx_xph_for_bodyx_x2 ( $cast ($uint<64>) xx_x237) $on if_nextx_x19_for_bodyx_x2 
+$phi xx_x1965661 :=  ( $cast ($uint<8>) xx_x1964864) $on for_bodyx_x2x_xlrx_xph_for_bodyx_x2 ( $cast ($uint<8>) xx_x196) $on if_nextx_x19_for_bodyx_x2 
+$endmerge
+// compare instruction
+xx_x140 := (xx_x23662 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  )
+$if xx_x140 $then  $place [for_bodyx_x2_if_truex_x7] $else $place [for_bodyx_x2_if_falsex_x7] $endif 
+//begin: basic-block if_truex_x7
+$merge for_bodyx_x2_if_truex_x7
+$endmerge
+xx_x143 := ($slice xx_x116 63 56)
+$place [if_truex_x7_if_nextx_x14]
+//begin: basic-block if_falsex_x7
+$merge for_bodyx_x2_if_falsex_x7
+$endmerge
+// compare instruction
+xx_x146 := (xx_x23662 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 )  )
+$if xx_x146 $then  $place [if_falsex_x7_if_truex_x8] $else $place [if_falsex_x7_if_falsex_x8] $endif 
+//begin: basic-block if_truex_x8
+$merge if_falsex_x7_if_truex_x8
+$endmerge
+xx_x149 := ($slice xx_x116 55 48)
+$place [if_truex_x8_if_nextx_x13]
+//begin: basic-block if_falsex_x8
+$merge if_falsex_x7_if_falsex_x8
+$endmerge
+// compare instruction
+xx_x152 := (xx_x23662 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000010 )  )
+$if xx_x152 $then  $place [if_falsex_x8_if_truex_x9] $else $place [if_falsex_x8_if_falsex_x9] $endif 
+//begin: basic-block if_truex_x9
+$merge if_falsex_x8_if_truex_x9
+$endmerge
+xx_x155 := ($slice xx_x116 47 40)
+$place [if_truex_x9_if_nextx_x12]
+//begin: basic-block if_falsex_x9
+$merge if_falsex_x8_if_falsex_x9
+$endmerge
+// compare instruction
+xx_x158 := (xx_x23662 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000011 )  )
+$if xx_x158 $then  $place [if_falsex_x9_if_truex_x10] $else $place [if_falsex_x9_if_falsex_x10] $endif 
+//begin: basic-block if_truex_x10
+$merge if_falsex_x9_if_truex_x10
+$endmerge
+xx_x161 := ($slice xx_x116 39 32)
+$place [if_truex_x10_if_nextx_x11]
+//begin: basic-block if_falsex_x10
+$merge if_falsex_x9_if_falsex_x10
+$endmerge
+// compare instruction
+xx_x164 := (xx_x23662 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000100 )  )
+$if xx_x164 $then  $place [if_falsex_x10_if_truex_x11] $else $place [if_falsex_x10_if_falsex_x11] $endif 
+//begin: basic-block if_truex_x11
+$merge if_falsex_x10_if_truex_x11
+$endmerge
+xx_x167 := ($slice xx_x116 31 24)
+$place [if_truex_x11_if_nextx_x10]
+//begin: basic-block if_falsex_x11
+$merge if_falsex_x10_if_falsex_x11
+$endmerge
+// compare instruction
+xx_x170 := (xx_x23662 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000101 )  )
+$if xx_x170 $then  $place [if_falsex_x11_if_truex_x12] $else $place [if_falsex_x11_if_falsex_x12] $endif 
+//begin: basic-block if_truex_x12
+$merge if_falsex_x11_if_truex_x12
+$endmerge
+xx_x173 := ($slice xx_x116 23 16)
+$place [if_truex_x12_if_nextx_x9]
+//begin: basic-block if_falsex_x12
+$merge if_falsex_x11_if_falsex_x12
+$endmerge
+// compare instruction
+xx_x176 := (xx_x23662 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000110 )  )
+$if xx_x176 $then  $place [if_falsex_x12_if_truex_x13] $else $place [if_falsex_x12_if_falsex_x13] $endif 
+//begin: basic-block if_truex_x13
+$merge if_falsex_x12_if_truex_x13
+$endmerge
+xx_x179 := ($slice xx_x116 15 8)
+$place [if_truex_x13_if_nextx_x8]
+//begin: basic-block if_falsex_x13
+$merge if_falsex_x12_if_falsex_x13
+$endmerge
+// compare instruction
+xx_x182 := (xx_x23662 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000111 )  )
+$if xx_x182 $then  $place [if_falsex_x13_if_truex_x14] $else $place [if_falsex_x13_if_falsex_x14] $endif 
+//begin: basic-block if_truex_x14
+$merge if_falsex_x13_if_truex_x14
+$endmerge
+xx_x185 := ($slice xx_x116 7 0)
+$place [if_truex_x14_if_nextx_x7]
+//begin: basic-block if_falsex_x14
+$merge if_falsex_x13_if_falsex_x14
+$endmerge
+$place [if_falsex_x14_if_nextx_x7]
+//begin: basic-block if_nextx_x7
+$merge if_falsex_x14_if_nextx_x7 if_truex_x14_if_nextx_x7
+$phi xx_x19655 :=  ( $cast ($uint<8>) xx_x1965661) $on if_falsex_x14_if_nextx_x7 ( $cast ($uint<8>) xx_x185) $on if_truex_x14_if_nextx_x7 
+$endmerge
+$place [if_nextx_x7_if_nextx_x8]
+//begin: basic-block if_nextx_x8
+$merge if_nextx_x7_if_nextx_x8 if_truex_x13_if_nextx_x8
+$phi xx_x19654 :=  ( $cast ($uint<8>) xx_x19655) $on if_nextx_x7_if_nextx_x8 ( $cast ($uint<8>) xx_x179) $on if_truex_x13_if_nextx_x8 
+$endmerge
+$place [if_nextx_x8_if_nextx_x9]
+//begin: basic-block if_nextx_x9
+$merge if_nextx_x8_if_nextx_x9 if_truex_x12_if_nextx_x9
+$phi xx_x19653 :=  ( $cast ($uint<8>) xx_x19654) $on if_nextx_x8_if_nextx_x9 ( $cast ($uint<8>) xx_x173) $on if_truex_x12_if_nextx_x9 
+$endmerge
+$place [if_nextx_x9_if_nextx_x10]
+//begin: basic-block if_nextx_x10
+$merge if_nextx_x9_if_nextx_x10 if_truex_x11_if_nextx_x10
+$phi xx_x19652 :=  ( $cast ($uint<8>) xx_x19653) $on if_nextx_x9_if_nextx_x10 ( $cast ($uint<8>) xx_x167) $on if_truex_x11_if_nextx_x10 
+$endmerge
+$place [if_nextx_x10_if_nextx_x11]
+//begin: basic-block if_nextx_x11
+$merge if_nextx_x10_if_nextx_x11 if_truex_x10_if_nextx_x11
+$phi xx_x19651 :=  ( $cast ($uint<8>) xx_x19652) $on if_nextx_x10_if_nextx_x11 ( $cast ($uint<8>) xx_x161) $on if_truex_x10_if_nextx_x11 
+$endmerge
+$place [if_nextx_x11_if_nextx_x12]
+//begin: basic-block if_nextx_x12
+$merge if_nextx_x11_if_nextx_x12 if_truex_x9_if_nextx_x12
+$phi xx_x19650 :=  ( $cast ($uint<8>) xx_x19651) $on if_nextx_x11_if_nextx_x12 ( $cast ($uint<8>) xx_x155) $on if_truex_x9_if_nextx_x12 
+$endmerge
+$place [if_nextx_x12_if_nextx_x13]
+//begin: basic-block if_nextx_x13
+$merge if_nextx_x12_if_nextx_x13 if_truex_x8_if_nextx_x13
+$phi xx_x19649 :=  ( $cast ($uint<8>) xx_x19650) $on if_nextx_x12_if_nextx_x13 ( $cast ($uint<8>) xx_x149) $on if_truex_x8_if_nextx_x13 
+$endmerge
+$place [if_nextx_x13_if_nextx_x14]
+//begin: basic-block if_nextx_x14
+$merge if_nextx_x13_if_nextx_x14 if_truex_x7_if_nextx_x14
+$phi xx_x196 :=  ( $cast ($uint<8>) xx_x19649) $on if_nextx_x13_if_nextx_x14 ( $cast ($uint<8>) xx_x143) $on if_truex_x7_if_nextx_x14 
+$endmerge
+$call dequant_inp (xx_x196 inp_scale inp_zero_point )  (xx_x199)
+$if xx_x201 $then  $place [if_nextx_x14_if_truex_x15] $else $place [if_nextx_x14_if_falsex_x15] $endif 
+//begin: basic-block if_truex_x15
+$merge if_nextx_x14_if_truex_x15
+$endmerge
+xx_x204 := ( $bitcast ($uint<32> )  xx_x199) 
+in_data_0 := xx_x204
+$place [if_truex_x15_if_nextx_x19]
+//begin: basic-block if_falsex_x15
+$merge if_nextx_x14_if_falsex_x15
+$endmerge
+$if xx_x207 $then  $place [if_falsex_x15_if_truex_x16] $else $place [if_falsex_x15_if_falsex_x16] $endif 
+//begin: basic-block if_truex_x16
+$merge if_falsex_x15_if_truex_x16
+$endmerge
+xx_x210 := ( $bitcast ($uint<32> ) xx_x199) 
+in_data_1 := xx_x210
+$place [if_truex_x16_if_nextx_x18]
+//begin: basic-block if_falsex_x16
+$merge if_falsex_x15_if_falsex_x16
+$endmerge
+$if xx_x213 $then  $place [if_falsex_x16_if_truex_x17] $else $place [if_falsex_x16_if_falsex_x17] $endif 
+//begin: basic-block if_truex_x17
+$merge if_falsex_x16_if_truex_x17
+$endmerge
+xx_x216 := ( $bitcast ($uint<32> ) xx_x199) 
+in_data_2 := xx_x216
+$place [if_truex_x17_if_nextx_x17]
+//begin: basic-block if_falsex_x17
+$merge if_falsex_x16_if_falsex_x17
+$endmerge
+$if xx_x219 $then  $place [if_falsex_x17_if_truex_x18] $else $place [if_falsex_x17_if_falsex_x18] $endif 
+//begin: basic-block if_truex_x18
+$merge if_falsex_x17_if_truex_x18
+$endmerge
+xx_x222 := ( $bitcast ($uint<32> )  xx_x199) 
+in_data_3 := xx_x222
+$place [if_truex_x18_if_nextx_x16]
+//begin: basic-block if_falsex_x18
+$merge if_falsex_x17_if_falsex_x18
+$endmerge
+$if xx_x225 $then  $place [if_falsex_x18_if_truex_x19] $else $place [if_falsex_x18_if_falsex_x19] $endif 
+//begin: basic-block if_truex_x19
+$merge if_falsex_x18_if_truex_x19
+$endmerge
+xx_x228 := ( $bitcast ($uint<32> ) xx_x199) 
+in_data_4 := xx_x228
+$place [if_truex_x19_if_nextx_x15]
+//begin: basic-block if_falsex_x19
+$merge if_falsex_x18_if_falsex_x19
+$endmerge
+$place [if_falsex_x19_if_nextx_x15]
+//begin: basic-block if_nextx_x15
+$merge if_falsex_x19_if_nextx_x15 if_truex_x19_if_nextx_x15
+$endmerge
+$place [if_nextx_x15_if_nextx_x16]
+//begin: basic-block if_nextx_x16
+$merge if_nextx_x15_if_nextx_x16 if_truex_x18_if_nextx_x16
+$endmerge
+$place [if_nextx_x16_if_nextx_x17]
+//begin: basic-block if_nextx_x17
+$merge if_nextx_x16_if_nextx_x17 if_truex_x17_if_nextx_x17
+$endmerge
+$place [if_nextx_x17_if_nextx_x18]
+//begin: basic-block if_nextx_x18
+$merge if_nextx_x17_if_nextx_x18 if_truex_x16_if_nextx_x18
+$endmerge
+$place [if_nextx_x18_if_nextx_x19]
+//begin: basic-block if_nextx_x19
+$merge if_nextx_x18_if_nextx_x19 if_truex_x15_if_nextx_x19
+$endmerge
+xx_x237 := (xx_x23662 + ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 ) )
+// compare instruction
+xx_x138 := (xx_x237 < xx_x134 )
+$if xx_x138 $then  $place [if_nextx_x19_for_bodyx_x2] $else $place [if_nextx_x19_forx_x2x_xfor_outx_x1_crit_edge] $endif 
+//begin: basic-block forx_x2x_xfor_outx_x1_crit_edge
+$merge if_nextx_x19_forx_x2x_xfor_outx_x1_crit_edge
+$phi split :=  ( $cast ($uint<8>) xx_x196) $on if_nextx_x19_forx_x2x_xfor_outx_x1_crit_edge 
+$endmerge
+$place [forx_x2x_xfor_outx_x1_crit_edge_for_outx_x1]
+//begin: basic-block for_outx_x1
+$merge forx_x2x_xfor_outx_x1_crit_edge_for_outx_x1 if_nextx_x6_for_outx_x1
+$phi xx_x19656x_xlcssa :=  ( $cast ($uint<8>) split) $on forx_x2x_xfor_outx_x1_crit_edge_for_outx_x1 ( $cast ($uint<8>) xx_x1964864) $on if_nextx_x6_for_outx_x1 
+$endmerge
+xx_x241 := (xx_x24065 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x42 := (xx_x241 < ker_size )
+$if xx_x42 $then  $place [for_outx_x1_for_body] $else $place [for_outx_x1_forx_xfor_outx_x2_crit_edge] $endif 
+//begin: basic-block forx_xfor_outx_x2_crit_edge
+$merge for_outx_x1_forx_xfor_outx_x2_crit_edge
+$endmerge
+$place [forx_xfor_outx_x2_crit_edge_for_outx_x2]
+//begin: basic-block for_outx_x2
+$merge forx_xfor_outx_x2_crit_edge_for_outx_x2 if_next_for_outx_x2
+$endmerge
+$place [return__]
+$merge return__ $endmerge
+}
+}
+$module [pooling] 
+ $in (pool_cols : $uint<32> )
+ $out ()
+ $is 
+{
+$branchblock [body] {
+//begin: basic-block vars
+// compare instruction
+xx_x86 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < pool_cols )
+$if xx_x86 $then  $place [vars_for_bodyx_xlrx_xph] $else $place [vars_for_out] $endif 
+//begin: basic-block for_bodyx_xlrx_xph
+$merge vars_for_bodyx_xlrx_xph
+$endmerge
+$place [for_bodyx_xlrx_xph_for_body]
+//begin: basic-block for_body
+$merge for_bodyx_xlrx_xph_for_body if_nextx_x2_for_body
+$phi xx_x707 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x71) $on if_nextx_x2_for_body 
+$endmerge
+xx_x10 := pool_data_fifo_r0
+xx_x12 := pool_data_fifo_r0
+xx_x14 := pool_data_lifo_r1
+xx_x16 := pool_data_lifo_r1
+// compare instruction
+xx_x20 := ( ($bitcast ( $int<8>) xx_x10) >=   ($bitcast ( $int<8>) xx_x12 ) )
+// compare instruction
+xx_x23 := ( ($bitcast ( $int<8>) xx_x10) >=   ($bitcast ( $int<8>) xx_x14 ) )
+// compare instruction
+xx_x26 := ( ($bitcast ( $int<8>) xx_x10) >=   ($bitcast ( $int<8>) xx_x16 ) )
+xx_x27 := (xx_x20 & xx_x23)
+xx_x28 := (xx_x27 & xx_x26)
+$if xx_x28 $then  $place [for_body_if_true] $else $place [for_body_if_false] $endif 
+//begin: basic-block if_true
+$merge for_body_if_true
+$endmerge
+$place [if_true_if_nextx_x2]
+//begin: basic-block if_false
+$merge for_body_if_false
+$endmerge
+// compare instruction
+xx_x35 := ( ($bitcast ( $int<8>) xx_x12) >=   ($bitcast ( $int<8>) xx_x10 ) )
+// compare instruction
+xx_x38 := ( ($bitcast ( $int<8>) xx_x12) >=   ($bitcast ( $int<8>) xx_x14 ) )
+// compare instruction
+xx_x41 := ( ($bitcast ( $int<8>) xx_x12) >=   ($bitcast ( $int<8>) xx_x16 ) )
+xx_x42 := (xx_x35 & xx_x38)
+xx_x43 := (xx_x42 & xx_x41)
+$if xx_x43 $then  $place [if_false_if_truex_x1] $else $place [if_false_if_falsex_x1] $endif 
+//begin: basic-block if_truex_x1
+$merge if_false_if_truex_x1
+$endmerge
+$place [if_truex_x1_if_nextx_x1]
+//begin: basic-block if_falsex_x1
+$merge if_false_if_falsex_x1
+$endmerge
+// compare instruction
+xx_x50 := ( ($bitcast ( $int<8>) xx_x14) >=   ($bitcast ( $int<8>) xx_x10 ) )
+// compare instruction
+xx_x53 := ( ($bitcast ( $int<8>) xx_x14) >=   ($bitcast ( $int<8>) xx_x12 ) )
+// compare instruction
+xx_x56 := ( ($bitcast ( $int<8>) xx_x14) >=   ($bitcast ( $int<8>) xx_x16 ) )
+xx_x57 := (xx_x50 & xx_x53)
+xx_x58 := (xx_x57 & xx_x56)
+$if xx_x58 $then  $place [if_falsex_x1_if_truex_x2] $else $place [if_falsex_x1_if_falsex_x2] $endif 
+//begin: basic-block if_truex_x2
+$merge if_falsex_x1_if_truex_x2
+$endmerge
+$place [if_truex_x2_if_next]
+//begin: basic-block if_falsex_x2
+$merge if_falsex_x1_if_falsex_x2
+$endmerge
+$place [if_falsex_x2_if_next]
+//begin: basic-block if_next
+$merge if_falsex_x2_if_next if_truex_x2_if_next
+$phi xx_x685 :=  ( $cast ($uint<8>) xx_x16) $on if_falsex_x2_if_next ( $cast ($uint<8>) xx_x14) $on if_truex_x2_if_next 
+$endmerge
+$place [if_next_if_nextx_x1]
+//begin: basic-block if_nextx_x1
+$merge if_next_if_nextx_x1 if_truex_x1_if_nextx_x1
+$phi xx_x684 :=  ( $cast ($uint<8>) xx_x685) $on if_next_if_nextx_x1 ( $cast ($uint<8>) xx_x12) $on if_truex_x1_if_nextx_x1 
+$endmerge
+$place [if_nextx_x1_if_nextx_x2]
+//begin: basic-block if_nextx_x2
+$merge if_nextx_x1_if_nextx_x2 if_true_if_nextx_x2
+$phi xx_x68 :=  ( $cast ($uint<8>) xx_x684) $on if_nextx_x1_if_nextx_x2 ( $cast ($uint<8>) xx_x10) $on if_true_if_nextx_x2 
+$endmerge
+pool_out_data := xx_x68
+xx_x71 := (xx_x707 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x8 := (xx_x71 < pool_cols )
+$if xx_x8 $then  $place [if_nextx_x2_for_body] $else $place [if_nextx_x2_forx_xfor_out_crit_edge] $endif 
+//begin: basic-block forx_xfor_out_crit_edge
+$merge if_nextx_x2_forx_xfor_out_crit_edge
+$endmerge
+$place [forx_xfor_out_crit_edge_for_out]
+//begin: basic-block for_out
+$merge forx_xfor_out_crit_edge_for_out vars_for_out
+$endmerge
+$place [return__]
+$merge return__ $endmerge
+}
+}
+$module [convengine] 
+ $in (in_start_addr : $uint<32> out_start_addr : $uint<32> ker_start_addr : $uint<32> out_grp_no : $uint<32> in_rows : $uint<32> in_cols : $uint<32> in_channels : $uint<32> out_channels : $uint<32> groups : $uint<32> ker_size : $uint<32> pool_cols : $uint<32> inp_scale : $float<8,23> inp_zero_point : $float<8,23> ker_scale : $float<8,23> ker_zero_point : $float<8,23> conv_scale : $float<8,23> conv_zero_point : $float<8,23> padReq : $uint<1> poolReq : $uint<1> isLinear : $uint<1> isActivation : $uint<1> isFlatten : $uint<1> offsetStart : $uint<32> out_chn_ind : $uint<32> )
+ $out (ret_val__ : $uint<8>)
+ $is 
+{
+$storage stored_ret_val__ : $uint<8>
+$storage start_time1: $uint<64>
+$storage start_time2: $uint<64>
+$storage end_time1: $uint<64>
+$storage end_time2: $uint<64>
+$storage time_taken1: $uint<64>
+$storage time_taken2: $uint<64>
+$branchblock [body] {
+//begin: basic-block vars
+time_taken1 := 0
+time_taken2 := 0
+xx_x52 := (in_rows - ker_size)
+xx_x53 := (xx_x52 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+xx_x57 := (in_cols - ker_size)
+xx_x58 := (xx_x57 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+$if isLinear $then  $place [vars_if_true] $else $place [vars_if_falsex_x2] $endif 
+//begin: basic-block if_true
+$merge vars_if_true
+$endmerge
+$call fetchInputLinear (in_start_addr groups in_channels inp_scale inp_zero_point )  ()
+xx_x81 := (out_channels + ( $bitcast ($uint<32> ) _b11111111111111111111111111111111 ) )
+// compare instruction
+xx_x78165 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < out_channels )
+$if xx_x78165 $then  $place [if_true_for_bodyx_xlrx_xph] $else $place [if_true_for_out] $endif 
+//begin: basic-block for_bodyx_xlrx_xph
+$merge if_true_for_bodyx_xlrx_xph
+$endmerge
+$place [for_bodyx_xlrx_xph_for_body]
+//begin: basic-block for_body
+$merge for_bodyx_xlrx_xph_for_body if_nextx_x1_for_body
+$phi xx_x145169 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x146) $on if_nextx_x1_for_body 
+$phi xx_x95154168 :=  ( $cast ($uint<1>) ( $bitcast ($uint<1> ) _b1 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<1>) xx_x95) $on if_nextx_x1_for_body 
+$phi xx_x133167 :=  ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000001000 ) ) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<64>) xx_x117162) $on if_nextx_x1_for_body 
+$phi xx_x140166 :=  ( $cast ($uint<32>) offsetStart) $on for_bodyx_xlrx_xph_for_body ( $cast ($uint<32>) xx_x128163) $on if_nextx_x1_for_body 
+$endmerge
+// compare instruction
+xx_x82 := (xx_x145169 == xx_x81 )
+$if xx_x82 $then  $place [for_body_if_truex_x1] $else $place [for_body_if_false] $endif 
+//begin: basic-block if_truex_x1
+$merge for_body_if_truex_x1
+$endmerge
+$place [if_truex_x1_if_next]
+//begin: basic-block if_false
+$merge for_body_if_false
+$endmerge
+$place [if_false_if_next]
+//begin: basic-block if_next
+$merge if_false_if_next if_truex_x1_if_next
+$phi xx_x95 :=  ( $cast ($uint<1>) xx_x95154168) $on if_false_if_next ( $cast ($uint<1>) ( $bitcast ($uint<1> ) _b0 ) ) $on if_truex_x1_if_next 
+$endmerge
+$call fetchKernelLinear (ker_start_addr groups xx_x145169 in_channels ker_scale ker_zero_point )  ()
+
+start_time1 := time_val
+$parallelblock [parsum1] 
+{
+	$call convolution_new (groups ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 )  xx_x95 ker_size inp_scale inp_zero_point ker_scale ker_zero_point conv_scale conv_zero_point ( $bitcast ($uint<1> ) _b1 )  in_channels isActivation )  ()
+	$call accumulator (in_channels ker_size conv_scale conv_zero_point isActivation ( $bitcast ($uint<1> ) _b1 )  )  (xx_x113)
+}
+
+end_time1 := time_val
+time_taken1 := (time_taken1+(end_time1 - start_time1))
+
+xx_x114 := out_data
+// xx_x118 := (xx_x133167 + ( $bitcast ($uint<64> ) _b1111111111111111111111111111111111111111111111111111111111111111 ) )
+xx_x118 := (xx_x133167 - 1 )
+xx_x119 := (xx_x118 << ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000011 ) )
+xx_x120 :=  ($bitcast ($uint<64>) ( $cast ($int< 64 > ) xx_x114) )
+xx_x121 := (xx_x120 << xx_x119)
+xx_x125 := (( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 )  << xx_x118)
+xx_x131 := ($cast ($uint<8>) xx_x125)
+$call writeModule_convolution (out_start_addr xx_x140166 xx_x121 xx_x131 )  (d1)
+// compare instruction
+xx_x137 := (xx_x118 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  )
+$if xx_x137 $then  $place [if_next_if_truex_x2] $else $place [if_next_if_falsex_x1] $endif 
+//begin: basic-block if_truex_x2
+$merge if_next_if_truex_x2
+$endmerge
+xx_x141 := (xx_x140166 + ( $bitcast ($uint<32> ) _b00000000000000000000000000001000 ) )
+$place [if_truex_x2_if_nextx_x1]
+//begin: basic-block if_falsex_x1
+$merge if_next_if_falsex_x1
+$endmerge
+$place [if_falsex_x1_if_nextx_x1]
+//begin: basic-block if_nextx_x1
+$merge if_falsex_x1_if_nextx_x1 if_truex_x2_if_nextx_x1
+$phi xx_x128163 :=  ( $cast ($uint<32>) xx_x140166) $on if_falsex_x1_if_nextx_x1 ( $cast ($uint<32>) xx_x141) $on if_truex_x2_if_nextx_x1 
+$phi xx_x117162 :=  ( $cast ($uint<64>) xx_x118) $on if_falsex_x1_if_nextx_x1 ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000001000 ) ) $on if_truex_x2_if_nextx_x1 
+$endmerge
+xx_x146 := (xx_x145169 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x78 := (xx_x146 < out_channels )
+$if xx_x78 $then  $place [if_nextx_x1_for_body] $else $place [if_nextx_x1_forx_xfor_out_crit_edge] $endif 
+//begin: basic-block forx_xfor_out_crit_edge
+$merge if_nextx_x1_forx_xfor_out_crit_edge
+$phi split :=  ( $cast ($uint<8>) xx_x114) $on if_nextx_x1_forx_xfor_out_crit_edge 
+$endmerge
+$place [forx_xfor_out_crit_edge_for_out]
+//begin: basic-block for_out
+$merge forx_xfor_out_crit_edge_for_out if_true_for_out
+$phi xx_x149x_xlcssa :=  ( $cast ($uint<8>) split) $on forx_xfor_out_crit_edge_for_out ( $cast ($uint<8>) ( $bitcast ($uint<8> ) _b0 ) ) $on if_true_for_out 
+$endmerge
+stored_ret_val__ := xx_x149x_xlcssa
+$place [return__]
+//begin: basic-block if_falsex_x2
+$merge vars_if_falsex_x2
+$endmerge
+$if padReq $then  $place [if_falsex_x2_if_truex_x3] $else $place [if_falsex_x2_if_falsex_x3] $endif 
+//begin: basic-block if_truex_x3
+$merge if_falsex_x2_if_truex_x3
+$endmerge
+$place [if_truex_x3_if_nextx_x3]
+//begin: basic-block if_falsex_x3
+$merge if_falsex_x2_if_falsex_x3
+$endmerge
+$place [if_falsex_x3_if_nextx_x3]
+//begin: basic-block if_nextx_x3
+$merge if_falsex_x3_if_nextx_x3 if_truex_x3_if_nextx_x3
+$phi xx_x247 :=  ( $cast ($uint<32>) xx_x58) $on if_falsex_x3_if_nextx_x3 ( $cast ($uint<32>) in_cols) $on if_truex_x3_if_nextx_x3 
+$phi xx_x209 :=  ( $cast ($uint<32>) xx_x53) $on if_falsex_x3_if_nextx_x3 ( $cast ($uint<32>) in_rows) $on if_truex_x3_if_nextx_x3 
+$endmerge
+$call fetchKernel (ker_start_addr groups ker_size in_channels ker_scale ker_zero_point )  ()
+// compare instruction
+xx_x171202 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < ker_size )
+$if xx_x171202 $then  $place [if_nextx_x3_for_bodyx_x1x_xlrx_xph] $else $place [if_nextx_x3_for_outx_x2] $endif 
+//begin: basic-block for_bodyx_x1x_xlrx_xph
+$merge if_nextx_x3_for_bodyx_x1x_xlrx_xph
+$endmerge
+$place [for_bodyx_x1x_xlrx_xph_for_bodyx_x1]
+//begin: basic-block for_bodyx_x1
+$merge for_bodyx_x1x_xlrx_xph_for_bodyx_x1 for_outx_x1_for_bodyx_x1
+$phi xx_x193203 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<32>) xx_x194) $on for_outx_x1_for_bodyx_x1 
+$endmerge
+// compare instruction
+xx_x177200 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < groups )
+$if xx_x177200 $then  $place [for_bodyx_x1_for_bodyx_x2x_xlrx_xph] $else $place [for_bodyx_x1_for_outx_x1] $endif 
+//begin: basic-block for_bodyx_x2x_xlrx_xph
+$merge for_bodyx_x1_for_bodyx_x2x_xlrx_xph
+$endmerge
+$place [for_bodyx_x2x_xlrx_xph_for_bodyx_x2]
+//begin: basic-block for_bodyx_x2
+$merge for_bodyx_x2_for_bodyx_x2 for_bodyx_x2x_xlrx_xph_for_bodyx_x2
+$phi xx_x189201 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x2x_xlrx_xph_for_bodyx_x2 ( $cast ($uint<32>) xx_x190) $on for_bodyx_x2_for_bodyx_x2 
+$endmerge
+$call fetchInpVerSlice (in_start_addr groups ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  xx_x193203 xx_x189201 ker_size padReq in_rows in_cols in_channels inp_scale inp_zero_point )  ()
+xx_x190 := (xx_x189201 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x177 := (xx_x190 < groups )
+$if xx_x177 $then  $place [for_bodyx_x2_for_bodyx_x2] $else $place [for_bodyx_x2_forx_x2x_xfor_outx_x1_crit_edge] $endif 
+//begin: basic-block forx_x2x_xfor_outx_x1_crit_edge
+$merge for_bodyx_x2_forx_x2x_xfor_outx_x1_crit_edge
+$endmerge
+$place [forx_x2x_xfor_outx_x1_crit_edge_for_outx_x1]
+//begin: basic-block for_outx_x1
+$merge for_bodyx_x1_for_outx_x1 forx_x2x_xfor_outx_x1_crit_edge_for_outx_x1
+$endmerge
+xx_x194 := (xx_x193203 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x171 := (xx_x194 < ker_size )
+$if xx_x171 $then  $place [for_outx_x1_for_bodyx_x1] $else $place [for_outx_x1_forx_x1x_xfor_outx_x2_crit_edge] $endif 
+//begin: basic-block forx_x1x_xfor_outx_x2_crit_edge
+$merge for_outx_x1_forx_x1x_xfor_outx_x2_crit_edge
+$endmerge
+$place [forx_x1x_xfor_outx_x2_crit_edge_for_outx_x2]
+//begin: basic-block for_outx_x2
+$merge forx_x1x_xfor_outx_x2_crit_edge_for_outx_x2 if_nextx_x3_for_outx_x2
+$endmerge
+xx_x210 := (xx_x209 + ( $bitcast ($uint<32> ) _b11111111111111111111111111111111 ) )
+xx_x229 := (ker_size + ( $bitcast ($uint<32> ) _b11111111111111111111111111111111 ) )
+xx_x248 := (xx_x247 + ( $bitcast ($uint<32> ) _b11111111111111111111111111111111 ) )
+xx_x340 := (out_channels * pool_cols)
+xx_x347 := (out_grp_no << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x351 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000111 )  - out_chn_ind)
+xx_x352 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000001 )  << xx_x351)
+xx_x356 := (out_chn_ind << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
+xx_x357 := (( $bitcast ($uint<32> ) _b00000000000000000000000000111000 )  - xx_x356)
+xx_x366 := ($cast ($uint<8>) xx_x352)
+// compare instruction
+xx_x201191 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < xx_x209 )
+$if xx_x201191 $then  $place [for_outx_x2_for_bodyx_x3x_xlrx_xph] $else $place [for_outx_x2_for_outx_x7] $endif 
+//begin: basic-block for_bodyx_x3x_xlrx_xph
+$merge for_outx_x2_for_bodyx_x3x_xlrx_xph
+$endmerge
+$place [for_bodyx_x3x_xlrx_xph_for_bodyx_x3]
+//begin: basic-block for_bodyx_x3
+$merge for_bodyx_x3x_xlrx_xph_for_bodyx_x3 if_nextx_x14_for_bodyx_x3
+$phi xx_x437198 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<32>) xx_x438) $on if_nextx_x14_for_bodyx_x3 
+$phi xx_x203197 :=  ( $cast ($uint<32>) xx_x247) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<32>) xx_x2034) $on if_nextx_x14_for_bodyx_x3 
+$phi xx_x341196 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<32>) xx_x40323) $on if_nextx_x14_for_bodyx_x3 
+$phi xx_x41029195 :=  ( $cast ($uint<32>) xx_x209) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<32>) xx_x410x_xlcssa) $on if_nextx_x14_for_bodyx_x3 
+$phi xx_x42772194 :=  ( $cast ($uint<32>) xx_x247) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<32>) xx_x238x_xlcssa) $on if_nextx_x14_for_bodyx_x3 
+$phi xx_x37085193 :=  ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000001000 ) ) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<64>) xx_x37081) $on if_nextx_x14_for_bodyx_x3 
+$phi xx_x38197192 :=  ( $cast ($uint<32>) offsetStart) $on for_bodyx_x3x_xlrx_xph_for_bodyx_x3 ( $cast ($uint<32>) xx_x38192) $on if_nextx_x14_for_bodyx_x3 
+$endmerge
+// compare instruction
+xx_x211 := (xx_x437198 == xx_x210 )
+iNsTr_26 := (xx_x437198 & ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x222 := (iNsTr_26 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+// compare instruction
+xx_x207172 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < xx_x203197 )
+$if xx_x207172 $then  $place [for_bodyx_x3_for_bodyx_x4x_xlrx_xph] $else $place [for_bodyx_x3_for_outx_x4] $endif 
+//begin: basic-block for_bodyx_x4x_xlrx_xph
+$merge for_bodyx_x3_for_bodyx_x4x_xlrx_xph
+$endmerge
+$place [for_bodyx_x4x_xlrx_xph_for_bodyx_x4]
+//begin: basic-block for_bodyx_x4
+$merge for_bodyx_x4x_xlrx_xph_for_bodyx_x4 if_nextx_x9_for_bodyx_x4
+$phi xx_x316174 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x4x_xlrx_xph_for_bodyx_x4 ( $cast ($uint<32>) xx_x317) $on if_nextx_x9_for_bodyx_x4 
+$phi xx_x238173 :=  ( $cast ($uint<32>) xx_x42772194) $on for_bodyx_x4x_xlrx_xph_for_bodyx_x4 ( $cast ($uint<32>) xx_x247) $on if_nextx_x9_for_bodyx_x4 
+$endmerge
+xx_x213 := (xx_x238173 + ( $bitcast ($uint<32> ) _b11111111111111111111111111111111 ) )
+// compare instruction
+xx_x214 := (xx_x316174 == xx_x213 )
+xx_x215 := (xx_x211 & xx_x214)
+$if xx_x215 $then  $place [for_bodyx_x4_if_truex_x4] $else $place [for_bodyx_x4_if_falsex_x4] $endif 
+//begin: basic-block if_truex_x4
+$merge for_bodyx_x4_if_truex_x4
+$endmerge
+$place [if_truex_x4_if_nextx_x4]
+//begin: basic-block if_falsex_x4
+$merge for_bodyx_x4_if_falsex_x4
+$endmerge
+$place [if_falsex_x4_if_nextx_x4]
+//begin: basic-block if_nextx_x4
+$merge if_falsex_x4_if_nextx_x4 if_truex_x4_if_nextx_x4
+$phi xx_x282 :=  ( $cast ($uint<1>) ( $bitcast ($uint<1> ) _b1 ) ) $on if_falsex_x4_if_nextx_x4 ( $cast ($uint<1>) ( $bitcast ($uint<1> ) _b0 ) ) $on if_truex_x4_if_nextx_x4 
+$endmerge
+$if xx_x222 $then  $place [if_nextx_x4_if_truex_x5] $else $place [if_nextx_x4_if_falsex_x5] $endif 
+//begin: basic-block if_truex_x5
+$merge if_nextx_x4_if_truex_x5
+$endmerge
+xx_x230 := (xx_x316174 + xx_x229)
+$place [if_truex_x5_if_nextx_x5]
+//begin: basic-block if_falsex_x5
+$merge if_nextx_x4_if_falsex_x5
+$endmerge
+iNsTr_53 := (xx_x316174 ^ ( $bitcast ($uint<32> ) _b11111111111111111111111111111111 ) )
+xx_x240 := (xx_x238173 + iNsTr_53)
+$place [if_falsex_x5_if_nextx_x5]
+//begin: basic-block if_nextx_x5
+$merge if_falsex_x5_if_nextx_x5 if_truex_x5_if_nextx_x5
+$phi xx_x316175 :=  ( $cast ($uint<32>) xx_x316174) $on if_falsex_x5_if_nextx_x5 ( $cast ($uint<32>) xx_x316174) $on if_truex_x5_if_nextx_x5 
+$phi xx_x265 :=  ( $cast ($uint<32>) xx_x240) $on if_falsex_x5_if_nextx_x5 ( $cast ($uint<32>) xx_x230) $on if_truex_x5_if_nextx_x5 
+$phi xx_x281114 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000010 ) ) $on if_falsex_x5_if_nextx_x5 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) ) $on if_truex_x5_if_nextx_x5 
+$endmerge
+// compare instruction
+xx_x249 := (xx_x316174 == xx_x248 )
+$if xx_x249 $then  $place [if_nextx_x5_if_truex_x6] $else $place [if_nextx_x5_if_falsex_x6] $endif 
+//begin: basic-block if_truex_x6
+$merge if_nextx_x5_if_truex_x6
+$endmerge
+$place [if_truex_x6_if_nextx_x6]
+//begin: basic-block if_falsex_x6
+$merge if_nextx_x5_if_falsex_x6
+$endmerge
+$place [if_falsex_x6_if_nextx_x6]
+//begin: basic-block if_nextx_x6
+$merge if_falsex_x6_if_nextx_x6 if_truex_x6_if_nextx_x6
+$phi xx_x281 :=  ( $cast ($uint<32>) xx_x281114) $on if_falsex_x6_if_nextx_x6 ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on if_truex_x6_if_nextx_x6 
+$endmerge
+// compare instruction
+xx_x255 := ( ($bitcast ( $int<32>) xx_x316175) >  ($bitcast ( $int<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  ) )
+$if xx_x255 $then  $place [if_nextx_x6_if_truex_x7] $else $place [if_nextx_x6_if_falsex_x7] $endif 
+//begin: basic-block if_truex_x7
+$merge if_nextx_x6_if_truex_x7
+$endmerge
+// compare instruction
+xx_x261170 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < groups )
+$if xx_x261170 $then  $place [if_truex_x7_for_bodyx_x5x_xlrx_xph] $else $place [if_truex_x7_for_outx_x3] $endif 
+//begin: basic-block for_bodyx_x5x_xlrx_xph
+$merge if_truex_x7_for_bodyx_x5x_xlrx_xph
+$endmerge
+$place [for_bodyx_x5x_xlrx_xph_for_bodyx_x5]
+//begin: basic-block for_bodyx_x5
+$merge for_bodyx_x5_for_bodyx_x5 for_bodyx_x5x_xlrx_xph_for_bodyx_x5
+$phi xx_x274171 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x5x_xlrx_xph_for_bodyx_x5 ( $cast ($uint<32>) xx_x275) $on for_bodyx_x5_for_bodyx_x5 
+$endmerge
+$call fetchInpVerSlice (in_start_addr groups xx_x437198 xx_x265 xx_x274171 ker_size padReq in_rows in_cols in_channels inp_scale inp_zero_point )  ()
+xx_x275 := (xx_x274171 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x261 := (xx_x275 < groups )
+$if xx_x261 $then  $place [for_bodyx_x5_for_bodyx_x5] $else $place [for_bodyx_x5_forx_x5x_xfor_outx_x3_crit_edge] $endif 
+//begin: basic-block forx_x5x_xfor_outx_x3_crit_edge
+$merge for_bodyx_x5_forx_x5x_xfor_outx_x3_crit_edge
+$endmerge
+$place [forx_x5x_xfor_outx_x3_crit_edge_for_outx_x3]
+//begin: basic-block for_outx_x3
+$merge forx_x5x_xfor_outx_x3_crit_edge_for_outx_x3 if_truex_x7_for_outx_x3
+$endmerge
+$place [for_outx_x3_if_nextx_x7]
+//begin: basic-block if_falsex_x7
+$merge if_nextx_x6_if_falsex_x7
+$endmerge
+$place [if_falsex_x7_if_nextx_x7]
+//begin: basic-block if_nextx_x7
+$merge for_outx_x3_if_nextx_x7 if_falsex_x7_if_nextx_x7
+$endmerge
+
+start_time2 := time_val
+$parallelblock [parsum2] 
+{
+$call convolution_new (groups xx_x281 xx_x282 ker_size inp_scale inp_zero_point ker_scale ker_zero_point conv_scale conv_zero_point ( $bitcast ($uint<1> ) _b0 )  in_channels isActivation )  ()
+$call accumulator (in_channels ker_size conv_scale conv_zero_point isActivation ( $bitcast ($uint<1> ) _b0 )  )  (xx_x300)
+}
+end_time2 := time_val
+time_taken2 := (time_taken2+(end_time2 - start_time2))
+
+xx_x301 := out_data
+$if poolReq $then  $place [if_nextx_x7_if_truex_x8] $else $place [if_nextx_x7_if_falsex_x9] $endif 
+//begin: basic-block if_truex_x8
+$merge if_nextx_x7_if_truex_x8
+$endmerge
+$if xx_x222 $then  $place [if_truex_x8_if_truex_x9] $else $place [if_truex_x8_if_falsex_x8] $endif 
+//begin: basic-block if_truex_x9
+$merge if_truex_x8_if_truex_x9
+$endmerge
+pool_data_fifo_r0 := xx_x301
+$place [if_truex_x9_if_nextx_x8]
+//begin: basic-block if_falsex_x8
+$merge if_truex_x8_if_falsex_x8
+$endmerge
+pool_data_lifo_r1 := xx_x301
+$place [if_falsex_x8_if_nextx_x8]
+//begin: basic-block if_nextx_x8
+$merge if_falsex_x8_if_nextx_x8 if_truex_x9_if_nextx_x8
+$endmerge
+$place [if_nextx_x8_if_nextx_x9]
+//begin: basic-block if_falsex_x9
+$merge if_nextx_x7_if_falsex_x9
+$endmerge
+$place [if_falsex_x9_if_nextx_x9]
+//begin: basic-block if_nextx_x9
+$merge if_falsex_x9_if_nextx_x9 if_nextx_x8_if_nextx_x9
+$endmerge
+xx_x317 := (xx_x316175 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x207 := (xx_x317 < xx_x203197 )
+$if xx_x207 $then  $place [if_nextx_x9_for_bodyx_x4] $else $place [if_nextx_x9_forx_x4x_xfor_outx_x4_crit_edge] $endif 
+//begin: basic-block forx_x4x_xfor_outx_x4_crit_edge
+$merge if_nextx_x9_forx_x4x_xfor_outx_x4_crit_edge
+$phi split176 :=  ( $cast ($uint<32>) xx_x247) $on if_nextx_x9_forx_x4x_xfor_outx_x4_crit_edge 
+$phi split177 :=  ( $cast ($uint<32>) xx_x209) $on if_nextx_x9_forx_x4x_xfor_outx_x4_crit_edge 
+$phi split178 :=  ( $cast ($uint<32>) xx_x247) $on if_nextx_x9_forx_x4x_xfor_outx_x4_crit_edge 
+$endmerge
+$place [forx_x4x_xfor_outx_x4_crit_edge_for_outx_x4]
+//begin: basic-block for_outx_x4
+$merge for_bodyx_x3_for_outx_x4 forx_x4x_xfor_outx_x4_crit_edge_for_outx_x4
+$phi xx_x238x_xlcssa :=  ( $cast ($uint<32>) split176) $on forx_x4x_xfor_outx_x4_crit_edge_for_outx_x4 ( $cast ($uint<32>) xx_x42772194) $on for_bodyx_x3_for_outx_x4 
+$phi xx_x410x_xlcssa :=  ( $cast ($uint<32>) split177) $on forx_x4x_xfor_outx_x4_crit_edge_for_outx_x4 ( $cast ($uint<32>) xx_x41029195) $on for_bodyx_x3_for_outx_x4 
+$phi xx_x2036x_xlcssa :=  ( $cast ($uint<32>) split178) $on forx_x4x_xfor_outx_x4_crit_edge_for_outx_x4 ( $cast ($uint<32>) xx_x203197) $on for_bodyx_x3_for_outx_x4 
+$endmerge
+$if poolReq $then  $place [for_outx_x4_if_truex_x10] $else $place [for_outx_x4_if_falsex_x13] $endif 
+//begin: basic-block if_truex_x10
+$merge for_outx_x4_if_truex_x10
+$endmerge
+iNsTr_37 := (xx_x437198 & ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x323x_xnot := (iNsTr_37 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+$if xx_x323x_xnot $then  $place [if_truex_x10_if_falsex_x12] $else $place [if_truex_x10_if_truex_x11] $endif 
+//begin: basic-block if_truex_x11
+$merge if_truex_x10_if_truex_x11
+$endmerge
+$call pooling (pool_cols )  ()
+xx_x342 := (xx_x340 * xx_x341196)
+// compare instruction
+xx_x331179 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < pool_cols )
+$if xx_x331179 $then  $place [if_truex_x11_for_bodyx_x6x_xlrx_xph] $else $place [if_truex_x11_for_outx_x5] $endif 
+//begin: basic-block for_bodyx_x6x_xlrx_xph
+$merge if_truex_x11_for_bodyx_x6x_xlrx_xph
+$endmerge
+$place [for_bodyx_x6x_xlrx_xph_for_bodyx_x6]
+//begin: basic-block for_bodyx_x6
+$merge for_bodyx_x6x_xlrx_xph_for_bodyx_x6 if_nextx_x11_for_bodyx_x6
+$phi xx_x399183 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x6x_xlrx_xph_for_bodyx_x6 ( $cast ($uint<32>) xx_x400) $on if_nextx_x11_for_bodyx_x6 
+$phi xx_x403182 :=  ( $cast ($uint<32>) xx_x341196) $on for_bodyx_x6x_xlrx_xph_for_bodyx_x6 ( $cast ($uint<32>) xx_x40325) $on if_nextx_x11_for_bodyx_x6 
+$phi xx_x386181 :=  ( $cast ($uint<64>) xx_x37085193) $on for_bodyx_x6x_xlrx_xph_for_bodyx_x6 ( $cast ($uint<64>) xx_x37083) $on if_nextx_x11_for_bodyx_x6 
+$phi xx_x393180 :=  ( $cast ($uint<32>) xx_x38197192) $on for_bodyx_x6x_xlrx_xph_for_bodyx_x6 ( $cast ($uint<32>) xx_x38194) $on if_nextx_x11_for_bodyx_x6 
+$endmerge
+xx_x333 := pool_out_data
+$if isFlatten $then  $place [for_bodyx_x6_if_falsex_x10] $else $place [for_bodyx_x6_if_truex_x12] $endif 
+//begin: basic-block if_truex_x12
+$merge for_bodyx_x6_if_truex_x12
+$endmerge
+xx_x344 := (xx_x399183 * out_channels)
+xx_x345 := (xx_x342 + xx_x344)
+xx_x348 := (xx_x345 + xx_x347)
+xx_x358 :=  ($bitcast ($uint<64>) ( $cast ($int< 64 > ) xx_x333) )
+xx_x359 := (xx_x358 << ( $bitcast ($uint<64>)xx_x357))
+// xx_x360 :=  ($bitcast ($uint<64>) ( $cast ($int< 64 > ) xx_x359) )
+$call writeModule_convolution (out_start_addr xx_x348 xx_x359 xx_x366 )  (d2)
+$place [if_truex_x12_if_nextx_x11]
+//begin: basic-block if_falsex_x10
+$merge for_bodyx_x6_if_falsex_x10
+$endmerge
+// xx_x371 := (xx_x386181 + ( $bitcast ($uint<64> ) _b1111111111111111111111111111111111111111111111111111111111111111 ) )
+xx_x371 := (xx_x386181 - 1)
+xx_x372 := (xx_x371 << ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000011 ) )
+xx_x373 :=  ($bitcast ($uint<64>) ( $cast ($int< 64 > ) xx_x333) )
+xx_x374 := (xx_x373 << xx_x372)
+xx_x378 := (( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 )  << xx_x371)
+xx_x384 := ($cast ($uint<8>) xx_x378)
+$call writeModule_convolution (out_start_addr xx_x393180 xx_x374 xx_x384 )  (d3)
+// compare instruction
+xx_x390 := (xx_x371 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  )
+$if xx_x390 $then  $place [if_falsex_x10_if_truex_x13] $else $place [if_falsex_x10_if_falsex_x11] $endif 
+//begin: basic-block if_truex_x13
+$merge if_falsex_x10_if_truex_x13
+$endmerge
+xx_x394 := (xx_x393180 + ( $bitcast ($uint<32> ) _b00000000000000000000000000001000 ) )
+$place [if_truex_x13_if_nextx_x10]
+//begin: basic-block if_falsex_x11
+$merge if_falsex_x10_if_falsex_x11
+$endmerge
+$place [if_falsex_x11_if_nextx_x10]
+//begin: basic-block if_nextx_x10
+$merge if_falsex_x11_if_nextx_x10 if_truex_x13_if_nextx_x10
+$phi xx_x38195 :=  ( $cast ($uint<32>) xx_x393180) $on if_falsex_x11_if_nextx_x10 ( $cast ($uint<32>) xx_x394) $on if_truex_x13_if_nextx_x10 
+$phi xx_x37086 :=  ( $cast ($uint<64>) xx_x371) $on if_falsex_x11_if_nextx_x10 ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000001000 ) ) $on if_truex_x13_if_nextx_x10 
+$endmerge
+$place [if_nextx_x10_if_nextx_x11]
+//begin: basic-block if_nextx_x11
+$merge if_nextx_x10_if_nextx_x11 if_truex_x12_if_nextx_x11
+$phi xx_x399184 :=  ( $cast ($uint<32>) xx_x399183) $on if_nextx_x10_if_nextx_x11 ( $cast ($uint<32>) xx_x399183) $on if_truex_x12_if_nextx_x11 
+$phi xx_x38194 :=  ( $cast ($uint<32>) xx_x38195) $on if_nextx_x10_if_nextx_x11 ( $cast ($uint<32>) xx_x393180) $on if_truex_x12_if_nextx_x11 
+$phi xx_x37083 :=  ( $cast ($uint<64>) xx_x37086) $on if_nextx_x10_if_nextx_x11 ( $cast ($uint<64>) xx_x386181) $on if_truex_x12_if_nextx_x11 
+$phi xx_x40325 :=  ( $cast ($uint<32>) xx_x403182) $on if_nextx_x10_if_nextx_x11 ( $cast ($uint<32>) xx_x341196) $on if_truex_x12_if_nextx_x11 
+$endmerge
+xx_x400 := (xx_x399184 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x331 := (xx_x400 < pool_cols )
+$if xx_x331 $then  $place [if_nextx_x11_for_bodyx_x6] $else $place [if_nextx_x11_forx_x6x_xfor_outx_x5_crit_edge] $endif 
+//begin: basic-block forx_x6x_xfor_outx_x5_crit_edge
+$merge if_nextx_x11_forx_x6x_xfor_outx_x5_crit_edge
+$phi split185 :=  ( $cast ($uint<32>) xx_x38194) $on if_nextx_x11_forx_x6x_xfor_outx_x5_crit_edge 
+$phi split186 :=  ( $cast ($uint<64>) xx_x37083) $on if_nextx_x11_forx_x6x_xfor_outx_x5_crit_edge 
+$phi split187 :=  ( $cast ($uint<32>) xx_x40325) $on if_nextx_x11_forx_x6x_xfor_outx_x5_crit_edge 
+$endmerge
+$place [forx_x6x_xfor_outx_x5_crit_edge_for_outx_x5]
+//begin: basic-block for_outx_x5
+$merge forx_x6x_xfor_outx_x5_crit_edge_for_outx_x5 if_truex_x11_for_outx_x5
+$phi xx_x393x_xlcssa :=  ( $cast ($uint<32>) split185) $on forx_x6x_xfor_outx_x5_crit_edge_for_outx_x5 ( $cast ($uint<32>) xx_x38197192) $on if_truex_x11_for_outx_x5 
+$phi xx_x386x_xlcssa :=  ( $cast ($uint<64>) split186) $on forx_x6x_xfor_outx_x5_crit_edge_for_outx_x5 ( $cast ($uint<64>) xx_x37085193) $on if_truex_x11_for_outx_x5 
+$phi xx_x403x_xlcssa :=  ( $cast ($uint<32>) split187) $on forx_x6x_xfor_outx_x5_crit_edge_for_outx_x5 ( $cast ($uint<32>) xx_x341196) $on if_truex_x11_for_outx_x5 
+$endmerge
+xx_x404 := (xx_x403x_xlcssa + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+$place [for_outx_x5_if_nextx_x12]
+//begin: basic-block if_falsex_x12
+$merge if_truex_x10_if_falsex_x12
+$endmerge
+$place [if_falsex_x12_if_nextx_x12]
+//begin: basic-block if_nextx_x12
+$merge for_outx_x5_if_nextx_x12 if_falsex_x12_if_nextx_x12
+$phi xx_x38193 :=  ( $cast ($uint<32>) xx_x38197192) $on if_falsex_x12_if_nextx_x12 ( $cast ($uint<32>) xx_x393x_xlcssa) $on for_outx_x5_if_nextx_x12 
+$phi xx_x37082 :=  ( $cast ($uint<64>) xx_x37085193) $on if_falsex_x12_if_nextx_x12 ( $cast ($uint<64>) xx_x386x_xlcssa) $on for_outx_x5_if_nextx_x12 
+$phi xx_x40324 :=  ( $cast ($uint<32>) xx_x341196) $on if_falsex_x12_if_nextx_x12 ( $cast ($uint<32>) xx_x404) $on for_outx_x5_if_nextx_x12 
+$endmerge
+$place [if_nextx_x12_if_nextx_x13]
+//begin: basic-block if_falsex_x13
+$merge for_outx_x4_if_falsex_x13
+$endmerge
+$place [if_falsex_x13_if_nextx_x13]
+//begin: basic-block if_nextx_x13
+$merge if_falsex_x13_if_nextx_x13 if_nextx_x12_if_nextx_x13
+$phi xx_x437199 :=  ( $cast ($uint<32>) xx_x437198) $on if_falsex_x13_if_nextx_x13 ( $cast ($uint<32>) xx_x437198) $on if_nextx_x12_if_nextx_x13 
+$phi xx_x38192 :=  ( $cast ($uint<32>) xx_x38197192) $on if_falsex_x13_if_nextx_x13 ( $cast ($uint<32>) xx_x38193) $on if_nextx_x12_if_nextx_x13 
+$phi xx_x37081 :=  ( $cast ($uint<64>) xx_x37085193) $on if_falsex_x13_if_nextx_x13 ( $cast ($uint<64>) xx_x37082) $on if_nextx_x12_if_nextx_x13 
+$phi xx_x40323 :=  ( $cast ($uint<32>) xx_x341196) $on if_falsex_x13_if_nextx_x13 ( $cast ($uint<32>) xx_x40324) $on if_nextx_x12_if_nextx_x13 
+$endmerge
+xx_x411 := (xx_x410x_xlcssa + ( $bitcast ($uint<32> ) _b11111111111111111111111111111111 ) )
+// compare instruction
+xx_x412 := ( ($bitcast ( $int<32>) xx_x437198) <   ($bitcast ( $int<32>) xx_x411 ) )
+$if xx_x412 $then  $place [if_nextx_x13_if_truex_x14] $else $place [if_nextx_x13_if_falsex_x14] $endif 
+//begin: basic-block if_truex_x14
+$merge if_nextx_x13_if_truex_x14
+$endmerge
+// compare instruction
+xx_x418188 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < groups )
+$if xx_x418188 $then  $place [if_truex_x14_for_bodyx_x7x_xlrx_xph] $else $place [if_truex_x14_for_outx_x6] $endif 
+//begin: basic-block for_bodyx_x7x_xlrx_xph
+$merge if_truex_x14_for_bodyx_x7x_xlrx_xph
+$endmerge
+$place [for_bodyx_x7x_xlrx_xph_for_bodyx_x7]
+//begin: basic-block for_bodyx_x7
+$merge for_bodyx_x7_for_bodyx_x7 for_bodyx_x7x_xlrx_xph_for_bodyx_x7
+$phi xx_x431189 :=  ( $cast ($uint<32>) ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 ) ) $on for_bodyx_x7x_xlrx_xph_for_bodyx_x7 ( $cast ($uint<32>) xx_x432) $on for_bodyx_x7_for_bodyx_x7 
+$endmerge
+$call fetchInpHorSlice (in_start_addr groups xx_x437199 xx_x431189 ker_size padReq in_rows in_cols in_channels xx_x238x_xlcssa inp_scale inp_zero_point )  ()
+xx_x432 := (xx_x431189 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x418 := (xx_x432 < groups )
+$if xx_x418 $then  $place [for_bodyx_x7_for_bodyx_x7] $else $place [for_bodyx_x7_forx_x7x_xfor_outx_x6_crit_edge] $endif 
+//begin: basic-block forx_x7x_xfor_outx_x6_crit_edge
+$merge for_bodyx_x7_forx_x7x_xfor_outx_x6_crit_edge
+$phi split190 :=  ( $cast ($uint<32>) xx_x238x_xlcssa) $on for_bodyx_x7_forx_x7x_xfor_outx_x6_crit_edge 
+$endmerge
+$place [forx_x7x_xfor_outx_x6_crit_edge_for_outx_x6]
+//begin: basic-block for_outx_x6
+$merge forx_x7x_xfor_outx_x6_crit_edge_for_outx_x6 if_truex_x14_for_outx_x6
+$phi xx_x2035x_xlcssa :=  ( $cast ($uint<32>) split190) $on forx_x7x_xfor_outx_x6_crit_edge_for_outx_x6 ( $cast ($uint<32>) xx_x2036x_xlcssa) $on if_truex_x14_for_outx_x6 
+$endmerge
+$place [for_outx_x6_if_nextx_x14]
+//begin: basic-block if_falsex_x14
+$merge if_nextx_x13_if_falsex_x14
+$endmerge
+$place [if_falsex_x14_if_nextx_x14]
+//begin: basic-block if_nextx_x14
+$merge for_outx_x6_if_nextx_x14 if_falsex_x14_if_nextx_x14
+$phi xx_x2034 :=  ( $cast ($uint<32>) xx_x2036x_xlcssa) $on if_falsex_x14_if_nextx_x14 ( $cast ($uint<32>) xx_x2035x_xlcssa) $on for_outx_x6_if_nextx_x14 
+$endmerge
+xx_x438 := (xx_x437199 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// compare instruction
+xx_x201 := (xx_x438 < xx_x209 )
+$if xx_x201 $then  $place [if_nextx_x14_for_bodyx_x3] $else $place [if_nextx_x14_forx_x3x_xfor_outx_x7_crit_edge] $endif 
+//begin: basic-block forx_x3x_xfor_outx_x7_crit_edge
+$merge if_nextx_x14_forx_x3x_xfor_outx_x7_crit_edge
+$endmerge
+$place [forx_x3x_xfor_outx_x7_crit_edge_for_outx_x7]
+//begin: basic-block for_outx_x7
+$merge for_outx_x2_for_outx_x7 forx_x3x_xfor_outx_x7_crit_edge_for_outx_x7
+$endmerge
+stored_ret_val__ := ( $bitcast ($uint<8> ) _b00000000 ) 
+$place [return__]
+$merge return__ $endmerge
+
+accelerator_reg[12] := ($slice (end_time1-start_time1) 31 0)
+accelerator_reg[13] := ($slice time_taken1 31 0)
+
+accelerator_reg[14] := ($slice (end_time2-start_time2) 31 0)
+accelerator_reg[15] := ($slice time_taken2 31 0)
+ret_val__ := stored_ret_val__ 
+}
+}

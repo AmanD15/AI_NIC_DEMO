@@ -1,0 +1,20 @@
+Results of testing LeNet Architecture on VCU128 
+
+    1. Final accuracy on testing image dataset is 98%
+
+    2. Total time for processing 10,000 images is 40 minutes
+
+    3. Number of cycles taken for Convolution + Accumulator at each stage
+
+    Stage         Total Clock Cycles          Clock Cycles in            No.of MAC operations in              
+                                             single function call         single function call         
+
+   Stage 1          412,828                       711                          25
+
+   Stage 2          159,315                       2,481                        200
+
+   Stage 3          1,938,668                     16,128                       1536
+
+   Stage 4          639,140                       7,601                        720
+
+   Stage 5          53,846                        5,385                        420
