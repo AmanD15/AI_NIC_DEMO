@@ -1,0 +1,169 @@
+// Need at least 10 32-bit registers
+$parameter MAX_ACC_REG 17
+$parameter BITS_MAX_ACC_REG 4
+
+$storage accelerator_reg : $array[MAX_ACC_REG] $of $uint<32>
+
+$pipe start_worker: $uint<1>
+$module [accelerator_control_daemon]
+	$in () $out () $is
+{
+	// initialize
+	$branchblock[init_loop] {
+		$merge $entry loopback 
+			$phi I := $zero<BITS_MAX_ACC_REG> $on $entry nI $on loopback
+		$endmerge
+		$volatile nI := (I + 1)
+		accelerator_reg[I] := 0
+
+		$if (I < {MAX_ACC_REG-1}) $then $place[loopback] $endif
+	}
+
+	start_worker := 1
+
+	$branchblock[run_loop] {
+		$merge $entry loopback $endmerge 
+
+		cmd := AFB_ACCELERATOR_REQUEST
+		$volatile $split (cmd 1 1 4 36 32)
+				(lock rwbar bmask addr wdata)
+
+		$volatile reg_index := ($slice addr {BITS_MAX_ACC_REG+1} 2)
+
+		// we assume bmask is always 0xf
+		$guard (rwbar)    rdata := accelerator_reg[reg_index]
+		$guard (~rwbar)   accelerator_reg[reg_index] := wdata
+
+		$volatile resp := ($concat $zero<1> ($mux rwbar rdata 0))
+		AFB_ACCELERATOR_RESPONSE := resp
+
+		$place [loopback]
+	}
+}
+
+$module [accelerator_worker_daemon] $in () $out () $is
+{
+	sw := start_worker // wait on initialization
+
+	$branchblock[loop] {
+		$merge $entry loopback $endmerge	
+		
+
+		// spin, wait for command...
+		$merge $entry look_for_command $endmerge
+			r0 := accelerator_reg[0]
+			$volatile cmd_flag := ($reduce & (r0 [] 0) (r0 [] 2) (~(r0 [] 3)))
+		$if (~cmd_flag) $then $place [look_for_command] $endif
+
+		//clear bits 2, 4 of register 0
+		accelerator_reg[0] := (r0 & (~ 36))
+
+        in_start_addr := accelerator_reg[1]
+        out_start_addr := accelerator_reg[2]
+        ker_start_addr := accelerator_reg[3]
+
+        out_grp_no :=  accelerator_reg[4]
+        // pool_cols := ($bitcast ($uint<8>) r4)
+
+        r5 := accelerator_reg[5]
+        $split (r5 16 16) (temp_in_r temp_in_c)
+        in_rows := ($bitcast ($uint<32>) temp_in_r)
+        in_cols := ($bitcast ($uint<32>) temp_in_c)
+
+		r6 := accelerator_reg[6]
+        $split (r6 16 16) (temp_in_chns temp_in_grps)
+        in_channels := ($bitcast ($uint<32>) temp_in_chns)
+        groups := ($bitcast ($uint<32>) temp_in_grps)
+
+        ker_size := accelerator_reg[7]
+
+		pool_cols := accelerator_reg[8]
+        // $split (r8 16 16) (temp_pool_stride temp_pool_ker_size)
+        // pool_stride := ($bitcast ($uint<32>) temp_pool_stride)
+        // pool_ker_size := ($bitcast ($uint<32>) temp_pool_ker_size)
+
+        util_addr := accelerator_reg[9]
+
+        $call readModule_convolution (util_addr 0) (read_val)
+		$split (read_val 32 32) (temp_in_scale temp_in_zp)
+		inp_scale := ($bitcast ($float<8,23>) temp_in_scale)
+		inp_zero_point := ($bitcast ($float<8,23>) temp_in_zp)
+
+        $call readModule_convolution (util_addr 8) (read_val1)
+		$split (read_val1 32 32) (temp_ker_scale temp_ker_zp)
+		ker_scale := ($bitcast ($float<8,23>) temp_ker_scale)
+		ker_zero_point := ($bitcast ($float<8,23>) temp_ker_zp)
+
+        $call readModule_convolution (util_addr 16) (read_val2)
+		$split (read_val2 32 32) (temp_conv_scale temp_conv_zp)
+		conv_scale := ($bitcast ($float<8,23>) temp_conv_scale)
+		conv_zero_point := ($bitcast ($float<8,23>) temp_conv_zp)
+
+        temp_flags := accelerator_reg[10]
+        $split (temp_flags 26 1 1 1 1 1 1) (temp isLastStage padReq poolReq isLinear isActivation isFlatten)
+
+        r11 := accelerator_reg[11]
+		$split (r11 16 16) (temp_out_channels temp_out_chn_ind)
+        out_channels := ($bitcast ($uint<32>) temp_out_channels)
+        out_chn_ind := ($bitcast ($uint<32>) temp_out_chn_ind)
+
+		flattenOffset := accelerator_reg[12]
+
+		// start_time := time_val
+		// accelerator_reg[12] := ($slice start_time 63 32)
+		// accelerator_reg[13] := ($slice start_time 31 0)
+		
+		$barrier
+
+		$call convengine (in_start_addr  out_start_addr  ker_start_addr  out_grp_no 
+		 in_rows  in_cols  in_channels  out_channels  groups  ker_size  pool_cols 
+		  inp_scale  inp_zero_point  ker_scale  ker_zero_point  conv_scale  conv_zero_point 
+		   padReq  poolReq  isLinear  isActivation  isFlatten  flattenOffset  out_chn_ind ) (ret_val)
+		// $call iotest(ri ci ro co in_base_addr out_base_addr) ()
+		// accelerator_reg[12] := ($bitcast ($uint<32>) ret_val)
+		$barrier
+
+		// end_time := time_val
+		
+		// accelerator_reg[14] := ($slice end_time 63 32)
+		// accelerator_reg[15] := ($slice end_time 31 0)
+
+
+		// set interrupt flag in r0.
+
+		// $call readModule_convolution (in_start_addr 0 )  (val1)
+		// accelerator_reg[15] := ($bitcast ($uint<32>) val1)
+
+		$volatile set_intr := ((r0 [] 0) & (r0 [] 1))
+		accelerator_reg[0] := ($concat ($slice r0 31 5) set_intr $one<1> ($slice r0 2 0))
+		
+		
+
+		$place [loopback]
+
+		
+		
+		
+		
+
+		
+	}
+}
+
+
+
+$module [accelerator_interrupt_daemon]
+	$in () $out () $is
+{
+	$branchblock[loop] {
+		$merge $entry loopback $endmerge
+
+		r0 := accelerator_reg[0]
+		ACCELERATOR_INTERRUPT_8 := ($bitcast ($uint<8>)  (r0 [] 4))
+
+
+	 	$place[loopback]
+	}
+}
+
+
