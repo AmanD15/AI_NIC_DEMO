@@ -1,0 +1,24 @@
+
+Operations supported
+----------------------
+
+	Vector add  :   Z := X + Y 
+	Vector scale:   Z := aX
+	Dot-product:    Z := X.Y					
+	Matrix-vector:  Z := A.X --> for fully connected layers
+         product
+	Matrix-matrix:  R := A.B
+         product 
+        Zero-pad->conv->pool->Relu 
+			Long chain.
+	Zero-pad
+	Relu
+	Pool
+
+
+Data types
+----------------
+	for storage:  posit, int8,    float16, float32, float64
+	for compute:  int16, int32,   float16, float32, float64
+
+	

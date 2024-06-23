@@ -1,0 +1,96 @@
+$parameter ORDER         	64
+$parameter STREAM_DEPTH          2
+
+$storage AL AH: $array [ {ORDER/2} ] $of $int<8>
+$storage BL BH: $array [ {ORDER/2} ] $of $int<8>
+
+$module [setAValue] $in (idx: $uint<8> val: $int<8>) $out () $is
+{
+	$volatile L := (idx < {ORDER/2})
+	$guard (L)  AL[idx] := val
+	$guard (~L) AH[idx] := val
+}
+
+$module [setBValue] $in (idx: $uint<8> val: $int<8>) $out () $is
+{
+	$volatile L := (idx < {ORDER/2})
+	$guard (L)  BL[idx] := val
+	$guard (~L) BH[idx] := val
+}
+
+
+$pipe a_l_stream b_l_stream: $int<8> $depth STREAM_DEPTH $p2p
+$pipe a_h_stream b_h_stream: $int<8> $depth STREAM_DEPTH $p2p
+
+$module [compute_dot_product] $in () $out (ret_val: $int<8>) $is
+{
+	$parallelblock[chain] {
+		$call streamAB   (0 {{ORDER/2}-1} ) ()
+		$call accumulate ({ ORDER/2 } ) (ret_val)
+	}
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+$module [streamAB] $in (start_index stop_index: $uint<8>) $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+			$merge $entry $loopback
+				$phi I := start_index $on $entry nI $on $loopback
+			$endmerge
+			$volatile nI := (I + 1)
+			$volatile continue_flag := (I < stop_index)
+
+
+			// simultaneously accessed, in parallel.
+			u := AL[I]
+			v := BL[I]
+			w := AH[I]
+			x := BH[I]
+
+			// simultaneous write to pipes, in parallel
+			a_l_stream := u
+			b_l_stream := v
+			a_h_stream := w
+			b_h_stream := x
+
+		$while continue_flag
+	}
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+$module [accumulate] $in (n_items: $uint<8>) $out (ret_val: $int<8>) $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 7 $fullrate 
+			$merge $entry $loopback
+				$phi I := $one<9> $on $entry nI $on $loopback
+			$endmerge
+
+			// simultaneous reads from pipes, parallel
+			u := a_l_stream
+			v := b_l_stream
+			w := a_h_stream
+			x := b_h_stream
+
+			$volatile nI := (I + 1)
+			$volatile continue_flag := (I < ($bitcast ($uint<9>)  n_items))
+				
+			// two parallel accumulations for low and high sums
+			sum_l := (($mux (I == 0) 0 sum_l) + (u*v))
+			sum_h := (($mux (I == 0) 0 sum_h) + (w*x))
+
+		$while continue_flag
+		ret_val := (sum_h + sum_l)
+	} 
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+
+

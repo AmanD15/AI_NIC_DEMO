@@ -1,0 +1,167 @@
+$parameter ORDER         	 16
+$parameter STREAM_DEPTH          2
+ 
+// The matrix
+$storage A: $array [ {ORDER * ORDER} ] $of $int<8>
+
+// The vector.
+$storage B RESULT: $array [ ORDER ] $of $int<8>
+
+$module [setAValue] $in (i j: $uint<8> val: $int<8>) $out () $is
+{
+	$volatile addr := ((i* ORDER) + j)
+	A[addr] := val
+}
+
+$module [setBValue] $in (idx: $uint<8> val: $int<8>) $out () $is
+{
+	B[idx] := val
+}
+
+
+$module [getResult] $in (I: $uint<8>) $out (R: $int<8>) $is
+{
+	R := RESULT[I]
+}
+
+$pipe a_stream b_stream result_stream: $int<8>     $depth STREAM_DEPTH 	$p2p
+$pipe recirculated_b_stream: $int<8> 		   $depth {ORDER + 1} 	$p2p
+
+
+
+
+$module [compute_matrix_vector_product] $in () $out () $is
+{
+	$parallelblock[chain] {
+		$call streamA    () ()
+		$call streamB    () ()
+		$call accumulate (ORDER {{ORDER*ORDER} - ORDER}) ()
+		$call storeResults () ()
+	}
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+$module [streamA] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+			$merge $entry $loopback
+				$phi I := $zero<16> $on $entry nI $on $loopback
+			$endmerge
+			$volatile nI := (I + 1)
+			$volatile continue_flag := (I < {{ORDER * ORDER} - 1})
+
+			u := A[I]
+			a_stream := u
+
+
+		$while continue_flag
+	}
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+$module [streamB] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+			$merge $entry $loopback
+				$phi I := $zero<8> $on $entry nI $on $loopback
+			$endmerge
+			$volatile nI := (I + 1)
+			$volatile continue_flag := (I < {ORDER - 1})
+
+			// stream to b_stream
+			v := B[I]
+			b_stream := v
+				
+			
+		$while continue_flag
+	}
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+$volatile  $module [muladd] $in (reset_flag: $uint<1>  p sum_in: $int<8>) $out (sum_out: $int<8>) $is
+{
+	sum_out := (($mux reset_flag 0 sum_in) + p)
+}
+
+$module [accumulate] $in (start_recirc_threshold stop_recirc_threshold: $uint<16>) 
+				$out () $is
+{
+
+	$branchblock[loop] {
+		$dopipeline $depth 7 $fullrate 
+			$merge $entry $loopback
+				$phi I := $one<16> $on $entry nI $on $loopback
+				$phi tc := $zero<8> $on $entry n_tc $on $loopback
+			$endmerge
+			
+			$volatile nI := (I + 1)
+			$volatile n_tc := ($mux (tc < {ORDER - 1}) (tc + 1) 0)
+
+			$volatile get_from_b := (I <= start_recirc_threshold)
+			$volatile get_from_a := (I != 0)
+
+			$volatile write_to_recirc := (I <= stop_recirc_threshold)
+			$volatile reset_sum := (tc == 0)
+
+			$volatile send_result :=  (tc == { ORDER - 1} )
+
+			$guard (get_from_a)
+				u := a_stream
+
+			$guard (get_from_b)
+				vb := b_stream
+			$guard (~get_from_b)
+				vr := recirculated_b_stream
+
+			$volatile v := ($mux get_from_b vb vr)
+
+			// write to recirculated stream to avoid
+			// memory access!
+			$guard (write_to_recirc)
+				recirculated_b_stream := v
+
+			$volatile continue_flag := (I < {ORDER * ORDER})
+
+			$volatile p := (u*v)
+
+			// sum := (($mux reset_sum 0 sum) + p) 
+			sum := ($call muladd (reset_sum p sum))
+
+			// at I=1, I=4, ...., 
+			$guard (send_result)
+				result_stream := sum
+
+		$while continue_flag
+	} 
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+
+
+$module [storeResults] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+			$merge $entry $loopback
+				$phi I    := $zero<8> $on $entry nI $on $loopback
+			$endmerge
+
+			$volatile nI := (I + 1)
+			$volatile continue_flag := (I < { ORDER - 1} )
+			rval := result_stream
+	
+			RESULT[I] := rval
+
+		$while continue_flag
+	}
+}
