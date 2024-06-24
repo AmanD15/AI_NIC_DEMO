@@ -83,23 +83,23 @@ Software:
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
     BuildArgs: "-D USE_CORTOS -D USE_VMAP -D CLK_FREQUENCY=80000000 
-    -c $AJIT_HOME/AI_NIC_DEMO/lwip/FINAL_UDP/main.c
-    -I $AJIT_HOME/AI_NIC_DEMO/lwip/FINAL_UDP/include
-    -I $AJIT_HOME/AI_NIC_DEMO/lwip/FINAL_UDP/include/arch
+    -c $AJIT_HOME/AI_NIC_DEMO/lwip/Caching_app/main.c
+    -I $AJIT_HOME/AI_NIC_DEMO/lwip/Caching_app/include
+    -I $AJIT_HOME/AI_NIC_DEMO/lwip/Caching_app/include/arch
     -I $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/include
     -I $AJIT_HOME/AI_NIC_DEMO/Networking/NIC_1.1/driver/include
     -I $AJIT_HOME/application_development/rng_marsaglia/include
     -I $AJIT_HOME/AjitPublicResources/tools/ajit_access_routines_mt/include
     -c $AJIT_HOME/AjitPublicResources/tools/ajit_access_routines_mt/src/ajit_generic_sys_calls.c
-    -I $AJIT_HOME/AI_NIC_DEMO/lwip/FINAL_UDP/tcp_app
-    -C $AJIT_HOME/AI_NIC_DEMO/lwip/FINAL_UDP/tcp_app	
+    -I $AJIT_HOME/AI_NIC_DEMO/lwip/Caching_app/tcp_udp_app
+    -C $AJIT_HOME/AI_NIC_DEMO/lwip/Caching_app/tcp_udp_app	
     -C $AJIT_HOME/application_development/rng_marsaglia/src
     -C $AJIT_HOME/AI_NIC_DEMO/Networking/NIC_1.1/driver/src
     -c $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/netif/ethernet.c
     -c $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/api/err.c 
     -C $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/core 
     -C $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/core/ipv4
-    -C $AJIT_HOME/AI_NIC_DEMO/lwip/FINAL_UDP/src"
+    -C $AJIT_HOME/AI_NIC_DEMO/lwip/Caching_app/src"
 
   # Required: Which functions execute on each ajit thread.
   ProgramThreads:
