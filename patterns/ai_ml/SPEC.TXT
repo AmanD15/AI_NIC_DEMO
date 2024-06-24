@@ -1,4 +1,3 @@
-
 Operations supported
 ----------------------
 
@@ -11,14 +10,17 @@ Operations supported
          product 
         Zero-pad->conv->pool->Relu 
 			Long chain.
+
+Special cases of last compound operation.
 	Zero-pad
 	Relu
 	Pool
+	Conv
 
 
 Data types
 ----------------
-	for storage:  posit, int8,    float16, float32, float64
-	for compute:  int16, int32,   float16, float32, float64
+	for storage:  posit8, int8, float16, float32, float64
+	for compute:  int8-mul, int16-mul,add, int32 mul,add,   float16, float32, float64
 
 	
