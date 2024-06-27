@@ -3,11 +3,13 @@
 #include "tcpecho_raw.h"
 
 extern uint8_t udp_flag;
-
+extern uint8_t udp_done;
 int main()
 {
 	__ajit_write_serial_control_register__ (TX_ENABLE); 
-
+	uint64_t total = 0;
+	uint64_t t0 = 0;
+	uint64_t t1 =0;
 	
 	cortos_printf ("Started\n");
 	const ip4_addr_t ipaddr  =  {{LWIP_MAKEU32(10,107,90,23)}}  ;
@@ -27,7 +29,7 @@ int main()
 	
 	tcpecho_raw_init();
        	low_level_init();
-
+	
 	
 
 
@@ -48,8 +50,19 @@ int main()
 
 
 		if(udp_flag){
+			t0 =__ajit_get_clock_time();
 			udpClient_send();
+			t1 =__ajit_get_clock_time();
+			total = total + (t1 - t0);
 			}
+
+		if(udp_done)
+			{
+			cortos_printf("total forwarding time = %016llx\n",total);
+			break;
+			}
+
+
 
 	
 	}

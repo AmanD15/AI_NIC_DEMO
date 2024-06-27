@@ -59,7 +59,7 @@ uint32_t recvdBytes =0;
 uint64_t totalBytes=0;
 
 uint8_t udp_flag =0;
-
+uint8_t udp_done =0;
 enum tcpecho_raw_states
 {
   ES_NONE = 0,
@@ -499,6 +499,7 @@ udpClient_send(){
 				udp_send(udp_client,p);
 				pbuf_free(p);
 				udp_flag = 0;
+				udp_done = 1;
 			}
 
 		}
@@ -610,7 +611,7 @@ tcp_raw_forward(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
     ip4_addr_t remote_ip = {{LWIP_MAKEU32(IP[0],IP[1],IP[2],IP[3])}};
     
 
-    cortos_printf("remote port =%u\n",remote_port);
+    //cortos_printf("remote port =%u\n",remote_port);
     tcpecho_raw_close(tpcb, es);
     tcp_abort(tpcb);
     
@@ -618,7 +619,7 @@ tcp_raw_forward(struct tcp_pcb *tpcb, struct tcpecho_raw_state *es)
 // using UDP to send data
 	
      wr_err = udp_connect(udp_client, &remote_ip, remote_port);
-     cortos_printf("value of wr_err = %d\n",(int)wr_err);
+     //cortos_printf("value of wr_err = %d\n",(int)wr_err);
 	if(wr_err!=ERR_OK)
 	{
 		cortos_printf("client: error connecting to remote server\n");
@@ -869,7 +870,7 @@ tcpecho_raw_sent(void *arg, struct tcp_pcb *tpcb, u16_t len)
 
   es = (struct tcpecho_raw_state *)arg;
   es->retries = 0;
-  cortos_printf("tcpecho_raw_sent:called\n");
+  //cortos_printf("tcpecho_raw_sent:called\n");
   if(es->p != NULL) {
     /* still got pbufs to send */
     tcp_sent(tpcb, tcpecho_raw_sent);
