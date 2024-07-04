@@ -83,8 +83,10 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$pipe FLASH_AFB_RESPONSE $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 	
 	//ACB SRAM pipes
-	$pipe REQUEST_TO_ACB_SRAM $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
-	$pipe RESPONSE_FROM_ACB_SRAM $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	$pipe REQUEST_TO_ACB_SRAM_FIFO_IN $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
+	$pipe REQUEST_TO_ACB_SRAM_FIFO_OUT $clk => CLOCK_TO_DRAMCTRL_BRIDGE $reset => RESET_TO_DRAMCTRL_BRIDGE
+	$pipe RESPONSE_FROM_ACB_SRAM_FIFO_IN $clk => CLOCK_TO_DRAMCTRL_BRIDGE $reset => RESET_TO_DRAMCTRL_BRIDGE
+	$pipe RESPONSE_FROM_ACB_SRAM_FIFO_OUT $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
 
 
 	$pipe ACB_DRAM_REQUEST_FIFO_IN $clk => CLOCK_TO_NIC $reset => RESET_TO_NIC
@@ -125,8 +127,8 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		MAX_ACB_TAP2_ADDR           => MAX_ACB_TAP2_ADDR
 		MIN_ACB_TAP3_ADDR           => MIN_ACB_TAP3_ADDR
 		MAX_ACB_TAP3_ADDR           => MAX_ACB_TAP3_ADDR
-		REQUEST_TO_ACB_SRAM	     => REQUEST_TO_ACB_SRAM
-		RESPONSE_FROM_ACB_SRAM	     => RESPONSE_FROM_ACB_SRAM
+		REQUEST_TO_ACB_SRAM	     => REQUEST_TO_ACB_SRAM_FIFO_IN
+		RESPONSE_FROM_ACB_SRAM	     => RESPONSE_FROM_ACB_SRAM_FIFO_OUT
 		$clk => CLOCK_TO_NIC
 		$reset => RESET_TO_NIC
 		
@@ -170,10 +172,10 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$reset => RESET_TO_DRAMCTRL_BRIDGE
 		
 	$instance acb_sram_inst acb_sram_lib:acb_sram
-		ACB_SRAM_REQUEST      => REQUEST_TO_ACB_SRAM
-		ACB_SRAM_RESPONSE     => RESPONSE_FROM_ACB_SRAM
-		$clk => CLOCK_TO_NIC
-		$reset => RESET_TO_NIC	
+		ACB_SRAM_REQUEST      => REQUEST_TO_ACB_SRAM_FIFO_OUT
+		ACB_SRAM_RESPONSE     => RESPONSE_FROM_ACB_SRAM_FIFO_IN
+		$clk => CLOCK_TO_DRAMCTRL_BRIDGE
+		$reset => RESET_TO_DRAMCTRL_BRIDGE	
 	
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -213,6 +215,28 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 
 		write_data	=> DRAM_ACB_RESPONSE_FIFO_IN
 		read_data	=> DRAM_ACB_RESPONSE_FIFO_OUT
+		write_clk       => CLOCK_TO_DRAMCTRL_BRIDGE
+		read_clk        => CLOCK_TO_NIC
+		fifo_reset      => RESET_TO_DRAMCTRL_BRIDGE
+		$clk => $null
+		$reset => $null
+		
+	/////////////////////////////////// FOR ACB SRAM ////////////////////////////////////////////////////
+		
+	$instance DualClockedQueue_ACB_SRAM_req_inst DualClockedQueue_lib:DualClockedQueue_ACB_req_wrap
+	
+		write_data             => REQUEST_TO_ACB_SRAM_FIFO_IN
+		read_data              => REQUEST_TO_ACB_SRAM_FIFO_OUT
+		write_clk              => CLOCK_TO_NIC
+		read_clk               => CLOCK_TO_DRAMCTRL_BRIDGE
+		fifo_reset              => RESET_TO_NIC
+		$clk => $null
+		$reset => $null
+
+	$instance DualClockedQueue_SRAM_ACB_resp_inst DualClockedQueue_lib:DualClockedQueue_ACB_resp_wrap
+
+		write_data	=> RESPONSE_FROM_ACB_SRAM_FIFO_IN
+		read_data	=> RESPONSE_FROM_ACB_SRAM_FIFO_OUT
 		write_clk       => CLOCK_TO_DRAMCTRL_BRIDGE
 		read_clk        => CLOCK_TO_NIC
 		fifo_reset      => RESET_TO_DRAMCTRL_BRIDGE

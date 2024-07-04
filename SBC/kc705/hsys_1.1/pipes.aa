@@ -44,8 +44,15 @@ $pipe ACB_REQUEST_FROM_NIC: $uint<110> $depth 2
 $pipe ACB_RESPONSE_TO_NIC: $uint<65> $depth 2
 $pipe ACB_REQUEST_TO_DRAM: $uint<110> $depth 2
 $pipe ACB_RESPONSE_FROM_DRAM: $uint<65> $depth 2
+
+// pipes for ACB SRAM
+
 $pipe REQUEST_TO_ACB_SRAM: $uint<110> $depth 2
 $pipe RESPONSE_FROM_ACB_SRAM: $uint<65> $depth 2
+$pipe REQUEST_TO_ACB_SRAM_FIFO_IN: $uint<110> $depth 2
+$pipe RESPONSE_FROM_ACB_SRAM_FIFO_IN: $uint<65> $depth 2
+$pipe REQUEST_TO_ACB_SRAM_FIFO_OUT: $uint<110> $depth 2
+$pipe RESPONSE_FROM_ACB_SRAM_FIFO_OUT: $uint<65> $depth 2
 
 
 // pipes for flash controller

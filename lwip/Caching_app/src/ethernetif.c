@@ -437,7 +437,7 @@ low_level_output(struct netif *netif, struct pbuf *p)
 
 	int read_ok = cortos_readMessages(free_queue_tx, (uint8_t*)(&bufptrPA) , 1);
  	if(read_ok == 0){
-		cortos_printf("low_level_output: failed to read free buffer\n");
+		//cortos_printf("low_level_output: failed to read free buffer\n");
 		return 1;
 	 }
 
