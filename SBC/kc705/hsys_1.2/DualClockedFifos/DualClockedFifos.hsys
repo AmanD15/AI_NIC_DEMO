@@ -1,0 +1,55 @@
+$system DualClockedQueue_ACB_req_wrap $library DualClockedQueue_lib
+$in
+    $pipe   write_data  110 $depth 2
+    $signal $clk read_clk  1 $depth 1
+    $signal $clk write_clk 1 $depth 1
+    $signal $reset fifo_reset    1 $depth 1 
+	
+$out
+	$pipe read_data 110 $depth 2
+{
+}
+
+
+$system DualClockedQueue_ACB_resp_wrap $library DualClockedQueue_lib
+$in
+    $pipe write_data 65 $depth 2
+    $signal $clk read_clk 1 $depth 1
+    $signal $clk write_clk 1 $depth 1
+    $signal $reset fifo_reset 1 $depth 1
+	
+$out
+    $pipe read_data  65 $depth 2
+{
+}
+
+
+
+
+
+$system DualClockedQueue_AFB_req_wrap $library DualClockedQueue_lib
+$in
+	$pipe write_data  74 $depth 2
+        $signal $clk read_clk   1 $depth 1
+        $signal $clk write_clk   1 $depth 1
+     	$signal $reset fifo_reset 1 $depth 1
+$out
+	$pipe read_data   74 $depth 2
+
+	
+{
+}
+
+
+$system DualClockedQueue_AFB_resp_wrap $library DualClockedQueue_lib
+$in
+	$pipe write_data 33 $depth 2
+        $signal $clk read_clk 1 $depth 1
+        $signal $clk write_clk 1 $depth 1
+     	$signal $reset fifo_reset 1 $depth 1
+$out
+	$pipe read_data  33 $depth 2
+
+	
+{
+}

@@ -1,0 +1,29 @@
+
+$system nic_mac_bridge $library nic_mac_bridge_lib
+    $in 
+	    $signal ENABLE_MAC
+        $pipe rx_in_pipe
+	    $pipe tx_in_pipe 
+        
+    $out
+	  
+	    $signal nic_to_mac_resetn
+	    $pipe rx_out_pipe
+        $pipe tx_out_pipe
+   
+{
+    $instance inst_rx_concat_system nic_mac_bridge_lib:rx_concat_system
+                rx_in_pipe => rx_in_pipe		        // input (10)
+		        rx_out_pipe => rx_out_pipe              // output (73)
+
+    $instance inst_tx_deconcat_system nic_mac_bridge_lib:tx_deconcat_system
+                tx_in_pipe  => tx_in_pipe               // input(73)
+                tx_out_pipe => tx_out_pipe              // output(10)
+
+    $instance inst_nic_mac_pipe_reset nic_mac_bridge_lib:nic_mac_pipe_reset
+                ENABLE_MAC         =>  ENABLE_MAC
+                nic_to_mac_resetn  =>  nic_to_mac_resetn
+                
+
+}
+
