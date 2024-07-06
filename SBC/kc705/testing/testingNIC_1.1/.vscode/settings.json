@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "cortos.h": "c",
-        "cortos_locks.h": "c"
-    }
-}

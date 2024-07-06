@@ -12,6 +12,10 @@ Author: Siddhant Singh Tomar
 	nic_mac_bridge_edited.vhdl : 
 		this file is needed, because output reset signal from
 		nic_mac_pipe_reset.v, is sent to rx_concat and tx_deconcat blocks  
+
+
+Depending on the config, one wants to build, add the relevant toplevel file
+in bitgen.tcl, by uncommenting. (see bitgen.tcl for more details)
 				
 NOTE: To build the system, with NIC or NIC_1.1 one has to 
 	make changes in ../hsys or hsys_1.1/nic_subsystem/nic/Makefile
