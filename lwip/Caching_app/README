@@ -1,0 +1,51 @@
+Title : Network caching application
+Author : Siddhant Singh Tomar
+Date   : 12/1/2024
+
+    1. include folder
+        contains various configuration file for LwIP
+            - cc.h :
+            - sys_arch.h:
+            - lwipopts.h:
+
+    2. src folder
+            - contains mainloop code for baremetal use of LwIP.
+            - ethernetif.c contanis low level drivers
+            - sys_arch.c mainly contains sys_now() function
+                needed for internal timers of TCP/IP stack.
+
+
+    3. server : host side UDP server code
+
+    4. client : host side TCP client code
+
+    5. tcp_app : lwIP server client code.
+
+
+Host (PC) Side Setup:
+- Check the connection details of "ETH_NIC_TESTING" on the machine at 10.107.90.64.
+
+Hardware (FPGA) Setup:
+After loading any SBC bitfile onto the FPGA, follow these steps:
+1. Press the east push button to reset the clock.
+2. Reset the processor using VIO by giving a reset pulse (0->1->0).
+3. Reset the NIC using VIO by giving a reset pulse (0->1->0).
+4. Now, you are ready to push the code using `ajit_debug_monitor_mt`.
+
+
+NOTE: For original_SBC and hsys_1.2, use the regular process (./build.sh)
+      Generating code for SBC_FASTMEM. 
+    1. ./build.sh
+    2. cd cortos_build/cortos_src
+    3. changes to be made in vmap.txt:  
+        non cacheable lock page should be mapped to 0x50000000
+    4. changes to be made in init.s
+        initialize non cacheable lock from 0x50000000
+			to first illegal address 0x50001000
+
+    (see files inside temp. for reference)
+    5. cd .. (now you are inside cortos_build)
+    6. ./build.sh
+
+
+

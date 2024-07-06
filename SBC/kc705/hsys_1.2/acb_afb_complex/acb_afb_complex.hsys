@@ -1,0 +1,113 @@
+$system acb_afb_complex $library acb_afb_complex_lib
+	$in
+		$pipe ACB_REQUEST_FROM_PROCESSOR
+		$pipe ACB_REQUEST_FROM_NIC
+
+		$pipe AFB_RESPONSE_FROM_NIC
+		$pipe AFB_RESPONSE_FROM_FLASH
+
+		$pipe ACB_RESPONSE_FROM_L2CACHE
+
+		// tap ranges could be made inputs
+		// so that we can delay the decision
+		// of which address ranges are used
+		$signal MIN_ACB_TAP1_ADDR   36	$depth 1
+		$signal MAX_ACB_TAP1_ADDR   36	$depth 1
+
+		$signal MIN_ACB_TAP2_ADDR   36	$depth 1
+		$signal MAX_ACB_TAP2_ADDR   36	$depth 1
+
+	$out
+		$pipe ACB_RESPONSE_TO_PROCESSOR
+		$pipe ACB_RESPONSE_TO_NIC
+
+		$pipe AFB_REQUEST_TO_NIC
+		$pipe AFB_REQUEST_TO_FLASH
+
+		$pipe ACB_REQUEST_TO_L2CACHE
+
+{
+
+	
+	
+	$pipe ACB_TAP_REQUEST_TO_NIC    110 $depth 2
+	$pipe ACB_TAP_RESPONSE_FROM_NIC  65 $depth 2
+	
+	$pipe ACB_TAP_REQUEST_TO_FLASH   110 $depth 2
+	$pipe ACB_TAP_RESPONSE_FROM_FLASH  65 $depth 2
+
+	$pipe ACB_THROUGH_REQUEST_TO_FLASH_DRAM     110 $depth 2
+	$pipe ACB_THROUGH_RESPONSE_FROM_FLASH_DRAM  65 $depth 2
+
+	$pipe ACB_THROUGH_REQUEST_TO_L2CACHE     110 $depth 2
+	$pipe ACB_THROUGH_RESPONSE_FROM_L2CACHE  65 $depth 2
+
+
+	$instance acb_tap_inst_1  GlueModules:acb_fast_tap
+		CORE_BUS_REQUEST           => ACB_REQUEST_FROM_PROCESSOR
+		CORE_BUS_RESPONSE          => ACB_RESPONSE_TO_PROCESSOR
+
+		// tap to NIC
+		CORE_BUS_REQUEST_TAP       => ACB_TAP_REQUEST_TO_NIC
+		CORE_BUS_RESPONSE_TAP      => ACB_TAP_RESPONSE_FROM_NIC
+		
+
+		// through to Flash and DRAM
+		CORE_BUS_REQUEST_THROUGH   => ACB_THROUGH_REQUEST_TO_FLASH_DRAM
+		CORE_BUS_RESPONSE_THROUGH  => ACB_THROUGH_RESPONSE_FROM_FLASH_DRAM
+
+		// address range for tap
+		MIN_ADDR_TAP            => MIN_ACB_TAP1_ADDR
+		MAX_ADDR_TAP            => MAX_ACB_TAP1_ADDR
+		
+	$instance acb_afb_bridge_inst_1  GlueModules:acb_afb_bridge
+		CORE_BUS_REQUEST    => ACB_TAP_REQUEST_TO_NIC
+		CORE_BUS_RESPONSE   => ACB_TAP_RESPONSE_FROM_NIC
+
+		AFB_BUS_REQUEST     => AFB_REQUEST_TO_NIC
+		AFB_BUS_RESPONSE    => AFB_RESPONSE_FROM_NIC
+				
+		
+	$instance acb_tap_inst_2  GlueModules:acb_fast_tap
+		CORE_BUS_REQUEST           => ACB_THROUGH_REQUEST_TO_FLASH_DRAM
+		CORE_BUS_RESPONSE          => ACB_THROUGH_RESPONSE_FROM_FLASH_DRAM
+
+		// tap to NIC
+		CORE_BUS_REQUEST_TAP       =>  ACB_TAP_REQUEST_TO_FLASH
+		CORE_BUS_RESPONSE_TAP      =>  ACB_TAP_RESPONSE_FROM_FLASH
+		
+
+		// through to Flash and DRAM
+		CORE_BUS_REQUEST_THROUGH   =>   ACB_THROUGH_REQUEST_TO_L2CACHE
+		CORE_BUS_RESPONSE_THROUGH  =>   ACB_THROUGH_RESPONSE_FROM_L2CACHE
+
+		// address range for tap
+		MIN_ADDR_TAP            => MIN_ACB_TAP2_ADDR 
+		MAX_ADDR_TAP            => MAX_ACB_TAP2_ADDR 
+
+		
+	$instance acb_afb_bridge_inst_2  GlueModules:acb_afb_bridge
+		CORE_BUS_REQUEST    => ACB_TAP_REQUEST_TO_FLASH
+		CORE_BUS_RESPONSE   => ACB_TAP_RESPONSE_FROM_FLASH
+
+		AFB_BUS_REQUEST     => AFB_REQUEST_TO_FLASH
+		AFB_BUS_RESPONSE    => AFB_RESPONSE_FROM_FLASH
+
+
+
+	$instance acb_fast_mux_inst  GlueModules:acb_fast_mux
+		CORE_BUS_REQUEST_HIGH  => ACB_REQUEST_FROM_NIC
+		CORE_BUS_RESPONSE_HIGH => ACB_RESPONSE_TO_NIC
+
+		CORE_BUS_REQUEST_LOW   => ACB_THROUGH_REQUEST_TO_L2CACHE
+		CORE_BUS_RESPONSE_LOW  => ACB_THROUGH_RESPONSE_FROM_L2CACHE
+
+		CORE_BUS_REQUEST       => ACB_REQUEST_TO_L2CACHE      
+		CORE_BUS_RESPONSE      => ACB_RESPONSE_FROM_L2CACHE    
+		
+		
+		
+		
+
+
+}

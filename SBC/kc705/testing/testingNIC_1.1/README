@@ -2,15 +2,18 @@
 
 			Authors: Siddhant Singh Tomar.
 			
-	(cortos_build_ACB_SRAM should be used, 
-	if ACB SRAM of 256KB is used,
-	in yaml file NCRAM start address should be 0x5000_1000
-	with size 252KB)
-	
-	(cortos_build_ACB_SRAM: changes are as  follows
-		- vmap.txt non cacheable lock page mapped to 0x50000000
-		- init.s initialize non cacheable lock from 0x50000000
-			to 0x50001000)
+How to build for SBC_FASTMEM?	
+    1. ./build.sh
+    2. cd cortos_build/cortos_src
+    3. changes to be made in vmap.txt:  
+        non cacheable lock page should be mapped to 0x50000000
+    4. changes to be made in init.s
+        initialize non cacheable lock from 0x50000000
+			to first illegal address 0x50001000
+
+    (see files inside temp. for reference)
+    5. cd .. (now you are inside cortos_build)
+    6. ./build.sh
 	
 1. Overview
 -------------------------

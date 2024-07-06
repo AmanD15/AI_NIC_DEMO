@@ -1,6 +1,0 @@
-1. Write a sequence of values to memory locations.
-2. Read-back the sequence and verify correctness of read-back values.
-3. Memory areas to be checked:
-	- Flash
-	- DRAM
-	- NIC registers.

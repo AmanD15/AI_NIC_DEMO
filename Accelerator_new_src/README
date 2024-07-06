@@ -1,0 +1,19 @@
+To generate VHDL:
+
+1. sh ./docker_command.sh
+
+In Docker container:
+
+2. cd home
+3. make
+
+Steps 1 and 2 can be skipped if AHIR-V2 is installed on the device
+
+Now, you can exit docker
+
+The following files will be created:
+ai_ml_engine_global_package.vhdl
+ai_ml_engine.vhdl
+
+**Note: The file 'fp_enhanced.aa' is not included in the GitHub repository. 
+To obtain the file, please contact Professor Madhav Desai at madhav@ee.iitb.ac.in. 

@@ -22,7 +22,6 @@ int main()
 	netif_set_default(&netif);
 	netif_set_up(&netif);
 	
-	tcpecho_raw_init();
 
 	low_level_init();
 
@@ -32,7 +31,7 @@ int main()
 	while(1)
 
 	{
-		
+		//if(low_level_input(&netif) == 0) {
 		if(ZeroCopyRx_input(&netif) == 0) {
 
 			//message_counter++;
