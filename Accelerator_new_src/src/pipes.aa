@@ -1,0 +1,21 @@
+// lock rwbar bmask addr wdata
+//  1    1     4    36    32
+$pipe AFB_ACCELERATOR_REQUEST: $uint<74>  $depth 2 $p2p
+// error rdata
+//   1    32
+$pipe AFB_ACCELERATOR_RESPONSE: $uint<33> $depth 2 
+
+
+
+// interrupt
+$pipe ACCELERATOR_INTERRUPT: $uint<1> $signal
+
+// rwbar addr wdata
+//  1     31   32
+$pipe tester_control_command: $uint<64> $depth 2
+
+// rdata
+//  32
+$pipe tester_control_response: $uint<32> $depth 2
+
+$pipe ACCELERATOR_INTERRUPT_8 : $uint<8> $signal

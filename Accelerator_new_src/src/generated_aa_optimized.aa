@@ -1,20 +1,22 @@
 // Aa code produced by llvm2aa (version 2.0)
-$pipe accumulator_pipe_even : $float<8,23> $depth 1
-$pipe accumulator_pipe_odd : $float<8,23> $depth 1
-$pipe conv_input_data : $float<8,23> $depth 1
-$pipe conv_ker_data : $float<8,23> $depth 1
-$pipe conv_out_data : $float<8,23> $depth 1
-$pipe fetch_start : $uint<8> $depth 1
-$pipe hor_slice_pipe : $float<8,23> $depth 1
-$pipe in_data_0 : $float<8,23> $depth 1
-$pipe in_data_1 : $float<8,23> $depth 1
-$pipe in_data_2 : $float<8,23> $depth 1
-$pipe in_data_3 : $float<8,23> $depth 1
-$pipe in_data_4 : $float<8,23> $depth 1
-$pipe ker_data : $uint<64> $depth 1
-$pipe pool_data_fifo_r0 : $uint<8> $depth 1
-$pipe pool_data_lifo_r1 : $uint<8> $depth 1
-$pipe pool_out_data : $uint<8> $depth 1
+$pipe accumulator_pipe_even : $float<8,23> $depth 10000
+$pipe accumulator_pipe_odd : $float<8,23> $depth 10000
+$pipe conv_input_data : $float<8,23> $depth 10000
+$pipe conv_ker_data : $float<8,23> $depth 10000
+$pipe conv_out_data : $float<8,23> $depth 10000
+$pipe fetch_start : $uint<8> $depth 10000
+$pipe hor_slice_pipe : $float<8,23> $depth 10000
+$pipe in_data_0 : $float<8,23> $depth 10000
+$pipe in_data_1 : $float<8,23> $depth 10000
+$pipe in_data_2 : $float<8,23> $depth 10000
+$pipe in_data_3 : $float<8,23> $depth 10000
+$pipe in_data_4 : $float<8,23> $depth 10000
+$pipe ker_data : $uint<64> $depth 10000
+$pipe test_pipe : $uint<64> $depth 10000
+$pipe test_pipe1 : $uint<64> $depth 10000
+$pipe pool_data_fifo_r0 : $uint<8> $depth 10000
+$lifo $pipe pool_data_lifo_r1 : $uint<8> $depth 10000
+$pipe pool_out_data : $uint<8> $depth 10000
 $module [generated_llvmx_xbc_storage_initializer_] $in () $out () $is {
 $null
 $attribute initializer
@@ -105,149 +107,288 @@ $attribute initializer
 // //begin: basic-block vars
 // ret_val__ := ($cast ($float<8,23>) number1)
 // }
+// $module [round_half_even] 
+//  $in (number : $float<8,23> )
+//  $out (ret_val__ : $uint<8>)
+//  $is 
+// {
+// //begin: basic-block vars
+// $call fstoi_for_ecg (number )  (xx_x5)
+// $call fitos32_for_ecg (( $bitcast ($uint<32> ) xx_x5) )  (xx_x8)
+// $call fp32_sub_for_ecg (number xx_x8 )  (xx_x12)
+// $volatile $call fpcmp32 (xx_x12 ( $bitcast ($float<8,23> ) _f5.000000e-01 )  ( $bitcast ($uint<1> ) _b1 )  )  (xx_x15)
+// // compare instruction
+// xx_x18 := (xx_x15 == ( $bitcast ($uint<2> ) _b01 )  )
+// vars_if_true_taken := xx_x18
+// vars_if_false_taken := ( ~xx_x18)
+// if_false_exec_guard := vars_if_false_taken
+// //begin: basic-block if_false
+// // compare instruction
+// $guard (if_false_exec_guard) xx_x24 := (xx_x15 == ( $bitcast ($uint<2> ) _b10 )  )
+// if_false_if_truex_x1_taken := (if_false_exec_guard & xx_x24)
+// if_false_if_falsex_x1_taken := (if_false_exec_guard & (~xx_x24))
+// if_falsex_x1_exec_guard := if_false_if_falsex_x1_taken
+// //begin: basic-block if_falsex_x1
+// $guard (if_falsex_x1_exec_guard) iNsTr_5 := (( $bitcast ($uint<32> ) xx_x5) & ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
+// // compare instruction
+// $guard (if_falsex_x1_exec_guard) xx_x32 := (iNsTr_5 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
+// if_falsex_x1_if_truex_x2_taken := (if_falsex_x1_exec_guard & xx_x32)
+// if_falsex_x1_if_falsex_x2_taken := (if_falsex_x1_exec_guard & (~xx_x32))
+// if_falsex_x2_exec_guard := if_falsex_x1_if_falsex_x2_taken
+// //begin: basic-block if_falsex_x2
+// $guard (if_falsex_x2_exec_guard) xx_x38 := (xx_x8 + ( $bitcast ($float<8,23> ) _f1.000000e+00 ) )
+// if_falsex_x2_if_next_taken := if_falsex_x2_exec_guard
+// if_truex_x2_exec_guard := if_falsex_x1_if_truex_x2_taken
+// //begin: basic-block if_truex_x2
+// if_truex_x2_if_next_taken := if_truex_x2_exec_guard
+// if_next_exec_guard := (if_falsex_x2_if_next_taken | if_truex_x2_if_next_taken )
+// //begin: basic-block if_next
+// xx_x433 := ($mux if_falsex_x2_if_next_taken ( $bitcast ($float<8,23>) xx_x38) ($mux if_truex_x2_if_next_taken ( $bitcast ($float<8,23>) xx_x8) ($bitcast ($float<8,23>) 0)))
+// if_next_if_nextx_x1_taken := if_next_exec_guard
+// if_truex_x1_exec_guard := if_false_if_truex_x1_taken
+// //begin: basic-block if_truex_x1
+// $guard (if_truex_x1_exec_guard) xx_x27 := (xx_x8 + ( $bitcast ($float<8,23> ) _f1.000000e+00 ) )
+// if_truex_x1_if_nextx_x1_taken := if_truex_x1_exec_guard
+// if_nextx_x1_exec_guard := (if_next_if_nextx_x1_taken | if_truex_x1_if_nextx_x1_taken )
+// //begin: basic-block if_nextx_x1
+// xx_x432 := ($mux if_next_if_nextx_x1_taken ( $bitcast ($float<8,23>) xx_x433) ($mux if_truex_x1_if_nextx_x1_taken ( $bitcast ($float<8,23>) xx_x27) ($bitcast ($float<8,23>) 0)))
+// if_nextx_x1_if_nextx_x2_taken := if_nextx_x1_exec_guard
+// if_true_exec_guard := vars_if_true_taken
+// //begin: basic-block if_true
+// if_true_if_nextx_x2_taken := if_true_exec_guard
+// //begin: basic-block if_nextx_x2
+// xx_x43 := ($mux if_nextx_x1_if_nextx_x2_taken ( $bitcast ($float<8,23>) xx_x432) ($mux if_true_if_nextx_x2_taken ( $bitcast ($float<8,23>) xx_x8) ($bitcast ($float<8,23>) 0)))
+// ret_val__ := ( $bitcast ($uint<8> ) ( $cast ( $int< 8 > ) xx_x43) )
+// }
+// $module [uint_quant] 
+//  $in (val : $float<8,23> scale_inv : $float<8,23> zero_point : $float<8,23> )
+//  $out (ret_val__ : $uint<8>)
+//  $is 
+// {
+// //begin: basic-block vars
+// $call fp32_mul_for_ecg (val scale_inv )  (xx_x10)
+// $call fp32_add_for_ecg (xx_x10 zero_point )  (xx_x12)
+// // compare instruction
+// xx_x15 := (xx_x12 > ( $bitcast ($float<8,23> ) _f2.550000e+02 )  )
+// vars_if_true_taken := xx_x15
+// vars_if_false_taken := ( ~xx_x15)
+// if_false_exec_guard := vars_if_false_taken
+// //begin: basic-block if_false
+// if_false_if_next_taken := if_false_exec_guard
+// if_true_exec_guard := vars_if_true_taken
+// //begin: basic-block if_true
+// if_true_if_next_taken := if_true_exec_guard
+// if_next_exec_guard := (if_false_if_next_taken | if_true_if_next_taken )
+// //begin: basic-block if_next
+// xx_x20 := ($mux if_false_if_next_taken ( $bitcast ($float<8,23>) xx_x12) ($mux if_true_if_next_taken ( $bitcast ($float<8,23>) ( $bitcast ($float<8,23> ) _f2.550000e+02 ) ) ($bitcast ($float<8,23>) 0)))
+// // compare instruction
+// $guard (if_next_exec_guard) xx_x21 := (xx_x20 < ( $bitcast ($float<8,23> ) _h0 )  )
+// if_next_if_truex_x1_taken := (if_next_exec_guard & xx_x21)
+// if_next_if_falsex_x1_taken := (if_next_exec_guard & (~xx_x21))
+// if_falsex_x1_exec_guard := if_next_if_falsex_x1_taken
+// //begin: basic-block if_falsex_x1
+// if_falsex_x1_if_nextx_x1_taken := if_falsex_x1_exec_guard
+// if_truex_x1_exec_guard := if_next_if_truex_x1_taken
+// //begin: basic-block if_truex_x1
+// if_truex_x1_if_nextx_x1_taken := if_truex_x1_exec_guard
+// //begin: basic-block if_nextx_x1
+// xx_x26 := ($mux if_falsex_x1_if_nextx_x1_taken ( $bitcast ($float<8,23>) xx_x20) ($mux if_truex_x1_if_nextx_x1_taken ( $bitcast ($float<8,23>) ( $bitcast ($float<8,23> ) _h0 ) ) ($bitcast ($float<8,23>) 0)))
+// $call round_half_even (xx_x26 )  (ret_val__)
+// }
+// $module [dequant_inp] 
+//  $in (val : $uint<8> scale : $float<8,23> zero_point : $float<8,23> )
+//  $out (ret_val__ : $float<8,23>)
+//  $is 
+// {
+// //begin: basic-block vars
+// xx_x13 := ($cast ($float<8,23>) val)
+// $call fp32_sub_for_ecg (xx_x13 zero_point )  (xx_x14)
+// $call fp32_mul_for_ecg (scale xx_x14 )  (ret_val__)
+// }
+// $module [dequant_ker] 
+//  $in (val : $uint<8> scale : $float<8,23> zero_point : $float<8,23> )
+//  $out (ret_val__ : $float<8,23>)
+//  $is 
+// {
+// //begin: basic-block vars
+// xx_x13 :=  ( $cast ($float<8,23>)  ( $bitcast ( $int< 32 > ) val) ) 
+// $call fp32_sub_for_ecg (xx_x13 zero_point )  (xx_x14)
+// $call fp32_mul_for_ecg (scale xx_x14 )  (ret_val__)
+// }
+// $module [relu] 
+//  $in (val : $float<8,23> )
+//  $out (ret_val__ : $float<8,23>)
+//  $is 
+// {
+// //begin: basic-block vars
+// // compare instruction
+// xx_x6 := (val > ( $bitcast ($float<8,23> ) _h0 )  )
+// vars_if_true_taken := xx_x6
+// vars_if_false_taken := ( ~xx_x6)
+// if_false_exec_guard := vars_if_false_taken
+// //begin: basic-block if_false
+// if_false_if_next_taken := if_false_exec_guard
+// if_true_exec_guard := vars_if_true_taken
+// //begin: basic-block if_true
+// if_true_if_next_taken := if_true_exec_guard
+// //begin: basic-block if_next
+// ret_val__ := ($mux if_false_if_next_taken ( $bitcast ($float<8,23>) ( $bitcast ($float<8,23> ) _h0 ) ) ($mux if_true_if_next_taken ( $bitcast ($float<8,23>) val) ($bitcast ($float<8,23>) 0)))
+// }
 $module [round_half_even] 
  $in (number : $float<8,23> )
  $out (ret_val__ : $uint<8>)
  $is 
 {
+$branchblock [body] {
+$storage temp_out: $uint<8>
 //begin: basic-block vars
-$call fstoi_for_ecg (number )  (xx_x5)
-$call fitos32_for_ecg (( $bitcast ($uint<32> ) xx_x5) )  (xx_x8)
-$call fp32_sub_for_ecg (number xx_x8 )  (xx_x12)
-$volatile $call fpcmp32 (xx_x12 ( $bitcast ($float<8,23> ) _f5.000000e-01 )  ( $bitcast ($uint<1> ) _b1 )  )  (xx_x15)
-// compare instruction
-xx_x18 := (xx_x15 == ( $bitcast ($uint<2> ) _b01 )  )
-vars_if_true_taken := xx_x18
-vars_if_false_taken := ( ~xx_x18)
-if_false_exec_guard := vars_if_false_taken
-//begin: basic-block if_false
-// compare instruction
-$guard (if_false_exec_guard) xx_x24 := (xx_x15 == ( $bitcast ($uint<2> ) _b10 )  )
-if_false_if_truex_x1_taken := (if_false_exec_guard & xx_x24)
-if_false_if_falsex_x1_taken := (if_false_exec_guard & (~xx_x24))
-if_falsex_x1_exec_guard := if_false_if_falsex_x1_taken
-//begin: basic-block if_falsex_x1
-$guard (if_falsex_x1_exec_guard) iNsTr_5 := (( $bitcast ($uint<32> ) xx_x5) & ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
-// compare instruction
-$guard (if_falsex_x1_exec_guard) xx_x32 := (iNsTr_5 == ( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  )
-if_falsex_x1_if_truex_x2_taken := (if_falsex_x1_exec_guard & xx_x32)
-if_falsex_x1_if_falsex_x2_taken := (if_falsex_x1_exec_guard & (~xx_x32))
-if_falsex_x2_exec_guard := if_falsex_x1_if_falsex_x2_taken
-//begin: basic-block if_falsex_x2
-$guard (if_falsex_x2_exec_guard) xx_x38 := (xx_x8 + ( $bitcast ($float<8,23> ) _f1.000000e+00 ) )
-if_falsex_x2_if_next_taken := if_falsex_x2_exec_guard
-if_truex_x2_exec_guard := if_falsex_x1_if_truex_x2_taken
-//begin: basic-block if_truex_x2
-if_truex_x2_if_next_taken := if_truex_x2_exec_guard
-if_next_exec_guard := (if_falsex_x2_if_next_taken | if_truex_x2_if_next_taken )
-//begin: basic-block if_next
-xx_x433 := ($mux if_falsex_x2_if_next_taken ( $bitcast ($float<8,23>) xx_x38) ($mux if_truex_x2_if_next_taken ( $bitcast ($float<8,23>) xx_x8) ($bitcast ($float<8,23>) 0)))
-if_next_if_nextx_x1_taken := if_next_exec_guard
-if_truex_x1_exec_guard := if_false_if_truex_x1_taken
-//begin: basic-block if_truex_x1
-$guard (if_truex_x1_exec_guard) xx_x27 := (xx_x8 + ( $bitcast ($float<8,23> ) _f1.000000e+00 ) )
-if_truex_x1_if_nextx_x1_taken := if_truex_x1_exec_guard
-if_nextx_x1_exec_guard := (if_next_if_nextx_x1_taken | if_truex_x1_if_nextx_x1_taken )
-//begin: basic-block if_nextx_x1
-xx_x432 := ($mux if_next_if_nextx_x1_taken ( $bitcast ($float<8,23>) xx_x433) ($mux if_truex_x1_if_nextx_x1_taken ( $bitcast ($float<8,23>) xx_x27) ($bitcast ($float<8,23>) 0)))
-if_nextx_x1_if_nextx_x2_taken := if_nextx_x1_exec_guard
-if_true_exec_guard := vars_if_true_taken
-//begin: basic-block if_true
-if_true_if_nextx_x2_taken := if_true_exec_guard
-//begin: basic-block if_nextx_x2
-xx_x43 := ($mux if_nextx_x1_if_nextx_x2_taken ( $bitcast ($float<8,23>) xx_x432) ($mux if_true_if_nextx_x2_taken ( $bitcast ($float<8,23>) xx_x8) ($bitcast ($float<8,23>) 0)))
-ret_val__ := ( $bitcast ($uint<8> ) ( $cast ( $int< 8 > ) xx_x43) )
+$call fstoi_for_ecg (number)  (int_part)
+
+$call fitos32_for_ecg (($bitcast ($uint<32>) int_part) )  (xx_x8)
+
+$call fp32_sub_for_ecg (number xx_x8 )  (frac_part)
+
+$volatile $call fpcmp32 (frac_part ( $bitcast ($float<8,23> ) _f0.5e+0 ) 0) (chk)
+
+$if (chk == 1) $then
+	temp_out := ( $bitcast ( $uint<8> ) int_part)
+	$place [return__] 
+// $else 
+// 	$place [false1] 
+$endif 
+
+$if (chk == 2) $then
+	temp_out := ( $bitcast ( $uint<8> ) ( int_part + 1))
+	$place [return__] 
+// $else 
+// 	$place [false1] 
+$endif 
+
+first_bit := (int_part [] 0)
+$if (first_bit == 0) $then
+	temp_out := ( $bitcast ( $uint<8> ) int_part)
+	$place [return__] 
+// $else 
+// 	$place [false1] 
+$endif 
+
+temp_out := ( $bitcast ( $uint<8> ) ( int_part + 1))
+$place [return__] 
+$merge return__ $endmerge
+
+ret_val__ := temp_out
+
 }
+}
+
 $module [uint_quant] 
- $in (val : $float<8,23> scale_inv : $float<8,23> zero_point : $float<8,23> )
+ $in (val : $float<8,23> scale : $float<8,23> zero_point : $float<8,23> )
  $out (ret_val__ : $uint<8>)
  $is 
 {
+$branchblock [body] {
 //begin: basic-block vars
-$call fp32_mul_for_ecg (val scale_inv )  (xx_x10)
-$call fp32_add_for_ecg (xx_x10 zero_point )  (xx_x12)
+$storage temp_out: $uint<8>
+$call fp32_mul_for_ecg (val scale )  (xx_x10)
+$call fp32_add_for_ecg (xx_x10 zero_point )  (quant_float)
+
 // compare instruction
-xx_x15 := (xx_x12 > ( $bitcast ($float<8,23> ) _f2.550000e+02 )  )
-vars_if_true_taken := xx_x15
-vars_if_false_taken := ( ~xx_x15)
-if_false_exec_guard := vars_if_false_taken
-//begin: basic-block if_false
-if_false_if_next_taken := if_false_exec_guard
-if_true_exec_guard := vars_if_true_taken
-//begin: basic-block if_true
-if_true_if_next_taken := if_true_exec_guard
-if_next_exec_guard := (if_false_if_next_taken | if_true_if_next_taken )
-//begin: basic-block if_next
-xx_x20 := ($mux if_false_if_next_taken ( $bitcast ($float<8,23>) xx_x12) ($mux if_true_if_next_taken ( $bitcast ($float<8,23>) ( $bitcast ($float<8,23> ) _f2.550000e+02 ) ) ($bitcast ($float<8,23>) 0)))
-// compare instruction
-$guard (if_next_exec_guard) xx_x21 := (xx_x20 < ( $bitcast ($float<8,23> ) _h0 )  )
-if_next_if_truex_x1_taken := (if_next_exec_guard & xx_x21)
-if_next_if_falsex_x1_taken := (if_next_exec_guard & (~xx_x21))
-if_falsex_x1_exec_guard := if_next_if_falsex_x1_taken
-//begin: basic-block if_falsex_x1
-if_falsex_x1_if_nextx_x1_taken := if_falsex_x1_exec_guard
-if_truex_x1_exec_guard := if_next_if_truex_x1_taken
-//begin: basic-block if_truex_x1
-if_truex_x1_if_nextx_x1_taken := if_truex_x1_exec_guard
-//begin: basic-block if_nextx_x1
-xx_x26 := ($mux if_falsex_x1_if_nextx_x1_taken ( $bitcast ($float<8,23>) xx_x20) ($mux if_truex_x1_if_nextx_x1_taken ( $bitcast ($float<8,23>) ( $bitcast ($float<8,23> ) _h0 ) ) ($bitcast ($float<8,23>) 0)))
-$call round_half_even (xx_x26 )  (ret_val__)
+// chk1 := (quant_float > ( $bitcast ($float<8,23> ) _f2.550e+02 )  )
+$volatile $call fpcmp32 (quant_float ( $bitcast ($float<8,23> ) _f2.550e+02 ) 0) (chk)
+$volatile $call fpcmp32 (quant_float ( $bitcast ($float<8,23> ) _f0.0e+0 ) 0) (chk1)
+
+$if (chk == 2) $then
+	temp_out := ( $cast ( $uint<8> ) 255)
+	$place [return__] 
+$endif
+
+// chk2 := (quant_float < ( $cast ($float<8,23> ) _f0.0e+0 )  )
+
+$if (chk1 == 1) $then
+	temp_out := ( $cast ( $uint<8> ) 0)
+	$place [return__] 
+$endif
+
+$call round_half_even(quant_float) (round_val)
+temp_out := round_val
+// $place [return__]
+$place [return__] 
+
+$merge return__ $endmerge
+
+ret_val__ :=  temp_out
+}
 }
 $module [dequant_inp] 
  $in (val : $uint<8> scale : $float<8,23> zero_point : $float<8,23> )
  $out (ret_val__ : $float<8,23>)
  $is 
 {
+$branchblock [body] {
 //begin: basic-block vars
 xx_x13 := ($cast ($float<8,23>) val)
 $call fp32_sub_for_ecg (xx_x13 zero_point )  (xx_x14)
 $call fp32_mul_for_ecg (scale xx_x14 )  (ret_val__)
+$place [return__]
+$merge return__ $endmerge
+}
 }
 $module [dequant_ker] 
  $in (val : $uint<8> scale : $float<8,23> zero_point : $float<8,23> )
  $out (ret_val__ : $float<8,23>)
  $is 
 {
+$branchblock [body] {
 //begin: basic-block vars
-xx_x13 :=  ( $cast ($float<8,23>)  ( $bitcast ( $int< 32 > ) val) ) 
+xx_x13 :=  ( $cast ($float<8,23>)  ( $cast ( $int< 32 > ) val) ) 
+
 $call fp32_sub_for_ecg (xx_x13 zero_point )  (xx_x14)
 $call fp32_mul_for_ecg (scale xx_x14 )  (ret_val__)
+$place [return__]
+$merge return__ $endmerge
+}
 }
 $module [relu] 
  $in (val : $float<8,23> )
  $out (ret_val__ : $float<8,23>)
  $is 
 {
+$storage stored_ret_val__ : $float<8,23>
+$branchblock [body] {
 //begin: basic-block vars
 // compare instruction
-xx_x6 := (val > ( $bitcast ($float<8,23> ) _h0 )  )
-vars_if_true_taken := xx_x6
-vars_if_false_taken := ( ~xx_x6)
-if_false_exec_guard := vars_if_false_taken
-//begin: basic-block if_false
-if_false_if_next_taken := if_false_exec_guard
-if_true_exec_guard := vars_if_true_taken
+xx_x5 := (val > ( $bitcast ($float<8,23> ) _h0 )  )
+$if xx_x5 $then  $place [vars_if_true] $else $place [vars_if_false] $endif 
 //begin: basic-block if_true
-if_true_if_next_taken := if_true_exec_guard
-//begin: basic-block if_next
-ret_val__ := ($mux if_false_if_next_taken ( $bitcast ($float<8,23>) ( $bitcast ($float<8,23> ) _h0 ) ) ($mux if_true_if_next_taken ( $bitcast ($float<8,23>) val) ($bitcast ($float<8,23>) 0)))
+$merge vars_if_true
+$endmerge
+stored_ret_val__ := val
+$place [return__]
+//begin: basic-block if_false
+$merge vars_if_false
+$endmerge
+stored_ret_val__ := ( $bitcast ($float<8,23> ) _h0 ) 
+$place [return__]
+$merge return__ $endmerge
+ret_val__ := stored_ret_val__ 
 }
-$module [readModule_convolution] 
- $in (base_address : $uint<32> addr : $uint<32> )
- $out (ret_val__ : $uint<64>)
- $is 
-{
-//begin: basic-block vars
-ret_val__ := ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )
 }
-$module [writeModule_convolution] 
- $in (base_address : $uint<32> addr : $uint<32> data : $uint<64> byte_mask : $uint<8> )
- $out ()
- $is 
-{
-//begin: basic-block vars
-ker_data := data
-}
+// $module [readModule_convolution] 
+//  $in (base_address : $uint<32> addr : $uint<32> )
+//  $out (ret_val__ : $uint<64>)
+//  $is 
+// {
+// //begin: basic-block vars
+// ret_val__ := ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )
+// }
+// $module [writeModule_convolution] 
+//  $in (base_address : $uint<32> addr : $uint<32> data : $uint<64> byte_mask : $uint<8> )
+//  $out ()
+//  $is 
+// {
+// //begin: basic-block vars
+// ker_data := data
+// }
 $module [writeInpPipe] 
  $in (col : $uint<32> inp_dequant_val : $float<8,23> )
  $out ()
@@ -1405,10 +1546,12 @@ $endmerge
 }
 }
 $module [fetchPartial] 
- $in (base_addr : $uint<32> ker_size : $uint<32> in_channels : $uint<32> groups : $uint<32> in_rows : $uint<32> in_cols : $uint<32> out_rows : $uint<32> out_cols : $uint<32> inp_scale : $uint<32> inp_zero_point : $uint<32> )
+ $in (base_addr : $uint<32> ker_size : $uint<32> in_channels : $uint<32> groups : $uint<32> in_rows : $uint<32> in_cols : $uint<32> out_rows : $uint<32> out_cols : $uint<32> inp_scale : $float<8,23> inp_zero_point : $float<8,23> )
  $out ()
  $is 
 {
+  $storage sti2: $uint<64>
+  $storage enti2: $uint<64>
 $branchblock [body] {
 //begin: basic-block vars
 xx_x29 := (out_rows + ( $bitcast ($uint<32> ) _b11111111111111111111111111111111 ) )
@@ -1420,22 +1563,23 @@ xx_x48 := (xx_x46 * in_cols)
 xx_x52 := ($cast ($uint<64>) xx_x48)
 xx_x55 := (groups << ( $bitcast ($uint<32> ) _b00000000000000000000000000000011 ) )
 xx_x74 := ($cast ($uint<64>) in_channels)
-xx_x93 := ($cast ($float<8,23>) inp_scale)
-xx_x94 := ($cast ($float<8,23>) inp_zero_point)
+xx_x93 :=  inp_scale
+xx_x94 := inp_zero_point
 xx_x169 := ($cast ($uint<64>) ker_size)
 xx_x180 := ($cast ($uint<64>) groups)
 xx_x205 := ($cast ($uint<64>) out_rows)
-xx_x217 := ($cast ($float<8,23>) inp_scale)
-xx_x218 := ($cast ($float<8,23>) inp_zero_point)
+xx_x217 :=  inp_scale
+xx_x218 :=  inp_zero_point
 xx_x104 := ($cast ($uint<64>) ker_size)
 xx_x115 := ($cast ($uint<64>) groups)
 xx_x133 := (in_cols - ker_size)
 xx_x134 := (xx_x133 + ( $bitcast ($uint<32> ) _b11111111111111111111111111111111 ) )
 xx_x140 := ($cast ($uint<64>) out_rows)
-xx_x154 := ($cast ($float<8,23>) inp_scale)
-xx_x155 := ($cast ($float<8,23>) inp_zero_point)
+xx_x154 :=  inp_scale
+xx_x155 :=  inp_zero_point
 // compare instruction
 xx_x43184 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < xx_x35 )
+sti2 := time_val
 $if xx_x43184 $then  $place [vars_for_bodyx_xlrx_xph] $else $place [vars_for_out] $endif 
 //begin: basic-block for_bodyx_xlrx_xph
 $merge vars_for_bodyx_xlrx_xph
@@ -1708,6 +1852,8 @@ $place [forx_xfor_out_crit_edge_for_out]
 //begin: basic-block for_out
 $merge forx_xfor_out_crit_edge_for_out vars_for_out
 $endmerge
+enti2 := time_val
+accelerator_reg[7] := ($slice (enti2 - sti2) 31 0)
 }
 }
 $module [loadForward] 
@@ -2605,6 +2751,8 @@ $module [inputLoader]
  $out ()
  $is 
 {
+  $storage sti3: $uint<64>
+  $storage enti3: $uint<64>
 $branchblock [body] {
 //begin: basic-block vars
 xx_x18 := (out_rows * out_cols)
@@ -2618,6 +2766,7 @@ xx_x129 := (xx_x20 + ( $bitcast ($uint<32> ) _b11111111111111111111111111111111 
 xx_x130 :=  ($bitcast ($uint<64>) ( $cast ($int< 64 > ) xx_x129) )
 // compare instruction
 xx_x2844 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < xx_x20 )
+sti3 := time_val
 $if xx_x2844 $then  $place [vars_for_bodyx_xlrx_xph] $else $place [vars_for_out] $endif 
 //begin: basic-block for_bodyx_xlrx_xph
 $merge vars_for_bodyx_xlrx_xph
@@ -2818,6 +2967,8 @@ $place [forx_xfor_out_crit_edge_for_out]
 //begin: basic-block for_out
 $merge forx_xfor_out_crit_edge_for_out vars_for_out
 $endmerge
+enti3 := time_val
+accelerator_reg[8] := ($slice (enti3 - sti3) 31 0)
 }
 }
 $module [kernelLoader] 
@@ -2825,12 +2976,15 @@ $module [kernelLoader]
  $out ()
  $is 
 {
+  $storage sti4: $uint<64>
+  $storage enti4: $uint<64>
 $branchblock [body] {
 //begin: basic-block vars
 xx_x32 := (num_iterations - stopCond)
 xx_x33 :=  ($bitcast ($uint<64>) ( $cast ($int< 64 > ) xx_x32) )
 // compare instruction
 xx_x125 := (( $bitcast ($uint<32> ) _b00000000000000000000000000000000 )  < num_iterations )
+sti4 := time_val
 $if xx_x125 $then  $place [vars_for_bodyx_xlrx_xph] $else $place [vars_for_out] $endif 
 //begin: basic-block for_bodyx_xlrx_xph
 $merge vars_for_bodyx_xlrx_xph
@@ -2888,6 +3042,8 @@ $place [forx_xfor_out_crit_edge_for_out]
 //begin: basic-block for_out
 $merge forx_xfor_out_crit_edge_for_out vars_for_out
 $endmerge
+enti4 := time_val
+accelerator_reg[9] := ($slice (enti4 - sti4) 31 0)
 }
 }
 $module [fetchInputLinear] 
@@ -3515,8 +3671,11 @@ $module [output_module]
  $out ()
  $is 
 {
+  $storage sti5: $uint<64>
+  $storage enti5: $uint<64>
 $branchblock [body] {
 //begin: basic-block vars
+sti5 := time_val
 $if isLinear $then  $place [vars_if_true] $else $place [vars_if_falsex_x2] $endif 
 //begin: basic-block if_true
 $merge vars_if_true
@@ -3552,11 +3711,11 @@ $endmerge
 $call uint_quant (xx_x48 conv_scale conv_zero_point )  (xx_x51)
 xx_x55 := (xx_x7054 + ( $bitcast ($uint<64> ) _b1111111111111111111111111111111111111111111111111111111111111111 ) )
 xx_x56 := (xx_x55 << ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000011 ) )
-xx_x57 :=  ($bitcast ($uint<64>) ( $cast ($int< 64 > ) xx_x51) )
+xx_x57 :=  ($bitcast ($uint<64>)  xx_x51) 
 xx_x58 := (xx_x57 << xx_x56)
 xx_x62 := (( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 )  << xx_x55)
 xx_x68 := ($cast ($uint<8>) xx_x62)
-$call writeModule_convolution (out_start_addr xx_x7753 xx_x58 xx_x68 )  ()
+$call writeModule_convolution (out_start_addr xx_x7753 xx_x58 xx_x68 )  (d1)
 // compare instruction
 xx_x74 := (xx_x55 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  )
 $if xx_x74 $then  $place [if_next_if_truex_x2] $else $place [if_next_if_falsex_x1] $endif 
@@ -3622,6 +3781,8 @@ $phi xx_x1463969 :=  ( $cast ($uint<64>) ( $bitcast ($uint<64> ) _b0000000000000
 $phi xx_x1574568 :=  ( $cast ($uint<32>) offsetStart) $on for_bodyx_x1x_xlrx_xph_for_bodyx_x1 ( $cast ($uint<32>) xx_x15741) $on if_nextx_x8_for_bodyx_x1 
 $endmerge
 xx_x103 := conv_out_data
+accelerator_reg[14] := ( $bitcast ($uint<32> ) xx_x103)
+// accelerator_reg[15] := ($slice time_taken2 31 0)
 $if isActivation $then  $place [for_bodyx_x1_if_truex_x3] $else $place [for_bodyx_x1_if_falsex_x3] $endif 
 //begin: basic-block if_truex_x3
 $merge for_bodyx_x1_if_truex_x3
@@ -3683,11 +3844,11 @@ $merge for_bodyx_x2_if_truex_x6
 $endmerge
 xx_x147 := (xx_x16258 + ( $bitcast ($uint<64> ) _b1111111111111111111111111111111111111111111111111111111111111111 ) )
 xx_x148 := (xx_x147 << ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000011 ) )
-xx_x149 :=  ($bitcast ($uint<64>) ( $cast ($int< 64 > ) xx_x141) )
+xx_x149 :=  ($bitcast ($uint<64>) xx_x141) 
 xx_x150 := (xx_x149 << xx_x148)
 xx_x154 := (( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000001 )  << xx_x147)
 xx_x160 := ($cast ($uint<8>) xx_x154)
-$call writeModule_convolution (out_start_addr xx_x16957 xx_x150 xx_x160 )  ()
+$call writeModule_convolution (out_start_addr xx_x16957 xx_x150 xx_x160 )  (d2)
 // compare instruction
 xx_x166 := (xx_x147 == ( $bitcast ($uint<64> ) _b0000000000000000000000000000000000000000000000000000000000000000 )  )
 $if xx_x166 $then  $place [if_truex_x6_if_truex_x7] $else $place [if_truex_x6_if_falsex_x5] $endif 
@@ -3712,12 +3873,12 @@ $endmerge
 xx_x180 := (xx_x22061 * xx_x179)
 xx_x184 := (xx_x21159 * xx_x183)
 xx_x185 := (xx_x180 + xx_x184)
-xx_x199 :=  ($bitcast ($uint<32>) ( $cast ($int< 32 > ) xx_x141) )
-xx_x200 := (xx_x199 << xx_x198)
-xx_x201 :=  ($bitcast ($uint<64>) ( $cast ($int< 64 > ) xx_x200) )
+xx_x199 :=  ($bitcast ($uint<64>) xx_x141) 
+xx_x200 := (xx_x199 << ($bitcast ($uint<64>)xx_x198))
+// xx_x201 :=  ($bitcast ($uint<64>) ( $cast ($int< 64 > ) xx_x200) )
 iNsTr_36 := ($cast ($uint<32>) xx_x185)
 xx_x207 := (xx_x187 + iNsTr_36)
-$call writeModule_convolution (out_start_addr xx_x207 xx_x201 xx_x208 )  ()
+$call writeModule_convolution (out_start_addr xx_x207 xx_x200 xx_x208 )  (d3)
 $place [if_falsex_x6_if_nextx_x5]
 //begin: basic-block if_nextx_x5
 $merge if_falsex_x6_if_nextx_x5 if_nextx_x4_if_nextx_x5
@@ -3809,6 +3970,8 @@ $place [for_outx_x2_if_nextx_x9]
 //begin: basic-block if_nextx_x9
 $merge for_out_if_nextx_x9 for_outx_x2_if_nextx_x9
 $endmerge
+enti5 := time_val
+// accelerator_reg[6] := ($slice (enti5 - sti5) 31 0)
 }
 }
 $module [compute_mul] 
@@ -3816,6 +3979,9 @@ $module [compute_mul]
  $out ()
  $is 
 {
+  $storage sti: $uint<64>
+  $storage enti: $uint<64>
+
 $branchblock [body] {
 //begin: basic-block vars
 xx_x35 := (ker_size * ker_size)
@@ -3831,6 +3997,7 @@ $place [while_bodyx_xlrx_xph_while_body]
 //   this is a do-while loop.
 $merge while_bodyx_xlrx_xph_while_body
 $endmerge
+sti := time_val
 $dopipeline $depth 31 $buffering 7 
 $fullrate
 $merge $entry $loopback
@@ -3889,6 +4056,8 @@ $place [whilex_xwhile_out_crit_edge_while_out]
 //begin: basic-block while_out
 $merge vars_while_out whilex_xwhile_out_crit_edge_while_out
 $endmerge
+enti := time_val
+accelerator_reg[10] := ($slice (enti - sti) 31 0)
 }
 }
 $module [compute_accumulate] 
@@ -3896,6 +4065,8 @@ $module [compute_accumulate]
  $out ()
  $is 
 {
+  $storage sti1: $uint<64>
+  $storage enti1: $uint<64>
 $branchblock [body] {
 //begin: basic-block vars
 xx_x12 := (ker_size * ker_size)
@@ -3911,6 +4082,7 @@ $place [while_bodyx_xlrx_xph_while_body]
 //   this is a do-while loop.
 $merge while_bodyx_xlrx_xph_while_body
 $endmerge
+sti1 := time_val
 $dopipeline $depth 31 $buffering 7 
 $fullrate
 $merge $entry $loopback
@@ -3954,6 +4126,7 @@ if_falsex_x1_if_nextx_x1_taken := if_falsex_x1_exec_guard
 if_truex_x1_exec_guard := if_next_if_truex_x1_taken
 //begin: basic-block if_truex_x1
 $guard (if_truex_x1_exec_guard) conv_out_data := xx_x52
+accelerator_reg[15] := ( $bitcast ($uint<32> ) xx_x52)
 if_truex_x1_if_nextx_x1_taken := if_truex_x1_exec_guard
 //begin: basic-block if_nextx_x1
 xx_x487 := ($mux if_falsex_x1_if_nextx_x1_taken ( $bitcast ($float<8,23>) xx_x52) ($mux if_truex_x1_if_nextx_x1_taken ( $bitcast ($float<8,23>) ( $bitcast ($float<8,23> ) _h0 ) ) ($bitcast ($float<8,23>) 0)))
@@ -3972,6 +4145,8 @@ $place [whilex_xwhile_out_crit_edge_while_out]
 //begin: basic-block while_out
 $merge vars_while_out whilex_xwhile_out_crit_edge_while_out
 $endmerge
+enti1 := time_val
+accelerator_reg[11] := ($slice (enti1 - sti1) 31 0)
 }
 }
 $module [compute_mul_linear] 
@@ -4092,11 +4267,18 @@ $merge vars_while_out whilex_xwhile_out_crit_edge_while_out
 $endmerge
 }
 }
+
 $module [convengine] 
  $in (in_start_addr : $uint<32> out_start_addr : $uint<32> ker_start_addr : $uint<32> out_grp_no : $uint<32> in_rows : $uint<32> in_cols : $uint<32> in_channels : $uint<32> out_channels : $uint<32> groups : $uint<32> ker_size : $uint<32> pool_cols : $uint<32> inp_scale : $float<8,23> inp_zero_point : $float<8,23> ker_scale : $float<8,23> ker_zero_point : $float<8,23> conv_scale : $float<8,23> conv_zero_point : $float<8,23> padReq : $uint<1> poolReq : $uint<1> isLinear : $uint<1> isActivation : $uint<1> isFlatten : $uint<1> offsetStart : $uint<32> out_chn_ind : $uint<32> )
  $out ()
  $is 
 {
+$storage start_time1: $uint<64>
+$storage start_time2: $uint<64>
+$storage end_time1: $uint<64>
+$storage end_time2: $uint<64>
+$storage time_taken1: $uint<64>
+$storage time_taken2: $uint<64>
 //begin: basic-block vars
 xx_x52 := (in_rows - ker_size)
 xx_x53 := (xx_x52 + ( $bitcast ($uint<32> ) _b00000000000000000000000000000001 ) )
@@ -4112,459 +4294,49 @@ $guard (if_false_exec_guard) xx_x124 := (xx_x53 * xx_x58)
 $guard (if_false_exec_guard) xx_x126 := (xx_x124 * ker_size)
 $guard (if_false_exec_guard) xx_x128 := (xx_x126 * ker_size)
 $guard (if_false_exec_guard) xx_x130 := (xx_x128 * in_channels)
-$guard (if_false_exec_guard) xx_x142 := ( $bitcast ($uint<32> ) ( $cast ( $int< 32 > ) inp_scale) )
-$guard (if_false_exec_guard) xx_x143 := ( $bitcast ($uint<32> ) ( $cast ( $int< 32 > ) inp_zero_point) )
-$guard (if_false_exec_guard) $call fetchPartial (in_start_addr ker_size in_channels groups in_rows in_cols xx_x53 xx_x58 xx_x142 xx_x143 )  ()
-$guard (if_false_exec_guard) $call inputLoader (ker_size in_channels groups xx_x53 xx_x58 )  ()
+$guard (if_false_exec_guard) xx_x142 := inp_scale
+$guard (if_false_exec_guard) xx_x143 :=  inp_zero_point
 $guard (if_false_exec_guard) xx_x154 := (ker_size * ker_size)
 $guard (if_false_exec_guard) xx_x156 := (xx_x154 * in_channels)
-$guard (if_false_exec_guard) $call kernelLoader (xx_x130 xx_x156 )  ()
-$guard (if_false_exec_guard) $call compute_mul (ker_size in_channels xx_x130 )  ()
-$guard (if_false_exec_guard) $call compute_accumulate (ker_size in_channels xx_x130 )  ()
-$guard (if_false_exec_guard) $call output_module (out_start_addr conv_scale conv_zero_point offsetStart pool_cols ( $bitcast ($uint<1> ) _b0 )  isFlatten isActivation xx_x53 xx_x58 out_channels out_grp_no out_chn_ind )  ()
+
+start_time1 := time_val
+$parallelblock [parsum1] 
+{
+  $guard (if_false_exec_guard) $call fetchPartial (in_start_addr ker_size in_channels groups in_rows in_cols xx_x53 xx_x58 xx_x142 xx_x143 )  ()
+  $guard (if_false_exec_guard) $call inputLoader (ker_size in_channels groups xx_x53 xx_x58 )  ()
+  // $guard (if_false_exec_guard) $call pipeReadTest () ()
+  $guard (if_false_exec_guard) $call kernelLoader (xx_x130 xx_x156 )  ()
+  $guard (if_false_exec_guard) $call compute_mul (ker_size in_channels xx_x130 )  ()
+  $guard (if_false_exec_guard) $call compute_accumulate (ker_size in_channels xx_x130 )  ()
+  $guard (if_false_exec_guard) $call output_module (out_start_addr conv_scale conv_zero_point offsetStart pool_cols ( $bitcast ($uint<1> ) _b0 )  isFlatten isActivation xx_x53 xx_x58 out_channels out_grp_no out_chn_ind )  ()
+
+}
+end_time1 := time_val
+time_taken1 := (time_taken1+(end_time1 - start_time1))
+
 if_false_if_next_taken := if_false_exec_guard
 if_true_exec_guard := vars_if_true_taken
 //begin: basic-block if_true
 $guard (if_true_exec_guard) $call fetchInputLinear (in_start_addr groups in_channels inp_scale inp_zero_point )  ()
 $guard (if_true_exec_guard) xx_x76 := (in_channels * out_channels)
-$guard (if_true_exec_guard) $call inputLoaderLinear (xx_x76 in_channels )  ()
-$guard (if_true_exec_guard) $call kernelLoaderLinear (ker_start_addr groups in_channels out_channels ker_scale ker_zero_point )  ()
-$guard (if_true_exec_guard) $call compute_mul_linear (xx_x76 )  ()
-$guard (if_true_exec_guard) $call compute_accumulate_linear (in_channels xx_x76 )  ()
-$guard (if_true_exec_guard) $call output_module (out_start_addr conv_scale conv_zero_point offsetStart pool_cols ( $bitcast ($uint<1> ) _b1 )  isFlatten isActivation xx_x53 xx_x58 out_channels out_grp_no out_chn_ind )  ()
+start_time2 := time_val
+$parallelblock [parsum2] 
+{
+  $guard (if_true_exec_guard) $call inputLoaderLinear (xx_x76 in_channels )  ()
+  $guard (if_true_exec_guard) $call kernelLoaderLinear (ker_start_addr groups in_channels out_channels ker_scale ker_zero_point )  ()
+  $guard (if_true_exec_guard) $call compute_mul_linear (xx_x76 )  ()
+  // $guard (if_true_exec_guard) $call pipeReadTest () ()
+  $guard (if_true_exec_guard) $call compute_accumulate_linear (in_channels xx_x76 )  ()
+  $guard (if_true_exec_guard) $call output_module (out_start_addr conv_scale conv_zero_point offsetStart pool_cols ( $bitcast ($uint<1> ) _b1 )  isFlatten isActivation xx_x53 xx_x58 out_channels out_grp_no out_chn_ind )  ()
+
+}
+end_time2 := time_val
+time_taken2 := (time_taken2+(end_time2 - start_time2))
+
+accelerator_reg[12] := ($slice time_taken1 31 0)
+accelerator_reg[13] := ($slice time_taken2 31 0)
+
+
 if_true_if_next_taken := if_true_exec_guard
 //begin: basic-block if_next
 }
-BC��5     b0$JY�f���OQ�L   !  �  !       �#�A�I29��%�b�EB�B�28K
-2b�Hp�!#D��A�d�� CF� �2b�*(*�1|�\� ��   �   :   "f�B��RB���q�PH
-	&F�Bb&��@a� �!�|�AH!���B�
-a���sA!�y���S&*��B`���0E`�2Q4P�,���!��2 S�,���a
-AP!�bdA$0LQ�(��(��,YEQEQA ʐEQ�YEQT� ��EQ�0e��YT�,b�(z�'��(*DEQɲ(��(��(��a�y�牢��)    Q     ������  )�  I     �  0|�;�;��6�wXwx�{p�6`�tp�z��68w���	!CFJ� !LNޜ.O�Ͼ��       � ��	)��  �    @ `��� 
-	  @     �c�
-b�       �1]1�B      옸�F!      vLaP)$     @� ����b(�       �1�Aa��       ;&8(��  �    @ `�T2�B      ���H�UH     � �(��
-	  @     �c2R!      vL�` �*$     @� ��Ieh�       �1Ⴑ��       C*_�          R��           ���� �   @      �T.q@          0���F          @�!�X<    �      ���          `HJ @         � C*�X,          R��b          ��
-<� �   @      �T�aa          0�ҏK          @�!U�0    �      �z��           `H�&M          � C*;A<           R���          ���V$0          @�!��,     �      ��e
-           R�L#           0��f           `H�3
-           ���l�2           @�!��0f           � C*�a�      @      �T���     �      �j�)           R��r           0�z�
-�          `H�?L            ��ʄ�4           @�!�
-1j           � C*1�<           R�QT           0�"%�          @�!�-k            � C�^j�      @      �T괴     �      ��Ij           R���           0�ʩ�           `H%W�            ���¨  Y 4   2�L��	&G�C
-F hXD!� &��M���	��M���	��M���	��M���	��M���	�q*�9��D �y2v)�I8~i���}��~�y���	 d�i�_!� &`��q�ߡ� &`�i�ߡ� &����Y����@
-���Y���A
-�jR��b���������hhY
-��`r��A�w�   �  �   3���f=�C8�ÌB�yxs�q� ��3B��Ρf0=�C8���=�C=�=�x�tp{yH�ppzpvx�p ����0n0���P3��!�!�af0�;��;�C9�<��<�;��v`{h7h�rh7��p��p`v(v�vx�w��_�q�r��y��,�������0bȡ�̡��a�!ā�a֐C9�C9�C9�C9��8�C8�;��/��<��;�;���i�pX�rp�thx`�t�t���S� �P��@� �P3 (���A�!܁�����fQ8�C:��;�P$v`{h7`�wxx�QL���P3j�a�!��~��!�aT��8��;�C=�C9��<�C;��;�Ì�
-�y��w�tz(r��\����P�0#��A�����fH;��=����8�C9��<��9��;�<�H�qv`q�qX����`��� �0� �Pn�0�0�����P�0#��a���!�!�!�!�!f �;�C=�9��9�X�ppwxzzH�wp����0���@��0�s�w�_��pp�t��tЇr���A9��8�C=�C9�@Ġʡ�A��f$c0���0�@�0C!�usH�_��|��r���<��<��8�C:��;�Ì�H!Ba�!��R�f(g��0��P�@    �  '   
-r(�w�zXp�C=��8�C9�Â�ơ
-�A���!�!��4�`�P� �@� �P����y(�p`vx�qz(rXp��8�;��=��k�!��� �a� ��aС�a�a�� �P��usH    �     �<��;�;�=��<�C8��   a   
-   �	�l      �t4�} DD�9
-�DTT�_��      a   
-   �	l      �t4�} DD�9
-�DTT�_��      a   
-   �	Al      �t4�} DD�9
-�DTT�_��      a   =   J,      ��@��     �
-���2B0K�7 3�0�,2ܐ �,Ca��,�1P�8S� �p0�,A2P�l %   W� �?E�ۇ� �����v5��}	R�SD~}
-R��H�o���PL@D�e%�M۾S�U
-~M_B�C\�o���׺i%1����A�p �?Eq
-R��H�_V����;EA Q�tR��H�9
-�DT���C\       a      Ae��@    @T@$���PL@D�=	~nPIDL,�      a      ALm      @T@$���PL@D�=%1���?      a   R   J,      �@�S�� 1c ��7F �   # �` �2bP  S(# �`Д�� �T
-�7�2B0K�7�2Dp���7�2F0Kp��,�1P��T� �p(�,A2P��d ��@ )   wp ���db��߶5�6~
-R��H�o����6�D��W���F��m���PL@D�5��}
-R��H�_ Q�t	R�
-qM~m`��߷u�)�џ�@��Q�__B�C\�oە��p �?Ea_��5�5R��H�e
-~���ۻa
-~m_A��Q�o      a   8   G,      Č� ��a0  # �`ЈBA� �A#
-1��,C ��,�0P��73�@�,�1K`T0D�# �`@�B�A8      @T@$����?�LG� �?E���4T�bV�o���H�?�Tg� ����׆5��nS�_Ӗ�D��W���p �?Eq
-R��H�_�����	 H��"V5�u~R�
-qMF5��
-    a      AL� �A��0b`  �(��@      �dD����4�9
-������I5��mO�$ aSIDL,�    a      A�� �A��0b`  �(��@      �dD����4�9
-������I5��mO�$ aSIDL,�    a      D,      Č  �
-B��2B0K0�!��@    7p ���tR�SD%��9
-� Q�tR��H�E%1���?      a   
-   �N�@     ���D��0D�$�Ct DD      a      ���� lt��      E�XT`�3�����׵91 ?0!I�D � Q�       a   \   P,      � �@�A!   �
-G��� �Ag�p�<�
-��� �A����8�
-���� �A����4�
-
-�� �A����0�
-O��� �A����,��,3K��8���3   �5�w}	R�
-qM>~
-R��H�o��׺]
-~}_B��Q����,���� ��D��W�r	R�SD�m^��G� �_ �D��9$H�7�5��9
-�� Q�t	R�
-qM~m\�o�5��}	R�SD~mV�_�א �����p �?Ea[�o�5�uoU�����,��'� �_ �D�C\�$H�OE�6      a   �  n     �@��C\�X�TyP9L��KA�	3 � �A	�@B)C9   \ rAȍ�r��dHA�2�d0�(�,�0P�A�@E��( �>��T��2P�C0
-Ȉ�� |��g�W(r�"'p��	d���� `�`���� ��8m�# �``�C@s�M# �`��C � ���m0bp  �;w`# �`���� ����m0bp  V<y�# �`��C� ���m0bp  �<{�# �`���� ����y0bp  V=}�# �`��C� ���n0bp  �=�# �`���� ����n0bp  V>� 
-# �`��C� ��t~0bp  ?� 
-# �`���\'
-0���2Dp)�,A1KPT|@�@E�z17e ���� ��@E 
-�`T�!�@E��a�7p@�B4
-2� x�,�2P�k ��p��p(��B�� Iq�@
-w/H���p	�7�B�K��@E��;��@E��:��@E��9��@E �8��@� �-����� |5!�0W,r�"'pD0b`  XX�C�I�
-�p��,C��,�3P�E�f0P!XM��p��`0��@���� �X��f0�@��2DR0bp  ` �:��,A7� �� �����0K@�
-H8��,Ce# �` f���:���p��`0�pa���� �Z8�`�b0����2dZ0bp  `�;��,A78� �� �����0K �
-�8��,C�# �` nA��>�|��@� �����@� |�6K� N6K ��5K0� Z5K@�0`0���@� ��D�f0P!e��@�@��<# �``�F�(1b`  \_x�q� �
-A��,�s�@����@C@f0K��-��-0�q��T��sp�0���2��7����,�T�i0P(j@��@E�������AH�pC
-d0���A0K�  W  �@�v����,���@�5�z@��tΛn ���m��_��A(H��"�m��o��D�N�ҳ S�c �״}
-R��H�k ��4n��_�~^�IV8�o���5��/D���A�w�!=2����m�{ns��@��~�u���|�?����6��OD��� Q�d���,���V �6��OD촿�f ��y	R�SD~~	R�
-qM~m����6@��][e ���}J�D��_g ��;m����6��6��OD蹍���@�7}�v ��|n����`�vO�Q(����:nO�9�#]KR8��P�o��,��vP�vM����6��OD��=$H�OE���
-��[��㵕�M�0��}
-G�D�CM�� �?E�״->�a�����$H�7�5��)����@��Λw@!=2Y`����E$H�OE����]�@���_T8�8�����a��o߹���0�6*R��H�_�F7��n}�Ӈ� �_ �D��-����@�v]�j �۴},Y�D~�N�;��ۿ!�Oa��_ӻa ����7p �?Eay�_�}O[��׽��M��@�v��l���=��@�uݛp ��vo����f@�6^_I�C\��c����9% ?0�A~]�7��n��_﹑0~�ӻ�/�$v@�6M�v ��<	U�D~�D�CM�!�Oa��o��D�~[o ��vm��o���[k �۴nr��v@�5_w ��}~+
-R�
-qM~M۔�4ϟ��?�Lw� �_ �D���$H�7�5��	>���R8�8�۷ N�΀���D�s���9n��_繥�]�g� �?E�׶@���JR8��P�__�S8�8�/������~�;������~��{ox�_�x_y ��4~$	R�
-qM�nw�o�n����P�w�㷑 �?E���P�8��Ƈ��N�6��t���|�?���6�u~
-R��H�ϛo �۽m��o�4[q ��7o��o罙���ym��o��i(H��"�n���㗑 �?E���`��N���]�|~	R�SD>n��o�I%H��� ,��~��V`�vO���$H�7�5��]$H�OE���@������/�$�@��n[w ���~
-R��H����/!a��_�9���ב �?E��� �/@��d��ӻ���I�C\��t ��{m��o㻩~��f��6��OD��}$H�7�5��y~��9o��o��$H�7�5��%�^�d �׶n��_���~��|R��H�	 ���3`Wp ���    a   o  n     �@��C\�X�TyP9L��KA�	3 � �A	�@B)C9   \ rAȍ�r��dHA�2�d0�(�,�0P�A��@E�A, �>��T��2P�CȈ�� |��g�W(r�"'p��	d���� `�`���� ��8m�# �``�C@s0b`  �9�D0bp  `P������ X�܁� �A�)� ����n0bp  �<z�# �`еK# �` ���� ��UA����� t������ ��;4q�# �``�C 
-0b`  �<�D0bp  `������ X���(� �Ag5� ���Ds0bp  �?�P
-# �`��N# �` �`�)� ��A*��� t����A*�pC�`0�0���*�,A1KPT�@�@E��17l ���� ��@E��aT�p�@E��a��7w@�B42K�TB���(��p�A�/��$ąC*�� �CX��
-d92� �2,m�0�X,��},�~,��,��# �`��9��9�����d���� `e1�p/Td0�РA0K�TDz��TTf0� ��2<P0bp  `0�;��,�7� ��� �����0KP�
-�/��,�D# �` g��C;���pB`0�PY���� �AZ,���c0ܠ��2\X0bp  `��;��,�70� ��� �����0K�
-9��,��# �` o��;���pT`0��y���� �A\L7���,�7P!��'t�`0P!����@� ������@� �u���@� ��V���@� �L�e0P!d`�,�TB��3P!e�ψ�� X���J� �A��\�0���28g4����@� ��,0�0�
-��,C�Apm 0K��k0P��i0P j`+ipr0���20l����Q  V@�5ݟ��,��@�5��q �۵n��o׷�~�ӆ�����OD�1�}�� �_ �D��I~ߛu���z�?���@�u��d �״}
-R��H�p ��4n����w�N��~�D�CM~�2��`ǠN�΀���
-��[t ��xo��_������I�@����k ��;~	R�SD~~	R�
-qM~m��_׶����;o{�_�7�c���}~���@��NۓaD�HV@�6�[u���z�?��pHςL�n���Ӷ@���t �۸~-I�D�CM�}
-R��H���x@!=2�C��Q�o[r ��vn~��V7�xm���ߧpN�;�d��o�~��H�C\��[`���!�mۖ@��m_D��Q�[g ��7n����m����� N�΀���D�s\���Q�_��0�<n��_����a���i(�����}*R��H�_��@�6N[������F7��n���ۇ� �_ �D��u����@���y ��|},Y�D~�N�;��ۿ!�Oa��o�8O�l ��}n��o��
-H�OEX��ߴ�
-~�o ��}m��oӹa~]��@���۔�џ��?�L@����b���y��۶@�5��S ���e ��5np�_��@�6M_I�C\��_BU8�_8��P�/D���A�i@��t�[x ��um��o��D���u���z�?��0�zJ�D��o[z ��}nr�۷� ����״	>�߁�,��&@�vni������&�(D�K�� ����߷ N�΀���D�se ��4n��_빍~���@��m[d����$H�OE���~�뇒N�;����N�΀�K�?��
->nI�C\�����׸�㷑 �?E���@���[s ���n��o��D��@����:�/�$�6�u~
-R��H�ϛy ��=m��o��D�~�y���=^��@�6~���,��V0�9~	R�SD�~!	R�
-qM>n��o��M$H�OE������{o��_�0����:��w� �?E�� ����OD쵿��p���u��@�5������}
-R��H����/!a��o��D�^��~���@�u�_G��Q�����9��VP�8��� �/@��t	R�
-qM�m��_��
-���{n��o���$H�7�5���~���)�m�f`�5o��	 ���3`6@�v��b����~}�G� �_ �Db�����$H�7�5��H�7�5c���=     a     c     �O9�@��_��[A�W�S�H�Dy�PE0@�@	AB)C9   �
-��
-	��,C �,�0PQ�(��@��u )} # �`��|�p��,�@# �` �p�7K�
-7�2F0bp  `@i�y��p��,Á# �` ���7K�
-7(�2$J0bp  `�m�y��p#��,��# �` ����X�
-���� ��B��7KP
-7@�2<P0bp  `�s �,5� U`0�I���� �8ԁ)��,�4K0
-Tf 	�,5P!��T�@9�,�5P!��\�`i�,6P!��@� `fP�h����0bp  �<{��
-���,��# �`йJ�`0��ya0b`  �;��0K��|�`0P!�ħۅ��pC0
-d0� �A0K   �   � �_ �D��=~O_HU8�_8��P�/D���A��ߵ~Λb@������,�ۖP�{~�FP�{�ߧ� �_ �D��AM��!�3NE0D3Y��߸~����4ϟ��?�Lg� �_ �D��Y$H�7�5���
->� Q�d����xm������4�G�?!�t
-	R�SD~~	R�
-qM~mq���8���7�xo�����D�\A��Q�_�F�C\��_�S8�8�/���� �?E��&W�<��67�5o����w
-R��H����,��0�{~	R�SD�m���Ӹnz���7��}
-R��H���E�C\��_D��Q���d����e$H�7�5��-$H�OE���~��E%H��� ,��
->�_B��Q��C��Q��[a@��9n�[��:Ο�Q8��P�9(H��"~n����7�8mu�o�vP�{��v7�6	R�SD~ 	R�
-qM~	R�
-qM�}
-R��H�������}$H�7�5��a$H�7�5��
-H�OEXc����
-~ݟ R8�8fv�o�G� �_ �D�`���1���āC\     a   v  g     �@�CA�O��_��[TyP9B��B��K1�	3 � �@�     '` �]�ɅA��H�A�A$1��$d0��A0K TD\�d0P�Bpd0P�D0d0P!�A�dp� �pD\����� `�`�!n ��
-7��2C0KPt�,A1P�/�
-���,��,�1P����@��s�� ���r@v0�0��2 I0bp  `����,�7�P��2(K0bp  `����,�7�p��20M0bp  ` ���,A7ܐ��28O0bp  ` ���,7ܰ��2@Q0bp  `@S��,�6����2HS0bp  ``U��,�6����2PU0bp  `�W(��,A6���2XW0bp  `�8��,6K�
-Tdp	�,A6P!B�h��9�,�6P!�p��i�,A7P!0��@� tf��|��2bp  VK� # �`НX��7`@�
-�����@� ��.�
-g0`0� c\����,T�0�!�9�!W� �
-(��,�P�,�h8�   �`������(H��"~
-R��H�oe�����
-�N߁R8�8��V@�5m_��,��0�8o��_��~���mr��F0�yn��_��^[k ��9 DD�A$H�OE��a$H�7�5���~��60��nSK�X�D��e�C=ҁ\���_8��P�/D���A\�U8�_8��P�_�B�L?1�=(H��">n���,�t
-	R�SD�mv���v@�5�_�Q8��P�u$H�7�5���
->�d����1$H�OE���~}�9m����vp���7�dw���6`����q~m�67��n��_ӹ�~��}
-R��H���h�������@�8~�G�C\������Q�9>_�j ������"H`��_�{~[j���%��[d����9% ?0�e~]�0�wmq�o�@�u�c ������ny�_�5>O���4ϟ��?�L�� �_ �D��i$H�7�5��>�[i ���~P�D��_�K�?��~�㇐ �?E��g�N�;����N�΀�K�?�y$H�7�5��a~]�g� �?E���g�5��	�)��߅�,��F`�����!~}︮�W� �_ �D��QH��"E��Q���`����m$H�7�5��I~�C��Q���k ��nU	�<�$ q	R�SD�n����&5�r
-R��H�����/!a��_۴-~��9ou��ӦW�w��'� �?E��� �/@��t	R�
-qM�}$	R�
-qM~o����`����)����
-��G�C\���i ��8m��_��	 ���3`G� �_ �D\��C\        a   J  f     �@�AA�PE@Q
-��@	   �p�#Pr�%g!wA%q�r��Si1�_��\�1�SIA�qb`q9A�0�b��p�F��,CP�,�0P�Apc0P�C0c0P�D�c0P�B�c0P�Dpc0P�D0c0P�D�c0P!�B�c0P�Bpc0P�B0c0P�D�c0P�C�c0P�Dpc0P�C0cp
-��\4�A7p�	d���� `�0
-�Ixp�7i`���IEp�ܝB��@E��A��0P�A�@E@�#	 �`����}� �
-Z)��,�1�
-���,Á���$��@E �pT
-��p��`0ˠ,�u� ��,3P��"(����2P0�l(�
--��,C�� �
-���,��)D0b�  bP����v�����A� ��H��,4K �H��@EE� 
-T��4P�E��@�`Y@�4P�C$A�c0��� �T�
-W)��,Ce���\��@E��P
-T�`�@E`}T�
-B*��,��� ��,�6P�C&`��6P�Cf`���6P@��`�
-C8��,��G
-� W�\0�0��2p]�D#
- �` ?q�P�P�<��,� ��D_�x��,���@E�}�7PY��
-T��7P��'�@E�}�7P��gy�b0K J�K���@Ea���@E@a@`0P�D@`0P�D@`0P�C�T�j �<���@E�a`��@E@a�`0P�E``�� �c0Pib��@E���:H�&� 
-T���4Phb �@E��8H�#� 
-T�Ѓ4Ppb`�@E��>H'� 
-T���4Ppb�ҭCI�pCd0� �A0KP  S  �@�5�g����}(H��"~o��_�E>����N��~��V�8���"c����-(H��"�m��_��m�N��=(H��"�me��&u �9�dh���&��<�;EA�}m����F@�v�����U~���Yj ��x} DD�9�^m ��;~	R�SD~~		R�
-qM~m����9o��_Ӵ�>O뽑~}�6@��N[v���6^�!(~m���|nQ�9�#�w������NQ��F���[d����E(H��">nq�o��$H�OE���~N۸�>~�a���u_�����5Yc���u~��}n����;}	R�
-qM�nt�_׹�~���g�:]��%>���)$H�OE���~}�P�x_�ǡ �?E�״��}�FP�:���p�u}�yn��_�|]�6P��~צp�u}�yo�����0��m��_�}]�� �_ �D�5m�����m��_ӹ
-~��=}
-R��H���s���;_ӽ�~Nۻ~m㵾[i����]봙�N���$H�7�5��
-H�OEXh@�紝�e C\S�?�|m��_�}]��@�u_�w@��}o��tn��_۽�~m�u�[y@��}��b��续
-��k���6^��~]�u��S ����ߵ�~m���n����]��^�=n��_�}m��p���׺ny�_�e >��NQ��g��^��
-�M�P��~�7� ����״�~��6P�{��&P�:}�v� ��gD����4�!(H��"~m��_׷�
->��j ���}	R�
-qM�ms�_Ӹi�^��~��p��~׽m~�_�x���6�=n��_�x��k@�����A��Q�_�G�C\���r@��}�_�S8�8�/��VG��}[u@���m��9nf��&@�u�d����a$H�OE��Y�)�яv C\S�?ռ}$U�D~�D�CM�!�Oa����ס �_ �D��~��&G�v�_��,��6u �/8�t	R�SD�~	R�
-qM>nl���א �?E��f� ��K��w����}	R�SD�n��_�|��Fp����|oz���5�l@����߄�,����(D�KHF���۽�~m�F�8��G�%���<m��_��!~���n��_�w�߷� �?E���p����4	R�
-qM�mP���4
-�HV@��M[�����$H�7�5��]>�׻Y~N��]$H�7�5���~��&0��}H�D��~��v@����a����]�|��G� �_ �DXk���:��Wp ���d����~�L     a   (  Z,      �@�A��C!P4P �$r�"��L �
-�@�A����5P�B��@E@
-A:\�)�p
-T���5P�B��@E�
-A,\�+�p
-T���5bp  )L�5ܐ��2D0bP  f��0b`  ]*�C0K
-7,�2F0bP  f
-�0b`  +�C0b`  ]+��0K 
-78�2H0bP  fP
-�0b`  ,�C0b`  ],��0K�7D` ��� ����;� �AG�� �AW� �8�
-T��,��# �``�# �`���;# �`��=��,A3K�Tp��B2P�A#�,�3P����1P�.��@E`<|PT�
-�@E`<�PT�C�,A4P )��0P +��pdp0���2HSpe�0K@�P�*L�4P OH�
-B��,Ce�} ��,�5P �XT�b�E5P��eTg!�@E�YJ5PpS
-T��T�~ �
-A��,������   �0�=}U�D~�D�CM�!�Oa��_�6�wmZ���6@�6��a����!(H��"�m�����5��}
-
-R��H�������M�&V��}�P�9o�V7��ne���v��6�7nq���g� �_ �D���>���A$H�7�5��Iv7�zmc���w~	R�SD~~	R�
-qM~mNOC1�p4��L&7�xo��o�m
->�_A��Q�__�S8�8�/���6��n����md���7n��o�5my����U�=���U��~�f@�6}��,��V�8�0�{	R�SD�mo����W�7_�F7�9~	R�
-qM>n`��7o����w� �����f7�y	R�SD>n���m���ߦ0��~		R�SD�}	R�SD�n^�o�8}G�D�CM�6��m_�o�wo����7}
-R��H�����/!aj�o��W�8o�P�7_�6P�8_��6��~	R�
-qM�}
-R��H��[d@��|����Q�M��6�w	R�
-qM~~R�SD�W�8_�f6�uo��oӹ��M�P��m�'�N�΀����� H��"�5�umx����p ���d����6       a   (  Z,      �@�A��C!P4P �$r�"��L �
-�@�A����5P�B��@E@
-A:\�)�p
-T���5P�B��@E�
-A,\�+�p
-T���5bp  )L�5ܐ��2D0bP  f��0b`  ]*�C0b`  �*��0K
-70�2F0bP  f 
-�0b`  ]+�C0b`  �+��0K 
-7<�2H0bP  f`
-�0b`  ],�C0b`  �,��0K�7Ha ��� ����;� �AW�� �Ag� �8�
-���,��# �``� # �`��<��,A3K�Tp��B2P�A#�,�3P����1P�.��@E`<|PT�
-�@E`<�PT�C�,A4P )��0P +��pdp0���2HSpe�0K@�P�*L�4P OH�
-B��,Ce�} ��,�5P �XT�b�E5P��eTg!�@E�YJ5PpS
-T��T�~ �
-A��,������   �W�8]��W�9m��0�=m��_�FP�8]ߦ5�;ov���v0�;~
-R��H�o[e����e
-~}���,��67�ym~�oӺ�
->�X����[���E~N׻�>���}[����(H��"~mb��۷~	R�
-qM�mx���@T@$���뵍�~��I$H�OE��9$H�7�5��9=
-�����ODHD3�����$H�OE��aT����5�B�L?1�8���3`���ak�ז6��n����5ol��FV��}�&P�8]��W�9]��W�9mז7��n]���xm\�_�m��oӷ�
-��`@��t���,��V@�7�[X�����A��Q�o�����
->~�d ��4G�D�CM� �����0��}	R�
-qM�n�����}	R�SD>n���ߦ0��~		R�SD�}	R�SD�n_��wo^�o�8mh�o��P��~�7� �_ �D��=!
-��F7��mj�o��6��n���5}	R�
-qM�}
-R��H��e �۴}	R�
-qM~~R�SDf6�uoX�_�&@�6�����~H�D��-�~�� H��"�0�{og�o��p ���d����6       a   r       �@�A��C!P4P �$r�"��L �
-�@���@E��`�(�`)�`�)�`*�`�*�`+�`�+�`,�`# �`��$Y�
-���,�p# �``~`# �`Х8�
-G��,Q# �`ЭB:��,�1K �
-
-�� ����:� �A�
-�70r`��� �A�0�,��,�7���24Q0bP  f�
-�0b`  �,�C0�݁�28O0b`  ]-��0K �@��pCE`0� Y��A� �A+�È�� t���p��f0�0Q���� t�P�,A5KP�t�
-���,õ# �``�`# �`��=�
-[(��,�# �`��B>��,�6K��p��@E�/T�p�P�xщ4P9@�љ4K�
-T��
-�@E`x��T���@E�x����@E�|�`T�G�@E�|�`T��ƥA�pC@`0�b����,�T� BT��E7w �dP���(�,����@E���[��@E��\��@E�e`��@E��BW
-T\0d0Ppe����)�pC0
-d0� �A0K��
-� 	�7��@�i��,�TD4���j��+��@E�i�
-|0P�F�T����l����@E i�|0bp  _I��,�A� ��?��p�`0˰l� �A�h!���pC�`0��n� �A�iA���p��`0��p� �A�ja���p��`0�r� �Ak����p�`0�0t� �A'l����,A���@E�Ձh��@E��i��,�T���T���T������@E`���@E`���@E`�m��@E�܁m��,AT��T��T��T���0���2�������,T���T~��T�z0PH{���@E 큢���\�7m@�j��,�h8 V  �� �_ �D���
->�[e@��{�[d���4��@���[r �׽}
-
-R��H�o�e@��tn[�����(���3`~mt���Ǡ �_ �D��~��m]�_����W����[o���9^�67��n��_�n��_봎�a@����͂,�׺�
-~^[����IvP�z��@�5�b@��4n�C��Q��ߍ�C\�_���4�G�?!�d��_�q~���~���m��_��~�ӷ� �����V`��N۸�~���@��^X����l ��:nw���P�z���� �_ �D��=~]��`��N��!$H�OE���
-~_���㵽
->~�Q8��PӅ(H�OE�5m|���6P�9��ב �����f`�u���%$H�OE���(H�OE�unh�o�G� �?E�׵�Mߺ�~��5o��_��M���ۼ�
-~~_OV8�_���5��/D���A�Ȃ,�״�
-�����tn��o�wn��_��Q(H��"�~.R��H�_߷� �_ �D��~	R�
-qM>o��_�vM����
-~������(H�OE��}R�SDV��u���Nh���}��wRN�N�;��2��`@�u��f@���]g��׻�
-�]�d ���n��_繑~M�{m�����m��_��nc�_��n�W����߈�C\�_�g� ����׷�
-������(H��"~m��_縞�q���9^�@����̂,����@���3`~�/���P�6}�W� ����ߦ@����b@����A��Q�_�OR8��P�_m��׸]�VP�z���P�6}��� �?E�׸�
-��̂,����(H�7�5��~N�D���D�s����m~]�f7��n��_�|�˂,���]$H�OE���~}��@�un[g ���m��_Ӻ�
-��[����e(H��">o��_뺽e���5���P�w~�P�9��V`�5���Y(H��"�~	R�
-qM>~	R�SD�n��_�n��C\�_�א �?E��ǣ �������(H�7�5��m��_���(H�OE��n�����~	R�SD�~%R��H�_�`�5n���(H�OE��m��_���(H�7�5�uma���;~:
-R�SD~�_��,����(D�KHF�d ��6m����xo��_봝����u��� ���� �?E��� ������ ����ۆ7�{}	R�
-qM~n��_�vo��_��~���m��_��	 ���3`&@�5�[q���:m�v6�vm��_㼮_�,a��_߻^���C\      a     Z,      �@�A��C!P4P �$r�"��L �
-�@�A����5P�BP�@E@
-A8\�)�p
-T���5P�BP�@E�
-A*\�+�p
-T���5bp  )L�5ܐ��2D0bP  f��0b`  ]*�C0K
-7,�2F0bP  f
-�0b`  +�C0K 
-74�2H0bP  f@
-�0b`  �+�C0K�7<�2$J0bP  fp
-�0b`  �,�C0K�7D�2,L0bP  f�
-�0b`  ]-�C0K��4��@E�
-*$�4���<��1P,����1K 
-T�C�@E`<xPTƣ�@E�<�P�D��0P (��0P �Js �
-���,�4u ��,5P��$H2ф4� ��2TVpg�0Kp�\b�D5P(OT-XF5PpR
-T��Tg1�@E�YNut�0���2X0K�i8  �   �QN�N�;��2��`�W�6_�&0��nk���W��^��@�6�[����!(H��"�mZ��Ӗ5��}
-
-R��H���۴n�����6�7nt���g� �_ �D���>���A$H�7�5�������I��4�G�?!�t	R�SD~n`��7ox���6m����7m��o��$H�OE������8���3`���ao��ۖ6��ne���v�&V�<~�� ������P�8^�&7�9mq���60��n\�_�m��o��1(H��">n����w� �?E��0�}mm��qN�;�t	R�
-qM>~	R�
-qM�np��緐 �?E�㗐 �?E�߶W�8^�W� �?E��0�|n^�o�8mh�o��U�6�FV�;~�V�8~�7� �_ �D��=!
-���W��^�6�vos����P��^�P��^߆0��}
-R��H��a����=$H�7�5��A�M۶P�;n��6�w	R�
-qM~~R�SD�5�|mf�_��5�um~�oӹ�>���	 ���3`vG�6�c@��}�,ag�o��U�=���p ���     a   B  c     �@�	%@�@
-PT# eP%  �0r�#�Q %�A )r2�� d0��A0K TD\`0P�B0��@E����@E A-��@E A,��@��A-��@E �*��@E@�)��@E`�(��@E����%\p�w�
-Ae����Dpw�A��@��0���2G0b`  e B�8�
-���,�# �`P�0��,A3ˠ,ψ�� ��+n0K�� �A�����,A3P�x���8�Ѐ�1P�Ac�p��,�'��D��@E ��Tf �@E K<�
-B��,���
-���,�D��p�&`0�PY�,�5Kp
-Tl`�C5K�
-T�,A7܀��2h[0b`  h�"A��,7P����@E`m>�
-T��@E@
-�h�l|��t��A�@E�p`�
-T
-�@E�pb�
-T��@E�pp�
-7���,���`0K |���7z@�B�b��@�   �`�u���}(H��"~o���66��nu��~�L&�8���"]��,���V������ �_ �D���
-~^�e@��z��c ��4 DD�I$H�OE��1$H�7�5��Y~}�&6��n��_����aD�HF0�=
-R��H��B��Q�o��߻�>��E~]�w~"G�D�CM�7�y	R�
-qM�no���v��V@�9��B��Q�[f��ۼ)~m�67��~
-R��H��_��z^e@��|]_G�C\��[c@�������Q��~m�0�=m��_׸!~m�8mr����u��8�[b ���nh�_�z�^B\S�?]HU8�_8��P�/D���A�d@���M߁�,��� ����߶V�9�߆@����`����$H�OE���~}��N�΀�K�?�~m�x}	R�
-qM�nd�_׺�~N��� �?E��vw ��F?n��_Ӻy
-~��` �߹nq�_�4�߆�,��6�7ol�_�yn_��,��� �����W� �?E���� �?E�㖇���;EA[_��zN�D��Q��[���9~�׶~M�vV�6��G� �_ �D��9!
-���8��G�%YZ��t�����?E�5�6} 	R�
-qM~	R�SD~
-	R�
-qM�mO���4
-�H`��M��]$H�7�5��	 ���3`�V�<��G� �_ �D�d@��_��C\      a   [   K,      �@��=# 5@�@	 � �A �
-�B����T�@E���T<R� # �`���4780bP  fP�0�@Ĉ�� t���,A1KP� �A
-� 7
-�2G0K�� �sx�)7�2I0K�h8   1   �PN�N�;��2��`�E�����Q8��P��
-�����׺m~��5��m\�oӺ]
-�m�����(H��"~mO�49�4�u
-~� Q�t	R�
-qM~mZ���99
-���DD��8�dd���g� �?E��6�6N�D���D�s����Q�	 ���3`6F�6}����� H��"V6��}R�
-qM     a   *  d     D	�C��_��[Ty�A�S!L��B��K1�	3 � �A	  �
-CG����@E�ITLPapBq# �`�тGpr�
-���,1�őA1KPTa
-�p�d0�`�A0KpT�`��7P!XF|�
-B��,�# �` ����|�
-��,��# �` �Д�x�
-��,�# �` ����t�
-���,��# �` ����p�
-���,# �` �0�A�l�
-L��,�4# �` �P��h�
-��,U# �` �p��d�
-���,�u# �` 搱�`��@� �`�d��!�,�6P!�#�l��Q�,7P!���t���3K�
-TBg�,�7P! # �``�C
-��AD# �`�� �u� �
-��,��@��|�a0P!`@�p��2b����   �   ��D��0D60�zoy���x��vW�8��7�6~
-R��H�o߁R8�8��נ �_ �D���
-~^����
-�m�c@��<����4ϟ��?�L�� �_ �D��i$H�7�5���~ Q�tP�D��_�K�?�M~M�� �?E�燑 ����ׇ� �?E��� �����7�N�;����N�΀�K�?��
->n[��߷=F�P�d����rN��~�D�CM�!�Oq	R�SD>"W�D~�D�CM~�2��`0�=o�����m����}
-R��H����״��w� �_ �D��]ҳ �)$H�OE����[��z�_��,���7�9~	R�SD�n��_뷑 �����7�x~	R�SD>~	R�
-qM�nQ	�<�$ a����ǐ �?E��'� �?E���v�=��y~!G�D�CM&@�5]`���-~��)~���E(H��"~n�����f�uM�Y>N��۴1~��Q~M�� �/@��dv�뗑 �����7� �_ �D�������3Ye ���~	R�
-qM>	R�
-qM~~R�SDv0�|mo�_�'�N�΀a����
-~�[c@��<��,a����&7�vn����x�/�$Wp ���      a   4  d     D	�C��_��[Ty�A�S!L��B��K1�	3 ��@	  �urq�
-��,C0�,�0P)��B���� ��f\���
-7f`���wFd�,A1P+�
-~��,��,�1P����@��q�
-7� �H� ��g0K�
-7k ��� ��B�g0K�
-7g �L� ���sf0K�
-7 f ��� ��Cde0K�
-7(e �P� ���Td0K�
-70d ��� ��CEc0K�
-78c �T� ���uc0K�
-7@v ��� ��Cw0K��`�\�5K�
-T�P��@� d�4K�
-T�FA��@� l�3K�
-T�,�7P!�(��@� xl�� ���)�B� ����Kב7`@�
-����@� ��-�
-h�
-d0� �A0K0   �   ��D��0D�@�u�e���t��V7�wmq�_�9^�~�[����-(H��"�}J�D��_[a����
-��_��,��`�5��!�ޛ��߶��`���	�^_��,�ק� ������V�5��&�(D�K�@T@$�T8�8�����aP�p4�D��Q��F�C\�_f �׵m�����7�x	R�SD~}	R�
-qM�~#I�D�CM~}N�D���D�sg ��t���"H`s�o��`�5��=F�P�d��_׵->ϛf������E��Q�ϟ�U8�_8��P�_�B�L?1ā\���_8��P�/D���Ad���t���0�5
-R��H���a����](H��">o���,�t
-	R�SD�m��_�9~c�����
->~�e ��4ow��~�LW� �_ �D��Q$H�OE��I~M�8~	R�
-qM>~	R�
-qM�~	R�SD>np�_�{�C��Q��D��Q���b�������5]��,��7�8m{���ym��_ӹE-H��4�"Yb����M(H��"�n��_�9��������7��}	R�
-qM>	R�
-qM~~R�SD�� �����'�N�΀Y��t���mn�o�&7�v}R��H�M9
-�9�� �dt�o�Wp ���d����      a   [   K,      �@��=# 5@�@	 � �A �
-�B����T�@E���T<R� # �`���4780bP  fP�0�@Ĉ�� t���,A1KP� �A
-� 7
-�2G0K�� �sx�)7�2I0K�h8   1   �PN�N�;��2��`�E�����Q8��P��
-�����׺m~��5��m\�oӺ]
-�m�����(H��"~mO�49�4�u
-~� Q�t	R�
-qM~mZ���99
-���DD��8�dd���g� �?E��6�6N�D���D�s����Q�	 ���3`6F�6}����� H��"V6��}R�
-qM     a   5   E,      � �    �
-BA����� xe�$b0� d0� �,��@"   7PN�N�;��2��`GpN�;�tN�D���D�sԂ4�p MC,�=F�P�dW�o�Y~����(D�KM?0�	 ���3`�5�5oR�BD�$ q DD�M9
-�9�� �dX�o��8���4�"     a   |   N,      � �    �
-�@�A����2bP  d��0bP  d��0bP  d��0bP  d��0�@g0�Pg0�`gp��:�0�,�2܀$g0ܐ g0ܠ gp��:�P�,�2��8g0��8g0��4gp��:�p �,A2K�T`���1K�TBb�,�2P!�# �`�z��a7�2L0K�h8   B   �PN�N�;��2��`�5�xmN��8�/8�d`���5��~
-G�D�CMV6�9oT�_ۖ6�z
-R��H�o���׺I�N�66��nX�o�g� �_ �D��U
-~� Q�dg����)$H�7�5���
-~����ۼ�
-~~_A��Q�_�����8���3`���a_��ۖ5��~	R�
-qM�mj���fF�:���߹�	>oa���7p �?Eah���'�N�΀���״u
-���,aZ�o�p ���t	R�SD�
-     a     k     �@A�@P4PQ�Pp  �#
-7
-�2K0K0TD�0�@E`	_2P���%# �``��DQ� ���
-�,�1K`T0D!# �`P�B�qg@pt9r�pg�� # �`��B,C0�`��2Hp���,A2Pi�pTB�E7`@���,�jpc rc�]A��dD�Ag�]gqaܡ�}A� @�A�A7��C�M��@E$�K��@E��J��@E��?��@E�MI��@E�M>��@E M=��@E@M<��@E�M;���A� ��9��,����A� \��D��@C@�3bp  �>�0
-��7� ��� ���J�Ԉ�� �:�1K@
-78�2Tc� ����)7��)��,�%�,�5Pك5
-`0Px���@E�Y{ �g�TD��`0bP  dp21ˀq�p�(��p9r�p�
-�e ��� h)��7� ��\b
-0K��l�	�@E i:��t�����rB �Dr�\�$��A # �`��9��t�pn�
-Tn���6P��mp�v�.�pC `0��}�� �`0K ���7P@�]�7�@�W
-�
-�
-
-�b0P!a@�@E��:T�P
-TH�C5K@�d0P�� b0P�� b0P�� b0P�� bp�p�0���2��7
-� �g0Kp�a`R�J�Qw
-� �
-�-��,���,A����B  �@�5����,���7��nR��8�/8�d��_�m�m�zmW�CM��,�~��Ǡ �_ �D���]�@�uo��R8�8��7�9
-R��H�[���DL�D��
->������d���_8��P�_�B�L?1��
-~��c �����:om����@�6��g ��x} DD��~��fV����W� �?E�痐 �����&@�umf ��wm}�_�)�}��m��_�9~]�(~���"H`h����m��o��n����������$��5��%���;~
-R��H���m ���n���,�t	R�SD�m���,Ȥ�7��n��_�v�[d ��4G�D�CMv7��} 	R�
-qM�n��_׹Y~m��� �?E�����5�߽ޛa ��wo��o׶1 ~�����gN�΀���D�s�r ��wnX�CM�p MC,�1���7��m��_�:N�r ��8m��_�~��~
-R��H��[q������6� R�4JV8�_���5��/D���A�I�C\��_���Q��
-~�[f���w��� ��F��[l ���n��_׽�~m�F7�;o��_��~���ns���@�5��BU8�_8��P�/D���A�k ��4me��m��o�x��]��8��#8M�gD����4���m׆`�6���](���3`�}
-R��H�_[�H�0!0!Ns	R�
-qM�}
-P�D��_�K�?��~��v`�5o۸	(~���"H`|�_ﻝ�N�!~��6}	R�SD~m��_�
-(�]��"HpN�D���D�s�HR8��P�_�g���z��G� �����G��MU�H�L�Xn��׼m��@�6]�G��Q��o ��wo��_���ҳ ��߈�,��8��G�#�`��_۹e)5�F���c��o��}(H��"�~	R�
-qM>~	R�SD�~	R�SD>n��_�;n�f���v����NS�� ,�a$H�OE��q�]�yo��_ӵ~M��n��o۴n���,��f�8��G�%�n �۶n��_ӷ�M�@�5O[k ��}o��_���~��F� ��F��o�!=2���$H�OE���$H�7�5��E$H�7�5���
->�[��߽(�m��"H`��o׵N_G�C\�����P�/M@4��0D7�N�΀j������6@�u�����n��_�]_�,a��_��H�7�5     a   }   K,      �O9� E# %P    �$rA"�
-E�����2P9A # �`����$# �``s@# �``t@# �`и�� �A
-����pC���,�@# �``y�# �``z�# �`�Ђ� �Ag
-��9��P0KPTDl@�@ED�0� P`0�`�,2K�TD�!�p���,�����   A   �5��nh����5��nm�o븹
-~}���絕
->������(H��"~} DD�9!
-���F�um���P�/��D�D4�@ց,�8�/��f6�xoPNC1?20!N#�����!$H�7�5���
->N�Bb�B�5�A��Q�_��㶥
-�M���zoZ�o�5ml��뗐Y��u �;��2��`v5�w~R�SD6�vnY�_߼�
-�͛����	(ց,�8vR��H�q
-~�[����H�7�5      a   ~   K,      �O9� E# %PČ  �(r�"�
-������l�@Ei�T0LPȈ�� ||�0ˈA� �A��7�2D0bP  f��pG�80KP��,A1P�a�0P2� �As�0b`  
-.4�pCq��p�1��	��2G0b`  �+�1K�� �r��1PQ�
-I��,����� D   F6�xml����6�yoi��׆F�5o[��߷q��׶�
-~�����}
-�}߁�,�ז5�5~ DD�9!
-��V6�voOOC1�p4��L Y����D�sB�C\�_��P̏LDL��H�5��mn���7�6}
-�u �;�t	�u �[��CM�!�Oao���
-���A��Q�_�����	(ց,�8fp�o�m��׷u>�׵�
-~N����Q�i�M״�
-~n����� H��"Wp ���dX�_�      a   K   H,      �O9� E# %  �
-�A����Lň�� |tpňA� �A�A� ����� 4� W:�$`0�0���� t|�
-�,A1b`  ]�1KP\��pC��,�`���  %   gPN�N�;��2��`��4�#�4�e
-~��������5]�S8�8�/��VE�6���״}	>oX�_�F5��}R�SD�u ��F�}H�D��]
-~][��ۺq
-�} Q�tR��H�y
-��_��C\       a   \   H,      �O9� E# E@�   �
-Á���4�@cY1P1AU� ���J�� ���+� ���+������ 4�0# �`д����pC0��,�@# �`Љ-��,A1P�Bx�pb��,�`���   /   �5��nY�o�
-�}�����I6�voNOC1�p4��L'�X���@ց,�8�/����4�#�4�]~���5�6}�u �;�db��g�Y��u �;��2��`�5��nc�o��m߆E�������Q�Y~m��5�v~R��H�m
-~�_��C\��
-~m      a   �   D,      ��� E% wIq� �Qq����$ �A��we�t&# �`Pzh#
- �`�假i�$� ���A0b`  e0Z0b lp_)�0��u�,�0b�  ^+�vi5b�  �*xإM��\���\�Ifeш�� �A+�A������A� ��)t`�)�u�\2b`  e`
-E0bp  m��# �`�}��A1b l�g�a��L��AD��� S   V�8��G�#�`X��8�/8�dQ�CM�=��ԁ4��,��
-~ΛS�4�4�����׸m^��4՟��?�L�e<������,+YV�4�/	�B�ԁ4�X�A9
-��D�Cd]��4�/	�BX���i9H��9�� �db"iT��8�m%
-�� ,�Iv�(D�KHF��6oU�CM�p MC,��~��6��md�S1�M6G�5~[��7ma"�HC �Q-H��4�"�X�H�Lј�aD�H�F���[����~��p �?Eak�����8��KM?0��~m�'� �_ �D��џ��?�L7p ���    q   !   2"��(q\��HQ^��h!k���1y���A~���Q����Q��!�	HR�%�hBY�'���́+����-�&蒋�0�*���3�.H��5�1h�7�2�Sn�9�7�C��;�9��     ]  �   ��   volatilestr.0str.1str.2str.3str.4str.5str.6str.7str.8str.9str.10str.11str.12str.13str.14str.15fp32_mul_for_ecgfp32_add_for_ecgfp32_sub_for_ecgfpcmp32fstoi_for_ecgfitos32_for_ecground_half_evenuint_quantdequant_inpdequant_kerrelureadModule_convolutionwriteModule_convolutionwrite_uint64writeInpPipewrite_float32fetchAll__loop_pipelining_on____i8__slice__i64__fetchKernelwriteInpPipePartialfetchHorSlicefetchPartialread_uint8loadForwardread_float32loadBackwardloadNeutralloadNeutralLastinputLoaderwrite_uint8kernelLoaderfetchInputLinearwrite_uint32fetchKernelLinearinputLoaderLinearkernelLoaderLinearpoolingoutput_modulecompute_mulcompute_accumulatecompute_mul_linearcompute_accumulate_linearconvengine17.0.0x86_64-unknown-linux-gnu<string>      

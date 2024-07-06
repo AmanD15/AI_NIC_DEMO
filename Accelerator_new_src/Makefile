@@ -18,7 +18,7 @@ all: AA2VHDL
 LLVM2AAOPTS=-extract_do_while=true --storageinit=true -pipedepths=pipedepths.txt
 #LLVM2AAOPTS=--storageinit=true
 
-MODULES=./src/acc_proc_test/pipes.aa ./src/accelerator_processor_interface_test3.aa ./src/readWriteModules.aa ./src/fp_enhanced.aa ./src/gen_latest.aa
+MODULES=./src/pipes.aa ./src/accelerator_processor_interface.aa ./src/readWriteModules.aa ./src/fp_enhanced.aa ./src/generated_aa.aa
 # src/concat/concat.aa src/convTranspose/ct_core.aa
 INCLUDES=-Isrc/ConvAll 
 # -Isrc/concat -Isrc/convTranspose
