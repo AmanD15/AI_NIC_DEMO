@@ -10,6 +10,7 @@ vivado_synth/ - Script to generate bitstream files
 
 
 Building Hardware
+-----------------------
     - Enter hsys folder and run build.sh script 
       - This will generate required VHDL files for each subsystem
 
@@ -21,7 +22,9 @@ Building Hardware
       - This should generate two files, processor_1x1x32.sbc.vcu128.bit and processor_1x1x32.sbc.vcu128.ltx
 
 
+loading the bit-file  and running an example
+----------------------------------------------
 
-
+	Follow the instructions in testing/lenet_test/README
 
 

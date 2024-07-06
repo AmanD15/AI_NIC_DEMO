@@ -23,4 +23,52 @@ Data types
 	for storage:  posit8, int8, float16, float32, float64
 	for compute:  int8-mul, int16-mul,add, int32 mul,add,   float16, float32, float64
 
+
+Maximum problem size
+---------------------
+
+	Vector add    : 4096 (float64), 32K (int8)
+	Vector mul    : 4096
+	Dot product   : 4096 
+	Matrix-vector :  * X 4096 
+	Matrix-matrix :  256 X 256
+		mul, add/sub.
+	Convolve etc. :  256
 	
+Problem partitioning
+-----------------------
+
+	Vector add, mul, dot-product:  straight partitioning V = [V1 V2 ... VN]^T
+	Matrix vector product: 
+		A = 
+                -- 256 columns per submatrix
+		[ A11 A12 .. A1N] -- 256 rows per submatrix
+		[ A21 .......A2N] 
+		....
+		[ AM1 .......AMN] 
+		
+
+
+	Software:   
+		load A0    X     X
+		load B0    X     X
+
+		compute0      X     X
+
+		store R0         X     X
+
+		load A1       Y     Y
+		load B1       Y     Y
+		
+		compute1         Y     Y
+
+		store R1            Y     Y
+
+
+	Number of subproblems for vector-vector is N/max
+	Number of subproblems for matrix-vector is (N/max)^2
+	Number of subproblems for matrix-matrix is (N/max)^3
+		
+		
+		
+

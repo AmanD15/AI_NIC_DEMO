@@ -1,0 +1,12 @@
+1. About
+-----------
+
+	NIC and NIC glue logic build setups
+
+2. Contents
+-------------
+	NIC/
+		Run make to build NIC_1.1
+		
+	NIC_GLUE_LOGIC/
+		see the README

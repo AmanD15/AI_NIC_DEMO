@@ -1,3 +1,31 @@
+1. About
+-----------------
+   An implementation of NIC+PROCESSOR system in which
+   the NIC is emulated via an interrupt-service-routine.
+   
+
+
+
+2. Contents
+-------------
+	build.sh
+	compiler_flags.txt
+	config.yaml
+	include
+	main.c
+	packetGen
+	README
+	README.OLD
+	run.script
+	SerialMonitorLog
+	src
+	working.jpg
+
+	Basically a CORTOS project.
+
+
+
+2. Old README
 Title : Porting LwIP for AJIT.
 Author : Siddhant Singh Tomar
 Date   : 12/1/2024

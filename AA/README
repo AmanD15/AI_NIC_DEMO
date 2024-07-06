@@ -1,20 +1,29 @@
 To generate VHDL:
 
-1. sh ./docker_command.sh
+    Assume that the AHIR infra-structure is available
+    as a docker image on your system.
+
+    Run
+	 sh ./docker_command.sh
+	(Assumption: AHIR docker image)
 
 In Docker container:
+   Run the following commands
+ 	cd home
+ 	make
 
-2. cd home
-3. make
+   Now, you can exit docker
 
-Steps 1 and 2 can be skipped if AHIR-V2 is installed on the device
+If AHIR is locally installed, just source the
+AHIR/release/ahir_bashrc and type 
+	make
 
-Now, you can exit docker
+
 
 The following files will be created:
-ai_ml_engine_global_package.vhdl
-ai_ml_engine.vhdl
-ethernet_boot_global_package.vhdl
-ethernet_boot.vhdl
-nic_system_global_package.vhdl
-nic_system.vhdl
+	ai_ml_engine_global_package.vhdl
+	ai_ml_engine.vhdl
+	ethernet_boot_global_package.vhdl
+	ethernet_boot.vhdl
+	nic_system_global_package.vhdl
+	nic_system.vhdl
