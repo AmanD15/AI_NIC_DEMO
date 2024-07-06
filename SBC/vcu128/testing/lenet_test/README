@@ -1,20 +1,30 @@
-Results of testing LeNet Architecture on VCU128 
+Testing Procedure
 
-    1. Final accuracy on testing image dataset is 98%
+1) Hardware Setup
 
-    2. Total time for processing 10,000 images is 40 minutes
+    i) Load the bitfile generated in the vivado_synth folder to the VCU128 board
+        using UART
+    
+    ii) First press the cpu reset button on board (Refer to CPU_RESET, SW4 push button, 
+        in the VCU128 user guide present in docs folder)
 
-    3. Number of cycles taken for Convolution + Accumulator at each stage
+    iii) In the Vivado UI, go to VIO tab and reset the RESET_TO_NIC and RESET_TO_PROCESSOR
+        signals
 
-    Stage         Total Clock Cycles          Clock Cycles in            No.of MAC operations in              
-                                             single function call         single function call         
+2) Software Setup
+   i) Run the ./run.sh script using ajit toochain to generate cortos files
 
-   Stage 1          412,828                       711                          25
+   ii) Run ajit debug monitor and run the command "s script.txt"
+        - command for debug monitor is "ajit_debug_monitor_mt -u <tty-dev>"
+        - To learn more about debug monitor, visit https://github.com/adhuliya/ajit-toolchain/blob/marshal/AjitPublicResources/tools/ajit_debug_monitor_mt/docs/ajit_debug_monitor_mt.txt
 
-   Stage 2          159,315                       2,481                        200
+   iii) Once the program is dumped in the FPGA, go to host_ethernet_data folder
 
-   Stage 3          1,938,668                     16,128                       1536
+   iv)  First run the weights_send.sh script to send the weights and then input_send.sh for 
+        sending images.
 
-   Stage 4          639,140                       7,601                        720
+    v) The results will be stored in the receivedData folder. To validate the results, 
+        run ./receivedData/verify.ipynb file.
 
-   Stage 5          53,846                        5,385                        420
+    Note: You can also view cortos_printf statements from the program using serial monitor
+        of your preferred choice(Just set the baud rate at 115200).  

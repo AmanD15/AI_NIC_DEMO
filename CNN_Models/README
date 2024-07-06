@@ -1,38 +1,43 @@
 
 Latest py_ahir code along with generated Aa code - https://drive.google.com/drive/folders/1otOVTVLwS2-Ss3oX7Wbb820n0qCLlUd0
 
-py_ahir_convolution.ipynb - python code for implementation of AI ML Accelerator
-(colab link - https://colab.research.google.com/drive/1P47d1V_sEBoMZYmkSyUxW3K5jeOcJc2p?usp=sharing)
+LeNet-5 Architecture
 
-/resnet/models/ 
-    - qresnet.py - Code for ResNet 18 architecture
-                    [Reference: https://github.com/pytorch/vision/blob/main/torchvision/models/resnet.py]
-    - quantize.py - Code for implementing forward and backward pass of 
-                    Quantized Convolution Neural Network and also 
-                    quantizing input data of convolution and weights
-                    to 8 bits
+    /lenet/lenet_ptsq_uint8.ipynb - LeNet-5 architecture implementation using PTQ technique. This method has reduced
+                                    impact of quantization on accuracy loss.
+    References for learning PTQ: https://youtu.be/0VdNflU08yA?feature=shared
+                                 https://medium.com/@sanjanasrinivas73/post-training-static-quantization-pytorch-37dd187ba105
+                                 https://pytorch.org/tutorials/advanced/static_quantization_tutorial.html
 
-/resnet/utils/ - folder contains helper code for finding accuracy and logging 
+    /lenet/lenet_float.ipynb - LeNet-5 architecture implementation using float datatype
 
-/resnet/preprocess.py - code for preprocessing the input data
+    /lenet/lenet_posit.ipynb - LeNet-5 architecture with float arithmetic. The input of each
+                                convolution layer is first converted to 8-bit posit
+                                and then converted back to 32 bit float. This is to simulate
+                                the storage of 32 bit output of convolution to 8 bit posit
+                                in the accelerator.
 
-/resnet/resnet_8bit.ipynb - Jupyter Notebook containing code for training and testing ResNet-18 architecture
-                    with quantized 8-bit input and weights
+Resnet-18 Architecture
+    /resnet/models/ 
+        - qresnet.py - Code for ResNet 18 architecture
+                        [Reference: https://github.com/pytorch/vision/blob/main/torchvision/models/resnet.py]
+        - quantize.py - Code for implementing forward and backward pass of 
+                        Quantized Convolution Neural Network and also 
+                        quantizing input data of convolution and weights
+                        to 8 bits
 
-/resnet/resnet_original.ipynb - Actual ResNet-18 architecture using float data type 
+    /resnet/utils/ - folder contains helper code for finding accuracy and logging 
 
-/lenet/lenet_float.ipynb - LeNet-5 architecture implementation using float datatype
+    /resnet/preprocess.py - code for preprocessing the input data
 
-/lenet/lenet_posit.ipynb - LeNet-5 architecture with float arithmetic. The input of each
-                            convolution layer is first converted to 8-bit posit
-                            and then converted back to 32 bit float. This is to simulate
-                            the storage of 32 bit output of convolution to 8 bit posit
-                            in the accelerator.
+    /resnet/resnet_8bit.ipynb - Jupyter Notebook containing code for training and testing ResNet-18 architecture
+                        with quantized 8-bit input and weights
+
+    /resnet/resnet_original.ipynb - Actual ResNet-18 architecture using float data type 
 
 References
     - https://github.com/soon-yau/QNN/tree/master - Tutorial for understanding Quantized Neural Network
 
-TODO
 
                                         Dataset     Training Accuracy     Testing Accuracy
 
@@ -58,7 +63,27 @@ LeNet-5 with 16 bit float               MNIST-Digit       96.65%                
 LeNet-5 with 8 bit posit conversion     MNIST-Digit       88.7%                 89.37%
 (16 bit float operation)
 
+LeNet-5 with PTQ technique              MNIST-Digit         -                    98%
+ quantization
 
-Observations
-    - In LeNet-5, conversion from full precision to half precision operations did not change
-        accuracy much
+
+
+Additional Learning
+-------------------------------
+    - Unet image segmentation using the pretrained model gave a dice score of 98%
+       [github: https://github.com/Project-MONAI/tutorials/tree/main/2d_segmentation/torch]
+    - ML algorithms using convolution of quantized 8-bit input
+        [github: https://github.com/eladhoffer/quantized.pytorch, https://github.com/eladhoffer/convNet.pytorch]
+        - Quantized Resnet - for image classification
+            Dataset: cifar10 - 60,000 images of 32 x 32, across 10 classes
+            Quantization: input and weights are quantized to 8 bits before each convolution 
+                            but the output of the convolution is float
+            Accuracy: 80%
+        - Quantized Unet - [github: https://github.com/hossein1387/U-Net-Fixed-Point-Quantization-for-Medical-Image-Segmentation/tree/master]
+                           [paper: https://arxiv.org/pdf/1908.01073v2.pdf]
+            Dice Score:
+                        EM Dataset: Full Precision - 94%, fixed point (8-bit) - 92%
+                        GM Dataset: Full Precision - 56.32%, fixed point (8-bit) - 56.1%
+                        NIH Dataset: Full Precision - 75.69%, fixed point (8-bit) - 73.06%
+    - Read more about Quantization Aware Training of PyTorch
+        - ResNet50, and MobileNet V1,2

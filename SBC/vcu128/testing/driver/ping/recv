@@ -1,3 +1,0 @@
-!/bin/bash
-sudo python3 recvFile.py $1
-sudo chmod a+rw $1

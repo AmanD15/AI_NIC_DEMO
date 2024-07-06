@@ -1,3 +1,4 @@
+
 # build software version of testbench (to check the "desired behaviour")
 AHIR_INCLUDE=$(AHIR_RELEASE)/include
 AHIR_LIB=$(AHIR_RELEASE)/lib
@@ -13,11 +14,11 @@ VHDL_LIB=$(AHIR_RELEASE)/vhdl
 #SIZED_TENSOR=../../../C/primitives/include
 SRC=./src
 
-all: HW 
+all: AA2VHDL 
 LLVM2AAOPTS=-extract_do_while=true --storageinit=true -pipedepths=pipedepths.txt
 #LLVM2AAOPTS=--storageinit=true
 
-MODULES=./src/acc_proc_test/pipes.aa ./src/accelerator_processor_interface_test.aa ./src/readWriteModules.aa ./src/fp_enhanced.aa ./src/generated_aa.aa
+MODULES=./src/acc_proc_test/pipes.aa ./src/accelerator_processor_interface_test3.aa ./src/readWriteModules.aa ./src/fp_enhanced.aa ./src/gen_latest.aa
 # src/concat/concat.aa src/convTranspose/ct_core.aa
 INCLUDES=-Isrc/ConvAll 
 # -Isrc/concat -Isrc/convTranspose
@@ -47,9 +48,13 @@ llvmbc2aa:  prog.opt.o
 
 # link and optimize
 # AaPreprocess -I src/ConvAll src/ConvAll/conv_macro.aa -o src/ConvAll/conv_compiled.aa
-aalink: src/timer.aa prog.aa $(MODULES)
-	AaPreprocess -I src/ConvAll src/ConvAll/conv_macro.aa -o src/ConvAll/conv_compiled.aa
-	AaLinkExtMem prog.aa src/timer.aa src/decl.aa $(MODULES) | vcFormat > prog.linked.aa
+# aalink: src/timer.aa prog.aa $(MODULES)
+# 	AaPreprocess -I src/ConvAll src/ConvAll/conv_macro.aa -o src/ConvAll/conv_compiled.aa
+# 	AaLinkExtMem prog.aa src/timer.aa src/decl.aa $(MODULES) | vcFormat > prog.linked.aa
+# 	AaOpt -C prog.linked.aa | vcFormat > prog.linked.C.opt.aa
+# 	AaOpt -B prog.linked.C.opt.aa | vcFormat > prog.linked.opt.aa
+aalink: src/timer.aa  $(MODULES)
+	AaLinkExtMem src/timer.aa src/decl.aa $(MODULES) | vcFormat > prog.linked.aa
 	AaOpt -C prog.linked.aa | vcFormat > prog.linked.C.opt.aa
 	AaOpt -B prog.linked.C.opt.aa | vcFormat > prog.linked.opt.aa
 
