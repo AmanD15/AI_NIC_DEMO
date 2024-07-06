@@ -1,4 +1,4 @@
-Title : Ping application
+Title : Network caching application
 Author : Siddhant Singh Tomar
 Date   : 12/1/2024
 
@@ -7,6 +7,7 @@ Date   : 12/1/2024
             - cc.h :
             - sys_arch.h:
             - lwipopts.h:
+
     2. src folder
             - contains mainloop code for baremetal use of LwIP.
             - ethernetif.c contanis low level drivers
@@ -14,6 +15,15 @@ Date   : 12/1/2024
                 needed for internal timers of TCP/IP stack.
 
 
+    3. server : host side UDP server code
+
+    4. client : host side TCP client code
+
+    5. tcp_app : lwIP server client code.
+
+
+Host (PC) Side Setup:
+- Check the connection details of "ETH_NIC_TESTING" on the machine at 10.107.90.64.
 
 Hardware (FPGA) Setup:
 After loading any SBC bitfile onto the FPGA, follow these steps:
@@ -22,14 +32,8 @@ After loading any SBC bitfile onto the FPGA, follow these steps:
 3. Reset the NIC using VIO by giving a reset pulse (0->1->0).
 4. Now, you are ready to push the code using `ajit_debug_monitor_mt`.
 
-Host (PC) Side Setup:
-- Check the connection details of "ETH_NIC_TESTING" on the machine at 10.107.90.64.
 
-Performing the test:
-- open terminal and ping 10.107.90.23
-
-
-NOTE: For original_SBC and hsys_1.2, use the regular process.
+NOTE: For original_SBC and hsys_1.2, use the regular process (./build.sh)
       Generating code for SBC_FASTMEM. 
     1. ./build.sh
     2. cd cortos_build/cortos_src

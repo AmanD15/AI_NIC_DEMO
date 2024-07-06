@@ -1,7 +1,45 @@
 Author: Siddhant Singh Tomar
-	
-	hsys		:	original_SBC 
-	hsys_1.1	:	SBC_FASTMEM 
-	hsys_1.2	:	SBC_L2CACHE 
-			
-	
+Date: 6/7/24
+
+Overview:
+This directory contains everything needed to generate 
+the bitfiles and software for testing.
+
+Directory Structure:
+
+- docs:
+  Contains diagrams for various subsystems used 
+  in the SBCs and the final toplevel diagram.
+
+- hsys files:
+  Generate the VHDL files based on the type of SBC you want to use:
+  - hsys: original_SBC 
+  - hsys_1.1: SBC_FASTMEM 
+  - hsys_1.2: SBC_L2CACHE 
+
+    the main difference between the above three configuration 
+    is in the ACB_AFB_complex subsystem. For reference one can 
+    take a look at digarams at: 
+    ./<hsys>or<hsys_1.1>or<hsys_1.2>/acb_afb_complex
+
+- organizedMAC:
+  Example design of trimode Ethernet MAC IP adapted for use with the custom NIC.
+
+- vivado_synth:
+  Contains the TCL script "bitgen.tcl" for generating the bit file. Edit the script 
+  to include the appropriate files for hsys, hsys_1.1, or hsys_1.2.
+  ./vivado_synth/bitfiles/tested contains the tested bitfile for all three config.
+
+- ip_consolidated:
+  Contains other Xilinx IPs used in the project.
+
+- constraints:
+  Contains the Xilinx constraint file (.xdc).
+
+- testing:
+  Contains code needed for testing the bitfiles.
+  - latestNICtesting: Code for testing NIC in Networking/NIC with drivers in Networking/NIC/driver.
+  - testingNIC_1.1: Code for testing NIC_1.1 in Networking/NIC_1.1 with drivers in Networking/NIC_1.1/driver.
+  - NIC_via_interrupt: NIC emulated via interrupt.
+  - march test: March test to check NIC register and memory.
+

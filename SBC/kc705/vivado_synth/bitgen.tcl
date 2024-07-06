@@ -64,11 +64,9 @@ read_vhdl -library nic_mac_bridge_lib ../toplevel/nic_mac_bridge_edited.vhdl
 
 ############ ADDING TOP LEVEL VHDL #########################
 # toplevel file for hsys (original SBC)
-
 # read_vhdl ../toplevel/orignal_SBC/sbc_kc705.vhdl
 
 # toplevel file for hsys_1.1 (SBC with ACB SRAM)
-
  read_vhdl ../toplevel/SBC_FASTMEM/sbc_kc705.vhdl
  read_vhdl ../hsys_1.1/acb_sram/vhdl/acb_sram_lib/acb_sram.vhdl
 
@@ -76,7 +74,6 @@ read_vhdl -library nic_mac_bridge_lib ../toplevel/nic_mac_bridge_edited.vhdl
 #read_vhdl -library l2_cache_lib ../../../SOURCE/L2CACHE/vhdl/l2_cache_lib/l2_cache.vhdl
 #read_vhdl -library l2_cache_lib ../../../SOURCE/L2CACHE/vhdl/l2_cache_lib/l2_cache_global_package.vhdl
 #read_vhdl ../toplevel/SBC_L2CACHE/sbc_kc705.vhdl
-
 
 ###########################################################
 # verilog files for old MAC
