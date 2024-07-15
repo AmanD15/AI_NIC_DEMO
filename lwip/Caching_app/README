@@ -31,6 +31,7 @@ After loading any SBC bitfile onto the FPGA, follow these steps:
 2. Reset the processor using VIO by giving a reset pulse (0->1->0).
 3. Reset the NIC using VIO by giving a reset pulse (0->1->0).
 4. Now, you are ready to push the code using `ajit_debug_monitor_mt`.
+    inside ajit_debug_monitor_mt do : s run.script
 
 
 NOTE: For original_SBC and hsys_1.2, use the regular process (./build.sh)

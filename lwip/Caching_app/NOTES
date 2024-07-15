@@ -1,0 +1,76 @@
+Title : Network Caching Application Description
+Author : Siddhant Singh Tomar
+Date   : 12/1/2024
+
+1. About
+--------------------------------
+
+The LWIP server code in ./tcp_app is explained as follows:
+
+The tcpecho_raw_recv() function implements a state machine. 
+It starts in the ACCEPTED state upon establishing a TCP connection. 
+When a message is received from the client, it transitions to the 
+RECEIVED state. Depending on the command from the client, it then 
+moves to either the DATA state or the CONTROL state.
+
+The actions for each state are defined by the following functions:
+- RECEIVED state: `tcp_RECEIVED_STATE()`
+- DATA state: `tcp_DATA_STATE()`
+- CONTROL state: `tcp_CONTROL_STATE()`
+
+
+2. Application flow
+------------------------
+
+    Events:
+
+    1. A TCP connection is established from a client on Host A (PC) to an lwIP server/client on an FPGA.
+    2. When the client sends a message (e.g., "start") for the first time, the following sequence occurs:
+    
+        a. lwIP server prompts: "RECEIVED STATE: Enter 'C' or 'D', to go to control or data state:"
+        
+        b. Client sends: D
+
+        c. lwIP server prompts: "DATA STATE: Enter the offset, data size (<offset>, <num_of_bytes>):"
+        
+        d. Client sends: 0,15360
+        
+        e. lwIP server prompts: "DATA STATE: 15360 bytes stored at, starting from offset: 0"
+                               "RECEIVED STATE: Enter 'C' or 'D', to go to control or data state:"
+
+        f. Steps from (b) repeat or a large file is sent.
+
+        g. Client sends: C
+
+        h. lwIP server prompts: "CONTROL STATE: Enter IP and port (A.B.C.D <space> WXYZ):"
+        
+        i. Client sends: 10.107.90.23 55555
+        
+        j. lwIP server prompts: "CONTROL STATE: Forwarding data..."
+
+        k. lwIP server acts as a client, connects to a UDP server on Host B (PC), and starts sending 
+           stored data in 128-byte packets.
+
+
+3. Running the application
+-----------------------------
+
+    Steps:
+
+    a. Open 3 tmux sessions: one for the client script (host A), one for the UDP server (host B), 
+       and one for pushing the lwIP server/client code using ajit_debug_monitor_mt.
+
+    b. After pushing the code, you might see the NIC and lwIP config log on the serial monitor. 
+       You can use Minicap or the Arduino serial monitor for this purpose.
+
+    c. Start the UDP server on host B using:
+        sudo python ./server/UDP_server.py
+
+    d. Start the TCP client on host A using:
+        sudo python ./client/TCP_client.py
+        After this, you can see messages sent by the lwIP server (on FPGA).
+
+    
+       
+
+    
