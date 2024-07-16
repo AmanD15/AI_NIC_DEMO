@@ -22,16 +22,22 @@ Date   : 12/1/2024
     5. tcp_app : lwIP server client code.
 
 
-Host (PC) Side Setup:
-- Check the connection details of "ETH_NIC_TESTING" on the machine at 10.107.90.64.
+Host Configuration: 
+    On Ubuntu 16.04/20.04, modify wired settings for the ethernet connection:
+        - Details Section: check "Connect automatically", check "Make available to other users".
+        - Security Section: Disable 802.1x security.
+        - IPv4 Section: Set the IP address 10.107.90.20 and netmask 255.255.240.0.
+        - IPv6 Section: Disable both protocols. 
+        NOTE: For reference, one can check wired settings named "ETH_NIC_TESTING"
+                in the 10.107.90.64 machine in VLSI LAB
 
 Hardware (FPGA) Setup:
-After loading any SBC bitfile onto the FPGA, follow these steps:
-1. Press the east push button to reset the clock.
-2. Reset the processor using VIO by giving a reset pulse (0->1->0).
-3. Reset the NIC using VIO by giving a reset pulse (0->1->0).
-4. Now, you are ready to push the code using `ajit_debug_monitor_mt`.
-    inside ajit_debug_monitor_mt do : s run.script
+    After loading any SBC bitfile onto the FPGA, follow these steps:
+    1. Press the east push button to reset the clock.
+    2. Reset the processor using VIO by giving a reset pulse (0->1->0).
+    3. Reset the NIC using VIO by giving a reset pulse (0->1->0).
+    4. Now, you are ready to push the code using `ajit_debug_monitor_mt`.
+        inside ajit_debug_monitor_mt do : s run.script
 
 
 NOTE: For original_SBC and hsys_1.2, use the regular process (./build.sh)
