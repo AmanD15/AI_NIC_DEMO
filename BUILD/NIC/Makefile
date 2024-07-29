@@ -4,7 +4,8 @@ AHIR_LIB=$(AHIR_RELEASE)/lib
 VHDL_LIB=$(AHIR_RELEASE)/vhdl
 VHDL_VHPI_LIB=$(AHIR_RELEASE)/CtestBench/vhdl
 FUNCTIONLIB=$(AHIR_RELEASE)/functionLibrary/
-SRC=../../SOURCE/NIC/
+#SRC=../../SOURCE/NIC/
+SRC=../../Networking/NIC_1.1/src
 all: HW 
 
 TOPMODULES=-T ReceiveEngineDaemon -T nicRxFromMacDaemon -T transmitEngineDaemon -T controlDaemon

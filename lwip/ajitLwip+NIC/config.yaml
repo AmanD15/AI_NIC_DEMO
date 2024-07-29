@@ -25,9 +25,9 @@ Hardware:
       SizeInMegaBytes: 64
       Permissions: RWXC
     NCRAM:
-      StartAddr: 0x50000000  # physical address
+      StartAddr: 0x50001000  # physical address
       # SizeInBytes: ...
-      SizeInMegaBytes: 32
+      SizeInKiloBytes: 252
       Permissions: RW
     MMIO: # Memory Mapped IO
       StartAddr: 0xFF000000  # physical address
@@ -88,6 +88,8 @@ Software:
     -I $AJIT_HOME/AI_NIC_DEMO/lwip/ajitLwip+NIC/include/arch
     -I $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/include
     -I $AJIT_HOME/AI_NIC_DEMO/Networking/NIC_1.1/driver/include
+    -I $AJIT_HOME/application_development/rng_marsaglia/include
+    -C $AJIT_HOME/application_development/rng_marsaglia/src
     -C $AJIT_HOME/AI_NIC_DEMO/Networking/NIC_1.1/driver/src
     -c $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/netif/ethernet.c
     -c $AJIT_HOME/AI_NIC_DEMO/lwip/lwip/src/api/err.c 
@@ -107,8 +109,8 @@ Software:
 
   DynamicMemory: # Dynamic Memory Configuration.
     # SizeInBytes: ...
-    SizeInKiloBytes: 100
-    # SizeInMegaBytes: 500
+    # SizeInKiloBytes: 100
+    SizeInMegaBytes: 32
 
   Locks: # Locks for synchronization between threads.
 #      Cacheable: 32

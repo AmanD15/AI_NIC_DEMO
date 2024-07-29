@@ -486,7 +486,7 @@ begin
             start_access   <= 1;
             writenread     <= 1;
             addr           <= CONFIG_UNI0_CTRL_ADD;
-            axi_wr_data    <= 32'h040302DA;
+            axi_wr_data    <= 32'hA0760535;	// modified
             axi_state      <= CNFG_HI_ADDR;
          end
          CNFG_HI_ADDR : begin
@@ -494,15 +494,15 @@ begin
             start_access   <= 1;
             writenread     <= 1;
             addr           <= CONFIG_UNI1_CTRL_ADD;
-            axi_wr_data    <= 32'h0605;
+            axi_wr_data    <= 32'h0A00;	// modified
             axi_state      <= CNFG_FILTER;
          end
          CNFG_FILTER : begin
-            $display("** Note: Setting core to promiscuous mode....");
+            $display("** Note: Setting core to non-promiscuous mode....");     // modified
             start_access   <= 1;
             writenread     <= 1;
             addr           <= CONFIG_ADDR_CTRL_ADD;
-            axi_wr_data    <= 32'h80000000;
+            axi_wr_data    <= 32'h00000000;	// modified
             axi_state      <= CHECK_SPEED;
          end
          CHECK_SPEED : begin

@@ -233,56 +233,43 @@ architecture structure of sbc_vcu128 is
 -------------------------------------------------------------------------
 
   component sbc_vcu128_core is -- 
-    port( -- 
-      CLOCK_TO_DRAMCTRL_BRIDGE : in std_logic;
-      CLOCK_TO_NIC : in std_logic;
-      CLOCK_TO_PROCESSOR : in std_logic;
-      CONSOLE_to_SERIAL_RX_pipe_write_data : in std_logic_vector(7 downto 0);
-      CONSOLE_to_SERIAL_RX_pipe_write_req  : in std_logic_vector(0  downto 0);
-      CONSOLE_to_SERIAL_RX_pipe_write_ack  : out std_logic_vector(0  downto 0);
-      DRAM_CONTROLLER_TO_ACB_BRIDGE : in std_logic_vector(521 downto 0);
-      MAC_TO_NIC_pipe_write_data : in std_logic_vector(9 downto 0);
-      MAC_TO_NIC_pipe_write_req  : in std_logic_vector(0  downto 0);
-      MAC_TO_NIC_pipe_write_ack  : out std_logic_vector(0  downto 0);
-      MAX_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MAX_ACC_1_2_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MAX_ACC_1_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MAX_ACC_3_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MAX_FLASH_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MAX_NIC_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MIN_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MIN_ACC_1_2_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MIN_ACC_1_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MIN_ACC_3_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MIN_FLASH_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      MIN_NIC_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
-      RESET_TO_DRAMCTRL_BRIDGE : in std_logic;
-      RESET_TO_NIC : in std_logic;
-      RESET_TO_PROCESSOR : in std_logic;
-      SOC_MONITOR_to_DEBUG_pipe_write_data : in std_logic_vector(7 downto 0);
-      SOC_MONITOR_to_DEBUG_pipe_write_req  : in std_logic_vector(0  downto 0);
-      SOC_MONITOR_to_DEBUG_pipe_write_ack  : out std_logic_vector(0  downto 0);
-      SPI_FLASH_MISO : in std_logic_vector(0 downto 0);
-      THREAD_RESET : in std_logic_vector(3 downto 0);
-      WRITE_PROTECT : in std_logic_vector(0 downto 0);
-      ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(613 downto 0);
-      NIC_MAC_RESETN : out std_logic_vector(0 downto 0);
-      NIC_TO_MAC_pipe_read_data : out std_logic_vector(9 downto 0);
-      NIC_TO_MAC_pipe_read_req  : in std_logic_vector(0  downto 0);
-      NIC_TO_MAC_pipe_read_ack  : out std_logic_vector(0  downto 0);
-      PROCESSOR_MODE : out std_logic_vector(15 downto 0);
-      SERIAL_TX_to_CONSOLE_pipe_read_data : out std_logic_vector(7 downto 0);
-      SERIAL_TX_to_CONSOLE_pipe_read_req  : in std_logic_vector(0  downto 0);
-      SERIAL_TX_to_CONSOLE_pipe_read_ack  : out std_logic_vector(0  downto 0);
-      SOC_DEBUG_to_MONITOR_pipe_read_data : out std_logic_vector(7 downto 0);
-      SOC_DEBUG_to_MONITOR_pipe_read_req  : in std_logic_vector(0  downto 0);
-      SOC_DEBUG_to_MONITOR_pipe_read_ack  : out std_logic_vector(0  downto 0);
-      SPI_FLASH_CLK : out std_logic_vector(0 downto 0);
-      SPI_FLASH_CS_L : out std_logic_vector(7 downto 0);
-      SPI_FLASH_MOSI : out std_logic_vector(0 downto 0)
-      --clk, reset: in std_logic 
-      -- 
-    );
+  port( -- 
+    CLOCK_TO_DRAMCTRL_BRIDGE : in std_logic;
+    CLOCK_TO_NIC : in std_logic;
+    CLOCK_TO_PROCESSOR : in std_logic;
+    CONSOLE_to_SERIAL_RX_pipe_write_data : in std_logic_vector(7 downto 0);
+    CONSOLE_to_SERIAL_RX_pipe_write_req  : in std_logic_vector(0  downto 0);
+    CONSOLE_to_SERIAL_RX_pipe_write_ack  : out std_logic_vector(0  downto 0);
+    DRAM_CONTROLLER_TO_ACB_BRIDGE : in std_logic_vector(521 downto 0);
+    MAC_TO_NIC_pipe_write_data : in std_logic_vector(9 downto 0);
+    MAC_TO_NIC_pipe_write_req  : in std_logic_vector(0  downto 0);
+    MAC_TO_NIC_pipe_write_ack  : out std_logic_vector(0  downto 0);
+    MAX_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
+    MAX_NIC_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
+    MIN_ACB_TAP_ADDR : in std_logic_vector(35 downto 0);
+    MIN_NIC_AFB_TAP_ADDR : in std_logic_vector(35 downto 0);
+    RESET_TO_DRAMCTRL_BRIDGE : in std_logic;
+    RESET_TO_NIC : in std_logic;
+    RESET_TO_PROCESSOR : in std_logic;
+    SOC_MONITOR_to_DEBUG_pipe_write_data : in std_logic_vector(7 downto 0);
+    SOC_MONITOR_to_DEBUG_pipe_write_req  : in std_logic_vector(0  downto 0);
+    SOC_MONITOR_to_DEBUG_pipe_write_ack  : out std_logic_vector(0  downto 0);
+    THREAD_RESET : in std_logic_vector(3 downto 0);
+    ACB_BRIDGE_TO_DRAM_CONTROLLER : out std_logic_vector(613 downto 0);
+    NIC_MAC_RESETN : out std_logic_vector(0 downto 0);
+    NIC_TO_MAC_pipe_read_data : out std_logic_vector(9 downto 0);
+    NIC_TO_MAC_pipe_read_req  : in std_logic_vector(0  downto 0);
+    NIC_TO_MAC_pipe_read_ack  : out std_logic_vector(0  downto 0);
+    PROCESSOR_MODE : out std_logic_vector(15 downto 0);
+    SERIAL_TX_to_CONSOLE_pipe_read_data : out std_logic_vector(7 downto 0);
+    SERIAL_TX_to_CONSOLE_pipe_read_req  : in std_logic_vector(0  downto 0);
+    SERIAL_TX_to_CONSOLE_pipe_read_ack  : out std_logic_vector(0  downto 0);
+    SOC_DEBUG_to_MONITOR_pipe_read_data : out std_logic_vector(7 downto 0);
+    SOC_DEBUG_to_MONITOR_pipe_read_req  : in std_logic_vector(0  downto 0);
+    SOC_DEBUG_to_MONITOR_pipe_read_ack  : out std_logic_vector(0  downto 0)
+    -- clk, reset: in std_logic 
+    -- 
+  );
   --
   end component sbc_vcu128_core;
   signal SPI_FLASH_CS_L: std_logic_vector(7 downto 0);
@@ -532,23 +519,23 @@ component ddr4_0 is
    signal NIC_TO_MAC_pipe_read_req  : std_logic_vector(0  downto 0);
    signal NIC_TO_MAC_pipe_read_ack  : std_logic_vector(0  downto 0);
 
-  --  signal MAX_ACB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
-  --  signal MAX_AFB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
-  --  signal MIN_ACB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
-  --  signal MIN_AFB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MAX_ACB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MIN_ACB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MAX_NIC_AFB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MIN_NIC_AFB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
 
-   signal MAX_ACB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
-   signal MAX_ACC_1_2_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
-   signal MAX_ACC_1_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
-   signal MAX_ACC_3_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
-   signal MAX_FLASH_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
-   signal MAX_NIC_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
-   signal MIN_ACB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
-   signal MIN_ACC_1_2_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
-   signal MIN_ACC_1_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
-   signal MIN_ACC_3_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
-   signal MIN_FLASH_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
-   signal MIN_NIC_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+  --  signal MAX_ACC_1_2_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+  --  signal MAX_ACC_1_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+  --  signal MAX_ACC_3_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+  --  signal MAX_DRAM_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+  --  signal MAX_NIC_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+  --  signal MIN_ACC_1_2_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+  --  signal MIN_ACC_1_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+  --  signal MIN_ACC_3_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+  --  signal MIN_DRAM_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+  --  signal MIN_NIC_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+  --  signal MIN_FLASH_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
+  --  signal MIN_NIC_AFB_TAP_ADDR : std_logic_vector(35 downto 0) :=X"0_0000_0000";
    
 
 
@@ -606,45 +593,41 @@ begin
    -- CONFIG_UART_BAUD_CONTROL_WORD <= X"3b890180";
 
       
-     -- Tap goes to NIC + FLASH (0x0000_0000 - 0x3000_0000)
+     -- Tap goes to NIC + ACCL (0x0000_0000 - 0x3000_0000)
 
-    --  MIN_ACB_TAP_ADDR <= X"0_0000_0000";
-    --  MAX_ACB_TAP_ADDR <= X"0_2FFF_FFFF";
      MIN_ACB_TAP_ADDR <= X"0_1000_0000";
      MAX_ACB_TAP_ADDR <= X"0_1FFF_FFFF";
+    -- MIN_NIC_TAP_ADDR <= X"0_FF00_0000";
+    -- MAX_NIC_TAP_ADDR <= X"0_FFFF_FFFF";
 
 
       -- TAP goes to NIC (0x2000 0000 to 0x3000 0000)
       
-    --  MIN_NIC_AFB_TAP_ADDR <= X"0_2000_0000";
-    --  MAX_NIC_AFB_TAP_ADDR <= X"0_2FFF_FFFF"; 
-
      MIN_NIC_AFB_TAP_ADDR <= X"0_1000_0000";
      MAX_NIC_AFB_TAP_ADDR <= X"0_1000_FFFF"; 
+
+    -- MIN_DRAM_TAP_ADDR <= X"0_3000_0000";
+    -- MAX_DRAM_TAP_ADDR <= X"0_FEFF_FFFF"; 
 
     -- TAP goes to FLASH (0x0000 0000 to 0x1FF0 FFFF)
     -- Through Accelerator 1-4 Address (0x1FF1 0000 to 0x1FFF FFFF)
     --  MIN_FLASH_AFB_TAP_ADDR <= X"0_0000_0000";
     --  MAX_FLASH_AFB_TAP_ADDR <= X"0_1FF0_FFFF";
-    MIN_FLASH_AFB_TAP_ADDR <= X"0_0000_0000";
-     MAX_FLASH_AFB_TAP_ADDR <= X"0_0000_0001";
+    -- MIN_ACC_1_2_TAP_ADDR <= X"0_1001_0000";
+    -- MAX_ACC_1_2_TAP_ADDR <= X"0_1002_FFFF";
 
     -- TAP goes to Accelerator 1-2 (0x1FF1 0000 to 0x1FF2 FFFF)
     -- Through Accelerator 3-4 Address (0x1FF3 0000 to 0x1FFF FFFF)
     --  MIN_ACC_1_2_AFB_TAP_ADDR <= X"0_1FF1_0000";
     --  MAX_ACC_1_2_AFB_TAP_ADDR <= X"0_1FF2_FFFF";
-    MIN_ACC_1_2_AFB_TAP_ADDR <= X"0_1001_0000";
-     MAX_ACC_1_2_AFB_TAP_ADDR <= X"0_1002_FFFF";
+    -- MIN_ACC_1_TAP_ADDR <= X"0_1001_0000";
+    -- MAX_ACC_1_TAP_ADDR <= X"0_1001_FFFF";
 
-    -- TAP goes to Accelerator 1 (0x1FF1 0000 to 0x1FF1 FFFF)
-    -- Through Accelerator 2 Address (0x1FF2 0000 to 0x1FF2 FFFF)
-     MIN_ACC_1_AFB_TAP_ADDR <= X"0_1001_0000";
-     MAX_ACC_1_AFB_TAP_ADDR <= X"0_1001_FFFF";
 
     -- TAP goes to Accelerator 3 (0x1FF3 0000 to 0x1FF3 FFFF)
     -- Through Accelerator 4 Address (0x1FF4 0000 to 0x1FFF FFFF)
-     MIN_ACC_3_AFB_TAP_ADDR <= X"0_1003_0000";
-     MAX_ACC_3_AFB_TAP_ADDR <= X"0_1003_FFFF";
+    -- MIN_ACC_3_TAP_ADDR <= X"0_1003_0000";
+    --  MAX_ACC_3_TAP_ADDR <= X"0_1003_FFFF";
 
     --  clk_in1_p <= CLKREF_P;
     --  clk_in1_n <= CLKREF_N;
@@ -682,7 +665,8 @@ begin
 
     virtual_reset_nic       : vio_125
         port map (
-                  clk         => clk_ref_125,
+                  -- clk         => clk_ref_125,
+                  clk         => clk_125mhz_int,
                   probe_in0   => clk_wizard_locked,
                   probe_out0  => RESET_TO_NIC
           );
@@ -716,7 +700,8 @@ begin
    sbc_vcu128_core_inst: sbc_vcu128_core
      port map ( --
     CLOCK_TO_DRAMCTRL_BRIDGE =>  MIG7_UI_CLOCK, --  ui_clk, 80MHz
-    CLOCK_TO_NIC => clk_ref_125,
+    -- CLOCK_TO_NIC => clk_ref_125,
+    CLOCK_TO_NIC => clk_125mhz_int,
     CLOCK_TO_PROCESSOR => CLOCK_TO_PROCESSOR,        --  ui_clk, 80MHz
 
     RESET_TO_DRAMCTRL_BRIDGE => RESET_TO_PROCESSOR(0),    
@@ -724,7 +709,7 @@ begin
     RESET_TO_PROCESSOR => RESET_TO_PROCESSOR(0),
     
     THREAD_RESET => THREAD_RESET,
-    WRITE_PROTECT => WRITE_PROTECT,
+    -- WRITE_PROTECT => WRITE_PROTECT,
     PROCESSOR_MODE => PROCESSOR_MODE,
 
     CONSOLE_to_SERIAL_RX_pipe_write_data => CONSOLE_to_SERIAL_RX_pipe_write_data,
@@ -754,25 +739,26 @@ begin
     
     -- MAX_ACB_TAP_ADDR => MAX_ACB_TAP_ADDR,
     -- MAX_AFB_TAP_ADDR => MAX_AFB_TAP_ADDR,
-    -- MIN_ACB_TAP_ADDR => MIN_ACB_TAP_ADDR,
+    MAX_ACB_TAP_ADDR => MAX_ACB_TAP_ADDR,
+    MIN_ACB_TAP_ADDR => MIN_ACB_TAP_ADDR,
     -- MIN_AFB_TAP_ADDR => MIN_AFB_TAP_ADDR,
-      MAX_ACB_TAP_ADDR => MAX_ACB_TAP_ADDR,
-      MAX_ACC_1_2_AFB_TAP_ADDR => MAX_ACC_1_2_AFB_TAP_ADDR,
-      MAX_ACC_1_AFB_TAP_ADDR => MAX_ACC_1_AFB_TAP_ADDR,
-      MAX_ACC_3_AFB_TAP_ADDR => MAX_ACC_3_AFB_TAP_ADDR,
-      MAX_FLASH_AFB_TAP_ADDR => MAX_FLASH_AFB_TAP_ADDR,
+      -- MAX_ACC_1_2_TAP_ADDR => MAX_ACC_1_2_TAP_ADDR,
+      -- MAX_ACC_1_TAP_ADDR => MAX_ACC_1_TAP_ADDR,
+      -- MAX_ACC_3_TAP_ADDR => MAX_ACC_3_TAP_ADDR,
+      -- MAX_DRAM_TAP_ADDR => MAX_DRAM_TAP_ADDR,
+      -- MAX_NIC_TAP_ADDR => MAX_NIC_TAP_ADDR,
+      -- MIN_ACC_1_2_TAP_ADDR => MIN_ACC_1_2_TAP_ADDR,
+      -- MIN_ACC_1_TAP_ADDR => MIN_ACC_1_TAP_ADDR,
+      -- MIN_ACC_3_TAP_ADDR => MIN_ACC_3_TAP_ADDR,
+      -- MIN_DRAM_TAP_ADDR => MIN_DRAM_TAP_ADDR,
       MAX_NIC_AFB_TAP_ADDR => MAX_NIC_AFB_TAP_ADDR,
-      MIN_ACB_TAP_ADDR => MIN_ACB_TAP_ADDR,
-      MIN_ACC_1_2_AFB_TAP_ADDR => MIN_ACC_1_2_AFB_TAP_ADDR,
-      MIN_ACC_1_AFB_TAP_ADDR => MIN_ACC_1_AFB_TAP_ADDR,
-      MIN_ACC_3_AFB_TAP_ADDR => MIN_ACC_3_AFB_TAP_ADDR,
-      MIN_FLASH_AFB_TAP_ADDR => MIN_FLASH_AFB_TAP_ADDR,
-      MIN_NIC_AFB_TAP_ADDR => MIN_NIC_AFB_TAP_ADDR,
+      -- MIN_FLASH_AFB_TAP_ADDR => MIN_FLASH_AFB_TAP_ADDR,
+      MIN_NIC_AFB_TAP_ADDR => MIN_NIC_AFB_TAP_ADDR
 
-    SPI_FLASH_MISO => "0",
-    SPI_FLASH_CLK => open,
-    SPI_FLASH_CS_L => open,
-    SPI_FLASH_MOSI => open
+    -- SPI_FLASH_MISO => "0",
+    -- SPI_FLASH_CLK => open,
+    -- SPI_FLASH_CS_L => open,
+    -- SPI_FLASH_MOSI => open
     ); -- 
   -- 
     -- SPI_FLASH_CS_TOP(0) <= SPI_FLASH_CS_L(0);
@@ -863,7 +849,8 @@ ETH_TOP_inst : ETH_TOP
 	    led => led,-- out std_logic_vector(7 downto 0);
 	    dummy_port_in => dummy_port_in,-- in std_logic;
 
-	    clk_125mhz_int => open, -- out std_logic;
+	    -- clk_125mhz_int => open, -- out std_logic;
+      clk_125mhz_int => clk_125mhz_int, -- out std_logic;
 	    clock_100mhz_int => open, -- out std_logic;
 	    clock_70mhz_int => open, -- out std_logic;
 	    rst_125mhz_int => open, -- out_std_logic;
@@ -895,7 +882,8 @@ ETH_TOP_inst : ETH_TOP
 
       ila_2_inst : ila_2
       port map(
-     clk => clk_ref_125,
+    --  clk => clk_ref_125,
+    clk => clk_125mhz_int,
      probe0 => MAC_TO_NIC_pipe_write_data, --
      probe1 => MAC_TO_NIC_pipe_write_req, --
      probe2 => MAC_TO_NIC_pipe_write_ack ,--

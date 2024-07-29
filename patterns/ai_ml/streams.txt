@@ -1,0 +1,6 @@
+Operations
+8-bit
+
+   dword 0:    (0,0,0) (0,0,1) (0,0,2) ... (0,0, Olayers-1)
+   dword 1:    (0,1,0) (0,1,1) (0,1,2) ... (0,1, Olayers-1)
+   dword 2: 

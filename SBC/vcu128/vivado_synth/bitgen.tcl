@@ -1,14 +1,42 @@
 # VHDL libs.
-read_vhdl -library AhbApbLib ../vhdl_libs/AhbApbLib.vhdl
-read_vhdl -library ahir_ieee_proposed ../vhdl_libs/aHiR_ieee_proposed.vhdl
-read_vhdl -library ahir ../vhdl_libs/ahir.vhdl
-read_vhdl -library AxiBridgeLib ../vhdl_libs/AxiBridgeLib.vhdl
+# read_vhdl -library AhbApbLib ../vhdl_libs/AhbApbLib.vhdl
+# read_vhdl -library ahir_ieee_proposed ../vhdl_libs/aHiR_ieee_proposed.vhdl
+# read_vhdl -library ahir ../vhdl_libs/ahir.vhdl
+# read_vhdl -library AxiBridgeLib ../vhdl_libs/AxiBridgeLib.vhdl
+# read_vhdl -library DualClockedQueuelib ../vhdl_libs/DualClockedQueuelib.vhdl
+# read_vhdl -library GenericCoreAddOnLib ../vhdl_libs/GenericCoreAddOnLib.vhdl
+# read_vhdl -library GenericGlueStuff ../vhdl_libs/GenericGlueStuff.vhdl
+# read_vhdl -library GlueModules ../vhdl_libs/GlueModules.vhdl
+# read_vhdl -library simpleI2CLib  ../vhdl_libs/simpleI2CLib.vhdl
+# read_vhdl -library simpleUartLib ../vhdl_libs/simpleUartLib.vhdl
+# read_vhdl -library SpiMasterLib  ../vhdl_libs/SpiMasterLib.vhdl
+# read_vhdl -library AjitCustom  ../vhdl_libs/AjitCustom.vhdl
+
+#read_vhdl -library AhbApbLib ../vhdl_libs/AhbApbLib.vhdl
+
+#read_vhdl -library ahir_ieee_proposed ../vhdl_libs/aHiR_ieee_proposed.vhdl
+read_vhdl -library ahir_ieee_proposed ../../../Networking/vcu128/NicMac/vhdl_libs/aHiR_ieee_proposed.vhdl
+
+#read_vhdl -library ahir ../vhdl_libs/ahir.vhdl
+read_vhdl -library ahir ../../../Networking/vcu128/NicMac/vhdl_libs/ahir.vhdl
+
+#read_vhdl -library AxiBridgeLib ../vhdl_libs/AxiBridgeLib.vhdl
 read_vhdl -library DualClockedQueuelib ../vhdl_libs/DualClockedQueuelib.vhdl
-read_vhdl -library GenericCoreAddOnLib ../vhdl_libs/GenericCoreAddOnLib.vhdl
-read_vhdl -library GenericGlueStuff ../vhdl_libs/GenericGlueStuff.vhdl
-read_vhdl -library GlueModules ../vhdl_libs/GlueModules.vhdl
+
+#read_vhdl -library GenericCoreAddOnLib ../vhdl_libs/GenericCoreAddOnLib.vhdl
+read_vhdl -library GenericCoreAddonLib ../../../Networking/vcu128/NicMac/vhdl_libs/GenericCoreAddOnLib.vhdl
+
+#read_vhdl -library GenericGlueStuff ../vhdl_libs/GenericGlueStuff.vhdl
+read_vhdl -library GenericGlueStuff ../../../Networking/vcu128/NicMac/vhdl_libs/GenericGlueStuff.vhdl
+
+#read_vhdl -library GlueModules ../vhdl_libs/GlueModules.vhdl
+read_vhdl -library GlueModules ../../../Networking/vcu128/NicMac/vhdl_libs/GlueModules.vhdl
+
 read_vhdl -library simpleI2CLib  ../vhdl_libs/simpleI2CLib.vhdl
+
 read_vhdl -library simpleUartLib ../vhdl_libs/simpleUartLib.vhdl
+
+
 read_vhdl -library SpiMasterLib  ../vhdl_libs/SpiMasterLib.vhdl
 read_vhdl -library AjitCustom  ../vhdl_libs/AjitCustom.vhdl
 

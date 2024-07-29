@@ -1,5 +1,6 @@
 #include "include/ethernetif.h"
 #include "nic_driver.h"
+#include "tcpecho_raw.h"
 int main()
 {
 	__ajit_write_serial_control_register__ (TX_ENABLE); 
@@ -8,7 +9,7 @@ int main()
 	cortos_printf ("Started\n");
 	const ip4_addr_t ipaddr  =  {{LWIP_MAKEU32(10,107,90,23)}}  ;
 	const ip4_addr_t netmask  = {{LWIP_MAKEU32(255,255,240,0)}}  ; 
-	const ip4_addr_t gw       = {{LWIP_MAKEU32(10,200,1,11)}}  ; 
+	const ip4_addr_t gw       = {{LWIP_MAKEU32(10,107,95,120)}}  ; 
 
 	struct netif netif;
 	lwip_init();
@@ -25,31 +26,20 @@ int main()
 	low_level_init();
 
 /* Application beigns here*/
-
-	unsigned int i;
-	int message_counter = 0;
+	
 	
 	while(1)
 
 	{
-		
-		if(low_level_input(&netif) == 0) {
+		//if(low_level_input(&netif) == 0) {
+		if(ZeroCopyRx_input(&netif) == 0) {
 
-			message_counter++;
-			cortos_printf ("main(): no. of messages recieved: %d\n",message_counter);
+			//message_counter++;
+			//cortos_printf ("main(): no. of messages recieved: %d\n",message_counter);
 			sys_check_timeouts();
 			
 		}
-		else
-		{
-			// Spin for 1024 clock cycles.
-			__ajit_sleep__ (1024);
-		}
-	
-		
-		if(message_counter == 2048) {	
-				break;
-			}
+
 	
 	}
 	
@@ -62,8 +52,9 @@ int main()
 
 	cortos_freeQueue(rx_queue);	
 	cortos_freeQueue(tx_queue);	
-	cortos_freeQueue(free_queue);
-
+	cortos_freeQueue(free_queue_rx);
+	cortos_freeQueue(free_queue_tx);
+	unsigned int i;
 	// release buffers
 	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
 	{

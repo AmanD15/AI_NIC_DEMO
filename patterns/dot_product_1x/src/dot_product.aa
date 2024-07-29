@@ -1,0 +1,72 @@
+$parameter ORDER         	16
+$parameter STREAM_DEPTH          2
+
+$storage A: $array [ ORDER ] $of $int<8>
+$storage B: $array [ ORDER ] $of $int<8>
+
+$module [setAValue] $in (idx: $uint<8> val: $int<8>) $out () $is
+{
+	A[idx] := val
+}
+
+$module [setBValue] $in (idx: $uint<8> val: $int<8>) $out () $is
+{
+	B[idx] := val
+}
+
+
+$pipe a_stream b_stream: $int<8> $depth STREAM_DEPTH $p2p
+$pipe result_pipe : $uint<8> $depth 2
+
+$module [compute_dot_product] $in () $out (ret_val: $int<8>) $is
+{
+	$parallelblock[chain] {
+		$call streamAB   (0 {ORDER-1}) ()
+		$call accumulate (ORDER) (ret_val)
+	}
+}
+
+$module [streamAB] $in (start_index stop_index: $uint<8>) $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+			$merge $entry $loopback
+				$phi I := start_index $on $entry nI $on $loopback
+			$endmerge
+			$volatile nI := (I + 1)
+			$volatile continue_flag := (I < stop_index)
+
+			v := A[I]
+			w := B[I]
+
+			a_stream := v
+			b_stream := w
+
+		$while continue_flag
+	}
+}
+
+$module [accumulate] $in (n_items: $uint<8>) $out (ret_val: $int<8>) $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 7 $fullrate 
+			$merge $entry $loopback
+				$phi I := $one<9> $on $entry nI $on $loopback
+			$endmerge
+
+			u := a_stream
+			v := b_stream
+
+			$volatile nI := (I + 1)
+			$volatile continue_flag := (I < ($bitcast ($uint<9>)  n_items))
+				
+			sum := (($mux (I == 0) 0 sum) + (u*v))
+
+		$while continue_flag
+	} (sum => sum)
+
+	ret_val := sum
+}
+
+
+

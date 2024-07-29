@@ -1,0 +1,257 @@
+$parameter LOG2_ORDER  		 5
+$parameter ORDER         	 { 2 ** LOG2_ORDER } 
+ 	
+$parameter start_recirc_threshold  ORDER
+$parameter stop_recirc_threshold   {{ORDER * ORDER} - ORDER}
+
+$constant ORDER_MASK_16       : $uint<16> := { ORDER  - 1}
+
+$parameter STREAM_DEPTH          2
+ 
+// The first matrix
+$storage A: $array [ {ORDER * ORDER} ] $of $int<8>
+
+// The second matrix.
+$storage B: $array [ {ORDER * ORDER} ] $of $int<8>
+
+// The result matrix
+$storage RESULT: $array [ {ORDER * ORDER} ] $of $int<8>
+
+$module [setAValue] $in (i j: $uint<8> val: $int<8>) $out () $is
+{
+	$volatile addr := ((i* ORDER) + j)
+	A[addr] := val
+}
+
+$module [setBValue] $in (i j: $uint<8> val: $int<8>) $out () $is
+{
+	$volatile addr := ((i* ORDER) + j)
+	B[addr] := val
+}
+
+
+$module [getResult] $in (i j: $uint<8>) $out (R: $int<8>) $is
+{
+	$volatile addr := ((i* ORDER) + j)
+	R := RESULT[addr] 
+}
+
+$pipe a_stream b_stream result_stream: $int<8>     $depth STREAM_DEPTH 	$p2p
+$pipe recirculated_b_stream: $int<8> 		   $depth {ORDER + 1} 	$p2p
+
+
+
+
+$module [compute_matrix_product] $in () $out () $is
+{
+	$parallelblock[chain] {
+		$call streamA    () ()
+		$call streamB    () ()
+		$call accumulateTop () ()
+		$call storeResults () ()
+	}
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+// Stream all the rows, and repeat
+// ORDER times.
+$module [streamA] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 3 $fullrate
+			$merge $entry $loopback
+				$phi I := $zero<8> $on $entry nI $on $loopback
+				$phi iteration_count := $zero<8> $on $entry
+							n_iteration_count $on $loopback
+			$endmerge
+			$volatile nI := ($mux (I == {ORDER-1}) 0 (I + 1))
+			$volatile n_iteration_count :=
+					($mux (I == {ORDER-1}) (iteration_count + 1) iteration_count)
+
+			$volatile continue_flag := 
+				((iteration_count < {ORDER - 1}) | (I < {ORDER - 1}))
+
+			$call streamARow (I) ()
+
+		$while continue_flag
+	}
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+$module [streamARow] $in (ROW: $uint<8>) $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+			$merge $entry $loopback
+				$phi COL := $zero<8> $on $entry nCOL $on $loopback
+			$endmerge
+			$volatile nCOL := ($mux (COL < {ORDER - 1}) (COL + 1) 0)
+			$volatile continue_flag := (COL < { ORDER - 1 })
+
+			$volatile addr := 
+				($bitcast ($uint<16>) 
+					($concat ROW 
+						($bitcast ($uint< LOG2_ORDER >) COL)))
+		
+			v := A[addr]
+			a_stream := v
+
+		$while continue_flag
+	}
+}
+
+// Stream all the columns once.
+$module [streamB] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 3 $fullrate
+			$merge $entry $loopback
+				$phi I := $zero<8> $on $entry nI $on $loopback
+			$endmerge
+			$volatile nI := (I + 1)
+			$volatile continue_flag := (I < {ORDER - 1})
+
+			$call streamBCol (I) ()
+			
+		$while continue_flag
+	}
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+$module [streamBCol] $in (COL: $uint<8>) $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+			$merge $entry $loopback
+				$phi ROW := $zero<8> $on $entry nROW $on $loopback
+			$endmerge
+			$volatile nROW := ($mux (ROW < {ORDER - 1}) (ROW + 1) 0)
+			$volatile continue_flag := (ROW < { ORDER - 1 })
+			$volatile addr := 
+				($bitcast ($uint<16>) 
+					($concat ROW 
+						($bitcast ($uint< LOG2_ORDER >) COL)))
+		
+			v := B[addr]
+			b_stream := v
+
+		$while continue_flag
+	}
+}
+
+$volatile  $module [muladd] $in (reset_flag: $uint<1>  p sum_in: $int<8>) $out (sum_out: $int<8>) $is
+{
+	sum_out := (($mux reset_flag 0 sum_in) + p)
+}
+
+//
+//  Matrix-vector product sweep for a column..  This is the tricky
+//  one.
+//
+$module [accumulateSweep] $in () $out () $is
+{
+
+
+	$branchblock[loop] {
+		$dopipeline $depth 7 $fullrate 
+			$merge $entry $loopback
+				$phi I := $one<16> $on $entry nI $on $loopback
+				$phi tc := $zero<8> $on $entry n_tc $on $loopback
+			$endmerge
+			
+			$volatile nI := (I + 1)
+			$volatile n_tc := ($mux (tc < {ORDER - 1}) (tc + 1) 0)
+
+			$volatile get_from_b := (I <= start_recirc_threshold)
+			$volatile get_from_a := (I != 0) // to balance things.
+
+			$volatile write_to_recirc := (I <= stop_recirc_threshold)
+			$volatile reset_sum := (tc == 0)
+
+			$volatile send_result :=  (tc == { ORDER - 1} )
+
+			$guard (get_from_a)
+				u := a_stream
+
+			$guard (get_from_b)
+				vb := b_stream
+			$guard (~get_from_b)
+				vr := recirculated_b_stream
+
+			$volatile v := ($mux get_from_b vb vr)
+
+			// write to recirculated stream to avoid
+			// memory access!
+			$guard (write_to_recirc)
+				recirculated_b_stream := v
+
+			$volatile continue_flag := (I < {ORDER * ORDER})
+
+			$volatile p := (u*v)
+
+			// sum := (($mux reset_sum 0 sum) + p) 
+			sum := ($call muladd (reset_sum p sum))
+
+			// at I=1, I=4, ...., 
+			$guard (send_result)
+				result_stream := sum
+
+		$while continue_flag
+	} 
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+//
+//  top-level accumulate routine.
+//
+$module [accumulateTop] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 3 $fullrate 
+			$merge $entry $loopback
+				$phi COL := $zero<8> $on $entry nCOL $on $loopback
+			$endmerge
+			
+			$volatile nCOL := (COL + 1)
+			$volatile continue_flag := (COL < {ORDER - 1})
+
+			$call accumulateSweep () ()
+
+		$while continue_flag
+	} 
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+
+
+//
+// We will get the results in sequence
+//  (0,0), (1,0), (2,0) ... (ORDER-1, 0)
+//  (0,1), (1,1), (2,1) ... (ORDER-1, 1)  
+//
+$module [storeResults] $in () $out () $is
+{
+	$branchblock[loop] {
+		$dopipeline $depth 15 $fullrate
+			$merge $entry $loopback
+				$phi I    := $zero<16> $on $entry nI $on $loopback
+			$endmerge
+			$volatile nI := (I + 1)
+			$volatile continue_flag := (I < { {ORDER * ORDER} - 1} )
+
+			rval := result_stream
+			RESULT[I] := rval
+
+		$while continue_flag
+	}
+}

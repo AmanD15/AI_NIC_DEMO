@@ -3,40 +3,28 @@ AI ML Accelerator on VCU128
 constraints/ - xdc file which contains the constraints for vcu128 board
 docs/ - Folder contains figures for explanation of the architecture
 hsys/ - source files for subsystems
-testing/ - Files for testing memory march, NIC march and Accelerator
+testing/ - Files for testing LeNet architecture
 toplevel/ - Contains SBC core(hand edited) and toplevel vhdl file
+vhdl/ - VHDL files related to ai_ml engine should be copied here
 vivado_synth/ - Script to generate bitstream files
 
 
-TODO
--------------------------------
-    - Unet image segmentation using the pretrained model gave a dice score of 98%
-       [github: https://github.com/Project-MONAI/tutorials/tree/main/2d_segmentation/torch]
-    - ML algorithms using convolution of quantized 8-bit input
-        [github: https://github.com/eladhoffer/quantized.pytorch, https://github.com/eladhoffer/convNet.pytorch]
-        - Quantized Resnet - for image classification
-            Dataset: cifar10 - 60,000 images of 32 x 32, across 10 classes
-            Quantization: input and weights are quantized to 8 bits before each convolution 
-                            but the output of the convolution is float
-            Accuracy: 80%
-        - Quantized Unet - [github: https://github.com/hossein1387/U-Net-Fixed-Point-Quantization-for-Medical-Image-Segmentation/tree/master]
-                           [paper: https://arxiv.org/pdf/1908.01073v2.pdf]
-            Dice Score:
-                        EM Dataset: Full Precision - 94%, fixed point (8-bit) - 92%
-                        GM Dataset: Full Precision - 56.32%, fixed point (8-bit) - 56.1%
-                        NIH Dataset: Full Precision - 75.69%, fixed point (8-bit) - 73.06%
-        - Read more about Quantization Aware Training
-            - ResNet50, and MobileNet V1,2
+Building Hardware
+-----------------------
+    - Enter hsys folder and run build.sh script 
+      - This will generate required VHDL files for each subsystem
+
+    - If there are any changes that need to be done in either
+        SBC core or toplevel SBC, make those changes in the files 
+        present in toplevel folder
     
-Plan
----------------------------------
-    - Quantization of convolution output
-        1) Use the scale values calculated for each channel during the training and use the same in inference engine
-        2) Send the 32 bit output of accumulator to a temporary memory location until all the rows, columns & channels
-            are calculated and then apply quantization on each channel to convert into 8-bit data and store back in correct location
+    - Enter vivado_synth folder and run run.sh script
+      - This should generate two files, processor_1x1x32.sbc.vcu128.bit and processor_1x1x32.sbc.vcu128.ltx
 
 
+loading the bit-file  and running an example
+----------------------------------------------
 
-
+	Follow the instructions in testing/lenet_test/README
 
 

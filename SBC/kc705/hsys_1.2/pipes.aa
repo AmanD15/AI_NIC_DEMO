@@ -1,0 +1,84 @@
+
+
+// Processor subsystem pipes
+
+$pipe SOC_MONITOR_to_DEBUG: $uint<8> $depth 2
+$pipe SOC_DEBUG_to_MONITOR: $uint<8> $depth 2
+$pipe CONSOLE_to_SERIAL_RX: $uint<8> $depth 2
+$pipe SERIAL_TX_to_CONSOLE: $uint<8> $depth 2
+$pipe MAIN_MEM_INVALIDATE: $uint<30> $depth 2
+
+$pipe PROCESSOR_ACB_REQUEST_FIFO_IN: $uint<110> $depth 2 $p2p
+$pipe PROCESSOR_ACB_RESPONSE_FIFO_IN: $uint<65> $depth 2 $p2p
+$pipe PROCESSOR_ACB_REQUEST_FIFO_OUT: $uint<110> $depth 2 $p2p
+$pipe PROCESSOR_ACB_RESPONSE_FIFO_OUT: $uint<65> $depth 2 $p2p
+
+//L2CACHE pipes
+
+$pipe ACB_L2CACHE_REQUEST_TO_DRAM : $uint<110> $depth 2
+$pipe ACB_L2CACHE_REQUEST_NB : $uint<111> $depth 2
+$pipe ACB_L2CACHE_RESPONSE_FROM_DRAM : $uint<65> $depth 2
+$pipe NOBLOCK_L2_INVALIDATE: $uint<31> $depth 2
+$pipe L2_TO_L1_INVALIDATE: $uint<30> $depth 2
+
+
+// Nic pipes
+
+$pipe AFB_NIC_REQUEST: $uint<74> $depth 2
+$pipe NIC_AFB_RESPONSE: $uint<33> $depth 2
+$pipe NIC_ACB_REQUEST: $uint<110> $depth 2
+$pipe ACB_NIC_RESPONSE: $uint<65> $depth 2
+$pipe MAC_TO_NIC: $uint<10> $depth 2  
+$pipe NIC_TO_MAC: $uint<10> $depth 2 
+$pipe NIC_ACB_REQUEST_TO_MEMORY: $uint<110> $depth 2 
+
+
+// DRAM subsystem pipes
+
+$pipe ACB_DRAM_REQUEST: $uint<110> $depth 2
+$pipe DRAM_ACB_RESPONSE: $uint<65> $depth 2
+$pipe CORE_BUS_REQUEST: $uint<110> $depth 2
+$pipe CORE_BUS_RESPONSE: $uint<65> $depth 2
+
+
+// pipes for ACB AFB complex
+
+$pipe ACB_REQUEST_FROM_PROCESSOR: $uint<110> $depth 2 $p2p
+$pipe ACB_RESPONSE_TO_PROCESSOR: $uint<65> $depth 2 $p2p
+$pipe AFB_REQUEST_TO_NIC: $uint<74> $depth 2
+$pipe AFB_RESPONSE_FROM_NIC: $uint<33> $depth 2
+$pipe AFB_REQUEST_TO_FLASH: $uint<74> $depth 2
+$pipe AFB_RESPONSE_FROM_FLASH: $uint<33> $depth 2
+$pipe ACB_REQUEST_FROM_NIC: $uint<110> $depth 2
+$pipe ACB_RESPONSE_TO_NIC: $uint<65> $depth 2
+$pipe ACB_REQUEST_TO_L2CACHE: $uint<110> $depth 2
+$pipe ACB_RESPONSE_FROM_L2CACHE: $uint<65> $depth 2
+
+// pipes for flash controller
+
+$pipe master_in_data : $uint<16> $depth 2
+$pipe master_out_data:  $uint<8> $depth 2
+$pipe MAIN_MEM_REQUEST: $uint<110> $depth 2 
+$pipe MAIN_MEM_RESPONSE: $uint<65> $depth 2 
+$pipe MAIN_MEM_INVALIDATE: $uint<30> $depth 2
+$pipe AFB_FLASH_REQUEST: $uint<74> $depth 2
+$pipe FLASH_AFB_RESPONSE: $uint<33> $depth 2
+
+// FIFO connection pipes
+
+//$pipe AFB_NIC_REQUEST_FIFO_IN: $uint<74> $depth 2
+//$pipe AFB_NIC_REQUEST_FIFO_OUT: $uint<74> $depth 2
+
+//$pipe NIC_AFB_RESPONSE_FIFO_IN: $uint<33> $depth 2
+//$pipe NIC_AFB_RESPONSE_FIFO_OUT: $uint<33> $depth 2
+
+//$pipe NIC_ACB_REQUEST_FIFO_IN: $uint<110> $depth 2
+//$pipe NIC_ACB_REQUEST_FIFO_OUT: $uint<110> $depth 2
+
+//$pipe ACB_NIC_RESPONSE_FIFO_IN: $uint<65> $depth 2
+//$pipe ACB_NIC_RESPONSE_FIFO_OUT: $uint<65> $depth 2
+
+$pipe ACB_L2CACHE_REQUEST_FIFO_IN: $uint<110> $depth 2
+$pipe ACB_L2CACHE_REQUEST_FIFO_OUT: $uint<110> $depth 2
+$pipe ACB_L2CACHE_RESPONSE_FIFO_IN: $uint<65> $depth 2
+$pipe ACB_L2CACHE_RESPONSE_FIFO_OUT: $uint<65> $depth 2

@@ -15,13 +15,15 @@ int main()
 	uint8_t nonCacheable = 1;
 
 	
-	free_queue    = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
+	free_queue_rx = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
 	free_queue_tx = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
 	rx_queue      = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
 	tx_queue      = cortos_reserveQueue(msgSizeInBytes, length, nonCacheable);
-		
-	cortos_printf("Reserved queues in non cacheable region: free=0x%lx,free_tx=0x%lx, rx=0x%lx, tx=0x%lx\n",
-				(uint32_t) free_queue,
+	
+
+
+	cortos_printf("Reserved queues in non cacheable region: free_rx=0x%lx,free_tx=0x%lx, rx=0x%lx, tx=0x%lx\n",
+				(uint32_t) free_queue_rx,
 				(uint32_t) free_queue_tx,
 				(uint32_t) rx_queue,
 				(uint32_t) tx_queue);
@@ -30,11 +32,11 @@ int main()
 	// Step 2 : Finding the physical address, lock address and buffer address for each queue
 
 	uint64_t freeQueueTxPA,freeQueueTxLockPA,freeQueueTxBuffPA;
-	uint64_t freeQueuePA,freeQueueLockPA,freeQueueBuffPA;
+	uint64_t freeQueueRxPA,freeQueueRxLockPA,freeQueueRxBuffPA;
 	uint64_t rxQueuePA  ,rxQueueLockPA  ,rxQueueBuffPA;
 	uint64_t txQueuePA  ,txQueueLockPA  ,txQueueBuffPA;
 
-	findQueuePhyAddr("free_queue", free_queue, &freeQueuePA,&freeQueueLockPA,&freeQueueBuffPA);
+	findQueuePhyAddr("free_queue_rx", free_queue_rx, &freeQueueRxPA,&freeQueueRxLockPA,&freeQueueRxBuffPA);
 	findQueuePhyAddr("free_queue_tx", free_queue_tx, &freeQueueTxPA,&freeQueueTxLockPA,&freeQueueTxBuffPA);
 	findQueuePhyAddr("rx_queue"  , rx_queue  , &rxQueuePA  ,&rxQueueLockPA  ,&rxQueueBuffPA);
 	findQueuePhyAddr("tx_queue"  , tx_queue  , &txQueuePA  ,&txQueueLockPA  ,&txQueueBuffPA);
@@ -48,9 +50,9 @@ int main()
 	nicConfig.nic_id = 0;
 	nicConfig.number_of_servers = 1;
 
-	nicConfig.free_queue_address = freeQueuePA ;
-	nicConfig.free_queue_lock_address = freeQueueLockPA ;
-	nicConfig.free_queue_buffer_address = freeQueueBuffPA ;
+	nicConfig.free_queue_rx_address = freeQueueRxPA ;
+	nicConfig.free_queue_rx_lock_address = freeQueueRxLockPA ;
+	nicConfig.free_queue_rx_buffer_address = freeQueueRxBuffPA ;
 
 	nicConfig.free_queue_tx_address = freeQueueTxPA ;
 	nicConfig.free_queue_tx_lock_address = freeQueueTxLockPA ;
@@ -70,12 +72,12 @@ int main()
 
 	uint64_t storedPA[12];
 
-	getNicQueuePhysicalAddresses (0, 0,FREEQUEUE, &storedPA[0]  ,&storedPA[1]  ,&storedPA[2]);
+	getNicQueuePhysicalAddresses (0, 0,FREEQUEUE_RX, &storedPA[0]  ,&storedPA[1]  ,&storedPA[2]);
 	getNicQueuePhysicalAddresses (0, 0,FREEQUEUE_TX, &storedPA[3]  ,&storedPA[4]  ,&storedPA[5]);
 	getNicQueuePhysicalAddresses (0, 0,RXQUEUE,   &storedPA[6]  ,&storedPA[7]  ,&storedPA[8]);
 	getNicQueuePhysicalAddresses (0, 0,TXQUEUE,   &storedPA[9]  ,&storedPA[10]  ,&storedPA[11]);
 
-	cortos_printf("free_queue addr: %016llx,free_queue lock addr: %016llx,free_queue buffer addr: %016llx\n",
+	cortos_printf("free_queue_rx addr: %016llx,free_queue_rx lock addr: %016llx,free_queue_rx buffer addr: %016llx\n",
 	storedPA[0] ,storedPA[1]  ,storedPA[2]);
 	cortos_printf("free_queue_tx addr: %016llx,free_queue_tx lock addr: %016llx,free_queue_tx buffer addr: %016llx\n",
 	storedPA[3] ,storedPA[4]  ,storedPA[5]);
@@ -88,13 +90,13 @@ int main()
 	
 	// Step 5 : Allocating Packet buffers
 
-		// Allocating buffers in freeQ (For Receive Engine)
+		// Allocating buffers in freeQRx (For Receive Engine)
 
 		int i,status;
 		for(i = 0; i < NUMBER_OF_BUFFERS; i++)
 		{
 			BufferPtrsVA[i] = (uint32_t*) cortos_bget_ncram(BUFFER_SIZE_IN_BYTES);
-			cortos_printf("for freeQ :Allocated Buffer[%d] VA = 0x%08lx\n", i,(uint32_t)BufferPtrsVA[i]);
+			cortos_printf("for freeQRx :Allocated Buffer[%d] VA = 0x%08lx\n", i,(uint32_t)BufferPtrsVA[i]);
 		}
 
 			// configuring buffer size in the control word, top 16 bits.
@@ -112,7 +114,7 @@ int main()
 			{
 				status = translateVaToPa ((uint32_t) BufferPtrsVA[i], &BufferPtrsPA[i]);
 				if(status==0)
-				cortos_printf("for freeQ :Allocated Buffer[%d] PA = 0x%016llx\n", i,BufferPtrsPA[i]);
+				cortos_printf("for freeQRx :Allocated Buffer[%d] PA = 0x%016llx\n", i,BufferPtrsPA[i]);
 			}
 
 
@@ -134,25 +136,25 @@ int main()
 			}
 
 
-	// Step 6 : Pushing Buffer pointers (PA) to free queue and free queue tx.
+	// Step 6 : Pushing Buffer pointers (PA) to free_queue_rx and free_queue_tx.
 
 
-		// For FREEQUEUE
+		// For FREEQUEUE_RX
 		int msgs_written;
 		for(i = 0; i < NUMBER_OF_BUFFERS; i++)
 		{
-			msgs_written = cortos_writeMessages(free_queue, (uint8_t*) (&BufferPtrsPA[i]), 1);
+			msgs_written = cortos_writeMessages(free_queue_rx, (uint8_t*) (&BufferPtrsPA[i]), 1);
 			if(msgs_written)
-			cortos_printf("Stored Buffer[%d] in free-queue = 0x%016llx\n", i, BufferPtrsPA[i]);
+			cortos_printf("Stored Buffer[%d] in free-queue-rx = 0x%016llx\n", i, BufferPtrsPA[i]);
 		}
 
 		
-		// Ensuring buffers are stored properly in free queue.
-			uint8_t* addr  = (uint8_t*)(free_queue + 1);
-			cortos_printf("no. of item in free-queue: %u\n",free_queue->totalMsgs);
+		// Ensuring buffers are stored properly in free queue rx.
+			uint8_t* addr  = (uint8_t*)(free_queue_rx + 1);
+			cortos_printf("no. of item in free-queue-rx: %u\n",free_queue_rx->totalMsgs);
 			
-			for(i=0 ; i <free_queue->totalMsgs;i++)
-				cortos_printf("bufferPtr(PA) stored in free-queue at : 0x%08lx is 0x%016llx\n",
+			for(i=0 ; i < free_queue_rx->totalMsgs;i++)
+				cortos_printf("bufferPtr(PA) stored in free-queue-rx at : 0x%08lx is 0x%016llx\n",
 				(uint32_t)(addr + 8*i),*( (uint64_t*)(addr + 8*i) ));
 
 		// For FREEQUEUE_TX
@@ -254,8 +256,8 @@ int main()
 			
 			}
 			
-			// pushing the buffer back to free queue 
-			msgs_written = cortos_writeMessages(free_queue, (uint8_t*)(&bufptrPA_RX), 1);
+			// pushing the receive buffer back to free_queue_rx 
+			msgs_written = cortos_writeMessages(free_queue_rx, (uint8_t*)(&bufptrPA_RX), 1);
 			if(msgs_written)
 			cortos_printf("freeQ replenished \n");
 				
@@ -284,11 +286,12 @@ int main()
 
 	cortos_freeQueue(rx_queue);	
 	cortos_freeQueue(tx_queue);	
-	cortos_freeQueue(free_queue);
+	cortos_freeQueue(free_queue_rx);
+	cortos_freeQueue(free_queue_tx);
 
 	// freeing the allocated buffers
 
-	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
+	for(i = 0; i < 2*NUMBER_OF_BUFFERS; i++)
 	{
 		cortos_printf("Releasing buffer[%d] 0x%lx\n",i,(uint32_t)BufferPtrsVA[i]);
 		cortos_brel_ncram(BufferPtrsVA[i]);

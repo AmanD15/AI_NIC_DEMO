@@ -1,0 +1,18 @@
+$system l2_cache $library l2_cache_lib
+   $in 
+          $pipe  MEM_TO_L2CACHE_RESPONSE 65 $depth 2
+    	  $noblock      $pipe  NOBLOCK_L2_INVALIDATE 31 $depth 4
+
+	  //
+	  // Always make sure that top-bit [110] is 1.
+	  //
+    	  $noblock      $pipe  NOBLOCK_L2_REQUEST 111 $depth 2
+   $out 
+          $pipe  L2CACHE_TO_MEM_REQUEST 110 $depth 2
+          $pipe  L2_RESPONSE 65 $depth 2
+          $pipe  L2_TO_L1_INVALIDATE 30 $depth 4
+{ 
+          $pipe  L2_TAGS_RESPONSE 34 $depth 2
+    	  $noblock      $pipe  NOBLOCK_L2_TAGS_REQUEST 45 $depth 2
+          $pipe  sys_mem_lock 1 $depth 1
+} 

@@ -1,0 +1,11 @@
+To build the hsys files, follow these steps:
+
+1. Open Docker with the Ahir toolchain.
+2. Run `./build.sh` to generate the system files.
+3. Run `./clean.sh` to clean the generated files.
+
+If you encounter issues with `./build.sh`, ensure that the PATH variable includes the path `/ahir/release/scripts`. 
+You can check this by running `echo $PATH`. If the path is not included, add it using the following command:
+`export PATH=$PATH:/ahir/release/scripts`
+
+

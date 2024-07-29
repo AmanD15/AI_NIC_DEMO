@@ -1,14 +1,90 @@
-Final working Designs of,
-	1. Networking Interface. 
-	2. AI_ML_ACCELRATOR.
-	3. Accelrator with Networking Interface.
+1. About
+----------
+   The contents of this directory are related to work
+   done in two directions
+	- SBC with network interface
+	- AI/ML SOC with accelerator.
 
 
-Docs/
-	documentation (including final thesis reports)
+2. Contents
+-----------------
+  The following directories are present:
+	AA/
+		Aa code for the AI accelerator
+		(Aman Dhammani)
 
-Integration/
-	All the stuff....
+	Accelerator_new_src/
+		Aa code for AI accelerator
+		(Indrahas Reddy)
+
+	BUILD/
+		Implementation of NIC
+		and NIC glue logic.
+
+	CNN_Models/
+		Trained python (pyTorch) models
+		for lenet, resnet (Indrahas)
+		
+	docs/
+		Documents
+
+	Docs/
+		More Documents
+
+	Integration/
+		SOC implementation with Aman's accel
+		and Harshad's SOC with ethernet,
+		for the VCU128 FPGA board.
+
+
+	Links/
+		Links to useful websites (rCONNX)
+
+	lwip/
+		lwip (Dunkels), a light-weight IP stack.
+		Check the README.  Also contains some
+		examples of its use.
+
+	Networking/
+		Contains the NIC implementation and test setup.
+
+		
+	patterns/
+		Some design patterns for building accelerators (MPD)
+
+	README/ 
+		This file
+
+	SBC/
+		Single-board computer implementation using kc705.
+
+	Scratch/
+		scratch
+
+	SOURCE/
+		links to sources required to build SBC
+
+	STUDENTS/
+		Area for student reports etc.
+
+3. Links to follow
+----------------------
 	
-Networking/
-	kc705 stuff..
+	To find out more about using LWIP to build software
+	applications running on the SBC, check lwip/README
+
+	To find out more about building and using the SBC
+	check  SBC/README
+
+	For actual run setup of the KC705 SBC using host PC 
+	and FPGA card, see ./SBC/kc705/testing/latestNICTesting/README
+
+	To build the Aman-Harshad SOC on VCU128, go to
+	Integration and check the README
+
+	To run the Aman-Harshad SOC on vcu128, go to
+	SBC/vcu128/testing/lenet_test/README
+
+	To build the Aman-Harshad-Indrahas SOC on VCU128,
+	go to SBC/vcu128/README
+		

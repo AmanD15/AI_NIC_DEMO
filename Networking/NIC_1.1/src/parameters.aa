@@ -13,5 +13,5 @@ $parameter    P_TX_ENGINE_TAG                   2
 //  Base index for queue's registers
 $parameter    P_RX_QUEUE_REGISTER_BASE_INDEX       8
 $parameter    P_TX_QUEUE_REGISTER_BASE_INDEX       128
-$parameter    P_FREE_QUEUE_REGISTER_BASE_INDEX     200
+$parameter    P_FREE_QUEUE_RX_REGISTER_BASE_INDEX  200
 $parameter    P_FREE_QUEUE_TX_REGISTER_BASE_INDEX  213  

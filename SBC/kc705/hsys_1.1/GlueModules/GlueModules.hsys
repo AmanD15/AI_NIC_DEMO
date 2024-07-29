@@ -1,0 +1,557 @@
+$system afb_fast_splitter $library GlueModules
+	$in
+		$pipe AFB_BUS_REQUEST  74 $depth 2
+
+		$pipe AFB_BUS_RESPONSE_HIGH  33 $depth 2 
+		$pipe AFB_BUS_RESPONSE_LOW  33 $depth 2 
+
+		$signal MIN_ADDR_LOW	36	$depth 1
+		$signal MAX_ADDR_LOW	36	$depth 1
+
+		$signal MIN_ADDR_HIGH   36	$depth 1
+		$signal MAX_ADDR_HIGH   36	$depth 1
+
+	$out
+		$pipe AFB_BUS_RESPONSE   33 $depth 2 
+
+		$pipe AFB_BUS_REQUEST_HIGH  74 $depth 2
+		$pipe AFB_BUS_REQUEST_LOW  74 $depth 2
+{
+	
+}
+$system icache_mux_bypass $library GlueModules
+	$in
+		$noblock $pipe noblock_icache_request_0 41 $depth 2
+		$noblock $pipe noblock_icache_request_1 41 $depth 2
+
+		$pipe muxed_icache_response 90 $depth 2
+	$out
+
+		$noblock $pipe noblock_muxed_icache_request 41 $depth 2
+		$pipe icache_response_0 90 $depth 2
+		$pipe icache_response_1 90 $depth 2
+{
+	
+}
+$system afb_scratch_pad $library GlueModules
+   $in 
+          $pipe  AFB_BUS_REQUEST 74 $depth 2
+   $out 
+          $pipe  AFB_BUS_RESPONSE 33 $depth 2
+{ 
+} 
+$system debug_aggregator_two_core $library GlueModules
+   $in 
+          $pipe  AJIT_to_ENV_debug_response_0_0 32 $depth 2
+          $pipe  AJIT_to_ENV_debug_response_0_1 32 $depth 2
+          $pipe  AJIT_to_ENV_debug_response_1_0 32 $depth 2
+          $pipe  AJIT_to_ENV_debug_response_1_1 32 $depth 2
+          $pipe  SOC_MONITOR_to_DEBUG 8 $depth 2
+   $out 
+          $pipe  ENV_to_AJIT_debug_command_0_0 32 $depth 2
+          $pipe  ENV_to_AJIT_debug_command_0_1 32 $depth 2
+          $pipe  ENV_to_AJIT_debug_command_1_0 32 $depth 2
+          $pipe  ENV_to_AJIT_debug_command_1_1 32 $depth 2
+          $pipe  SOC_DEBUG_to_MONITOR 8 $depth 2
+{ 
+} 
+$system afb_null_stub $library GlueModules
+   $in 
+          $pipe  AFB_BUS_REQUEST 74 $depth 2
+   $out 
+          $pipe  AFB_BUS_RESPONSE 33 $depth 2
+{ 
+} 
+$system acb_fast_tap $library GlueModules
+	$in
+		$pipe CORE_BUS_REQUEST  110 $depth 2
+
+		$pipe CORE_BUS_RESPONSE_THROUGH  65 $depth 2 
+		$pipe CORE_BUS_RESPONSE_TAP  	 65 $depth 2 
+
+		$signal MIN_ADDR_TAP   36	$depth 1
+		$signal MAX_ADDR_TAP   36	$depth 1
+
+	$out
+		$pipe CORE_BUS_RESPONSE   65 $depth 2 
+
+		$pipe CORE_BUS_REQUEST_THROUGH  110 $depth 2
+		$pipe CORE_BUS_REQUEST_TAP  110 $depth 2
+{
+	
+}
+$system mem_reset_mux $library GlueModules
+	$in
+		 $noblock $pipe noblock_reset_request_0 1 $depth 1
+		 $noblock $pipe noblock_reset_request_1 1 $depth 1
+
+		 $pipe muxed_reset_response 1 $depth 1
+	$out
+
+		 $noblock $pipe noblock_muxed_reset_request 1 $depth 1
+		 $pipe reset_response_0 1  $depth 1
+		 $pipe reset_response_1 1 $depth 1
+{
+	
+}
+$system afb_fast_tap $library GlueModules
+	$in
+		$pipe AFB_BUS_REQUEST  74 $depth 2
+
+		$pipe AFB_BUS_RESPONSE_THROUGH  33 $depth 2 
+		$pipe AFB_BUS_RESPONSE_TAP  	 33 $depth 2 
+
+		$signal MIN_ADDR_TAP   36	$depth 1
+		$signal MAX_ADDR_TAP   36	$depth 1
+
+	$out
+		$pipe AFB_BUS_RESPONSE   33 $depth 2 
+
+		$pipe AFB_BUS_REQUEST_THROUGH  74 $depth 2
+		$pipe AFB_BUS_REQUEST_TAP  74 $depth 2
+{
+	
+}
+$system acb_fast_mux $library GlueModules
+	$in
+		$pipe CORE_BUS_REQUEST_HIGH  110 $depth 2
+		$pipe CORE_BUS_REQUEST_LOW  110 $depth 2
+
+		$pipe CORE_BUS_RESPONSE   65 $depth 2 
+	$out
+
+		$pipe CORE_BUS_RESPONSE_HIGH  65 $depth 2 
+		$pipe CORE_BUS_RESPONSE_LOW  65 $depth 2 
+
+		$pipe CORE_BUS_REQUEST  110 $depth 2
+{
+	
+}
+$system acb_afb_bridge $library GlueModules
+   $in 
+          $pipe  AFB_BUS_RESPONSE 33 $depth 2
+          $pipe  CORE_BUS_REQUEST 110 $depth 2
+   $out 
+          $pipe  AFB_BUS_REQUEST 74 $depth 2
+          $pipe  CORE_BUS_RESPONSE 65 $depth 2
+{ 
+} 
+$system acb_null_stub $library GlueModules
+   $in 
+          $pipe  CORE_BUS_REQUEST 110 $depth 2
+   $out 
+          $pipe  CORE_BUS_RESPONSE 65 $depth 2
+{ 
+} 
+$system afb_1x1_interrupt_controller $library GlueModules
+   $in 
+          $pipe  AFB_BUS_REQUEST 74 $depth 2
+          $signal  INTERRUPT_VECTOR 15 $depth 1
+   $out 
+          $pipe  AFB_BUS_RESPONSE 33 $depth 2
+          $signal  INTR_LEVEL_0_0 4 $depth 1
+{ 
+          $pipe  irc_response_1x1_0_0 32 $depth 1
+    $noblock      $pipe  noblock_irc_command_1x1_0_0 18 $depth 2
+} 
+$system afb_multicore_interrupt_controller $library GlueModules
+   $in 
+          $pipe  AFB_BUS_REQUEST 74 $depth 2
+          $signal  INTERRUPT_VECTOR 15 $depth 1
+   $out 
+          $pipe  AFB_BUS_RESPONSE 33 $depth 2
+          $signal  INTR_LEVEL_0_0 4 $depth 1
+          $signal  INTR_LEVEL_0_1 4 $depth 1
+          $signal  INTR_LEVEL_1_0 4 $depth 1
+          $signal  INTR_LEVEL_1_1 4 $depth 1
+          $signal  INTR_LEVEL_2_0 4 $depth 1
+          $signal  INTR_LEVEL_2_1 4 $depth 1
+          $signal  INTR_LEVEL_3_0 4 $depth 1
+          $signal  INTR_LEVEL_3_1 4 $depth 1
+{ 
+          $pipe  irc_response_0_0 32 $depth 1
+          $pipe  irc_response_0_1 32 $depth 1
+          $pipe  irc_response_1_0 32 $depth 1
+          $pipe  irc_response_1_1 32 $depth 1
+          $pipe  irc_response_2_0 32 $depth 1
+          $pipe  irc_response_2_1 32 $depth 1
+          $pipe  irc_response_3_0 32 $depth 1
+          $pipe  irc_response_3_1 32 $depth 1
+    $noblock      $pipe  noblock_irc_command_0_0 18 $depth 2
+    $noblock      $pipe  noblock_irc_command_0_1 18 $depth 2
+    $noblock      $pipe  noblock_irc_command_1_0 18 $depth 2
+    $noblock      $pipe  noblock_irc_command_1_1 18 $depth 2
+    $noblock      $pipe  noblock_irc_command_2_0 18 $depth 2
+    $noblock      $pipe  noblock_irc_command_2_1 18 $depth 2
+    $noblock      $pipe  noblock_irc_command_3_0 18 $depth 2
+    $noblock      $pipe  noblock_irc_command_3_1 18 $depth 2
+} 
+$system coherent_memory_controller_four_core $library GlueModules
+   $in 
+          $pipe  CORE_0_BUS_REQUEST 110 $depth 2
+          $pipe  CORE_1_BUS_REQUEST 110 $depth 2
+          $pipe  CORE_2_BUS_REQUEST 110 $depth 2
+          $pipe  CORE_3_BUS_REQUEST 110 $depth 2
+          $pipe  IO_CORE_BUS_RESPONSE 65 $depth 2
+          $signal  IO_MAX_ADDR 36 $depth 1
+          $signal  IO_MIN_ADDR 36 $depth 1
+          $pipe  MAIN_MEM_INVALIDATE 30 $depth 4
+          $pipe  MAIN_MEM_RESPONSE 65 $depth 2
+   $out 
+          $signal  CACHE_STALL_ENABLE 1 $depth 1
+          $pipe  CORE_0_BUS_RESPONSE 65 $depth 2
+          $pipe  CORE_1_BUS_RESPONSE 65 $depth 2
+          $pipe  CORE_2_BUS_RESPONSE 65 $depth 2
+          $pipe  CORE_3_BUS_RESPONSE 65 $depth 2
+          $pipe  INVALIDATE_TO_CORE_0 30 $depth 4
+          $pipe  INVALIDATE_TO_CORE_1 30 $depth 4
+          $pipe  INVALIDATE_TO_CORE_2 30 $depth 4
+          $pipe  INVALIDATE_TO_CORE_3 30 $depth 4
+          $pipe  IO_CORE_BUS_REQUEST 110 $depth 2
+          $pipe  MAIN_MEM_REQUEST 110 $depth 2
+{ 
+          $pipe  ACCESS_DESCRIPTOR 4 $depth 8
+    $noblock      $pipe  INVALIDATE_DAEMON_REQUEST 36 $depth 60
+          $pipe  MC_CORE_0_BUS_RESPONSE 65 $depth 2
+          $pipe  MC_CORE_1_BUS_RESPONSE 65 $depth 2
+          $pipe  MC_CORE_2_BUS_RESPONSE 65 $depth 2
+          $pipe  MC_CORE_3_BUS_RESPONSE 65 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_0_BUS_REQUEST 111 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_1_BUS_REQUEST 111 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_2_BUS_REQUEST 111 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_3_BUS_REQUEST 111 $depth 2
+    $noblock      $pipe  NOBLOCK_EXTERNAL_INVALIDATE_SLOT_RETURN 1 $depth 2
+} 
+$system coherent_memory_controller_two_core $library GlueModules
+   $in 
+          $pipe  CORE_0_BUS_REQUEST 110 $depth 2
+          $pipe  CORE_1_BUS_REQUEST 110 $depth 2
+          $pipe  IO_CORE_BUS_RESPONSE 65 $depth 2
+          $signal  IO_MAX_ADDR 36 $depth 1
+          $signal  IO_MIN_ADDR 36 $depth 1
+          $pipe  MAIN_MEM_INVALIDATE 30 $depth 4
+          $pipe  MAIN_MEM_RESPONSE 65 $depth 2
+   $out 
+          $signal  CACHE_STALL_ENABLE 1 $depth 1
+          $pipe  CORE_0_BUS_RESPONSE 65 $depth 2
+          $pipe  CORE_1_BUS_RESPONSE 65 $depth 2
+          $pipe  INVALIDATE_TO_CORE_0 30 $depth 4
+          $pipe  INVALIDATE_TO_CORE_1 30 $depth 4
+          $pipe  IO_CORE_BUS_REQUEST 110 $depth 2
+          $pipe  MAIN_MEM_REQUEST 110 $depth 2
+{ 
+          $pipe  ACCESS_DESCRIPTOR 4 $depth 8
+    $noblock      $pipe  INVALIDATE_DAEMON_REQUEST 36 $depth 36
+          $pipe  MC_CORE_0_BUS_RESPONSE 65 $depth 2
+          $pipe  MC_CORE_1_BUS_RESPONSE 65 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_0_BUS_REQUEST 111 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_1_BUS_REQUEST 111 $depth 2
+    $noblock      $pipe  NOBLOCK_EXTERNAL_INVALIDATE_SLOT_RETURN 1 $depth 2
+} 
+$system coherent_memory_controller_single_core $library GlueModules
+   $in 
+          $pipe  CORE_0_BUS_REQUEST 110 $depth 2
+          $pipe  IO_CORE_BUS_RESPONSE 65 $depth 2
+          $signal  IO_MAX_ADDR 36 $depth 1
+          $signal  IO_MIN_ADDR 36 $depth 1
+          $pipe  MAIN_MEM_INVALIDATE 30 $depth 4
+          $pipe  MAIN_MEM_RESPONSE 65 $depth 2
+   $out 
+          $signal  CACHE_STALL_ENABLE 1 $depth 1
+          $pipe  CORE_0_BUS_RESPONSE 65 $depth 2
+          $pipe  INVALIDATE_TO_CORE_0 30 $depth 4
+          $pipe  IO_CORE_BUS_REQUEST 110 $depth 2
+          $pipe  MAIN_MEM_REQUEST 110 $depth 2
+{ 
+          $pipe  ACCESS_DESCRIPTOR 4 $depth 8
+    $noblock      $pipe  INVALIDATE_DAEMON_REQUEST 36 $depth 24
+          $pipe  MC_CORE_0_BUS_RESPONSE 65 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_0_BUS_REQUEST 111 $depth 2
+    $noblock      $pipe  NOBLOCK_EXTERNAL_INVALIDATE_SLOT_RETURN 1 $depth 2
+} 
+$system debug_aggregator_single_core $library GlueModules
+   $in 
+          $pipe  AJIT_to_ENV_debug_response_0_0 32 $depth 2
+          $pipe  AJIT_to_ENV_debug_response_0_1 32 $depth 2
+          $pipe  SOC_MONITOR_to_DEBUG 8 $depth 2
+   $out 
+          $pipe  ENV_to_AJIT_debug_command_0_0 32 $depth 2
+          $pipe  ENV_to_AJIT_debug_command_0_1 32 $depth 2
+          $pipe  SOC_DEBUG_to_MONITOR 8 $depth 2
+{ 
+} 
+$system coherent_memory_controller_four_core_v2 $library GlueModules
+   $in 
+          $pipe  IO_CORE_BUS_RESPONSE 65 $depth 2
+          $signal  IO_MAX_ADDR 36 $depth 1
+          $signal  IO_MIN_ADDR 36 $depth 1
+          $pipe  MAIN_MEM_INVALIDATE 30 $depth 4
+          $pipe  MAIN_MEM_RESPONSE 65 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_0_BUS_REQUEST 111 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_1_BUS_REQUEST 111 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_2_BUS_REQUEST 111 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_3_BUS_REQUEST 111 $depth 2
+   $out 
+          $signal  CACHE_STALL_ENABLE 1 $depth 1
+          $pipe  CORE_0_BUS_RESPONSE 65 $depth 2
+          $pipe  CORE_1_BUS_RESPONSE 65 $depth 2
+          $pipe  CORE_2_BUS_RESPONSE 65 $depth 2
+          $pipe  CORE_3_BUS_RESPONSE 65 $depth 2
+          $pipe  INVALIDATE_TO_CORE_0 30 $depth 4
+          $pipe  INVALIDATE_TO_CORE_1 30 $depth 4
+          $pipe  INVALIDATE_TO_CORE_2 30 $depth 4
+          $pipe  INVALIDATE_TO_CORE_3 30 $depth 4
+          $pipe  IO_CORE_BUS_REQUEST 110 $depth 2
+          $pipe  MAIN_MEM_REQUEST 110 $depth 2
+{ 
+          $pipe  INVALIDATE_DAEMON_REQUEST 36 $depth 62
+          $pipe  MUXED_MEM_ACCESS_RESPONSE_CONTROL 36 $depth 8
+    $noblock      $pipe  NOBLOCK_EXTERNAL_INVALIDATE_SLOT_RETURN 1 $depth 2
+} 
+$system coherent_memory_controller_two_core_v2 $library GlueModules
+   $in 
+          $pipe  IO_CORE_BUS_RESPONSE 65 $depth 2
+          $signal  IO_MAX_ADDR 36 $depth 1
+          $signal  IO_MIN_ADDR 36 $depth 1
+          $pipe  MAIN_MEM_INVALIDATE 30 $depth 4
+          $pipe  MAIN_MEM_RESPONSE 65 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_0_BUS_REQUEST 111 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_1_BUS_REQUEST 111 $depth 2
+   $out 
+          $signal  CACHE_STALL_ENABLE 1 $depth 1
+          $pipe  CORE_0_BUS_RESPONSE 65 $depth 2
+          $pipe  CORE_1_BUS_RESPONSE 65 $depth 2
+          $pipe  INVALIDATE_TO_CORE_0 30 $depth 4
+          $pipe  INVALIDATE_TO_CORE_1 30 $depth 4
+          $pipe  IO_CORE_BUS_REQUEST 110 $depth 2
+          $pipe  MAIN_MEM_REQUEST 110 $depth 2
+{ 
+          $pipe  INVALIDATE_DAEMON_REQUEST 36 $depth 38
+          $pipe  MUXED_MEM_ACCESS_RESPONSE_CONTROL 36 $depth 8
+    $noblock      $pipe  NOBLOCK_EXTERNAL_INVALIDATE_SLOT_RETURN 1 $depth 2
+} 
+$system coherent_memory_controller_single_core_v2 $library GlueModules
+   $in 
+          $pipe  IO_CORE_BUS_RESPONSE 65 $depth 2
+          $signal  IO_MAX_ADDR 36 $depth 1
+          $signal  IO_MIN_ADDR 36 $depth 1
+          $pipe  MAIN_MEM_INVALIDATE 30 $depth 4
+          $pipe  MAIN_MEM_RESPONSE 65 $depth 2
+    $noblock      $pipe  NOBLOCK_CORE_0_BUS_REQUEST 111 $depth 2
+   $out 
+          $signal  CACHE_STALL_ENABLE 1 $depth 1
+          $pipe  CORE_0_BUS_RESPONSE 65 $depth 2
+          $pipe  INVALIDATE_TO_CORE_0 30 $depth 4
+          $pipe  IO_CORE_BUS_REQUEST 110 $depth 2
+          $pipe  MAIN_MEM_REQUEST 110 $depth 2
+{ 
+          $pipe  INVALIDATE_DAEMON_REQUEST 36 $depth 26
+          $pipe  MUXED_MEM_ACCESS_RESPONSE_CONTROL 36 $depth 8
+    $noblock      $pipe  NOBLOCK_EXTERNAL_INVALIDATE_SLOT_RETURN 1 $depth 2
+} 
+$system tcm_64KB $library GlueModules
+   $in 
+    $noblock      $pipe  NOBLOCK_CPU_to_DCACHE_command 143 $depth 2
+    $noblock      $pipe  NOBLOCK_CPU_to_DCACHE_reset 1 $depth 2
+    $noblock      $pipe  NOBLOCK_CPU_to_DCACHE_slow_command 121 $depth 0
+    $noblock      $pipe  NOBLOCK_CPU_to_ICACHE_command 41 $depth 2
+    $noblock      $pipe  NOBLOCK_CPU_to_ICACHE_reset 1 $depth 2
+    $noblock      $pipe  NOBLOCK_CPU_to_MMU_reset 1 $depth 2
+   $out 
+          $pipe  DCACHE_to_CPU_reset_ack 1 $depth 2
+          $pipe  DCACHE_to_CPU_response 72 $depth 2
+          $pipe  DCACHE_to_CPU_slow_response 72 $depth 2
+          $pipe  ICACHE_to_CPU_reset_ack 1 $depth 2
+          $pipe  ICACHE_to_CPU_response 90 $depth 2
+          $pipe  MMU_to_CPU_reset_ack 1 $depth 2
+    $noblock      $pipe  NOBLOCK_DCACHE_TO_CPU_FU_BYPASS 93 $depth 0
+    $noblock      $pipe  NOBLOCK_DCACHE_TO_CPU_IU_BYPASS 93 $depth 0
+{ 
+          $pipe  CORE_IO_BUS_REQUEST 110 $depth 2
+          $pipe  CORE_IO_BUS_RESPONSE 65 $depth 2
+} 
+$system debug_aggregator_four_core $library GlueModules
+   $in 
+          $pipe  AJIT_to_ENV_debug_response_0_0 32 $depth 2
+          $pipe  AJIT_to_ENV_debug_response_0_1 32 $depth 2
+          $pipe  AJIT_to_ENV_debug_response_1_0 32 $depth 2
+          $pipe  AJIT_to_ENV_debug_response_1_1 32 $depth 2
+          $pipe  AJIT_to_ENV_debug_response_2_0 32 $depth 2
+          $pipe  AJIT_to_ENV_debug_response_2_1 32 $depth 2
+          $pipe  AJIT_to_ENV_debug_response_3_0 32 $depth 2
+          $pipe  AJIT_to_ENV_debug_response_3_1 32 $depth 2
+          $pipe  SOC_MONITOR_to_DEBUG 8 $depth 2
+   $out 
+          $pipe  ENV_to_AJIT_debug_command_0_0 32 $depth 2
+          $pipe  ENV_to_AJIT_debug_command_0_1 32 $depth 2
+          $pipe  ENV_to_AJIT_debug_command_1_0 32 $depth 2
+          $pipe  ENV_to_AJIT_debug_command_1_1 32 $depth 2
+          $pipe  ENV_to_AJIT_debug_command_2_0 32 $depth 2
+          $pipe  ENV_to_AJIT_debug_command_2_1 32 $depth 2
+          $pipe  ENV_to_AJIT_debug_command_3_0 32 $depth 2
+          $pipe  ENV_to_AJIT_debug_command_3_1 32 $depth 2
+          $pipe  SOC_DEBUG_to_MONITOR 8 $depth 2
+{ 
+} 
+$system afb_fast_mux $library GlueModules
+	$in
+		$pipe AFB_BUS_REQUEST_HIGH  74 $depth 2
+		$pipe AFB_BUS_REQUEST_LOW  74 $depth 2
+
+		$pipe AFB_BUS_RESPONSE   33 $depth 2 
+	$out
+
+		$pipe AFB_BUS_RESPONSE_HIGH  33 $depth 2 
+		$pipe AFB_BUS_RESPONSE_LOW  33 $depth 2 
+
+		$pipe AFB_BUS_REQUEST  74 $depth 2
+{
+	
+}
+$system afb_flash_rw_controller $library GlueModules
+   $in 
+          $pipe  AFB_BUS_REQUEST 74 $depth 2
+          $pipe  SPI_MASTER_RESPONSE 8 $depth 2
+          $signal  WRITE_PROTECT 1 $depth 1
+   $out 
+          $pipe  AFB_BUS_RESPONSE 33 $depth 2
+          $pipe  SPI_MASTER_COMMAND 16 $depth 2
+{ 
+} 
+$system icache_mux $library GlueModules
+	$in
+		$noblock $pipe noblock_icache_request_0 41 $depth 2
+		$noblock $pipe noblock_icache_request_1 41 $depth 2
+
+		$pipe muxed_icache_response 90 $depth 2
+	$out
+
+		$noblock $pipe noblock_muxed_icache_request 41 $depth 2
+		$pipe icache_response_0 90 $depth 2
+		$pipe icache_response_1 90 $depth 2
+{
+	
+}
+$system acb_fast_splitter $library GlueModules
+	$in
+		$pipe CORE_BUS_REQUEST  110 $depth 2
+
+		$pipe CORE_BUS_RESPONSE_HIGH  65 $depth 2 
+		$pipe CORE_BUS_RESPONSE_LOW  65 $depth 2 
+
+		$signal MIN_ADDR_LOW	36	$depth 1
+		$signal MAX_ADDR_LOW	36	$depth 1
+
+		$signal MIN_ADDR_HIGH   36	$depth 1
+		$signal MAX_ADDR_HIGH   36	$depth 1
+
+	$out
+		$pipe CORE_BUS_RESPONSE   65 $depth 2 
+
+		$pipe CORE_BUS_REQUEST_HIGH  110 $depth 2
+		$pipe CORE_BUS_REQUEST_LOW  110 $depth 2
+{
+	
+}
+$system afb_acb_bridge $library GlueModules
+   $in 
+          $pipe  AFB_BUS_REQUEST 74 $depth 2
+          $pipe  CORE_BUS_RESPONSE 65 $depth 2
+   $out 
+          $pipe  AFB_BUS_RESPONSE 33 $depth 2
+          $pipe  CORE_BUS_REQUEST 110 $depth 2
+{ 
+} 
+$system dcache_mux $library GlueModules
+	$in
+		$noblock $pipe noblock_dcache_request_0 121 $depth 2
+		$noblock $pipe noblock_dcache_request_1 121 $depth 2
+
+		$pipe muxed_dcache_response 72 $depth 2
+	$out
+
+		$noblock $pipe noblock_muxed_dcache_request 121 $depth 2
+		$pipe dcache_response_0 72 $depth 2
+		$pipe dcache_response_1 72 $depth 2
+{
+	
+}
+$system afb_serial_with_bcw_adapter $library GlueModules
+   $in 
+          $pipe  AFB_BUS_REQUEST 74 $depth 2
+          $pipe  CONSOLE_to_SERIAL_RX 8 $depth 2
+   $out 
+          $pipe  AFB_BUS_RESPONSE 33 $depth 2
+          $pipe  SERIAL_TX_to_CONSOLE 8 $depth 2
+          $signal  SERIAL_to_IRC_INT 1 $depth 1
+          $signal  UART_BAUD_FREQ 32 $depth 1
+          $signal  UART_BAUD_LIMIT 32 $depth 1
+          $signal  UART_SOFT_RESET 1 $depth 1
+{ 
+    $noblock      $pipe  noblock_serial_command 41 $depth 2
+    $noblock      $pipe  noblock_serial_data_in 9 $depth 1
+    $noblock      $pipe  noblock_transmit_completed_pipe 1 $depth 1
+          $pipe  transmit_data_pipe 8 $depth 1
+} 
+$system afb_trace_logger $library GlueModules
+   $in 
+          $pipe  AFB_BUS_REQUEST 74 $depth 2
+          $pipe  AFB_MEM_TO_TRACE_LOGGER_RESPONSE 33 $depth 2
+          $pipe  AJIT_to_ENV_logger 32 $depth 3
+   $out 
+          $pipe  AFB_BUS_RESPONSE 33 $depth 2
+          $pipe  AFB_TRACE_LOGGER_TO_MEM_REQUEST 74 $depth 2
+{ 
+          $signal  control_register 32 $depth 1
+          $signal  max_address_register 32 $depth 1
+          $signal  min_address_register 32 $depth 1
+          $signal  sample_count_register 32 $depth 1
+          $signal  trigger_register 32 $depth 1
+} 
+$system afb_serial_adapter $library GlueModules
+   $in 
+          $pipe  AFB_BUS_REQUEST 74 $depth 2
+          $pipe  CONSOLE_to_SERIAL_RX 8 $depth 2
+   $out 
+          $pipe  AFB_BUS_RESPONSE 33 $depth 2
+          $pipe  SERIAL_TX_to_CONSOLE 8 $depth 2
+          $signal  SERIAL_to_IRC_INT 1 $depth 1
+{ 
+    $noblock      $pipe  noblock_serial_command 41 $depth 2
+    $noblock      $pipe  noblock_serial_data_in 9 $depth 1
+    $noblock      $pipe  noblock_transmit_completed_pipe 1 $depth 1
+          $pipe  transmit_data_pipe 8 $depth 1
+} 
+$system afb_timer $library GlueModules
+   $in 
+          $pipe  AFB_BUS_REQUEST 74 $depth 2
+   $out 
+          $pipe  AFB_BUS_RESPONSE 33 $depth 2
+          $signal  TIMER_to_IRC_INT 1 $depth 1
+{ 
+    $noblock      $pipe  noblock_cpu_to_timer 40 $depth 2
+} 
+$system afb_spi_master_adapter $library GlueModules
+   $in 
+          $pipe  AFB_BUS_REQUEST 74 $depth 2
+          $pipe  SPI_MASTER_RESPONSE 8 $depth 2
+   $out 
+          $pipe  AFB_BUS_RESPONSE 33 $depth 2
+          $pipe  SPI_MASTER_COMMAND 16 $depth 2
+{ 
+} 
+$system dcache_fast_interface_mux $library GlueModules
+	$in
+		$noblock $pipe noblock_dcache_request_0 143 $depth 2
+		$noblock $pipe noblock_dcache_request_1 143 $depth 2
+
+		$pipe muxed_dcache_response 72 $depth 2
+	$out
+
+		$noblock $pipe noblock_muxed_dcache_request 143 $depth 2
+		$pipe dcache_response_0 72 $depth 2
+		$pipe dcache_response_1 72 $depth 2
+{
+	
+}
+

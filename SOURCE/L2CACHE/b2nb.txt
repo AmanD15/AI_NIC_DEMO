@@ -1,0 +1,19 @@
+ // Example of converting blocking to non-blocking pipe
+        $thread blockToNoblock
+                $in $pipe  blocking_pipe: $unsigned<32>
+                // Note the top-bit
+                $out $pipe nonblock_pipe: $unsigned<33>
+                $constant one_1: $unsigned<1> := ($unsigned<1> 1)
+        $default
+                $now blocking_pipe$req := nonblock_pipe$ack
+                $now nonblock_pipe$req := blocking_pipe$ack
+
+                $now nonblock_pipe     :=  (one_1 && blocking_pipe)
+                <b2nb_rst_state> {
+                        $goto rst_state
+                }
+
+         $string b2nb_str: blockToNonblock
+                blocking_pipe => some_blocking_pipe_declared_above
+                noblock_pipe  => som_nonblocking_pipe_declared_above
+

@@ -1,0 +1,40 @@
+1. About
+------------
+
+	An implementation of a SOC with
+	processor + ethernet + AI/ML 
+	accelerator using the VCU128
+	board
+
+2. Contents
+-------------
+	constraints/
+		FPGA constraints.
+	docs/
+		hardware block diagrams
+
+	ip/
+		IP used in SOC.
+
+	testing/
+		Test cases used to check
+		the SOC.  These should
+		run on the vcu setup.
+	
+	verilog/
+		Verilog wrappers and 
+		glue.
+
+	vhdl/
+		VHDL (generated from ../AA)
+	vhdl_libs/
+		VHDL libraries
+
+	vivado_synth/
+		tcl scripts etc.
+
+3. To synthesize
+------------------
+
+	Go to vivado_synth/ and execute run.sh
+	(Note this needs a VIVADO path)

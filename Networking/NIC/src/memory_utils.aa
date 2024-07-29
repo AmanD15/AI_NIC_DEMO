@@ -162,6 +162,9 @@ $pipeline $depth 15 $fullrate   $module [doMemAccess]
 
 	// Get the memory lock to continue.
 	mem_lock := memory_access_lock
+
+	// ensure that the memory access lock has
+	// been obtained.
 	$barrier
 
 	// release the lock right-away if 
@@ -193,6 +196,7 @@ $pipeline $depth 15 $fullrate   $module [doMemAccess]
 				is_dword_access     	     r_dword)
 
 
+	// Ensure that ldstub has completed.
 	$barrier
 
 	// return the lock if it is an atomic!

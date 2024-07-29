@@ -81,25 +81,25 @@
 #define LWIP_DBG_MIN_LEVEL         LWIP_DBG_LEVEL_ALL
 #define PPP_DEBUG                  LWIP_DBG_OFF
 #define MEM_DEBUG                  LWIP_DBG_ON
-#define MEMP_DEBUG                 LWIP_DBG_ON
-#define PBUF_DEBUG                 LWIP_DBG_ON
-#define ETHARP_DEBUG               LWIP_DBG_ON
+#define MEMP_DEBUG                 LWIP_DBG_OFF
+#define PBUF_DEBUG                 LWIP_DBG_OFF
+#define ETHARP_DEBUG               LWIP_DBG_OFF
 #define API_LIB_DEBUG              LWIP_DBG_OFF
 #define API_MSG_DEBUG              LWIP_DBG_OFF
-#define TCPIP_DEBUG                LWIP_DBG_OFF
+#define TCPIP_DEBUG                LWIP_DBG_ON
 #define NETIF_DEBUG                LWIP_DBG_ON
 #define SOCKETS_DEBUG              LWIP_DBG_OFF
 #define DNS_DEBUG                  LWIP_DBG_OFF
 #define AUTOIP_DEBUG               LWIP_DBG_OFF
 #define DHCP_DEBUG                 LWIP_DBG_OFF
-#define IP_DEBUG                   LWIP_DBG_ON
+#define IP_DEBUG                   LWIP_DBG_OFF
 #define IP_REASS_DEBUG             LWIP_DBG_OFF
-#define ICMP_DEBUG                 LWIP_DBG_ON
+#define ICMP_DEBUG                 LWIP_DBG_OFF
 #define IGMP_DEBUG                 LWIP_DBG_OFF
 #define UDP_DEBUG                  LWIP_DBG_OFF
-#define TCP_DEBUG                  LWIP_DBG_OFF
-#define TCP_INPUT_DEBUG            LWIP_DBG_OFF
-#define TCP_OUTPUT_DEBUG           LWIP_DBG_OFF
+#define TCP_DEBUG                  LWIP_DBG_ON
+#define TCP_INPUT_DEBUG            LWIP_DBG_ON
+#define TCP_OUTPUT_DEBUG           LWIP_DBG_ON
 #define TCP_RTO_DEBUG              LWIP_DBG_OFF
 #define TCP_CWND_DEBUG             LWIP_DBG_OFF
 #define TCP_WND_DEBUG              LWIP_DBG_OFF
@@ -174,7 +174,7 @@ a lot of data that needs to be copied, this should be set high. */
 
 
 /* ---------- TCP options ---------- */
-#define LWIP_TCP                0
+#define LWIP_TCP                1
 #define TCP_TTL                 255
 
 #define LWIP_ALTCP              (LWIP_TCP)
@@ -258,13 +258,18 @@ a lot of data that needs to be copied, this should be set high. */
 
 
 /* ---------- UDP options ---------- */
-#define LWIP_UDP                0
+#define LWIP_UDP                1
 #define LWIP_UDPLITE            LWIP_UDP
 #define UDP_TTL                 255
 #define LWIP_RAND() (lwip_port_rand())
 
 /* ---------- RAW options ---------- */
 #define LWIP_RAW                1
+
+
+/* ---------- Added by siddhant ---------- */
+#define LWIP_SINGLE_NETIF       1
+#define LWIP_SUPPORT_CUSTOM_PBUF 1
 
 
 /* ---------- Statistics options ---------- */
@@ -323,5 +328,7 @@ a lot of data that needs to be copied, this should be set high. */
 void sys_check_core_locking(void);
 #define LWIP_ASSERT_CORE_LOCKED()  sys_check_core_locking()
 #endif
+
+
 
 #endif /* LWIP_LWIPOPTS_H */

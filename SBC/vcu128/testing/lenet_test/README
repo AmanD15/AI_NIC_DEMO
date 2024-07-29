@@ -1,0 +1,30 @@
+Testing Procedure
+
+1) Hardware Setup
+
+    i) Load the bitfile generated in the vivado_synth folder to the VCU128 board
+        using UART
+    
+    ii) First press the cpu reset button on board (Refer to CPU_RESET, SW4 push button, 
+        in the VCU128 user guide present in docs folder)
+
+    iii) In the Vivado UI, go to VIO tab and reset the RESET_TO_NIC and RESET_TO_PROCESSOR
+        signals
+
+2) Software Setup
+   i) Run the ./run.sh script using ajit toochain to generate cortos files
+
+   ii) Run ajit debug monitor and run the command "s script.txt"
+        - command for debug monitor is "ajit_debug_monitor_mt -u <tty-dev>"
+        - To learn more about debug monitor, visit https://github.com/adhuliya/ajit-toolchain/blob/marshal/AjitPublicResources/tools/ajit_debug_monitor_mt/docs/ajit_debug_monitor_mt.txt
+
+   iii) Once the program is dumped in the FPGA, go to host_ethernet_data folder
+
+   iv)  First run the weights_send.sh script to send the weights and then input_send.sh for 
+        sending images.
+
+    v) The results will be stored in the receivedData folder. To validate the results, 
+        run ./receivedData/verify.ipynb file.
+
+    Note: You can also view cortos_printf statements from the program using serial monitor
+        of your preferred choice(Just set the baud rate at 115200).  

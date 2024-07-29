@@ -98,6 +98,8 @@ $module [controlDaemon] $in () $out () $is
 			// access the register.
 			$call accessRegister (rwbar bmask index wdata) (rdata)
 			
+			// ensure that the register has been
+			// written into.
 			$barrier 
 
 			$volatile update_control_register := ((~rwbar) & (index == 0))

@@ -1,0 +1,4 @@
+This is the makefile used to generate a blank wrapper
+for the bridge.  Kept here for reference only.
+
+Do not overwrite the ../vhdl/ directory!

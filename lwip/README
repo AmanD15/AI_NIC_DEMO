@@ -5,16 +5,13 @@
     	
  	Directory structure explained:
  	
- 	1.	This directory holds C code for Ajit and utilizes lwIP.
- 		Configuration options for the lwIP stack can be found in 
- 		ajitLwip/include/lwipopts.h, while low-level driver code 
- 		resides in ajitLwip/src/ethernetif.c.
- 	
-		ajitLwip/
-		
-			├── src/             
-			├── include/     			  
-			├── main.c    
+ 	1.	This directory holds code that utilizes lwIP.
+ 		for ping application and network caching application
+
+        - ajitLwIP+NIC : for ping application
+        - Caching_app  : for network content cache application
+        - ajitLwip     : NIC emulation via interrupt + lwIP
+               
 
 	2. 	This directory exclusively contains the original LwIP 
 		TCP/IP stack by Adam Dunkels.
@@ -45,6 +42,4 @@
  			   
  	3.	This folder contains reference material for understanding Lwip.
  		
- 		refMaterial/
- 			├── ..            
-			├── ..			   	
+	   	

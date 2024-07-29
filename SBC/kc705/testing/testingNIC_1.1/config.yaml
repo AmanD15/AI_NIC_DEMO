@@ -25,9 +25,10 @@ Hardware:
       SizeInMegaBytes: 16
       Permissions: RWXC
     NCRAM:
-      StartAddr: 0x41000000  # physical address
+      StartAddr: 0x50001000  # physical address
       # SizeInBytes: ...
-      SizeInMegaBytes: 16
+      # SizeInMegaBytes: 16
+      SizeInKiloBytes: 252
       Permissions: RW
     MMIO: # Memory Mapped IO
       StartAddr: 0xFF000000  # physical address

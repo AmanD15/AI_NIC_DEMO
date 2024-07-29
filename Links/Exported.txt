@@ -1,0 +1,25 @@
+__Global__ (U, size_u) // kernels U, replicated on each core
+if (cpu_id_is (0,0)) 
+{
+	__Input__(U, size_u) 
+	__mirror__ (U,size_u,1,0)
+	__mirror__ (U,size_u,2,0)
+	__mirror__ (U,size_u,3,0)
+}
+
+// First stage
+if(cpu_id_is_(0,0))
+{
+	__Local__ (V, size_v) 
+	__Input__ (V, size_v)
+	__Local__ (W, size_w)
+	__TensorConvolve__ (V,U,W, size_w)
+	__Output__ (W,size_w)
+	__send__ (W,size_w, 1,0)
+}
+
+if(cpu_id_is_ (1,0))
+{
+}
+
+

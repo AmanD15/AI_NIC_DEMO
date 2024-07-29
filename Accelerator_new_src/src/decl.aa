@@ -1,0 +1,83 @@
+//SizedTensor_64K input, output;
+//SizedTensor_64K KE3_1, KT2, KD2_1;
+//SizedTensor_64K M2, CM1, CM2, ZM1, ZM2;
+//
+//SizedTensor_512 KE1_1, KL;
+//SizedTensor_8K KE1_2, KD1_2;
+//SizedTensor_16K KT1, KE2_1, KD1_1;
+//SizedTensor_32K KE2_2, KD2_2;
+//SizedTensor_32K M3;
+//SizedTensor_128K KE3_2, KD3_2;
+//SizedTensor_128K M1, CE3_1, CE3_2, T3, CD3_1, CD3_2,ZE3_1, ZE3_2, ZD3_1, ZD3_2;
+//SizedTensor_256K KM1, KT3, KD3_1;
+//SizedTensor_256K ZE2_1, ZE2_2, CE2_1, CE2_2, CO3, T2, ZD2_1, ZD2_2, CD2_1, CD2_2;
+//SizedTensor_512K KM2;
+//SizedTensor_512K ZE1_1, ZE1_2, CE1_1, CE1_2, CO2, T1, CD1_1, CD1_2, ZD1_1, ZD1_2,ZL;
+//SizedTensor_1M CO1;
+
+$parameter FLASH_END_ORIG {8*{4096*4096}}
+$parameter FLASH_END 0
+$parameter KB2WORD 128
+$parameter MB2WORD {128*1024}
+$parameter T0_base FLASH_END
+$parameter T1_base {FLASH_END+{512*KB2WORD}}
+$parameter T2_base {T1_base + MB2WORD}
+$parameter T3_base {T2_base+{512*KB2WORD}}
+$parameter T4_base {T3_base+{256*KB2WORD}}
+$parameter K_base {T4_base+{128*KB2WORD}}
+$parameter K0_base {T4_base+{128*KB2WORD}}
+$parameter K1_base {K0_base+{2*KB2WORD}}
+$parameter K2_base {K1_base+{40*KB2WORD}}
+$parameter K3_base {K2_base+{80*KB2WORD}}
+$parameter K4_base {K3_base+{150*KB2WORD}}
+$parameter K5_base {K4_base+{300*KB2WORD}}
+$parameter K6_base {K5_base+{600*KB2WORD}}
+$parameter K7_base {K6_base+{1200*KB2WORD}}
+$parameter K8_base {K7_base+{2400*KB2WORD}}
+$parameter K9_base {K8_base+{600*KB2WORD}}
+$parameter K10_base {K9_base+{1200*KB2WORD}}
+$parameter K11_base {K10_base+{600*KB2WORD}}
+$parameter K12_base {K11_base+{150*KB2WORD}}
+$parameter K13_base {K12_base+{300*KB2WORD}}
+$parameter K14_base {K13_base+{150*KB2WORD}}
+$parameter K15_base {K14_base+{40*KB2WORD}}
+$parameter K16_base {K15_base+{80*KB2WORD}}
+$parameter K17_base {K16_base+{40*KB2WORD}}
+$parameter end_addr {K17_base+{2*KB2WORD}}
+//$parameter end_addr {K_base + {512*KB2WORD}}
+
+//$storage UnifiedMemory : $array [end_addr] $of $uint<64>
+
+//$pipe MAIN_MEM_REQUEST : $uint<110> $depth 16
+//$pipe MAIN_MEM_RESPONSE : $uint<65> $depth 16
+
+$pipe READ_T_RESP_QUEUE : $uint<64> $depth 16
+$pipe READ_K_RESP_QUEUE : $uint<64> $depth 16
+
+//$operator $module [memoryXsingleX24X64] 
+//	$in (enable: $uint<1> write_bar: $uint<1>
+//		write_data: $uint<64> address: $uint<19>)
+//	$out (read_data: $uint<64>) $is
+//{
+//	// put some junk here.
+//	read_data := write_data
+//}
+
+		
+$pipe ACCELERATOR_MEMORY_REQUEST_PIPE : $uint<110> $depth 2
+$pipe MEMORY_ACCELERATOR_RESPONSE_PIPE : $uint<65> $depth 2
+
+// mem-test
+$pipeline $depth 15 $fullrate
+$module [memoryModule]
+$in (r_wbar : $uint<1> addr : $uint<32> data_in : $uint<64> bytemask : $uint<8>)
+$out (data_out : $uint<64>)
+$is
+{
+	
+	ACCELERATOR_MEMORY_REQUEST_PIPE := ($concat $zero<1> r_wbar bytemask $zero<1> addr $zero<3> data_in)
+	rec_data := MEMORY_ACCELERATOR_RESPONSE_PIPE
+	data_out := ($slice rec_data 63 0) 
+	//$call memoryXsingleX24X64 ($one<1> r_wbar data_in ($slice addr 18 0)) (data_out)
+}
+

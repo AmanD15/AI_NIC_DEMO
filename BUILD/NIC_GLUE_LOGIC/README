@@ -1,0 +1,12 @@
+1. About
+-------------
+   MAC->NIC and NIC->MAC glue logic.
+
+2. Contents
+--------------
+	concatSystem/
+		MAC->NIC aggregation logic
+		Run make to build
+	deconcatSystem/
+		NIC->MAC disaggregation logic
+		Run make to build.

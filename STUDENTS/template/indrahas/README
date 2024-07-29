@@ -1,0 +1,10 @@
+This folder contains the Latex source code for the DDP report.
+You can also view this project online at https://www.overleaf.com/read/crwdyfdkrgxd#bdb1f5
+
+/figures - folder contains all the images used in the report
+/tex     - folder contains .tex files for all the chapters of the report
+
+To generate the pdf, you must install pdflatex on your PC
+(instructions to install: https://gist.github.com/rain1024/98dd5e2c6c8c28f9ea9d)
+
+run "build.sh" - This will generate main.pdf in this folder

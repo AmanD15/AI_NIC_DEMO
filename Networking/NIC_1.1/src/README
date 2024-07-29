@@ -1,30 +1,41 @@
 ---------------------------------------------------------
-1. NIC design summary
+1. NIC design summary (Updated)
 ---------------------------------------------------------
 
 	The NIC is designed to be a bridge between an
 	Ethernet interface and the system memory.
 
-	Three queues are used to coordinate the NIC's
+	Four queues are used to coordinate the NIC's
 	activity.
-		- The free queue
-		- The rx   queue
+		- The free queue rx
+		- The free queue tx
+		- The rx queue
 			as many as there are servers.
-		- The tx   queue
+		- The tx queue
 			as many as there are servers.
-
-	The free queue is initialized with a list of
-	packet buffer pointers.  When the NIC receives
-	a packet, it puts it into a buffer popped from the
-	free queue, fills the buffer with packet data,
-	and writes the buffer pointer to one of the rx queues.
-
-	On the transmit side, the NIC polls the tx queues,
-	and if it finds a buffer pointer, then it pops
-	the buffer pointer from the tx-queue, transmits it
-	to the Ethernet interface, and pushes the buffer
-	pointer to the free queue.
-
+			
+	Working:
+	
+		Packet Reception:
+		
+			NIC (HW side) pops a free buffer pointer from "free queue rx", and
+			writes data into the buffer, and pushes the free buffer to
+			rx queue.
+			
+			Processor(SW side) pops the buffer from rx queue, processes packet
+			info, and pushes the buffer pointer back to "free queue rx", for further
+			reception of packets.
+			
+		Packet Transmission:
+		
+			Processor(SW side) pops a free buffer pointer from "free queue tx", and
+			writes data into the buffer, and pushes the free buffer to
+			tx queue.
+					
+			NIC (HW side) pops the buffer from tx queue, transmits it, and
+			pushes the buffer pointer back to "free queue tx", for further
+			transmission of packets. 
+			
 ---------------------------------------------------------
 2. NIC design files.
 ---------------------------------------------------------

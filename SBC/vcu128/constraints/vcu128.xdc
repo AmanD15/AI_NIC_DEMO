@@ -291,7 +291,13 @@ set_false_path -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -t
 
 set_false_path -from [get_clocks -include_generated_clocks clk_125_clk_wiz_0] -to [get_clocks -include_generated_clocks mmcm_clkout0]
 
+# New changes for ethernet
+set_false_path -from [get_clocks -include_generated_clocks clk_125mhz_mmcm_out] -to [get_clocks -include_generated_clocks clk_125mhz_mmcm_out]
 
+set_false_path -from [get_clocks -include_generated_clocks clk_125mhz_mmcm_out] -to [get_clocks -include_generated_clocks clk_80_clk_wiz_0]
+set_false_path -from [get_clocks -include_generated_clocks clk_80_clk_wiz_0] -to [get_clocks -include_generated_clocks clk_125mhz_mmcm_out]
+
+set_false_path -from [get_clocks -include_generated_clocks clk_125mhz_mmcm_out] -to [get_clocks -include_generated_clocks mmcm_clkout0]
 
 
 #

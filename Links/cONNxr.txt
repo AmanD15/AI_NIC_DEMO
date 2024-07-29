@@ -1,0 +1,3 @@
+https://github.com/alrevuelta/cONNXr/tree/master/src
+
+	Most useful C implementation of basic AI/ML operations.
