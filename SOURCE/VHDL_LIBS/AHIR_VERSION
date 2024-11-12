@@ -1,7 +1,6 @@
-commit 3fd5250446aa32e1a941e3a69353c5640c785f46
-Author: Madhav Pandurang Desai <madhav@ee.iitb.ac.in>
-Date:   Thu Mar 14 13:28:50 2024 +0530
+commit dc8198ebb073617eb4ddb1c523da2e05eb19e4dd
+Merge: 4e2c416 5ea2837
+Author: madhav <madhav@localhost.localdomain>
+Date:   Fri Oct 11 17:41:13 2024 +0530
 
-    An optimization to reduce wastage of flip-flops in the
-    control path.  After this fix, the average number of
-    FF's per join is about 2.5.
+    Merge branch 'master' of github.com:madhavPdesai/ahir

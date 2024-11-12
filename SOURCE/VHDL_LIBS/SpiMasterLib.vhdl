@@ -99,10 +99,10 @@ package SpiMasterLibComponents is
     component spi_slave_binary_pipe_bridge is
 	port (
 		-- SPI interface
-		spi_mosi: in std_logic;   -- master-out-slave-in
-		spi_miso: out std_logic;  -- master-in-slave-out
-		spi_ss_bar: in std_logic; -- slave-select active low
-		spi_clk  : in std_logic;  -- spi-clk
+		SPI_MOSI: in std_logic_vector(0 downto 0);   -- master-out-slave-in
+		SPI_MISO: out std_logic_vector(0 downto 0);  -- master-in-slave-out
+		SPI_CS_BAR: in std_logic_vector(0 downto 0); -- slave-select active low
+		SPI_CLK  : in std_logic_vector(0 downto 0);  -- spi-clk
 		-- pipe interface
 		-- output pipe
 		out_data_pipe_read_data: out std_logic_vector(7 downto 0);
@@ -117,13 +117,13 @@ package SpiMasterLibComponents is
 	     );
     end component spi_slave_binary_pipe_bridge;
     component spi_slave_pipe_bridge_simplified is
-	generic (tristate_miso_flag : boolean := true);
 	port (
 		-- SPI interface
-		spi_mosi: in std_logic;   -- master-out-slave-in
-		spi_miso: out std_logic;  -- master-in-slave-out
-		spi_ss_bar: in std_logic; -- slave-select active low
-		spi_clk  : in std_logic;  -- spi-clk
+		SPI_MOSI: in std_logic_vector(0 downto 0);   -- master-out-slave-in
+		SPI_MISO: out std_logic_vector(0 downto 0);  -- master-in-slave-out
+		SPI_MISO_ENABLE: out std_logic_vector(0 downto 0);  -- for wired OR.
+		SPI_CS_BAR: in std_logic_vector(0 downto 0); -- slave-select active low
+		SPI_CLK  : in std_logic_vector(0 downto 0);  -- spi-clk
 		-- pipe interface
 		-- output pipe
 		out_data_pipe_read_data: out std_logic_vector(7 downto 0);
@@ -1065,13 +1065,13 @@ use ahir.BaseComponents.all;
 --   to out_data_pipe.
 --
 --
-entity spi_slave_pipe_bridge_simplified is
-	generic (tristate_miso_flag : boolean := true);
+entity spi_slave_pipe_bridge_simplified_inner is
 	port (
 		-- SPI interface
 		spi_mosi: in std_logic;   -- master-out-slave-in
 		spi_miso: out std_logic;  -- master-in-slave-out
-		spi_ss_bar: in std_logic; -- slave-select active low
+		spi_miso_enable: out std_logic; -- output enable for MISO tristate.
+		spi_cs_bar: in std_logic; -- slave-select active low
 		spi_clk  : in std_logic;  -- spi-clk
 		-- pipe interface
 		out_data_pipe_read_data: out std_logic_vector(7 downto 0);
@@ -1085,16 +1085,16 @@ entity spi_slave_pipe_bridge_simplified is
 		--
 		clk, reset: in std_logic	
 	     );
-end entity spi_slave_pipe_bridge_simplified;
+end entity spi_slave_pipe_bridge_simplified_inner;
 
 
-architecture Behave of spi_slave_pipe_bridge_simplified is
+architecture Behave of spi_slave_pipe_bridge_simplified_inner is
 
 
 	signal spi_clk_rising_edge, spi_clk_falling_edge: Boolean;
 	signal last_spi_clk, spi_clk_d, spi_clk_d_d: std_logic;
 	signal mosi_d, mosi_d_d: std_logic;
-	signal spi_ss_bar_d, spi_ss_bar_d_d: std_logic;
+	signal spi_cs_bar_d, spi_cs_bar_d_d: std_logic;
 
 
 	type RxState is (RxIdle, RxWaitOnPipe);
@@ -1186,16 +1186,16 @@ begin
 				spi_clk_d_d <= '0';
 				mosi_d <= '0';
 				mosi_d_d <= '0';
-				spi_ss_bar_d <= '1';
-				spi_ss_bar_d_d <= '1';
+				spi_cs_bar_d <= '1';
+				spi_cs_bar_d_d <= '1';
 			else
 				last_spi_clk <= spi_clk_d_d;
 				spi_clk_d <= spi_clk;
 				spi_clk_d_d <= spi_clk_d;
 				mosi_d <= spi_mosi;
 				mosi_d_d <= mosi_d;
-				spi_ss_bar_d <= spi_ss_bar;
-				spi_ss_bar_d_d <= spi_ss_bar_d;
+				spi_cs_bar_d <= spi_cs_bar;
+				spi_cs_bar_d_d <= spi_cs_bar_d;
 			end if;
 		end if;
 	end process;
@@ -1203,7 +1203,7 @@ begin
 	-- assumption: clk is 4X+ faster than SPI-clk.
 	spi_clk_rising_edge <= (last_spi_clk = '0') and (spi_clk_d_d = '1');
 	spi_clk_falling_edge <= (last_spi_clk = '1') and (spi_clk_d_d = '0');
-	spi_selected <= (spi_ss_bar_d_d = '0');
+	spi_selected <= (spi_cs_bar_d_d = '0');
 
 	status_word_unsigned <= tx_queue_size & rx_available_slots;
 
@@ -1364,16 +1364,95 @@ begin
 	
 	
 	-- transmit side logic: on synch (shift completed)
-	Zgen: if tristate_miso_flag generate
-		-- miso: tristated if not selected.
-		spi_miso <= shift_out_reg(7) when spi_ss_bar_d_d = '0' else 'Z';
-	end generate Zgen;
-	noZgen: if (not tristate_miso_flag) generate
-		-- drive to '0' if not selected (wired-and)
-		spi_miso <= shift_out_reg(7) when spi_ss_bar_d_d = '0' else '0';
-	end generate noZgen;
+	-- note the output enable.
+	spi_miso        <= shift_out_reg(7);
+        spi_miso_enable <=  spi_cs_bar_d_d;
+
 
 end Behave;
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+library ahir;
+use ahir.BaseComponents.all;
+
+
+--
+-- SPI-slave to pipe bridge.
+--   Expects a command word followed by (optional) data.
+--   If the command word is a read, then either a status-word
+--   or data from in_data_pipe is returned as the second
+--   byte (following the response to the command).  If the command word is
+--   a write, the second byte after the command is forwarded
+--   to out_data_pipe.
+--
+--
+entity spi_slave_pipe_bridge_simplified is
+	port (
+		-- SPI interface
+		SPI_MOSI: in std_logic_vector(0 downto 0);   -- master-out-slave-in
+		SPI_MISO: out std_logic_vector(0 downto 0);  -- master-in-slave-out
+		SPI_MISO_ENABLE: out std_logic_vector(0 downto 0);  -- master-in-slave-out
+		SPI_CS_BAR: in std_logic_vector(0 downto 0); -- slave-select active low
+		SPI_CLK  : in std_logic_vector(0 downto 0);  -- spi-clk
+		-- pipe interface
+		out_data_pipe_read_data: out std_logic_vector(7 downto 0);
+		out_data_pipe_read_req : in std_logic_vector(0 downto 0);
+		out_data_pipe_read_ack : out std_logic_vector(0 downto 0);
+		-- input pipe: if the internal queue is full, writes
+		-- will be blocked.
+		in_data_pipe_write_data: in std_logic_vector(7 downto 0);
+		in_data_pipe_write_req : in std_logic_vector(0 downto 0);
+		in_data_pipe_write_ack : out std_logic_vector(0 downto 0);
+		--
+		clk, reset: in std_logic	
+	     );
+end entity spi_slave_pipe_bridge_simplified;
+
+architecture Wrapper of spi_slave_pipe_bridge_simplified is
+	component spi_slave_pipe_bridge_simplified_inner is
+	  port (
+		-- SPI interface
+		spi_mosi: in std_logic;   -- master-out-slave-in
+		spi_miso: out std_logic;  -- master-in-slave-out
+		spi_miso_enable: out std_logic; -- output enable for MISO tristate.
+		spi_cs_bar: in std_logic; -- slave-select active low
+		spi_clk  : in std_logic;  -- spi-clk
+		-- pipe interface
+		out_data_pipe_read_data: out std_logic_vector(7 downto 0);
+		out_data_pipe_read_req : in std_logic_vector(0 downto 0);
+		out_data_pipe_read_ack : out std_logic_vector(0 downto 0);
+		-- input pipe: if the internal queue is full, writes
+		-- will be blocked.
+		in_data_pipe_write_data: in std_logic_vector(7 downto 0);
+		in_data_pipe_write_req : in std_logic_vector(0 downto 0);
+		in_data_pipe_write_ack : out std_logic_vector(0 downto 0);
+		--
+		clk, reset: in std_logic	
+	     );
+	end component spi_slave_pipe_bridge_simplified_inner;
+begin
+	inner_inst:  spi_slave_pipe_bridge_simplified_inner
+		port map (
+			spi_mosi => SPI_MOSI(0),
+			spi_miso => SPI_MISO(0),
+			spi_miso_enable => SPI_MISO_ENABLE(0),
+			spi_cs_bar => SPI_CS_BAR(0),
+			spi_clk   =>  SPI_CLK(0), 
+			-- pipe interface
+			out_data_pipe_read_data => out_data_pipe_read_data,
+			out_data_pipe_read_req  => out_data_pipe_read_req ,
+			out_data_pipe_read_ack  => out_data_pipe_read_ack ,
+			-- input pipe: if the internal queue is full, writes
+			-- will be blocked.
+			in_data_pipe_write_data => in_data_pipe_write_data,
+			in_data_pipe_write_req  => in_data_pipe_write_req ,
+			in_data_pipe_write_ack  => in_data_pipe_write_ack ,
+			--
+			clk => clk, reset => reset
+		);
+end Wrapper;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;

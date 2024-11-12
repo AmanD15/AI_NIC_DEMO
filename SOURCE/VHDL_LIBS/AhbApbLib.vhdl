@@ -355,25 +355,25 @@ architecture afb_ahb_bridge_daemon_arch of afb_ahb_bridge_daemon is --
     -- 
   end component; 
   -- links between control-path and data-path
-  signal do_while_stmt_401_branch_req_0 : boolean;
-  signal RPIPE_AFB_BUS_REQUEST_404_inst_req_0 : boolean;
-  signal RPIPE_AFB_BUS_REQUEST_404_inst_ack_0 : boolean;
-  signal RPIPE_AFB_BUS_REQUEST_404_inst_req_1 : boolean;
-  signal RPIPE_AFB_BUS_REQUEST_404_inst_ack_1 : boolean;
-  signal WPIPE_AFB_TO_AHB_COMMAND_446_inst_req_0 : boolean;
-  signal WPIPE_AFB_TO_AHB_COMMAND_446_inst_ack_0 : boolean;
-  signal WPIPE_AFB_TO_AHB_COMMAND_446_inst_req_1 : boolean;
-  signal WPIPE_AFB_TO_AHB_COMMAND_446_inst_ack_1 : boolean;
-  signal RPIPE_AHB_TO_AFB_RESPONSE_450_inst_req_0 : boolean;
-  signal RPIPE_AHB_TO_AFB_RESPONSE_450_inst_ack_0 : boolean;
-  signal RPIPE_AHB_TO_AFB_RESPONSE_450_inst_req_1 : boolean;
-  signal RPIPE_AHB_TO_AFB_RESPONSE_450_inst_ack_1 : boolean;
-  signal WPIPE_AFB_BUS_RESPONSE_465_inst_req_0 : boolean;
-  signal WPIPE_AFB_BUS_RESPONSE_465_inst_ack_0 : boolean;
-  signal WPIPE_AFB_BUS_RESPONSE_465_inst_req_1 : boolean;
-  signal WPIPE_AFB_BUS_RESPONSE_465_inst_ack_1 : boolean;
-  signal do_while_stmt_401_branch_ack_0 : boolean;
-  signal do_while_stmt_401_branch_ack_1 : boolean;
+  signal do_while_stmt_408_branch_req_0 : boolean;
+  signal RPIPE_AFB_BUS_REQUEST_411_inst_req_0 : boolean;
+  signal RPIPE_AFB_BUS_REQUEST_411_inst_ack_0 : boolean;
+  signal RPIPE_AFB_BUS_REQUEST_411_inst_req_1 : boolean;
+  signal RPIPE_AFB_BUS_REQUEST_411_inst_ack_1 : boolean;
+  signal WPIPE_AFB_TO_AHB_COMMAND_453_inst_req_0 : boolean;
+  signal WPIPE_AFB_TO_AHB_COMMAND_453_inst_ack_0 : boolean;
+  signal WPIPE_AFB_TO_AHB_COMMAND_453_inst_req_1 : boolean;
+  signal WPIPE_AFB_TO_AHB_COMMAND_453_inst_ack_1 : boolean;
+  signal RPIPE_AHB_TO_AFB_RESPONSE_457_inst_req_0 : boolean;
+  signal RPIPE_AHB_TO_AFB_RESPONSE_457_inst_ack_0 : boolean;
+  signal RPIPE_AHB_TO_AFB_RESPONSE_457_inst_req_1 : boolean;
+  signal RPIPE_AHB_TO_AFB_RESPONSE_457_inst_ack_1 : boolean;
+  signal WPIPE_AFB_BUS_RESPONSE_472_inst_req_0 : boolean;
+  signal WPIPE_AFB_BUS_RESPONSE_472_inst_ack_0 : boolean;
+  signal WPIPE_AFB_BUS_RESPONSE_472_inst_req_1 : boolean;
+  signal WPIPE_AFB_BUS_RESPONSE_472_inst_ack_1 : boolean;
+  signal do_while_stmt_408_branch_ack_0 : boolean;
+  signal do_while_stmt_408_branch_ack_1 : boolean;
   -- 
 begin --  
   -- input handling ------------------------------------------------
@@ -490,9 +490,9 @@ begin --
     -- CP-element group 0: 	2 
     -- CP-element group 0:  members (4) 
       -- CP-element group 0: 	 $entry
-      -- CP-element group 0: 	 branch_block_stmt_400/$entry
-      -- CP-element group 0: 	 branch_block_stmt_400/branch_block_stmt_400__entry__
-      -- CP-element group 0: 	 branch_block_stmt_400/do_while_stmt_401__entry__
+      -- CP-element group 0: 	 branch_block_stmt_407/$entry
+      -- CP-element group 0: 	 branch_block_stmt_407/branch_block_stmt_407__entry__
+      -- CP-element group 0: 	 branch_block_stmt_407/do_while_stmt_408__entry__
       -- 
     -- CP-element group 1:  transition  place  bypass 
     -- CP-element group 1: predecessors 
@@ -500,9 +500,9 @@ begin --
     -- CP-element group 1: successors 
     -- CP-element group 1:  members (4) 
       -- CP-element group 1: 	 $exit
-      -- CP-element group 1: 	 branch_block_stmt_400/$exit
-      -- CP-element group 1: 	 branch_block_stmt_400/branch_block_stmt_400__exit__
-      -- CP-element group 1: 	 branch_block_stmt_400/do_while_stmt_401__exit__
+      -- CP-element group 1: 	 branch_block_stmt_407/$exit
+      -- CP-element group 1: 	 branch_block_stmt_407/branch_block_stmt_407__exit__
+      -- CP-element group 1: 	 branch_block_stmt_407/do_while_stmt_408__exit__
       -- 
     afb_ahb_bridge_daemon_CP_9_elements(1) <= afb_ahb_bridge_daemon_CP_9_elements(28);
     -- CP-element group 2:  transition  place  bypass  pipeline-parent 
@@ -511,8 +511,8 @@ begin --
     -- CP-element group 2: successors 
     -- CP-element group 2: 	8 
     -- CP-element group 2:  members (2) 
-      -- CP-element group 2: 	 branch_block_stmt_400/do_while_stmt_401/$entry
-      -- CP-element group 2: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401__entry__
+      -- CP-element group 2: 	 branch_block_stmt_407/do_while_stmt_408/$entry
+      -- CP-element group 2: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408__entry__
       -- 
     afb_ahb_bridge_daemon_CP_9_elements(2) <= afb_ahb_bridge_daemon_CP_9_elements(0);
     -- CP-element group 3:  merge  place  bypass  pipeline-parent 
@@ -520,7 +520,7 @@ begin --
     -- CP-element group 3: successors 
     -- CP-element group 3: 	28 
     -- CP-element group 3:  members (1) 
-      -- CP-element group 3: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401__exit__
+      -- CP-element group 3: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408__exit__
       -- 
     -- Element group afb_ahb_bridge_daemon_CP_9_elements(3) is bound as output of CP function.
     -- CP-element group 4:  merge  place  bypass  pipeline-parent 
@@ -528,7 +528,7 @@ begin --
     -- CP-element group 4: successors 
     -- CP-element group 4: 	7 
     -- CP-element group 4:  members (1) 
-      -- CP-element group 4: 	 branch_block_stmt_400/do_while_stmt_401/loop_back
+      -- CP-element group 4: 	 branch_block_stmt_407/do_while_stmt_408/loop_back
       -- 
     -- Element group afb_ahb_bridge_daemon_CP_9_elements(4) is bound as output of CP function.
     -- CP-element group 5:  branch  transition  place  bypass  pipeline-parent 
@@ -538,9 +538,9 @@ begin --
     -- CP-element group 5: 	26 
     -- CP-element group 5: 	27 
     -- CP-element group 5:  members (3) 
-      -- CP-element group 5: 	 branch_block_stmt_400/do_while_stmt_401/condition_done
-      -- CP-element group 5: 	 branch_block_stmt_400/do_while_stmt_401/loop_exit/$entry
-      -- CP-element group 5: 	 branch_block_stmt_400/do_while_stmt_401/loop_taken/$entry
+      -- CP-element group 5: 	 branch_block_stmt_407/do_while_stmt_408/condition_done
+      -- CP-element group 5: 	 branch_block_stmt_407/do_while_stmt_408/loop_exit/$entry
+      -- CP-element group 5: 	 branch_block_stmt_407/do_while_stmt_408/loop_taken/$entry
       -- 
     afb_ahb_bridge_daemon_CP_9_elements(5) <= afb_ahb_bridge_daemon_CP_9_elements(24);
     -- CP-element group 6:  branch  place  bypass  pipeline-parent 
@@ -548,7 +548,7 @@ begin --
     -- CP-element group 6: 	25 
     -- CP-element group 6: successors 
     -- CP-element group 6:  members (1) 
-      -- CP-element group 6: 	 branch_block_stmt_400/do_while_stmt_401/loop_body_done
+      -- CP-element group 6: 	 branch_block_stmt_407/do_while_stmt_408/loop_body_done
       -- 
     afb_ahb_bridge_daemon_CP_9_elements(6) <= afb_ahb_bridge_daemon_CP_9_elements(25);
     -- CP-element group 7:  transition  bypass  pipeline-parent 
@@ -556,7 +556,7 @@ begin --
     -- CP-element group 7: 	4 
     -- CP-element group 7: successors 
     -- CP-element group 7:  members (1) 
-      -- CP-element group 7: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/back_edge_to_loop_body
+      -- CP-element group 7: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/back_edge_to_loop_body
       -- 
     afb_ahb_bridge_daemon_CP_9_elements(7) <= afb_ahb_bridge_daemon_CP_9_elements(4);
     -- CP-element group 8:  transition  bypass  pipeline-parent 
@@ -564,18 +564,18 @@ begin --
     -- CP-element group 8: 	2 
     -- CP-element group 8: successors 
     -- CP-element group 8:  members (1) 
-      -- CP-element group 8: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/first_time_through_loop_body
+      -- CP-element group 8: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/first_time_through_loop_body
       -- 
     afb_ahb_bridge_daemon_CP_9_elements(8) <= afb_ahb_bridge_daemon_CP_9_elements(2);
     -- CP-element group 9:  fork  transition  bypass  pipeline-parent 
     -- CP-element group 9: predecessors 
     -- CP-element group 9: successors 
-    -- CP-element group 9: 	17 
     -- CP-element group 9: 	24 
     -- CP-element group 9: 	10 
+    -- CP-element group 9: 	17 
     -- CP-element group 9:  members (2) 
-      -- CP-element group 9: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/$entry
-      -- CP-element group 9: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/loop_body_start
+      -- CP-element group 9: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/$entry
+      -- CP-element group 9: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/loop_body_start
       -- 
     -- Element group afb_ahb_bridge_daemon_CP_9_elements(9) is bound as output of CP function.
     -- CP-element group 10:  join  transition  output  bypass  pipeline-parent 
@@ -586,13 +586,13 @@ begin --
     -- CP-element group 10: successors 
     -- CP-element group 10: 	12 
     -- CP-element group 10:  members (3) 
-      -- CP-element group 10: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AFB_BUS_REQUEST_404_sample_start_
-      -- CP-element group 10: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AFB_BUS_REQUEST_404_Sample/$entry
-      -- CP-element group 10: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AFB_BUS_REQUEST_404_Sample/rr
+      -- CP-element group 10: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AFB_BUS_REQUEST_411_sample_start_
+      -- CP-element group 10: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AFB_BUS_REQUEST_411_Sample/$entry
+      -- CP-element group 10: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AFB_BUS_REQUEST_411_Sample/rr
       -- 
     rr_42_symbol_link_to_dp: control_delay_element -- 
       generic map(name => " rr_42_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(10), ack => RPIPE_AFB_BUS_REQUEST_404_inst_req_0); -- 
+      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(10), ack => RPIPE_AFB_BUS_REQUEST_411_inst_req_0); -- 
     afb_ahb_bridge_daemon_cp_element_group_10: block -- 
       constant place_capacities: IntegerArray(0 to 1) := (0 => 15,1 => 1);
       constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
@@ -612,13 +612,13 @@ begin --
     -- CP-element group 11: successors 
     -- CP-element group 11: 	13 
     -- CP-element group 11:  members (3) 
-      -- CP-element group 11: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AFB_BUS_REQUEST_404_update_start_
-      -- CP-element group 11: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AFB_BUS_REQUEST_404_Update/$entry
-      -- CP-element group 11: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AFB_BUS_REQUEST_404_Update/cr
+      -- CP-element group 11: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AFB_BUS_REQUEST_411_update_start_
+      -- CP-element group 11: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AFB_BUS_REQUEST_411_Update/$entry
+      -- CP-element group 11: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AFB_BUS_REQUEST_411_Update/cr
       -- 
     cr_47_symbol_link_to_dp: control_delay_element -- 
       generic map(name => " cr_47_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(11), ack => RPIPE_AFB_BUS_REQUEST_404_inst_req_1); -- 
+      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(11), ack => RPIPE_AFB_BUS_REQUEST_411_inst_req_1); -- 
     afb_ahb_bridge_daemon_cp_element_group_11: block -- 
       constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
       constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
@@ -636,13 +636,13 @@ begin --
     -- CP-element group 12: successors 
     -- CP-element group 12: 	11 
     -- CP-element group 12:  members (3) 
-      -- CP-element group 12: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AFB_BUS_REQUEST_404_sample_completed_
-      -- CP-element group 12: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AFB_BUS_REQUEST_404_Sample/$exit
-      -- CP-element group 12: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AFB_BUS_REQUEST_404_Sample/ra
+      -- CP-element group 12: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AFB_BUS_REQUEST_411_sample_completed_
+      -- CP-element group 12: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AFB_BUS_REQUEST_411_Sample/$exit
+      -- CP-element group 12: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AFB_BUS_REQUEST_411_Sample/ra
       -- 
     ra_43_symbol_link_from_dp: control_delay_element -- 
       generic map(name => " 12_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => RPIPE_AFB_BUS_REQUEST_404_inst_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(12)); -- 
+      port map(clk => clk, reset => reset, req => RPIPE_AFB_BUS_REQUEST_411_inst_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(12)); -- 
     -- CP-element group 13:  fork  transition  input  bypass  pipeline-parent 
     -- CP-element group 13: predecessors 
     -- CP-element group 13: 	11 
@@ -651,13 +651,13 @@ begin --
     -- CP-element group 13: marked-successors 
     -- CP-element group 13: 	10 
     -- CP-element group 13:  members (3) 
-      -- CP-element group 13: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AFB_BUS_REQUEST_404_update_completed_
-      -- CP-element group 13: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AFB_BUS_REQUEST_404_Update/$exit
-      -- CP-element group 13: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AFB_BUS_REQUEST_404_Update/ca
+      -- CP-element group 13: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AFB_BUS_REQUEST_411_update_completed_
+      -- CP-element group 13: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AFB_BUS_REQUEST_411_Update/$exit
+      -- CP-element group 13: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AFB_BUS_REQUEST_411_Update/ca
       -- 
     ca_48_symbol_link_from_dp: control_delay_element -- 
       generic map(name => " 13_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => RPIPE_AFB_BUS_REQUEST_404_inst_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(13)); -- 
+      port map(clk => clk, reset => reset, req => RPIPE_AFB_BUS_REQUEST_411_inst_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(13)); -- 
     -- CP-element group 14:  join  transition  output  bypass  pipeline-parent 
     -- CP-element group 14: predecessors 
     -- CP-element group 14: 	13 
@@ -666,13 +666,13 @@ begin --
     -- CP-element group 14: successors 
     -- CP-element group 14: 	15 
     -- CP-element group 14:  members (3) 
-      -- CP-element group 14: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_TO_AHB_COMMAND_446_sample_start_
-      -- CP-element group 14: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_TO_AHB_COMMAND_446_Sample/$entry
-      -- CP-element group 14: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_TO_AHB_COMMAND_446_Sample/req
+      -- CP-element group 14: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_TO_AHB_COMMAND_453_sample_start_
+      -- CP-element group 14: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_TO_AHB_COMMAND_453_Sample/$entry
+      -- CP-element group 14: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_TO_AHB_COMMAND_453_Sample/req
       -- 
     req_56_symbol_link_to_dp: control_delay_element -- 
       generic map(name => " req_56_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(14), ack => WPIPE_AFB_TO_AHB_COMMAND_446_inst_req_0); -- 
+      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(14), ack => WPIPE_AFB_TO_AHB_COMMAND_453_inst_req_0); -- 
     afb_ahb_bridge_daemon_cp_element_group_14: block -- 
       constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
       constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
@@ -692,19 +692,19 @@ begin --
     -- CP-element group 15: marked-successors 
     -- CP-element group 15: 	11 
     -- CP-element group 15:  members (6) 
-      -- CP-element group 15: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_TO_AHB_COMMAND_446_sample_completed_
-      -- CP-element group 15: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_TO_AHB_COMMAND_446_update_start_
-      -- CP-element group 15: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_TO_AHB_COMMAND_446_Sample/$exit
-      -- CP-element group 15: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_TO_AHB_COMMAND_446_Sample/ack
-      -- CP-element group 15: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_TO_AHB_COMMAND_446_Update/$entry
-      -- CP-element group 15: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_TO_AHB_COMMAND_446_Update/req
+      -- CP-element group 15: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_TO_AHB_COMMAND_453_sample_completed_
+      -- CP-element group 15: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_TO_AHB_COMMAND_453_update_start_
+      -- CP-element group 15: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_TO_AHB_COMMAND_453_Sample/$exit
+      -- CP-element group 15: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_TO_AHB_COMMAND_453_Sample/ack
+      -- CP-element group 15: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_TO_AHB_COMMAND_453_Update/$entry
+      -- CP-element group 15: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_TO_AHB_COMMAND_453_Update/req
       -- 
     ack_57_symbol_link_from_dp: control_delay_element -- 
       generic map(name => " 15_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => WPIPE_AFB_TO_AHB_COMMAND_446_inst_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(15)); -- 
+      port map(clk => clk, reset => reset, req => WPIPE_AFB_TO_AHB_COMMAND_453_inst_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(15)); -- 
     req_61_symbol_link_to_dp: control_delay_element -- 
       generic map(name => " req_61_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(15), ack => WPIPE_AFB_TO_AHB_COMMAND_446_inst_req_1); -- 
+      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(15), ack => WPIPE_AFB_TO_AHB_COMMAND_453_inst_req_1); -- 
     -- CP-element group 16:  fork  transition  input  bypass  pipeline-parent 
     -- CP-element group 16: predecessors 
     -- CP-element group 16: 	15 
@@ -713,13 +713,13 @@ begin --
     -- CP-element group 16: marked-successors 
     -- CP-element group 16: 	14 
     -- CP-element group 16:  members (3) 
-      -- CP-element group 16: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_TO_AHB_COMMAND_446_update_completed_
-      -- CP-element group 16: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_TO_AHB_COMMAND_446_Update/$exit
-      -- CP-element group 16: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_TO_AHB_COMMAND_446_Update/ack
+      -- CP-element group 16: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_TO_AHB_COMMAND_453_update_completed_
+      -- CP-element group 16: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_TO_AHB_COMMAND_453_Update/$exit
+      -- CP-element group 16: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_TO_AHB_COMMAND_453_Update/ack
       -- 
     ack_62_symbol_link_from_dp: control_delay_element -- 
       generic map(name => " 16_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => WPIPE_AFB_TO_AHB_COMMAND_446_inst_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(16)); -- 
+      port map(clk => clk, reset => reset, req => WPIPE_AFB_TO_AHB_COMMAND_453_inst_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(16)); -- 
     -- CP-element group 17:  join  transition  output  bypass  pipeline-parent 
     -- CP-element group 17: predecessors 
     -- CP-element group 17: 	9 
@@ -728,13 +728,13 @@ begin --
     -- CP-element group 17: successors 
     -- CP-element group 17: 	19 
     -- CP-element group 17:  members (3) 
-      -- CP-element group 17: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_450_sample_start_
-      -- CP-element group 17: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_450_Sample/$entry
-      -- CP-element group 17: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_450_Sample/rr
+      -- CP-element group 17: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_457_sample_start_
+      -- CP-element group 17: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_457_Sample/$entry
+      -- CP-element group 17: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_457_Sample/rr
       -- 
     rr_70_symbol_link_to_dp: control_delay_element -- 
       generic map(name => " rr_70_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(17), ack => RPIPE_AHB_TO_AFB_RESPONSE_450_inst_req_0); -- 
+      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(17), ack => RPIPE_AHB_TO_AFB_RESPONSE_457_inst_req_0); -- 
     afb_ahb_bridge_daemon_cp_element_group_17: block -- 
       constant place_capacities: IntegerArray(0 to 1) := (0 => 15,1 => 1);
       constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
@@ -754,13 +754,13 @@ begin --
     -- CP-element group 18: successors 
     -- CP-element group 18: 	20 
     -- CP-element group 18:  members (3) 
-      -- CP-element group 18: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_450_update_start_
-      -- CP-element group 18: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_450_Update/$entry
-      -- CP-element group 18: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_450_Update/cr
+      -- CP-element group 18: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_457_update_start_
+      -- CP-element group 18: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_457_Update/$entry
+      -- CP-element group 18: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_457_Update/cr
       -- 
     cr_75_symbol_link_to_dp: control_delay_element -- 
       generic map(name => " cr_75_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(18), ack => RPIPE_AHB_TO_AFB_RESPONSE_450_inst_req_1); -- 
+      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(18), ack => RPIPE_AHB_TO_AFB_RESPONSE_457_inst_req_1); -- 
     afb_ahb_bridge_daemon_cp_element_group_18: block -- 
       constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
       constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
@@ -778,13 +778,13 @@ begin --
     -- CP-element group 19: successors 
     -- CP-element group 19: 	18 
     -- CP-element group 19:  members (3) 
-      -- CP-element group 19: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_450_sample_completed_
-      -- CP-element group 19: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_450_Sample/$exit
-      -- CP-element group 19: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_450_Sample/ra
+      -- CP-element group 19: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_457_sample_completed_
+      -- CP-element group 19: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_457_Sample/$exit
+      -- CP-element group 19: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_457_Sample/ra
       -- 
     ra_71_symbol_link_from_dp: control_delay_element -- 
       generic map(name => " 19_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => RPIPE_AHB_TO_AFB_RESPONSE_450_inst_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(19)); -- 
+      port map(clk => clk, reset => reset, req => RPIPE_AHB_TO_AFB_RESPONSE_457_inst_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(19)); -- 
     -- CP-element group 20:  fork  transition  input  bypass  pipeline-parent 
     -- CP-element group 20: predecessors 
     -- CP-element group 20: 	18 
@@ -793,13 +793,13 @@ begin --
     -- CP-element group 20: marked-successors 
     -- CP-element group 20: 	17 
     -- CP-element group 20:  members (3) 
-      -- CP-element group 20: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_450_update_completed_
-      -- CP-element group 20: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_450_Update/$exit
-      -- CP-element group 20: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_450_Update/ca
+      -- CP-element group 20: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_457_update_completed_
+      -- CP-element group 20: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_457_Update/$exit
+      -- CP-element group 20: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/RPIPE_AHB_TO_AFB_RESPONSE_457_Update/ca
       -- 
     ca_76_symbol_link_from_dp: control_delay_element -- 
       generic map(name => " 20_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => RPIPE_AHB_TO_AFB_RESPONSE_450_inst_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(20)); -- 
+      port map(clk => clk, reset => reset, req => RPIPE_AHB_TO_AFB_RESPONSE_457_inst_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(20)); -- 
     -- CP-element group 21:  join  transition  output  bypass  pipeline-parent 
     -- CP-element group 21: predecessors 
     -- CP-element group 21: 	20 
@@ -808,13 +808,13 @@ begin --
     -- CP-element group 21: successors 
     -- CP-element group 21: 	22 
     -- CP-element group 21:  members (3) 
-      -- CP-element group 21: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_BUS_RESPONSE_465_sample_start_
-      -- CP-element group 21: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_BUS_RESPONSE_465_Sample/$entry
-      -- CP-element group 21: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_BUS_RESPONSE_465_Sample/req
+      -- CP-element group 21: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_BUS_RESPONSE_472_sample_start_
+      -- CP-element group 21: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_BUS_RESPONSE_472_Sample/$entry
+      -- CP-element group 21: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_BUS_RESPONSE_472_Sample/req
       -- 
     req_84_symbol_link_to_dp: control_delay_element -- 
       generic map(name => " req_84_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(21), ack => WPIPE_AFB_BUS_RESPONSE_465_inst_req_0); -- 
+      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(21), ack => WPIPE_AFB_BUS_RESPONSE_472_inst_req_0); -- 
     afb_ahb_bridge_daemon_cp_element_group_21: block -- 
       constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
       constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
@@ -834,19 +834,19 @@ begin --
     -- CP-element group 22: marked-successors 
     -- CP-element group 22: 	18 
     -- CP-element group 22:  members (6) 
-      -- CP-element group 22: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_BUS_RESPONSE_465_sample_completed_
-      -- CP-element group 22: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_BUS_RESPONSE_465_update_start_
-      -- CP-element group 22: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_BUS_RESPONSE_465_Sample/$exit
-      -- CP-element group 22: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_BUS_RESPONSE_465_Sample/ack
-      -- CP-element group 22: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_BUS_RESPONSE_465_Update/$entry
-      -- CP-element group 22: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_BUS_RESPONSE_465_Update/req
+      -- CP-element group 22: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_BUS_RESPONSE_472_sample_completed_
+      -- CP-element group 22: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_BUS_RESPONSE_472_update_start_
+      -- CP-element group 22: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_BUS_RESPONSE_472_Sample/$exit
+      -- CP-element group 22: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_BUS_RESPONSE_472_Sample/ack
+      -- CP-element group 22: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_BUS_RESPONSE_472_Update/$entry
+      -- CP-element group 22: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_BUS_RESPONSE_472_Update/req
       -- 
     ack_85_symbol_link_from_dp: control_delay_element -- 
       generic map(name => " 22_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => WPIPE_AFB_BUS_RESPONSE_465_inst_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(22)); -- 
+      port map(clk => clk, reset => reset, req => WPIPE_AFB_BUS_RESPONSE_472_inst_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(22)); -- 
     req_89_symbol_link_to_dp: control_delay_element -- 
       generic map(name => " req_89_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(22), ack => WPIPE_AFB_BUS_RESPONSE_465_inst_req_1); -- 
+      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(22), ack => WPIPE_AFB_BUS_RESPONSE_472_inst_req_1); -- 
     -- CP-element group 23:  fork  transition  input  bypass  pipeline-parent 
     -- CP-element group 23: predecessors 
     -- CP-element group 23: 	22 
@@ -855,35 +855,35 @@ begin --
     -- CP-element group 23: marked-successors 
     -- CP-element group 23: 	21 
     -- CP-element group 23:  members (3) 
-      -- CP-element group 23: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_BUS_RESPONSE_465_update_completed_
-      -- CP-element group 23: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_BUS_RESPONSE_465_Update/$exit
-      -- CP-element group 23: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/WPIPE_AFB_BUS_RESPONSE_465_Update/ack
+      -- CP-element group 23: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_BUS_RESPONSE_472_update_completed_
+      -- CP-element group 23: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_BUS_RESPONSE_472_Update/$exit
+      -- CP-element group 23: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/WPIPE_AFB_BUS_RESPONSE_472_Update/ack
       -- 
     ack_90_symbol_link_from_dp: control_delay_element -- 
       generic map(name => " 23_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => WPIPE_AFB_BUS_RESPONSE_465_inst_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(23)); -- 
+      port map(clk => clk, reset => reset, req => WPIPE_AFB_BUS_RESPONSE_472_inst_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(23)); -- 
     -- CP-element group 24:  transition  output  delay-element  bypass  pipeline-parent 
     -- CP-element group 24: predecessors 
     -- CP-element group 24: 	9 
     -- CP-element group 24: successors 
     -- CP-element group 24: 	5 
     -- CP-element group 24:  members (2) 
-      -- CP-element group 24: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/condition_evaluated
-      -- CP-element group 24: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/loop_body_delay_to_condition_start
+      -- CP-element group 24: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/condition_evaluated
+      -- CP-element group 24: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/loop_body_delay_to_condition_start
       -- 
     condition_evaluated_33_symbol_link_to_dp: control_delay_element -- 
       generic map(name => " condition_evaluated_33_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(24), ack => do_while_stmt_401_branch_req_0); -- 
+      port map(clk => clk, reset => reset, req => afb_ahb_bridge_daemon_CP_9_elements(24), ack => do_while_stmt_408_branch_req_0); -- 
     -- Element group afb_ahb_bridge_daemon_CP_9_elements(24) is a control-delay.
     cp_element_24_delay: control_delay_element  generic map(name => " 24_delay", delay_value => 1)  port map(req => afb_ahb_bridge_daemon_CP_9_elements(9), ack => afb_ahb_bridge_daemon_CP_9_elements(24), clk => clk, reset =>reset);
     -- CP-element group 25:  join  transition  bypass  pipeline-parent 
     -- CP-element group 25: predecessors 
-    -- CP-element group 25: 	16 
     -- CP-element group 25: 	23 
+    -- CP-element group 25: 	16 
     -- CP-element group 25: successors 
     -- CP-element group 25: 	6 
     -- CP-element group 25:  members (1) 
-      -- CP-element group 25: 	 branch_block_stmt_400/do_while_stmt_401/do_while_stmt_401_loop_body/$exit
+      -- CP-element group 25: 	 branch_block_stmt_407/do_while_stmt_408/do_while_stmt_408_loop_body/$exit
       -- 
     afb_ahb_bridge_daemon_cp_element_group_25: block -- 
       constant place_capacities: IntegerArray(0 to 1) := (0 => 15,1 => 15);
@@ -892,7 +892,7 @@ begin --
       constant joinName: string(1 to 41) := "afb_ahb_bridge_daemon_cp_element_group_25"; 
       signal preds: BooleanArray(1 to 2); -- 
     begin -- 
-      preds <= afb_ahb_bridge_daemon_CP_9_elements(16) & afb_ahb_bridge_daemon_CP_9_elements(23);
+      preds <= afb_ahb_bridge_daemon_CP_9_elements(23) & afb_ahb_bridge_daemon_CP_9_elements(16);
       gj_afb_ahb_bridge_daemon_cp_element_group_25 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
         port map(preds => preds, symbol_out => afb_ahb_bridge_daemon_CP_9_elements(25), clk => clk, reset => reset); --
     end block;
@@ -901,34 +901,34 @@ begin --
     -- CP-element group 26: 	5 
     -- CP-element group 26: successors 
     -- CP-element group 26:  members (2) 
-      -- CP-element group 26: 	 branch_block_stmt_400/do_while_stmt_401/loop_exit/$exit
-      -- CP-element group 26: 	 branch_block_stmt_400/do_while_stmt_401/loop_exit/ack
+      -- CP-element group 26: 	 branch_block_stmt_407/do_while_stmt_408/loop_exit/$exit
+      -- CP-element group 26: 	 branch_block_stmt_407/do_while_stmt_408/loop_exit/ack
       -- 
     ack_95_symbol_link_from_dp: control_delay_element -- 
       generic map(name => " 26_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => do_while_stmt_401_branch_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(26)); -- 
+      port map(clk => clk, reset => reset, req => do_while_stmt_408_branch_ack_0, ack => afb_ahb_bridge_daemon_CP_9_elements(26)); -- 
     -- CP-element group 27:  transition  input  bypass  pipeline-parent 
     -- CP-element group 27: predecessors 
     -- CP-element group 27: 	5 
     -- CP-element group 27: successors 
     -- CP-element group 27:  members (2) 
-      -- CP-element group 27: 	 branch_block_stmt_400/do_while_stmt_401/loop_taken/$exit
-      -- CP-element group 27: 	 branch_block_stmt_400/do_while_stmt_401/loop_taken/ack
+      -- CP-element group 27: 	 branch_block_stmt_407/do_while_stmt_408/loop_taken/$exit
+      -- CP-element group 27: 	 branch_block_stmt_407/do_while_stmt_408/loop_taken/ack
       -- 
     ack_99_symbol_link_from_dp: control_delay_element -- 
       generic map(name => " 27_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => do_while_stmt_401_branch_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(27)); -- 
+      port map(clk => clk, reset => reset, req => do_while_stmt_408_branch_ack_1, ack => afb_ahb_bridge_daemon_CP_9_elements(27)); -- 
     -- CP-element group 28:  transition  bypass  pipeline-parent 
     -- CP-element group 28: predecessors 
     -- CP-element group 28: 	3 
     -- CP-element group 28: successors 
     -- CP-element group 28: 	1 
     -- CP-element group 28:  members (1) 
-      -- CP-element group 28: 	 branch_block_stmt_400/do_while_stmt_401/$exit
+      -- CP-element group 28: 	 branch_block_stmt_407/do_while_stmt_408/$exit
       -- 
     afb_ahb_bridge_daemon_CP_9_elements(28) <= afb_ahb_bridge_daemon_CP_9_elements(3);
-    afb_ahb_bridge_daemon_do_while_stmt_401_terminator_100: loop_terminator -- 
-      generic map (name => " afb_ahb_bridge_daemon_do_while_stmt_401_terminator_100", max_iterations_in_flight =>15) 
+    afb_ahb_bridge_daemon_do_while_stmt_408_terminator_100: loop_terminator -- 
+      generic map (name => " afb_ahb_bridge_daemon_do_while_stmt_408_terminator_100", max_iterations_in_flight =>15) 
       port map(loop_body_exit => afb_ahb_bridge_daemon_CP_9_elements(6),loop_continue => afb_ahb_bridge_daemon_CP_9_elements(27),loop_terminate => afb_ahb_bridge_daemon_CP_9_elements(26),loop_back => afb_ahb_bridge_daemon_CP_9_elements(4),loop_exit => afb_ahb_bridge_daemon_CP_9_elements(3),clk => clk, reset => reset); -- 
     entry_tmerge_34_block : block -- 
       signal preds : BooleanArray(0 to 1);
@@ -946,91 +946,91 @@ begin --
   end Block; -- control-path
   -- the data path
   data_path: Block -- 
-    signal CONCAT_u1_u2_435_wire : std_logic_vector(1 downto 0);
-    signal CONCAT_u2_u6_437_wire : std_logic_vector(5 downto 0);
-    signal CONCAT_u36_u68_440_wire : std_logic_vector(67 downto 0);
-    signal access_error_455 : std_logic_vector(0 downto 0);
-    signal addr36_421 : std_logic_vector(35 downto 0);
-    signal ahb_command_445 : std_logic_vector(72 downto 0);
-    signal ahb_response_451 : std_logic_vector(32 downto 0);
-    signal byte_mask_417 : std_logic_vector(3 downto 0);
-    signal command_405 : std_logic_vector(73 downto 0);
-    signal data_out_mem_459 : std_logic_vector(31 downto 0);
-    signal konst_469_wire_constant : std_logic_vector(0 downto 0);
-    signal lock_flag_409 : std_logic_vector(0 downto 0);
-    signal read_write_bar_413 : std_logic_vector(0 downto 0);
-    signal to_afb_464 : std_logic_vector(32 downto 0);
-    signal to_mem_adapter_442 : std_logic_vector(73 downto 0);
-    signal wdata_32_425 : std_logic_vector(31 downto 0);
+    signal CONCAT_u1_u2_442_wire : std_logic_vector(1 downto 0);
+    signal CONCAT_u2_u6_444_wire : std_logic_vector(5 downto 0);
+    signal CONCAT_u36_u68_447_wire : std_logic_vector(67 downto 0);
+    signal access_error_462 : std_logic_vector(0 downto 0);
+    signal addr36_428 : std_logic_vector(35 downto 0);
+    signal ahb_command_452 : std_logic_vector(72 downto 0);
+    signal ahb_response_458 : std_logic_vector(32 downto 0);
+    signal byte_mask_424 : std_logic_vector(3 downto 0);
+    signal command_412 : std_logic_vector(73 downto 0);
+    signal data_out_mem_466 : std_logic_vector(31 downto 0);
+    signal konst_476_wire_constant : std_logic_vector(0 downto 0);
+    signal lock_flag_416 : std_logic_vector(0 downto 0);
+    signal read_write_bar_420 : std_logic_vector(0 downto 0);
+    signal to_afb_471 : std_logic_vector(32 downto 0);
+    signal to_mem_adapter_449 : std_logic_vector(73 downto 0);
+    signal wdata_32_432 : std_logic_vector(31 downto 0);
     -- 
   begin -- 
-    konst_469_wire_constant <= "1";
-    -- flow-through slice operator slice_408_inst
-    lock_flag_409 <= command_405(73 downto 73);
-    -- flow-through slice operator slice_412_inst
-    read_write_bar_413 <= command_405(72 downto 72);
-    -- flow-through slice operator slice_416_inst
-    byte_mask_417 <= command_405(71 downto 68);
-    -- flow-through slice operator slice_420_inst
-    addr36_421 <= command_405(67 downto 32);
-    -- flow-through slice operator slice_424_inst
-    wdata_32_425 <= command_405(31 downto 0);
-    -- flow-through slice operator slice_454_inst
-    access_error_455 <= ahb_response_451(32 downto 32);
-    -- flow-through slice operator slice_458_inst
-    data_out_mem_459 <= ahb_response_451(31 downto 0);
-    do_while_stmt_401_branch: Block -- 
+    konst_476_wire_constant <= "1";
+    -- flow-through slice operator slice_415_inst
+    lock_flag_416 <= command_412(73 downto 73);
+    -- flow-through slice operator slice_419_inst
+    read_write_bar_420 <= command_412(72 downto 72);
+    -- flow-through slice operator slice_423_inst
+    byte_mask_424 <= command_412(71 downto 68);
+    -- flow-through slice operator slice_427_inst
+    addr36_428 <= command_412(67 downto 32);
+    -- flow-through slice operator slice_431_inst
+    wdata_32_432 <= command_412(31 downto 0);
+    -- flow-through slice operator slice_461_inst
+    access_error_462 <= ahb_response_458(32 downto 32);
+    -- flow-through slice operator slice_465_inst
+    data_out_mem_466 <= ahb_response_458(31 downto 0);
+    do_while_stmt_408_branch: Block -- 
       -- branch-block
       signal condition_sig : std_logic_vector(0 downto 0);
       begin 
-      condition_sig <= konst_469_wire_constant;
+      condition_sig <= konst_476_wire_constant;
       branch_instance: BranchBase -- 
-        generic map( name => "do_while_stmt_401_branch", condition_width => 1,  bypass_flag => true)
+        generic map( name => "do_while_stmt_408_branch", condition_width => 1,  bypass_flag => true)
         port map( -- 
           condition => condition_sig,
-          req => do_while_stmt_401_branch_req_0,
-          ack0 => do_while_stmt_401_branch_ack_0,
-          ack1 => do_while_stmt_401_branch_ack_1,
+          req => do_while_stmt_408_branch_req_0,
+          ack0 => do_while_stmt_408_branch_ack_0,
+          ack1 => do_while_stmt_408_branch_ack_1,
           clk => clk,
           reset => reset); -- 
       --
     end Block; -- branch-block
-    -- flow through binary operator CONCAT_u1_u2_435_inst
-    process(lock_flag_409, read_write_bar_413) -- 
+    -- flow through binary operator CONCAT_u1_u2_442_inst
+    process(lock_flag_416, read_write_bar_420) -- 
       variable tmp_var : std_logic_vector(1 downto 0); -- 
     begin -- 
-      ApConcat_proc(lock_flag_409, read_write_bar_413, tmp_var);
-      CONCAT_u1_u2_435_wire <= tmp_var; --
+      ApConcat_proc(lock_flag_416, read_write_bar_420, tmp_var);
+      CONCAT_u1_u2_442_wire <= tmp_var; --
     end process;
-    -- flow through binary operator CONCAT_u1_u33_463_inst
-    process(access_error_455, data_out_mem_459) -- 
+    -- flow through binary operator CONCAT_u1_u33_470_inst
+    process(access_error_462, data_out_mem_466) -- 
       variable tmp_var : std_logic_vector(32 downto 0); -- 
     begin -- 
-      ApConcat_proc(access_error_455, data_out_mem_459, tmp_var);
-      to_afb_464 <= tmp_var; --
+      ApConcat_proc(access_error_462, data_out_mem_466, tmp_var);
+      to_afb_471 <= tmp_var; --
     end process;
-    -- flow through binary operator CONCAT_u2_u6_437_inst
-    process(CONCAT_u1_u2_435_wire, byte_mask_417) -- 
+    -- flow through binary operator CONCAT_u2_u6_444_inst
+    process(CONCAT_u1_u2_442_wire, byte_mask_424) -- 
       variable tmp_var : std_logic_vector(5 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u1_u2_435_wire, byte_mask_417, tmp_var);
-      CONCAT_u2_u6_437_wire <= tmp_var; --
+      ApConcat_proc(CONCAT_u1_u2_442_wire, byte_mask_424, tmp_var);
+      CONCAT_u2_u6_444_wire <= tmp_var; --
     end process;
-    -- flow through binary operator CONCAT_u36_u68_440_inst
-    process(addr36_421, wdata_32_425) -- 
+    -- flow through binary operator CONCAT_u36_u68_447_inst
+    process(addr36_428, wdata_32_432) -- 
       variable tmp_var : std_logic_vector(67 downto 0); -- 
     begin -- 
-      ApConcat_proc(addr36_421, wdata_32_425, tmp_var);
-      CONCAT_u36_u68_440_wire <= tmp_var; --
+      ApConcat_proc(addr36_428, wdata_32_432, tmp_var);
+      CONCAT_u36_u68_447_wire <= tmp_var; --
     end process;
-    -- flow through binary operator CONCAT_u6_u74_441_inst
-    process(CONCAT_u2_u6_437_wire, CONCAT_u36_u68_440_wire) -- 
+    -- flow through binary operator CONCAT_u6_u74_448_inst
+    process(CONCAT_u2_u6_444_wire, CONCAT_u36_u68_447_wire) -- 
       variable tmp_var : std_logic_vector(73 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u2_u6_437_wire, CONCAT_u36_u68_440_wire, tmp_var);
-      to_mem_adapter_442 <= tmp_var; --
+      ApConcat_proc(CONCAT_u2_u6_444_wire, CONCAT_u36_u68_447_wire, tmp_var);
+      to_mem_adapter_449 <= tmp_var; --
     end process;
-    -- shared inport operator group (0) : RPIPE_AFB_BUS_REQUEST_404_inst 
+    -- shared inport operator group (0) : RPIPE_AFB_BUS_REQUEST_411_inst 
     InportGroup_0: Block -- 
       signal data_out: std_logic_vector(73 downto 0);
       signal reqL, ackL, reqR, ackR : BooleanArray( 0 downto 0);
@@ -1042,12 +1042,12 @@ begin --
       constant guardBuffering: IntegerArray(0 downto 0)  := (0 => 2);
       -- 
     begin -- 
-      reqL_unguarded(0) <= RPIPE_AFB_BUS_REQUEST_404_inst_req_0;
-      RPIPE_AFB_BUS_REQUEST_404_inst_ack_0 <= ackL_unguarded(0);
-      reqR_unguarded(0) <= RPIPE_AFB_BUS_REQUEST_404_inst_req_1;
-      RPIPE_AFB_BUS_REQUEST_404_inst_ack_1 <= ackR_unguarded(0);
+      reqL_unguarded(0) <= RPIPE_AFB_BUS_REQUEST_411_inst_req_0;
+      RPIPE_AFB_BUS_REQUEST_411_inst_ack_0 <= ackL_unguarded(0);
+      reqR_unguarded(0) <= RPIPE_AFB_BUS_REQUEST_411_inst_req_1;
+      RPIPE_AFB_BUS_REQUEST_411_inst_ack_1 <= ackR_unguarded(0);
       guard_vector(0)  <=  '1';
-      command_405 <= data_out(73 downto 0);
+      command_412 <= data_out(73 downto 0);
       AFB_BUS_REQUEST_read_0_gI: SplitGuardInterface generic map(name => "AFB_BUS_REQUEST_read_0_gI", nreqs => 1, buffering => guardBuffering, use_guards => guardFlags,  sample_only => false,  update_only => true) -- 
         port map(clk => clk, reset => reset,
         sr_in => reqL_unguarded,
@@ -1074,7 +1074,7 @@ begin --
         ); -- 
       -- 
     end Block; -- inport group 0
-    -- shared inport operator group (1) : RPIPE_AHB_TO_AFB_RESPONSE_450_inst 
+    -- shared inport operator group (1) : RPIPE_AHB_TO_AFB_RESPONSE_457_inst 
     InportGroup_1: Block -- 
       signal data_out: std_logic_vector(32 downto 0);
       signal reqL, ackL, reqR, ackR : BooleanArray( 0 downto 0);
@@ -1086,12 +1086,12 @@ begin --
       constant guardBuffering: IntegerArray(0 downto 0)  := (0 => 2);
       -- 
     begin -- 
-      reqL_unguarded(0) <= RPIPE_AHB_TO_AFB_RESPONSE_450_inst_req_0;
-      RPIPE_AHB_TO_AFB_RESPONSE_450_inst_ack_0 <= ackL_unguarded(0);
-      reqR_unguarded(0) <= RPIPE_AHB_TO_AFB_RESPONSE_450_inst_req_1;
-      RPIPE_AHB_TO_AFB_RESPONSE_450_inst_ack_1 <= ackR_unguarded(0);
+      reqL_unguarded(0) <= RPIPE_AHB_TO_AFB_RESPONSE_457_inst_req_0;
+      RPIPE_AHB_TO_AFB_RESPONSE_457_inst_ack_0 <= ackL_unguarded(0);
+      reqR_unguarded(0) <= RPIPE_AHB_TO_AFB_RESPONSE_457_inst_req_1;
+      RPIPE_AHB_TO_AFB_RESPONSE_457_inst_ack_1 <= ackR_unguarded(0);
       guard_vector(0)  <=  '1';
-      ahb_response_451 <= data_out(32 downto 0);
+      ahb_response_458 <= data_out(32 downto 0);
       AHB_TO_AFB_RESPONSE_read_1_gI: SplitGuardInterface generic map(name => "AHB_TO_AFB_RESPONSE_read_1_gI", nreqs => 1, buffering => guardBuffering, use_guards => guardFlags,  sample_only => false,  update_only => true) -- 
         port map(clk => clk, reset => reset,
         sr_in => reqL_unguarded,
@@ -1118,7 +1118,7 @@ begin --
         ); -- 
       -- 
     end Block; -- inport group 1
-    -- shared outport operator group (0) : WPIPE_AFB_BUS_RESPONSE_465_inst 
+    -- shared outport operator group (0) : WPIPE_AFB_BUS_RESPONSE_472_inst 
     OutportGroup_0: Block -- 
       signal data_in: std_logic_vector(32 downto 0);
       signal sample_req, sample_ack : BooleanArray( 0 downto 0);
@@ -1131,12 +1131,12 @@ begin --
       constant guardBuffering: IntegerArray(0 downto 0)  := (0 => 2);
       -- 
     begin -- 
-      sample_req_unguarded(0) <= WPIPE_AFB_BUS_RESPONSE_465_inst_req_0;
-      WPIPE_AFB_BUS_RESPONSE_465_inst_ack_0 <= sample_ack_unguarded(0);
-      update_req_unguarded(0) <= WPIPE_AFB_BUS_RESPONSE_465_inst_req_1;
-      WPIPE_AFB_BUS_RESPONSE_465_inst_ack_1 <= update_ack_unguarded(0);
+      sample_req_unguarded(0) <= WPIPE_AFB_BUS_RESPONSE_472_inst_req_0;
+      WPIPE_AFB_BUS_RESPONSE_472_inst_ack_0 <= sample_ack_unguarded(0);
+      update_req_unguarded(0) <= WPIPE_AFB_BUS_RESPONSE_472_inst_req_1;
+      WPIPE_AFB_BUS_RESPONSE_472_inst_ack_1 <= update_ack_unguarded(0);
       guard_vector(0)  <=  '1';
-      data_in <= to_afb_464;
+      data_in <= to_afb_471;
       AFB_BUS_RESPONSE_write_0_gI: SplitGuardInterface generic map(name => "AFB_BUS_RESPONSE_write_0_gI", nreqs => 1, buffering => guardBuffering, use_guards => guardFlags,  sample_only => true,  update_only => false) -- 
         port map(clk => clk, reset => reset,
         sr_in => sample_req_unguarded,
@@ -1164,7 +1164,7 @@ begin --
         );-- 
       -- 
     end Block; -- outport group 0
-    -- shared outport operator group (1) : WPIPE_AFB_TO_AHB_COMMAND_446_inst 
+    -- shared outport operator group (1) : WPIPE_AFB_TO_AHB_COMMAND_453_inst 
     OutportGroup_1: Block -- 
       signal data_in: std_logic_vector(72 downto 0);
       signal sample_req, sample_ack : BooleanArray( 0 downto 0);
@@ -1177,12 +1177,12 @@ begin --
       constant guardBuffering: IntegerArray(0 downto 0)  := (0 => 2);
       -- 
     begin -- 
-      sample_req_unguarded(0) <= WPIPE_AFB_TO_AHB_COMMAND_446_inst_req_0;
-      WPIPE_AFB_TO_AHB_COMMAND_446_inst_ack_0 <= sample_ack_unguarded(0);
-      update_req_unguarded(0) <= WPIPE_AFB_TO_AHB_COMMAND_446_inst_req_1;
-      WPIPE_AFB_TO_AHB_COMMAND_446_inst_ack_1 <= update_ack_unguarded(0);
+      sample_req_unguarded(0) <= WPIPE_AFB_TO_AHB_COMMAND_453_inst_req_0;
+      WPIPE_AFB_TO_AHB_COMMAND_453_inst_ack_0 <= sample_ack_unguarded(0);
+      update_req_unguarded(0) <= WPIPE_AFB_TO_AHB_COMMAND_453_inst_req_1;
+      WPIPE_AFB_TO_AHB_COMMAND_453_inst_ack_1 <= update_ack_unguarded(0);
       guard_vector(0)  <=  '1';
-      data_in <= ahb_command_445;
+      data_in <= ahb_command_452;
       AFB_TO_AHB_COMMAND_write_1_gI: SplitGuardInterface generic map(name => "AFB_TO_AHB_COMMAND_write_1_gI", nreqs => 1, buffering => guardBuffering, use_guards => guardFlags,  sample_only => true,  update_only => false) -- 
         port map(clk => clk, reset => reset,
         sr_in => sample_req_unguarded,
@@ -1210,7 +1210,7 @@ begin --
         );-- 
       -- 
     end Block; -- outport group 1
-    volatile_operator_create_ahb_commands_530: create_ahb_commands_Volatile port map(mem_adapter_command => to_mem_adapter_442, command_to_ahb => ahb_command_445); 
+    volatile_operator_create_ahb_commands_535: create_ahb_commands_Volatile port map(mem_adapter_command => to_mem_adapter_449, command_to_ahb => ahb_command_452); 
     -- 
   end Block; -- data_path
   -- 
@@ -1277,74 +1277,74 @@ begin --
   -- volatile module, no control path
   -- the data path
   data_path: Block -- 
-    signal CONCAT_u1_u2_386_wire : std_logic_vector(1 downto 0);
-    signal CONCAT_u2_u5_388_wire : std_logic_vector(4 downto 0);
-    signal CONCAT_u36_u68_395_wire : std_logic_vector(67 downto 0);
-    signal MUX_394_wire : std_logic_vector(31 downto 0);
-    signal addr_365 : std_logic_vector(35 downto 0);
-    signal addr_with_byte_offset_382 : std_logic_vector(35 downto 0);
-    signal ahb_transfer_size_375 : std_logic_vector(2 downto 0);
-    signal bmask_360 : std_logic_vector(3 downto 0);
-    signal byte_offset_372 : std_logic_vector(1 downto 0);
-    signal lock_flag_352 : std_logic_vector(0 downto 0);
-    signal rw_356 : std_logic_vector(0 downto 0);
-    signal slice_379_wire : std_logic_vector(33 downto 0);
-    signal type_cast_392_wire_constant : std_logic_vector(31 downto 0);
-    signal write_data_369 : std_logic_vector(31 downto 0);
+    signal CONCAT_u1_u2_393_wire : std_logic_vector(1 downto 0);
+    signal CONCAT_u2_u5_395_wire : std_logic_vector(4 downto 0);
+    signal CONCAT_u36_u68_402_wire : std_logic_vector(67 downto 0);
+    signal MUX_401_wire : std_logic_vector(31 downto 0);
+    signal addr_372 : std_logic_vector(35 downto 0);
+    signal addr_with_byte_offset_389 : std_logic_vector(35 downto 0);
+    signal ahb_transfer_size_382 : std_logic_vector(2 downto 0);
+    signal bmask_367 : std_logic_vector(3 downto 0);
+    signal byte_offset_379 : std_logic_vector(1 downto 0);
+    signal lock_flag_359 : std_logic_vector(0 downto 0);
+    signal rw_363 : std_logic_vector(0 downto 0);
+    signal slice_386_wire : std_logic_vector(33 downto 0);
+    signal type_cast_399_wire_constant : std_logic_vector(31 downto 0);
+    signal write_data_376 : std_logic_vector(31 downto 0);
     -- 
   begin -- 
-    type_cast_392_wire_constant <= "00000000000000000000000000000000";
-    -- flow-through select operator MUX_394_inst
-    MUX_394_wire <= type_cast_392_wire_constant when (rw_356(0) /=  '0') else write_data_369;
-    -- flow-through slice operator slice_351_inst
-    lock_flag_352 <= mem_adapter_command_buffer(73 downto 73);
-    -- flow-through slice operator slice_355_inst
-    rw_356 <= mem_adapter_command_buffer(72 downto 72);
-    -- flow-through slice operator slice_359_inst
-    bmask_360 <= mem_adapter_command_buffer(71 downto 68);
-    -- flow-through slice operator slice_364_inst
-    addr_365 <= mem_adapter_command_buffer(67 downto 32);
-    -- flow-through slice operator slice_368_inst
-    write_data_369 <= mem_adapter_command_buffer(31 downto 0);
-    -- flow-through slice operator slice_379_inst
-    slice_379_wire <= addr_365(35 downto 2);
-    -- flow through binary operator CONCAT_u1_u2_386_inst
-    process(lock_flag_352, rw_356) -- 
+    type_cast_399_wire_constant <= "00000000000000000000000000000000";
+    -- flow-through select operator MUX_401_inst
+    MUX_401_wire <= type_cast_399_wire_constant when (rw_363(0) /=  '0') else write_data_376;
+    -- flow-through slice operator slice_358_inst
+    lock_flag_359 <= mem_adapter_command_buffer(73 downto 73);
+    -- flow-through slice operator slice_362_inst
+    rw_363 <= mem_adapter_command_buffer(72 downto 72);
+    -- flow-through slice operator slice_366_inst
+    bmask_367 <= mem_adapter_command_buffer(71 downto 68);
+    -- flow-through slice operator slice_371_inst
+    addr_372 <= mem_adapter_command_buffer(67 downto 32);
+    -- flow-through slice operator slice_375_inst
+    write_data_376 <= mem_adapter_command_buffer(31 downto 0);
+    -- flow-through slice operator slice_386_inst
+    slice_386_wire <= addr_372(35 downto 2);
+    -- flow through binary operator CONCAT_u1_u2_393_inst
+    process(lock_flag_359, rw_363) -- 
       variable tmp_var : std_logic_vector(1 downto 0); -- 
     begin -- 
-      ApConcat_proc(lock_flag_352, rw_356, tmp_var);
-      CONCAT_u1_u2_386_wire <= tmp_var; --
+      ApConcat_proc(lock_flag_359, rw_363, tmp_var);
+      CONCAT_u1_u2_393_wire <= tmp_var; --
     end process;
-    -- flow through binary operator CONCAT_u2_u5_388_inst
-    process(CONCAT_u1_u2_386_wire, ahb_transfer_size_375) -- 
+    -- flow through binary operator CONCAT_u2_u5_395_inst
+    process(CONCAT_u1_u2_393_wire, ahb_transfer_size_382) -- 
       variable tmp_var : std_logic_vector(4 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u1_u2_386_wire, ahb_transfer_size_375, tmp_var);
-      CONCAT_u2_u5_388_wire <= tmp_var; --
+      ApConcat_proc(CONCAT_u1_u2_393_wire, ahb_transfer_size_382, tmp_var);
+      CONCAT_u2_u5_395_wire <= tmp_var; --
     end process;
-    -- flow through binary operator CONCAT_u34_u36_381_inst
-    process(slice_379_wire, byte_offset_372) -- 
+    -- flow through binary operator CONCAT_u34_u36_388_inst
+    process(slice_386_wire, byte_offset_379) -- 
       variable tmp_var : std_logic_vector(35 downto 0); -- 
     begin -- 
-      ApConcat_proc(slice_379_wire, byte_offset_372, tmp_var);
-      addr_with_byte_offset_382 <= tmp_var; --
+      ApConcat_proc(slice_386_wire, byte_offset_379, tmp_var);
+      addr_with_byte_offset_389 <= tmp_var; --
     end process;
-    -- flow through binary operator CONCAT_u36_u68_395_inst
-    process(addr_with_byte_offset_382, MUX_394_wire) -- 
+    -- flow through binary operator CONCAT_u36_u68_402_inst
+    process(addr_with_byte_offset_389, MUX_401_wire) -- 
       variable tmp_var : std_logic_vector(67 downto 0); -- 
     begin -- 
-      ApConcat_proc(addr_with_byte_offset_382, MUX_394_wire, tmp_var);
-      CONCAT_u36_u68_395_wire <= tmp_var; --
+      ApConcat_proc(addr_with_byte_offset_389, MUX_401_wire, tmp_var);
+      CONCAT_u36_u68_402_wire <= tmp_var; --
     end process;
-    -- flow through binary operator CONCAT_u5_u73_396_inst
-    process(CONCAT_u2_u5_388_wire, CONCAT_u36_u68_395_wire) -- 
+    -- flow through binary operator CONCAT_u5_u73_403_inst
+    process(CONCAT_u2_u5_395_wire, CONCAT_u36_u68_402_wire) -- 
       variable tmp_var : std_logic_vector(72 downto 0); -- 
     begin -- 
-      ApConcat_proc(CONCAT_u2_u5_388_wire, CONCAT_u36_u68_395_wire, tmp_var);
+      ApConcat_proc(CONCAT_u2_u5_395_wire, CONCAT_u36_u68_402_wire, tmp_var);
       command_to_ahb_buffer <= tmp_var; --
     end process;
-    volatile_operator_get_byte_offset_397: get_byte_offset_Volatile port map(bmask => bmask_360, byte_offset => byte_offset_372); 
-    volatile_operator_get_ahb_hsize_398: get_ahb_hsize_Volatile port map(bmask => bmask_360, t_size => ahb_transfer_size_375); 
+    volatile_operator_get_byte_offset_402: get_byte_offset_Volatile port map(bmask => bmask_367, byte_offset => byte_offset_379); 
+    volatile_operator_get_ahb_hsize_403: get_ahb_hsize_Volatile port map(bmask => bmask_367, t_size => ahb_transfer_size_382); 
     -- 
   end Block; -- data_path
   -- 
@@ -1397,101 +1397,94 @@ begin --
   -- volatile module, no control path
   -- the data path
   data_path: Block -- 
-    signal EQ_u4_u1_283_wire : std_logic_vector(0 downto 0);
     signal EQ_u4_u1_290_wire : std_logic_vector(0 downto 0);
-    signal EQ_u4_u1_298_wire : std_logic_vector(0 downto 0);
+    signal EQ_u4_u1_297_wire : std_logic_vector(0 downto 0);
     signal EQ_u4_u1_305_wire : std_logic_vector(0 downto 0);
-    signal EQ_u4_u1_314_wire : std_logic_vector(0 downto 0);
+    signal EQ_u4_u1_312_wire : std_logic_vector(0 downto 0);
     signal EQ_u4_u1_321_wire : std_logic_vector(0 downto 0);
-    signal EQ_u4_u1_329_wire : std_logic_vector(0 downto 0);
+    signal EQ_u4_u1_328_wire : std_logic_vector(0 downto 0);
     signal EQ_u4_u1_336_wire : std_logic_vector(0 downto 0);
-    signal MUX_287_wire : std_logic_vector(2 downto 0);
+    signal EQ_u4_u1_343_wire : std_logic_vector(0 downto 0);
     signal MUX_294_wire : std_logic_vector(2 downto 0);
-    signal MUX_302_wire : std_logic_vector(2 downto 0);
+    signal MUX_301_wire : std_logic_vector(2 downto 0);
     signal MUX_309_wire : std_logic_vector(2 downto 0);
-    signal MUX_318_wire : std_logic_vector(2 downto 0);
+    signal MUX_316_wire : std_logic_vector(2 downto 0);
     signal MUX_325_wire : std_logic_vector(2 downto 0);
-    signal MUX_333_wire : std_logic_vector(2 downto 0);
+    signal MUX_332_wire : std_logic_vector(2 downto 0);
     signal MUX_340_wire : std_logic_vector(2 downto 0);
-    signal OR_u3_u3_295_wire : std_logic_vector(2 downto 0);
-    signal OR_u3_u3_310_wire : std_logic_vector(2 downto 0);
-    signal OR_u3_u3_311_wire : std_logic_vector(2 downto 0);
-    signal OR_u3_u3_326_wire : std_logic_vector(2 downto 0);
-    signal OR_u3_u3_341_wire : std_logic_vector(2 downto 0);
-    signal OR_u3_u3_342_wire : std_logic_vector(2 downto 0);
-    signal konst_282_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_286_wire_constant : std_logic_vector(2 downto 0);
+    signal MUX_347_wire : std_logic_vector(2 downto 0);
+    signal OR_u3_u3_302_wire : std_logic_vector(2 downto 0);
+    signal OR_u3_u3_317_wire : std_logic_vector(2 downto 0);
+    signal OR_u3_u3_318_wire : std_logic_vector(2 downto 0);
+    signal OR_u3_u3_333_wire : std_logic_vector(2 downto 0);
+    signal OR_u3_u3_348_wire : std_logic_vector(2 downto 0);
+    signal OR_u3_u3_349_wire : std_logic_vector(2 downto 0);
     signal konst_289_wire_constant : std_logic_vector(3 downto 0);
     signal konst_293_wire_constant : std_logic_vector(2 downto 0);
-    signal konst_297_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_301_wire_constant : std_logic_vector(2 downto 0);
+    signal konst_296_wire_constant : std_logic_vector(3 downto 0);
+    signal konst_300_wire_constant : std_logic_vector(2 downto 0);
     signal konst_304_wire_constant : std_logic_vector(3 downto 0);
     signal konst_308_wire_constant : std_logic_vector(2 downto 0);
-    signal konst_313_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_317_wire_constant : std_logic_vector(2 downto 0);
+    signal konst_311_wire_constant : std_logic_vector(3 downto 0);
+    signal konst_315_wire_constant : std_logic_vector(2 downto 0);
     signal konst_320_wire_constant : std_logic_vector(3 downto 0);
     signal konst_324_wire_constant : std_logic_vector(2 downto 0);
-    signal konst_328_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_332_wire_constant : std_logic_vector(2 downto 0);
+    signal konst_327_wire_constant : std_logic_vector(3 downto 0);
+    signal konst_331_wire_constant : std_logic_vector(2 downto 0);
     signal konst_335_wire_constant : std_logic_vector(3 downto 0);
     signal konst_339_wire_constant : std_logic_vector(2 downto 0);
-    signal type_cast_285_wire_constant : std_logic_vector(2 downto 0);
+    signal konst_342_wire_constant : std_logic_vector(3 downto 0);
+    signal konst_346_wire_constant : std_logic_vector(2 downto 0);
     signal type_cast_292_wire_constant : std_logic_vector(2 downto 0);
-    signal type_cast_300_wire_constant : std_logic_vector(2 downto 0);
+    signal type_cast_299_wire_constant : std_logic_vector(2 downto 0);
     signal type_cast_307_wire_constant : std_logic_vector(2 downto 0);
-    signal type_cast_316_wire_constant : std_logic_vector(2 downto 0);
+    signal type_cast_314_wire_constant : std_logic_vector(2 downto 0);
     signal type_cast_323_wire_constant : std_logic_vector(2 downto 0);
-    signal type_cast_331_wire_constant : std_logic_vector(2 downto 0);
+    signal type_cast_330_wire_constant : std_logic_vector(2 downto 0);
     signal type_cast_338_wire_constant : std_logic_vector(2 downto 0);
+    signal type_cast_345_wire_constant : std_logic_vector(2 downto 0);
     -- 
   begin -- 
-    konst_282_wire_constant <= "0001";
-    konst_286_wire_constant <= "000";
-    konst_289_wire_constant <= "0010";
+    konst_289_wire_constant <= "0001";
     konst_293_wire_constant <= "000";
-    konst_297_wire_constant <= "0100";
-    konst_301_wire_constant <= "000";
-    konst_304_wire_constant <= "1000";
+    konst_296_wire_constant <= "0010";
+    konst_300_wire_constant <= "000";
+    konst_304_wire_constant <= "0100";
     konst_308_wire_constant <= "000";
-    konst_313_wire_constant <= "0011";
-    konst_317_wire_constant <= "000";
-    konst_320_wire_constant <= "0110";
+    konst_311_wire_constant <= "1000";
+    konst_315_wire_constant <= "000";
+    konst_320_wire_constant <= "0011";
     konst_324_wire_constant <= "000";
-    konst_328_wire_constant <= "1100";
-    konst_332_wire_constant <= "000";
-    konst_335_wire_constant <= "1111";
+    konst_327_wire_constant <= "0110";
+    konst_331_wire_constant <= "000";
+    konst_335_wire_constant <= "1100";
     konst_339_wire_constant <= "000";
-    type_cast_285_wire_constant <= "000";
+    konst_342_wire_constant <= "1111";
+    konst_346_wire_constant <= "000";
     type_cast_292_wire_constant <= "000";
-    type_cast_300_wire_constant <= "000";
+    type_cast_299_wire_constant <= "000";
     type_cast_307_wire_constant <= "000";
-    type_cast_316_wire_constant <= "001";
+    type_cast_314_wire_constant <= "000";
     type_cast_323_wire_constant <= "001";
-    type_cast_331_wire_constant <= "001";
-    type_cast_338_wire_constant <= "010";
-    -- flow-through select operator MUX_287_inst
-    MUX_287_wire <= type_cast_285_wire_constant when (EQ_u4_u1_283_wire(0) /=  '0') else konst_286_wire_constant;
+    type_cast_330_wire_constant <= "001";
+    type_cast_338_wire_constant <= "001";
+    type_cast_345_wire_constant <= "010";
     -- flow-through select operator MUX_294_inst
     MUX_294_wire <= type_cast_292_wire_constant when (EQ_u4_u1_290_wire(0) /=  '0') else konst_293_wire_constant;
-    -- flow-through select operator MUX_302_inst
-    MUX_302_wire <= type_cast_300_wire_constant when (EQ_u4_u1_298_wire(0) /=  '0') else konst_301_wire_constant;
+    -- flow-through select operator MUX_301_inst
+    MUX_301_wire <= type_cast_299_wire_constant when (EQ_u4_u1_297_wire(0) /=  '0') else konst_300_wire_constant;
     -- flow-through select operator MUX_309_inst
     MUX_309_wire <= type_cast_307_wire_constant when (EQ_u4_u1_305_wire(0) /=  '0') else konst_308_wire_constant;
-    -- flow-through select operator MUX_318_inst
-    MUX_318_wire <= type_cast_316_wire_constant when (EQ_u4_u1_314_wire(0) /=  '0') else konst_317_wire_constant;
+    -- flow-through select operator MUX_316_inst
+    MUX_316_wire <= type_cast_314_wire_constant when (EQ_u4_u1_312_wire(0) /=  '0') else konst_315_wire_constant;
     -- flow-through select operator MUX_325_inst
     MUX_325_wire <= type_cast_323_wire_constant when (EQ_u4_u1_321_wire(0) /=  '0') else konst_324_wire_constant;
-    -- flow-through select operator MUX_333_inst
-    MUX_333_wire <= type_cast_331_wire_constant when (EQ_u4_u1_329_wire(0) /=  '0') else konst_332_wire_constant;
+    -- flow-through select operator MUX_332_inst
+    MUX_332_wire <= type_cast_330_wire_constant when (EQ_u4_u1_328_wire(0) /=  '0') else konst_331_wire_constant;
     -- flow-through select operator MUX_340_inst
     MUX_340_wire <= type_cast_338_wire_constant when (EQ_u4_u1_336_wire(0) /=  '0') else konst_339_wire_constant;
-    -- flow through binary operator EQ_u4_u1_283_inst
-    process(bmask_buffer) -- 
-      variable tmp_var : std_logic_vector(0 downto 0); -- 
-    begin -- 
-      ApIntEq_proc(bmask_buffer, konst_282_wire_constant, tmp_var);
-      EQ_u4_u1_283_wire <= tmp_var; --
-    end process;
+    -- flow-through select operator MUX_347_inst
+    MUX_347_wire <= type_cast_345_wire_constant when (EQ_u4_u1_343_wire(0) /=  '0') else konst_346_wire_constant;
     -- flow through binary operator EQ_u4_u1_290_inst
     process(bmask_buffer) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
@@ -1499,12 +1492,12 @@ begin --
       ApIntEq_proc(bmask_buffer, konst_289_wire_constant, tmp_var);
       EQ_u4_u1_290_wire <= tmp_var; --
     end process;
-    -- flow through binary operator EQ_u4_u1_298_inst
+    -- flow through binary operator EQ_u4_u1_297_inst
     process(bmask_buffer) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(bmask_buffer, konst_297_wire_constant, tmp_var);
-      EQ_u4_u1_298_wire <= tmp_var; --
+      ApIntEq_proc(bmask_buffer, konst_296_wire_constant, tmp_var);
+      EQ_u4_u1_297_wire <= tmp_var; --
     end process;
     -- flow through binary operator EQ_u4_u1_305_inst
     process(bmask_buffer) -- 
@@ -1513,12 +1506,12 @@ begin --
       ApIntEq_proc(bmask_buffer, konst_304_wire_constant, tmp_var);
       EQ_u4_u1_305_wire <= tmp_var; --
     end process;
-    -- flow through binary operator EQ_u4_u1_314_inst
+    -- flow through binary operator EQ_u4_u1_312_inst
     process(bmask_buffer) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(bmask_buffer, konst_313_wire_constant, tmp_var);
-      EQ_u4_u1_314_wire <= tmp_var; --
+      ApIntEq_proc(bmask_buffer, konst_311_wire_constant, tmp_var);
+      EQ_u4_u1_312_wire <= tmp_var; --
     end process;
     -- flow through binary operator EQ_u4_u1_321_inst
     process(bmask_buffer) -- 
@@ -1527,12 +1520,12 @@ begin --
       ApIntEq_proc(bmask_buffer, konst_320_wire_constant, tmp_var);
       EQ_u4_u1_321_wire <= tmp_var; --
     end process;
-    -- flow through binary operator EQ_u4_u1_329_inst
+    -- flow through binary operator EQ_u4_u1_328_inst
     process(bmask_buffer) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApIntEq_proc(bmask_buffer, konst_328_wire_constant, tmp_var);
-      EQ_u4_u1_329_wire <= tmp_var; --
+      ApIntEq_proc(bmask_buffer, konst_327_wire_constant, tmp_var);
+      EQ_u4_u1_328_wire <= tmp_var; --
     end process;
     -- flow through binary operator EQ_u4_u1_336_inst
     process(bmask_buffer) -- 
@@ -1541,20 +1534,27 @@ begin --
       ApIntEq_proc(bmask_buffer, konst_335_wire_constant, tmp_var);
       EQ_u4_u1_336_wire <= tmp_var; --
     end process;
-    -- flow through binary operator OR_u3_u3_295_inst
-    OR_u3_u3_295_wire <= (MUX_287_wire or MUX_294_wire);
-    -- flow through binary operator OR_u3_u3_310_inst
-    OR_u3_u3_310_wire <= (MUX_302_wire or MUX_309_wire);
-    -- flow through binary operator OR_u3_u3_311_inst
-    OR_u3_u3_311_wire <= (OR_u3_u3_295_wire or OR_u3_u3_310_wire);
-    -- flow through binary operator OR_u3_u3_326_inst
-    OR_u3_u3_326_wire <= (MUX_318_wire or MUX_325_wire);
-    -- flow through binary operator OR_u3_u3_341_inst
-    OR_u3_u3_341_wire <= (MUX_333_wire or MUX_340_wire);
-    -- flow through binary operator OR_u3_u3_342_inst
-    OR_u3_u3_342_wire <= (OR_u3_u3_326_wire or OR_u3_u3_341_wire);
-    -- flow through binary operator OR_u3_u3_343_inst
-    t_size_buffer <= (OR_u3_u3_311_wire or OR_u3_u3_342_wire);
+    -- flow through binary operator EQ_u4_u1_343_inst
+    process(bmask_buffer) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      ApIntEq_proc(bmask_buffer, konst_342_wire_constant, tmp_var);
+      EQ_u4_u1_343_wire <= tmp_var; --
+    end process;
+    -- flow through binary operator OR_u3_u3_302_inst
+    OR_u3_u3_302_wire <= (MUX_294_wire or MUX_301_wire);
+    -- flow through binary operator OR_u3_u3_317_inst
+    OR_u3_u3_317_wire <= (MUX_309_wire or MUX_316_wire);
+    -- flow through binary operator OR_u3_u3_318_inst
+    OR_u3_u3_318_wire <= (OR_u3_u3_302_wire or OR_u3_u3_317_wire);
+    -- flow through binary operator OR_u3_u3_333_inst
+    OR_u3_u3_333_wire <= (MUX_325_wire or MUX_332_wire);
+    -- flow through binary operator OR_u3_u3_348_inst
+    OR_u3_u3_348_wire <= (MUX_340_wire or MUX_347_wire);
+    -- flow through binary operator OR_u3_u3_349_inst
+    OR_u3_u3_349_wire <= (OR_u3_u3_333_wire or OR_u3_u3_348_wire);
+    -- flow through binary operator OR_u3_u3_350_inst
+    t_size_buffer <= (OR_u3_u3_318_wire or OR_u3_u3_349_wire);
     -- 
   end Block; -- data_path
   -- 
@@ -1607,68 +1607,68 @@ begin --
   -- volatile module, no control path
   -- the data path
   data_path: Block -- 
-    signal BITSEL_u4_u1_250_wire : std_logic_vector(0 downto 0);
-    signal BITSEL_u4_u1_255_wire : std_logic_vector(0 downto 0);
-    signal BITSEL_u4_u1_260_wire : std_logic_vector(0 downto 0);
-    signal BITSEL_u4_u1_265_wire : std_logic_vector(0 downto 0);
-    signal MUX_270_wire : std_logic_vector(1 downto 0);
-    signal MUX_271_wire : std_logic_vector(1 downto 0);
-    signal MUX_272_wire : std_logic_vector(1 downto 0);
-    signal konst_249_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_254_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_259_wire_constant : std_logic_vector(3 downto 0);
-    signal konst_264_wire_constant : std_logic_vector(3 downto 0);
-    signal type_cast_252_wire_constant : std_logic_vector(1 downto 0);
-    signal type_cast_257_wire_constant : std_logic_vector(1 downto 0);
-    signal type_cast_262_wire_constant : std_logic_vector(1 downto 0);
-    signal type_cast_267_wire_constant : std_logic_vector(1 downto 0);
+    signal BITSEL_u4_u1_257_wire : std_logic_vector(0 downto 0);
+    signal BITSEL_u4_u1_262_wire : std_logic_vector(0 downto 0);
+    signal BITSEL_u4_u1_267_wire : std_logic_vector(0 downto 0);
+    signal BITSEL_u4_u1_272_wire : std_logic_vector(0 downto 0);
+    signal MUX_277_wire : std_logic_vector(1 downto 0);
+    signal MUX_278_wire : std_logic_vector(1 downto 0);
+    signal MUX_279_wire : std_logic_vector(1 downto 0);
+    signal konst_256_wire_constant : std_logic_vector(3 downto 0);
+    signal konst_261_wire_constant : std_logic_vector(3 downto 0);
+    signal konst_266_wire_constant : std_logic_vector(3 downto 0);
+    signal konst_271_wire_constant : std_logic_vector(3 downto 0);
+    signal type_cast_259_wire_constant : std_logic_vector(1 downto 0);
+    signal type_cast_264_wire_constant : std_logic_vector(1 downto 0);
     signal type_cast_269_wire_constant : std_logic_vector(1 downto 0);
+    signal type_cast_274_wire_constant : std_logic_vector(1 downto 0);
+    signal type_cast_276_wire_constant : std_logic_vector(1 downto 0);
     -- 
   begin -- 
-    konst_249_wire_constant <= "0011";
-    konst_254_wire_constant <= "0010";
-    konst_259_wire_constant <= "0001";
-    konst_264_wire_constant <= "0000";
-    type_cast_252_wire_constant <= "00";
-    type_cast_257_wire_constant <= "01";
-    type_cast_262_wire_constant <= "10";
-    type_cast_267_wire_constant <= "11";
-    type_cast_269_wire_constant <= "00";
-    -- flow-through select operator MUX_270_inst
-    MUX_270_wire <= type_cast_267_wire_constant when (BITSEL_u4_u1_265_wire(0) /=  '0') else type_cast_269_wire_constant;
-    -- flow-through select operator MUX_271_inst
-    MUX_271_wire <= type_cast_262_wire_constant when (BITSEL_u4_u1_260_wire(0) /=  '0') else MUX_270_wire;
-    -- flow-through select operator MUX_272_inst
-    MUX_272_wire <= type_cast_257_wire_constant when (BITSEL_u4_u1_255_wire(0) /=  '0') else MUX_271_wire;
-    -- flow-through select operator MUX_273_inst
-    byte_offset_buffer <= type_cast_252_wire_constant when (BITSEL_u4_u1_250_wire(0) /=  '0') else MUX_272_wire;
-    -- flow through binary operator BITSEL_u4_u1_250_inst
+    konst_256_wire_constant <= "0011";
+    konst_261_wire_constant <= "0010";
+    konst_266_wire_constant <= "0001";
+    konst_271_wire_constant <= "0000";
+    type_cast_259_wire_constant <= "00";
+    type_cast_264_wire_constant <= "01";
+    type_cast_269_wire_constant <= "10";
+    type_cast_274_wire_constant <= "11";
+    type_cast_276_wire_constant <= "00";
+    -- flow-through select operator MUX_277_inst
+    MUX_277_wire <= type_cast_274_wire_constant when (BITSEL_u4_u1_272_wire(0) /=  '0') else type_cast_276_wire_constant;
+    -- flow-through select operator MUX_278_inst
+    MUX_278_wire <= type_cast_269_wire_constant when (BITSEL_u4_u1_267_wire(0) /=  '0') else MUX_277_wire;
+    -- flow-through select operator MUX_279_inst
+    MUX_279_wire <= type_cast_264_wire_constant when (BITSEL_u4_u1_262_wire(0) /=  '0') else MUX_278_wire;
+    -- flow-through select operator MUX_280_inst
+    byte_offset_buffer <= type_cast_259_wire_constant when (BITSEL_u4_u1_257_wire(0) /=  '0') else MUX_279_wire;
+    -- flow through binary operator BITSEL_u4_u1_257_inst
     process(bmask_buffer) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApBitsel_proc(bmask_buffer, konst_249_wire_constant, tmp_var);
-      BITSEL_u4_u1_250_wire <= tmp_var; --
+      ApBitsel_proc(bmask_buffer, konst_256_wire_constant, tmp_var);
+      BITSEL_u4_u1_257_wire <= tmp_var; --
     end process;
-    -- flow through binary operator BITSEL_u4_u1_255_inst
+    -- flow through binary operator BITSEL_u4_u1_262_inst
     process(bmask_buffer) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApBitsel_proc(bmask_buffer, konst_254_wire_constant, tmp_var);
-      BITSEL_u4_u1_255_wire <= tmp_var; --
+      ApBitsel_proc(bmask_buffer, konst_261_wire_constant, tmp_var);
+      BITSEL_u4_u1_262_wire <= tmp_var; --
     end process;
-    -- flow through binary operator BITSEL_u4_u1_260_inst
+    -- flow through binary operator BITSEL_u4_u1_267_inst
     process(bmask_buffer) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApBitsel_proc(bmask_buffer, konst_259_wire_constant, tmp_var);
-      BITSEL_u4_u1_260_wire <= tmp_var; --
+      ApBitsel_proc(bmask_buffer, konst_266_wire_constant, tmp_var);
+      BITSEL_u4_u1_267_wire <= tmp_var; --
     end process;
-    -- flow through binary operator BITSEL_u4_u1_265_inst
+    -- flow through binary operator BITSEL_u4_u1_272_inst
     process(bmask_buffer) -- 
       variable tmp_var : std_logic_vector(0 downto 0); -- 
     begin -- 
-      ApBitsel_proc(bmask_buffer, konst_264_wire_constant, tmp_var);
-      BITSEL_u4_u1_265_wire <= tmp_var; --
+      ApBitsel_proc(bmask_buffer, konst_271_wire_constant, tmp_var);
+      BITSEL_u4_u1_272_wire <= tmp_var; --
     end process;
     -- 
   end Block; -- data_path
