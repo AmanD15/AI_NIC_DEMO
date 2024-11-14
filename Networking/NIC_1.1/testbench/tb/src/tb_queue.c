@@ -15,8 +15,7 @@
 #include "nic_driver.h"
 #include "tb_queue.h"
 
-extern uint32_t  free_queue_rx_base_address;
-extern uint32_t  free_queue_tx_base_address;
+extern uint32_t  free_queue_base_address;
 extern uint32_t  rx_queue_base_address;
 extern uint32_t  tx_queue_base_address;
 
@@ -339,10 +338,10 @@ int checkQueues (int queue_id)
 		uint64_t queue_base_addr;		 
 		switch(queue_id)
 		{
-			case 0   : queue_base_addr = free_queue_rx_base_address; break;
+			case 0   : queue_base_addr = free_queue_base_address; break;
 			case 1   : queue_base_addr = tx_queue_base_address; break;
 			case 2   : queue_base_addr = rx_queue_base_address; break;
-			case 3   : queue_base_addr = free_queue_tx_base_address; break;	
+			case 3   : assert(0); 
 		}	 
 
 		uint64_t v;
@@ -382,10 +381,10 @@ int checkQueuesInReverse (int queue_id)
 	uint64_t queue_base_addr;		 
 		switch(queue_id)
 		{
-			case 0   : queue_base_addr = free_queue_rx_base_address; break;
+			case 0   : queue_base_addr = free_queue_base_address; break;
 			case 1   : queue_base_addr = tx_queue_base_address; break;
 			case 2   : queue_base_addr = rx_queue_base_address; break;
-			case 3   : queue_base_addr = free_queue_tx_base_address; break;	
+			case 3   : assert(0);
 		}
 	
 	uint32_t I;

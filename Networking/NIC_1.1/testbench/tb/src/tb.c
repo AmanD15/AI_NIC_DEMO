@@ -26,15 +26,13 @@ int number_of_packets = 16;
 uint64_t  mem_array [16*4096];
 int 	  err_flag = 0;
 
-uint32_t  free_queue_rx_base_address = 0;      // includes 128-bytes for buffer.
+uint32_t  free_queue_base_address = 0;      // includes 128-bytes for buffer.
 uint32_t  rx_queue_base_address   = 256;    // includes 128-bytes for buffer.
 uint32_t  tx_queue_base_address   = 512;    // includes 128-bytes for buffer.
-uint32_t  free_queue_tx_base_address   = 768;    // includes 128-bytes for buffer.
 
-uint32_t  free_queue_rx_bget_address = 128;  
+uint32_t  free_queue_bget_address = 128;  
 uint32_t  rx_queue_bget_address   = 256 + 128;    
 uint32_t  tx_queue_bget_address   = 512 + 128;   
-uint32_t  free_queue_tx_bget_address   = 768 +128;    
 
 
 // four buffers for packets, each buffer has a capacity
@@ -42,10 +40,9 @@ uint32_t  free_queue_tx_bget_address   = 768 +128;
 uint32_t  buffer_addresses[4]     = {1024, 2048, 3072, 4096};
 
 // lock addresses
-uint32_t free_queue_rx_lock_address = 8092;
+uint32_t free_queue_lock_address = 8092;
 uint32_t rx_queue_lock_address   = 8093;
 uint32_t tx_queue_lock_address   = 8094;
-uint32_t free_queue_tx_lock_address   = 8095; 
 
 
 uint32_t accessNicReg (uint8_t rwbar, uint32_t nic_id, uint32_t reg_index, uint32_t reg_value)
@@ -132,19 +129,10 @@ void setNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 				queue_lock_addr, queue_buffer_addr);
 #endif
 
-	/*
-	uint32_t base_index = ((queue_type == FREEQUEUE) ? P_FREE_QUEUE_REGISTER_BASE_INDEX :
-			((queue_type  == RXQUEUE) ?
-			 (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)) :
-			 (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)) ));
-			 
-	*/	
-		 
 	uint32_t base_index;		 
 	switch(queue_type)
 	{
-		case FREEQUEUE_RX  : base_index = P_FREE_QUEUE_RX_REGISTER_BASE_INDEX;    break;
-		case FREEQUEUE_TX  : base_index = P_FREE_QUEUE_TX_REGISTER_BASE_INDEX; break;
+		case FREEQUEUE     : base_index = P_FREE_QUEUE_REGISTER_BASE_INDEX;    break;
 		case RXQUEUE       : base_index = (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;
 		case TXQUEUE       : base_index = (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;	
 	}	 
@@ -158,18 +146,10 @@ void getNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 		uint32_t queue_type,  uint64_t *queue_addr, 
 		uint64_t *queue_lock_addr, uint64_t *queue_buffer_addr)
 {
-	/*
-	uint32_t base_index = ((queue_type == FREEQUEUE) ? P_FREE_QUEUE_REGISTER_BASE_INDEX :
-			((queue_type  == RXQUEUE) ?
-			 (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)) :
-			 (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)) ));
-	*/
-	
 	uint32_t base_index;		 
 	switch(queue_type)
 	{
-		case FREEQUEUE_RX  : base_index = P_FREE_QUEUE_RX_REGISTER_BASE_INDEX;    break;
-		case FREEQUEUE_TX  : base_index = P_FREE_QUEUE_TX_REGISTER_BASE_INDEX; break;
+		case FREEQUEUE     : base_index = P_FREE_QUEUE_REGISTER_BASE_INDEX;    break;
 		case RXQUEUE       : base_index = (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;
 		case TXQUEUE       : base_index = (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;	
 	}	 		 
@@ -185,6 +165,25 @@ void getNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 				*queue_lock_addr, *queue_buffer_addr);
 #endif
 }
+
+void RxLoggerDaemon () {
+	while(1)
+	{
+		uint32_t val = read_uint32("RX_ACTIVITY_LOGGER");
+		fprintf (stderr, "Info: RX_ACTIVITY_LOGGER=0x%x\n", val);
+	}
+}
+DEFINE_THREAD(RxLoggerDaemon);
+
+void TxLoggerDaemon () {
+	while(1)
+	{
+		uint32_t val = read_uint32("TX_ACTIVITY_LOGGER");
+		fprintf (stderr, "Info: TX_ACTIVITY_LOGGER=0x%x\n", val);
+	}
+}
+DEFINE_THREAD(TxLoggerDaemon);
+
 
 
 
@@ -497,6 +496,12 @@ int main(int argc, char* argv[])
 	PTHREAD_DECL(memoryDaemon);
 	PTHREAD_CREATE(memoryDaemon);
 
+	PTHREAD_DECL(RxLoggerDaemon);
+	PTHREAD_CREATE(RxLoggerDaemon);
+
+	PTHREAD_DECL(TxLoggerDaemon);
+	PTHREAD_CREATE(TxLoggerDaemon);
+
 	//-------------------------------------------------------------------------------------//
 	//  First setup and check the free queue rx.
 	//-------------------------------------------------------------------------------------//
@@ -504,21 +509,21 @@ int main(int argc, char* argv[])
 	//-------------------------------------------------------------------------------------//
 	// setup free queue rx in memory from the tb-side.
 	//-------------------------------------------------------------------------------------//
-	setUpEmptyQueueInMemory (free_queue_rx_base_address, free_queue_rx_lock_address, 
-				free_queue_rx_bget_address,       QUEUE_SIZE_IN_MSGS, QUEUE_MSG_SIZE_IN_BYTES);
+	setUpEmptyQueueInMemory (free_queue_base_address, free_queue_lock_address, 
+				free_queue_bget_address,       QUEUE_SIZE_IN_MSGS, QUEUE_MSG_SIZE_IN_BYTES);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	fprintf(stderr,"Info: setup empty free queue rx in memory.\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 
 	// initialize lock to '0' in free-queue.
-	releaseLock (free_queue_rx_base_address);
+	releaseLock (free_queue_base_address);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	fprintf(stderr,"Info: cleared free queue rx locks.\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 
-	setNumberOfMessages (free_queue_rx_base_address, 0);
+	setNumberOfMessages (free_queue_base_address, 0);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	fprintf(stderr,"Info: set num-messages = 0 in  free queue rx.\n");
@@ -527,51 +532,12 @@ int main(int argc, char* argv[])
 	// confirm
 	uint64_t b,l,g;
 	// Set up the queues in the NIC
-	setNicQueuePhysicalAddresses (0,0, FREEQUEUE_RX,  free_queue_rx_base_address,
-							free_queue_rx_lock_address, free_queue_rx_bget_address); 
-	getNicQueuePhysicalAddresses (0,0, FREEQUEUE_RX,  &b, &l, &g);
+	setNicQueuePhysicalAddresses (0,0, FREEQUEUE,  free_queue_base_address,
+							free_queue_lock_address, free_queue_bget_address); 
+	getNicQueuePhysicalAddresses (0,0, FREEQUEUE,  &b, &l, &g);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	fprintf (stderr,"Info: finished setting physical addresses of free queue rx into NIC \n");
-	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-
-
-	//-------------------------------------------------------------------------------------//
-	//  Second setup and check the free queue tx.
-	//-------------------------------------------------------------------------------------//
-
-	//-------------------------------------------------------------------------------------//
-	// setup free queue tx in memory from the tb-side.
-	//-------------------------------------------------------------------------------------//
-	setUpEmptyQueueInMemory (free_queue_tx_base_address, free_queue_tx_lock_address, 
-				free_queue_tx_bget_address,       QUEUE_SIZE_IN_MSGS, QUEUE_MSG_SIZE_IN_BYTES);
-
-	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf(stderr,"Info: setup empty free queue tx in memory.\n");
-	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-
-	// initialize lock to '0' in free-queue-tx.
-	releaseLock (free_queue_tx_base_address);
-
-	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf(stderr,"Info: cleared free queue tx locks.\n");
-	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-
-	setNumberOfMessages (free_queue_tx_base_address, 0);
-
-	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf(stderr,"Info: set num-messages = 0 in  free queue tx.\n");
-	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	
-	// confirm
-	uint64_t b1,l1,g1;
-	// Set up the queues in the NIC
-	setNicQueuePhysicalAddresses (0,0, FREEQUEUE_TX,  free_queue_tx_base_address, 
-							free_queue_tx_lock_address, free_queue_tx_bget_address);
-	getNicQueuePhysicalAddresses (0,0, FREEQUEUE_TX,  &b1, &l1, &g1);
-
-	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf (stderr,"Info: finished setting physical addresses of free queue tx into NIC \n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 
 #ifdef CHECK_QUEUES
@@ -702,17 +668,17 @@ int main(int argc, char* argv[])
 	for(i = 0; i < NBUFFERS; i++)
 	{
 		//
-		// Note: physical addresses of buffers are pushed into "FREEQUEUE_RX".
+		// Note: physical addresses of buffers are pushed into "FREEQUEUE".
 		// 
 		uint64_t max_addr_offset = 1016;
 		max_addr_offset = (max_addr_offset << 48);
 		processorAccessMemory (0, 0, 0xff, buffer_addresses[i], max_addr_offset); 
 
-		pushIntoQueue (free_queue_rx_base_address, buffer_addresses[i]);
+		pushIntoQueue (free_queue_base_address, buffer_addresses[i]);
 	}
 	
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf (stderr,"Info: pushed %d buffers to free queue\n", NBUFFERS);
+	fprintf (stderr,"Info: pushed %d buffers to free rx queue\n", NBUFFERS);
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	
 	// start the forwarding engine
@@ -741,24 +707,7 @@ int main(int argc, char* argv[])
 	PTHREAD_JOIN(packetTxDaemon);
 	PTHREAD_JOIN(packetRxDaemon);
 	
-	// Ensuring the buffers are pushed to "FREEQUEUE_TX", in first in first out order.
-	for(i = 0; i < NBUFFERS; i++)
-	{
-		
-	// Note: physical addresses of buffers are pushed into "FREEQUEUE_TX", by transmit engine.
-		
-		uint64_t buf_addr;
-		popFromQueue (free_queue_tx_base_address, &buf_addr);
-		if (buf_addr != buffer_addresses[i])
-		{
-			err_flag = 1;
-			break;
-		}
-				
-	}
-	
 	fprintf(stderr,"%s: completed %s\n", err_flag ? "Error" : "Info", err_flag ? "with error." : "");
 	return(err_flag);
-
 }
 

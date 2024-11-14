@@ -32,8 +32,7 @@ $volatile $module [getBaseIndex]
 	//				(server_id * 8)))
 
 	base_index := ($excmux
-					(queue_type == FREEQUEUE_RX)	P_FREE_QUEUE_RX_REGISTER_BASE_INDEX 
-					(queue_type == FREEQUEUE_TX)	P_FREE_QUEUE_TX_REGISTER_BASE_INDEX 
+					(queue_type == FREEQUEUE)	P_FREE_QUEUE_REGISTER_BASE_INDEX 
 					(queue_type == TXQUEUE)	(P_TX_QUEUE_REGISTER_BASE_INDEX + (server_id * 8))
 					(queue_type == RXQUEUE)	(P_RX_QUEUE_REGISTER_BASE_INDEX + (server_id * 8))
 					)

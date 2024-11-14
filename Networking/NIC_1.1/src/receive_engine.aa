@@ -65,7 +65,8 @@ $is
 		$endmerge
 
 			// get a buffer from free queue.
-			$call popFromQueue (rx_tag FREEQUEUE_RX 0) (rx_buffer_pointer status)
+			$call popFromQueue (rx_tag FREEQUEUE 0) (rx_buffer_pointer status)
+			RX_ACTIVITY_LOGGER := 1
 			$barrier
 
 			// Read the control word of the buffer.
@@ -74,6 +75,8 @@ $is
 
 			$guard (~status)// 0 = success
 				$call loadBuffer (rx_tag max_buffer_addr_offset rx_buffer_pointer) (bad_packet_identifier)
+			$barrier
+			RX_ACTIVITY_LOGGER := 2
 
 			// packet is ok, push into rx queue
 			$volatile ok_flag := ((~status) & (~bad_packet_identifier))
@@ -96,12 +99,17 @@ $is
 			$guard (ok_flag) 
 				$call populateRxQueue (rx_tag rx_buffer_pointer) ()
 
+			$barrier
+			RX_ACTIVITY_LOGGER := 3
+
 			$rreport(ReceiveEngineDaemon pushing_into_free_q free_flag )
 
 			// If buffer is defective, free it!
 			$guard (free_flag) 
-				$call pushIntoQueue (rx_tag FREEQUEUE_RX 0 rx_buffer_pointer) (push_status) 
+				$call pushIntoQueue (rx_tag FREEQUEUE 0 rx_buffer_pointer) (push_status) 
 				$barrier
+
+			RX_ACTIVITY_LOGGER := 4
 
 			$rreport(ReceiveEngineDaemon completed_iteration_in_receive_engine )
 		
