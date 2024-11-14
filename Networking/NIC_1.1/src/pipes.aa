@@ -50,7 +50,7 @@ $pipe  QUEUE_MONITOR_SIGNAL: $uint<32> $signal
 
 
 // Rx activity logger
-$pipe RX_ACTIVITY_LOGGER: $uint<32> $depth 1
+$pipe RX_ACTIVITY_LOGGER: $uint<8> $depth 1
 
 // Tx
-$pipe TX_ACTIVITY_LOGGER: $uint<32> $depth 1
+$pipe TX_ACTIVITY_LOGGER: $uint<8> $depth 1

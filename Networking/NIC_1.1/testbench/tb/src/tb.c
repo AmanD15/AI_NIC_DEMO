@@ -169,7 +169,7 @@ void getNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 void RxLoggerDaemon () {
 	while(1)
 	{
-		uint32_t val = read_uint32("RX_ACTIVITY_LOGGER");
+		uint32_t val = read_uint8("RX_ACTIVITY_LOGGER");
 		fprintf (stderr, "Info: RX_ACTIVITY_LOGGER=0x%x\n", val);
 	}
 }
@@ -178,7 +178,7 @@ DEFINE_THREAD(RxLoggerDaemon);
 void TxLoggerDaemon () {
 	while(1)
 	{
-		uint32_t val = read_uint32("TX_ACTIVITY_LOGGER");
+		uint32_t val = read_uint8("TX_ACTIVITY_LOGGER");
 		fprintf (stderr, "Info: TX_ACTIVITY_LOGGER=0x%x\n", val);
 	}
 }
