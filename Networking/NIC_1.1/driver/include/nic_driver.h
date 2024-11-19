@@ -21,14 +21,13 @@
 #define NIC_START_ADDR 0xFF000000
 
 // The Qs
-CortosQueueHeader* free_queue_rx;
-CortosQueueHeader* free_queue_tx;
+CortosQueueHeader* free_queue;
 CortosQueueHeader* rx_queue;
 CortosQueueHeader* tx_queue;
 
 // The array to store ptr to buffers
-volatile uint32_t*  BufferPtrsVA[2*NUMBER_OF_BUFFERS];
-volatile uint64_t   BufferPtrsPA[2*NUMBER_OF_BUFFERS];
+volatile uint32_t*  BufferPtrsVA[NUMBER_OF_BUFFERS];
+volatile uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
 
 #endif
 
