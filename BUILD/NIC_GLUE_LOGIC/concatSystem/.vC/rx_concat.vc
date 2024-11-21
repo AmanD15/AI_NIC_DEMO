@@ -1,0 +1,931 @@
+// Virtual circuit produced from Aa description by Aa2VC 
+// $pipe  rx_in_pipe : $uint<10>  $depth 2 
+// can point into 
+// in scope  top-level
+$pipe [rx_in_pipe] 10 $depth 2 
+// $pipe  rx_out_pipe : $uint<73>  $depth 2 
+// can point into 
+// in scope  top-level
+$pipe [rx_out_pipe] 73 $depth 2 
+// Declared gated clocks.
+$module [global_storage_initializer_] 
+{
+  // pipe-declarations for block %global_storage_initializer_
+  //  file .Aa/rx_concat.linked.opt.aa, line 5
+  // there are no memory spaces local to this module.
+  $CP 
+  {
+    // begin control-path 
+  }
+  // end control-path
+  $DP 
+  {
+    // begin data-path 
+    // constant-object-declarations for block %global_storage_initializer_
+    //  file .Aa/rx_concat.linked.opt.aa, line 5
+  }
+  // end data-path
+}
+$module [rx_concat] 
+{
+  // pipe-declarations for block %rx_concat
+  //  file .Aa/rx_concat.linked.opt.aa, line 12
+  // pipe-declarations for block %rx_concat%loop
+  //  file .Aa/rx_concat.linked.opt.aa, line 17
+  // there are no memory spaces local to this module.
+  $CP 
+  {
+    // begin control-path 
+    <>[branch_block_stmt_8] // Branch Block  file .Aa/rx_concat.linked.opt.aa, line 17
+    {
+      $P [branch_block_stmt_8__entry__]
+      branch_block_stmt_8__entry__ <-| ($entry)
+      $P [branch_block_stmt_8__exit__]
+      branch_block_stmt_8__exit__ |-> ($exit)
+      $P [do_while_stmt_9__entry__] 
+      $P [do_while_stmt_9__exit__] 
+      // do-while-statement  
+      //  file .Aa/rx_concat.linked.opt.aa, line 19
+      <o> [do_while_stmt_9]  $depth 7 $buffering 1 
+      {
+        $P[do_while_stmt_9__entry__] 
+        $P[do_while_stmt_9__exit__] 
+        $P[loop_back] 
+        $P[condition_done] 
+        $P[loop_body_done] 
+        $pipeline [do_while_stmt_9_loop_body] 
+        {
+          // Pipelined!
+          $T[back_edge_to_loop_body] 
+          $T[first_time_through_loop_body] 
+          $T[loop_body_start] 
+          $T[condition_evaluated] 
+          $transitionmerge [entry_tmerge] (back_edge_to_loop_body first_time_through_loop_body) (loop_body_start)
+          $entry <-& (loop_body_start)
+          $T[aggregated_phi_sample_req] 
+          $T[aggregated_phi_sample_ack] 
+          $T[aggregated_phi_sample_ack_d] $delay
+          aggregated_phi_sample_ack_d <-& (aggregated_phi_sample_ack)
+          $T[aggregated_phi_update_req] 
+          $T[aggregated_phi_update_ack] 
+          // do not loop-back unless all phi's have used up their triggering tokens.
+          condition_evaluated <-& (aggregated_phi_update_ack)
+          aggregated_phi_sample_req o<-& (aggregated_phi_update_ack 0)
+          // start:  multi-source PHI statement phi_stmt_11
+          // 			$phi CIRCULANT := 			  ((($bitcast ($uint<64>) _b0  ) && ($bitcast ($uint<4>) _b1  )) && ($bitcast ($uint<8>) _b1  )) $on   $entry 			  next_CIRCULANT $on   $loopback  $barrier
+          // type of target is $uint<76>
+          $T[phi_stmt_11_sample_start_] 
+          $T[phi_stmt_11_sample_completed_] 
+          $T[phi_stmt_11_update_start_] 
+          $T[phi_stmt_11_update_completed_] 
+          $T[phi_stmt_11_sample_start__ps] 
+          phi_stmt_11_sample_start__ps <-& (aggregated_phi_sample_req)
+          $T[phi_stmt_11_sample_completed__ps] 
+          phi_stmt_11_sample_completed__ps &-> (aggregated_phi_sample_ack)
+          $T[phi_stmt_11_update_start__ps] 
+          phi_stmt_11_update_start__ps <-& (aggregated_phi_update_req)
+          $T[phi_stmt_11_update_completed__ps] 
+          phi_stmt_11_update_completed_ <-& (phi_stmt_11_update_completed__ps)
+          aggregated_phi_sample_req <-& (phi_stmt_11_sample_start_)
+          aggregated_phi_sample_ack &-> (phi_stmt_11_sample_completed_)
+          aggregated_phi_update_req <-& (phi_stmt_11_update_start_)
+          $T[phi_stmt_11_loopback_trigger] 
+          phi_stmt_11_loopback_trigger <-& (back_edge_to_loop_body)
+          $T[phi_stmt_11_loopback_sample_req] 
+          $T[phi_stmt_11_loopback_sample_req_ps] 
+          phi_stmt_11_loopback_sample_req <-& (phi_stmt_11_loopback_sample_req_ps)
+          phi_stmt_11_loopback_sample_req &-> ($null)
+          $T[phi_stmt_11_entry_trigger] 
+          phi_stmt_11_entry_trigger <-& (first_time_through_loop_body)
+          $T[phi_stmt_11_entry_sample_req] 
+          $T[phi_stmt_11_entry_sample_req_ps] 
+          phi_stmt_11_entry_sample_req <-& (phi_stmt_11_entry_sample_req_ps)
+          phi_stmt_11_entry_sample_req &-> ($null)
+          phi_stmt_11_update_start_ o<-& (phi_stmt_11_update_completed_ 0)
+          phi_stmt_11_sample_start_ o<-& (phi_stmt_11_sample_completed_ 1)
+          $T[phi_stmt_11_merged_reqs] 
+          $T[phi_stmt_11_phi_mux_ack] 
+          $T[phi_stmt_11_phi_mux_ack_ps] 
+          phi_stmt_11_phi_mux_ack_ps <-& (phi_stmt_11_phi_mux_ack)
+          aggregated_phi_update_ack <-& (phi_stmt_11_update_completed_)
+          $T[CONCAT_u68_u76_24_sample_start__ps] 
+          $T[CONCAT_u68_u76_24_sample_completed__ps] 
+          $T[CONCAT_u68_u76_24_update_start__ps] 
+          $T[CONCAT_u68_u76_24_update_completed__ps] 
+          // dummies for constant expression source for phi
+          $T[CONCAT_u68_u76_24_sample_start_] 
+          $T[CONCAT_u68_u76_24_sample_completed_] 
+          CONCAT_u68_u76_24_sample_completed_ <-& (CONCAT_u68_u76_24_sample_start_)
+          $T[CONCAT_u68_u76_24_update_start_] 
+          $T [CONCAT_u68_u76_24_update_completed_] $delay 
+          CONCAT_u68_u76_24_update_completed_ <-& (CONCAT_u68_u76_24_update_start_)
+          // Phi start dependency for implicit/constant alternative.
+          CONCAT_u68_u76_24_sample_start_ <-& (CONCAT_u68_u76_24_sample_start__ps)
+          CONCAT_u68_u76_24_update_start_ <-& (CONCAT_u68_u76_24_update_start__ps)
+          // Phi complete dependency.
+          CONCAT_u68_u76_24_sample_completed__ps <-& (CONCAT_u68_u76_24_sample_completed_)
+          CONCAT_u68_u76_24_update_completed__ps <-& (CONCAT_u68_u76_24_update_completed_)
+          $T[R_next_CIRCULANT_26_sample_start__ps] 
+          $T[R_next_CIRCULANT_26_sample_completed__ps] 
+          $T[R_next_CIRCULANT_26_update_start__ps] 
+          $T[R_next_CIRCULANT_26_update_completed__ps] 
+          // interlock for implicit-variable-ref/signal-read in Phi alternative 1
+          $T[R_next_CIRCULANT_26_sample_start_] 
+          $T[R_next_CIRCULANT_26_sample_completed_] 
+          $T[R_next_CIRCULANT_26_update_start_] 
+          $T[R_next_CIRCULANT_26_update_completed_] 
+          ;;[R_next_CIRCULANT_26_Sample] 
+          {
+            $T [req] $T [ack] // interlock-sample.
+          }
+          R_next_CIRCULANT_26_sample_start_ &-> (R_next_CIRCULANT_26_Sample)
+          R_next_CIRCULANT_26_sample_completed_ <-& (R_next_CIRCULANT_26_Sample)
+          ;;[R_next_CIRCULANT_26_Update] 
+          {
+            $T [req] $T [ack] // interlock-update.
+          }
+          R_next_CIRCULANT_26_update_start_ &-> (R_next_CIRCULANT_26_Update)
+          R_next_CIRCULANT_26_update_completed_ <-& (R_next_CIRCULANT_26_Update)
+          // RAW reenables for next_CIRCULANT
+          // Phi start dependency for implicit/constant alternative.
+          R_next_CIRCULANT_26_sample_start_ <-& (R_next_CIRCULANT_26_sample_start__ps)
+          R_next_CIRCULANT_26_update_start_ <-& (R_next_CIRCULANT_26_update_start__ps)
+          // Phi complete dependency.
+          R_next_CIRCULANT_26_sample_completed__ps <-& (R_next_CIRCULANT_26_sample_completed_)
+          R_next_CIRCULANT_26_update_completed__ps <-& (R_next_CIRCULANT_26_update_completed_)
+          $phisequencer [ phi_stmt_11_phi_seq] : 
+          phi_stmt_11_entry_trigger CONCAT_u68_u76_24_sample_start__ps CONCAT_u68_u76_24_sample_completed__ps CONCAT_u68_u76_24_update_start__ps CONCAT_u68_u76_24_update_completed__ps phi_stmt_11_loopback_trigger R_next_CIRCULANT_26_sample_start__ps R_next_CIRCULANT_26_sample_completed__ps R_next_CIRCULANT_26_update_start__ps R_next_CIRCULANT_26_update_completed__ps :
+          phi_stmt_11_sample_start__ps phi_stmt_11_sample_completed__ps phi_stmt_11_update_start__ps phi_stmt_11_update_completed__ps :
+          phi_stmt_11_entry_sample_req_ps phi_stmt_11_loopback_sample_req_ps : 
+          phi_stmt_11_phi_mux_ack_ps
+          // done: PHI Statement phi_stmt_11
+          // start:  single source PHI statement phi_stmt_27
+          // 			$phi RX := 			  rx_in_pipe $on   $entry ,   $loopback 
+          // type of target is $uint<10>
+          $T[phi_stmt_27_sample_start_] 
+          $T[phi_stmt_27_sample_completed_] 
+          $T[phi_stmt_27_update_start_] 
+          $T[phi_stmt_27_update_completed_] 
+          aggregated_phi_sample_req <-& (phi_stmt_27_sample_start_)
+          aggregated_phi_sample_ack &-> (phi_stmt_27_sample_completed_)
+          aggregated_phi_update_req <-& (phi_stmt_27_update_start_)
+          // non-implicit source expression in single-source phi
+          // rx_in_pipe
+          $T[RPIPE_rx_in_pipe_29_sample_start_] 
+          $T[RPIPE_rx_in_pipe_29_sample_completed_] 
+          $T[RPIPE_rx_in_pipe_29_update_start_] 
+          $T[RPIPE_rx_in_pipe_29_update_completed_] 
+          ;;[RPIPE_rx_in_pipe_29_Sample] 
+          {
+            // pipe read sample
+            $T [rr] $T [ra] 
+          }
+          ;;[RPIPE_rx_in_pipe_29_Update] 
+          {
+            // pipe read update
+            $T [cr] $T [ca] 
+          }
+          RPIPE_rx_in_pipe_29_sample_start_ &-> (RPIPE_rx_in_pipe_29_Sample)
+          RPIPE_rx_in_pipe_29_sample_completed_ <-& (RPIPE_rx_in_pipe_29_Sample)
+          RPIPE_rx_in_pipe_29_update_start_ <-& (RPIPE_rx_in_pipe_29_sample_completed_)
+          RPIPE_rx_in_pipe_29_update_start_ &-> (RPIPE_rx_in_pipe_29_Update)
+          RPIPE_rx_in_pipe_29_update_completed_ <-& (RPIPE_rx_in_pipe_29_Update)
+          RPIPE_rx_in_pipe_29_sample_start_ o<-& (RPIPE_rx_in_pipe_29_update_completed_ 0)
+          // RAW reenables for rx_in_pipe
+          // producer  and  consumer are both determined by PHI statements.
+          aggregated_phi_sample_req &-> (RPIPE_rx_in_pipe_29_sample_start_)
+          aggregated_phi_sample_ack <-& (RPIPE_rx_in_pipe_29_sample_completed_)
+          aggregated_phi_update_req &-> (RPIPE_rx_in_pipe_29_update_start_)
+          phi_stmt_27_update_completed_ <-& (RPIPE_rx_in_pipe_29_update_completed_)
+          aggregated_phi_update_ack <-& (phi_stmt_27_update_completed_)
+          // done: PHI Statement phi_stmt_27
+          // Race prevention dependency in ordered.. PHI's.
+          RPIPE_rx_in_pipe_29_update_start_ <-& (phi_stmt_11_sample_completed__ps)
+          // start: WAR dependencies for collected_dword
+          // done: WAR dependencies for collected_dword
+          // start:  			$volatile collected_dword := ( $slice CIRCULANT 75 12 )  $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 27
+          // volatile! 
+          // Source expression
+          // ( $slice CIRCULANT 75 12 ) 
+          // CIRCULANT
+          // Target expression
+          // (as target) collected_dword
+          // start: WAR dependencies for collected_dword
+          // done: WAR dependencies for collected_dword
+          // end:  			$volatile collected_dword := ( $slice CIRCULANT 75 12 )  $buffering 1
+          // start: WAR dependencies for running_byte_count
+          // done: WAR dependencies for running_byte_count
+          // start:  			$volatile running_byte_count := ( $slice CIRCULANT 11 8 )  $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 28
+          // volatile! 
+          // Source expression
+          // ( $slice CIRCULANT 11 8 ) 
+          // CIRCULANT
+          // Target expression
+          // (as target) running_byte_count
+          // start: WAR dependencies for running_byte_count
+          // done: WAR dependencies for running_byte_count
+          // end:  			$volatile running_byte_count := ( $slice CIRCULANT 11 8 )  $buffering 1
+          // start: WAR dependencies for running_byte_mask
+          // done: WAR dependencies for running_byte_mask
+          // start:  			$volatile running_byte_mask := ( $slice CIRCULANT 7 0 )  $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 29
+          // volatile! 
+          // Source expression
+          // ( $slice CIRCULANT 7 0 ) 
+          // CIRCULANT
+          // Target expression
+          // (as target) running_byte_mask
+          // start: WAR dependencies for running_byte_mask
+          // done: WAR dependencies for running_byte_mask
+          // end:  			$volatile running_byte_mask := ( $slice CIRCULANT 7 0 )  $buffering 1
+          // start: WAR dependencies for rx_last
+          // done: WAR dependencies for rx_last
+          // start:  			$volatile rx_last := ( $slice RX 9 9 )  $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 30
+          // volatile! 
+          // Source expression
+          // ( $slice RX 9 9 ) 
+          // RX
+          // Target expression
+          // (as target) rx_last
+          // start: WAR dependencies for rx_last
+          // done: WAR dependencies for rx_last
+          // end:  			$volatile rx_last := ( $slice RX 9 9 )  $buffering 1
+          // start: WAR dependencies for rx_data
+          // done: WAR dependencies for rx_data
+          // start:  			$volatile rx_data := ( $slice RX 8 1 )  $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 31
+          // volatile! 
+          // Source expression
+          // ( $slice RX 8 1 ) 
+          // RX
+          // Target expression
+          // (as target) rx_data
+          // start: WAR dependencies for rx_data
+          // done: WAR dependencies for rx_data
+          // end:  			$volatile rx_data := ( $slice RX 8 1 )  $buffering 1
+          // start: WAR dependencies for send_to_pipe
+          // done: WAR dependencies for send_to_pipe
+          // start:  			$volatile send_to_pipe := (rx_last | (running_byte_count == 8 )) $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 32
+          // volatile! 
+          // Source expression
+          // (rx_last | (running_byte_count == 8 ))
+          // rx_last
+          // (running_byte_count == 8 )
+          // running_byte_count
+          // Target expression
+          // (as target) send_to_pipe
+          // start: WAR dependencies for send_to_pipe
+          // done: WAR dependencies for send_to_pipe
+          // end:  			$volatile send_to_pipe := (rx_last | (running_byte_count == 8 )) $buffering 1
+          // start: WAR dependencies for dword_to_pipe
+          // done: WAR dependencies for dword_to_pipe
+          // start:  			$volatile dword_to_pipe := (( $slice collected_dword 55 0 )  && rx_data) $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 33
+          // volatile! 
+          // Source expression
+          // (( $slice collected_dword 55 0 )  && rx_data)
+          // ( $slice collected_dword 55 0 ) 
+          // collected_dword
+          // rx_data
+          // Target expression
+          // (as target) dword_to_pipe
+          // start: WAR dependencies for dword_to_pipe
+          // done: WAR dependencies for dword_to_pipe
+          // end:  			$volatile dword_to_pipe := (( $slice collected_dword 55 0 )  && rx_data) $buffering 1
+          // start: WAR dependencies for next_collected_dword
+          // done: WAR dependencies for next_collected_dword
+          // start:  			$volatile next_collected_dword := ( $mux send_to_pipe ($bitcast ($uint<64>) _b0  )  dword_to_pipe )  $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 34
+          // volatile! 
+          // Source expression
+          // ( $mux send_to_pipe ($bitcast ($uint<64>) _b0  )  dword_to_pipe ) 
+          // send_to_pipe
+          // dword_to_pipe
+          // Target expression
+          // (as target) next_collected_dword
+          // start: WAR dependencies for next_collected_dword
+          // done: WAR dependencies for next_collected_dword
+          // end:  			$volatile next_collected_dword := ( $mux send_to_pipe ($bitcast ($uint<64>) _b0  )  dword_to_pipe )  $buffering 1
+          // start: WAR dependencies for next_running_byte_count
+          // done: WAR dependencies for next_running_byte_count
+          // start:  			$volatile next_running_byte_count := ( $mux send_to_pipe ($bitcast ($uint<4>) _b1  )  (running_byte_count + 1 ) )  $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 35
+          // volatile! 
+          // Source expression
+          // ( $mux send_to_pipe ($bitcast ($uint<4>) _b1  )  (running_byte_count + 1 ) ) 
+          // send_to_pipe
+          // (running_byte_count + 1 )
+          // running_byte_count
+          // Target expression
+          // (as target) next_running_byte_count
+          // start: WAR dependencies for next_running_byte_count
+          // done: WAR dependencies for next_running_byte_count
+          // end:  			$volatile next_running_byte_count := ( $mux send_to_pipe ($bitcast ($uint<4>) _b1  )  (running_byte_count + 1 ) )  $buffering 1
+          // start: WAR dependencies for next_running_byte_mask
+          // done: WAR dependencies for next_running_byte_mask
+          // start:  			$volatile next_running_byte_mask := ( $mux send_to_pipe ($bitcast ($uint<8>) _b1  )  (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  )) )  $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 36
+          // volatile! 
+          // Source expression
+          // ( $mux send_to_pipe ($bitcast ($uint<8>) _b1  )  (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  )) ) 
+          // send_to_pipe
+          // (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  ))
+          // ( $slice running_byte_mask 6 0 ) 
+          // running_byte_mask
+          // Target expression
+          // (as target) next_running_byte_mask
+          // start: WAR dependencies for next_running_byte_mask
+          // done: WAR dependencies for next_running_byte_mask
+          // end:  			$volatile next_running_byte_mask := ( $mux send_to_pipe ($bitcast ($uint<8>) _b1  )  (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  )) )  $buffering 1
+          // start: WAR dependencies for left_shift_amount
+          // done: WAR dependencies for left_shift_amount
+          // start:  			$volatile left_shift_amount := ($bitcast ($uint<64>) ((8  - running_byte_count) && ($bitcast ($uint<3>) _b0  )) ) $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 37
+          // volatile! 
+          // Source expression
+          // ($bitcast ($uint<64>) ((8  - running_byte_count) && ($bitcast ($uint<3>) _b0  )) )
+          // ((8  - running_byte_count) && ($bitcast ($uint<3>) _b0  ))
+          // (8  - running_byte_count)
+          // running_byte_count
+          // Target expression
+          // (as target) left_shift_amount
+          // start: WAR dependencies for left_shift_amount
+          // done: WAR dependencies for left_shift_amount
+          // end:  			$volatile left_shift_amount := ($bitcast ($uint<64>) ((8  - running_byte_count) && ($bitcast ($uint<3>) _b0  )) ) $buffering 1
+          // start: WAR dependencies for data_to_pipe
+          // done: WAR dependencies for data_to_pipe
+          // start:  			$volatile data_to_pipe := ( $mux (send_to_pipe & ( ~ rx_last )) dword_to_pipe  (dword_to_pipe << left_shift_amount) )  $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 38
+          // volatile! 
+          // Source expression
+          // ( $mux (send_to_pipe & ( ~ rx_last )) dword_to_pipe  (dword_to_pipe << left_shift_amount) ) 
+          // (send_to_pipe & ( ~ rx_last ))
+          // send_to_pipe
+          // ( ~ rx_last )
+          // rx_last
+          // dword_to_pipe
+          // (dword_to_pipe << left_shift_amount)
+          // dword_to_pipe
+          // left_shift_amount
+          // Target expression
+          // (as target) data_to_pipe
+          // start: WAR dependencies for data_to_pipe
+          // done: WAR dependencies for data_to_pipe
+          // end:  			$volatile data_to_pipe := ( $mux (send_to_pipe & ( ~ rx_last )) dword_to_pipe  (dword_to_pipe << left_shift_amount) )  $buffering 1
+          // start: WAR dependencies for byte_mask_to_pipe
+          // done: WAR dependencies for byte_mask_to_pipe
+          // start:  			$volatile byte_mask_to_pipe := ( $mux (send_to_pipe & ( ~ rx_last )) ( ~ ($bitcast ($uint<8>) _b0  ) )  (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) )) )  $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 39
+          // volatile! 
+          // Source expression
+          // ( $mux (send_to_pipe & ( ~ rx_last )) ( ~ ($bitcast ($uint<8>) _b0  ) )  (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) )) ) 
+          // (send_to_pipe & ( ~ rx_last ))
+          // send_to_pipe
+          // ( ~ rx_last )
+          // rx_last
+          // (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) ))
+          // running_byte_mask
+          // ($bitcast ($uint<8>) (8  - running_byte_count) )
+          // (8  - running_byte_count)
+          // running_byte_count
+          // Target expression
+          // (as target) byte_mask_to_pipe
+          // start: WAR dependencies for byte_mask_to_pipe
+          // done: WAR dependencies for byte_mask_to_pipe
+          // end:  			$volatile byte_mask_to_pipe := ( $mux (send_to_pipe & ( ~ rx_last )) ( ~ ($bitcast ($uint<8>) _b0  ) )  (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) )) )  $buffering 1
+          // start: WAR dependencies for next_CIRCULANT
+          // WAR dependency: Read: next_CIRCULANT before Write: 			$volatile next_CIRCULANT := ((next_collected_dword && next_running_byte_count) && next_running_byte_mask) $buffering 1
+          //  WAR  PHI-PHI dependency ignored...
+          //  WAR  PHI-PHI dependency ignored...
+          // done: WAR dependencies for next_CIRCULANT
+          // start:  			$volatile next_CIRCULANT := ((next_collected_dword && next_running_byte_count) && next_running_byte_mask) $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 40
+          // volatile! 
+          // Source expression
+          // ((next_collected_dword && next_running_byte_count) && next_running_byte_mask)
+          // (next_collected_dword && next_running_byte_count)
+          // next_collected_dword
+          // next_running_byte_count
+          // next_running_byte_mask
+          // Target expression
+          // (as target) next_CIRCULANT
+          // start: WAR dependencies for next_CIRCULANT
+          // WAR dependency: Read: next_CIRCULANT before Write: 			$volatile next_CIRCULANT := ((next_collected_dword && next_running_byte_count) && next_running_byte_mask) $buffering 1
+          //  WAR  PHI-PHI dependency ignored...
+          //  WAR  PHI-PHI dependency ignored...
+          // done: WAR dependencies for next_CIRCULANT
+          // end:  			$volatile next_CIRCULANT := ((next_collected_dword && next_running_byte_count) && next_running_byte_mask) $buffering 1
+          // start: WAR dependencies for to_pipe
+          // done: WAR dependencies for to_pipe
+          // start:  			$volatile to_pipe := ((rx_last && data_to_pipe) && byte_mask_to_pipe) $buffering 1
+          //  file .Aa/rx_concat.linked.opt.aa, line 41
+          // volatile! 
+          // Source expression
+          // ((rx_last && data_to_pipe) && byte_mask_to_pipe)
+          // (rx_last && data_to_pipe)
+          // rx_last
+          // data_to_pipe
+          // byte_mask_to_pipe
+          // Target expression
+          // (as target) to_pipe
+          // start: WAR dependencies for to_pipe
+          // done: WAR dependencies for to_pipe
+          // end:  			$volatile to_pipe := ((rx_last && data_to_pipe) && byte_mask_to_pipe) $buffering 1
+          // start:  			$guard (send_to_pipe) rx_out_pipe := to_pipe $buffering 1// bits of buffering = 73. 
+          //  file .Aa/rx_concat.linked.opt.aa, line 42
+          // Guard expression 
+          // send_to_pipe
+          // Source expression
+          // to_pipe
+          // Target expression
+          // (as target) rx_out_pipe
+          $T[WPIPE_rx_out_pipe_146_sample_start_] 
+          $T[WPIPE_rx_out_pipe_146_sample_completed_] 
+          $T[WPIPE_rx_out_pipe_146_update_start_] 
+          $T[WPIPE_rx_out_pipe_146_update_completed_] 
+          // Guard dependency for expression WPIPE_rx_out_pipe_146 with guard R_send_to_pipe_145
+          // Guard forward dependency 
+          WPIPE_rx_out_pipe_146_sample_start_ <-& (phi_stmt_27_update_completed_)
+          // Guard forward dependency 
+          WPIPE_rx_out_pipe_146_sample_start_ <-& (phi_stmt_11_update_completed_)
+          // RAW reenables for send_to_pipe
+          phi_stmt_27_update_start_ o<-& (WPIPE_rx_out_pipe_146_sample_completed_ 0)
+          phi_stmt_11_update_start_ o<-& (WPIPE_rx_out_pipe_146_sample_completed_ 0)
+          ;;[WPIPE_rx_out_pipe_146_Sample] 
+          {
+            // pipe write sample-start rx_out_pipe
+            $T [req] $T [ack] 
+          }
+          ;;[WPIPE_rx_out_pipe_146_Update] 
+          {
+            // pipe write update (complete) rx_out_pipe
+            $T [req] $T [ack] 
+          }
+          WPIPE_rx_out_pipe_146_sample_start_ &-> (WPIPE_rx_out_pipe_146_Sample)
+          WPIPE_rx_out_pipe_146_sample_completed_ <-& (WPIPE_rx_out_pipe_146_Sample)
+          WPIPE_rx_out_pipe_146_update_start_ <-& (WPIPE_rx_out_pipe_146_sample_completed_)
+          WPIPE_rx_out_pipe_146_update_start_ &-> (WPIPE_rx_out_pipe_146_Update)
+          WPIPE_rx_out_pipe_146_update_completed_ <-& (WPIPE_rx_out_pipe_146_Update)
+          WPIPE_rx_out_pipe_146_sample_start_ o<-& (WPIPE_rx_out_pipe_146_update_completed_ 0)
+          // start: Forward dependencies from to_pipe to transition WPIPE_rx_out_pipe_146_sample_start_
+          WPIPE_rx_out_pipe_146_sample_start_ <-& (phi_stmt_27_update_completed_)
+          WPIPE_rx_out_pipe_146_sample_start_ <-& (phi_stmt_11_update_completed_)
+          // done: Forward dependencies from to_pipe to transition WPIPE_rx_out_pipe_146_sample_start_
+          // RAW reenables for to_pipe
+          phi_stmt_27_update_start_ o<-& (WPIPE_rx_out_pipe_146_sample_completed_ 0)
+          phi_stmt_11_update_start_ o<-& (WPIPE_rx_out_pipe_146_sample_completed_ 0)
+          // end:  			$guard (send_to_pipe) rx_out_pipe := to_pipe $buffering 1// bits of buffering = 73. 
+          $T [loop_body_delay_to_condition_start] $delay
+          loop_body_start &-> (loop_body_delay_to_condition_start)
+          loop_body_delay_to_condition_start &-> (condition_evaluated)
+          condition_evaluated &-> ($null)
+          // load-store dependencies..
+          // pipe read/write dependencies for pipe rx_in_pipe
+          // read-dependencies for pipe rx_in_pipe
+          // write-dependencies for pipe rx_in_pipe
+          // signal write dependencies for rx_in_pipe
+          // pipe read/write dependencies for pipe rx_out_pipe
+          // read-dependencies for pipe rx_out_pipe
+          // write-dependencies for pipe rx_out_pipe
+          // signal write dependencies for rx_out_pipe
+        }
+        ( first_time_through_loop_body  back_edge_to_loop_body) 
+        ( condition_evaluated )
+        ;; [loop_exit] 
+        {
+          $T [ack] 
+        }
+        ;; [loop_taken] 
+        {
+          $T [ack] 
+        }
+        do_while_stmt_9__entry__ <-| ($entry)
+        loop_body_done <-| ( do_while_stmt_9_loop_body ) 
+        condition_done |-> (loop_exit loop_taken)
+        do_while_stmt_9__exit__ |-> ($exit)
+        $bind condition_done <= do_while_stmt_9_loop_body : condition_evaluated
+        $bind do_while_stmt_9__entry__  => do_while_stmt_9_loop_body : first_time_through_loop_body 
+        $bind loop_back  => do_while_stmt_9_loop_body : back_edge_to_loop_body 
+        $terminate (loop_exit loop_taken loop_body_done) (loop_back do_while_stmt_9__exit__)
+      }
+      do_while_stmt_9__entry__ |-> (do_while_stmt_9)
+      do_while_stmt_9__exit__ <-| (do_while_stmt_9)
+      do_while_stmt_9__entry__ <-| (branch_block_stmt_8__entry__)
+      do_while_stmt_9__exit__ |-> (branch_block_stmt_8__exit__)
+    }
+  }
+  // end control-path
+  $DP 
+  {
+    // begin data-path 
+    // constant-object-declarations for block %rx_concat%loop%
+    //  file .Aa/rx_concat.linked.opt.aa, line 21
+    // constant-object-declarations for block %rx_concat%loop
+    //  file .Aa/rx_concat.linked.opt.aa, line 17
+    // constant-object-declarations for block %rx_concat
+    //  file .Aa/rx_concat.linked.opt.aa, line 12
+    // constant-declarations for block %rx_concat%loop
+    //  file .Aa/rx_concat.linked.opt.aa, line 17
+    // do-while statement  
+    //  file .Aa/rx_concat.linked.opt.aa, line 19
+    // 1 
+    $constant $W[konst_150_wire_constant] : $int<1> := _b1// 1
+    // constant-declarations for block %rx_concat%loop%
+    //  file .Aa/rx_concat.linked.opt.aa, line 21
+    // constant-declarations for phi:  			$phi CIRCULANT := 			  ((($bitcast ($uint<64>) _b0  ) && ($bitcast ($uint<4>) _b1  )) && ($bitcast ($uint<8>) _b1  )) $on   $entry 			  next_CIRCULANT $on   $loopback  $barrier
+    // type of target is $uint<76>
+    //  file .Aa/rx_concat.linked.opt.aa, line 22
+    // ((($bitcast ($uint<64>) _b0  ) && ($bitcast ($uint<4>) _b1  )) && ($bitcast ($uint<8>) _b1  ))
+    $constant $W[CONCAT_u68_u76_24_wire_constant] : $int<76> := _b0000000000000000000000000000000000000000000000000000000000000000000100000001// 257
+    // constant-declarations for phi:  			$phi RX := 			  rx_in_pipe $on   $entry ,   $loopback 
+    // type of target is $uint<10>
+    //  file .Aa/rx_concat.linked.opt.aa, line 24
+    // 8 
+    $constant $W[konst_55_wire_constant] : $int<4> := _b1000// 8
+    // ( $mux send_to_pipe ($bitcast ($uint<64>) _b0  )  dword_to_pipe ) 
+    // ($bitcast ($uint<64>) _b0  )
+    $constant $W[type_cast_69_wire_constant] : $int<64> := _b0000000000000000000000000000000000000000000000000000000000000000// 0
+    // ( $mux send_to_pipe ($bitcast ($uint<4>) _b1  )  (running_byte_count + 1 ) ) 
+    // ($bitcast ($uint<4>) _b1  )
+    $constant $W[type_cast_76_wire_constant] : $int<4> := _b0001// 1
+    // 1 
+    $constant $W[konst_78_wire_constant] : $int<4> := _b0001// 1
+    // ( $mux send_to_pipe ($bitcast ($uint<8>) _b1  )  (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  )) ) 
+    // ($bitcast ($uint<8>) _b1  )
+    $constant $W[type_cast_85_wire_constant] : $int<8> := _b00000001// 1
+    // ($bitcast ($uint<1>) _b1  )
+    $constant $W[type_cast_90_wire_constant] : $int<1> := _b1// 1
+    // 8 
+    $constant $W[konst_95_wire_constant] : $int<4> := _b1000// 8
+    // ($bitcast ($uint<3>) _b0  )
+    $constant $W[type_cast_100_wire_constant] : $int<3> := _b000// 0
+    // ( $mux (send_to_pipe & ( ~ rx_last )) dword_to_pipe  (dword_to_pipe << left_shift_amount) ) 
+    // ( $mux (send_to_pipe & ( ~ rx_last )) ( ~ ($bitcast ($uint<8>) _b0  ) )  (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) )) ) 
+    // ( ~ ($bitcast ($uint<8>) _b0  ) )
+    $constant $W[NOT_u8_u8_122_wire_constant] : $int<8> := _b11111111// -1
+    // 8 
+    $constant $W[konst_124_wire_constant] : $int<4> := _b1000// 8
+    // block %rx_concat%loop
+    //  file .Aa/rx_concat.linked.opt.aa, line 17
+    // do-while statement  
+    //  file .Aa/rx_concat.linked.opt.aa, line 19
+    // merge-statement  
+    //  file .Aa/rx_concat.linked.opt.aa, line 21
+    // 			$phi CIRCULANT := 			  ((($bitcast ($uint<64>) _b0  ) && ($bitcast ($uint<4>) _b1  )) && ($bitcast ($uint<8>) _b1  )) $on   $entry 			  next_CIRCULANT $on   $loopback  $barrier
+    // type of target is $uint<76>
+    //  file .Aa/rx_concat.linked.opt.aa, line 22
+    $W[next_CIRCULANT_137_26_buffered] : $int<76>
+    // CIRCULANT
+    $W[CIRCULANT_11] : $int<76>
+    // 			$phi RX := 			  rx_in_pipe $on   $entry ,   $loopback 
+    // type of target is $uint<10>
+    //  file .Aa/rx_concat.linked.opt.aa, line 24
+    // rx_in_pipe
+    $W[RPIPE_rx_in_pipe_29_wire] : $int<10>
+    // RX
+    $W[RX_27] : $int<10>
+    // 			$volatile collected_dword := ( $slice CIRCULANT 75 12 )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 27
+    // collected_dword
+    $W[collected_dword_34] : $int<64>
+    // 			$volatile running_byte_count := ( $slice CIRCULANT 11 8 )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 28
+    // running_byte_count
+    $W[running_byte_count_38] : $int<4>
+    // 			$volatile running_byte_mask := ( $slice CIRCULANT 7 0 )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 29
+    // running_byte_mask
+    $W[running_byte_mask_42] : $int<8>
+    // 			$volatile rx_last := ( $slice RX 9 9 )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 30
+    // rx_last
+    $W[rx_last_47] : $int<1>
+    // 			$volatile rx_data := ( $slice RX 8 1 )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 31
+    // rx_data
+    $W[rx_data_51] : $int<8>
+    // 			$volatile send_to_pipe := (rx_last | (running_byte_count == 8 )) $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 32
+    // (running_byte_count == 8 )
+    $intermediate $W[EQ_u4_u1_56_wire] : $int<1>
+    // send_to_pipe
+    $W[send_to_pipe_58] : $int<1>
+    // 			$volatile dword_to_pipe := (( $slice collected_dword 55 0 )  && rx_data) $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 33
+    // ( $slice collected_dword 55 0 ) 
+    $intermediate $W[slice_62_wire] : $int<56>
+    // dword_to_pipe
+    $W[dword_to_pipe_65] : $int<64>
+    // 			$volatile next_collected_dword := ( $mux send_to_pipe ($bitcast ($uint<64>) _b0  )  dword_to_pipe )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 34
+    // next_collected_dword
+    $W[next_collected_dword_72] : $int<64>
+    // 			$volatile next_running_byte_count := ( $mux send_to_pipe ($bitcast ($uint<4>) _b1  )  (running_byte_count + 1 ) )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 35
+    // (running_byte_count + 1 )
+    $intermediate $W[ADD_u4_u4_79_wire] : $int<4>
+    // next_running_byte_count
+    $W[next_running_byte_count_81] : $int<4>
+    // 			$volatile next_running_byte_mask := ( $mux send_to_pipe ($bitcast ($uint<8>) _b1  )  (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  )) )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 36
+    // ( $slice running_byte_mask 6 0 ) 
+    $intermediate $W[slice_88_wire] : $int<7>
+    // (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  ))
+    $intermediate $W[CONCAT_u7_u8_91_wire] : $int<8>
+    // next_running_byte_mask
+    $W[next_running_byte_mask_93] : $int<8>
+    // 			$volatile left_shift_amount := ($bitcast ($uint<64>) ((8  - running_byte_count) && ($bitcast ($uint<3>) _b0  )) ) $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 37
+    // (8  - running_byte_count)
+    $intermediate $W[SUB_u4_u4_97_wire] : $int<4>
+    // ((8  - running_byte_count) && ($bitcast ($uint<3>) _b0  ))
+    $intermediate $W[CONCAT_u4_u7_101_wire] : $int<7>
+    // left_shift_amount
+    $W[left_shift_amount_103] : $int<64>
+    // 			$volatile data_to_pipe := ( $mux (send_to_pipe & ( ~ rx_last )) dword_to_pipe  (dword_to_pipe << left_shift_amount) )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 38
+    // ( ~ rx_last )
+    $intermediate $W[NOT_u1_u1_107_wire] : $int<1>
+    // (send_to_pipe & ( ~ rx_last ))
+    $intermediate $W[AND_u1_u1_108_wire] : $int<1>
+    // (dword_to_pipe << left_shift_amount)
+    $intermediate $W[SHL_u64_u64_112_wire] : $int<64>
+    // data_to_pipe
+    $W[data_to_pipe_114] : $int<64>
+    // 			$volatile byte_mask_to_pipe := ( $mux (send_to_pipe & ( ~ rx_last )) ( ~ ($bitcast ($uint<8>) _b0  ) )  (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) )) )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 39
+    // ( ~ rx_last )
+    $intermediate $W[NOT_u1_u1_118_wire] : $int<1>
+    // (send_to_pipe & ( ~ rx_last ))
+    $intermediate $W[AND_u1_u1_119_wire] : $int<1>
+    // (8  - running_byte_count)
+    $intermediate $W[SUB_u4_u4_126_wire] : $int<4>
+    // ($bitcast ($uint<8>) (8  - running_byte_count) )
+    $intermediate $W[type_cast_127_wire] : $int<8>
+    // (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) ))
+    $intermediate $W[SHL_u8_u8_128_wire] : $int<8>
+    // byte_mask_to_pipe
+    $W[byte_mask_to_pipe_130] : $int<8>
+    // 			$volatile next_CIRCULANT := ((next_collected_dword && next_running_byte_count) && next_running_byte_mask) $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 40
+    // (next_collected_dword && next_running_byte_count)
+    $intermediate $W[CONCAT_u64_u68_134_wire] : $int<68>
+    // next_CIRCULANT
+    $W[next_CIRCULANT_137] : $int<76>
+    // 			$volatile to_pipe := ((rx_last && data_to_pipe) && byte_mask_to_pipe) $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 41
+    // (rx_last && data_to_pipe)
+    $intermediate $W[CONCAT_u1_u65_141_wire] : $int<65>
+    // to_pipe
+    $W[to_pipe_144] : $int<73>
+    // 			$guard (send_to_pipe) rx_out_pipe := to_pipe $buffering 1// bits of buffering = 73. 
+    //  file .Aa/rx_concat.linked.opt.aa, line 42
+    // rx_out_pipe
+    // datapath-instances for block %rx_concat%loop
+    //  file .Aa/rx_concat.linked.opt.aa, line 17
+    // datapath-instances for do-while  
+    //  file .Aa/rx_concat.linked.opt.aa, line 19
+    ==0? [do_while_stmt_9_branch] (konst_150_wire_constant)
+    $flowthrough
+    // data-path instances for merge  
+    //  file .Aa/rx_concat.linked.opt.aa, line 21
+    // 			$phi CIRCULANT := 			  ((($bitcast ($uint<64>) _b0  ) && ($bitcast ($uint<4>) _b1  )) && ($bitcast ($uint<8>) _b1  )) $on   $entry 			  next_CIRCULANT $on   $loopback  $barrier
+    // type of target is $uint<76>
+    //  file .Aa/rx_concat.linked.opt.aa, line 22
+    # := [next_CIRCULANT_137_26_buf] (next_CIRCULANT_137) (next_CIRCULANT_137_26_buffered)   $in_phi    $fullrate
+    $buffering $out next_CIRCULANT_137_26_buf next_CIRCULANT_137_26_buffered  1
+    # $phi [phi_stmt_11] (CONCAT_u68_u76_24_wire_constant next_CIRCULANT_137_26_buffered) ( CIRCULANT_11 ) $fullrate
+    // $buffering  $out phi_stmt_11 CIRCULANT_11 2
+    // 			$phi RX := 			  rx_in_pipe $on   $entry ,   $loopback 
+    // type of target is $uint<10>
+    //  file .Aa/rx_concat.linked.opt.aa, line 24
+    // rx_in_pipe
+    $ioport $in [RPIPE_rx_in_pipe_29_inst] (rx_in_pipe) (RPIPE_rx_in_pipe_29_wire)  $fullrate 
+    $buffering $out RPIPE_rx_in_pipe_29_inst RPIPE_rx_in_pipe_29_wire 1
+    # := [ssrc_phi_stmt_27] (RPIPE_rx_in_pipe_29_wire) (RX_27)     $flowthrough 
+    // 			$volatile collected_dword := ( $slice CIRCULANT 75 12 )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 27
+    // ( $slice CIRCULANT 75 12 ) 
+    [:] [slice_33_inst] (CIRCULANT_11 75 12) (collected_dword_34)  $flowthrough
+    $delay slice_33_inst 0
+    // 			$volatile running_byte_count := ( $slice CIRCULANT 11 8 )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 28
+    // ( $slice CIRCULANT 11 8 ) 
+    [:] [slice_37_inst] (CIRCULANT_11 11 8) (running_byte_count_38)  $flowthrough
+    $delay slice_37_inst 0
+    // 			$volatile running_byte_mask := ( $slice CIRCULANT 7 0 )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 29
+    // ( $slice CIRCULANT 7 0 ) 
+    [:] [slice_41_inst] (CIRCULANT_11 7 0) (running_byte_mask_42)  $flowthrough
+    $delay slice_41_inst 0
+    // 			$volatile rx_last := ( $slice RX 9 9 )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 30
+    // ( $slice RX 9 9 ) 
+    [:] [slice_46_inst] (RX_27 9 9) (rx_last_47)  $flowthrough
+    $delay slice_46_inst 0
+    // 			$volatile rx_data := ( $slice RX 8 1 )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 31
+    // ( $slice RX 8 1 ) 
+    [:] [slice_50_inst] (RX_27 8 1) (rx_data_51)  $flowthrough
+    $delay slice_50_inst 0
+    // 			$volatile send_to_pipe := (rx_last | (running_byte_count == 8 )) $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 32
+    // (running_byte_count == 8 )
+    ==[EQ_u4_u1_56_inst] (running_byte_count_38 konst_55_wire_constant) (EQ_u4_u1_56_wire)   $flowthrough 
+    $delay EQ_u4_u1_56_inst 0
+    // (rx_last | (running_byte_count == 8 ))
+    |[OR_u1_u1_57_inst] (rx_last_47 EQ_u4_u1_56_wire) (send_to_pipe_58)   $flowthrough 
+    $delay OR_u1_u1_57_inst 0
+    // 			$volatile dword_to_pipe := (( $slice collected_dword 55 0 )  && rx_data) $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 33
+    // ( $slice collected_dword 55 0 ) 
+    [:] [slice_62_inst] (collected_dword_34 55 0) (slice_62_wire)  $flowthrough
+    $delay slice_62_inst 0
+    // (( $slice collected_dword 55 0 )  && rx_data)
+    &&[CONCAT_u56_u64_64_inst] (slice_62_wire rx_data_51) (dword_to_pipe_65)   $flowthrough 
+    $delay CONCAT_u56_u64_64_inst 0
+    // 			$volatile next_collected_dword := ( $mux send_to_pipe ($bitcast ($uint<64>) _b0  )  dword_to_pipe )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 34
+    // ( $mux send_to_pipe ($bitcast ($uint<64>) _b0  )  dword_to_pipe ) 
+    ? [MUX_71_inst] (send_to_pipe_58 type_cast_69_wire_constant dword_to_pipe_65) (next_collected_dword_72)  $flowthrough
+    // 			$volatile next_running_byte_count := ( $mux send_to_pipe ($bitcast ($uint<4>) _b1  )  (running_byte_count + 1 ) )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 35
+    // (running_byte_count + 1 )
+    +[ADD_u4_u4_79_inst] (running_byte_count_38 konst_78_wire_constant) (ADD_u4_u4_79_wire)   $flowthrough 
+    $delay ADD_u4_u4_79_inst 0
+    // ( $mux send_to_pipe ($bitcast ($uint<4>) _b1  )  (running_byte_count + 1 ) ) 
+    ? [MUX_80_inst] (send_to_pipe_58 type_cast_76_wire_constant ADD_u4_u4_79_wire) (next_running_byte_count_81)  $flowthrough
+    // 			$volatile next_running_byte_mask := ( $mux send_to_pipe ($bitcast ($uint<8>) _b1  )  (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  )) )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 36
+    // ( $slice running_byte_mask 6 0 ) 
+    [:] [slice_88_inst] (running_byte_mask_42 6 0) (slice_88_wire)  $flowthrough
+    $delay slice_88_inst 0
+    // (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  ))
+    &&[CONCAT_u7_u8_91_inst] (slice_88_wire type_cast_90_wire_constant) (CONCAT_u7_u8_91_wire)   $flowthrough 
+    $delay CONCAT_u7_u8_91_inst 0
+    // ( $mux send_to_pipe ($bitcast ($uint<8>) _b1  )  (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  )) ) 
+    ? [MUX_92_inst] (send_to_pipe_58 type_cast_85_wire_constant CONCAT_u7_u8_91_wire) (next_running_byte_mask_93)  $flowthrough
+    // 			$volatile left_shift_amount := ($bitcast ($uint<64>) ((8  - running_byte_count) && ($bitcast ($uint<3>) _b0  )) ) $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 37
+    // (8  - running_byte_count)
+    -[SUB_u4_u4_97_inst] (konst_95_wire_constant running_byte_count_38) (SUB_u4_u4_97_wire)   $flowthrough 
+    $delay SUB_u4_u4_97_inst 0
+    // ((8  - running_byte_count) && ($bitcast ($uint<3>) _b0  ))
+    &&[CONCAT_u4_u7_101_inst] (SUB_u4_u4_97_wire type_cast_100_wire_constant) (CONCAT_u4_u7_101_wire)   $flowthrough 
+    $delay CONCAT_u4_u7_101_inst 0
+    // ($bitcast ($uint<64>) ((8  - running_byte_count) && ($bitcast ($uint<3>) _b0  )) )
+    # := [type_cast_102_inst] (CONCAT_u4_u7_101_wire) (left_shift_amount_103)   $flowthrough
+    $delay type_cast_102_inst 0
+    // 			$volatile data_to_pipe := ( $mux (send_to_pipe & ( ~ rx_last )) dword_to_pipe  (dword_to_pipe << left_shift_amount) )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 38
+    // ( ~ rx_last )
+    ~ [NOT_u1_u1_107_inst] (rx_last_47) (NOT_u1_u1_107_wire)   $flowthrough
+    $delay NOT_u1_u1_107_inst 0
+    // (send_to_pipe & ( ~ rx_last ))
+    &[AND_u1_u1_108_inst] (send_to_pipe_58 NOT_u1_u1_107_wire) (AND_u1_u1_108_wire)   $flowthrough 
+    $delay AND_u1_u1_108_inst 0
+    // (dword_to_pipe << left_shift_amount)
+    <<[SHL_u64_u64_112_inst] (dword_to_pipe_65 left_shift_amount_103) (SHL_u64_u64_112_wire)   $flowthrough 
+    $delay SHL_u64_u64_112_inst 0
+    // ( $mux (send_to_pipe & ( ~ rx_last )) dword_to_pipe  (dword_to_pipe << left_shift_amount) ) 
+    ? [MUX_113_inst] (AND_u1_u1_108_wire dword_to_pipe_65 SHL_u64_u64_112_wire) (data_to_pipe_114)  $flowthrough
+    // 			$volatile byte_mask_to_pipe := ( $mux (send_to_pipe & ( ~ rx_last )) ( ~ ($bitcast ($uint<8>) _b0  ) )  (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) )) )  $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 39
+    // ( ~ rx_last )
+    ~ [NOT_u1_u1_118_inst] (rx_last_47) (NOT_u1_u1_118_wire)   $flowthrough
+    $delay NOT_u1_u1_118_inst 0
+    // (send_to_pipe & ( ~ rx_last ))
+    &[AND_u1_u1_119_inst] (send_to_pipe_58 NOT_u1_u1_118_wire) (AND_u1_u1_119_wire)   $flowthrough 
+    $delay AND_u1_u1_119_inst 0
+    // (8  - running_byte_count)
+    -[SUB_u4_u4_126_inst] (konst_124_wire_constant running_byte_count_38) (SUB_u4_u4_126_wire)   $flowthrough 
+    $delay SUB_u4_u4_126_inst 0
+    // ($bitcast ($uint<8>) (8  - running_byte_count) )
+    # := [type_cast_127_inst] (SUB_u4_u4_126_wire) (type_cast_127_wire)   $flowthrough
+    $delay type_cast_127_inst 0
+    // (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) ))
+    <<[SHL_u8_u8_128_inst] (running_byte_mask_42 type_cast_127_wire) (SHL_u8_u8_128_wire)   $flowthrough 
+    $delay SHL_u8_u8_128_inst 0
+    // ( $mux (send_to_pipe & ( ~ rx_last )) ( ~ ($bitcast ($uint<8>) _b0  ) )  (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) )) ) 
+    ? [MUX_129_inst] (AND_u1_u1_119_wire NOT_u8_u8_122_wire_constant SHL_u8_u8_128_wire) (byte_mask_to_pipe_130)  $flowthrough
+    // 			$volatile next_CIRCULANT := ((next_collected_dword && next_running_byte_count) && next_running_byte_mask) $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 40
+    // (next_collected_dword && next_running_byte_count)
+    &&[CONCAT_u64_u68_134_inst] (next_collected_dword_72 next_running_byte_count_81) (CONCAT_u64_u68_134_wire)   $flowthrough 
+    $delay CONCAT_u64_u68_134_inst 0
+    // ((next_collected_dword && next_running_byte_count) && next_running_byte_mask)
+    &&[CONCAT_u68_u76_136_inst] (CONCAT_u64_u68_134_wire next_running_byte_mask_93) (next_CIRCULANT_137)   $flowthrough 
+    $delay CONCAT_u68_u76_136_inst 0
+    // 			$volatile to_pipe := ((rx_last && data_to_pipe) && byte_mask_to_pipe) $buffering 1
+    //  file .Aa/rx_concat.linked.opt.aa, line 41
+    // (rx_last && data_to_pipe)
+    &&[CONCAT_u1_u65_141_inst] (rx_last_47 data_to_pipe_114) (CONCAT_u1_u65_141_wire)   $flowthrough 
+    $delay CONCAT_u1_u65_141_inst 0
+    // ((rx_last && data_to_pipe) && byte_mask_to_pipe)
+    &&[CONCAT_u65_u73_143_inst] (CONCAT_u1_u65_141_wire byte_mask_to_pipe_130) (to_pipe_144)   $flowthrough 
+    $delay CONCAT_u65_u73_143_inst 0
+    // 			$guard (send_to_pipe) rx_out_pipe := to_pipe $buffering 1// bits of buffering = 73. 
+    //  file .Aa/rx_concat.linked.opt.aa, line 42
+    // rx_out_pipe
+    $ioport $out [WPIPE_rx_out_pipe_146_inst]  (to_pipe_144) (rx_out_pipe) $guard ( send_to_pipe_58 )  $fullrate 
+  }
+  // end data-path
+  // CP-DP links for do-while  do_while_stmt_9
+  //  file .Aa/rx_concat.linked.opt.aa, line 19
+  phi_stmt_11 <=> (branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/phi_stmt_11_entry_sample_req branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/phi_stmt_11_loopback_sample_req) (branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/phi_stmt_11_phi_mux_ack)
+  next_CIRCULANT_137_26_buf <=> (branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/R_next_CIRCULANT_26_Sample/req branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/R_next_CIRCULANT_26_Update/req) (branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/R_next_CIRCULANT_26_Sample/ack branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/R_next_CIRCULANT_26_Update/ack)
+  // rx_in_pipe
+  RPIPE_rx_in_pipe_29_inst <=> (branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_rx_in_pipe_29_Sample/rr branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_rx_in_pipe_29_Update/cr) (branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_rx_in_pipe_29_Sample/ra branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_rx_in_pipe_29_Update/ca)
+  // 			$volatile collected_dword := ( $slice CIRCULANT 75 12 )  $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 27
+  // CIRCULANT
+  // 			$volatile running_byte_count := ( $slice CIRCULANT 11 8 )  $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 28
+  // CIRCULANT
+  // 			$volatile running_byte_mask := ( $slice CIRCULANT 7 0 )  $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 29
+  // CIRCULANT
+  // 			$volatile rx_last := ( $slice RX 9 9 )  $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 30
+  // RX
+  // 			$volatile rx_data := ( $slice RX 8 1 )  $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 31
+  // RX
+  // 			$volatile send_to_pipe := (rx_last | (running_byte_count == 8 )) $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 32
+  // (rx_last | (running_byte_count == 8 ))
+  // rx_last
+  // (running_byte_count == 8 )
+  // running_byte_count
+  // 			$volatile dword_to_pipe := (( $slice collected_dword 55 0 )  && rx_data) $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 33
+  // (( $slice collected_dword 55 0 )  && rx_data)
+  // collected_dword
+  // rx_data
+  // 			$volatile next_collected_dword := ( $mux send_to_pipe ($bitcast ($uint<64>) _b0  )  dword_to_pipe )  $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 34
+  // send_to_pipe
+  // dword_to_pipe
+  // ( $mux send_to_pipe ($bitcast ($uint<64>) _b0  )  dword_to_pipe ) 
+  // 			$volatile next_running_byte_count := ( $mux send_to_pipe ($bitcast ($uint<4>) _b1  )  (running_byte_count + 1 ) )  $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 35
+  // send_to_pipe
+  // (running_byte_count + 1 )
+  // running_byte_count
+  // ( $mux send_to_pipe ($bitcast ($uint<4>) _b1  )  (running_byte_count + 1 ) ) 
+  // 			$volatile next_running_byte_mask := ( $mux send_to_pipe ($bitcast ($uint<8>) _b1  )  (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  )) )  $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 36
+  // send_to_pipe
+  // (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  ))
+  // running_byte_mask
+  // ( $mux send_to_pipe ($bitcast ($uint<8>) _b1  )  (( $slice running_byte_mask 6 0 )  && ($bitcast ($uint<1>) _b1  )) ) 
+  // 			$volatile left_shift_amount := ($bitcast ($uint<64>) ((8  - running_byte_count) && ($bitcast ($uint<3>) _b0  )) ) $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 37
+  // ((8  - running_byte_count) && ($bitcast ($uint<3>) _b0  ))
+  // (8  - running_byte_count)
+  // running_byte_count
+  // 			$volatile data_to_pipe := ( $mux (send_to_pipe & ( ~ rx_last )) dword_to_pipe  (dword_to_pipe << left_shift_amount) )  $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 38
+  // (send_to_pipe & ( ~ rx_last ))
+  // send_to_pipe
+  // rx_last
+  // dword_to_pipe
+  // (dword_to_pipe << left_shift_amount)
+  // dword_to_pipe
+  // left_shift_amount
+  // ( $mux (send_to_pipe & ( ~ rx_last )) dword_to_pipe  (dword_to_pipe << left_shift_amount) ) 
+  // 			$volatile byte_mask_to_pipe := ( $mux (send_to_pipe & ( ~ rx_last )) ( ~ ($bitcast ($uint<8>) _b0  ) )  (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) )) )  $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 39
+  // (send_to_pipe & ( ~ rx_last ))
+  // send_to_pipe
+  // rx_last
+  // (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) ))
+  // running_byte_mask
+  // (8  - running_byte_count)
+  // running_byte_count
+  // ( $mux (send_to_pipe & ( ~ rx_last )) ( ~ ($bitcast ($uint<8>) _b0  ) )  (running_byte_mask << ($bitcast ($uint<8>) (8  - running_byte_count) )) ) 
+  // 			$volatile next_CIRCULANT := ((next_collected_dword && next_running_byte_count) && next_running_byte_mask) $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 40
+  // ((next_collected_dword && next_running_byte_count) && next_running_byte_mask)
+  // (next_collected_dword && next_running_byte_count)
+  // next_collected_dword
+  // next_running_byte_count
+  // next_running_byte_mask
+  // 			$volatile to_pipe := ((rx_last && data_to_pipe) && byte_mask_to_pipe) $buffering 1
+  //  file .Aa/rx_concat.linked.opt.aa, line 41
+  // ((rx_last && data_to_pipe) && byte_mask_to_pipe)
+  // (rx_last && data_to_pipe)
+  // rx_last
+  // data_to_pipe
+  // byte_mask_to_pipe
+  // 			$guard (send_to_pipe) rx_out_pipe := to_pipe $buffering 1// bits of buffering = 73. 
+  //  file .Aa/rx_concat.linked.opt.aa, line 42
+  // to_pipe
+  // rx_out_pipe
+  WPIPE_rx_out_pipe_146_inst <=> (branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_rx_out_pipe_146_Sample/req branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_rx_out_pipe_146_Update/req) (branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_rx_out_pipe_146_Sample/ack branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_rx_out_pipe_146_Update/ack)
+  do_while_stmt_9_branch <=> (branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/condition_evaluated) (branch_block_stmt_8/do_while_stmt_9/loop_exit/ack branch_block_stmt_8/do_while_stmt_9/loop_taken/ack)
+}

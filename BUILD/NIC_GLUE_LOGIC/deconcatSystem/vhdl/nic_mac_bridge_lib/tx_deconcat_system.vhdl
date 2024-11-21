@@ -1,0 +1,1499 @@
+-- VHDL produced by vc2vhdl from virtual circuit (vc) description 
+library std;
+use std.standard.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+library aHiR_ieee_proposed;
+use aHiR_ieee_proposed.math_utility_pkg.all;
+use aHiR_ieee_proposed.fixed_pkg.all;
+use aHiR_ieee_proposed.float_pkg.all;
+library ahir;
+use ahir.memory_subsystem_package.all;
+use ahir.types.all;
+use ahir.subprograms.all;
+use ahir.components.all;
+use ahir.basecomponents.all;
+use ahir.operatorpackage.all;
+use ahir.floatoperatorpackage.all;
+use ahir.utilities.all;
+library nic_mac_bridge_lib;
+use nic_mac_bridge_lib.tx_deconcat_system_global_package.all;
+entity tx_deconcat is -- 
+  generic (tag_length : integer); 
+  port ( -- 
+    tx_in_pipe_pipe_read_req : out  std_logic_vector(0 downto 0);
+    tx_in_pipe_pipe_read_ack : in   std_logic_vector(0 downto 0);
+    tx_in_pipe_pipe_read_data : in   std_logic_vector(72 downto 0);
+    tx_out_pipe_pipe_write_req : out  std_logic_vector(0 downto 0);
+    tx_out_pipe_pipe_write_ack : in   std_logic_vector(0 downto 0);
+    tx_out_pipe_pipe_write_data : out  std_logic_vector(9 downto 0);
+    tag_in: in std_logic_vector(tag_length-1 downto 0);
+    tag_out: out std_logic_vector(tag_length-1 downto 0) ;
+    clk : in std_logic;
+    reset : in std_logic;
+    start_req : in std_logic;
+    start_ack : out std_logic;
+    fin_req : in std_logic;
+    fin_ack   : out std_logic-- 
+  );
+  -- 
+end entity tx_deconcat;
+architecture tx_deconcat_arch of tx_deconcat is -- 
+  -- always true...
+  signal always_true_symbol: Boolean;
+  signal in_buffer_data_in, in_buffer_data_out: std_logic_vector((tag_length + 0)-1 downto 0);
+  signal default_zero_sig: std_logic;
+  signal in_buffer_write_req: std_logic;
+  signal in_buffer_write_ack: std_logic;
+  signal in_buffer_unload_req_symbol: Boolean;
+  signal in_buffer_unload_ack_symbol: Boolean;
+  signal out_buffer_data_in, out_buffer_data_out: std_logic_vector((tag_length + 0)-1 downto 0);
+  signal out_buffer_read_req: std_logic;
+  signal out_buffer_read_ack: std_logic;
+  signal out_buffer_write_req_symbol: Boolean;
+  signal out_buffer_write_ack_symbol: Boolean;
+  signal tag_ub_out, tag_ilock_out: std_logic_vector(tag_length-1 downto 0);
+  signal tag_push_req, tag_push_ack, tag_pop_req, tag_pop_ack: std_logic;
+  signal tag_unload_req_symbol, tag_unload_ack_symbol, tag_write_req_symbol, tag_write_ack_symbol: Boolean;
+  signal tag_ilock_write_req_symbol, tag_ilock_write_ack_symbol, tag_ilock_read_req_symbol, tag_ilock_read_ack_symbol: Boolean;
+  signal start_req_sig, fin_req_sig, start_ack_sig, fin_ack_sig: std_logic; 
+  signal input_sample_reenable_symbol: Boolean;
+  -- input port buffer signals
+  -- output port buffer signals
+  signal tx_deconcat_CP_3_start: Boolean;
+  signal tx_deconcat_CP_3_symbol: Boolean;
+  -- volatile/operator module components. 
+  -- links between control-path and data-path
+  signal WPIPE_tx_out_pipe_186_inst_ack_1 : boolean;
+  signal do_while_stmt_9_branch_req_0 : boolean;
+  signal WPIPE_tx_out_pipe_186_inst_req_0 : boolean;
+  signal WPIPE_tx_out_pipe_186_inst_ack_0 : boolean;
+  signal WPIPE_tx_out_pipe_186_inst_req_1 : boolean;
+  signal RPIPE_tx_in_pipe_12_inst_req_0 : boolean;
+  signal RPIPE_tx_in_pipe_12_inst_ack_0 : boolean;
+  signal RPIPE_tx_in_pipe_12_inst_req_1 : boolean;
+  signal RPIPE_tx_in_pipe_12_inst_ack_1 : boolean;
+  signal WPIPE_tx_out_pipe_190_inst_req_0 : boolean;
+  signal WPIPE_tx_out_pipe_190_inst_ack_0 : boolean;
+  signal WPIPE_tx_out_pipe_190_inst_req_1 : boolean;
+  signal WPIPE_tx_out_pipe_190_inst_ack_1 : boolean;
+  signal WPIPE_tx_out_pipe_194_inst_req_0 : boolean;
+  signal WPIPE_tx_out_pipe_194_inst_ack_0 : boolean;
+  signal WPIPE_tx_out_pipe_194_inst_req_1 : boolean;
+  signal WPIPE_tx_out_pipe_194_inst_ack_1 : boolean;
+  signal do_while_stmt_9_branch_ack_0 : boolean;
+  signal WPIPE_tx_out_pipe_198_inst_req_0 : boolean;
+  signal WPIPE_tx_out_pipe_198_inst_ack_0 : boolean;
+  signal WPIPE_tx_out_pipe_198_inst_req_1 : boolean;
+  signal WPIPE_tx_out_pipe_198_inst_ack_1 : boolean;
+  signal WPIPE_tx_out_pipe_202_inst_req_0 : boolean;
+  signal WPIPE_tx_out_pipe_202_inst_ack_0 : boolean;
+  signal WPIPE_tx_out_pipe_202_inst_req_1 : boolean;
+  signal WPIPE_tx_out_pipe_202_inst_ack_1 : boolean;
+  signal WPIPE_tx_out_pipe_206_inst_req_0 : boolean;
+  signal WPIPE_tx_out_pipe_206_inst_ack_0 : boolean;
+  signal WPIPE_tx_out_pipe_206_inst_req_1 : boolean;
+  signal WPIPE_tx_out_pipe_206_inst_ack_1 : boolean;
+  signal WPIPE_tx_out_pipe_210_inst_req_0 : boolean;
+  signal WPIPE_tx_out_pipe_210_inst_ack_0 : boolean;
+  signal WPIPE_tx_out_pipe_210_inst_req_1 : boolean;
+  signal WPIPE_tx_out_pipe_210_inst_ack_1 : boolean;
+  signal WPIPE_tx_out_pipe_214_inst_req_0 : boolean;
+  signal WPIPE_tx_out_pipe_214_inst_ack_0 : boolean;
+  signal WPIPE_tx_out_pipe_214_inst_req_1 : boolean;
+  signal WPIPE_tx_out_pipe_214_inst_ack_1 : boolean;
+  signal do_while_stmt_9_branch_ack_1 : boolean;
+  -- 
+begin --  
+  -- input handling ------------------------------------------------
+  in_buffer: UnloadBuffer -- 
+    generic map(name => "tx_deconcat_input_buffer", -- 
+      buffer_size => 1,
+      bypass_flag => false,
+      data_width => tag_length + 0) -- 
+    port map(write_req => in_buffer_write_req, -- 
+      write_ack => in_buffer_write_ack, 
+      write_data => in_buffer_data_in,
+      unload_req => in_buffer_unload_req_symbol, 
+      unload_ack => in_buffer_unload_ack_symbol, 
+      read_data => in_buffer_data_out,
+      clk => clk, reset => reset); -- 
+  in_buffer_data_in(tag_length-1 downto 0) <= tag_in;
+  tag_ub_out <= in_buffer_data_out(tag_length-1 downto 0);
+  in_buffer_write_req <= start_req;
+  start_ack <= in_buffer_write_ack;
+  in_buffer_unload_req_symbol_join: block -- 
+    constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
+    constant place_markings: IntegerArray(0 to 1)  := (0 => 1,1 => 1);
+    constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 1);
+    constant joinName: string(1 to 32) := "in_buffer_unload_req_symbol_join"; 
+    signal preds: BooleanArray(1 to 2); -- 
+  begin -- 
+    preds <= in_buffer_unload_ack_symbol & input_sample_reenable_symbol;
+    gj_in_buffer_unload_req_symbol_join : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+      port map(preds => preds, symbol_out => in_buffer_unload_req_symbol, clk => clk, reset => reset); --
+  end block;
+  -- join of all unload_ack_symbols.. used to trigger CP.
+  tx_deconcat_CP_3_start <= in_buffer_unload_ack_symbol;
+  -- output handling  -------------------------------------------------------
+  out_buffer: ReceiveBuffer -- 
+    generic map(name => "tx_deconcat_out_buffer", -- 
+      buffer_size => 1,
+      full_rate => false,
+      data_width => tag_length + 0) --
+    port map(write_req => out_buffer_write_req_symbol, -- 
+      write_ack => out_buffer_write_ack_symbol, 
+      write_data => out_buffer_data_in,
+      read_req => out_buffer_read_req, 
+      read_ack => out_buffer_read_ack, 
+      read_data => out_buffer_data_out,
+      clk => clk, reset => reset); -- 
+  out_buffer_data_in(tag_length-1 downto 0) <= tag_ilock_out;
+  tag_out <= out_buffer_data_out(tag_length-1 downto 0);
+  out_buffer_write_req_symbol_join: block -- 
+    constant place_capacities: IntegerArray(0 to 2) := (0 => 1,1 => 1,2 => 1);
+    constant place_markings: IntegerArray(0 to 2)  := (0 => 0,1 => 1,2 => 0);
+    constant place_delays: IntegerArray(0 to 2) := (0 => 0,1 => 1,2 => 0);
+    constant joinName: string(1 to 32) := "out_buffer_write_req_symbol_join"; 
+    signal preds: BooleanArray(1 to 3); -- 
+  begin -- 
+    preds <= tx_deconcat_CP_3_symbol & out_buffer_write_ack_symbol & tag_ilock_read_ack_symbol;
+    gj_out_buffer_write_req_symbol_join : generic_join generic map(name => joinName, number_of_predecessors => 3, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+      port map(preds => preds, symbol_out => out_buffer_write_req_symbol, clk => clk, reset => reset); --
+  end block;
+  -- write-to output-buffer produces  reenable input sampling
+  input_sample_reenable_symbol <= out_buffer_write_ack_symbol;
+  -- fin-req/ack level protocol..
+  out_buffer_read_req <= fin_req;
+  fin_ack <= out_buffer_read_ack;
+  ----- tag-queue --------------------------------------------------
+  -- interlock buffer for TAG.. to provide required buffering.
+  tagIlock: InterlockBuffer -- 
+    generic map(name => "tag-interlock-buffer", -- 
+      buffer_size => 1,
+      bypass_flag => false,
+      in_data_width => tag_length,
+      out_data_width => tag_length) -- 
+    port map(write_req => tag_ilock_write_req_symbol, -- 
+      write_ack => tag_ilock_write_ack_symbol, 
+      write_data => tag_ub_out,
+      read_req => tag_ilock_read_req_symbol, 
+      read_ack => tag_ilock_read_ack_symbol, 
+      read_data => tag_ilock_out, 
+      clk => clk, reset => reset); -- 
+  -- tag ilock-buffer control logic. 
+  tag_ilock_write_req_symbol_join: block -- 
+    constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
+    constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
+    constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 1);
+    constant joinName: string(1 to 31) := "tag_ilock_write_req_symbol_join"; 
+    signal preds: BooleanArray(1 to 2); -- 
+  begin -- 
+    preds <= tx_deconcat_CP_3_start & tag_ilock_write_ack_symbol;
+    gj_tag_ilock_write_req_symbol_join : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+      port map(preds => preds, symbol_out => tag_ilock_write_req_symbol, clk => clk, reset => reset); --
+  end block;
+  tag_ilock_read_req_symbol_join: block -- 
+    constant place_capacities: IntegerArray(0 to 2) := (0 => 1,1 => 1,2 => 1);
+    constant place_markings: IntegerArray(0 to 2)  := (0 => 0,1 => 1,2 => 1);
+    constant place_delays: IntegerArray(0 to 2) := (0 => 0,1 => 0,2 => 0);
+    constant joinName: string(1 to 30) := "tag_ilock_read_req_symbol_join"; 
+    signal preds: BooleanArray(1 to 3); -- 
+  begin -- 
+    preds <= tx_deconcat_CP_3_start & tag_ilock_read_ack_symbol & out_buffer_write_ack_symbol;
+    gj_tag_ilock_read_req_symbol_join : generic_join generic map(name => joinName, number_of_predecessors => 3, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+      port map(preds => preds, symbol_out => tag_ilock_read_req_symbol, clk => clk, reset => reset); --
+  end block;
+  -- the control path --------------------------------------------------
+  always_true_symbol <= true; 
+  default_zero_sig <= '0';
+  tx_deconcat_CP_3: Block -- control-path 
+    signal tx_deconcat_CP_3_elements: BooleanArray(40 downto 0);
+    -- 
+  begin -- 
+    tx_deconcat_CP_3_elements(0) <= tx_deconcat_CP_3_start;
+    tx_deconcat_CP_3_symbol <= tx_deconcat_CP_3_elements(1);
+    -- CP-element group 0:  transition  place  bypass 
+    -- CP-element group 0: predecessors 
+    -- CP-element group 0: successors 
+    -- CP-element group 0: 	2 
+    -- CP-element group 0:  members (4) 
+      -- CP-element group 0: 	 $entry
+      -- CP-element group 0: 	 branch_block_stmt_8/$entry
+      -- CP-element group 0: 	 branch_block_stmt_8/branch_block_stmt_8__entry__
+      -- CP-element group 0: 	 branch_block_stmt_8/do_while_stmt_9__entry__
+      -- 
+    -- CP-element group 1:  transition  place  bypass 
+    -- CP-element group 1: predecessors 
+    -- CP-element group 1: 	40 
+    -- CP-element group 1: successors 
+    -- CP-element group 1:  members (4) 
+      -- CP-element group 1: 	 $exit
+      -- CP-element group 1: 	 branch_block_stmt_8/$exit
+      -- CP-element group 1: 	 branch_block_stmt_8/branch_block_stmt_8__exit__
+      -- CP-element group 1: 	 branch_block_stmt_8/do_while_stmt_9__exit__
+      -- 
+    tx_deconcat_CP_3_elements(1) <= tx_deconcat_CP_3_elements(40);
+    -- CP-element group 2:  transition  place  bypass  pipeline-parent 
+    -- CP-element group 2: predecessors 
+    -- CP-element group 2: 	0 
+    -- CP-element group 2: successors 
+    -- CP-element group 2: 	8 
+    -- CP-element group 2:  members (2) 
+      -- CP-element group 2: 	 branch_block_stmt_8/do_while_stmt_9/$entry
+      -- CP-element group 2: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9__entry__
+      -- 
+    tx_deconcat_CP_3_elements(2) <= tx_deconcat_CP_3_elements(0);
+    -- CP-element group 3:  merge  place  bypass  pipeline-parent 
+    -- CP-element group 3: predecessors 
+    -- CP-element group 3: successors 
+    -- CP-element group 3: 	40 
+    -- CP-element group 3:  members (1) 
+      -- CP-element group 3: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9__exit__
+      -- 
+    -- Element group tx_deconcat_CP_3_elements(3) is bound as output of CP function.
+    -- CP-element group 4:  merge  place  bypass  pipeline-parent 
+    -- CP-element group 4: predecessors 
+    -- CP-element group 4: successors 
+    -- CP-element group 4: 	7 
+    -- CP-element group 4:  members (1) 
+      -- CP-element group 4: 	 branch_block_stmt_8/do_while_stmt_9/loop_back
+      -- 
+    -- Element group tx_deconcat_CP_3_elements(4) is bound as output of CP function.
+    -- CP-element group 5:  branch  transition  place  bypass  pipeline-parent 
+    -- CP-element group 5: predecessors 
+    -- CP-element group 5: 	37 
+    -- CP-element group 5: successors 
+    -- CP-element group 5: 	38 
+    -- CP-element group 5: 	39 
+    -- CP-element group 5:  members (3) 
+      -- CP-element group 5: 	 branch_block_stmt_8/do_while_stmt_9/condition_done
+      -- CP-element group 5: 	 branch_block_stmt_8/do_while_stmt_9/loop_exit/$entry
+      -- CP-element group 5: 	 branch_block_stmt_8/do_while_stmt_9/loop_taken/$entry
+      -- 
+    tx_deconcat_CP_3_elements(5) <= tx_deconcat_CP_3_elements(37);
+    -- CP-element group 6:  branch  place  bypass  pipeline-parent 
+    -- CP-element group 6: predecessors 
+    -- CP-element group 6: 	36 
+    -- CP-element group 6: successors 
+    -- CP-element group 6:  members (1) 
+      -- CP-element group 6: 	 branch_block_stmt_8/do_while_stmt_9/loop_body_done
+      -- 
+    tx_deconcat_CP_3_elements(6) <= tx_deconcat_CP_3_elements(36);
+    -- CP-element group 7:  transition  bypass  pipeline-parent 
+    -- CP-element group 7: predecessors 
+    -- CP-element group 7: 	4 
+    -- CP-element group 7: successors 
+    -- CP-element group 7:  members (1) 
+      -- CP-element group 7: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/back_edge_to_loop_body
+      -- 
+    tx_deconcat_CP_3_elements(7) <= tx_deconcat_CP_3_elements(4);
+    -- CP-element group 8:  transition  bypass  pipeline-parent 
+    -- CP-element group 8: predecessors 
+    -- CP-element group 8: 	2 
+    -- CP-element group 8: successors 
+    -- CP-element group 8:  members (1) 
+      -- CP-element group 8: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/first_time_through_loop_body
+      -- 
+    tx_deconcat_CP_3_elements(8) <= tx_deconcat_CP_3_elements(2);
+    -- CP-element group 9:  fork  transition  bypass  pipeline-parent 
+    -- CP-element group 9: predecessors 
+    -- CP-element group 9: successors 
+    -- CP-element group 9: 	10 
+    -- CP-element group 9: 	37 
+    -- CP-element group 9:  members (2) 
+      -- CP-element group 9: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/$entry
+      -- CP-element group 9: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/loop_body_start
+      -- 
+    -- Element group tx_deconcat_CP_3_elements(9) is bound as output of CP function.
+    -- CP-element group 10:  join  transition  output  bypass  pipeline-parent 
+    -- CP-element group 10: predecessors 
+    -- CP-element group 10: 	9 
+    -- CP-element group 10: marked-predecessors 
+    -- CP-element group 10: 	13 
+    -- CP-element group 10: successors 
+    -- CP-element group 10: 	12 
+    -- CP-element group 10:  members (3) 
+      -- CP-element group 10: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_tx_in_pipe_12_sample_start_
+      -- CP-element group 10: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_tx_in_pipe_12_Sample/$entry
+      -- CP-element group 10: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_tx_in_pipe_12_Sample/rr
+      -- 
+    rr_36_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " rr_36_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(10), ack => RPIPE_tx_in_pipe_12_inst_req_0); -- 
+    tx_deconcat_cp_element_group_10: block -- 
+      constant place_capacities: IntegerArray(0 to 1) := (0 => 7,1 => 1);
+      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
+      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
+      constant joinName: string(1 to 31) := "tx_deconcat_cp_element_group_10"; 
+      signal preds: BooleanArray(1 to 2); -- 
+    begin -- 
+      preds <= tx_deconcat_CP_3_elements(9) & tx_deconcat_CP_3_elements(13);
+      gj_tx_deconcat_cp_element_group_10 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+        port map(preds => preds, symbol_out => tx_deconcat_CP_3_elements(10), clk => clk, reset => reset); --
+    end block;
+    -- CP-element group 11:  join  transition  output  bypass  pipeline-parent 
+    -- CP-element group 11: predecessors 
+    -- CP-element group 11: 	12 
+    -- CP-element group 11: marked-predecessors 
+    -- CP-element group 11: 	35 
+    -- CP-element group 11: successors 
+    -- CP-element group 11: 	13 
+    -- CP-element group 11:  members (3) 
+      -- CP-element group 11: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_tx_in_pipe_12_update_start_
+      -- CP-element group 11: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_tx_in_pipe_12_Update/$entry
+      -- CP-element group 11: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_tx_in_pipe_12_Update/cr
+      -- 
+    cr_41_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " cr_41_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(11), ack => RPIPE_tx_in_pipe_12_inst_req_1); -- 
+    tx_deconcat_cp_element_group_11: block -- 
+      constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
+      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
+      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
+      constant joinName: string(1 to 31) := "tx_deconcat_cp_element_group_11"; 
+      signal preds: BooleanArray(1 to 2); -- 
+    begin -- 
+      preds <= tx_deconcat_CP_3_elements(12) & tx_deconcat_CP_3_elements(35);
+      gj_tx_deconcat_cp_element_group_11 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+        port map(preds => preds, symbol_out => tx_deconcat_CP_3_elements(11), clk => clk, reset => reset); --
+    end block;
+    -- CP-element group 12:  transition  input  bypass  pipeline-parent 
+    -- CP-element group 12: predecessors 
+    -- CP-element group 12: 	10 
+    -- CP-element group 12: successors 
+    -- CP-element group 12: 	11 
+    -- CP-element group 12:  members (3) 
+      -- CP-element group 12: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_tx_in_pipe_12_sample_completed_
+      -- CP-element group 12: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_tx_in_pipe_12_Sample/$exit
+      -- CP-element group 12: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_tx_in_pipe_12_Sample/ra
+      -- 
+    ra_37_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 12_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => RPIPE_tx_in_pipe_12_inst_ack_0, ack => tx_deconcat_CP_3_elements(12)); -- 
+    -- CP-element group 13:  fork  transition  input  bypass  pipeline-parent 
+    -- CP-element group 13: predecessors 
+    -- CP-element group 13: 	11 
+    -- CP-element group 13: successors 
+    -- CP-element group 13: 	14 
+    -- CP-element group 13: marked-successors 
+    -- CP-element group 13: 	10 
+    -- CP-element group 13:  members (3) 
+      -- CP-element group 13: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_tx_in_pipe_12_update_completed_
+      -- CP-element group 13: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_tx_in_pipe_12_Update/$exit
+      -- CP-element group 13: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/RPIPE_tx_in_pipe_12_Update/ca
+      -- 
+    ca_42_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 13_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => RPIPE_tx_in_pipe_12_inst_ack_1, ack => tx_deconcat_CP_3_elements(13)); -- 
+    -- CP-element group 14:  join  transition  output  bypass  pipeline-parent 
+    -- CP-element group 14: predecessors 
+    -- CP-element group 14: 	13 
+    -- CP-element group 14: marked-predecessors 
+    -- CP-element group 14: 	36 
+    -- CP-element group 14: successors 
+    -- CP-element group 14: 	15 
+    -- CP-element group 14:  members (3) 
+      -- CP-element group 14: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_186_sample_start_
+      -- CP-element group 14: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_186_Sample/$entry
+      -- CP-element group 14: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_186_Sample/req
+      -- 
+    req_50_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_50_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(14), ack => WPIPE_tx_out_pipe_186_inst_req_0); -- 
+    tx_deconcat_cp_element_group_14: block -- 
+      constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
+      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
+      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
+      constant joinName: string(1 to 31) := "tx_deconcat_cp_element_group_14"; 
+      signal preds: BooleanArray(1 to 2); -- 
+    begin -- 
+      preds <= tx_deconcat_CP_3_elements(13) & tx_deconcat_CP_3_elements(36);
+      gj_tx_deconcat_cp_element_group_14 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+        port map(preds => preds, symbol_out => tx_deconcat_CP_3_elements(14), clk => clk, reset => reset); --
+    end block;
+    -- CP-element group 15:  transition  input  output  bypass  pipeline-parent 
+    -- CP-element group 15: predecessors 
+    -- CP-element group 15: 	14 
+    -- CP-element group 15: successors 
+    -- CP-element group 15: 	16 
+    -- CP-element group 15:  members (6) 
+      -- CP-element group 15: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_186_sample_completed_
+      -- CP-element group 15: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_186_update_start_
+      -- CP-element group 15: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_186_Sample/$exit
+      -- CP-element group 15: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_186_Sample/ack
+      -- CP-element group 15: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_186_Update/$entry
+      -- CP-element group 15: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_186_Update/req
+      -- 
+    ack_51_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 15_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_186_inst_ack_0, ack => tx_deconcat_CP_3_elements(15)); -- 
+    req_55_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_55_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(15), ack => WPIPE_tx_out_pipe_186_inst_req_1); -- 
+    -- CP-element group 16:  transition  input  bypass  pipeline-parent 
+    -- CP-element group 16: predecessors 
+    -- CP-element group 16: 	15 
+    -- CP-element group 16: successors 
+    -- CP-element group 16: 	17 
+    -- CP-element group 16:  members (3) 
+      -- CP-element group 16: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_186_Update/ack
+      -- CP-element group 16: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_186_update_completed_
+      -- CP-element group 16: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_186_Update/$exit
+      -- 
+    ack_56_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 16_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_186_inst_ack_1, ack => tx_deconcat_CP_3_elements(16)); -- 
+    -- CP-element group 17:  join  transition  output  bypass  pipeline-parent 
+    -- CP-element group 17: predecessors 
+    -- CP-element group 17: 	16 
+    -- CP-element group 17: marked-predecessors 
+    -- CP-element group 17: 	19 
+    -- CP-element group 17: successors 
+    -- CP-element group 17: 	18 
+    -- CP-element group 17:  members (3) 
+      -- CP-element group 17: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_190_sample_start_
+      -- CP-element group 17: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_190_Sample/$entry
+      -- CP-element group 17: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_190_Sample/req
+      -- 
+    req_64_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_64_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(17), ack => WPIPE_tx_out_pipe_190_inst_req_0); -- 
+    tx_deconcat_cp_element_group_17: block -- 
+      constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
+      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
+      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
+      constant joinName: string(1 to 31) := "tx_deconcat_cp_element_group_17"; 
+      signal preds: BooleanArray(1 to 2); -- 
+    begin -- 
+      preds <= tx_deconcat_CP_3_elements(16) & tx_deconcat_CP_3_elements(19);
+      gj_tx_deconcat_cp_element_group_17 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+        port map(preds => preds, symbol_out => tx_deconcat_CP_3_elements(17), clk => clk, reset => reset); --
+    end block;
+    -- CP-element group 18:  transition  input  output  bypass  pipeline-parent 
+    -- CP-element group 18: predecessors 
+    -- CP-element group 18: 	17 
+    -- CP-element group 18: successors 
+    -- CP-element group 18: 	19 
+    -- CP-element group 18:  members (6) 
+      -- CP-element group 18: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_190_sample_completed_
+      -- CP-element group 18: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_190_update_start_
+      -- CP-element group 18: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_190_Sample/$exit
+      -- CP-element group 18: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_190_Sample/ack
+      -- CP-element group 18: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_190_Update/$entry
+      -- CP-element group 18: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_190_Update/req
+      -- 
+    ack_65_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 18_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_190_inst_ack_0, ack => tx_deconcat_CP_3_elements(18)); -- 
+    req_69_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_69_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(18), ack => WPIPE_tx_out_pipe_190_inst_req_1); -- 
+    -- CP-element group 19:  fork  transition  input  bypass  pipeline-parent 
+    -- CP-element group 19: predecessors 
+    -- CP-element group 19: 	18 
+    -- CP-element group 19: successors 
+    -- CP-element group 19: 	20 
+    -- CP-element group 19: marked-successors 
+    -- CP-element group 19: 	17 
+    -- CP-element group 19:  members (3) 
+      -- CP-element group 19: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_190_update_completed_
+      -- CP-element group 19: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_190_Update/$exit
+      -- CP-element group 19: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_190_Update/ack
+      -- 
+    ack_70_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 19_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_190_inst_ack_1, ack => tx_deconcat_CP_3_elements(19)); -- 
+    -- CP-element group 20:  join  transition  output  bypass  pipeline-parent 
+    -- CP-element group 20: predecessors 
+    -- CP-element group 20: 	19 
+    -- CP-element group 20: marked-predecessors 
+    -- CP-element group 20: 	22 
+    -- CP-element group 20: successors 
+    -- CP-element group 20: 	21 
+    -- CP-element group 20:  members (3) 
+      -- CP-element group 20: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_194_sample_start_
+      -- CP-element group 20: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_194_Sample/$entry
+      -- CP-element group 20: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_194_Sample/req
+      -- 
+    req_78_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_78_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(20), ack => WPIPE_tx_out_pipe_194_inst_req_0); -- 
+    tx_deconcat_cp_element_group_20: block -- 
+      constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
+      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
+      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
+      constant joinName: string(1 to 31) := "tx_deconcat_cp_element_group_20"; 
+      signal preds: BooleanArray(1 to 2); -- 
+    begin -- 
+      preds <= tx_deconcat_CP_3_elements(19) & tx_deconcat_CP_3_elements(22);
+      gj_tx_deconcat_cp_element_group_20 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+        port map(preds => preds, symbol_out => tx_deconcat_CP_3_elements(20), clk => clk, reset => reset); --
+    end block;
+    -- CP-element group 21:  transition  input  output  bypass  pipeline-parent 
+    -- CP-element group 21: predecessors 
+    -- CP-element group 21: 	20 
+    -- CP-element group 21: successors 
+    -- CP-element group 21: 	22 
+    -- CP-element group 21:  members (6) 
+      -- CP-element group 21: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_194_sample_completed_
+      -- CP-element group 21: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_194_update_start_
+      -- CP-element group 21: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_194_Sample/$exit
+      -- CP-element group 21: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_194_Sample/ack
+      -- CP-element group 21: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_194_Update/$entry
+      -- CP-element group 21: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_194_Update/req
+      -- 
+    ack_79_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 21_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_194_inst_ack_0, ack => tx_deconcat_CP_3_elements(21)); -- 
+    req_83_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_83_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(21), ack => WPIPE_tx_out_pipe_194_inst_req_1); -- 
+    -- CP-element group 22:  fork  transition  input  bypass  pipeline-parent 
+    -- CP-element group 22: predecessors 
+    -- CP-element group 22: 	21 
+    -- CP-element group 22: successors 
+    -- CP-element group 22: 	23 
+    -- CP-element group 22: marked-successors 
+    -- CP-element group 22: 	20 
+    -- CP-element group 22:  members (3) 
+      -- CP-element group 22: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_194_update_completed_
+      -- CP-element group 22: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_194_Update/$exit
+      -- CP-element group 22: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_194_Update/ack
+      -- 
+    ack_84_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 22_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_194_inst_ack_1, ack => tx_deconcat_CP_3_elements(22)); -- 
+    -- CP-element group 23:  join  transition  output  bypass  pipeline-parent 
+    -- CP-element group 23: predecessors 
+    -- CP-element group 23: 	22 
+    -- CP-element group 23: marked-predecessors 
+    -- CP-element group 23: 	25 
+    -- CP-element group 23: successors 
+    -- CP-element group 23: 	24 
+    -- CP-element group 23:  members (3) 
+      -- CP-element group 23: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_198_Sample/$entry
+      -- CP-element group 23: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_198_sample_start_
+      -- CP-element group 23: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_198_Sample/req
+      -- 
+    req_92_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_92_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(23), ack => WPIPE_tx_out_pipe_198_inst_req_0); -- 
+    tx_deconcat_cp_element_group_23: block -- 
+      constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
+      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
+      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
+      constant joinName: string(1 to 31) := "tx_deconcat_cp_element_group_23"; 
+      signal preds: BooleanArray(1 to 2); -- 
+    begin -- 
+      preds <= tx_deconcat_CP_3_elements(22) & tx_deconcat_CP_3_elements(25);
+      gj_tx_deconcat_cp_element_group_23 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+        port map(preds => preds, symbol_out => tx_deconcat_CP_3_elements(23), clk => clk, reset => reset); --
+    end block;
+    -- CP-element group 24:  transition  input  output  bypass  pipeline-parent 
+    -- CP-element group 24: predecessors 
+    -- CP-element group 24: 	23 
+    -- CP-element group 24: successors 
+    -- CP-element group 24: 	25 
+    -- CP-element group 24:  members (6) 
+      -- CP-element group 24: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_198_sample_completed_
+      -- CP-element group 24: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_198_update_start_
+      -- CP-element group 24: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_198_Sample/$exit
+      -- CP-element group 24: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_198_Sample/ack
+      -- CP-element group 24: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_198_Update/$entry
+      -- CP-element group 24: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_198_Update/req
+      -- 
+    ack_93_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 24_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_198_inst_ack_0, ack => tx_deconcat_CP_3_elements(24)); -- 
+    req_97_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_97_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(24), ack => WPIPE_tx_out_pipe_198_inst_req_1); -- 
+    -- CP-element group 25:  fork  transition  input  bypass  pipeline-parent 
+    -- CP-element group 25: predecessors 
+    -- CP-element group 25: 	24 
+    -- CP-element group 25: successors 
+    -- CP-element group 25: 	26 
+    -- CP-element group 25: marked-successors 
+    -- CP-element group 25: 	23 
+    -- CP-element group 25:  members (3) 
+      -- CP-element group 25: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_198_update_completed_
+      -- CP-element group 25: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_198_Update/$exit
+      -- CP-element group 25: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_198_Update/ack
+      -- 
+    ack_98_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 25_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_198_inst_ack_1, ack => tx_deconcat_CP_3_elements(25)); -- 
+    -- CP-element group 26:  join  transition  output  bypass  pipeline-parent 
+    -- CP-element group 26: predecessors 
+    -- CP-element group 26: 	25 
+    -- CP-element group 26: marked-predecessors 
+    -- CP-element group 26: 	28 
+    -- CP-element group 26: successors 
+    -- CP-element group 26: 	27 
+    -- CP-element group 26:  members (3) 
+      -- CP-element group 26: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_202_sample_start_
+      -- CP-element group 26: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_202_Sample/$entry
+      -- CP-element group 26: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_202_Sample/req
+      -- 
+    req_106_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_106_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(26), ack => WPIPE_tx_out_pipe_202_inst_req_0); -- 
+    tx_deconcat_cp_element_group_26: block -- 
+      constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
+      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
+      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
+      constant joinName: string(1 to 31) := "tx_deconcat_cp_element_group_26"; 
+      signal preds: BooleanArray(1 to 2); -- 
+    begin -- 
+      preds <= tx_deconcat_CP_3_elements(25) & tx_deconcat_CP_3_elements(28);
+      gj_tx_deconcat_cp_element_group_26 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+        port map(preds => preds, symbol_out => tx_deconcat_CP_3_elements(26), clk => clk, reset => reset); --
+    end block;
+    -- CP-element group 27:  transition  input  output  bypass  pipeline-parent 
+    -- CP-element group 27: predecessors 
+    -- CP-element group 27: 	26 
+    -- CP-element group 27: successors 
+    -- CP-element group 27: 	28 
+    -- CP-element group 27:  members (6) 
+      -- CP-element group 27: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_202_sample_completed_
+      -- CP-element group 27: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_202_update_start_
+      -- CP-element group 27: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_202_Sample/$exit
+      -- CP-element group 27: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_202_Sample/ack
+      -- CP-element group 27: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_202_Update/$entry
+      -- CP-element group 27: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_202_Update/req
+      -- 
+    ack_107_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 27_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_202_inst_ack_0, ack => tx_deconcat_CP_3_elements(27)); -- 
+    req_111_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_111_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(27), ack => WPIPE_tx_out_pipe_202_inst_req_1); -- 
+    -- CP-element group 28:  fork  transition  input  bypass  pipeline-parent 
+    -- CP-element group 28: predecessors 
+    -- CP-element group 28: 	27 
+    -- CP-element group 28: successors 
+    -- CP-element group 28: 	29 
+    -- CP-element group 28: marked-successors 
+    -- CP-element group 28: 	26 
+    -- CP-element group 28:  members (3) 
+      -- CP-element group 28: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_202_update_completed_
+      -- CP-element group 28: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_202_Update/$exit
+      -- CP-element group 28: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_202_Update/ack
+      -- 
+    ack_112_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 28_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_202_inst_ack_1, ack => tx_deconcat_CP_3_elements(28)); -- 
+    -- CP-element group 29:  join  transition  output  bypass  pipeline-parent 
+    -- CP-element group 29: predecessors 
+    -- CP-element group 29: 	28 
+    -- CP-element group 29: marked-predecessors 
+    -- CP-element group 29: 	31 
+    -- CP-element group 29: successors 
+    -- CP-element group 29: 	30 
+    -- CP-element group 29:  members (3) 
+      -- CP-element group 29: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_206_sample_start_
+      -- CP-element group 29: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_206_Sample/$entry
+      -- CP-element group 29: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_206_Sample/req
+      -- 
+    req_120_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_120_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(29), ack => WPIPE_tx_out_pipe_206_inst_req_0); -- 
+    tx_deconcat_cp_element_group_29: block -- 
+      constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
+      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
+      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
+      constant joinName: string(1 to 31) := "tx_deconcat_cp_element_group_29"; 
+      signal preds: BooleanArray(1 to 2); -- 
+    begin -- 
+      preds <= tx_deconcat_CP_3_elements(28) & tx_deconcat_CP_3_elements(31);
+      gj_tx_deconcat_cp_element_group_29 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+        port map(preds => preds, symbol_out => tx_deconcat_CP_3_elements(29), clk => clk, reset => reset); --
+    end block;
+    -- CP-element group 30:  transition  input  output  bypass  pipeline-parent 
+    -- CP-element group 30: predecessors 
+    -- CP-element group 30: 	29 
+    -- CP-element group 30: successors 
+    -- CP-element group 30: 	31 
+    -- CP-element group 30:  members (6) 
+      -- CP-element group 30: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_206_sample_completed_
+      -- CP-element group 30: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_206_update_start_
+      -- CP-element group 30: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_206_Sample/$exit
+      -- CP-element group 30: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_206_Sample/ack
+      -- CP-element group 30: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_206_Update/$entry
+      -- CP-element group 30: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_206_Update/req
+      -- 
+    ack_121_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 30_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_206_inst_ack_0, ack => tx_deconcat_CP_3_elements(30)); -- 
+    req_125_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_125_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(30), ack => WPIPE_tx_out_pipe_206_inst_req_1); -- 
+    -- CP-element group 31:  fork  transition  input  bypass  pipeline-parent 
+    -- CP-element group 31: predecessors 
+    -- CP-element group 31: 	30 
+    -- CP-element group 31: successors 
+    -- CP-element group 31: 	32 
+    -- CP-element group 31: marked-successors 
+    -- CP-element group 31: 	29 
+    -- CP-element group 31:  members (3) 
+      -- CP-element group 31: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_206_update_completed_
+      -- CP-element group 31: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_206_Update/$exit
+      -- CP-element group 31: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_206_Update/ack
+      -- 
+    ack_126_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 31_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_206_inst_ack_1, ack => tx_deconcat_CP_3_elements(31)); -- 
+    -- CP-element group 32:  join  transition  output  bypass  pipeline-parent 
+    -- CP-element group 32: predecessors 
+    -- CP-element group 32: 	31 
+    -- CP-element group 32: marked-predecessors 
+    -- CP-element group 32: 	34 
+    -- CP-element group 32: successors 
+    -- CP-element group 32: 	33 
+    -- CP-element group 32:  members (3) 
+      -- CP-element group 32: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_210_sample_start_
+      -- CP-element group 32: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_210_Sample/$entry
+      -- CP-element group 32: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_210_Sample/req
+      -- 
+    req_134_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_134_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(32), ack => WPIPE_tx_out_pipe_210_inst_req_0); -- 
+    tx_deconcat_cp_element_group_32: block -- 
+      constant place_capacities: IntegerArray(0 to 1) := (0 => 1,1 => 1);
+      constant place_markings: IntegerArray(0 to 1)  := (0 => 0,1 => 1);
+      constant place_delays: IntegerArray(0 to 1) := (0 => 0,1 => 0);
+      constant joinName: string(1 to 31) := "tx_deconcat_cp_element_group_32"; 
+      signal preds: BooleanArray(1 to 2); -- 
+    begin -- 
+      preds <= tx_deconcat_CP_3_elements(31) & tx_deconcat_CP_3_elements(34);
+      gj_tx_deconcat_cp_element_group_32 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
+        port map(preds => preds, symbol_out => tx_deconcat_CP_3_elements(32), clk => clk, reset => reset); --
+    end block;
+    -- CP-element group 33:  transition  input  output  bypass  pipeline-parent 
+    -- CP-element group 33: predecessors 
+    -- CP-element group 33: 	32 
+    -- CP-element group 33: successors 
+    -- CP-element group 33: 	34 
+    -- CP-element group 33:  members (6) 
+      -- CP-element group 33: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_210_sample_completed_
+      -- CP-element group 33: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_210_update_start_
+      -- CP-element group 33: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_210_Sample/$exit
+      -- CP-element group 33: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_210_Sample/ack
+      -- CP-element group 33: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_210_Update/$entry
+      -- CP-element group 33: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_210_Update/req
+      -- 
+    ack_135_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 33_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_210_inst_ack_0, ack => tx_deconcat_CP_3_elements(33)); -- 
+    req_139_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_139_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(33), ack => WPIPE_tx_out_pipe_210_inst_req_1); -- 
+    -- CP-element group 34:  fork  transition  input  output  bypass  pipeline-parent 
+    -- CP-element group 34: predecessors 
+    -- CP-element group 34: 	33 
+    -- CP-element group 34: successors 
+    -- CP-element group 34: 	35 
+    -- CP-element group 34: marked-successors 
+    -- CP-element group 34: 	32 
+    -- CP-element group 34:  members (6) 
+      -- CP-element group 34: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_210_update_completed_
+      -- CP-element group 34: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_210_Update/$exit
+      -- CP-element group 34: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_210_Update/ack
+      -- CP-element group 34: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_214_sample_start_
+      -- CP-element group 34: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_214_Sample/$entry
+      -- CP-element group 34: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_214_Sample/req
+      -- 
+    ack_140_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 34_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_210_inst_ack_1, ack => tx_deconcat_CP_3_elements(34)); -- 
+    req_148_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_148_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(34), ack => WPIPE_tx_out_pipe_214_inst_req_0); -- 
+    -- CP-element group 35:  fork  transition  input  output  bypass  pipeline-parent 
+    -- CP-element group 35: predecessors 
+    -- CP-element group 35: 	34 
+    -- CP-element group 35: successors 
+    -- CP-element group 35: 	36 
+    -- CP-element group 35: marked-successors 
+    -- CP-element group 35: 	11 
+    -- CP-element group 35:  members (6) 
+      -- CP-element group 35: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_214_sample_completed_
+      -- CP-element group 35: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_214_update_start_
+      -- CP-element group 35: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_214_Sample/$exit
+      -- CP-element group 35: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_214_Sample/ack
+      -- CP-element group 35: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_214_Update/$entry
+      -- CP-element group 35: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_214_Update/req
+      -- 
+    ack_149_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 35_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_214_inst_ack_0, ack => tx_deconcat_CP_3_elements(35)); -- 
+    req_153_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_153_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(35), ack => WPIPE_tx_out_pipe_214_inst_req_1); -- 
+    -- CP-element group 36:  fork  transition  input  bypass  pipeline-parent 
+    -- CP-element group 36: predecessors 
+    -- CP-element group 36: 	35 
+    -- CP-element group 36: successors 
+    -- CP-element group 36: 	6 
+    -- CP-element group 36: marked-successors 
+    -- CP-element group 36: 	14 
+    -- CP-element group 36:  members (4) 
+      -- CP-element group 36: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/$exit
+      -- CP-element group 36: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_214_update_completed_
+      -- CP-element group 36: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_214_Update/$exit
+      -- CP-element group 36: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/WPIPE_tx_out_pipe_214_Update/ack
+      -- 
+    ack_154_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 36_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => WPIPE_tx_out_pipe_214_inst_ack_1, ack => tx_deconcat_CP_3_elements(36)); -- 
+    -- CP-element group 37:  transition  output  delay-element  bypass  pipeline-parent 
+    -- CP-element group 37: predecessors 
+    -- CP-element group 37: 	9 
+    -- CP-element group 37: successors 
+    -- CP-element group 37: 	5 
+    -- CP-element group 37:  members (2) 
+      -- CP-element group 37: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/condition_evaluated
+      -- CP-element group 37: 	 branch_block_stmt_8/do_while_stmt_9/do_while_stmt_9_loop_body/loop_body_delay_to_condition_start
+      -- 
+    condition_evaluated_27_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " condition_evaluated_27_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => tx_deconcat_CP_3_elements(37), ack => do_while_stmt_9_branch_req_0); -- 
+    -- Element group tx_deconcat_CP_3_elements(37) is a control-delay.
+    cp_element_37_delay: control_delay_element  generic map(name => " 37_delay", delay_value => 1)  port map(req => tx_deconcat_CP_3_elements(9), ack => tx_deconcat_CP_3_elements(37), clk => clk, reset =>reset);
+    -- CP-element group 38:  transition  input  bypass  pipeline-parent 
+    -- CP-element group 38: predecessors 
+    -- CP-element group 38: 	5 
+    -- CP-element group 38: successors 
+    -- CP-element group 38:  members (2) 
+      -- CP-element group 38: 	 branch_block_stmt_8/do_while_stmt_9/loop_exit/$exit
+      -- CP-element group 38: 	 branch_block_stmt_8/do_while_stmt_9/loop_exit/ack
+      -- 
+    ack_159_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 38_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => do_while_stmt_9_branch_ack_0, ack => tx_deconcat_CP_3_elements(38)); -- 
+    -- CP-element group 39:  transition  input  bypass  pipeline-parent 
+    -- CP-element group 39: predecessors 
+    -- CP-element group 39: 	5 
+    -- CP-element group 39: successors 
+    -- CP-element group 39:  members (2) 
+      -- CP-element group 39: 	 branch_block_stmt_8/do_while_stmt_9/loop_taken/$exit
+      -- CP-element group 39: 	 branch_block_stmt_8/do_while_stmt_9/loop_taken/ack
+      -- 
+    ack_163_symbol_link_from_dp: control_delay_element -- 
+      generic map(name => " 39_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => do_while_stmt_9_branch_ack_1, ack => tx_deconcat_CP_3_elements(39)); -- 
+    -- CP-element group 40:  transition  bypass  pipeline-parent 
+    -- CP-element group 40: predecessors 
+    -- CP-element group 40: 	3 
+    -- CP-element group 40: successors 
+    -- CP-element group 40: 	1 
+    -- CP-element group 40:  members (1) 
+      -- CP-element group 40: 	 branch_block_stmt_8/do_while_stmt_9/$exit
+      -- 
+    tx_deconcat_CP_3_elements(40) <= tx_deconcat_CP_3_elements(3);
+    tx_deconcat_do_while_stmt_9_terminator_164: loop_terminator -- 
+      generic map (name => " tx_deconcat_do_while_stmt_9_terminator_164", max_iterations_in_flight =>7) 
+      port map(loop_body_exit => tx_deconcat_CP_3_elements(6),loop_continue => tx_deconcat_CP_3_elements(39),loop_terminate => tx_deconcat_CP_3_elements(38),loop_back => tx_deconcat_CP_3_elements(4),loop_exit => tx_deconcat_CP_3_elements(3),clk => clk, reset => reset); -- 
+    entry_tmerge_28_block : block -- 
+      signal preds : BooleanArray(0 to 1);
+      begin -- 
+        preds(0)  <= tx_deconcat_CP_3_elements(7);
+        preds(1)  <= tx_deconcat_CP_3_elements(8);
+        entry_tmerge_28 : transition_merge -- 
+          generic map(name => " entry_tmerge_28")
+          port map (preds => preds, symbol_out => tx_deconcat_CP_3_elements(9));
+          -- 
+    end block;
+    --  hookup: inputs to control-path 
+    -- hookup: output from control-path 
+    -- 
+  end Block; -- control-path
+  -- the data path
+  data_path: Block -- 
+    signal AND_u1_u1_102_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_103_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_115_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_116_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_128_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_129_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_141_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_142_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_154_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_155_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_167_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_168_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_178_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_89_wire : std_logic_vector(0 downto 0);
+    signal AND_u1_u1_90_wire : std_logic_vector(0 downto 0);
+    signal CONCAT_u1_u9_105_wire : std_logic_vector(8 downto 0);
+    signal CONCAT_u1_u9_118_wire : std_logic_vector(8 downto 0);
+    signal CONCAT_u1_u9_131_wire : std_logic_vector(8 downto 0);
+    signal CONCAT_u1_u9_144_wire : std_logic_vector(8 downto 0);
+    signal CONCAT_u1_u9_157_wire : std_logic_vector(8 downto 0);
+    signal CONCAT_u1_u9_170_wire : std_logic_vector(8 downto 0);
+    signal CONCAT_u1_u9_180_wire : std_logic_vector(8 downto 0);
+    signal CONCAT_u1_u9_92_wire : std_logic_vector(8 downto 0);
+    signal NOT_u1_u1_101_wire : std_logic_vector(0 downto 0);
+    signal NOT_u1_u1_114_wire : std_logic_vector(0 downto 0);
+    signal NOT_u1_u1_127_wire : std_logic_vector(0 downto 0);
+    signal NOT_u1_u1_140_wire : std_logic_vector(0 downto 0);
+    signal NOT_u1_u1_153_wire : std_logic_vector(0 downto 0);
+    signal NOT_u1_u1_166_wire : std_logic_vector(0 downto 0);
+    signal NOT_u1_u1_88_wire : std_logic_vector(0 downto 0);
+    signal RX_13 : std_logic_vector(72 downto 0);
+    signal b0_55 : std_logic_vector(0 downto 0);
+    signal b1_59 : std_logic_vector(0 downto 0);
+    signal b2_63 : std_logic_vector(0 downto 0);
+    signal b3_67 : std_logic_vector(0 downto 0);
+    signal b4_71 : std_logic_vector(0 downto 0);
+    signal b5_75 : std_logic_vector(0 downto 0);
+    signal b6_79 : std_logic_vector(0 downto 0);
+    signal b7_83 : std_logic_vector(0 downto 0);
+    signal d0_23 : std_logic_vector(7 downto 0);
+    signal d1_27 : std_logic_vector(7 downto 0);
+    signal d2_31 : std_logic_vector(7 downto 0);
+    signal d3_35 : std_logic_vector(7 downto 0);
+    signal d4_39 : std_logic_vector(7 downto 0);
+    signal d5_43 : std_logic_vector(7 downto 0);
+    signal d6_47 : std_logic_vector(7 downto 0);
+    signal d7_51 : std_logic_vector(7 downto 0);
+    signal konst_218_wire_constant : std_logic_vector(0 downto 0);
+    signal s0_96 : std_logic_vector(9 downto 0);
+    signal s1_109 : std_logic_vector(9 downto 0);
+    signal s2_122 : std_logic_vector(9 downto 0);
+    signal s3_135 : std_logic_vector(9 downto 0);
+    signal s4_148 : std_logic_vector(9 downto 0);
+    signal s5_161 : std_logic_vector(9 downto 0);
+    signal s6_174 : std_logic_vector(9 downto 0);
+    signal s7_184 : std_logic_vector(9 downto 0);
+    signal tlast_18 : std_logic_vector(0 downto 0);
+    signal type_cast_107_wire_constant : std_logic_vector(0 downto 0);
+    signal type_cast_120_wire_constant : std_logic_vector(0 downto 0);
+    signal type_cast_133_wire_constant : std_logic_vector(0 downto 0);
+    signal type_cast_146_wire_constant : std_logic_vector(0 downto 0);
+    signal type_cast_159_wire_constant : std_logic_vector(0 downto 0);
+    signal type_cast_172_wire_constant : std_logic_vector(0 downto 0);
+    signal type_cast_182_wire_constant : std_logic_vector(0 downto 0);
+    signal type_cast_94_wire_constant : std_logic_vector(0 downto 0);
+    -- 
+  begin -- 
+    konst_218_wire_constant <= "1";
+    type_cast_107_wire_constant <= "1";
+    type_cast_120_wire_constant <= "1";
+    type_cast_133_wire_constant <= "1";
+    type_cast_146_wire_constant <= "1";
+    type_cast_159_wire_constant <= "1";
+    type_cast_172_wire_constant <= "1";
+    type_cast_182_wire_constant <= "1";
+    type_cast_94_wire_constant <= "1";
+    -- flow-through slice operator slice_17_inst
+    tlast_18 <= RX_13(72 downto 72);
+    -- flow-through slice operator slice_22_inst
+    d0_23 <= RX_13(71 downto 64);
+    -- flow-through slice operator slice_26_inst
+    d1_27 <= RX_13(63 downto 56);
+    -- flow-through slice operator slice_30_inst
+    d2_31 <= RX_13(55 downto 48);
+    -- flow-through slice operator slice_34_inst
+    d3_35 <= RX_13(47 downto 40);
+    -- flow-through slice operator slice_38_inst
+    d4_39 <= RX_13(39 downto 32);
+    -- flow-through slice operator slice_42_inst
+    d5_43 <= RX_13(31 downto 24);
+    -- flow-through slice operator slice_46_inst
+    d6_47 <= RX_13(23 downto 16);
+    -- flow-through slice operator slice_50_inst
+    d7_51 <= RX_13(15 downto 8);
+    -- flow-through slice operator slice_54_inst
+    b0_55 <= RX_13(7 downto 7);
+    -- flow-through slice operator slice_58_inst
+    b1_59 <= RX_13(6 downto 6);
+    -- flow-through slice operator slice_62_inst
+    b2_63 <= RX_13(5 downto 5);
+    -- flow-through slice operator slice_66_inst
+    b3_67 <= RX_13(4 downto 4);
+    -- flow-through slice operator slice_70_inst
+    b4_71 <= RX_13(3 downto 3);
+    -- flow-through slice operator slice_74_inst
+    b5_75 <= RX_13(2 downto 2);
+    -- flow-through slice operator slice_78_inst
+    b6_79 <= RX_13(1 downto 1);
+    -- flow-through slice operator slice_82_inst
+    b7_83 <= RX_13(0 downto 0);
+    do_while_stmt_9_branch: Block -- 
+      -- branch-block
+      signal condition_sig : std_logic_vector(0 downto 0);
+      begin 
+      condition_sig <= konst_218_wire_constant;
+      branch_instance: BranchBase -- 
+        generic map( name => "do_while_stmt_9_branch", condition_width => 1,  bypass_flag => true)
+        port map( -- 
+          condition => condition_sig,
+          req => do_while_stmt_9_branch_req_0,
+          ack0 => do_while_stmt_9_branch_ack_0,
+          ack1 => do_while_stmt_9_branch_ack_1,
+          clk => clk,
+          reset => reset); -- 
+      --
+    end Block; -- branch-block
+    -- flow through binary operator AND_u1_u1_102_inst
+    AND_u1_u1_102_wire <= (b1_59 and NOT_u1_u1_101_wire);
+    -- flow through binary operator AND_u1_u1_103_inst
+    AND_u1_u1_103_wire <= (tlast_18 and AND_u1_u1_102_wire);
+    -- flow through binary operator AND_u1_u1_115_inst
+    AND_u1_u1_115_wire <= (b2_63 and NOT_u1_u1_114_wire);
+    -- flow through binary operator AND_u1_u1_116_inst
+    AND_u1_u1_116_wire <= (tlast_18 and AND_u1_u1_115_wire);
+    -- flow through binary operator AND_u1_u1_128_inst
+    AND_u1_u1_128_wire <= (b3_67 and NOT_u1_u1_127_wire);
+    -- flow through binary operator AND_u1_u1_129_inst
+    AND_u1_u1_129_wire <= (tlast_18 and AND_u1_u1_128_wire);
+    -- flow through binary operator AND_u1_u1_141_inst
+    AND_u1_u1_141_wire <= (b4_71 and NOT_u1_u1_140_wire);
+    -- flow through binary operator AND_u1_u1_142_inst
+    AND_u1_u1_142_wire <= (tlast_18 and AND_u1_u1_141_wire);
+    -- flow through binary operator AND_u1_u1_154_inst
+    AND_u1_u1_154_wire <= (b5_75 and NOT_u1_u1_153_wire);
+    -- flow through binary operator AND_u1_u1_155_inst
+    AND_u1_u1_155_wire <= (tlast_18 and AND_u1_u1_154_wire);
+    -- flow through binary operator AND_u1_u1_167_inst
+    AND_u1_u1_167_wire <= (b6_79 and NOT_u1_u1_166_wire);
+    -- flow through binary operator AND_u1_u1_168_inst
+    AND_u1_u1_168_wire <= (tlast_18 and AND_u1_u1_167_wire);
+    -- flow through binary operator AND_u1_u1_178_inst
+    AND_u1_u1_178_wire <= (tlast_18 and b7_83);
+    -- flow through binary operator AND_u1_u1_89_inst
+    AND_u1_u1_89_wire <= (b0_55 and NOT_u1_u1_88_wire);
+    -- flow through binary operator AND_u1_u1_90_inst
+    AND_u1_u1_90_wire <= (tlast_18 and AND_u1_u1_89_wire);
+    -- flow through binary operator CONCAT_u1_u9_105_inst
+    process(AND_u1_u1_103_wire, d1_27) -- 
+      variable tmp_var : std_logic_vector(8 downto 0); -- 
+    begin -- 
+      ApConcat_proc(AND_u1_u1_103_wire, d1_27, tmp_var);
+      CONCAT_u1_u9_105_wire <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u1_u9_118_inst
+    process(AND_u1_u1_116_wire, d2_31) -- 
+      variable tmp_var : std_logic_vector(8 downto 0); -- 
+    begin -- 
+      ApConcat_proc(AND_u1_u1_116_wire, d2_31, tmp_var);
+      CONCAT_u1_u9_118_wire <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u1_u9_131_inst
+    process(AND_u1_u1_129_wire, d3_35) -- 
+      variable tmp_var : std_logic_vector(8 downto 0); -- 
+    begin -- 
+      ApConcat_proc(AND_u1_u1_129_wire, d3_35, tmp_var);
+      CONCAT_u1_u9_131_wire <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u1_u9_144_inst
+    process(AND_u1_u1_142_wire, d4_39) -- 
+      variable tmp_var : std_logic_vector(8 downto 0); -- 
+    begin -- 
+      ApConcat_proc(AND_u1_u1_142_wire, d4_39, tmp_var);
+      CONCAT_u1_u9_144_wire <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u1_u9_157_inst
+    process(AND_u1_u1_155_wire, d5_43) -- 
+      variable tmp_var : std_logic_vector(8 downto 0); -- 
+    begin -- 
+      ApConcat_proc(AND_u1_u1_155_wire, d5_43, tmp_var);
+      CONCAT_u1_u9_157_wire <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u1_u9_170_inst
+    process(AND_u1_u1_168_wire, d6_47) -- 
+      variable tmp_var : std_logic_vector(8 downto 0); -- 
+    begin -- 
+      ApConcat_proc(AND_u1_u1_168_wire, d6_47, tmp_var);
+      CONCAT_u1_u9_170_wire <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u1_u9_180_inst
+    process(AND_u1_u1_178_wire, d7_51) -- 
+      variable tmp_var : std_logic_vector(8 downto 0); -- 
+    begin -- 
+      ApConcat_proc(AND_u1_u1_178_wire, d7_51, tmp_var);
+      CONCAT_u1_u9_180_wire <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u1_u9_92_inst
+    process(AND_u1_u1_90_wire, d0_23) -- 
+      variable tmp_var : std_logic_vector(8 downto 0); -- 
+    begin -- 
+      ApConcat_proc(AND_u1_u1_90_wire, d0_23, tmp_var);
+      CONCAT_u1_u9_92_wire <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u9_u10_108_inst
+    process(CONCAT_u1_u9_105_wire) -- 
+      variable tmp_var : std_logic_vector(9 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u9_105_wire, type_cast_107_wire_constant, tmp_var);
+      s1_109 <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u9_u10_121_inst
+    process(CONCAT_u1_u9_118_wire) -- 
+      variable tmp_var : std_logic_vector(9 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u9_118_wire, type_cast_120_wire_constant, tmp_var);
+      s2_122 <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u9_u10_134_inst
+    process(CONCAT_u1_u9_131_wire) -- 
+      variable tmp_var : std_logic_vector(9 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u9_131_wire, type_cast_133_wire_constant, tmp_var);
+      s3_135 <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u9_u10_147_inst
+    process(CONCAT_u1_u9_144_wire) -- 
+      variable tmp_var : std_logic_vector(9 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u9_144_wire, type_cast_146_wire_constant, tmp_var);
+      s4_148 <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u9_u10_160_inst
+    process(CONCAT_u1_u9_157_wire) -- 
+      variable tmp_var : std_logic_vector(9 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u9_157_wire, type_cast_159_wire_constant, tmp_var);
+      s5_161 <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u9_u10_173_inst
+    process(CONCAT_u1_u9_170_wire) -- 
+      variable tmp_var : std_logic_vector(9 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u9_170_wire, type_cast_172_wire_constant, tmp_var);
+      s6_174 <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u9_u10_183_inst
+    process(CONCAT_u1_u9_180_wire) -- 
+      variable tmp_var : std_logic_vector(9 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u9_180_wire, type_cast_182_wire_constant, tmp_var);
+      s7_184 <= tmp_var; --
+    end process;
+    -- flow through binary operator CONCAT_u9_u10_95_inst
+    process(CONCAT_u1_u9_92_wire) -- 
+      variable tmp_var : std_logic_vector(9 downto 0); -- 
+    begin -- 
+      ApConcat_proc(CONCAT_u1_u9_92_wire, type_cast_94_wire_constant, tmp_var);
+      s0_96 <= tmp_var; --
+    end process;
+    -- unary operator NOT_u1_u1_101_inst
+    process(b2_63) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      SingleInputOperation("ApIntNot", b2_63, tmp_var);
+      NOT_u1_u1_101_wire <= tmp_var; -- 
+    end process;
+    -- unary operator NOT_u1_u1_114_inst
+    process(b3_67) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      SingleInputOperation("ApIntNot", b3_67, tmp_var);
+      NOT_u1_u1_114_wire <= tmp_var; -- 
+    end process;
+    -- unary operator NOT_u1_u1_127_inst
+    process(b4_71) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      SingleInputOperation("ApIntNot", b4_71, tmp_var);
+      NOT_u1_u1_127_wire <= tmp_var; -- 
+    end process;
+    -- unary operator NOT_u1_u1_140_inst
+    process(b5_75) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      SingleInputOperation("ApIntNot", b5_75, tmp_var);
+      NOT_u1_u1_140_wire <= tmp_var; -- 
+    end process;
+    -- unary operator NOT_u1_u1_153_inst
+    process(b6_79) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      SingleInputOperation("ApIntNot", b6_79, tmp_var);
+      NOT_u1_u1_153_wire <= tmp_var; -- 
+    end process;
+    -- unary operator NOT_u1_u1_166_inst
+    process(b7_83) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      SingleInputOperation("ApIntNot", b7_83, tmp_var);
+      NOT_u1_u1_166_wire <= tmp_var; -- 
+    end process;
+    -- unary operator NOT_u1_u1_88_inst
+    process(b1_59) -- 
+      variable tmp_var : std_logic_vector(0 downto 0); -- 
+    begin -- 
+      SingleInputOperation("ApIntNot", b1_59, tmp_var);
+      NOT_u1_u1_88_wire <= tmp_var; -- 
+    end process;
+    -- shared inport operator group (0) : RPIPE_tx_in_pipe_12_inst 
+    InportGroup_0: Block -- 
+      signal data_out: std_logic_vector(72 downto 0);
+      signal reqL, ackL, reqR, ackR : BooleanArray( 0 downto 0);
+      signal reqL_unguarded, ackL_unguarded : BooleanArray( 0 downto 0);
+      signal reqR_unguarded, ackR_unguarded : BooleanArray( 0 downto 0);
+      signal guard_vector : std_logic_vector( 0 downto 0);
+      constant outBUFs : IntegerArray(0 downto 0) := (0 => 1);
+      constant guardFlags : BooleanArray(0 downto 0) := (0 => false);
+      constant guardBuffering: IntegerArray(0 downto 0)  := (0 => 2);
+      -- 
+    begin -- 
+      reqL_unguarded(0) <= RPIPE_tx_in_pipe_12_inst_req_0;
+      RPIPE_tx_in_pipe_12_inst_ack_0 <= ackL_unguarded(0);
+      reqR_unguarded(0) <= RPIPE_tx_in_pipe_12_inst_req_1;
+      RPIPE_tx_in_pipe_12_inst_ack_1 <= ackR_unguarded(0);
+      guard_vector(0)  <=  '1';
+      RX_13 <= data_out(72 downto 0);
+      tx_in_pipe_read_0_gI: SplitGuardInterface generic map(name => "tx_in_pipe_read_0_gI", nreqs => 1, buffering => guardBuffering, use_guards => guardFlags,  sample_only => false,  update_only => true) -- 
+        port map(clk => clk, reset => reset,
+        sr_in => reqL_unguarded,
+        sr_out => reqL,
+        sa_in => ackL,
+        sa_out => ackL_unguarded,
+        cr_in => reqR_unguarded,
+        cr_out => reqR,
+        ca_in => ackR,
+        ca_out => ackR_unguarded,
+        guards => guard_vector); -- 
+      tx_in_pipe_read_0: InputPortRevised -- 
+        generic map ( name => "tx_in_pipe_read_0", data_width => 73,  num_reqs => 1,  output_buffering => outBUFs,   nonblocking_read_flag => False,  no_arbitration => false)
+        port map (-- 
+          sample_req => reqL , 
+          sample_ack => ackL, 
+          update_req => reqR, 
+          update_ack => ackR, 
+          data => data_out, 
+          oreq => tx_in_pipe_pipe_read_req(0),
+          oack => tx_in_pipe_pipe_read_ack(0),
+          odata => tx_in_pipe_pipe_read_data(72 downto 0),
+          clk => clk, reset => reset -- 
+        ); -- 
+      -- 
+    end Block; -- inport group 0
+    -- shared outport operator group (0) : WPIPE_tx_out_pipe_186_inst WPIPE_tx_out_pipe_190_inst WPIPE_tx_out_pipe_194_inst WPIPE_tx_out_pipe_198_inst WPIPE_tx_out_pipe_202_inst WPIPE_tx_out_pipe_206_inst WPIPE_tx_out_pipe_210_inst WPIPE_tx_out_pipe_214_inst 
+    OutportGroup_0: Block -- 
+      signal data_in: std_logic_vector(79 downto 0);
+      signal sample_req, sample_ack : BooleanArray( 7 downto 0);
+      signal update_req, update_ack : BooleanArray( 7 downto 0);
+      signal sample_req_unguarded, sample_ack_unguarded : BooleanArray( 7 downto 0);
+      signal update_req_unguarded, update_ack_unguarded : BooleanArray( 7 downto 0);
+      signal guard_vector : std_logic_vector( 7 downto 0);
+      constant inBUFs : IntegerArray(7 downto 0) := (7 => 0, 6 => 0, 5 => 0, 4 => 0, 3 => 0, 2 => 0, 1 => 0, 0 => 0);
+      constant guardFlags : BooleanArray(7 downto 0) := (0 => true, 1 => true, 2 => true, 3 => true, 4 => true, 5 => true, 6 => true, 7 => true);
+      constant guardBuffering: IntegerArray(7 downto 0)  := (0 => 2, 1 => 2, 2 => 2, 3 => 2, 4 => 2, 5 => 2, 6 => 2, 7 => 2);
+      -- 
+    begin -- 
+      sample_req_unguarded(7) <= WPIPE_tx_out_pipe_186_inst_req_0;
+      sample_req_unguarded(6) <= WPIPE_tx_out_pipe_190_inst_req_0;
+      sample_req_unguarded(5) <= WPIPE_tx_out_pipe_194_inst_req_0;
+      sample_req_unguarded(4) <= WPIPE_tx_out_pipe_198_inst_req_0;
+      sample_req_unguarded(3) <= WPIPE_tx_out_pipe_202_inst_req_0;
+      sample_req_unguarded(2) <= WPIPE_tx_out_pipe_206_inst_req_0;
+      sample_req_unguarded(1) <= WPIPE_tx_out_pipe_210_inst_req_0;
+      sample_req_unguarded(0) <= WPIPE_tx_out_pipe_214_inst_req_0;
+      WPIPE_tx_out_pipe_186_inst_ack_0 <= sample_ack_unguarded(7);
+      WPIPE_tx_out_pipe_190_inst_ack_0 <= sample_ack_unguarded(6);
+      WPIPE_tx_out_pipe_194_inst_ack_0 <= sample_ack_unguarded(5);
+      WPIPE_tx_out_pipe_198_inst_ack_0 <= sample_ack_unguarded(4);
+      WPIPE_tx_out_pipe_202_inst_ack_0 <= sample_ack_unguarded(3);
+      WPIPE_tx_out_pipe_206_inst_ack_0 <= sample_ack_unguarded(2);
+      WPIPE_tx_out_pipe_210_inst_ack_0 <= sample_ack_unguarded(1);
+      WPIPE_tx_out_pipe_214_inst_ack_0 <= sample_ack_unguarded(0);
+      update_req_unguarded(7) <= WPIPE_tx_out_pipe_186_inst_req_1;
+      update_req_unguarded(6) <= WPIPE_tx_out_pipe_190_inst_req_1;
+      update_req_unguarded(5) <= WPIPE_tx_out_pipe_194_inst_req_1;
+      update_req_unguarded(4) <= WPIPE_tx_out_pipe_198_inst_req_1;
+      update_req_unguarded(3) <= WPIPE_tx_out_pipe_202_inst_req_1;
+      update_req_unguarded(2) <= WPIPE_tx_out_pipe_206_inst_req_1;
+      update_req_unguarded(1) <= WPIPE_tx_out_pipe_210_inst_req_1;
+      update_req_unguarded(0) <= WPIPE_tx_out_pipe_214_inst_req_1;
+      WPIPE_tx_out_pipe_186_inst_ack_1 <= update_ack_unguarded(7);
+      WPIPE_tx_out_pipe_190_inst_ack_1 <= update_ack_unguarded(6);
+      WPIPE_tx_out_pipe_194_inst_ack_1 <= update_ack_unguarded(5);
+      WPIPE_tx_out_pipe_198_inst_ack_1 <= update_ack_unguarded(4);
+      WPIPE_tx_out_pipe_202_inst_ack_1 <= update_ack_unguarded(3);
+      WPIPE_tx_out_pipe_206_inst_ack_1 <= update_ack_unguarded(2);
+      WPIPE_tx_out_pipe_210_inst_ack_1 <= update_ack_unguarded(1);
+      WPIPE_tx_out_pipe_214_inst_ack_1 <= update_ack_unguarded(0);
+      guard_vector(0)  <= b7_83(0);
+      guard_vector(1)  <= b6_79(0);
+      guard_vector(2)  <= b5_75(0);
+      guard_vector(3)  <= b4_71(0);
+      guard_vector(4)  <= b3_67(0);
+      guard_vector(5)  <= b2_63(0);
+      guard_vector(6)  <= b1_59(0);
+      guard_vector(7)  <= b0_55(0);
+      data_in <= s0_96 & s1_109 & s2_122 & s3_135 & s4_148 & s5_161 & s6_174 & s7_184;
+      tx_out_pipe_write_0_gI: SplitGuardInterface generic map(name => "tx_out_pipe_write_0_gI", nreqs => 8, buffering => guardBuffering, use_guards => guardFlags,  sample_only => true,  update_only => false) -- 
+        port map(clk => clk, reset => reset,
+        sr_in => sample_req_unguarded,
+        sr_out => sample_req,
+        sa_in => sample_ack,
+        sa_out => sample_ack_unguarded,
+        cr_in => update_req_unguarded,
+        cr_out => update_req,
+        ca_in => update_ack,
+        ca_out => update_ack_unguarded,
+        guards => guard_vector); -- 
+      tx_out_pipe_write_0: OutputPortRevised -- 
+        generic map ( name => "tx_out_pipe", data_width => 10, num_reqs => 8, input_buffering => inBUFs, full_rate => false,
+        no_arbitration => false)
+        port map (--
+          sample_req => sample_req , 
+          sample_ack => sample_ack , 
+          update_req => update_req , 
+          update_ack => update_ack , 
+          data => data_in, 
+          oreq => tx_out_pipe_pipe_write_req(0),
+          oack => tx_out_pipe_pipe_write_ack(0),
+          odata => tx_out_pipe_pipe_write_data(9 downto 0),
+          clk => clk, reset => reset -- 
+        );-- 
+      -- 
+    end Block; -- outport group 0
+    -- 
+  end Block; -- data_path
+  -- 
+end tx_deconcat_arch;
+library std;
+use std.standard.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+library aHiR_ieee_proposed;
+use aHiR_ieee_proposed.math_utility_pkg.all;
+use aHiR_ieee_proposed.fixed_pkg.all;
+use aHiR_ieee_proposed.float_pkg.all;
+library ahir;
+use ahir.memory_subsystem_package.all;
+use ahir.types.all;
+use ahir.subprograms.all;
+use ahir.components.all;
+use ahir.basecomponents.all;
+use ahir.operatorpackage.all;
+use ahir.floatoperatorpackage.all;
+use ahir.utilities.all;
+library nic_mac_bridge_lib;
+use nic_mac_bridge_lib.tx_deconcat_system_global_package.all;
+entity tx_deconcat_system is  -- system 
+  port (-- 
+    clk : in std_logic;
+    reset : in std_logic;
+    tx_in_pipe_pipe_write_data: in std_logic_vector(72 downto 0);
+    tx_in_pipe_pipe_write_req : in std_logic_vector(0 downto 0);
+    tx_in_pipe_pipe_write_ack : out std_logic_vector(0 downto 0);
+    tx_out_pipe_pipe_read_data: out std_logic_vector(9 downto 0);
+    tx_out_pipe_pipe_read_req : in std_logic_vector(0 downto 0);
+    tx_out_pipe_pipe_read_ack : out std_logic_vector(0 downto 0)); -- 
+  -- 
+end entity; 
+architecture tx_deconcat_system_arch  of tx_deconcat_system is -- system-architecture 
+  -- declarations related to module tx_deconcat
+  component tx_deconcat is -- 
+    generic (tag_length : integer); 
+    port ( -- 
+      tx_in_pipe_pipe_read_req : out  std_logic_vector(0 downto 0);
+      tx_in_pipe_pipe_read_ack : in   std_logic_vector(0 downto 0);
+      tx_in_pipe_pipe_read_data : in   std_logic_vector(72 downto 0);
+      tx_out_pipe_pipe_write_req : out  std_logic_vector(0 downto 0);
+      tx_out_pipe_pipe_write_ack : in   std_logic_vector(0 downto 0);
+      tx_out_pipe_pipe_write_data : out  std_logic_vector(9 downto 0);
+      tag_in: in std_logic_vector(tag_length-1 downto 0);
+      tag_out: out std_logic_vector(tag_length-1 downto 0) ;
+      clk : in std_logic;
+      reset : in std_logic;
+      start_req : in std_logic;
+      start_ack : out std_logic;
+      fin_req : in std_logic;
+      fin_ack   : out std_logic-- 
+    );
+    -- 
+  end component;
+  -- argument signals for module tx_deconcat
+  signal tx_deconcat_tag_in    : std_logic_vector(1 downto 0) := (others => '0');
+  signal tx_deconcat_tag_out   : std_logic_vector(1 downto 0);
+  signal tx_deconcat_start_req : std_logic;
+  signal tx_deconcat_start_ack : std_logic;
+  signal tx_deconcat_fin_req   : std_logic;
+  signal tx_deconcat_fin_ack : std_logic;
+  -- aggregate signals for read from pipe tx_in_pipe
+  signal tx_in_pipe_pipe_read_data: std_logic_vector(72 downto 0);
+  signal tx_in_pipe_pipe_read_req: std_logic_vector(0 downto 0);
+  signal tx_in_pipe_pipe_read_ack: std_logic_vector(0 downto 0);
+  -- aggregate signals for write to pipe tx_out_pipe
+  signal tx_out_pipe_pipe_write_data: std_logic_vector(9 downto 0);
+  signal tx_out_pipe_pipe_write_req: std_logic_vector(0 downto 0);
+  signal tx_out_pipe_pipe_write_ack: std_logic_vector(0 downto 0);
+  -- gated clock signal declarations.
+  -- 
+begin -- 
+  -- module tx_deconcat
+  tx_deconcat_instance:tx_deconcat-- 
+    generic map(tag_length => 2)
+    port map(-- 
+      start_req => tx_deconcat_start_req,
+      start_ack => tx_deconcat_start_ack,
+      fin_req => tx_deconcat_fin_req,
+      fin_ack => tx_deconcat_fin_ack,
+      clk => clk,
+      reset => reset,
+      tx_in_pipe_pipe_read_req => tx_in_pipe_pipe_read_req(0 downto 0),
+      tx_in_pipe_pipe_read_ack => tx_in_pipe_pipe_read_ack(0 downto 0),
+      tx_in_pipe_pipe_read_data => tx_in_pipe_pipe_read_data(72 downto 0),
+      tx_out_pipe_pipe_write_req => tx_out_pipe_pipe_write_req(0 downto 0),
+      tx_out_pipe_pipe_write_ack => tx_out_pipe_pipe_write_ack(0 downto 0),
+      tx_out_pipe_pipe_write_data => tx_out_pipe_pipe_write_data(9 downto 0),
+      tag_in => tx_deconcat_tag_in,
+      tag_out => tx_deconcat_tag_out-- 
+    ); -- 
+  -- module will be run forever 
+  tx_deconcat_tag_in <= (others => '0');
+  tx_deconcat_auto_run: auto_run generic map(use_delay => true)  port map(clk => clk, reset => reset, start_req => tx_deconcat_start_req, start_ack => tx_deconcat_start_ack,  fin_req => tx_deconcat_fin_req,  fin_ack => tx_deconcat_fin_ack);
+  tx_in_pipe_Pipe: PipeBase -- 
+    generic map( -- 
+      name => "pipe tx_in_pipe",
+      num_reads => 1,
+      num_writes => 1,
+      data_width => 73,
+      lifo_mode => false,
+      full_rate => false,
+      shift_register_mode => false,
+      bypass => false,
+      depth => 0 --
+    )
+    port map( -- 
+      read_req => tx_in_pipe_pipe_read_req,
+      read_ack => tx_in_pipe_pipe_read_ack,
+      read_data => tx_in_pipe_pipe_read_data,
+      write_req => tx_in_pipe_pipe_write_req,
+      write_ack => tx_in_pipe_pipe_write_ack,
+      write_data => tx_in_pipe_pipe_write_data,
+      clk => clk,reset => reset -- 
+    ); -- 
+  tx_out_pipe_Pipe: PipeBase -- 
+    generic map( -- 
+      name => "pipe tx_out_pipe",
+      num_reads => 1,
+      num_writes => 1,
+      data_width => 10,
+      lifo_mode => false,
+      full_rate => false,
+      shift_register_mode => false,
+      bypass => false,
+      depth => 0 --
+    )
+    port map( -- 
+      read_req => tx_out_pipe_pipe_read_req,
+      read_ack => tx_out_pipe_pipe_read_ack,
+      read_data => tx_out_pipe_pipe_read_data,
+      write_req => tx_out_pipe_pipe_write_req,
+      write_ack => tx_out_pipe_pipe_write_ack,
+      write_data => tx_out_pipe_pipe_write_data,
+      clk => clk,reset => reset -- 
+    ); -- 
+  -- gated clock generators 
+  -- 
+end tx_deconcat_system_arch;

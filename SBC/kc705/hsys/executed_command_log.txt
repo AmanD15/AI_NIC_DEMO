@@ -1,0 +1,14 @@
+make -C ./acb_afb_complex SIMULATOR=-s\ ghdl
+make -C ./processor_subsystem SIMULATOR=-s\ ghdl
+make -C ./nic_subsystem/nic SIMULATOR=-s\ ghdl
+make -C ./nic_subsystem/nic_mac_bridge/rx_concat_system SIMULATOR=-s\ ghdl
+make -C ./nic_subsystem/nic_mac_bridge/tx_deconcat_system SIMULATOR=-s\ ghdl
+make -C ./nic_subsystem/nic_mac_bridge SIMULATOR=-s\ ghdl
+make -C ./nic_subsystem SIMULATOR=-s\ ghdl
+make -C ./acb_afb_complex SIMULATOR=-s\ ghdl
+make -C ./processor_subsystem SIMULATOR=-s\ ghdl
+make -C ./nic_subsystem/nic SIMULATOR=-s\ ghdl
+make -C ./nic_subsystem/nic_mac_bridge/rx_concat_system SIMULATOR=-s\ ghdl
+make -C ./nic_subsystem/nic_mac_bridge/tx_deconcat_system SIMULATOR=-s\ ghdl
+make -C ./nic_subsystem/nic_mac_bridge SIMULATOR=-s\ ghdl
+make -C ./nic_subsystem SIMULATOR=-s\ ghdl

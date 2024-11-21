@@ -1,4 +1,3 @@
-
 #include "nic_driver.h"
 
 
@@ -189,12 +188,6 @@ int main()
 			else
                     	cortos_printf("Error: Failed to write buffer to TxQ\n");
 			
-			// Pushing the buffer back to free_queue 
-			msgs_written = cortos_writeMessages(free_queue, (uint8_t*)(&bufptrPA), 1);
-			if(msgs_written)
-			cortos_printf("Free queue replenished \n");
-			else
-                	cortos_printf("Error: Failed to recycle buffer to free queue\n");
 				
 			// NIC stats
 			message_counter++;
