@@ -1,4 +1,0 @@
-hierSys2Vhdl -s ghdl -o vhdl ../pipes.aa ../signals.aa ./rx_concat_system/rx_concat_system.hsys ./nic_mac_pipe_reset/nic_mac_pipe_reset.hsys ./tx_deconcat_system/tx_deconcat_system.hsys ./nic_mac_bridge.hsys 
-formatVhdlFiles.py vhdl
-hierSys2Vhdl -s ghdl -o vhdl ../pipes.aa ../signals.aa ./rx_concat_system/rx_concat_system.hsys ./nic_mac_pipe_reset/nic_mac_pipe_reset.hsys ./tx_deconcat_system/tx_deconcat_system.hsys ./nic_mac_bridge.hsys 
-formatVhdlFiles.py vhdl

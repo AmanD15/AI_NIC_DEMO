@@ -1,4 +1,0 @@
-hierSys2Vhdl -s ghdl -o vhdl ../pipes.aa ../signals.aa ../GlueModules/GlueModules.hsys ./acb_afb_complex.hsys 
-formatVhdlFiles.py vhdl
-hierSys2Vhdl -s ghdl -o vhdl ../pipes.aa ../signals.aa ../GlueModules/GlueModules.hsys ./acb_afb_complex.hsys 
-formatVhdlFiles.py vhdl
