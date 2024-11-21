@@ -31,7 +31,7 @@ if __name__ == "__main__":
     ETHERTYPE = 0x0800                        # Ethernet type (0x0800 for IPv4)
     
     # Payload (88 bytes)
-    payload = b'1234567891234567891234567891234567891234567891234567891234'  # Payload adjusted to 88 bytes
+    payload = b'1234567891234567891234567891234567891234567891234567891234'  # Payload adjusted to 58 bytes
 
     i=0
     while i<2048:

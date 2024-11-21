@@ -105,7 +105,7 @@ void setNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 	uint32_t base_index;		 
 	switch(queue_type)
 	{
-		case FREEQUEUE     : base_index = P_FREE_QUEUE_RX_REGISTER_BASE_INDEX; break;
+		case FREEQUEUE     : base_index = P_FREE_QUEUE_REGISTER_BASE_INDEX; break;
 		case RXQUEUE       : base_index = (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;
 		case TXQUEUE       : base_index = (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;	
 	}	
@@ -142,7 +142,7 @@ void configureNic (NicConfiguration* config)
 	// set the number of servers.
 	setNumberOfServersInNic (config->nic_id, config->number_of_servers);
 
-	// free-queue_RX.
+	// free-queue.
 	setNicQueuePhysicalAddresses (config->nic_id, 
 			0,
 			FREEQUEUE,
