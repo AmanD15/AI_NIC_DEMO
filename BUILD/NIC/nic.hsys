@@ -1,0 +1,26 @@
+$system nic $library nic_lib
+   $in 
+          $pipe  AFB_NIC_REQUEST 74 $depth 2
+          $pipe  MEMORY_TO_NIC_RESPONSE 65 $depth 2
+          $pipe  mac_to_nic_data 73 $depth 2
+   $out 
+          $pipe  AFB_NIC_RESPONSE 33 $depth 2
+          $signal  MAC_ENABLE 1 $depth 1
+          $signal  NIC_DEBUG_SIGNAL 256 $depth 1
+          $signal  NIC_INTR 1 $depth 1
+          $pipe  NIC_TO_MEMORY_REQUEST 110 $depth 2
+          $pipe  RX_ACTIVITY_LOGGER 8 $depth 1
+          $pipe  TX_ACTIVITY_LOGGER 8 $depth 1
+          $pipe  nic_to_mac_transmit_pipe 73 $depth 2
+{ 
+          $signal  LAST_READ_TX_QUEUE_INDEX 8 $depth 1
+          $signal  LAST_WRITTEN_RX_QUEUE_INDEX 8 $depth 1
+          $signal  NIC_INTR_ENABLE 1 $depth 1
+          $signal  NIC_INTR_INTERNAL 1 $depth 1
+          $signal  QUEUE_MONITOR_SIGNAL 32 $depth 1
+          $signal  S_CONTROL_REGISTER 32 $depth 1
+          $signal  S_NUMBER_OF_SERVERS 32 $depth 1
+          $pipe  memory_access_lock 1 $depth 1
+          $pipe  nic_rx_to_header 73 $depth 2
+          $pipe  nic_rx_to_packet 73 $depth 2
+} 

@@ -1,0 +1,7 @@
+$system tx_deconcat_system $library nic_mac_bridge_lib
+   $in 
+          $pipe  tx_in_pipe 73 $depth 2
+   $out 
+          $pipe  tx_out_pipe 10 $depth 2
+{ 
+} 
