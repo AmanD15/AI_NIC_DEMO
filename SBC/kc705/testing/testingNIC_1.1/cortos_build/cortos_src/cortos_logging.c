@@ -10,7 +10,7 @@ uint8_t* loggingLockAddr = 0;
 
 void cortos_init_logging() {
   // allocate lock
-  uint8_t* lockStartAddrNc = (uint8_t*)1129320448; // non-cacheable
+  uint8_t* lockStartAddrNc = (uint8_t*)1073827840; // non-cacheable
   allocatedLocksNc[LOGGING_LOCK_INDEX] = 1;
   loggingLockAddr = lockStartAddrNc + LOGGING_LOCK_INDEX;
 }

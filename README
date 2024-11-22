@@ -10,6 +10,9 @@
 2. Contents
 -----------------
   The following directories are present:
+	exports.sh
+		Source this before continuing.
+
 	AA/
 		Aa code for the AI accelerator
 		(Aman Dhammani)
@@ -45,6 +48,10 @@
 		lwip (Dunkels), a light-weight IP stack.
 		Check the README.  Also contains some
 		examples of its use.
+	
+		Specifically, contains the ping and 
+		network caching applications which 
+		were used to characterize the SBC
 
 	Networking/
 		Contains the NIC implementation and test setup.

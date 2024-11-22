@@ -1,5 +1,10 @@
+#include <cortos.h>
 #include "nic_driver.h"
 
+// The Queues
+CortosQueueHeader* free_queue = NULL;
+CortosQueueHeader* rx_queue = NULL;
+CortosQueueHeader* tx_queue = NULL;
 
 
 int main()
@@ -224,7 +229,7 @@ int main()
 	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
 	{
 		cortos_printf("Releasing buffer[%d] 0x%lx\n",i,(uint32_t)BufferPtrsVA[i]);
-		cortos_brel_ncram(BufferPtrsVA[i]);
+		cortos_brel_ncram((void*) BufferPtrsVA[i]);
 		cortos_printf("Released  buffer[%d] 0x%lx\n",i,(uint32_t)BufferPtrsVA[i]);
 		
 	}

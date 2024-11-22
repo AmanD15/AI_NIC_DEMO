@@ -1,8 +1,8 @@
 
 #include <cortos_locks.h>
 
-uint8_t* lockStartAddr   = 0x43500000;
-uint8_t* lockStartAddrNc = 0x43501000; // non-cacheable
+uint8_t* lockStartAddr   = 0x40014000;
+uint8_t* lockStartAddrNc = 0x40015000; // non-cacheable
 volatile uint8_t allocatedLocks[CORTOS_MAX_LOCKS];
 volatile uint8_t allocatedLocksNc[CORTOS_MAX_LOCKS]; // non-cacheable
 uint8_t* cortos_reservedLockAddr;
@@ -11,8 +11,8 @@ uint8_t* cortos_reservedLockAddr;
 
 void cortos_init_locks() {
   // lock for reserving locks
-  uint8_t* lockStartAddr   = (uint8_t*)0x43500000;
-  uint8_t* lockStartAddrNc = (uint8_t*)0x43501000; // non-cacheable
+  uint8_t* lockStartAddr   = (uint8_t*)0x40014000;
+  uint8_t* lockStartAddrNc = (uint8_t*)0x40015000; // non-cacheable
   allocatedLocksNc[LOGGING_LOCK_INDEX] = 1;
   cortos_reservedLockAddr = lockStartAddrNc + LOGGING_LOCK_INDEX;
 }

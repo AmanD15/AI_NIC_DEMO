@@ -67,7 +67,7 @@ SETUP_THREAD_0_0:
 
 
   !!!!!!!!!!!!!!!!!!!   START: thread (0,0) setup section !!!!!!!!!!!!!!!!!!
-  set 0x4351ffa0, %sp  ! set stack address
+  set 0x40033fa0, %sp  ! set stack address
   clr %fp
 
   ! zero initialization of memory regions and flags
@@ -309,12 +309,12 @@ __cortos_init_region_to_zero:
 
   ! BLOCK START: zero_init zero_region_BssSection
   ! set the base address
-  sethi %hi(0x42600000), %l0
-  or %l0, %lo(0x42600000), %l0
+  sethi %hi(0x40013000), %l0
+  or %l0, %lo(0x40013000), %l0
 
   ! set the first illegal address
-  sethi %hi(0x43500000), %l2
-  or %l2, %lo(0x43500000), %l2
+  sethi %hi(0x40014000), %l2
+  or %l2, %lo(0x40014000), %l2
   sub %l2, 0x4, %l2         ! address of last valid word location
 
 ! loop to store zeros byte by byte
@@ -327,12 +327,12 @@ _cortos_zero_init_area_BssSection:
 
   ! BLOCK START: zero_init zero_region_CacheableLocks
   ! set the base address
-  sethi %hi(0x43500000), %l0
-  or %l0, %lo(0x43500000), %l0
+  sethi %hi(0x40014000), %l0
+  or %l0, %lo(0x40014000), %l0
 
   ! set the first illegal address
-  sethi %hi(0x43501000), %l2
-  or %l2, %lo(0x43501000), %l2
+  sethi %hi(0x40015000), %l2
+  or %l2, %lo(0x40015000), %l2
   sub %l2, 0x4, %l2         ! address of last valid word location
 
 ! loop to store zeros byte by byte
@@ -345,12 +345,12 @@ _cortos_zero_init_area_CacheableLocks:
 
   ! BLOCK START: zero_init zero_region_NonCacheableLocks
   ! set the base address
-  sethi %hi(0x43501000), %l0
-  or %l0, %lo(0x43501000), %l0
+  sethi %hi(0x40015000), %l0
+  or %l0, %lo(0x40015000), %l0
 
   ! set the first illegal address
-  sethi %hi(0x43502000), %l2
-  or %l2, %lo(0x43502000), %l2
+  sethi %hi(0x40016000), %l2
+  or %l2, %lo(0x40016000), %l2
   sub %l2, 0x4, %l2         ! address of last valid word location
 
 ! loop to store zeros byte by byte

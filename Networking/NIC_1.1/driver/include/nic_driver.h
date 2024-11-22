@@ -25,8 +25,8 @@
 #endif
 
 // The array to store ptr to buffers
-volatile uint32_t*  BufferPtrsVA[NUMBER_OF_BUFFERS];
-volatile uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
+uint32_t*  BufferPtrsVA[NUMBER_OF_BUFFERS];
+uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
 
 
 //  Register definitions..  These must be consistent
@@ -83,16 +83,12 @@ typedef struct __NicCortosQueue {
   uint32_t misc;		                 // + 28
 	
 } NicCortosQueue;
-else
+#else
 
 // Cortos queue header will be called NicCortosQueue.
 typedef CortosQueueHeader NicCortosQueue;
 #endif
 
-// The Qs
-CortosQueueHeader* free_queue = NULL;
-CortosQueueHeader* rx_queue = NULL;
-CortosQueueHeader* tx_queue = NULL;
 
 
 typedef struct __NicConfiguration {
