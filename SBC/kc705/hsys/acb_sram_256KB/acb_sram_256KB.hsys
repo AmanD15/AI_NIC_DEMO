@@ -1,0 +1,9 @@
+$system acb_sram_256KB  $library acb_sram_256KB_lib
+	$in
+		$pipe MAIN_MEM_REQUEST 110 $depth 2
+	$out
+		$pipe MAIN_MEM_RESPONSE 65 $depth 2
+{
+	
+}
+

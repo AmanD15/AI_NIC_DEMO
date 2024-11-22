@@ -374,7 +374,7 @@ begin
 	-----------------------------------------------------------------
 	-- Rx FSM
 	-----------------------------------------------------------------
-	process(clk, reset, rx_fsm_state, newRxData, uart_rx_pipe_read_req)
+	process(clk, reset, rx_fsm_state, newRxData, rxData, uart_rx_pipe_read_req)
 		variable rx_latch_var : std_logic;
 		variable next_rx_fsm_state: RxFsmState;
 		variable read_ack_var : std_logic;

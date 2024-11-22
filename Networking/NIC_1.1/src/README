@@ -167,11 +167,11 @@ Register     address         		Description
 -------------------------------------------------------------
       Address of FreeQueue (2 registers)
 -------------------------------------------------------------
-200             0x320            Base address of free Queue [35:4]
+200             0x320            Base address of free Queue [35:32]
 201             0x324            Base address of free Queue [31:0]
-202             0x328            Lock address for free Queue [35:4]
+202             0x328            Lock address for free Queue [35:32]
 203             0x32c            Lock address for free Queue [31:0]
-204             0x328            Buf address for free Queue [35:4]
+204             0x328            Buf address for free Queue [35:32]
 205             0x330            Buf address for free Queue [31:0]
 206		unused
 207		unused
@@ -191,19 +191,7 @@ Register     address         		Description
 				[0] set if NIC has started (controlreg[0] = 1)
 
 
--------------------------------------------------------------
-		Address of FreeQueue_Tx (2 registers)
--------------------------------------------------------------
-213             0x320            Base address of free Queue Tx [35:4]
-214             0x324            Base address of free Queue Tx [31:0]
-215             0x328            Lock address for free Queue Tx [35:4]
-216             0x32c            Lock address for free Queue Tx [31:0]
-217             0x328            Buf address for free Queue Tx [35:4]
-218             0x330            Buf address for free Queue Tx [31:0]
-219		unused
-220		unused
 
-
-221-255 unused.
+213-255 unused.
  Register file (depth = 255) (width = 32)
 

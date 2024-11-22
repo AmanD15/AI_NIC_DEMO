@@ -9,3 +9,6 @@ cd nic_mac_bridge
 make clean
 cd $CWD
 rm -rf vhdl
+cd ghdl
+rm -f *.o *.cf
+cd $CWD

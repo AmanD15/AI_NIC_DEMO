@@ -1,0 +1,71 @@
+% Chapter Template
+
+\chapter{Introduction}\doublespacing % Main chapter title
+
+\label{Chapter1} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+\lhead{Chapter I. \emph{Introduction}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+% \section{Introduction}
+
+% \lipsum[1]
+The widespread adoption of Convolutional Neural Networks (CNNs) in various cognitive applications, including image recognition, natural language processing, object detection, voice recognition, and autonomous driving[5,6], can be attributed to their exceptional accuracy and performance. However, the computational intensity and memory requirements of CNNs pose significant challenges, particularly in resource-constrained environments. Moreover, the recent advancements in CNN accuracy have been achieved through the development of over-parameterized models, which introduce additional complexity and highlight the need for efficient optimization techniques to facilitate their deployment in resource-limited settings.[5,7]\\
+In recent years, the hardware implementation of Convolutional Neural Networks (CNNs) has garnered significant attention and optimization efforts, driven by the need to achieve high accuracy and real-time performance while minimizing power consumption and energy expenditure. The growing trend of implementing CNNs on digital devices, embedded systems, and edge devices, which are characterized by limited resources, has highlighted the challenges associated with deploying CNNs on resource-constrained devices (RCDs)[8,9]. Notably, as the complexity of CNNs increases, the hardware implementation faces significant obstacles, including quadratic increases in area, energy, and delay, as well as substantial memory traffic, thereby rendering the realization of large-scale CNNs in hardware a formidable challenge that warrants innovative solutions.[10]\\
+Resource-Constrained Devices (RCDs), commonly found in embedded systems and edge devices, are characterized by stringent limitations, including restricted memory capacity (both RAM and ROM) for executing applications and storing data/parameters, humble data processing capabilities, finite battery life, and compact physical dimensions. These constraints render the design and deployment of Convolutional Neural Networks (CNNs) on RCDs exceedingly challenging, necessitating a meticulous trade-off between resource allocation and model accuracy[11]. Moreover, the implementation of larger CNN models on RCDs is often rendered infeasible due to the severe resource constraints, thereby underscoring the need for innovative design methodologies and optimization techniques to enable efficient CNN deployment on resource-constrained platforms.[8,12,13]\\
+The optimization of Convolutional Neural Network (CNN) designs is a complex task, as various layers exhibit distinct challenges that hinder the identification of a single optimal approach for reducing complexity. Specifically, convolutional layers are computationally intensive, characterized by a high volume of mathematical operations, while fully connected (FC) layers are memory-intensive, requiring substantial memory bandwidth. Therefore, a proficient optimization technique should aim to concurrently simplify computational requirements and memory access patterns, addressing the diverse challenges posed by different CNN layers to achieve efficient optimization.[9]\\
+To alleviate the design complexity and facilitate the implementation of Convolutional Neural Networks (CNNs), various optimization techniques have been explored. One such technique is quantization, which entails the substitution of real-valued numbers with low-precision, fixed-point integers. By reducing the bit width of the parameters, including weights and biases, and the outputs from each layer, namely activations, quantization enables significant improvements in computational speed, reduces power consumption, and minimizes memory requirements, thereby yielding a more efficient and hardware-friendly CNN design.\\
+Extensive research has explored the application of quantization to Convolutional Neural Networks (CNNs), with various studies demonstrating the feasibility of using 32-bit, 16-bit, and 8-bit quantization[9,10,14]. Furthermore, recent investigations have proposed aggressive quantization techniques, which restrict the precision of model parameters to as few as two bits (ternary networks) or even a single bit (binarized networks). However, such aggressive quantization methods can potentially compromise CNN accuracy, necessitating the introduction of compensatory measures, such as increasing the number of neurons, which may inadvertently offset the benefits of quantization, including reduced computational complexity and memory requirements.
+
+
+
+
+
+% \section{Problem Statement}
+
+% In the field of machine learning, specifically in image processing, the computational requirements of Convolutional Neural Networks (CNNs) have grown significantly due to increased network depth and larger feature maps. These requirements, often amounting to billions of Multiply and Accumulate (MAC) operations per image, pose a challenge for traditional CPUs, which are limited in their ability to handle such parallel data operations efficiently. This issue is compounded by constraints on on-chip memory bandwidth, making it impractical to store all intermediate data. Therefore, there is a pressing need for a high-performance, data-reuse-efficient CNN inference engine that can manage these operations effectively while minimizing memory bandwidth usage. This thesis aims to design and implement a CNN inference engine using PyAHIR, and AHIR-V2, a high-level synthesis framework,  targeting an end-to-end image segmentation pipeline on an FPGA. The goal is to demonstrate competitive performance metrics, including  high accuracy and significant data reuse, achieving operational efficiency suitable for both research and commercial applications.
+% \lipsum[2]\\
+
+
+
+ 
+% \section{Need of the Study}
+
+% \lipsum[1-2]\\
+
+
+
+
+% \section{Study Objective}
+% \lipsum[1]
+
+% \begin{itemize}
+%     \item Uum sociis natoque penatibus et magnis dis
+%         parturient montes, nascetur ridiculus mus.
+%     \item Sociis natoque penatibus et magnis dis
+%         parturient montes, nascetur ridiculus mus.
+
+% \end{itemize}
+
+
+
+\section{Objectives}
+This thesis endeavors to develop a quantization method tailored for Field-Programmable Gate Arrays (FPGAs) to optimize the hardware design of Convolutional Neural Networks (CNNs) and to validate the CNN on FPGA. By achieving this objective, this thesis aims to enable the deployment of CNNs on Resource-Constrained Devices (RCDs), such as FPGA devices, and to provide a framework for rapid evaluation of Deep Neural Network (DNN) design choices. The key contributions of this thesis successfully address the aforementioned objective, and are summarized as follows:
+\begin{enumerate}
+  \item \textbf{Training Quantized CNN:} A novel algorithm has been designed and validated, which facilitates the quantization of the entire Convolutional Neural Network (CNN) model. The algorithm's innovative approach lies in its  post-training quantization techniques (PQT), enabling comprehensive model quantization, including both weights and activations, without necessitating an increase in the number of neurons. This  approach achieves full model quantization, thereby reducing computational complexity and memory requirements while maintaining accuracy.
+  \item \textbf{Design Efficiency:} Develop a CNN inference engine that maximizes data reuse and minimizes memory bandwidth usage.
+  \item \textbf{Maximizing Accuracy:} Ensure the highest possible accuracy of the CNN model is maintained despite storing intermediate results in 8-bit integer format by employing an effective quantization scheme.
+  \item \textbf{System Integration:} Integrate the engine into a System-on-Chip (SoC) architecture, including an AJIT processor and Network Interface Controller (NIC), to validate real-world performance and application readiness.
+
+  \item \textbf{Benchmarking:} Compare the designed engine’s performance against existing state-of-the-art FPGA implementations to demonstrate competitive advantages.
+\end{enumerate}
+This dissertation consists of 5 chapters, including the present chapter (Chapter \ref{Chapter1}) of introduction to the research topic. This chapter describes the need for the study,
+ and objectives of the study, and a brief thesis outline. Chapter \ref{Chapter2} presents a comprehensive overview of the LeNet architecture, and delves into the specifics of the quantization scheme employed. Chapter \ref{Chapter3} elaborates on the design and implementation of the custom AI/ML accelerator, encompassing the hardware architecture, data processing pipeline, and memory management. Chapter \ref{Chapter4} reports on the experimental evaluation of the hardware accelerator.  Chapter \ref{Chapter5} summarizes the conclusions  and presents further optimizations for future work.
+\section{Acknowledgement of Previous Work}
+This thesis is an extension of the research conducted by Aman Dhammani [1], who pioneered the development of an AI/ML Accelerator, demonstrating exceptional compute utilization rates of nearly 90\%. Nevertheless, the earlier work faced obstacles in quantizing the convolution output to 8-bit fixed-point representation, which hindered the model's accuracy. This investigation aims to overcome this limitation by exploring innovative quantization strategies and output scaling techniques, thereby enhancing the model's performance and precision.
+% \section{Summary}
+% \lipsum[1]\\
+
+ 

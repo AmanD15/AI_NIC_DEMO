@@ -11,10 +11,9 @@ $constant LOCKMEM  : $uint<1> := 1
 $constant UNLOCKMEM: $uint<1> := 0
 
 // queue related
-$constant FREEQUEUE_RX : $uint<2>  := 0
+$constant FREEQUEUE : $uint<2>  := 0
 $constant TXQUEUE   : $uint<2>  := 1
 $constant RXQUEUE   : $uint<2>  := 2
-$constant FREEQUEUE_TX : $uint<2>  := 3
 
 // memory access instructions.
 $constant ST:     $uint<3> := 1

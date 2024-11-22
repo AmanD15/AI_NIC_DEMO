@@ -1,0 +1,528 @@
+\documentclass[12pt, a4paper, twoside, openright]{Thesis} % Paper size, default font size and one-sided paper
+\usepackage[utf8]{inputenc}
+\usepackage{wrapfig}
+\usepackage{lscape}
+\usepackage{rotating}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{amsmath, nccmath}
+\usepackage{comment}
+\usepackage{afterpage}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{cleveref}
+\usepackage{rotating}
+% \usepackage[font=small]{caption}
+% \captionsetup{compatibility=false}
+% \usepackage{subcaption}
+% \usepackage{subfig}
+\usepackage{makecell}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{lscape}
+\usepackage{longtable}
+\usepackage{placeins}
+\usepackage{adjustbox}
+\usepackage{arydshln} % dashed midline
+\usepackage{ragged2e}
+\usepackage{lipsum}
+\usepackage{mathtools} % To use box inside an aligned environment
+\usepackage{enumitem} % for roman letter lists
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{amsmath}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+
+% \usepackage{subfig}
+\newcommand\myemptypage{
+    \null
+    \thispagestyle{empty}
+    \addtocounter{page}{-1}
+    \newpage
+    }
+%\usepackage[width=14cm, left=3cm]{geometry}
+
+% prints author names as small caps
+
+
+%\usepackage{subcaption} %incompatible with subfig
+\graphicspath{{Pictures/}} % Specifies the directory where pictures are stored
+% \usepackage[authoryear]{natbib}
+% \usepackage[square, numbers]{natbib} % Use the natbib reference package - read up on this to edit the reference style; if you want text (e.g. Smith et al., 2012) for the in-text references (instead of numbers), remove 'numbers' v
+% \bibliographystyle{abbrvnat}
+% \setcitestyle{authoryear,open={((},close={))}}
+\usepackage[english]{babel}
+\usepackage[square,numbers]{natbib}
+\bibliographystyle{abbrvnat}
+
+\hypersetup{urlcolor=blue, colorlinks=true} % Colors hyperlinks in blue - change to black if annoyingv`	
+\title{\ttitle} % Defines the thesis title - don't touch this
+
+
+
+
+%%%% New added
+
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+
+% Defining Tickz Style
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, text width = 10cm, draw=black, fill=white]
+
+% \tikzstyle{startstop1} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=white, text width = 10cm]
+
+% \tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, text width = 4.5cm, draw=black, fill=blue!30]
+
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, text width = 6cm, draw=black, fill=white, text width = 10cm]
+
+% \tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+
+\tikzstyle{arrow} = [ultra thick,->,>=stealth, line width=0.7mm]
+
+
+
+
+
+
+
+\usepackage[T1]{fontenc}
+
+\begin{document}
+% \makeatletter
+% \renewcommand*{\NAT@nmfmt}[1]{\textsc{#1}}
+% \makeatother
+
+% prints author names as small caps
+% it is sometimes necessary in user documents to have access to such package-internal macros, and so the commands \makeatletter and \makeatother change the catcode 
+
+
+\frontmatter % Use roman page numbering style (i, ii, iii, iv...) for the pre-content pages
+
+\setstretch{1.6} % Line spacing of 1.6 (double line spacing)
+
+% Define the page headers using the FancyHdr package and set up for one-sided printing
+\fancyhead{} % Clears all page headers and footers
+\rhead{\thepage} % Sets the right side header to show the page number
+\lhead{} % Clears the left side page header
+
+\pagestyle{fancy} % Finally, use the "fancy" page style to implement the FancyHdr headers
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % New command to make the lines in the title page
+
+% PDF meta-data
+\hypersetup{pdftitle={\ttitle}}
+\hypersetup{pdfsubject=\subjectname}
+\hypersetup{pdfauthor=\authornames}
+\hypersetup{pdfkeywords=\keywordnames}
+
+
+
+
+% --------------------------------------------------
+
+
+
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+\begin{comment}
+\begin{titlepage}
+\begin{center}
+
+\HRule \\[0.4cm] % Horizontal line
+{\huge \bfseries \ttitle}\\[0.4cm] % Thesis title
+\HRule \\[1.5cm] % Horizontal line
+ 
+\large \textit{A thesis submitted in fulfillment of the requirements\\ for the degree of \degreename}\\[0.3cm] % University requirement text
+\textit{by}\\[0.4cm]
+
+%\href{http://home.iitk.ac.in/~saiwal}{\authornames}
+
+\vfill
+\graphicspath{ {./Figures/} }
+\begin{figure}[hb]
+  \centering
+  \includegraphics[width=0.4\linewidth]{Images/redlogo.png}
+\end{figure}
+
+\DEPTNAME\\ % Research group name and department name
+\textsc{ \UNIVNAME}\\[1.5cm] % University name
+\large \today\\[2cm] % Date
+
+
+\end{center}
+
+\end{titlepage}
+\end{comment}
+%\begin{document}
+%\begin{titlepage}
+
+
+%\include{title1}
+%\end{titlepage}
+%\myemptypage
+%\afterpage{\null\newpage}
+%\include{blank_page_1}
+%\newpage
+%\newpage
+\include{title}
+\newpage
+% \myemptypage
+
+%----------------------------------------------------------------------------------------
+%	DEDICATION
+%----------------------------------------------------------------------------------------
+%
+\setstretch{1.3} % Return the line spacing back to 1.3
+%
+\pagestyle{empty} % Page style needs to be empty for this page
+%
+\dedicatory{\textit{Dedicated to my beloved parents.}} % Dedication text
+%
+\addtocontents{toc}{\vspace{2em}} % Add a gap in the Contents, for aesthetics
+\newpage
+% \myemptypage
+
+%----------------------------------------------------------------------------------------
+% Approval page
+%----------------------------------------------------------------------------------------
+\addtotoc{Approval}
+{\addtocontents{toc}{}
+
+\vspace{-1in}
+\begin{center}
+{\Large  {\bf Thesis Approval}}
+\end{center}
+\vspace*{0.1in} \noindent This dissertation entitled {\large \bf Design and Implementation of a Quantized CNN Inference Engine on FPGA} by {\bf \large
+Vennapusa Indrahas Reddy}, Roll No. 19D070067, is approved for the degree of  {\large \bf B.Tech and M.Tech} from the Indian Institute of Technology Bombay.\\\\
+
+\vspace{3cm}
+
+ \ldots\ldots \ldots\ldots \ldots\ldots \ldots\ldots  \hspace{2.5in}  \ldots\ldots \ldots\ldots \ldots\ldots \ldots\ldots \\
+ \hspace*{1cm} Sachin Patkar \hspace{3.4in} Virendra Singh\\
+ \hspace*{0.9cm} (Examiner 1) \hspace{3.3in} (Examiner 2)\\\\
+
+\vspace{2cm}
+
+ \ldots\ldots \ldots\ldots \ldots\ldots \ldots\ldots  \hspace{2.5in}  \ldots\ldots \ldots\ldots \ldots\ldots \ldots\ldots \\
+ \hspace*{0.1cm} Prof. Madhav P. Desai \hspace{2.4in} Virendra Singh\\
+ \hspace*{0.9cm} (Supervisor) \hspace{3.39in} (Chairman)\\\\
+
+\vspace{2cm}
+
+\noindent
+Date: 28 - 06 - 2024\\\\
+Place: IIT Bombay
+
+
+\newpage
+% \myemptypage
+
+
+%-------------------------------------------------------------
+%	DECLARATION PAGE
+%	Your institution may give you a different text to place here
+%----------------------------------------------------------------------------------------
+
+% ------------------------------------------------
+% Professor's declaration
+
+\Declaration{\addtocontents{toc}{} % Add a gap in the Contents, for aesthetics
+
+This is to certify that the dissertation entitled \textbf{``Design and Implementation of a Quantized CNN Inference Engine on FPGA''}, submitted by \textbf{Vennapusa Indrahas Reddy} to the Indian Institute of Technology Bombay, for the award of the degree of \textbf{B.Tech + M.Tech} in Electrical Engineering, is a record of the original, bona fide research work carried out by him under our supervision and guidance. The dissertation has reached the standards fulfilling the requirements of the regulations related to the award of the degree.
+
+\par The results contained in this dissertation have not been submitted in part or in full to any other University or Institute for the award of any degree or diploma to the best of our knowledge.
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+
+
+\vspace*{2.5cm} %\vfill
+%\begin{multicols}{2}
+%\begin{center}
+%\begin{flushleft}
+%Date:
+%\end{flushleft}
+%\textbf{Prof. Akhilesh Kumar Maurya}\\
+%Department of Civil Engineering,\\
+%Indian Institute of Technology Guwahati.
+%\end{center}
+\begin{flushleft}
+%\begin{flushleft}
+%Date:
+%\end{flushleft}
+\ldots \ldots \ldots \ldots \ldots \ldots \ldots \ldots \ldots \ldots \ldots \ldots\\
+\textbf{Prof. Madhav P. Desai}\\
+Department of Electrical Engineering,\\
+Indian Institute of Technology Bombay.
+\end{flushleft}
+%\end{multicols}
+\vfill{}}
+
+
+\clearpage % Start a new page
+
+% \myemptypage
+
+
+% ------------------------------------------------
+% Student declaration
+\addtotoc{Declaration} % Add the "Scope for future work" page entry to the Contents
+
+{\addtocontents{toc}{} % Add a gap in the Contents, for aesthetics
+
+\centerline{\textbf{\LARGE {Declaration}}}}
+\vspace{3em}
+I declare that this written submission represents my ideas in my own words. Where others' ideas and words have been included, I have adequately cited and referenced the original source. I declare that I have adhered to all principles of academic honesty and integrity and have not misrepresented or fabricated, or falsified any idea/data/fact/source in my submission. I understand that any violation of the above will cause disciplinary action by the Institute and can also evoke penal action from the source which has thus not been properly cited or from whom proper permission has not been taken when needed.
+
+\bigskip
+\bigskip
+\bigskip
+\bigskip
+
+\begin{flushleft}
+\ldots \ldots \ldots \ldots \ldots \ldots \ldots \ldots \ldots\\
+\vspace{2mm}
+\textbf{Vennapusa Indrahas Reddy} \\
+Roll No.: 19D070067 \\
+Date: 28 - 06 - 2024 \\
+Place: IIT Bombay
+\end{flushleft}
+
+\clearpage % Start a new page
+% \myemptypage
+
+
+
+
+%----------------------------------------------------------------------------------------
+%	ACKNOWLEDGEMENTS
+%----------------------------------------------------------------------------------------
+
+\setstretch{1.3} % Reset the line-spacing to 1.3 for body text (if it has changed)
+
+\acknowledgements{\addtocontents{toc}{} % Add a gap in the Contents, for aesthetics
+
+I take this opportunity to acknowledge and express my gratitude to all those who supported and guided me during the dissertation work. I am grateful to the Almighty for the abundant grace and blessings that enabled me to complete this dissertation successfully. \\
+I would also like to thank Siddhant Tomar, Rutuja and Jitendra for their collaboration in the development and validation of the inference engine.
+
+\begin{flushleft}
+    \textbf{Vennapusa Indrahas Reddy}
+\end{flushleft}
+
+}
+\clearpage % Start a new page
+
+% \myemptypage
+
+
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT PAGE
+%----------------------------------------------------------------------------------------
+
+\addtotoc{Abstract} % Add the "Abstract" page entry to the Contents
+
+\abstract{\addtocontents{toc}{} % Add a gap in the Contents, for aesthetics
+The escalating computational cost and memory requirements for training and deploying state-of-the-art neural networks have necessitated explorations into efficient optimization techniques that minimize resource utilization while maintaining acceptable accuracy. Leveraging lower precision data types has been shown to incur negligible accuracy losses, making it a viable strategy. Furthermore, while powerful hardware setups are often required for training, there is a growing need for deployable neural networks that can operate on resource-constrained and low-power architectures, highlighting the potential benefits of reconfigurable architectures over conventional GPUs for specific applications. To address these challenges, we have developed a Quantized CNN inference engine, to store the data in 8 bit integer format, using the PyAHIR and AHIR-V2 high-level synthesis framework, targeting FPGA implementation.\\
+Our design leverages 8-bit data storage for efficient hardware resource utilization and employs Ethernet for data transmission to the hardware. 
+% This setup facilitates the deployment of our inference engine in various embedded and real-time applications requiring robust image processing capabilities. 
+The engine is integrated and validated on an FPGA, with minimal accuracy loss. We demonstrate the efficacy of our design with comprehensive performance metrics, showcasing its capability to handle complex CNN workloads effectively.\\
+The results of our implementation indicate a substantial improvement in computational efficiency and data handling compared to traditional approaches, making it a viable solution for deploying CNNs in resource-constrained environments. Our work sets the stage for further exploration into optimizing FPGA-based accelerators for machine learning tasks.\\
+
+% \lipsum[1-2] 
+}
+
+% \clearpage % Start a new page
+
+% \myemptypage
+
+%----------------------------------------------------------------------------------------
+%	LIST OF CONTENTS/FIGURES/TABLES PAGES
+%----------------------------------------------------------------------------------------
+
+\pagestyle{fancy} % The page style headers have been "empty" all this time, now use the "fancy" headers as defined before to bring them back
+
+\lhead{\emph{Contents}} % Set the left side page header to "Contents"
+\tableofcontents % Write out the Table of Contents
+
+\lhead{\emph{List of Figures}} % Set the left side page header to "List of Figures"
+\listoffigures % Write out the List of Figures
+
+\lhead{\emph{List of Tables}} % Set the left side page header to "List of Tables"
+\listoftables % Write out the List of Tables
+
+%----------------------------------------------------------------------------------------
+%	ABBREVIATIONS
+%----------------------------------------------------------------------------------------
+
+% \clearpage % Start a new page
+
+% \setstretch{1.25} % Set the line spacing to 1.5, this makes the following tables easier to read
+
+% \lhead{\emph{Abbreviations}} % Set the left side page header to "Abbreviations"
+% \listofsymbols{ll} % Include a list of Abbreviations (a table of two columns)
+% {
+
+% % \textbf{SM} & \textbf{S}afety \textbf{M}argin\\
+
+
+
+% \textbf{AFT}  & \textbf{A}ccelerated  \textbf{F}ailure  \textbf{T}ime \\
+% \textbf{ANOVA}  & \textbf{A}nalysis  \textbf{}of  \textbf{V}ariance\\
+% \textbf{BLR}  & \textbf{B}inary \textbf{L}ogistic \textbf{R}egression\\
+
+% }
+
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%	SYMBOLS
+%----------------------------------------------------------------------------------------
+
+% \clearpage % Start a new page
+
+% \lhead{\emph{Symbols}} % Set the left side page header to "Symbols"
+
+% \listofnomenclature{lll} % Include a list of Symbols (a two column table)
+% {
+% $\mu$ & Location parameter  \\
+% $\lambda$ & Scale parameter  \\
+% $\beta_0$ & Null model parameter  \\
+% $\hat{\beta}$ & Fitted parameter  \\
+
+% }
+
+
+
+%----------------------------------------------------------------------------------------
+%	THESIS CONTENT - CHAPTERS
+%----------------------------------------------------------------------------------------
+
+\mainmatter % Begin numeric (1,2,3...) page numbering
+
+\pagestyle{fancy} % Return the page headers back to the "fancy" style
+
+% Include the chapters of the thesis as separate files from the Chapters folder
+% Uncomment the lines as you write the chapters
+
+\input{Chapters/Chapter_1/Chapter1}
+\input{Chapters/Chapter_2/Chapter2} 
+\input{Chapters/Chapter_3/Chapter3}
+\input{Chapters/Chapter_4/Chapter4} 
+\input{Chapters/Chapter_5/Chapter5} 
+% \input{Chapters/Chapter_6/Chapter6} 
+% \input{Chapters/Chapter7} 
+
+
+
+
+
+\clearpage % Start a new page
+%----------------------------------------------------------------------------------------
+%	THESIS CONTENT - APPENDICES
+%----------------------------------------------------------------------------------------
+
+% \addtocontents{toc}{\vspace{2em}} % Add a gap in the Contents, for aesthetics
+
+% \appendix % Cue to tell LaTeX that the following 'chapters' are Appendices
+
+% Include the appendices of the thesis as separate files from the Appendices folder
+% Uncomment the lines as you write the Appendices
+
+% \input{Appendices/AppendixA}
+% \input{Appendices/AppendixB}
+% \input{Appendices/AppendixC}
+%\input{Appendices/AppendixD}
+
+% \addtocontents{toc}{\vspace{2em}} % Add a gap in the Contents, for aesthetics
+
+% \backmatter
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\label{References}
+
+\lhead{\emph{References}} % Change the page header to say "Bibliography"
+%\usepackage{natbib}
+%\renewcommand{\refname}{References}
+\renewcommand\bibname{References}
+% \bibliographystyle{elsarticle-harv} % Use the "custom" BibTeX style for formatting the Bibliography
+%\setcitestyle{authoryear,open={((},close={))}}
+
+\bibliography{references} % The references (bibliography) information are stored in the file named "Bibliography.bib"
+[1] Aman Dhammani, “An AI/ML Inference Engine Developed Using AHIR-V2 Tools”, [Unpublished Dual Degree Thesis, IIT Bombay]. 
+\\
+
+ [2]Mohd, Bassam \& Ahmad Yousef, Khalil \& Almajali, Anas \& Hayajneh, Thaier. (2024). Quantization-Based {Optimization} Algorithm for Hardware Implementation of Convolution Neural Networks. Electronics. 13. 1-25. 10.3390/electronics13091727. \\
+ 
+[3] Blott, Michaela \& Preußer, Thomas \& Fraser, Nicholas \& Gambardella, Giulio \& O'Brien, Kenneth \& Umuroglu, Yaman \& Leeser, Miriam \& Vissers, Kees. (2018). FINN- R: An End-to-End Deep-Learning Framework for Fast Exploration of Quantized Neural Networks. ACM Transactions on Reconfigurable Technology and Systems. 11. 1-23. 10.1145/3242897. \\
+
+[4] Ji, Mengfei \& Al-Ars, Zaid \& Hofstee, H.P. \& Chang, Yuchun \& Zhang, Baolin. (2023). FPQNet: Fully Pipelined and Quantized CNN for Ultra-Low Latency Image Classification on FPGAs Using OpenCAPI. Electronics. 12. 4085. 10.3390/electronics12194085. 
+\\
+
+[5] Zhang, W. A Survey of Field Programmable Gate Array-Based Convolutional Neural Network Accelerators. Int. J. Electron.Commun. Eng. 2020, 14, 419–427.\\
+
+[6] Mittal, S. A survey of FPGA-based accelerators for convolutional neural networks. Neural Comput. Appl. 2020, 32, 1109–1139. \\
+
+[7] Gholami, A.; Kim, S.; Dong, Z.; Yao, Z.; Mahoney, M.W.; Keutzer, K. A survey of quantization methods for efficient neuralnetwork inference. arXiv 2021, arXiv:2103.13630   \\
+
+[8] Kim, Y.D.; Park, E.; Yoo, S.; Choi, T.; Yang, L.; Shin, D. Compression of deep convolutional neural networks for fast and lowpower mobile applications. arXiv 2015, arXiv:1511.06530. 
+ \\
+
+ [9] Qiu, J.; Wang, J.; Yao, S.; Guo, K.; Li, B.; Zhou, E.; Yu, J.; Tang, T.; Xu, N.; Song, S.; et al. Going deeper with embedded fpga platformfor convolutional neural network. In Proceedings of the 2016 ACM/SIGDA International Symposium on Field-ProgrammableGate Arrays, Monterey, CA, USA, 21–23 February 2016; pp. 26–35. 
+  \\
+  
+  [10] Chen, T.; Du, Z.; Sun, N.; Wang, J.; Wu, C.; Chen, Y.; Temam, O. Diannao: A small-footprint high-throughput accelerator forubiquitous machine-learning. ACM SIGARCH Comput. Archit. News 2014, 42, 269–284.   \\
+  
+  [11] Mohd, B.J.; Hayajneh, T.; Vasilakos, A.V. A survey on lightweight block ciphers for low-resource devices: Comparative study andopen issues. J. Netw. Comput. Appl. 2015, 58, 73–93. 
+    \\
+    
+    [12] Zhuang, B.; Shen, C.; Tan, M.; Liu, L.; Reid, I. Towards effective low-bitwidth convolutional neural networks. In Proceedings ofthe IEEE Conference on Computer Vision and Pattern Recognition, Salt Lake City, UT, USA, 18–22 June 2018; pp. 7920–7928. \\
+    
+[13] Zhu, C.; Han, S.; Mao, H.; Dally, W.J. Trained ternary quantization. arXiv 2016, arXiv:1612.01064 \\
+
+[14] Miyashita, D.; Lee, E.H.; Murmann, B. Convolutional neural networks using logarithmic data representation. arXiv 2016,arXiv:1603.01025.\\
+% \newpage
+% \include{LOP}
+% \newpage
+% % \include{Biography}
+
+
+\end{document}  

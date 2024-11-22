@@ -47,3 +47,10 @@ $pipe memory_access_lock : $uint<1> $depth 1
 // queue op  size  wp  rp
 // 4     4    8    8   8
 $pipe  QUEUE_MONITOR_SIGNAL: $uint<32> $signal
+
+
+// Rx activity logger
+$pipe RX_ACTIVITY_LOGGER: $uint<8> $depth 1
+
+// Tx
+$pipe TX_ACTIVITY_LOGGER: $uint<8> $depth 1

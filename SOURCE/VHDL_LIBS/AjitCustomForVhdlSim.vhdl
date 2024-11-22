@@ -17,8 +17,8 @@ package AjitCoreConfigurationPackage is
   constant  DCACHE_HIT_LATENCY       : integer :=     (2 + (TWO_THREADS_IN_CORE + DCACHE_BUFFER_REQUEST))	; -- DCACHE hit path latency (including buffering)
   constant  ICACHE_HIT_LATENCY       : integer :=     (2 + (TWO_THREADS_IN_CORE + ICACHE_BUFFER_REQUEST))    ; -- ICACHE hit path latency (including buffering)
 
-  constant  LOG_DCACHE_SET_ASSOCIATIVITY : integer :=   1  ;   -- log of set associativity.
-  constant  LOG_ICACHE_SET_ASSOCIATIVITY : integer :=   1  ;   -- log of set associativity.
+  constant  LOG_DCACHE_SET_ASSOCIATIVITY : integer :=   2  ;   -- log of set associativity.
+  constant  LOG_ICACHE_SET_ASSOCIATIVITY : integer :=   2  ;   -- log of set associativity.
 
   constant  DCACHE_ASSOCIATIVITY         : integer :=  (2 ** LOG_DCACHE_SET_ASSOCIATIVITY) ; -- dcache associativity
   constant  ICACHE_ASSOCIATIVITY         : integer :=  (2 ** LOG_ICACHE_SET_ASSOCIATIVITY) ; -- icache associativity
@@ -26,12 +26,12 @@ package AjitCoreConfigurationPackage is
   constant  TREAT_NONCACHEABLE_AS_BYPASS  : integer :=  1 ; -- non-cacheables will be treated as bypasses...
 
 --------------------------------------   CONFIGURABLE DCACHE PARAMETERS ---------------------------------
-  constant  LOG_DCACHE_SIZE_IN_BLOCKS : integer :=     7  	; -- Note: can be 7,8, or 9 (9 is 32KB)
+  constant  LOG_DCACHE_SIZE_IN_BLOCKS  : integer :=     9  	; -- Note: can be 7,8, or 9 (9 is 32KB)
   constant  DCACHE_SIZE_IN_BLOCKS      : integer :=     (2 ** LOG_DCACHE_SIZE_IN_BLOCKS)	;
   constant  DCACHE_WAY_SIZE            : integer :=     (DCACHE_SIZE_IN_BLOCKS - DCACHE_ASSOCIATIVITY) ;
 
 --------------------------------------   CONFIGURABLE ICACHE PARAMETERS ---------------------------------
-  constant  LOG_ICACHE_SIZE_IN_BLOCKS : integer :=     7  ; -- Note: can be 7,8, or 9 (9 is 32KB)
+  constant  LOG_ICACHE_SIZE_IN_BLOCKS  : integer :=     9  ; -- Note: can be 7,8, or 9 (9 is 32KB)
   constant  ICACHE_SIZE_IN_BLOCKS      : integer :=     (2 ** LOG_ICACHE_SIZE_IN_BLOCKS)	;
   constant  ICACHE_WAY_SIZE            : integer :=     (ICACHE_SIZE_IN_BLOCKS - ICACHE_ASSOCIATIVITY) ;
 
@@ -175,6 +175,9 @@ package AjitCoreConfigurationPackage is
   constant  LOG_IBUF_CACHE_SIZE  : integer :=  6 ; -- instruction buffer cache in ifetch.
   constant  IBUF_CACHE_SIZE      : integer :=  ( 2 ** LOG_IBUF_CACHE_SIZE) ; -- nominally 64 entries.
   constant  IBUF_CACHE_TAG_WIDTH : integer :=  (29 - LOG_IBUF_CACHE_SIZE)  ; -- tag
+
+-- for EE_1 processor
+  constant  EE_1_INTERNAL_MEM_SIZE_IN_BYTES  : integer :=  (128 * 1024) ; -- EE_1 munit internal memory size.
 
 end package;
 package AjitGlobalConfigurationPackage is
@@ -1215,6 +1218,21 @@ package AjitCustomComponents is
 		clk, reset:in std_logic
 	     );
    end component cpu_test_setup_memory_icache_Operator;
+
+   component single_port_16kX64_memory_Operator is -- 
+     port ( -- 
+        sample_req: in boolean;
+        sample_ack: out boolean;
+        update_req: in boolean;
+        update_ack: out boolean;
+        read : in  std_logic_vector(0 downto 0);
+        -- 16K dwords..= 128KB
+        addr : in  std_logic_vector(16 downto 0);
+        byte_mask : in  std_logic_vector(7 downto 0);
+        write_data : in  std_logic_vector(63 downto 0);
+        read_data : out  std_logic_vector(63 downto 0);
+        clk, reset: in std_logic);
+   end component single_port_16kX64_memory_Operator;
 
    component mem_test_setup_memory  is
 	generic (tag_length: integer := 2);
@@ -11164,6 +11182,82 @@ library AjitCustom;
 use AjitCustom.AjitCustomComponents.all;
 use AjitCustom.MemmapPackage.all;
 
+entity single_port_16kX64_memory_Operator is -- 
+  port ( -- 
+    sample_req: in boolean;
+    sample_ack: out boolean;
+    update_req: in boolean;
+    update_ack: out boolean;
+    read : in  std_logic_vector(0 downto 0);
+    -- 16K dwords..= 128KB
+    addr : in  std_logic_vector(16 downto 0);
+    byte_mask : in  std_logic_vector(7 downto 0);
+    write_data : in  std_logic_vector(63 downto 0);
+    read_data : out  std_logic_vector(63 downto 0);
+    clk, reset: in std_logic
+    -- 
+  );
+  -- 
+end entity single_port_16kX64_memory_Operator;
+
+architecture single_port_16kX64_memory_Operator_arch of single_port_16kX64_memory_Operator is -- 
+	signal joined_sig: boolean;	
+ 	signal enable: std_logic;
+begin --  
+
+    trig_join: join2 generic map (name => "single_port_16xK64_memory_Operator:trig-join", bypass => true)
+			port map (pred0 => sample_req, pred1 => update_req,
+					symbol_out => joined_sig, clk => clk, reset => reset);
+   
+    sample_ack <= joined_sig;
+
+    process(clk, reset)
+    begin
+	if(clk'event and clk='1') then
+		if(reset = '1') then
+			update_ack <= false;
+		else
+			update_ack <= joined_sig;
+		end if;
+	end if;
+    end process;
+
+    enable <= '1' when joined_sig else '0';
+
+    -- the base-bank
+    bb:  generic_single_port_memory_with_byte_mask
+		generic map (name => "single_port_16kX64_memory_Operator:bb",
+				g_addr_width => 14, g_data_width => 64)
+		port map (
+	   		datain => write_data,
+           		dataout => read_data,
+			-- dword address!
+           		addrin => addr(16 downto 3),
+	   		bytemask => byte_mask,
+           		enable => enable,
+           		writebar => read(0),
+           		clk => clk, 
+           		reset => reset);
+			
+
+end single_port_16kX64_memory_Operator_arch;
+-- THIS IS TO BE USED ONLY FOR SIMULATIONS!
+library std;
+use std.textio.all;
+use std.standard.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library ahir;
+use ahir.BaseComponents.all;
+use ahir.mem_component_pack.all;
+use ahir.Utilities.all;
+
+library AjitCustom;
+use AjitCustom.AjitCustomComponents.all;
+use AjitCustom.MemmapPackage.all;
+
 -- NOTE: only for simulations.
 entity single_port_u64_mem_Operator is -- 
   port ( -- 
@@ -19941,19 +20035,9 @@ use ieee.std_logic_1164.all;
 -- Synopsys DC ($^^$@!)  needs you to declare an attribute
 -- to infer a synchronous set/reset ... unbelievable.
 --##decl_synopsys_attribute_lib##
-library aHiR_ieee_proposed;
-use aHiR_ieee_proposed.math_utility_pkg.all;
-use aHiR_ieee_proposed.fixed_pkg.all;
-use aHiR_ieee_proposed.float_pkg.all;
 library ahir;
-use ahir.memory_subsystem_package.all;
-use ahir.types.all;
-use ahir.subprograms.all;
-use ahir.components.all;
 use ahir.basecomponents.all;
-use ahir.operatorpackage.all;
-use ahir.floatoperatorpackage.all;
-use ahir.utilities.all;
+
 entity stream_corrector_in_mux_daemon_v2 is -- 
   generic (tag_length : integer := 1); 
   port ( -- 
@@ -19989,11 +20073,9 @@ end entity stream_corrector_in_mux_daemon_v2;
 architecture stream_corrector_in_mux_daemon_arch of stream_corrector_in_mux_daemon_v2 is -- 
 
    signal pop_req_to_dispatch, pop_ack_from_dispatch : std_logic;
-   signal data_from_dispatch, data_from_dispatch_reg: std_logic_vector(204 downto 0);
+   signal data_from_dispatch:  std_logic_vector(204 downto 0);
 
-
-   signal other_data_reg, other_data: std_logic_vector(153 downto 0);
-
+   signal other_data: std_logic_vector(153 downto 0);
 
    signal pop_req_to_iu_cc, pop_ack_from_iu_cc : std_logic;
    signal data_from_iu_cc : std_logic_vector(16 downto 0);
@@ -20011,20 +20093,9 @@ architecture stream_corrector_in_mux_daemon_arch of stream_corrector_in_mux_daem
    signal dispatch_valid, read_iu, read_iu_cc, read_iu_rs1, read_fp_cc: boolean;
    signal dest_rdy, iu_cc_rdy, iu_rs1_rdy, iu_rdy, fp_cc_rdy : boolean;
 
-   signal write_to_dest : boolean;
-
-   type FsmState is (Idle, WaitOnInputs, WaitOnDestination);
-   signal fsm_state: FsmState;
-
-   -- from FSM.
-   signal read_iu_cc_reg, read_iu_rs1_reg, read_fp_cc_reg, read_iu_reg: boolean;
-
-   signal latch_dispatch_data, latch_other_data: boolean;
-   signal clear_dispatch_data, clear_other_data: boolean;
-
+   signal write_to_dest, do_transfer : boolean;
 
    signal const_one_sig: std_logic_vector(0 downto 0);
-
    constant debug_print_flag: boolean := false;
 
 -- see comment above..
@@ -20042,235 +20113,48 @@ begin --
 	dispatch_valid <= (pop_ack_from_dispatch = '1');
 
 	read_iu_cc <= dispatch_valid and (data_from_dispatch(137) = '1');
-	iu_cc_rdy     <= (pop_ack_from_iu_cc = '1');
+	iu_cc_rdy     <= (not read_iu_cc) or (pop_ack_from_iu_cc = '1');
 
 	read_fp_cc <= dispatch_valid and (data_from_dispatch(136) = '1');
-	fp_cc_rdy     <= (pop_ack_from_fp_cc = '1');
+	fp_cc_rdy     <= (not read_fp_cc) or (pop_ack_from_fp_cc = '1');
 
 	read_iu_rs1 <= dispatch_valid and (data_from_dispatch(135) = '1');
-	iu_rs1_rdy     <= (pop_ack_from_iu_rs1 = '1');
+	iu_rs1_rdy     <= (not read_iu_rs1) or (pop_ack_from_iu_rs1 = '1');
 
 	read_iu    <= dispatch_valid and (data_from_dispatch(134) = '1');
-	iu_rdy     <= (pop_ack_from_iu = '1');
-
-	process(clk, fsm_state, dispatch_valid, read_iu_cc, read_iu_rs1, read_fp_cc, read_iu, 
-					iu_cc_rdy, iu_rs1_rdy, fp_cc_rdy, iu_rdy, dest_rdy,
-					read_iu_cc_reg, read_iu_rs1_reg, read_iu_reg, read_fp_cc_reg)
-		variable next_read_iu_cc_reg_var, next_read_iu_rs1_reg_var, next_read_fp_cc_reg_var, next_read_iu_reg_var: boolean;
-		variable next_fsm_state_var: FsmState;
-
-		variable latch_dispatch_data_var, latch_other_data_var: boolean;
-		variable clear_dispatch_data_var, clear_other_data_var: boolean;
-
-		variable iu_cc_value_var: std_logic_vector(16 downto 0);
-		variable iu_rs1_value_var: std_logic_vector(31 downto 0);
-		variable fp_cc_value_var: std_logic_vector(14 downto 0);
-		variable iu_value_var: std_logic_vector(89 downto 0);
-
-		variable write_to_dest_var: boolean;
-   		variable pop_req_to_dispatch_var,
-				pop_req_to_iu_var, pop_req_to_iu_cc_var, pop_req_to_iu_rs1_var, pop_req_to_fp_cc_var: std_logic;
-
-	begin
-		next_fsm_state_var := fsm_state;
-
-		latch_dispatch_data_var := false;
-		clear_dispatch_data_var := false;
-
-		latch_other_data_var := false;
-		clear_other_data_var := false;
-
-		write_to_dest_var := false;
-
-		-- remember what we are doing..
-		next_read_iu_cc_reg_var := read_iu_cc_reg;
-		next_read_iu_rs1_reg_var := read_iu_rs1_reg;
-		next_read_fp_cc_reg_var := read_fp_cc_reg;
-		next_read_iu_reg_var    := read_iu_reg;
-
-		pop_req_to_dispatch_var := '0';
-		pop_req_to_iu_var := '0';
-		pop_req_to_iu_cc_var := '0';
-		pop_req_to_iu_rs1_var := '0';
-		pop_req_to_fp_cc_var := '0';
-
-		case fsm_state is
-			when Idle =>
-
-				-- ready to pick up data from dispatch
-				pop_req_to_dispatch_var := '1';
-				if(dispatch_valid) then
-
-					-- dispatch is valid, latch the data from dispatch.
-					latch_dispatch_data_var := true;
-					-- clear stale old data.			
-					clear_other_data_var:= true;
-
-					-- remember the read-flags.
-					next_read_iu_cc_reg_var :=  read_iu_cc;
-					next_read_iu_rs1_reg_var :=  read_iu_rs1;
-					next_read_fp_cc_reg_var :=  read_fp_cc;
-					next_read_iu_reg_var    :=  read_iu;
-
-					next_fsm_state_var := WaitOnInputs;
-
-				end if;
-
-			when WaitOnInputs =>
-
-				--
-				-- set up the pops... exactly one of these
-				-- will be acked.
-				--
-				if(read_iu_cc_reg) then
-					pop_req_to_iu_cc_var := '1';
-				end if;
-				if(read_iu_rs1_reg) then
-					pop_req_to_iu_rs1_var := '1';
-				end if;
-				if(read_iu_reg) then
-					pop_req_to_iu_var := '1';
-				end if;
-				if(read_fp_cc_reg) then
-					pop_req_to_fp_cc_var := '1';
-				end if;
-
-				if (((not read_iu_cc_reg) or iu_cc_rdy) and
-					((not read_iu_rs1_reg) or iu_rs1_rdy) and 
-					((not read_iu_reg) or iu_rdy) and
-					((not read_fp_cc_reg) or fp_cc_rdy)) then
-
-					-- all pops are acked?  send response
-					write_to_dest_var := true;
-
-					if dest_rdy then
-					-- destination is accepting the response..
-
-						-- check if dispatch has something for us.
-						pop_req_to_dispatch_var := '1';
-
-						if(dispatch_valid) then
-						-- yes it does... 
-	
-							-- latch the dispatch-data.	
-							latch_dispatch_data_var := true;
-
-							-- clear the old-data
-							clear_other_data_var:= true;
-
-							-- register the read flags.
-							next_read_iu_cc_reg_var :=  read_iu_cc;
-							next_read_iu_rs1_reg_var :=  read_iu_rs1;
-							next_read_fp_cc_reg_var :=  read_fp_cc;
-							next_read_iu_reg_var    :=  read_iu;
-
-							-- stay in this state.
-
-						else
-							next_fsm_state_var := Idle;
-							
-							next_read_iu_cc_reg_var :=  false;
-							next_read_iu_rs1_reg_var :=  false;
-							next_read_fp_cc_reg_var :=  false;
-							next_read_iu_reg_var :=  false;
-
-							clear_other_data_var:= true;
-						end if;
-					 else
-						-- other data is ready but destination is not.
-						next_fsm_state_var := WaitOnDestination;
-
-						-- remember other data.
-						latch_other_data_var := true;
-					 end if;
-				end if;
-					
-			when WaitOnDestination =>
-				write_to_dest_var := true;
-				if dest_rdy then
-					-- same logic as before..
-					pop_req_to_dispatch_var := '1';
-					clear_other_data_var:= true;
-
-					if(dispatch_valid) then
-
-						latch_dispatch_data_var := true;
-
-						next_read_iu_cc_reg_var :=  read_iu_cc;
-						next_read_iu_rs1_reg_var :=  read_iu_rs1;
-						next_read_fp_cc_reg_var :=  read_fp_cc;
-						next_read_iu_reg_var    :=  read_iu;
-
-						next_fsm_state_var := WaitOnInputs;
-					else
-						next_fsm_state_var := Idle;
-							
-						next_read_iu_cc_reg_var :=  false;
-						next_read_iu_rs1_reg_var :=  false;
-						next_read_fp_cc_reg_var :=  false;
-						next_read_iu_reg_var :=  false;
-					end if;
-				end if;
-		end case;
-
-		latch_dispatch_data <= latch_dispatch_data_var;
-		clear_dispatch_data <= clear_dispatch_data_var;
-
-		latch_other_data <= latch_other_data_var;
-		clear_other_data <= clear_other_data_var;
-
-		write_to_dest <= write_to_dest_var;
-
-		pop_req_to_dispatch <= pop_req_to_dispatch_var;
-		pop_req_to_iu_cc <= pop_req_to_iu_cc_var;
-		pop_req_to_iu_rs1 <= pop_req_to_iu_rs1_var;
-		pop_req_to_iu    <= pop_req_to_iu_var;
-		pop_req_to_fp_cc <= pop_req_to_fp_cc_var;
-
-		if(clk'event and clk = '1') then
-			if(reset = '1') then
-				fsm_state <= Idle;
-				read_iu_cc_reg <= false;
-				read_iu_rs1_reg <= false;
-				read_fp_cc_reg <= false;
-				read_iu_reg <= false;
-			else
-				fsm_state <= next_fsm_state_var;
-				read_iu_cc_reg <= next_read_iu_cc_reg_var;
-				read_iu_rs1_reg <= next_read_iu_rs1_reg_var;
-				read_fp_cc_reg <= next_read_fp_cc_reg_var;
-				read_iu_reg <= next_read_iu_reg_var;
-			end if;
-		end if;
-	end process;
-
+	iu_rdy     <= (not read_iu) or (pop_ack_from_iu = '1');
 
 	-- qualified other data
-	process (data_from_iu_cc, data_from_iu_rs1, data_from_iu, data_from_fp_cc,
-			read_iu_cc, read_iu_rs1, read_iu, read_fp_cc,
-			read_iu_cc_reg, read_iu_reg, read_fp_cc_reg)
+	process (data_from_iu_cc, 
+			data_from_iu_rs1, 
+			data_from_iu, 
+			data_from_fp_cc,
+			read_iu_cc, 
+			read_iu_rs1, 
+			read_iu, 
+			read_fp_cc)
 		variable data_from_iu_cc_var: std_logic_vector(16 downto 0);
 		variable data_from_iu_rs1_var: std_logic_vector(31 downto 0);
 		variable data_from_fp_cc_var: std_logic_vector(14 downto 0);
 		variable data_from_iu_var: std_logic_vector(89 downto 0);
 
 	begin
-		if(read_iu_cc_reg) then
+		if(read_iu_cc) then
 			data_from_iu_cc_var := data_from_iu_cc;
 		else	
 			data_from_iu_cc_var := (others => '0');
 		end if;
-		if(read_iu_rs1_reg) then
+		if(read_iu_rs1) then
 			data_from_iu_rs1_var := data_from_iu_rs1;
 		else	
 			data_from_iu_rs1_var := (others => '0');
 		end if;
-		if(read_fp_cc_reg) then
+		if(read_fp_cc) then
 			data_from_fp_cc_var := data_from_fp_cc;
 		else	
 			data_from_fp_cc_var := (others => '0');
 		end if;
-		if(read_iu_reg) then
+		if(read_iu) then
 			data_from_iu_var := data_from_iu;
 		else	
 			data_from_iu_var := (others => '0');
@@ -20280,27 +20164,9 @@ begin --
 
 	end process;
 
-
-	-- registers.
-	process (clk)
-	begin
-		if(clk'event and (clk = '1') ) then
-			if(latch_dispatch_data ) then
-				data_from_dispatch_reg <= data_from_dispatch;
-			elsif (clear_dispatch_data) then
-				data_from_dispatch_reg <= (others => '0');
-			end if;
-			if(latch_other_data) then
-				other_data_reg <= other_data;
-			elsif (clear_other_data) then
-				other_data_reg <= (others => '0');
-			end if;
-		end if;
-	end process;
-
 	-- Need to cut the long path...
 	qbDispatch: QueueBase
-		generic map (name => "sc_in_mux_qbDispatch", queue_depth => 0, data_width => 205)
+		generic map (name => "sc_in_mux_qbDispatch", queue_depth => 2, data_width => 205)
 		port map (
 			clk => clk, reset => reset,
 			data_in => teu_idispatch_to_stream_corrector_pipe_read_data,
@@ -20359,10 +20225,29 @@ begin --
 
 	-- destination side..
 	dest_rdy   <= (noblock_stream_corrector_in_args_pipe_write_ack(0) = '1'); 
+
+
+	-- do transfer.
+	do_transfer <= dest_rdy and 
+				dispatch_valid and 
+				iu_cc_rdy and 
+				iu_rs1_rdy and
+				iu_rdy and
+				fp_cc_rdy;
+
+	-- pops!
+	pop_req_to_dispatch <= '1' when do_transfer else '0';
+	pop_req_to_iu_cc <= '1' when (do_transfer and read_iu_cc) else '0';
+	pop_req_to_iu_rs1 <= '1' when (do_transfer and read_iu_rs1) else '0';
+	pop_req_to_iu     <= '1' when (do_transfer and read_iu) else '0';
+	pop_req_to_fp_cc     <= '1' when (do_transfer and read_fp_cc) else '0';
+
+	
+
+
+	write_to_dest <= do_transfer;
 	noblock_stream_corrector_in_args_pipe_write_req(0) <= '1' when write_to_dest else '0';
-	noblock_stream_corrector_in_args_pipe_write_data <= 
-		(const_one_sig & data_from_dispatch_reg & other_data_reg) when (fsm_state = WaitOnDestination) 
-			else (const_one_sig & data_from_dispatch_reg & other_data);
+	noblock_stream_corrector_in_args_pipe_write_data <= (const_one_sig & data_from_dispatch & other_data);
 
 end stream_corrector_in_mux_daemon_arch;
 
@@ -27166,8 +27051,8 @@ begin --
       port map(clk => clk, reset => reset, req => SUB_u32_u32_176_inst_ack_1, ack => baudControlCalculatorDaemon_CP_295_elements(23)); -- 
     -- CP-element group 24:  join  transition  output  bypass 
     -- CP-element group 24: predecessors 
-    -- CP-element group 24: 	17 
     -- CP-element group 24: 	23 
+    -- CP-element group 24: 	17 
     -- CP-element group 24: successors 
     -- CP-element group 24: 	25 
     -- CP-element group 24:  members (3) 
@@ -27185,7 +27070,7 @@ begin --
       constant joinName: string(1 to 47) := "baudControlCalculatorDaemon_cp_element_group_24"; 
       signal preds: BooleanArray(1 to 2); -- 
     begin -- 
-      preds <= baudControlCalculatorDaemon_CP_295_elements(17) & baudControlCalculatorDaemon_CP_295_elements(23);
+      preds <= baudControlCalculatorDaemon_CP_295_elements(23) & baudControlCalculatorDaemon_CP_295_elements(17);
       gj_baudControlCalculatorDaemon_cp_element_group_24 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
         port map(preds => preds, symbol_out => baudControlCalculatorDaemon_CP_295_elements(24), clk => clk, reset => reset); --
     end block;
@@ -27330,18 +27215,18 @@ begin --
     baudControlCalculatorDaemon_CP_295_elements(31) <= OrReduce(baudControlCalculatorDaemon_CP_295_elements(6) & baudControlCalculatorDaemon_CP_295_elements(2));
     -- CP-element group 32:  merge  fork  transition  place  output  bypass 
     -- CP-element group 32: predecessors 
-    -- CP-element group 32: 	30 
     -- CP-element group 32: 	7 
+    -- CP-element group 32: 	30 
     -- CP-element group 32: successors 
-    -- CP-element group 32: 	17 
     -- CP-element group 32: 	23 
     -- CP-element group 32: 	10 
-    -- CP-element group 32: 	26 
+    -- CP-element group 32: 	17 
     -- CP-element group 32: 	9 
     -- CP-element group 32: 	8 
     -- CP-element group 32: 	14 
     -- CP-element group 32: 	11 
     -- CP-element group 32: 	20 
+    -- CP-element group 32: 	26 
     -- CP-element group 32:  members (34) 
       -- CP-element group 32: 	 branch_block_stmt_133/merge_stmt_143__exit__
       -- CP-element group 32: 	 branch_block_stmt_133/assign_stmt_151_to_assign_stmt_189__entry__
@@ -27405,7 +27290,7 @@ begin --
     cr_483_symbol_link_to_dp: control_delay_element -- 
       generic map(name => " cr_483_symbol_delay",delay_value => 0)
       port map(clk => clk, reset => reset, req => baudControlCalculatorDaemon_CP_295_elements(32), ack => CONCAT_u20_u32_188_inst_req_1); -- 
-    baudControlCalculatorDaemon_CP_295_elements(32) <= OrReduce(baudControlCalculatorDaemon_CP_295_elements(30) & baudControlCalculatorDaemon_CP_295_elements(7));
+    baudControlCalculatorDaemon_CP_295_elements(32) <= OrReduce(baudControlCalculatorDaemon_CP_295_elements(7) & baudControlCalculatorDaemon_CP_295_elements(30));
     --  hookup: inputs to control-path 
     -- hookup: output from control-path 
     -- 
@@ -27464,7 +27349,8 @@ begin --
         cut_through =>  false ,
         in_data_width => 1,
         out_data_width => 1,
-        bypass_flag =>  false 
+        bypass_flag =>  false ,
+        in_phi =>  false 
         -- 
       )port map ( -- 
         write_req => wreq(0), 
@@ -28123,9 +28009,9 @@ architecture my_div_arch of my_div is --
   signal my_div_CP_159_symbol: Boolean;
   -- volatile/operator module components. 
   -- links between control-path and data-path
+  signal phi_stmt_85_ack_0 : boolean;
   signal phi_stmt_89_ack_0 : boolean;
   signal W_Q_125_inst_req_0 : boolean;
-  signal W_Q_125_inst_ack_0 : boolean;
   signal if_stmt_120_branch_req_0 : boolean;
   signal if_stmt_120_branch_ack_1 : boolean;
   signal if_stmt_120_branch_ack_0 : boolean;
@@ -28145,7 +28031,7 @@ architecture my_div_arch of my_div is --
   signal ntQ_119_93_buf_req_1 : boolean;
   signal ntQ_119_93_buf_ack_1 : boolean;
   signal phi_stmt_89_req_1 : boolean;
-  signal phi_stmt_85_ack_0 : boolean;
+  signal W_Q_125_inst_ack_0 : boolean;
   signal W_Q_125_inst_req_1 : boolean;
   signal W_Q_125_inst_ack_1 : boolean;
   -- 
@@ -28279,8 +28165,8 @@ begin --
     -- CP-element group 1: predecessors 
     -- CP-element group 1: 	20 
     -- CP-element group 1: successors 
-    -- CP-element group 1: 	3 
     -- CP-element group 1: 	2 
+    -- CP-element group 1: 	3 
     -- CP-element group 1:  members (13) 
       -- CP-element group 1: 	 branch_block_stmt_83/merge_stmt_84__exit__
       -- CP-element group 1: 	 branch_block_stmt_83/assign_stmt_103_to_assign_stmt_119__entry__
@@ -28304,10 +28190,10 @@ begin --
     -- CP-element group 2: predecessors 
     -- CP-element group 2: 	1 
     -- CP-element group 2: successors 
-    -- CP-element group 2: 	11 
-    -- CP-element group 2: 	14 
     -- CP-element group 2: 	10 
+    -- CP-element group 2: 	14 
     -- CP-element group 2: 	13 
+    -- CP-element group 2: 	11 
     -- CP-element group 2:  members (18) 
       -- CP-element group 2: 	 branch_block_stmt_83/if_stmt_120_if_link/$exit
       -- CP-element group 2: 	 branch_block_stmt_83/if_stmt_120_if_link/if_choice_transition
@@ -28347,8 +28233,8 @@ begin --
     -- CP-element group 3: predecessors 
     -- CP-element group 3: 	1 
     -- CP-element group 3: successors 
-    -- CP-element group 3: 	21 
     -- CP-element group 3: 	22 
+    -- CP-element group 3: 	21 
     -- CP-element group 3:  members (12) 
       -- CP-element group 3: 	 assign_stmt_127/$entry
       -- CP-element group 3: 	 assign_stmt_127/assign_stmt_127_sample_start_
@@ -28376,9 +28262,9 @@ begin --
     -- CP-element group 4: predecessors 
     -- CP-element group 4: 	0 
     -- CP-element group 4: successors 
-    -- CP-element group 4: 	6 
     -- CP-element group 4: 	5 
     -- CP-element group 4: 	8 
+    -- CP-element group 4: 	6 
     -- CP-element group 4:  members (10) 
       -- CP-element group 4: 	 branch_block_stmt_83/merge_stmt_84__entry___PhiReq/$entry
       -- CP-element group 4: 	 branch_block_stmt_83/merge_stmt_84__entry___PhiReq/phi_stmt_85/$entry
@@ -28391,12 +28277,12 @@ begin --
       -- CP-element group 4: 	 branch_block_stmt_83/merge_stmt_84__entry___PhiReq/phi_stmt_89/$entry
       -- CP-element group 4: 	 branch_block_stmt_83/merge_stmt_84__entry___PhiReq/phi_stmt_89/phi_stmt_89_sources/$entry
       -- 
-    req_218_symbol_link_to_dp: control_delay_element -- 
-      generic map(name => " req_218_symbol_delay",delay_value => 0)
-      port map(clk => clk, reset => reset, req => my_div_CP_159_elements(4), ack => A_87_buf_req_1); -- 
     req_213_symbol_link_to_dp: control_delay_element -- 
       generic map(name => " req_213_symbol_delay",delay_value => 0)
       port map(clk => clk, reset => reset, req => my_div_CP_159_elements(4), ack => A_87_buf_req_0); -- 
+    req_218_symbol_link_to_dp: control_delay_element -- 
+      generic map(name => " req_218_symbol_delay",delay_value => 0)
+      port map(clk => clk, reset => reset, req => my_div_CP_159_elements(4), ack => A_87_buf_req_1); -- 
     my_div_CP_159_elements(4) <= my_div_CP_159_elements(0);
     -- CP-element group 5:  transition  input  bypass 
     -- CP-element group 5: predecessors 
@@ -28424,8 +28310,8 @@ begin --
       port map(clk => clk, reset => reset, req => A_87_buf_ack_1, ack => my_div_CP_159_elements(6)); -- 
     -- CP-element group 7:  join  transition  output  bypass 
     -- CP-element group 7: predecessors 
-    -- CP-element group 7: 	6 
     -- CP-element group 7: 	5 
+    -- CP-element group 7: 	6 
     -- CP-element group 7: successors 
     -- CP-element group 7: 	9 
     -- CP-element group 7:  members (4) 
@@ -28444,7 +28330,7 @@ begin --
       constant joinName: string(1 to 25) := "my_div_cp_element_group_7"; 
       signal preds: BooleanArray(1 to 2); -- 
     begin -- 
-      preds <= my_div_CP_159_elements(6) & my_div_CP_159_elements(5);
+      preds <= my_div_CP_159_elements(5) & my_div_CP_159_elements(6);
       gj_my_div_cp_element_group_7 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
         port map(preds => preds, symbol_out => my_div_CP_159_elements(7), clk => clk, reset => reset); --
     end block;
@@ -28510,8 +28396,8 @@ begin --
       port map(clk => clk, reset => reset, req => ntA_111_88_buf_ack_1, ack => my_div_CP_159_elements(11)); -- 
     -- CP-element group 12:  join  transition  output  bypass 
     -- CP-element group 12: predecessors 
-    -- CP-element group 12: 	11 
     -- CP-element group 12: 	10 
+    -- CP-element group 12: 	11 
     -- CP-element group 12: successors 
     -- CP-element group 12: 	16 
     -- CP-element group 12:  members (4) 
@@ -28530,7 +28416,7 @@ begin --
       constant joinName: string(1 to 26) := "my_div_cp_element_group_12"; 
       signal preds: BooleanArray(1 to 2); -- 
     begin -- 
-      preds <= my_div_CP_159_elements(11) & my_div_CP_159_elements(10);
+      preds <= my_div_CP_159_elements(10) & my_div_CP_159_elements(11);
       gj_my_div_cp_element_group_12 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
         port map(preds => preds, symbol_out => my_div_CP_159_elements(12), clk => clk, reset => reset); --
     end block;
@@ -28586,8 +28472,8 @@ begin --
     end block;
     -- CP-element group 16:  join  transition  bypass 
     -- CP-element group 16: predecessors 
-    -- CP-element group 16: 	15 
     -- CP-element group 16: 	12 
+    -- CP-element group 16: 	15 
     -- CP-element group 16: successors 
     -- CP-element group 16: 	17 
     -- CP-element group 16:  members (1) 
@@ -28600,22 +28486,22 @@ begin --
       constant joinName: string(1 to 26) := "my_div_cp_element_group_16"; 
       signal preds: BooleanArray(1 to 2); -- 
     begin -- 
-      preds <= my_div_CP_159_elements(15) & my_div_CP_159_elements(12);
+      preds <= my_div_CP_159_elements(12) & my_div_CP_159_elements(15);
       gj_my_div_cp_element_group_16 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
         port map(preds => preds, symbol_out => my_div_CP_159_elements(16), clk => clk, reset => reset); --
     end block;
     -- CP-element group 17:  merge  fork  transition  place  bypass 
     -- CP-element group 17: predecessors 
-    -- CP-element group 17: 	9 
     -- CP-element group 17: 	16 
+    -- CP-element group 17: 	9 
     -- CP-element group 17: successors 
-    -- CP-element group 17: 	18 
     -- CP-element group 17: 	19 
+    -- CP-element group 17: 	18 
     -- CP-element group 17:  members (2) 
       -- CP-element group 17: 	 branch_block_stmt_83/merge_stmt_84_PhiReqMerge
       -- CP-element group 17: 	 branch_block_stmt_83/merge_stmt_84_PhiAck/$entry
       -- 
-    my_div_CP_159_elements(17) <= OrReduce(my_div_CP_159_elements(9) & my_div_CP_159_elements(16));
+    my_div_CP_159_elements(17) <= OrReduce(my_div_CP_159_elements(16) & my_div_CP_159_elements(9));
     -- CP-element group 18:  transition  input  bypass 
     -- CP-element group 18: predecessors 
     -- CP-element group 18: 	17 
@@ -28640,8 +28526,8 @@ begin --
       port map(clk => clk, reset => reset, req => phi_stmt_89_ack_0, ack => my_div_CP_159_elements(19)); -- 
     -- CP-element group 20:  join  transition  bypass 
     -- CP-element group 20: predecessors 
-    -- CP-element group 20: 	18 
     -- CP-element group 20: 	19 
+    -- CP-element group 20: 	18 
     -- CP-element group 20: successors 
     -- CP-element group 20: 	1 
     -- CP-element group 20:  members (1) 
@@ -28654,7 +28540,7 @@ begin --
       constant joinName: string(1 to 26) := "my_div_cp_element_group_20"; 
       signal preds: BooleanArray(1 to 2); -- 
     begin -- 
-      preds <= my_div_CP_159_elements(18) & my_div_CP_159_elements(19);
+      preds <= my_div_CP_159_elements(19) & my_div_CP_159_elements(18);
       gj_my_div_cp_element_group_20 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
         port map(preds => preds, symbol_out => my_div_CP_159_elements(20), clk => clk, reset => reset); --
     end block;
@@ -28773,7 +28659,8 @@ begin --
         cut_through =>  false ,
         in_data_width => 32,
         out_data_width => 32,
-        bypass_flag =>  false 
+        bypass_flag =>  false ,
+        in_phi =>  true 
         -- 
       )port map ( -- 
         write_req => wreq(0), 
@@ -28801,7 +28688,8 @@ begin --
         cut_through =>  false ,
         in_data_width => 32,
         out_data_width => 32,
-        bypass_flag =>  false 
+        bypass_flag =>  false ,
+        in_phi =>  false 
         -- 
       )port map ( -- 
         write_req => wreq(0), 
@@ -28829,7 +28717,8 @@ begin --
         cut_through =>  false ,
         in_data_width => 32,
         out_data_width => 32,
-        bypass_flag =>  false 
+        bypass_flag =>  false ,
+        in_phi =>  true 
         -- 
       )port map ( -- 
         write_req => wreq(0), 
@@ -28857,7 +28746,8 @@ begin --
         cut_through =>  false ,
         in_data_width => 32,
         out_data_width => 32,
-        bypass_flag =>  false 
+        bypass_flag =>  false ,
+        in_phi =>  true 
         -- 
       )port map ( -- 
         write_req => wreq(0), 
@@ -29145,8 +29035,8 @@ begin --
     -- CP-element group 1: successors 
     -- CP-element group 1: 	2 
     -- CP-element group 1: 	3 
-    -- CP-element group 1: 	5 
     -- CP-element group 1: 	4 
+    -- CP-element group 1: 	5 
     -- CP-element group 1:  members (15) 
       -- CP-element group 1: 	 branch_block_stmt_11/assign_stmt_34_to_assign_stmt_72/AND_u1_u1_33_update_start_
       -- CP-element group 1: 	 branch_block_stmt_11/assign_stmt_34_to_assign_stmt_72/AND_u1_u1_33_sample_start_
@@ -29232,8 +29122,8 @@ begin --
     -- CP-element group 6: 	3 
     -- CP-element group 6: 	5 
     -- CP-element group 6: successors 
-    -- CP-element group 6: 	7 
     -- CP-element group 6: 	8 
+    -- CP-element group 6: 	7 
     -- CP-element group 6:  members (10) 
       -- CP-element group 6: 	 branch_block_stmt_11/assign_stmt_34_to_assign_stmt_72__exit__
       -- CP-element group 6: 	 branch_block_stmt_11/if_stmt_73__entry__
@@ -29322,10 +29212,10 @@ begin --
     -- CP-element group 9: predecessors 
     -- CP-element group 9: 	0 
     -- CP-element group 9: successors 
-    -- CP-element group 9: 	10 
     -- CP-element group 9: 	11 
-    -- CP-element group 9: 	13 
+    -- CP-element group 9: 	10 
     -- CP-element group 9: 	14 
+    -- CP-element group 9: 	13 
     -- CP-element group 9:  members (15) 
       -- CP-element group 9: 	 branch_block_stmt_11/merge_stmt_12__entry___PhiReq/$entry
       -- CP-element group 9: 	 branch_block_stmt_11/merge_stmt_12__entry___PhiReq/phi_stmt_13/$entry
@@ -29382,8 +29272,8 @@ begin --
       port map(clk => clk, reset => reset, req => A_15_buf_ack_1, ack => my_gcd_CP_0_elements(11)); -- 
     -- CP-element group 12:  join  transition  output  bypass 
     -- CP-element group 12: predecessors 
-    -- CP-element group 12: 	10 
     -- CP-element group 12: 	11 
+    -- CP-element group 12: 	10 
     -- CP-element group 12: successors 
     -- CP-element group 12: 	16 
     -- CP-element group 12:  members (4) 
@@ -29402,7 +29292,7 @@ begin --
       constant joinName: string(1 to 26) := "my_gcd_cp_element_group_12"; 
       signal preds: BooleanArray(1 to 2); -- 
     begin -- 
-      preds <= my_gcd_CP_0_elements(10) & my_gcd_CP_0_elements(11);
+      preds <= my_gcd_CP_0_elements(11) & my_gcd_CP_0_elements(10);
       gj_my_gcd_cp_element_group_12 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
         port map(preds => preds, symbol_out => my_gcd_CP_0_elements(12), clk => clk, reset => reset); --
     end block;
@@ -29432,8 +29322,8 @@ begin --
       port map(clk => clk, reset => reset, req => B_19_buf_ack_1, ack => my_gcd_CP_0_elements(14)); -- 
     -- CP-element group 15:  join  transition  output  bypass 
     -- CP-element group 15: predecessors 
-    -- CP-element group 15: 	13 
     -- CP-element group 15: 	14 
+    -- CP-element group 15: 	13 
     -- CP-element group 15: successors 
     -- CP-element group 15: 	16 
     -- CP-element group 15:  members (4) 
@@ -29452,7 +29342,7 @@ begin --
       constant joinName: string(1 to 26) := "my_gcd_cp_element_group_15"; 
       signal preds: BooleanArray(1 to 2); -- 
     begin -- 
-      preds <= my_gcd_CP_0_elements(13) & my_gcd_CP_0_elements(14);
+      preds <= my_gcd_CP_0_elements(14) & my_gcd_CP_0_elements(13);
       gj_my_gcd_cp_element_group_15 : generic_join generic map(name => joinName, number_of_predecessors => 2, place_capacities => place_capacities, place_markings => place_markings, place_delays => place_delays) -- 
         port map(preds => preds, symbol_out => my_gcd_CP_0_elements(15), clk => clk, reset => reset); --
     end block;
@@ -29769,7 +29659,8 @@ begin --
         cut_through =>  false ,
         in_data_width => 32,
         out_data_width => 32,
-        bypass_flag =>  false 
+        bypass_flag =>  false ,
+        in_phi =>  true 
         -- 
       )port map ( -- 
         write_req => wreq(0), 
@@ -29797,7 +29688,8 @@ begin --
         cut_through =>  false ,
         in_data_width => 32,
         out_data_width => 32,
-        bypass_flag =>  false 
+        bypass_flag =>  false ,
+        in_phi =>  true 
         -- 
       )port map ( -- 
         write_req => wreq(0), 
@@ -29825,7 +29717,8 @@ begin --
         cut_through =>  false ,
         in_data_width => 32,
         out_data_width => 32,
-        bypass_flag =>  false 
+        bypass_flag =>  false ,
+        in_phi =>  true 
         -- 
       )port map ( -- 
         write_req => wreq(0), 
@@ -29853,7 +29746,8 @@ begin --
         cut_through =>  false ,
         in_data_width => 32,
         out_data_width => 32,
-        bypass_flag =>  false 
+        bypass_flag =>  false ,
+        in_phi =>  true 
         -- 
       )port map ( -- 
         write_req => wreq(0), 

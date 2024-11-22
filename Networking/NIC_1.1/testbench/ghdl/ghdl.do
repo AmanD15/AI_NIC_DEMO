@@ -1,5 +1,5 @@
 VHDL_LIBS=../../../../SOURCE/VHDL_LIBS
-AHIR_LIB=/ahir/release/lib
+AHIR_LIB=$AHIR_RELEASE/lib
 echo $VHDL_LIBS
 ghdl --clean
 ghdl --remove

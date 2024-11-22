@@ -1,5 +1,6 @@
-commit 77bf41b205422cd37cfb153448f23aa690fa583b
+commit b3badd991caf40f8422c591fc905cca75327f379
 Author: madhav <madhav@localhost.localdomain>
-Date:   Mon Feb 5 07:08:12 2024 +0000
+Date:   Sun Nov 10 16:07:56 2024 +0530
 
-    Generate ofc (overflow) exception on fdtoi, fstoi.
+    Got the base processor in the new AJIT SAC multi-core
+    into shape.  Long way to go.

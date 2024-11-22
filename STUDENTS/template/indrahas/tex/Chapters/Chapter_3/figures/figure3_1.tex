@@ -1,0 +1,88 @@
+% adjustbox is used to limit the figure inside the page
+% -- means normal arrow
+%  -| horizontal then vertical arrow
+%  |- vertical then horizontal arrow
+
+
+\begin{figure}[!ht]
+
+    \begin{center}
+        \begin{adjustbox}{max height=0.8\textheight, center, width=0.6\textwidth}
+            \begin{tikzpicture}[node distance=2.5cm]
+                \node (t1) [startstop] {\textbf{{\Large Step 1}}};
+                \node (t2) [process, below of = t1] {\textbf{{\Large Step 2}}};
+                \node (t3) [process, below of = t2] {\textbf{{\Large Step 3}}};
+                \node (t4) [process, below of = t3] {\textbf{{\Large Step 4}}};
+                \node (t5) [process, below of = t4] {\textbf{{\Large Step 5}}};
+% ---------------------------------------------
+% vertical (primary) Division
+% ---------------------------------------------
+                % Flow
+
+                \node (t6) [process, below of = t5] {\textbf{{\Large Step 6}}};
+
+                \node (t7) [process, below of = t6] {\textbf{{\Large Step 7}}};
+
+                \node (t8) [process, below of = t7] {\textbf{{\Large Step 8}}};
+
+                \node (t9) [process, below of = t8] {\textbf{{\Large Step 9}}};
+
+                \node (t10) [process, below of = t9] {\textbf{{\Large Step 10}}};
+
+                \node (t11) [process, below of = t10] {\textbf{{\Large Step 11}}};
+
+                 \node (t12) [process, below of = t11] {\textbf{{\Large Step 12}}};
+
+
+% ---------------------------------------------
+% All arrows (for vertical column
+% ---------------------------------------------
+
+                %  All arrows (for vertical column
+                \draw [arrow] (t1) -- (t2);
+                \draw [arrow] (t2) -- (t3);
+                \draw [arrow] (t3) -- (t4);
+                \draw [arrow] (t4) -- (t5);
+                \draw [arrow] (t5) -- (t6);
+                \draw [arrow] (t6) -- (t7);
+                \draw [arrow] (t7) -- (t8);
+                \draw [arrow] (t8) -- (t9);
+                \draw [arrow] (t9) -- (t10);
+                \draw [arrow] (t10) -- (t11);
+                \draw [arrow] (t11) -- (t12);
+% ---------------------------------------------
+% Left Division
+% --------------------------------------------- 
+                \node (l1) [process, left of = t5, xshift=-10cm, yshift=-2.6cm] {\textbf{{\Large Left 1}}};
+
+                \node (l2) [process, below of = l1, yshift=-0.3cm] {\textbf{{\Large Left 2}}};
+                
+
+% ---------------------------------------------
+% All arrows (for the left column)
+% ---------------------------------------------
+
+                %  All arrows (for vertical column
+                \draw [arrow] (t5) -| (l1);
+                \draw [arrow] (l1) -- (l2);
+                \draw [arrow] (l2) |- (t8);
+
+% ---------------------------------------------
+% Right Division
+% ---------------------------------------------   
+                \node (r1) [process, right of = t8, xshift=10cm, yshift=-4cm] {\textbf{{\Large Right 1}}};
+
+% ---------------------------------------------
+% All arrows (for right column)
+% ---------------------------------------------
+
+                %  All arrows (for vertical column
+                \draw [arrow] (t8) -| (r1);
+                \draw [arrow] (r1) |- (t11);
+                
+            \end{tikzpicture}
+        \end{adjustbox}
+    \end{center}
+    \caption{Study methodology.}
+    \label{fig:figure3_1}
+\end{figure}

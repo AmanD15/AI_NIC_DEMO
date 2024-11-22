@@ -1,0 +1,51 @@
+% Chapter Template
+
+\chapter{Summary}\doublespacing % Main chapter title
+
+\label{Chapter5} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+\lhead{Chapter V. \emph{Summary}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
+In this work, we present a CNN inference engine on FPGA which can produce results with higher accuracy despite storing those results in 8 bit integer format. This engine is designed using AHIR-V2 and PyAHIR tools. We demonstrate an application of the engine by developing image classification algorithm using LeNet architecture, a well known ML model for image classification.
+\\
+We also integrated the engine with an AJIT processor and Network Interface Controller (NIC) to generate a system-on-chip (SoC) capable of performing at-edge AI/ML inference tasks. Using the SoC, we established the correctness of the acceleration engine using a test bench to validate the output sent to the host machine after every stage.\\
+Our analysis of the engine's characteristics reveals opportunities for enhancing performance and robustness. These potential optimizations are outlined as future work here:
+\begin{itemize}
+    \item To increase the parallel computations in the hardware, multiple copies of the engines can be deployed, where each engine will work with separate filter, but on same input. This will help in obtaining the output of multiple channels simultaneously, thus decreasing the overall inference time for the output while maintaining same hardware utilization.
+    \item By supporting half precision arithmetic, a significant throughput enhancement can be achieved, stemming from the ability to perform twice the number of operations, compared to the current hardware implementation that exclusively employs single precision operators, thereby leveraging the reduced numerical precision requirements to double operational bandwidth and accelerate computational throughput. 
+    \item Through hardware design optimization, the engine's hardware utilization can be maximized, facilitating the extension of its capabilities to accommodate the execution of sophisticated CNN operations, such as Batch Normalization and depthwise convolution, in addition to standard convolution operations, thereby enhancing the engine's versatility and computational range.
+\end{itemize}
+
+
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+
+
+
+% \section{Introduction}
+% Nam dui ligula, fringilla a, euismod sodales, sollicitudin vel, wisi. Morbi auctor lorem non justo. Nam lacus libero, pretium at, 
+%  obortis vitae, ultricies et, tellus. Donec aliquet.
+
+
+% \section{Descriptive Statistics}
+% \lipsum[2]
+
+
+% \section{Model Development}
+% \lipsum[2]
+
+
+% \section{Discussion}
+% \lipsum[1]
+
+
+% \section{Summary}
+% \lipsum[3]
+
+
+
+
+
+
