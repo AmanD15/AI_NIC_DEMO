@@ -37,12 +37,16 @@ $module [transmitEngineDaemon] $in () $out () $is
 			// Get packet pointer for server tx_q_index
 			$call getTxPacketPointerFromServer (tx_tag tx_q_index) (pkt_pointer tx_flag)
 			$barrier
-			TX_ACTIVITY_LOGGER := 1
+			//
+			// TX_ACTIVITY_LOGGER := 1
+			//
 				
 			// if ok...
 			$guard (~tx_flag) $call transmitPacket (tx_tag pkt_pointer) (transmitted_flag)
 			$barrier
-			TX_ACTIVITY_LOGGER := 2
+			//
+			// TX_ACTIVITY_LOGGER := 2
+			//
 
 			
 			$volatile push_pointer_back_to_free_Q := ((~tx_flag) & transmitted_flag)
@@ -54,7 +58,9 @@ $module [transmitEngineDaemon] $in () $out () $is
 			$guard (push_pointer_back_to_free_Q)
 				$call pushIntoQueue (tx_tag FREEQUEUE 0 pkt_pointer) (push_status)
 			$barrier
-			TX_ACTIVITY_LOGGER := 3
+			//
+			// TX_ACTIVITY_LOGGER := 3
+			// 
 
 			$rreport(transmitEngineDaemon pushed_back_to_free_queue push_status)
 
@@ -66,8 +72,10 @@ $module [transmitEngineDaemon] $in () $out () $is
 			LAST_READ_TX_QUEUE_INDEX := tx_q_index
 
 			$barrier
-			TX_ACTIVITY_LOGGER := 4
-
+			//
+			// TX_ACTIVITY_LOGGER := 4
+			//
+	
 			// loop while enabled(control[0] == 1)
 			$while (S_CONTROL_REGISTER [] 0)
 			

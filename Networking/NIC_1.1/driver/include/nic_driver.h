@@ -5,6 +5,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+// Buffer parameters
+#define NUMBER_OF_BUFFERS 4
+#define BUFFER_SIZE_IN_BYTES 1500
+#define NIC_START_ADDR 0xFF000000
 
 
 #ifdef USE_CORTOS
@@ -16,10 +20,6 @@
 #include <ajit_mmap.h>
 #include <cortos.h>
 
-// Buffer parameters
-#define NUMBER_OF_BUFFERS 4
-#define BUFFER_SIZE_IN_BYTES 1500
-#define NIC_START_ADDR 0xFF000000
 
 
 #endif
@@ -87,6 +87,7 @@ typedef struct __NicCortosQueue {
 
 // Cortos queue header will be called NicCortosQueue.
 typedef CortosQueueHeader NicCortosQueue;
+
 #endif
 
 
@@ -178,7 +179,7 @@ int translateVaToPa (uint32_t va, uint64_t* pa);
 
 // The following function gives various physical address for Queues: 
 // Queue struct addr, packet buffer addr and lock addr.
-void findQueuePhyAddr(char*,CortosQueueHeader*,uint64_t*,uint64_t*,uint64_t*);
+void findQueuePhyAddr(char*,NicCortosQueue*,uint64_t*,uint64_t*,uint64_t*);
 
 // The following function gives actual packet length, used by LwIP: 
 uint32_t getPacketLen(uint32_t* controlWord);

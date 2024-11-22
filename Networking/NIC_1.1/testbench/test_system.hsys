@@ -36,8 +36,8 @@ $out
 	// response to mem request from processor in tb
 	$pipe MEM_TO_TB_PROCESSOR
 
-	$pipe RX_ACTIVITY_LOGGER 8 $depth 1
-	$pipe TX_ACTIVITY_LOGGER 8 $depth 1
+	// $pipe RX_ACTIVITY_LOGGER 8 $depth 1
+	// $pipe TX_ACTIVITY_LOGGER 8 $depth 1
 	
 {
 	
