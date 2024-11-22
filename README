@@ -6,6 +6,7 @@
 	- AI/ML SOC with accelerator.
 
 
+
 2. Contents
 -----------------
   The following directories are present:
@@ -87,4 +88,34 @@
 
 	To build the Aman-Harshad-Indrahas SOC on VCU128,
 	go to SBC/vcu128/README
+		
+
+
+4. Pre-requisites
+----------------------
+
+	You will need access to the following
+
+		AHIR-V2 setup
+			either locally installed
+			or docker.
+				(madhav@ee.iitb.ac.in)
+
+		PyAHIR setup
+			contact Rutuja 
+				(rutuja_e@iitb.ac.in)
+
+		AJIT tool-chain setup
+			either locally installed 
+			or docker.
+
+		VIVADO 
+			to synthesize and generate
+			bitfiles, and use the FPGA.
+
+
+		fp_enhanced.aa
+			implemention of FP operators
+				(madhav@ee.iitb.ac.in)
+
 		
