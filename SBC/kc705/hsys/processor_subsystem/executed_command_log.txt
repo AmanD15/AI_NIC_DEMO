@@ -1,2 +1,0 @@
-hierSys2Vhdl -s ghdl -o vhdl ../pipes.aa ../signals.aa ./processor_1x1x32.hsys 
-formatVhdlFiles.py vhdl
