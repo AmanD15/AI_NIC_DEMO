@@ -77,7 +77,8 @@ $module [controlDaemon] $in () $out () $is
 	
 	
 	$rreport(controlDaemon started_controlDaemon)
-	$branchblock[loop] {
+	$parallelblock [pb] {
+	   $branchblock[loop] {
 
 		// SPIN forever.
 		$dopipeline $depth 3 $fullrate 
@@ -95,8 +96,13 @@ $module [controlDaemon] $in () $out () $is
 			$volatile index := ($slice addr 9 2)
 
 				
+			$volatile read_counter := (index == 255)
+
 			// access the register.
-			$call accessRegister (rwbar bmask index wdata) (rdata)
+			$guard (~read_counter)
+				$call accessRegister (rwbar bmask index wdata) (rdata_other)
+
+			rdata := ($mux read_counter S_FREE_RUNNING_COUNTER  rdata_other)
 			
 			$barrier 
 
@@ -110,6 +116,17 @@ $module [controlDaemon] $in () $out () $is
 			AFB_NIC_RESPONSE := resp
 	
 		$while 1
+	    }
+	    $branchblock[counter_loop] {
+			$dopipeline $depth 7 $fullrate
+			$merge $entry $loopback 
+				$phi I := $zero<32> $on $entry nI $on $loopback
+			$endmerge
+				$volatile nI := (I + 1)
+				S_FREE_RUNNING_COUNTER := nI
+			$while 1
+	    }
 	}
 	ignq := QUEUE_MONITOR_SIGNAL $keep
 }
+

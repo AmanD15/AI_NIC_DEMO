@@ -25,3 +25,6 @@ $pipe S_NUMBER_OF_SERVERS : $uint<32> $signal
 
 // for various kinds of debug.
 $pipe NIC_DEBUG_SIGNAL: $uint<256> $signal
+
+$pipe S_FREE_RUNNING_COUNTER: $uint<32> $signal
+
