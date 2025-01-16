@@ -5,9 +5,14 @@
 #include <string.h>
 #include <stdlib.h>
 
+// Buffer parameters
+#define NUMBER_OF_BUFFERS 4
+#define BUFFER_SIZE_IN_BYTES 1500
+#define NIC_START_ADDR 0xFF000000
 
 
 #ifdef USE_CORTOS
+
 // Following stuff is used with lwip and baremetal testing
 // not useful while compiling testbench
 
@@ -15,22 +20,13 @@
 #include <ajit_mmap.h>
 #include <cortos.h>
 
-// Buffer parameters
-#define NUMBER_OF_BUFFERS 4
-#define BUFFER_SIZE_IN_BYTES 1500
-#define NIC_START_ADDR 0xFF000000
 
-// The Qs
-CortosQueueHeader* free_queue;
-CortosQueueHeader* rx_queue;
-CortosQueueHeader* tx_queue;
-
-// The array to store ptr to buffers
-volatile uint32_t*  BufferPtrsVA[NUMBER_OF_BUFFERS];
-volatile uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
 
 #endif
 
+// The array to store ptr to buffers
+uint32_t*  BufferPtrsVA[NUMBER_OF_BUFFERS];
+uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
 
 
 //  Register definitions..  These must be consistent
@@ -88,17 +84,12 @@ typedef struct __NicCortosQueue {
 	
 } NicCortosQueue;
 #else
+
+// Cortos queue header will be called NicCortosQueue.
 typedef CortosQueueHeader NicCortosQueue;
+
 #endif
 
-
-
-void initNicCortosQueue (NicCortosQueue* cqueue,
-				uint32_t queue_capacity,
-				uint32_t message_size_in_bytes,
-				uint8_t* lock,
-				uint8_t* bget_addr,
-				uint32_t misc);
 
 
 typedef struct __NicConfiguration {
@@ -122,6 +113,15 @@ typedef struct __NicConfiguration {
 	uint64_t  tx_queue_buffer_addresses[NIC_MAX_NUMBER_OF_SERVERS];
 
 } NicConfiguration;
+
+void initNicCortosQueue (NicCortosQueue* cqueue,
+				uint32_t queue_capacity,
+				uint32_t message_size_in_bytes,
+				uint8_t* lock,
+				uint8_t* bget_addr,
+				uint32_t misc);
+
+
 
 
 uint32_t getGlobalNicRegisterBasePointer ();
@@ -173,14 +173,13 @@ void configureNic (NicConfiguration* config);
 void enableNic  (uint32_t nic_id, uint8_t enable_interrupt, uint8_t enable_mac, uint8_t enable_nic);
 void disableNic (uint32_t nic_id);
 
-#ifdef USE_CORTOS
 // The following routine gives the PA for the specified VA
 // returns 0 if translation is successful (*pa holds the return value)
 int translateVaToPa (uint32_t va, uint64_t* pa);
 
 // The following function gives various physical address for Queues: 
 // Queue struct addr, packet buffer addr and lock addr.
-void findQueuePhyAddr(char*,CortosQueueHeader*,uint64_t*,uint64_t*,uint64_t*);
+void findQueuePhyAddr(char*,NicCortosQueue*,uint64_t*,uint64_t*,uint64_t*);
 
 // The following function gives actual packet length, used by LwIP: 
 uint32_t getPacketLen(uint32_t* controlWord);
@@ -194,8 +193,8 @@ typedef struct {
 
 
 
-// Define the translation table with eight entries
-TranslationEntry translationTable[2*NUMBER_OF_BUFFERS];
+// Define the translation table with NUMBER_OF_BUFFER entries
+TranslationEntry translationTable[NUMBER_OF_BUFFERS];
 
 // For initialsing the translation Table 
 void initTranslationTable(uint64_t,uint32_t*);
@@ -207,6 +206,5 @@ uint32_t* translatePAtoVA(uint64_t pa);
 uint32_t getPacketLenInDW(uint32_t lenInBytes);
 
 uint32_t getLastTkeep(uint32_t lenInBytes);
-#endif
 
 #endif

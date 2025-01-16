@@ -1,5 +1,4 @@
-
-#include "../include/nic_driver.h"
+#include "nic_driver.h"
 
 // needs to be set right in the beginning to 
 // a multiple of 256!
@@ -105,7 +104,7 @@ void setNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 	uint32_t base_index;		 
 	switch(queue_type)
 	{
-		case FREEQUEUE     : base_index = P_FREE_QUEUE_RX_REGISTER_BASE_INDEX; break;
+		case FREEQUEUE     : base_index = P_FREE_QUEUE_REGISTER_BASE_INDEX; break;
 		case RXQUEUE       : base_index = (P_RX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;
 		case TXQUEUE       : base_index = (P_TX_QUEUE_REGISTER_BASE_INDEX + (8*server_id)); break;	
 	}	
@@ -142,7 +141,7 @@ void configureNic (NicConfiguration* config)
 	// set the number of servers.
 	setNumberOfServersInNic (config->nic_id, config->number_of_servers);
 
-	// free-queue_RX.
+	// free-queue.
 	setNicQueuePhysicalAddresses (config->nic_id, 
 			0,
 			FREEQUEUE,
@@ -277,7 +276,7 @@ void initTranslationTable(uint64_t pa, uint32_t* va)
 uint32_t* translatePAtoVA(uint64_t pa) {
     // Search the translation table for the physical address
     int i;
-    for (i = 0; i < 2*NUMBER_OF_BUFFERS; i++) {
+    for (i = 0; i < NUMBER_OF_BUFFERS; i++) {
         if (translationTable[i].pa == pa) {
             return translationTable[i].va;  // Return virtual address if physical address is found
         }

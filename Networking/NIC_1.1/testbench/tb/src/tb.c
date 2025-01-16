@@ -496,11 +496,14 @@ int main(int argc, char* argv[])
 	PTHREAD_DECL(memoryDaemon);
 	PTHREAD_CREATE(memoryDaemon);
 
-	PTHREAD_DECL(RxLoggerDaemon);
-	PTHREAD_CREATE(RxLoggerDaemon);
+	/*   For debug purposes...
+		PTHREAD_DECL(RxLoggerDaemon);
+		PTHREAD_CREATE(RxLoggerDaemon);
+	
 
-	PTHREAD_DECL(TxLoggerDaemon);
-	PTHREAD_CREATE(TxLoggerDaemon);
+		PTHREAD_DECL(TxLoggerDaemon);
+		PTHREAD_CREATE(TxLoggerDaemon);
+	*/
 
 	//-------------------------------------------------------------------------------------//
 	//  First setup and check the free queue rx.
