@@ -5,10 +5,9 @@
 	The NIC is designed to be a bridge between an
 	Ethernet interface and the system memory.
 
-	Four queues are used to coordinate the NIC's
+	Three queues are used to coordinate the NIC's
 	activity.
-		- The free queue rx
-		- The free queue tx
+		- The free queue fx
 		- The rx queue
 			as many as there are servers.
 		- The tx queue
@@ -18,22 +17,23 @@
 	
 		Packet Reception:
 		
-			NIC (HW side) pops a free buffer pointer from "free queue rx", and
+			NIC (HW side) pops a free buffer pointer from "free queue ", and
 			writes data into the buffer, and pushes the free buffer to
 			rx queue.
 			
-			Processor(SW side) pops the buffer from rx queue, processes packet
-			info, and pushes the buffer pointer back to "free queue rx", for further
-			reception of packets.
+			Processor(SW side) pops the buffer from rx queue, processes the packet
+			info, and (optionally) produces an output buffer and pushes the buffer 
+			pointer into "free queue tx".  If the popped buffer is no longer
+			needed, it is pushed back to the free queue.
 			
 		Packet Transmission:
 		
-			Processor(SW side) pops a free buffer pointer from "free queue tx", and
-			writes data into the buffer, and pushes the free buffer to
-			tx queue.
+			Processor(SW side) works on received buffers from the "rx queue".
+			A buffer is popped from the "rx queue", and modified and pushed
+			onto the "tx queue".
 					
 			NIC (HW side) pops the buffer from tx queue, transmits it, and
-			pushes the buffer pointer back to "free queue tx", for further
+			pushes the buffer pointer back to the "free queue", for further
 			transmission of packets. 
 			
 ---------------------------------------------------------
