@@ -1,0 +1,190 @@
+---------------------------------------------------------
+1. NIC design summary (Updated)
+---------------------------------------------------------
+
+	The NIC is designed to be a bridge between an
+	Ethernet interface and the system memory.
+
+	Three queues are used to coordinate the NIC's
+	activity.
+		- The free queue 
+		- The rx queue
+			as many as there are servers.
+		- The tx queue
+			as many as there are servers.
+			
+	Working:
+	
+		Packet Reception:
+		
+			NIC (HW side) pops a free buffer pointer from "free queue", and
+			writes data into the buffer, and pushes the free buffer to
+			rx queue.
+			
+			Processor(SW side) pops the buffer from rx queue, processes packet
+			info, and pushes the buffer pointer back to "free queue",  or if
+			relevant, to the "tx queue.
+			
+		Packet Transmission:
+		
+			Processor(SW side) if required, pops a free buffer pointer 
+			from "free queue", and writes data into the buffer, and pushes the 
+			free buffer to tx queue.
+
+			OR
+
+			Processor uses the popped Rx buffer and transmits it by pushing
+			it into the tx queue.
+					
+			NIC (HW side) pops the buffer from tx queue, transmits it, and
+			pushes the buffer pointer back to "free queue tx", for further
+			transmission of packets. 
+			
+---------------------------------------------------------
+2. NIC design files.
+---------------------------------------------------------
+
+
+
+	control.aa  
+		control machine.
+	decls.aa 
+		most declarations
+	general_utils.aa 
+		utils.
+	memory_utils.aa  
+		memory access with NIC as master.
+	pipes.aa  
+		pipe declarations.
+	queue_utils.aa  
+		queue modules (push, pop, acquirelock & releaselock)
+	receive_engine.aa  
+		store Ethernet RX packet in memory
+	register_utils.aa  
+		NIC register access
+	rx_from_mac.aa  
+		packet parser to separate the header 
+		from packet data.
+	signals.aa  
+		ahir signal declarations.
+	transmit_engine.aa  
+		sending packet out to Ethernet TX
+
+
+
+---------------------------------------------------------
+3. Cortos queue data structure.
+---------------------------------------------------------
+
+  No longer used.
+
+  The rx/tx/free queues assume a message size of 8-bytes.
+  The 8-bytes represent buffer_pointer[35:0].
+
+
+---------------------------------------------------------
+4. Registers in the NIC
+---------------------------------------------------------
+	Registers in the NIC will be used to
+		- control the NIC
+		- configure the NIC
+			- number of servers
+			- physical addresses related to the
+				rx,tx and free queues.
+		- monitor the NIC
+			- status information 
+------------------------------------------------------------
+Register     address         		Description
+  Id	       offset	
+------------------------------------------------------------
+0  	        0x00		        control register
+					 bit [0] is nic enable
+					 bit [1] is mac enable
+					 bit [2] is nic interrupt enable
+--------------------------------------------------------------
+1.		0x04		        number of servers  (we can make this a mask...)
+         Note: specify the servers to be polled..
+2.		0x08			debug-register 0
+3.		0x0c			debug-register 1
+
+4 to 7 are unused.
+--------------------------------------------------------------
+      Queue mappings... 
+--------------------------------------------------------------
+
+		writes to these addresses will be
+		treated as pushes into the queue
+
+		reads from these addresses will be 
+		treated as pops from the queue.
+	
+8               0x20            Rx Q for server 0  
+9               0x24            Rx Q for server 0 status 
+				[31:16] number of occupied slots in queue.
+				[15:0]  number of free slots in queue.
+10              0x28            Rx Q for server 1  
+11              0x2c            Rx Q for server 1 status 
+12              0x30            Rx Q for server 2  
+13              0x34            Rx Q for server 2 status 
+14              0x38            Rx Q for server 3  
+15              0x3c            Rx Q for server 3 status 
+
+	Note: Rx queue will be filled by NIC and read by
+	processor.
+
+
+//---------------------------------------------------------------
+16              0x40            Tx Q for server 0  
+17              0x44            Tx Q for server 0 status 
+				[31:16] number of occupied slots in queue.
+				[15:0]  number of free slots in queue.
+18              0x48            Tx Q for server 1  
+19              0x4c            Tx Q for server 1 status 
+20              0x50            Tx Q for server 2  
+21              0x54            Tx Q for server 2 status 
+22              0x58            Tx Q for server 3  
+23              0x5c            Tx Q for server 3 status 
+
+
+	Note: Tx queue will be filled by processor and read by
+	NIC.
+
+//-------------------------------------------------------------
+24		0x60		free queue
+25              0x64		free queue status.
+				[31:16] number of occupied slots in queue.
+				[15:0]  number of free slots in queue.
+26              0x68		free queue lock.
+
+	Note: Free queue can be filled by either processor or
+	NIC, and emptied by either processor or NIC.
+
+	free_queue_lock will be read by the P/NIC while accessing
+	the free queue.  If the read returns a 1, the lock is acquired
+	else not.
+
+-------------------------------------------------------------
+      MAC address 48 bits (ie, two registers)
+-------------------------------------------------------------
+208             0x33c            MAC_ADDR[31:0]
+209             0x340            {unused,MAC_ADDR[47:32]}
+---------------------------------------------------
+210	  	0x344		Count of packets transmitted
+				by NIC [31:0]
+211	 	0x348		Count of packets received 
+				by NIC [31:0]
+212		0x34c           Status word
+				[31:2] unused
+				[0] set if NIC has started (controlreg[0] = 1)
+
+
+
+213-254 unused.
+
+----------------------------------------------------------------
+-- Free running counter mapped to register index 255
+----------------------------------------------------------------
+255            0x3fc            Free-running counter..
+  
+ Register file (depth = 255) (width = 32)
+

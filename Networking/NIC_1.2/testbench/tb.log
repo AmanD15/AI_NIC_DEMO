@@ -1,0 +1,916 @@
+./tb/bin/tb <n-packets> (default 4) 
+number_of_packets=8.
+Info:pThreadUtils: started thread memoryDaemon
+Info:pThreadUtils: started thread RxLoggerDaemon
+Info:pThreadUtils: started thread TxLoggerDaemon
+-------------------------------------------------------------------------------------
+Info: setup empty free queue rx in memory.
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+Info: cleared free queue rx locks.
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+Info: set num-messages = 0 in  free queue rx.
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+Info: finished setting physical addresses of free queue rx into NIC 
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+Info: setup empty queues rx, tx in memory.
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+Info: cleared rx, tx queue locks.
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+Info: set num-messages = 0 in   rx, tx queues.
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+Info: finished setting physical addresses of rx, tx, queues into NIC 
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+Info: pushed 4 buffers to free rx queue
+-------------------------------------------------------------------------------------
+Info:pThreadUtils: started thread forwardDaemon
+-------------------------------------------------------------------------------------
+Info: SPIN!
+-------------------------------------------------------------------------------------
+Info:pThreadUtils: started thread packetRxDaemon
+Info:pThreadUtils: started thread packetTxDaemon
+packetRxDaemon: expecting packet with length 32.
+packetTxDaemon: starting packet with length = 32.
+Info: packetTxDaemon: sent 0x0 byte=0x0 
+Info: packetTxDaemon: sent 0x2 byte=0x1 
+Info: packetTxDaemon: sent 0x4 byte=0x2 
+Info: packetTxDaemon: sent 0x6 byte=0x3 
+Info: packetTxDaemon: sent 0x8 byte=0x4 
+Info: packetTxDaemon: sent 0xa byte=0x5 
+Info: packetTxDaemon: sent 0xc byte=0x6 
+Info: packetTxDaemon: sent 0xe byte=0x7 
+Info: packetTxDaemon: sent 0x10 byte=0x8 
+Info: packetTxDaemon: sent 0x12 byte=0x9 
+Info: packetTxDaemon: sent 0x14 byte=0xa 
+Info: packetTxDaemon: sent 0x16 byte=0xb 
+Info: packetTxDaemon: sent 0x18 byte=0xc 
+Info: packetTxDaemon: sent 0x1a byte=0xd 
+Info: packetTxDaemon: sent 0x1c byte=0xe 
+Info: packetTxDaemon: sent 0x1e byte=0xf 
+Info: RX_ACTIVITY_LOGGER=0x1
+Info: packetTxDaemon: sent 0x20 byte=0x10 
+Info: packetTxDaemon: sent 0x22 byte=0x11 
+Info: packetTxDaemon: sent 0x24 byte=0x12 
+Info: packetTxDaemon: sent 0x26 byte=0x13 
+Info: packetTxDaemon: sent 0x28 byte=0x14 
+Info: packetTxDaemon: sent 0x2a byte=0x15 
+Info: packetTxDaemon: sent 0x2c byte=0x16 
+Info: packetTxDaemon: sent 0x2e byte=0x17 
+Info: packetTxDaemon: sent 0x30 byte=0x18 
+Info: packetTxDaemon: sent 0x32 byte=0x19 
+Info: packetTxDaemon: sent 0x34 byte=0x1a 
+Info: packetTxDaemon: sent 0x36 byte=0x1b 
+Info: packetTxDaemon: sent 0x38 byte=0x1c 
+Info: packetTxDaemon: sent 0x3a byte=0x1d 
+Info: packetTxDaemon: sent 0x3c byte=0x1e 
+Info: packetTxDaemon: sent 0x23e byte=0x1f last
+packetTxDaemon: starting packet with length = 37.
+Info: packetTxDaemon: sent 0x40 byte=0x20 
+Info: packetTxDaemon: sent 0x42 byte=0x21 
+Info: packetTxDaemon: sent 0x44 byte=0x22 
+Info: packetTxDaemon: sent 0x46 byte=0x23 
+Info: packetTxDaemon: sent 0x48 byte=0x24 
+Info: packetTxDaemon: sent 0x4a byte=0x25 
+Info: packetTxDaemon: sent 0x4c byte=0x26 
+Info: packetTxDaemon: sent 0x4e byte=0x27 
+Info: packetTxDaemon: sent 0x50 byte=0x28 
+Info: packetTxDaemon: sent 0x52 byte=0x29 
+Info: packetTxDaemon: sent 0x54 byte=0x2a 
+Info: packetTxDaemon: sent 0x56 byte=0x2b 
+Info: packetTxDaemon: sent 0x58 byte=0x2c 
+Info: packetTxDaemon: sent 0x5a byte=0x2d 
+Info: packetTxDaemon: sent 0x5c byte=0x2e 
+Info: packetTxDaemon: sent 0x5e byte=0x2f 
+Info: packetTxDaemon: sent 0x60 byte=0x30 
+Info: packetTxDaemon: sent 0x62 byte=0x31 
+Info: packetTxDaemon: sent 0x64 byte=0x32 
+Info: packetTxDaemon: sent 0x66 byte=0x33 
+Info: packetTxDaemon: sent 0x68 byte=0x34 
+Info: packetTxDaemon: sent 0x6a byte=0x35 
+Info: packetTxDaemon: sent 0x6c byte=0x36 
+Info: packetTxDaemon: sent 0x6e byte=0x37 
+Info: packetTxDaemon: sent 0x70 byte=0x38 
+Info: packetTxDaemon: sent 0x72 byte=0x39 
+Info: packetTxDaemon: sent 0x74 byte=0x3a 
+Info: packetTxDaemon: sent 0x76 byte=0x3b 
+Info: packetTxDaemon: sent 0x78 byte=0x3c 
+Info: packetTxDaemon: sent 0x7a byte=0x3d 
+Info: packetTxDaemon: sent 0x7c byte=0x3e 
+Info: packetTxDaemon: sent 0x7e byte=0x3f 
+Info: packetTxDaemon: sent 0x80 byte=0x40 
+Info: packetTxDaemon: sent 0x82 byte=0x41 
+Info: packetTxDaemon: sent 0x84 byte=0x42 
+Info: packetTxDaemon: sent 0x86 byte=0x43 
+Info: packetTxDaemon: sent 0x288 byte=0x44 last
+packetTxDaemon: starting packet with length = 49.
+Info: packetTxDaemon: sent 0x8a byte=0x45 
+Info: packetTxDaemon: sent 0x8c byte=0x46 
+Info: packetTxDaemon: sent 0x8e byte=0x47 
+Info: packetTxDaemon: sent 0x90 byte=0x48 
+Info: packetTxDaemon: sent 0x92 byte=0x49 
+Info: packetTxDaemon: sent 0x94 byte=0x4a 
+Info: packetTxDaemon: sent 0x96 byte=0x4b 
+Info: packetTxDaemon: sent 0x98 byte=0x4c 
+Info: packetTxDaemon: sent 0x9a byte=0x4d 
+Info: packetTxDaemon: sent 0x9c byte=0x4e 
+Info: packetTxDaemon: sent 0x9e byte=0x4f 
+Info: RX_ACTIVITY_LOGGER=0x2
+Info: TX_ACTIVITY_LOGGER=0x1
+Info: TX_ACTIVITY_LOGGER=0x2
+Info: TX_ACTIVITY_LOGGER=0x3
+Info: TX_ACTIVITY_LOGGER=0x4
+Info: TX_ACTIVITY_LOGGER=0x1
+Info: TX_ACTIVITY_LOGGER=0x2
+Info: TX_ACTIVITY_LOGGER=0x3
+Info: TX_ACTIVITY_LOGGER=0x4
+Info: RX_ACTIVITY_LOGGER=0x3
+Info: RX_ACTIVITY_LOGGER=0x4
+Info: RX_ACTIVITY_LOGGER=0x1
+//--------------------------------------------------------------------------------//
+forwardDaemon: popped from rxqueue addr=0x400
+//--------------------------------------------------------------------------------//
+//--------------------------------------------------------------------------------//
+forwardDaemon: pushed to txqueue addr=0x400
+//--------------------------------------------------------------------------------//
+Info: TX_ACTIVITY_LOGGER=0x1
+Info: TX_ACTIVITY_LOGGER=0x2
+Info: TX_ACTIVITY_LOGGER=0x3
+Info: TX_ACTIVITY_LOGGER=0x4
+Info: packetTxDaemon: sent 0xa0 byte=0x50 
+Info: packetTxDaemon: sent 0xa2 byte=0x51 
+Info: packetTxDaemon: sent 0xa4 byte=0x52 
+Info: packetTxDaemon: sent 0xa6 byte=0x53 
+Info: packetTxDaemon: sent 0xa8 byte=0x54 
+Info: packetTxDaemon: sent 0xaa byte=0x55 
+Info: packetTxDaemon: sent 0xac byte=0x56 
+Info: packetTxDaemon: sent 0xae byte=0x57 
+Info: packetTxDaemon: sent 0xb0 byte=0x58 
+Info: packetTxDaemon: sent 0xb2 byte=0x59 
+Info: packetTxDaemon: sent 0xb4 byte=0x5a 
+Info: packetTxDaemon: sent 0xb6 byte=0x5b 
+Info: packetTxDaemon: sent 0xb8 byte=0x5c 
+Info: packetTxDaemon: sent 0xba byte=0x5d 
+Info: packetTxDaemon: sent 0xbc byte=0x5e 
+Info: packetTxDaemon: sent 0xbe byte=0x5f 
+Info: packetTxDaemon: sent 0xc0 byte=0x60 
+Info: packetTxDaemon: sent 0xc2 byte=0x61 
+Info: packetTxDaemon: sent 0xc4 byte=0x62 
+Info: packetTxDaemon: sent 0xc6 byte=0x63 
+Info: packetTxDaemon: sent 0xc8 byte=0x64 
+Info: packetTxDaemon: sent 0xca byte=0x65 
+Info: packetTxDaemon: sent 0xcc byte=0x66 
+Info: packetTxDaemon: sent 0xce byte=0x67 
+Info: packetTxDaemon: sent 0xd0 byte=0x68 
+Info: packetTxDaemon: sent 0xd2 byte=0x69 
+Info: packetTxDaemon: sent 0xd4 byte=0x6a 
+Info: packetTxDaemon: sent 0xd6 byte=0x6b 
+Info: packetTxDaemon: sent 0xd8 byte=0x6c 
+Info: packetTxDaemon: sent 0xda byte=0x6d 
+Info: packetTxDaemon: sent 0xdc byte=0x6e 
+Info: packetTxDaemon: sent 0xde byte=0x6f 
+Info: packetTxDaemon: sent 0xe0 byte=0x70 
+Info: packetTxDaemon: sent 0xe2 byte=0x71 
+Info: packetTxDaemon: sent 0xe4 byte=0x72 
+Info: packetTxDaemon: sent 0xe6 byte=0x73 
+Info: packetTxDaemon: sent 0xe8 byte=0x74 
+Info: packetTxDaemon: sent 0x2ea byte=0x75 last
+packetTxDaemon: starting packet with length = 64.
+Info: packetTxDaemon: sent 0xec byte=0x76 
+Info: packetTxDaemon: sent 0xee byte=0x77 
+Info: RX_ACTIVITY_LOGGER=0x2
+Info: TX_ACTIVITY_LOGGER=0x1
+Info: packetRxDaemon: received byte 0x0 
+Info: packetRxDaemon: received byte 0x1 
+Info: packetRxDaemon: received byte 0x2 
+Info: packetRxDaemon: received byte 0x3 
+Info: packetRxDaemon: received byte 0x4 
+Info: packetRxDaemon: received byte 0x5 
+Info: packetRxDaemon: received byte 0x6 
+Info: packetRxDaemon: received byte 0x7 
+Info: packetRxDaemon: received byte 0x8 
+Info: packetRxDaemon: received byte 0x9 
+Info: packetRxDaemon: received byte 0xa 
+Info: packetRxDaemon: received byte 0xb 
+Info: packetRxDaemon: received byte 0xc 
+Info: packetRxDaemon: received byte 0xd 
+Info: packetRxDaemon: received byte 0xe 
+Info: packetRxDaemon: received byte 0xf 
+Info: packetRxDaemon: received byte 0x10 
+Info: packetRxDaemon: received byte 0x11 
+Info: packetRxDaemon: received byte 0x12 
+Info: packetRxDaemon: received byte 0x13 
+Info: packetRxDaemon: received byte 0x14 
+Info: packetRxDaemon: received byte 0x15 
+Info: packetRxDaemon: received byte 0x16 
+Info: packetRxDaemon: received byte 0x17 
+Info: packetRxDaemon: received byte 0x18 
+Info: TX_ACTIVITY_LOGGER=0x2
+Info: packetRxDaemon: received byte 0x19 
+Info: packetRxDaemon: received byte 0x1a 
+Info: packetRxDaemon: received byte 0x1b 
+Info: packetRxDaemon: received byte 0x1c 
+Info: packetRxDaemon: received byte 0x1d 
+Info: packetRxDaemon: received byte 0x1e 
+Info: packetRxDaemon: received byte 0x1f last
+packetRxDaemon: received packet with index 1.
+packetRxDaemon: expecting packet with length 37.
+Info: RX_ACTIVITY_LOGGER=0x3
+Info: RX_ACTIVITY_LOGGER=0x4
+Info: RX_ACTIVITY_LOGGER=0x1
+//--------------------------------------------------------------------------------//
+forwardDaemon: popped from rxqueue addr=0x800
+//--------------------------------------------------------------------------------//
+//--------------------------------------------------------------------------------//
+forwardDaemon: pushed to txqueue addr=0x800
+//--------------------------------------------------------------------------------//
+Info: TX_ACTIVITY_LOGGER=0x3
+Info: TX_ACTIVITY_LOGGER=0x4
+Info: packetTxDaemon: sent 0xf0 byte=0x78 
+Info: packetTxDaemon: sent 0xf2 byte=0x79 
+Info: packetTxDaemon: sent 0xf4 byte=0x7a 
+Info: packetTxDaemon: sent 0xf6 byte=0x7b 
+Info: packetTxDaemon: sent 0xf8 byte=0x7c 
+Info: packetTxDaemon: sent 0xfa byte=0x7d 
+Info: packetTxDaemon: sent 0xfc byte=0x7e 
+Info: packetTxDaemon: sent 0xfe byte=0x7f 
+Info: packetTxDaemon: sent 0x100 byte=0x80 
+Info: packetTxDaemon: sent 0x102 byte=0x81 
+Info: packetTxDaemon: sent 0x104 byte=0x82 
+Info: packetTxDaemon: sent 0x106 byte=0x83 
+Info: packetTxDaemon: sent 0x108 byte=0x84 
+Info: packetTxDaemon: sent 0x10a byte=0x85 
+Info: packetTxDaemon: sent 0x10c byte=0x86 
+Info: packetTxDaemon: sent 0x10e byte=0x87 
+Info: packetTxDaemon: sent 0x110 byte=0x88 
+Info: packetTxDaemon: sent 0x112 byte=0x89 
+Info: packetTxDaemon: sent 0x114 byte=0x8a 
+Info: packetTxDaemon: sent 0x116 byte=0x8b 
+Info: packetTxDaemon: sent 0x118 byte=0x8c 
+Info: packetTxDaemon: sent 0x11a byte=0x8d 
+Info: packetTxDaemon: sent 0x11c byte=0x8e 
+Info: packetTxDaemon: sent 0x11e byte=0x8f 
+Info: packetTxDaemon: sent 0x120 byte=0x90 
+Info: packetTxDaemon: sent 0x122 byte=0x91 
+Info: packetTxDaemon: sent 0x124 byte=0x92 
+Info: packetTxDaemon: sent 0x126 byte=0x93 
+Info: packetTxDaemon: sent 0x128 byte=0x94 
+Info: packetTxDaemon: sent 0x12a byte=0x95 
+Info: packetTxDaemon: sent 0x12c byte=0x96 
+Info: packetTxDaemon: sent 0x12e byte=0x97 
+Info: packetTxDaemon: sent 0x130 byte=0x98 
+Info: packetTxDaemon: sent 0x132 byte=0x99 
+Info: packetTxDaemon: sent 0x134 byte=0x9a 
+Info: packetTxDaemon: sent 0x136 byte=0x9b 
+Info: packetTxDaemon: sent 0x138 byte=0x9c 
+Info: packetTxDaemon: sent 0x13a byte=0x9d 
+Info: packetTxDaemon: sent 0x13c byte=0x9e 
+Info: packetTxDaemon: sent 0x13e byte=0x9f 
+Info: packetTxDaemon: sent 0x140 byte=0xa0 
+Info: packetTxDaemon: sent 0x142 byte=0xa1 
+Info: packetTxDaemon: sent 0x144 byte=0xa2 
+Info: packetTxDaemon: sent 0x146 byte=0xa3 
+Info: packetTxDaemon: sent 0x148 byte=0xa4 
+Info: packetTxDaemon: sent 0x14a byte=0xa5 
+Info: packetTxDaemon: sent 0x14c byte=0xa6 
+Info: packetTxDaemon: sent 0x14e byte=0xa7 
+Info: packetTxDaemon: sent 0x150 byte=0xa8 
+Info: RX_ACTIVITY_LOGGER=0x2
+Info: TX_ACTIVITY_LOGGER=0x1
+Info: packetRxDaemon: received byte 0x20 
+Info: packetRxDaemon: received byte 0x21 
+Info: packetRxDaemon: received byte 0x22 
+Info: packetRxDaemon: received byte 0x23 
+Info: packetRxDaemon: received byte 0x24 
+Info: packetRxDaemon: received byte 0x25 
+Info: packetRxDaemon: received byte 0x26 
+Info: packetRxDaemon: received byte 0x27 
+Info: packetRxDaemon: received byte 0x28 
+Info: packetRxDaemon: received byte 0x29 
+Info: packetRxDaemon: received byte 0x2a 
+Info: packetRxDaemon: received byte 0x2b 
+Info: packetRxDaemon: received byte 0x2c 
+Info: packetRxDaemon: received byte 0x2d 
+Info: packetRxDaemon: received byte 0x2e 
+Info: packetRxDaemon: received byte 0x2f 
+Info: packetRxDaemon: received byte 0x30 
+Info: packetRxDaemon: received byte 0x31 
+Info: packetRxDaemon: received byte 0x32 
+Info: packetRxDaemon: received byte 0x33 
+Info: packetRxDaemon: received byte 0x34 
+Info: packetRxDaemon: received byte 0x35 
+Info: packetRxDaemon: received byte 0x36 
+Info: packetRxDaemon: received byte 0x37 
+Info: packetRxDaemon: received byte 0x38 
+Info: packetRxDaemon: received byte 0x39 
+Info: packetRxDaemon: received byte 0x3a 
+Info: packetRxDaemon: received byte 0x3b 
+Info: packetRxDaemon: received byte 0x3c 
+Info: packetRxDaemon: received byte 0x3d 
+Info: packetRxDaemon: received byte 0x3e 
+Info: packetRxDaemon: received byte 0x3f 
+Info: packetRxDaemon: received byte 0x40 
+Info: TX_ACTIVITY_LOGGER=0x2
+Info: packetRxDaemon: received byte 0x41 
+Info: packetRxDaemon: received byte 0x42 
+Info: packetRxDaemon: received byte 0x43 
+Info: packetRxDaemon: received byte 0x44 last
+packetRxDaemon: received packet with index 2.
+packetRxDaemon: expecting packet with length 49.
+Info: RX_ACTIVITY_LOGGER=0x3
+Info: RX_ACTIVITY_LOGGER=0x4
+Info: RX_ACTIVITY_LOGGER=0x1
+//--------------------------------------------------------------------------------//
+forwardDaemon: popped from rxqueue addr=0xc00
+//--------------------------------------------------------------------------------//
+//--------------------------------------------------------------------------------//
+forwardDaemon: pushed to txqueue addr=0xc00
+//--------------------------------------------------------------------------------//
+Info: TX_ACTIVITY_LOGGER=0x3
+Info: TX_ACTIVITY_LOGGER=0x4
+Info: packetTxDaemon: sent 0x152 byte=0xa9 
+Info: packetTxDaemon: sent 0x154 byte=0xaa 
+Info: packetTxDaemon: sent 0x156 byte=0xab 
+Info: packetTxDaemon: sent 0x158 byte=0xac 
+Info: packetTxDaemon: sent 0x15a byte=0xad 
+Info: packetTxDaemon: sent 0x15c byte=0xae 
+Info: packetTxDaemon: sent 0x15e byte=0xaf 
+Info: packetTxDaemon: sent 0x160 byte=0xb0 
+Info: packetTxDaemon: sent 0x162 byte=0xb1 
+Info: packetTxDaemon: sent 0x164 byte=0xb2 
+Info: packetTxDaemon: sent 0x166 byte=0xb3 
+Info: packetTxDaemon: sent 0x168 byte=0xb4 
+Info: packetTxDaemon: sent 0x36a byte=0xb5 last
+packetTxDaemon: starting packet with length = 32.
+Info: packetTxDaemon: sent 0x16c byte=0xb6 
+Info: packetTxDaemon: sent 0x16e byte=0xb7 
+Info: packetTxDaemon: sent 0x170 byte=0xb8 
+Info: packetTxDaemon: sent 0x172 byte=0xb9 
+Info: packetTxDaemon: sent 0x174 byte=0xba 
+Info: packetTxDaemon: sent 0x176 byte=0xbb 
+Info: packetTxDaemon: sent 0x178 byte=0xbc 
+Info: packetTxDaemon: sent 0x17a byte=0xbd 
+Info: packetTxDaemon: sent 0x17c byte=0xbe 
+Info: packetTxDaemon: sent 0x17e byte=0xbf 
+Info: packetTxDaemon: sent 0x180 byte=0xc0 
+Info: packetTxDaemon: sent 0x182 byte=0xc1 
+Info: packetTxDaemon: sent 0x184 byte=0xc2 
+Info: packetTxDaemon: sent 0x186 byte=0xc3 
+Info: packetTxDaemon: sent 0x188 byte=0xc4 
+Info: packetTxDaemon: sent 0x18a byte=0xc5 
+Info: packetTxDaemon: sent 0x18c byte=0xc6 
+Info: packetTxDaemon: sent 0x18e byte=0xc7 
+Info: packetTxDaemon: sent 0x190 byte=0xc8 
+Info: packetTxDaemon: sent 0x192 byte=0xc9 
+Info: packetTxDaemon: sent 0x194 byte=0xca 
+Info: packetTxDaemon: sent 0x196 byte=0xcb 
+Info: packetTxDaemon: sent 0x198 byte=0xcc 
+Info: packetTxDaemon: sent 0x19a byte=0xcd 
+Info: packetTxDaemon: sent 0x19c byte=0xce 
+Info: packetTxDaemon: sent 0x19e byte=0xcf 
+Info: packetTxDaemon: sent 0x1a0 byte=0xd0 
+Info: packetTxDaemon: sent 0x1a2 byte=0xd1 
+Info: packetTxDaemon: sent 0x1a4 byte=0xd2 
+Info: packetTxDaemon: sent 0x1a6 byte=0xd3 
+Info: packetTxDaemon: sent 0x1a8 byte=0xd4 
+Info: packetTxDaemon: sent 0x3aa byte=0xd5 last
+packetTxDaemon: starting packet with length = 37.
+Info: packetTxDaemon: sent 0x1ac byte=0xd6 
+Info: packetTxDaemon: sent 0x1ae byte=0xd7 
+Info: packetTxDaemon: sent 0x1b0 byte=0xd8 
+Info: packetTxDaemon: sent 0x1b2 byte=0xd9 
+Info: packetTxDaemon: sent 0x1b4 byte=0xda 
+Info: packetTxDaemon: sent 0x1b6 byte=0xdb 
+Info: packetTxDaemon: sent 0x1b8 byte=0xdc 
+Info: packetTxDaemon: sent 0x1ba byte=0xdd 
+Info: packetTxDaemon: sent 0x1bc byte=0xde 
+Info: packetTxDaemon: sent 0x1be byte=0xdf 
+Info: packetTxDaemon: sent 0x1c0 byte=0xe0 
+Info: packetTxDaemon: sent 0x1c2 byte=0xe1 
+Info: packetTxDaemon: sent 0x1c4 byte=0xe2 
+Info: packetTxDaemon: sent 0x1c6 byte=0xe3 
+Info: packetTxDaemon: sent 0x1c8 byte=0xe4 
+Info: packetTxDaemon: sent 0x1ca byte=0xe5 
+Info: packetTxDaemon: sent 0x1cc byte=0xe6 
+Info: packetTxDaemon: sent 0x1ce byte=0xe7 
+Info: packetTxDaemon: sent 0x1d0 byte=0xe8 
+Info: RX_ACTIVITY_LOGGER=0x2
+Info: TX_ACTIVITY_LOGGER=0x1
+Info: packetRxDaemon: received byte 0x45 
+Info: packetRxDaemon: received byte 0x46 
+Info: packetRxDaemon: received byte 0x47 
+Info: packetRxDaemon: received byte 0x48 
+Info: packetRxDaemon: received byte 0x49 
+Info: packetRxDaemon: received byte 0x4a 
+Info: packetRxDaemon: received byte 0x4b 
+Info: packetRxDaemon: received byte 0x4c 
+Info: packetRxDaemon: received byte 0x4d 
+Info: packetRxDaemon: received byte 0x4e 
+Info: packetRxDaemon: received byte 0x4f 
+Info: packetRxDaemon: received byte 0x50 
+Info: packetRxDaemon: received byte 0x51 
+Info: packetRxDaemon: received byte 0x52 
+Info: packetRxDaemon: received byte 0x53 
+Info: packetRxDaemon: received byte 0x54 
+Info: packetRxDaemon: received byte 0x55 
+Info: packetRxDaemon: received byte 0x56 
+Info: packetRxDaemon: received byte 0x57 
+Info: packetRxDaemon: received byte 0x58 
+Info: packetRxDaemon: received byte 0x59 
+Info: packetRxDaemon: received byte 0x5a 
+Info: packetRxDaemon: received byte 0x5b 
+Info: packetRxDaemon: received byte 0x5c 
+Info: packetRxDaemon: received byte 0x5d 
+Info: packetRxDaemon: received byte 0x5e 
+Info: packetRxDaemon: received byte 0x5f 
+Info: packetRxDaemon: received byte 0x60 
+Info: packetRxDaemon: received byte 0x61 
+Info: packetRxDaemon: received byte 0x62 
+Info: packetRxDaemon: received byte 0x63 
+Info: packetRxDaemon: received byte 0x64 
+Info: packetRxDaemon: received byte 0x65 
+Info: packetRxDaemon: received byte 0x66 
+Info: packetRxDaemon: received byte 0x67 
+Info: packetRxDaemon: received byte 0x68 
+Info: packetRxDaemon: received byte 0x69 
+Info: packetRxDaemon: received byte 0x6a 
+Info: packetRxDaemon: received byte 0x6b 
+Info: packetRxDaemon: received byte 0x6c 
+Info: packetRxDaemon: received byte 0x6d 
+Info: packetRxDaemon: received byte 0x6e 
+Info: packetRxDaemon: received byte 0x6f 
+Info: packetRxDaemon: received byte 0x70 
+Info: packetRxDaemon: received byte 0x71 
+Info: packetRxDaemon: received byte 0x72 
+Info: packetRxDaemon: received byte 0x73 
+Info: packetRxDaemon: received byte 0x74 
+Info: packetRxDaemon: received byte 0x75 last
+packetRxDaemon: received packet with index 3.
+packetRxDaemon: expecting packet with length 64.
+Info: TX_ACTIVITY_LOGGER=0x2
+//--------------------------------------------------------------------------------//
+forwardDaemon: popped from rxqueue addr=0x1000
+//--------------------------------------------------------------------------------//
+Info: RX_ACTIVITY_LOGGER=0x3
+Info: RX_ACTIVITY_LOGGER=0x4
+Info: RX_ACTIVITY_LOGGER=0x1
+//--------------------------------------------------------------------------------//
+forwardDaemon: pushed to txqueue addr=0x1000
+//--------------------------------------------------------------------------------//
+Info: TX_ACTIVITY_LOGGER=0x3
+Info: TX_ACTIVITY_LOGGER=0x4
+Info: packetTxDaemon: sent 0x1d2 byte=0xe9 
+Info: packetTxDaemon: sent 0x1d4 byte=0xea 
+Info: packetTxDaemon: sent 0x1d6 byte=0xeb 
+Info: packetTxDaemon: sent 0x1d8 byte=0xec 
+Info: packetTxDaemon: sent 0x1da byte=0xed 
+Info: packetTxDaemon: sent 0x1dc byte=0xee 
+Info: packetTxDaemon: sent 0x1de byte=0xef 
+Info: packetTxDaemon: sent 0x1e0 byte=0xf0 
+Info: packetTxDaemon: sent 0x1e2 byte=0xf1 
+Info: packetTxDaemon: sent 0x1e4 byte=0xf2 
+Info: packetTxDaemon: sent 0x1e6 byte=0xf3 
+Info: packetTxDaemon: sent 0x1e8 byte=0xf4 
+Info: packetTxDaemon: sent 0x1ea byte=0xf5 
+Info: packetTxDaemon: sent 0x1ec byte=0xf6 
+Info: packetTxDaemon: sent 0x1ee byte=0xf7 
+Info: packetTxDaemon: sent 0x1f0 byte=0xf8 
+Info: packetTxDaemon: sent 0x1f2 byte=0xf9 
+Info: packetTxDaemon: sent 0x3f4 byte=0xfa last
+packetTxDaemon: starting packet with length = 49.
+Info: packetTxDaemon: sent 0x1f6 byte=0xfb 
+Info: packetTxDaemon: sent 0x1f8 byte=0xfc 
+Info: packetTxDaemon: sent 0x1fa byte=0xfd 
+Info: packetTxDaemon: sent 0x1fc byte=0xfe 
+Info: packetTxDaemon: sent 0x1fe byte=0xff 
+Info: packetTxDaemon: sent 0x0 byte=0x0 
+Info: packetTxDaemon: sent 0x2 byte=0x1 
+Info: packetTxDaemon: sent 0x4 byte=0x2 
+Info: packetTxDaemon: sent 0x6 byte=0x3 
+Info: packetTxDaemon: sent 0x8 byte=0x4 
+Info: packetTxDaemon: sent 0xa byte=0x5 
+Info: RX_ACTIVITY_LOGGER=0x2
+Info: TX_ACTIVITY_LOGGER=0x1
+Info: packetRxDaemon: received byte 0x76 
+Info: packetRxDaemon: received byte 0x77 
+Info: packetRxDaemon: received byte 0x78 
+Info: packetRxDaemon: received byte 0x79 
+Info: packetRxDaemon: received byte 0x7a 
+Info: packetRxDaemon: received byte 0x7b 
+Info: packetRxDaemon: received byte 0x7c 
+Info: packetRxDaemon: received byte 0x7d 
+Info: packetRxDaemon: received byte 0x7e 
+Info: packetRxDaemon: received byte 0x7f 
+Info: packetRxDaemon: received byte 0x80 
+Info: packetRxDaemon: received byte 0x81 
+Info: packetRxDaemon: received byte 0x82 
+Info: packetRxDaemon: received byte 0x83 
+Info: packetRxDaemon: received byte 0x84 
+Info: packetRxDaemon: received byte 0x85 
+Info: packetRxDaemon: received byte 0x86 
+Info: packetRxDaemon: received byte 0x87 
+Info: packetRxDaemon: received byte 0x88 
+Info: packetRxDaemon: received byte 0x89 
+Info: packetRxDaemon: received byte 0x8a 
+Info: packetRxDaemon: received byte 0x8b 
+Info: packetRxDaemon: received byte 0x8c 
+Info: packetRxDaemon: received byte 0x8d 
+Info: packetRxDaemon: received byte 0x8e 
+Info: packetRxDaemon: received byte 0x8f 
+Info: packetRxDaemon: received byte 0x90 
+Info: packetRxDaemon: received byte 0x91 
+Info: packetRxDaemon: received byte 0x92 
+Info: packetRxDaemon: received byte 0x93 
+Info: packetRxDaemon: received byte 0x94 
+Info: packetRxDaemon: received byte 0x95 
+Info: packetRxDaemon: received byte 0x96 
+Info: packetRxDaemon: received byte 0x97 
+Info: packetRxDaemon: received byte 0x98 
+Info: packetRxDaemon: received byte 0x99 
+Info: packetRxDaemon: received byte 0x9a 
+Info: packetRxDaemon: received byte 0x9b 
+Info: packetRxDaemon: received byte 0x9c 
+Info: packetRxDaemon: received byte 0x9d 
+Info: packetRxDaemon: received byte 0x9e 
+Info: packetRxDaemon: received byte 0x9f 
+Info: packetRxDaemon: received byte 0xa0 
+Info: packetRxDaemon: received byte 0xa1 
+Info: packetRxDaemon: received byte 0xa2 
+Info: packetRxDaemon: received byte 0xa3 
+Info: packetRxDaemon: received byte 0xa4 
+Info: packetRxDaemon: received byte 0xa5 
+Info: packetRxDaemon: received byte 0xa6 
+Info: packetRxDaemon: received byte 0xa7 
+Info: packetRxDaemon: received byte 0xa8 
+Info: packetRxDaemon: received byte 0xa9 
+Info: packetRxDaemon: received byte 0xaa 
+Info: packetRxDaemon: received byte 0xab 
+Info: packetRxDaemon: received byte 0xac 
+Info: packetRxDaemon: received byte 0xad 
+Info: packetRxDaemon: received byte 0xae 
+Info: TX_ACTIVITY_LOGGER=0x2
+Info: packetRxDaemon: received byte 0xaf 
+Info: packetRxDaemon: received byte 0xb0 
+Info: packetRxDaemon: received byte 0xb1 
+Info: packetRxDaemon: received byte 0xb2 
+Info: packetRxDaemon: received byte 0xb3 
+Info: packetRxDaemon: received byte 0xb4 
+Info: packetRxDaemon: received byte 0xb5 last
+packetRxDaemon: received packet with index 4.
+packetRxDaemon: expecting packet with length 32.
+//--------------------------------------------------------------------------------//
+forwardDaemon: popped from rxqueue addr=0x400
+//--------------------------------------------------------------------------------//
+Info: RX_ACTIVITY_LOGGER=0x3
+Info: RX_ACTIVITY_LOGGER=0x4
+Info: RX_ACTIVITY_LOGGER=0x1
+//--------------------------------------------------------------------------------//
+forwardDaemon: pushed to txqueue addr=0x400
+//--------------------------------------------------------------------------------//
+Info: TX_ACTIVITY_LOGGER=0x3
+Info: TX_ACTIVITY_LOGGER=0x4
+Info: packetTxDaemon: sent 0xc byte=0x6 
+Info: packetTxDaemon: sent 0xe byte=0x7 
+Info: packetTxDaemon: sent 0x10 byte=0x8 
+Info: packetTxDaemon: sent 0x12 byte=0x9 
+Info: packetTxDaemon: sent 0x14 byte=0xa 
+Info: packetTxDaemon: sent 0x16 byte=0xb 
+Info: packetTxDaemon: sent 0x18 byte=0xc 
+Info: packetTxDaemon: sent 0x1a byte=0xd 
+Info: packetTxDaemon: sent 0x1c byte=0xe 
+Info: packetTxDaemon: sent 0x1e byte=0xf 
+Info: packetTxDaemon: sent 0x20 byte=0x10 
+Info: packetTxDaemon: sent 0x22 byte=0x11 
+Info: packetTxDaemon: sent 0x24 byte=0x12 
+Info: packetTxDaemon: sent 0x26 byte=0x13 
+Info: packetTxDaemon: sent 0x28 byte=0x14 
+Info: packetTxDaemon: sent 0x2a byte=0x15 
+Info: packetTxDaemon: sent 0x2c byte=0x16 
+Info: packetTxDaemon: sent 0x2e byte=0x17 
+Info: packetTxDaemon: sent 0x30 byte=0x18 
+Info: packetTxDaemon: sent 0x32 byte=0x19 
+Info: packetTxDaemon: sent 0x34 byte=0x1a 
+Info: packetTxDaemon: sent 0x36 byte=0x1b 
+Info: packetTxDaemon: sent 0x38 byte=0x1c 
+Info: packetTxDaemon: sent 0x3a byte=0x1d 
+Info: packetTxDaemon: sent 0x3c byte=0x1e 
+Info: packetTxDaemon: sent 0x3e byte=0x1f 
+Info: packetTxDaemon: sent 0x40 byte=0x20 
+Info: packetTxDaemon: sent 0x42 byte=0x21 
+Info: packetTxDaemon: sent 0x44 byte=0x22 
+Info: packetTxDaemon: sent 0x46 byte=0x23 
+Info: packetTxDaemon: sent 0x48 byte=0x24 
+Info: packetTxDaemon: sent 0x4a byte=0x25 
+Info: packetTxDaemon: sent 0x4c byte=0x26 
+Info: packetTxDaemon: sent 0x4e byte=0x27 
+Info: packetTxDaemon: sent 0x50 byte=0x28 
+Info: packetTxDaemon: sent 0x52 byte=0x29 
+Info: packetTxDaemon: sent 0x54 byte=0x2a 
+Info: packetTxDaemon: sent 0x256 byte=0x2b last
+packetTxDaemon: starting packet with length = 64.
+Info: packetTxDaemon: sent 0x58 byte=0x2c 
+Info: packetTxDaemon: sent 0x5a byte=0x2d 
+Info: RX_ACTIVITY_LOGGER=0x2
+Info: TX_ACTIVITY_LOGGER=0x1
+Info: packetRxDaemon: received byte 0xb6 
+Info: packetRxDaemon: received byte 0xb7 
+Info: packetRxDaemon: received byte 0xb8 
+Info: packetRxDaemon: received byte 0xb9 
+Info: packetRxDaemon: received byte 0xba 
+Info: packetRxDaemon: received byte 0xbb 
+Info: packetRxDaemon: received byte 0xbc 
+Info: packetRxDaemon: received byte 0xbd 
+Info: packetRxDaemon: received byte 0xbe 
+Info: packetRxDaemon: received byte 0xbf 
+Info: packetRxDaemon: received byte 0xc0 
+Info: packetRxDaemon: received byte 0xc1 
+Info: packetRxDaemon: received byte 0xc2 
+Info: packetRxDaemon: received byte 0xc3 
+Info: packetRxDaemon: received byte 0xc4 
+Info: packetRxDaemon: received byte 0xc5 
+Info: packetRxDaemon: received byte 0xc6 
+Info: packetRxDaemon: received byte 0xc7 
+Info: packetRxDaemon: received byte 0xc8 
+Info: packetRxDaemon: received byte 0xc9 
+Info: packetRxDaemon: received byte 0xca 
+Info: packetRxDaemon: received byte 0xcb 
+Info: packetRxDaemon: received byte 0xcc 
+Info: packetRxDaemon: received byte 0xcd 
+Info: packetRxDaemon: received byte 0xce 
+Info: TX_ACTIVITY_LOGGER=0x2
+Info: packetRxDaemon: received byte 0xcf 
+Info: packetRxDaemon: received byte 0xd0 
+Info: packetRxDaemon: received byte 0xd1 
+Info: packetRxDaemon: received byte 0xd2 
+Info: packetRxDaemon: received byte 0xd3 
+Info: packetRxDaemon: received byte 0xd4 
+Info: packetRxDaemon: received byte 0xd5 last
+packetRxDaemon: received packet with index 5.
+packetRxDaemon: expecting packet with length 37.
+//--------------------------------------------------------------------------------//
+forwardDaemon: popped from rxqueue addr=0x800
+//--------------------------------------------------------------------------------//
+Info: RX_ACTIVITY_LOGGER=0x3
+Info: RX_ACTIVITY_LOGGER=0x4
+Info: RX_ACTIVITY_LOGGER=0x1
+//--------------------------------------------------------------------------------//
+forwardDaemon: pushed to txqueue addr=0x800
+//--------------------------------------------------------------------------------//
+Info: TX_ACTIVITY_LOGGER=0x3
+Info: TX_ACTIVITY_LOGGER=0x4
+Info: packetTxDaemon: sent 0x5c byte=0x2e 
+Info: packetTxDaemon: sent 0x5e byte=0x2f 
+Info: packetTxDaemon: sent 0x60 byte=0x30 
+Info: packetTxDaemon: sent 0x62 byte=0x31 
+Info: packetTxDaemon: sent 0x64 byte=0x32 
+Info: packetTxDaemon: sent 0x66 byte=0x33 
+Info: packetTxDaemon: sent 0x68 byte=0x34 
+Info: packetTxDaemon: sent 0x6a byte=0x35 
+Info: packetTxDaemon: sent 0x6c byte=0x36 
+Info: packetTxDaemon: sent 0x6e byte=0x37 
+Info: packetTxDaemon: sent 0x70 byte=0x38 
+Info: packetTxDaemon: sent 0x72 byte=0x39 
+Info: packetTxDaemon: sent 0x74 byte=0x3a 
+Info: packetTxDaemon: sent 0x76 byte=0x3b 
+Info: packetTxDaemon: sent 0x78 byte=0x3c 
+Info: packetTxDaemon: sent 0x7a byte=0x3d 
+Info: packetTxDaemon: sent 0x7c byte=0x3e 
+Info: packetTxDaemon: sent 0x7e byte=0x3f 
+Info: packetTxDaemon: sent 0x80 byte=0x40 
+Info: packetTxDaemon: sent 0x82 byte=0x41 
+Info: packetTxDaemon: sent 0x84 byte=0x42 
+Info: packetTxDaemon: sent 0x86 byte=0x43 
+Info: packetTxDaemon: sent 0x88 byte=0x44 
+Info: packetTxDaemon: sent 0x8a byte=0x45 
+Info: packetTxDaemon: sent 0x8c byte=0x46 
+Info: packetTxDaemon: sent 0x8e byte=0x47 
+Info: packetTxDaemon: sent 0x90 byte=0x48 
+Info: packetTxDaemon: sent 0x92 byte=0x49 
+Info: packetTxDaemon: sent 0x94 byte=0x4a 
+Info: packetTxDaemon: sent 0x96 byte=0x4b 
+Info: packetTxDaemon: sent 0x98 byte=0x4c 
+Info: packetTxDaemon: sent 0x9a byte=0x4d 
+Info: packetTxDaemon: sent 0x9c byte=0x4e 
+Info: packetTxDaemon: sent 0x9e byte=0x4f 
+Info: packetTxDaemon: sent 0xa0 byte=0x50 
+Info: packetTxDaemon: sent 0xa2 byte=0x51 
+Info: packetTxDaemon: sent 0xa4 byte=0x52 
+Info: packetTxDaemon: sent 0xa6 byte=0x53 
+Info: packetTxDaemon: sent 0xa8 byte=0x54 
+Info: packetTxDaemon: sent 0xaa byte=0x55 
+Info: packetTxDaemon: sent 0xac byte=0x56 
+Info: packetTxDaemon: sent 0xae byte=0x57 
+Info: packetTxDaemon: sent 0xb0 byte=0x58 
+Info: packetTxDaemon: sent 0xb2 byte=0x59 
+Info: packetTxDaemon: sent 0xb4 byte=0x5a 
+Info: packetTxDaemon: sent 0xb6 byte=0x5b 
+Info: packetTxDaemon: sent 0xb8 byte=0x5c 
+Info: packetTxDaemon: sent 0xba byte=0x5d 
+Info: packetTxDaemon: sent 0xbc byte=0x5e 
+Info: RX_ACTIVITY_LOGGER=0x2
+Info: TX_ACTIVITY_LOGGER=0x1
+Info: packetRxDaemon: received byte 0xd6 
+Info: packetRxDaemon: received byte 0xd7 
+Info: packetRxDaemon: received byte 0xd8 
+Info: packetRxDaemon: received byte 0xd9 
+Info: packetRxDaemon: received byte 0xda 
+Info: packetRxDaemon: received byte 0xdb 
+Info: packetRxDaemon: received byte 0xdc 
+Info: packetRxDaemon: received byte 0xdd 
+Info: packetRxDaemon: received byte 0xde 
+Info: packetRxDaemon: received byte 0xdf 
+Info: packetRxDaemon: received byte 0xe0 
+Info: packetRxDaemon: received byte 0xe1 
+Info: packetRxDaemon: received byte 0xe2 
+Info: packetRxDaemon: received byte 0xe3 
+Info: packetRxDaemon: received byte 0xe4 
+Info: packetRxDaemon: received byte 0xe5 
+Info: packetRxDaemon: received byte 0xe6 
+Info: packetRxDaemon: received byte 0xe7 
+Info: packetRxDaemon: received byte 0xe8 
+Info: packetRxDaemon: received byte 0xe9 
+Info: packetRxDaemon: received byte 0xea 
+Info: packetRxDaemon: received byte 0xeb 
+Info: packetRxDaemon: received byte 0xec 
+Info: packetRxDaemon: received byte 0xed 
+Info: packetRxDaemon: received byte 0xee 
+Info: packetRxDaemon: received byte 0xef 
+Info: packetRxDaemon: received byte 0xf0 
+Info: packetRxDaemon: received byte 0xf1 
+Info: packetRxDaemon: received byte 0xf2 
+Info: packetRxDaemon: received byte 0xf3 
+Info: packetRxDaemon: received byte 0xf4 
+Info: packetRxDaemon: received byte 0xf5 
+Info: packetRxDaemon: received byte 0xf6 
+Info: TX_ACTIVITY_LOGGER=0x2
+Info: packetRxDaemon: received byte 0xf7 
+Info: packetRxDaemon: received byte 0xf8 
+Info: packetRxDaemon: received byte 0xf9 
+Info: packetRxDaemon: received byte 0xfa last
+packetRxDaemon: received packet with index 6.
+packetRxDaemon: expecting packet with length 49.
+//--------------------------------------------------------------------------------//
+forwardDaemon: popped from rxqueue addr=0xc00
+//--------------------------------------------------------------------------------//
+Info: RX_ACTIVITY_LOGGER=0x3
+Info: RX_ACTIVITY_LOGGER=0x4
+Info: RX_ACTIVITY_LOGGER=0x1
+//--------------------------------------------------------------------------------//
+forwardDaemon: pushed to txqueue addr=0xc00
+//--------------------------------------------------------------------------------//
+Info: TX_ACTIVITY_LOGGER=0x3
+Info: TX_ACTIVITY_LOGGER=0x4
+Info: packetTxDaemon: sent 0xbe byte=0x5f 
+Info: packetTxDaemon: sent 0xc0 byte=0x60 
+Info: packetTxDaemon: sent 0xc2 byte=0x61 
+Info: packetTxDaemon: sent 0xc4 byte=0x62 
+Info: packetTxDaemon: sent 0xc6 byte=0x63 
+Info: packetTxDaemon: sent 0xc8 byte=0x64 
+Info: packetTxDaemon: sent 0xca byte=0x65 
+Info: packetTxDaemon: sent 0xcc byte=0x66 
+Info: packetTxDaemon: sent 0xce byte=0x67 
+Info: packetTxDaemon: sent 0xd0 byte=0x68 
+Info: packetTxDaemon: sent 0xd2 byte=0x69 
+Info: packetTxDaemon: sent 0xd4 byte=0x6a 
+Info: packetTxDaemon: sent 0x2d6 byte=0x6b last
+packetTxDaemon: done.
+Info: RX_ACTIVITY_LOGGER=0x2
+Info: TX_ACTIVITY_LOGGER=0x1
+Info: packetRxDaemon: received byte 0xfb 
+Info: packetRxDaemon: received byte 0xfc 
+Info: packetRxDaemon: received byte 0xfd 
+Info: packetRxDaemon: received byte 0xfe 
+Info: packetRxDaemon: received byte 0xff 
+Info: packetRxDaemon: received byte 0x0 
+Info: packetRxDaemon: received byte 0x1 
+Info: packetRxDaemon: received byte 0x2 
+Info: packetRxDaemon: received byte 0x3 
+Info: packetRxDaemon: received byte 0x4 
+Info: packetRxDaemon: received byte 0x5 
+Info: packetRxDaemon: received byte 0x6 
+Info: packetRxDaemon: received byte 0x7 
+Info: packetRxDaemon: received byte 0x8 
+Info: packetRxDaemon: received byte 0x9 
+Info: packetRxDaemon: received byte 0xa 
+Info: packetRxDaemon: received byte 0xb 
+Info: packetRxDaemon: received byte 0xc 
+Info: packetRxDaemon: received byte 0xd 
+Info: packetRxDaemon: received byte 0xe 
+Info: packetRxDaemon: received byte 0xf 
+Info: packetRxDaemon: received byte 0x10 
+Info: packetRxDaemon: received byte 0x11 
+Info: packetRxDaemon: received byte 0x12 
+Info: packetRxDaemon: received byte 0x13 
+Info: packetRxDaemon: received byte 0x14 
+Info: packetRxDaemon: received byte 0x15 
+Info: packetRxDaemon: received byte 0x16 
+Info: packetRxDaemon: received byte 0x17 
+Info: packetRxDaemon: received byte 0x18 
+Info: packetRxDaemon: received byte 0x19 
+Info: packetRxDaemon: received byte 0x1a 
+Info: packetRxDaemon: received byte 0x1b 
+Info: packetRxDaemon: received byte 0x1c 
+Info: packetRxDaemon: received byte 0x1d 
+Info: packetRxDaemon: received byte 0x1e 
+Info: packetRxDaemon: received byte 0x1f 
+Info: packetRxDaemon: received byte 0x20 
+Info: packetRxDaemon: received byte 0x21 
+Info: packetRxDaemon: received byte 0x22 
+Info: packetRxDaemon: received byte 0x23 
+Info: packetRxDaemon: received byte 0x24 
+Info: packetRxDaemon: received byte 0x25 
+Info: packetRxDaemon: received byte 0x26 
+Info: packetRxDaemon: received byte 0x27 
+Info: packetRxDaemon: received byte 0x28 
+Info: packetRxDaemon: received byte 0x29 
+Info: packetRxDaemon: received byte 0x2a 
+Info: packetRxDaemon: received byte 0x2b last
+packetRxDaemon: received packet with index 7.
+packetRxDaemon: expecting packet with length 64.
+Info: TX_ACTIVITY_LOGGER=0x2
+//--------------------------------------------------------------------------------//
+forwardDaemon: popped from rxqueue addr=0x1000
+//--------------------------------------------------------------------------------//
+Info: RX_ACTIVITY_LOGGER=0x3
+Info: RX_ACTIVITY_LOGGER=0x4
+Info: RX_ACTIVITY_LOGGER=0x1
+//--------------------------------------------------------------------------------//
+forwardDaemon: pushed to txqueue addr=0x1000
+//--------------------------------------------------------------------------------//
+Info: TX_ACTIVITY_LOGGER=0x3
+Info: TX_ACTIVITY_LOGGER=0x4
+Info: TX_ACTIVITY_LOGGER=0x1
+Info: packetRxDaemon: received byte 0x2c 
+Info: packetRxDaemon: received byte 0x2d 
+Info: packetRxDaemon: received byte 0x2e 
+Info: packetRxDaemon: received byte 0x2f 
+Info: packetRxDaemon: received byte 0x30 
+Info: packetRxDaemon: received byte 0x31 
+Info: packetRxDaemon: received byte 0x32 
+Info: packetRxDaemon: received byte 0x33 
+Info: packetRxDaemon: received byte 0x34 
+Info: packetRxDaemon: received byte 0x35 
+Info: packetRxDaemon: received byte 0x36 
+Info: packetRxDaemon: received byte 0x37 
+Info: packetRxDaemon: received byte 0x38 
+Info: packetRxDaemon: received byte 0x39 
+Info: packetRxDaemon: received byte 0x3a 
+Info: packetRxDaemon: received byte 0x3b 
+Info: packetRxDaemon: received byte 0x3c 
+Info: packetRxDaemon: received byte 0x3d 
+Info: packetRxDaemon: received byte 0x3e 
+Info: packetRxDaemon: received byte 0x3f 
+Info: packetRxDaemon: received byte 0x40 
+Info: packetRxDaemon: received byte 0x41 
+Info: packetRxDaemon: received byte 0x42 
+Info: packetRxDaemon: received byte 0x43 
+Info: packetRxDaemon: received byte 0x44 
+Info: packetRxDaemon: received byte 0x45 
+Info: packetRxDaemon: received byte 0x46 
+Info: packetRxDaemon: received byte 0x47 
+Info: packetRxDaemon: received byte 0x48 
+Info: packetRxDaemon: received byte 0x49 
+Info: packetRxDaemon: received byte 0x4a 
+Info: packetRxDaemon: received byte 0x4b 
+Info: packetRxDaemon: received byte 0x4c 
+Info: packetRxDaemon: received byte 0x4d 
+Info: packetRxDaemon: received byte 0x4e 
+Info: packetRxDaemon: received byte 0x4f 
+Info: packetRxDaemon: received byte 0x50 
+Info: packetRxDaemon: received byte 0x51 
+Info: packetRxDaemon: received byte 0x52 
+Info: packetRxDaemon: received byte 0x53 
+Info: packetRxDaemon: received byte 0x54 
+Info: packetRxDaemon: received byte 0x55 
+Info: packetRxDaemon: received byte 0x56 
+Info: packetRxDaemon: received byte 0x57 
+Info: packetRxDaemon: received byte 0x58 
+Info: packetRxDaemon: received byte 0x59 
+Info: packetRxDaemon: received byte 0x5a 
+Info: packetRxDaemon: received byte 0x5b 
+Info: packetRxDaemon: received byte 0x5c 
+Info: packetRxDaemon: received byte 0x5d 
+Info: packetRxDaemon: received byte 0x5e 
+Info: packetRxDaemon: received byte 0x5f 
+Info: packetRxDaemon: received byte 0x60 
+Info: packetRxDaemon: received byte 0x61 
+Info: packetRxDaemon: received byte 0x62 
+Info: packetRxDaemon: received byte 0x63 
+Info: packetRxDaemon: received byte 0x64 
+Info: TX_ACTIVITY_LOGGER=0x2
+Info: packetRxDaemon: received byte 0x65 
+Info: packetRxDaemon: received byte 0x66 
+Info: packetRxDaemon: received byte 0x67 
+Info: packetRxDaemon: received byte 0x68 
+Info: packetRxDaemon: received byte 0x69 
+Info: packetRxDaemon: received byte 0x6a 
+Info: packetRxDaemon: received byte 0x6b last
+packetRxDaemon: received packet with index 8.
+packetRxDaemon: done.
+Info: completed 

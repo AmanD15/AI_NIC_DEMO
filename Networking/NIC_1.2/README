@@ -1,0 +1,31 @@
+
+	Organization of the NIC_1.2 related work
+	--------------------------------------
+
+what's new?
+	
+	Maintains the queues in the NIC and allows
+	the processor to push/pop into the queues
+	via registers.
+
+1.  How to test
+
+	Go to testbench/ and type "build.sh".
+	Environment variable AHIR_RELEASE must be defined.
+	
+	attach two terminals to docker conatainer
+		first : in one terminal run "./tb/bin/tb 4"
+		second: in other terminal run "./ghdl/test_system_test_bench
+	
+
+2. Correctness
+
+	TBD	
+
+3.  How to build
+
+	Go to build_nic_only/ and type "make".
+	Environment variable AHIR_RELEASE must be defined.
+	
+	
+TODO : REFINE TESTBENCH!!

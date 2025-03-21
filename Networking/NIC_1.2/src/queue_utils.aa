@@ -1,0 +1,21 @@
+$module [popFromQueue]
+	$in (tag: $uint<8> queue_type: $uint<2> server_id : $uint<8>) $out (q_r_data: $uint<64> status: $uint<1>)
+$is
+{
+}
+
+$module [pushIntoQueue] 
+	$in  (tag: $uint<8> queue_type: $uint<2> server_id: $uint<8> q_w_data: $uint<64>) $out (status: $uint<1>)
+$is
+{
+}
+
+$module [acquireFreeQueueLock] $in () $out (lock_acquired_ok: $uint<1>) 
+$is
+{
+}
+
+$module [releaseFreeQueueLock] $in () $out (lock_release_ok: $uint<1>) $is
+{
+}
+	

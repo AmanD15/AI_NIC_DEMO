@@ -1,0 +1,178 @@
+$system acb_fast_tap $library GlueModules
+	$in
+		$pipe CORE_BUS_REQUEST  110 $depth 2
+
+		$pipe CORE_BUS_RESPONSE_THROUGH  65 $depth 2 
+		$pipe CORE_BUS_RESPONSE_TAP  	 65 $depth 2 
+
+		$signal MIN_ADDR_TAP   36	$depth 1
+		$signal MAX_ADDR_TAP   36	$depth 1
+
+	$out
+		$pipe CORE_BUS_RESPONSE   65 $depth 2 
+
+		$pipe CORE_BUS_REQUEST_THROUGH  110 $depth 2
+		$pipe CORE_BUS_REQUEST_TAP  110 $depth 2
+{
+	
+}
+$system acb_fast_splitter $library GlueModules
+	$in
+		$pipe CORE_BUS_REQUEST  110 $depth 2
+
+		$pipe CORE_BUS_RESPONSE_HIGH  65 $depth 2 
+		$pipe CORE_BUS_RESPONSE_LOW  65 $depth 2 
+
+		$signal MIN_ADDR_LOW	36	$depth 1
+		$signal MAX_ADDR_LOW	36	$depth 1
+
+		$signal MIN_ADDR_HIGH   36	$depth 1
+		$signal MAX_ADDR_HIGH   36	$depth 1
+
+	$out
+		$pipe CORE_BUS_RESPONSE   65 $depth 2 
+
+		$pipe CORE_BUS_REQUEST_HIGH  110 $depth 2
+		$pipe CORE_BUS_REQUEST_LOW  110 $depth 2
+{
+	
+}
+$system afb_fast_tap $library GlueModules
+	$in
+		$pipe AFB_BUS_REQUEST  74 $depth 2
+
+		$pipe AFB_BUS_RESPONSE_THROUGH  33 $depth 2 
+		$pipe AFB_BUS_RESPONSE_TAP  	 33 $depth 2 
+
+		$signal MIN_ADDR_TAP   36	$depth 1
+		$signal MAX_ADDR_TAP   36	$depth 1
+
+	$out
+		$pipe AFB_BUS_RESPONSE   33 $depth 2 
+
+		$pipe AFB_BUS_REQUEST_THROUGH  74 $depth 2
+		$pipe AFB_BUS_REQUEST_TAP  74 $depth 2
+{
+	
+}
+$system icache_mux_bypass $library GlueModules
+	$in
+		$noblock $pipe noblock_icache_request_0 51 $depth 2
+		$noblock $pipe noblock_icache_request_1 51 $depth 2
+
+		$pipe muxed_icache_response 90 $depth 2
+	$out
+
+		$noblock $pipe noblock_muxed_icache_request 51 $depth 2
+		$pipe icache_response_0 90 $depth 2
+		$pipe icache_response_1 90 $depth 2
+{
+	
+}
+$system icache_mux $library GlueModules
+	$in
+		$noblock $pipe noblock_icache_request_0 51 $depth 2
+		$noblock $pipe noblock_icache_request_1 51 $depth 2
+
+		$pipe muxed_icache_response 90 $depth 2
+	$out
+
+		$noblock $pipe noblock_muxed_icache_request 51 $depth 2
+		$pipe icache_response_0 90 $depth 2
+		$pipe icache_response_1 90 $depth 2
+{
+	
+}
+$system acb_fast_mux $library GlueModules
+	$in
+		$pipe CORE_BUS_REQUEST_HIGH  110 $depth 2
+		$pipe CORE_BUS_REQUEST_LOW  110 $depth 2
+
+		$pipe CORE_BUS_RESPONSE   65 $depth 2 
+	$out
+
+		$pipe CORE_BUS_RESPONSE_HIGH  65 $depth 2 
+		$pipe CORE_BUS_RESPONSE_LOW  65 $depth 2 
+
+		$pipe CORE_BUS_REQUEST  110 $depth 2
+{
+	
+}
+$system afb_fast_splitter $library GlueModules
+	$in
+		$pipe AFB_BUS_REQUEST  74 $depth 2
+
+		$pipe AFB_BUS_RESPONSE_HIGH  33 $depth 2 
+		$pipe AFB_BUS_RESPONSE_LOW  33 $depth 2 
+
+		$signal MIN_ADDR_LOW	36	$depth 1
+		$signal MAX_ADDR_LOW	36	$depth 1
+
+		$signal MIN_ADDR_HIGH   36	$depth 1
+		$signal MAX_ADDR_HIGH   36	$depth 1
+
+	$out
+		$pipe AFB_BUS_RESPONSE   33 $depth 2 
+
+		$pipe AFB_BUS_REQUEST_HIGH  74 $depth 2
+		$pipe AFB_BUS_REQUEST_LOW  74 $depth 2
+{
+	
+}
+$system dcache_fast_interface_mux $library GlueModules
+	$in
+		$noblock $pipe noblock_dcache_request_0 151 $depth 2
+		$noblock $pipe noblock_dcache_request_1 151 $depth 2
+
+		$pipe muxed_dcache_response 72 $depth 2
+	$out
+
+		$noblock $pipe noblock_muxed_dcache_request 151 $depth 2
+		$pipe dcache_response_0 72 $depth 2
+		$pipe dcache_response_1 72 $depth 2
+{
+	
+}
+$system afb_fast_mux $library GlueModules
+	$in
+		$pipe AFB_BUS_REQUEST_HIGH  74 $depth 2
+		$pipe AFB_BUS_REQUEST_LOW  74 $depth 2
+
+		$pipe AFB_BUS_RESPONSE   33 $depth 2 
+	$out
+
+		$pipe AFB_BUS_RESPONSE_HIGH  33 $depth 2 
+		$pipe AFB_BUS_RESPONSE_LOW  33 $depth 2 
+
+		$pipe AFB_BUS_REQUEST  74 $depth 2
+{
+	
+}
+$system mem_reset_mux $library GlueModules
+	$in
+		 $noblock $pipe noblock_reset_request_0 1 $depth 1
+		 $noblock $pipe noblock_reset_request_1 1 $depth 1
+
+		 $pipe muxed_reset_response 1 $depth 1
+	$out
+
+		 $noblock $pipe noblock_muxed_reset_request 1 $depth 1
+		 $pipe reset_response_0 1  $depth 1
+		 $pipe reset_response_1 1 $depth 1
+{
+	
+}
+$system dcache_mux $library GlueModules
+	$in
+		$noblock $pipe noblock_dcache_request_0 129 $depth 2
+		$noblock $pipe noblock_dcache_request_1 129 $depth 2
+
+		$pipe muxed_dcache_response 72 $depth 2
+	$out
+
+		$noblock $pipe noblock_muxed_dcache_request 129 $depth 2
+		$pipe dcache_response_0 72 $depth 2
+		$pipe dcache_response_1 72 $depth 2
+{
+	
+}

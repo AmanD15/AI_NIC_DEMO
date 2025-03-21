@@ -1,0 +1,163 @@
+//
+//	pulls packet(to be transmitted) from memory
+//	and pushes it to MAC
+//
+//step 0 : wait till enable
+//step 1 : pop from tx queue
+//step 2 : transmit the packet
+//step 3 : pushback to free queue
+$module [transmitEngineDaemon] $in () $out () $is
+{
+	LAST_READ_TX_QUEUE_INDEX := 0
+	$branchblock[main]
+	{
+		// loop around until enabled by Software
+		$merge $entry not_enabled_yet_loopback disable_loopback $endmerge
+		
+		// If not enabled yet -> Loopback
+		$if (~(S_CONTROL_REGISTER [] 0)) $then
+			$place [not_enabled_yet_loopback]
+		$endif
+
+		tx_tag := P_TX_ENGINE_TAG
+		$rreport(transmitEngineDaemon got_control)
+	
+			$dopipeline $depth 31 $fullrate
+		
+			$merge $entry $loopback 
+
+				$phi tx_q_index := 
+					((LAST_READ_TX_QUEUE_INDEX+1) & ($bitcast ($uint<8>) (S_NUMBER_OF_SERVERS - 1)))
+					$on $entry,$loopback
+				$phi init_flag := $one<1> $on $entry $zero<1> $on $loopback
+			$endmerge
+			
+			$rreport(transmitEngineDaemon trying_to_get_pointer_from_tx_queue tx_q_index)
+
+			// Get packet pointer for server tx_q_index
+			$call getTxPacketPointerFromServer (tx_tag tx_q_index) (pkt_pointer tx_flag)
+			$barrier
+			//
+			// TX_ACTIVITY_LOGGER := 1
+			//
+				
+			// if ok...
+			$guard (~tx_flag) $call transmitPacket (tx_tag pkt_pointer) (transmitted_flag)
+			$barrier
+			//
+			// TX_ACTIVITY_LOGGER := 2
+			//
+
+			
+			$volatile push_pointer_back_to_free_Q := ((~tx_flag) & transmitted_flag)
+
+
+			// push packet pointer to free queue
+			$rreport(transmitEngineDaemon pushing_back_to_free_queue push_pointer_back_to_free_Q pkt_pointer)
+			
+			$guard (push_pointer_back_to_free_Q)
+				$call pushIntoQueue (tx_tag FREEQUEUE 0 pkt_pointer) (push_status)
+			$barrier
+			//
+			// TX_ACTIVITY_LOGGER := 3
+			// 
+
+			$rreport(transmitEngineDaemon pushed_back_to_free_queue push_status)
+
+			// Increment the number of packets transmitted
+			$guard (push_pointer_back_to_free_Q)
+				$call incrementNumberOfPacketsTransmitted () ()
+
+			// move to next tx queue
+			LAST_READ_TX_QUEUE_INDEX := tx_q_index
+
+			$barrier
+			//
+			// TX_ACTIVITY_LOGGER := 4
+			//
+	
+			// loop while enabled(control[0] == 1)
+			$while (S_CONTROL_REGISTER [] 0)
+			
+		$place [disable_loopback]
+	}
+}
+
+//
+//	Get a packet buffer from server server_index.
+//
+$pipeline $depth 7
+$module [getTxPacketPointerFromServer] 
+	$in (tag :$uint<8> server_index : $uint<8>)
+	$out (pkt_pointer : $uint<64> status : $uint<1>) $is
+{
+
+	$call popFromQueue    (tag TXQUEUE server_index)  (pkt_pointer status)
+
+	$attribute input_buffering 0
+}
+
+
+
+// Transmit packet, given the pointer to the
+// packet. and return 1 if success.
+$module [transmitPacket]
+	$in (tag :$uint<8> packet_pointer: $uint<64>) $out (status: $uint<1>) $is
+{
+	// read packet information from packet buffer.
+	$volatile control_data_addr := packet_pointer
+
+	$rreport(transmitPacket control_data_addr_is packet_pointer control_data_addr)	
+	$call accessMemoryDword (tag READMEM control_data_addr  0 $zero<64>) (control_data)
+	
+	
+	// get packet_size and tkeep(bytemask) of last word
+	$volatile $split (control_data 45 11 8 ) (unused packet_size last_tkeep)
+	$rreport(transmitPacket control_data_received_is packet_size last_tkeep)	
+	$branchblock[loop]
+	{
+		// TODO MPD: Check this logic (the counts!)
+		$dopipeline $depth 31 $fullrate
+		$merge $entry $loopback
+
+			$phi count_down := (packet_size - 16) $on $entry ncount_down $on $loopback
+
+			//packet starts after 3 d-words (64 bits each) in the buffer
+			$phi mem_addr_offset := ($bitcast ($uint<16>) 24) $on $entry nmem_addr_offset $on $loopback
+
+		$endmerge
+
+		// read packet data
+		$call accessMemoryDword (tag READMEM control_data_addr 
+							($bitcast ($uint<64>) mem_addr_offset) $zero<64>) (data)
+		
+		// TODO: will need to calculate IP-header checksum in future
+ 
+		// transmit packet to MAC.
+		nic_to_mac_transmit_pipe := ($concat $zero<1> data FULL_BYTE_MASK)
+
+		// compute next count down and next memory address.
+		$volatile  ncount_down := (count_down - 8)
+		$volatile  nmem_addr_offset := (mem_addr_offset + 8)
+		
+		$volatile not_last_word := (ncount_down > 8)
+
+		// loop till last word
+		$while not_last_word
+	
+
+		last_offset := nmem_addr_offset
+	
+		//last word
+		$call accessMemoryDword (tag READMEM control_data_addr 
+						($bitcast ($uint<64>) last_offset) $zero<64>) (last_word)
+		
+		// transmit last word
+		$rreport(transmitPacket sending_last_word last_word)
+		nic_to_mac_transmit_pipe := ($concat $one<1> last_word last_tkeep)
+		
+		// transmit successful if packet_size amount of data is succesfully
+		// transmitted
+		status := (packet_size == ($bitcast ($uint<11>) last_offset))
+	}	
+}

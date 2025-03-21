@@ -1,0 +1,152 @@
+//
+// Register file (depth = 256) (width = 32)
+//
+$storage nic_registers: $array [255] $of $uint<32>
+
+
+// read modify write.
+$module [accessRegister] 
+	$in (rwbar: $uint<1> bmask: $uint<4> index: $uint<8> wdata: $uint<32>)
+	$out (rdata : $uint<32>) 
+$is
+{
+	$volatile is_for_rx_queue   := ((index >= 8)   &  (index < 16))
+	$volatile is_for_tx_queue   := ((index >= 16)  &  (index < 24))
+	$volatile is_for_free_queue := ((index >= 24)  &  (index < 27))
+
+	$volatile reg_access := ($reduce &
+					(~is_for_rx_queue)
+					(~is_for_tx_queue)
+					(~is_for_free_queue))
+
+	$guard (reg_access) rdata_regs := nic_registers[index]
+	$guard (is_for_rx_queue)   $call accessRxQueue (rwbar index wdata) (rdata_rx_q)
+	$guard (is_for_tx_queue)   $call accessTxQueue (rwbar index wdata) (rdata_tx_q)
+	$guard (is_for_free_queue) $call accessFreeQueue (rwbar index wdata) (rdata_free_q)
+
+	$volatile rdata := ($excmux
+				is_for_rx_queue rdata_rx_q
+				is_for_tx_queue rdata_tx_q
+				is_for_free_queue rdata_free_q
+				reg_access rdata_regs)
+
+
+	$volatile $split (bmask 1 1 1 1) (b0 b1 b2 b3)
+	$volatile $split (rdata  8 8 8 8) (r0 r1 r2 r3)
+	$volatile $split (wdata  8 8 8 8) (w0 w1 w2 w3)
+
+	$volatile wval := ($concat
+				($mux b0 w0 r0)
+				($mux b1 w1 r1)
+				($mux b2 w2 r2)
+				($mux b3 w3 r3))
+
+	$volatile write_to_regs := ((~rwbar) & reg_access)
+	$guard (write_to_regs)
+		nic_registers[index] := wval
+
+}
+
+
+$module [setGlobalSignals]
+	$in () $out () $is
+{
+
+	$call accessRegister (READMEM _hF P_N_SERVERS_REGISTER_INDEX 0) (n_servers)
+	S_NUMBER_OF_SERVERS  := n_servers
+
+	$barrier
+	
+
+	$call accessRegister (READMEM _hF P_NIC_CONTROL_REGISTER_INDEX 0) (ctrl_reg)
+
+	S_CONTROL_REGISTER := ctrl_reg
+	MAC_ENABLE := (ctrl_reg [] 1)
+	NIC_INTR_ENABLE := (ctrl_reg [] 2)
+
+	$barrier
+
+	NIC_INTR := (NIC_INTR_ENABLE & NIC_INTR_INTERNAL)
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
+}
+
+
+
+
+$module [controlDaemon] $in () $out () $is
+{
+
+		
+	// set up the lock, at the beginning.
+	// (will be accessed in doMemAccess)
+	memory_access_lock := 1
+
+	// control-register set to 0.
+	$call accessRegister (0 0 0 0) (ign)
+
+	MAC_ENABLE := 0
+
+	NIC_INTR   := 0
+	NIC_INTR_ENABLE   := 0
+	NIC_INTR_INTERNAL := 0
+
+	S_CONTROL_REGISTER := 0
+	S_NUMBER_OF_SERVERS := 0
+	
+	
+	$rreport(controlDaemon started_controlDaemon)
+	$parallelblock [pb] {
+	   $branchblock[loop] {
+
+		// SPIN forever.
+		$dopipeline $depth 3 $fullrate 
+		$merge $entry $loopback $endmerge
+
+			req := AFB_NIC_REQUEST
+
+			$rreport (SoftwareRegisterAccessDaemon got_afb_req req)
+			$volatile $split (req 1 1 4 36 32) 
+					(lock rwbar bmask addr wdata)
+
+			$rreport(controlDaemon read_afb_request lock rwbar bmask addr wdata)
+		
+			// register_index.
+			$volatile index := ($slice addr 9 2)
+
+				
+			$volatile read_counter := (index == 255)
+
+			// access the register.
+			$guard (~read_counter)
+				$call accessRegister (rwbar bmask index wdata) (rdata_other)
+
+			rdata := ($mux read_counter S_FREE_RUNNING_COUNTER  rdata_other)
+			
+			$barrier 
+
+			$volatile update_control_register := ((~rwbar) & (index == 0))
+			$volatile set_globals := (update_control_register & (wdata [] 0))
+			$guard (set_globals)
+				$call setGlobalSignals () ()
+
+			// Send response
+			$volatile resp  := ($concat $zero<1> rdata) // zero<1> -> No error
+			AFB_NIC_RESPONSE := resp
+	
+		$while 1
+	    }
+	    $branchblock[counter_loop] {
+			$dopipeline $depth 7 $fullrate
+			$merge $entry $loopback 
+				$phi I := $zero<32> $on $entry nI $on $loopback
+			$endmerge
+				$volatile nI := (I + 1)
+				S_FREE_RUNNING_COUNTER := nI
+			$while 1
+	    }
+	}
+	ignq := QUEUE_MONITOR_SIGNAL $keep
+}
+
