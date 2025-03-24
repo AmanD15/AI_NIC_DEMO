@@ -8,10 +8,36 @@ $parameter    P_TX_PKT_COUNT_REGISTER_INDEX     210
 $parameter    P_RX_PKT_COUNT_REGISTER_INDEX     211
 $parameter    P_STATUS_REGISTER_INDEX           212
 
-//  Base index for queue's registers
-$parameter    P_RX_QUEUE_REGISTER_BASE_INDEX       8
-$parameter    P_TX_QUEUE_REGISTER_BASE_INDEX       128
-$parameter    P_FREE_QUEUE_REGISTER_BASE_INDEX  200
+//  Base index for queue access
+$parameter    P_RX_QUEUE_0_INDEX		     8 
+$parameter    P_RX_QUEUE_0_STATUS_INDEX		     9 
+$parameter    P_RX_QUEUE_1_INDEX		     10 
+$parameter    P_RX_QUEUE_1_STATUS_INDEX		     11 
+$parameter    P_RX_QUEUE_2_INDEX		     12 
+$parameter    P_RX_QUEUE_2_STATUS_INDEX		     13 
+$parameter    P_RX_QUEUE_3_INDEX		     14 
+$parameter    P_RX_QUEUE_3_STATUS_INDEX		     15 
+
+$parameter    P_TX_QUEUE_0_INDEX		     16 
+$parameter    P_TX_QUEUE_0_STATUS_INDEX		     17 
+$parameter    P_TX_QUEUE_1_INDEX		     18 
+$parameter    P_TX_QUEUE_1_STATUS_INDEX		     19 
+$parameter    P_TX_QUEUE_2_INDEX		     20 
+$parameter    P_TX_QUEUE_2_STATUS_INDEX		     21 
+$parameter    P_TX_QUEUE_3_INDEX		     22 
+$parameter    P_TX_QUEUE_3_STATUS_INDEX		     23 
+
+$parameter    P_FREE_QUEUE_0_INDEX		     24 
+$parameter    P_FREE_QUEUE_0_STATUS_INDEX	     25 
+$parameter    P_FREE_QUEUE_1_INDEX		     26 
+$parameter    P_FREE_QUEUE_1_STATUS_INDEX	     27 
+$parameter    P_FREE_QUEUE_2_INDEX		     28 
+$parameter    P_FREE_QUEUE_2_STATUS_INDEX	     29 
+$parameter    P_FREE_QUEUE_3_INDEX		     30 
+$parameter    P_FREE_QUEUE_3_STATUS_INDEX	     31 
+
+
+
 
 // Tag value, not an address.
 //  to distinguish between Rx and Tx engines.

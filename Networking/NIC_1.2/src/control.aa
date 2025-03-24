@@ -1,3 +1,10 @@
+$module [init_all_queues] $in () $out () $is
+{
+
+	// TODO: coherent start sequence....
+	// setup the initial status..
+}
+
 //
 // Register file (depth = 256) (width = 32)
 //
@@ -12,7 +19,7 @@ $is
 {
 	$volatile is_for_rx_queue   := ((index >= 8)   &  (index < 16))
 	$volatile is_for_tx_queue   := ((index >= 16)  &  (index < 24))
-	$volatile is_for_free_queue := ((index >= 24)  &  (index < 27))
+	$volatile is_for_free_queue := ((index >= 24)  &  (index < 36))  // includes lock access.
 
 	$volatile reg_access := ($reduce &
 					(~is_for_rx_queue)
@@ -20,8 +27,9 @@ $is
 					(~is_for_free_queue))
 
 	$guard (reg_access) rdata_regs := nic_registers[index]
-	$guard (is_for_rx_queue)   $call accessRxQueue (rwbar index wdata) (rdata_rx_q)
-	$guard (is_for_tx_queue)   $call accessTxQueue (rwbar index wdata) (rdata_tx_q)
+
+	$guard (is_for_rx_queue)   $call accessRxQueue   (rwbar index wdata) (rdata_rx_q)
+	$guard (is_for_tx_queue)   $call accessTxQueue   (rwbar index wdata) (rdata_tx_q)
 	$guard (is_for_free_queue) $call accessFreeQueue (rwbar index wdata) (rdata_free_q)
 
 	$volatile rdata := ($excmux

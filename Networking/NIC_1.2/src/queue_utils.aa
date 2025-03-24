@@ -1,21 +1,44 @@
+
+$module [read_Rx_status] $in (index: $uint<8>) (rx_status: $uint<32>)
+{
+}
+
+$module [write_Rx_status] $in (index: $uint<8>  rx_status: $uint<32>) $out () 
+{
+}
+
+	
+$module [accessRxQueue]    $in (rwbar: $uint<1>  index: $uint<8> wdata: $uint<32>) 
+							$out (rdata_rx_q rdata_rx_status: $uint<32>)
+{
+	// if it is an access to queue, its a pop/push 
+	// else it is an access to status, it is write/read.
+}
+
+$module [accessTxQueue]    $in (rwbar: $uint<1>  index: $uint<8> wdata: $uint<32>) $out (rdata_rx_q: $uint<32>)
+{
+}
+$module [accessFreeQueue]    $in (rwbar: $uint<1>  index: $uint<8> wdata: $uint<32>) $out (rdata_rx_q: $uint<32>)
+{
+}
+
 $module [popFromQueue]
-	$in (tag: $uint<8> queue_type: $uint<2> server_id : $uint<8>) $out (q_r_data: $uint<64> status: $uint<1>)
+	$in (tag: $uint<8> queue_type: $uint<2> server_id : $uint<8>) $out (q_r_data: $uint<32> status: $uint<1>)
 $is
 {
 }
 
 $module [pushIntoQueue] 
-	$in  (tag: $uint<8> queue_type: $uint<2> server_id: $uint<8> q_w_data: $uint<64>) $out (status: $uint<1>)
+	$in  (tag: $uint<8> queue_type: $uint<2> server_id: $uint<8> q_w_data: $uint<32>) $out (status: $uint<1>)
 $is
 {
 }
 
-$module [acquireFreeQueueLock] $in () $out (lock_acquired_ok: $uint<1>) 
+$module [acquireFreeQueueLock] $in (free_queue_index: $uint<2>) $out (lock_acquired_ok: $uint<1>) 
 $is
 {
 }
 
-$module [releaseFreeQueueLock] $in () $out (lock_release_ok: $uint<1>) $is
+$module [releaseFreeQueueLock] $in (free_queue_index: $uint<2>) $out (lock_release_ok: $uint<1>) $is
 {
 }
-	
