@@ -1,17 +1,20 @@
-//
-//	pulls packet(to be transmitted) from memory
+//	Pulls packet(to be transmitted) from memory
 //	and pushes it to MAC
 //
-//step 0 : wait till enable
-//step 1 : pop from tx queue
-//step 2 : transmit the packet
-//step 3 : pushback to free queue
-$module [transmitEngineDaemon] $in () $out () $is
+//	step 0 : Wait until enabled
+//	step 1 : Get Tx buffer pointer from TxQ register and pop it from TxQ
+//	step 2 : Transmit (read) packet data from the acquired Tx buffer
+//	step 3 : Write the buffer pointer into the freeQ pointed by freeQ register 
+//	Perform sequentilly for all servers so that a particular server is not overburdened
+
+$module [TransmitEngineDaemon] $in () $out () $is
 {
+	// The last index in the transmit queue which was read from
 	LAST_READ_TX_QUEUE_INDEX := 0
+	
 	$branchblock[main]
 	{
-		// loop around until enabled by Software
+		// spin until enabled by software
 		$merge $entry not_enabled_yet_loopback disable_loopback $endmerge
 		
 		// If not enabled yet -> Loopback
@@ -19,30 +22,28 @@ $module [transmitEngineDaemon] $in () $out () $is
 			$place [not_enabled_yet_loopback]
 		$endif
 
-		tx_tag := P_TX_ENGINE_TAG
-		$rreport(transmitEngineDaemon got_control)
+		tx_tag := ($bitcast ($uint<8>) P_TX_ENGINE_TAG)
+		$rreport(TransmitEngineDaemon got_control)
 	
-			$dopipeline $depth 31 $fullrate
-		
+		$dopipeline $depth 31 $fullrate	
 			$merge $entry $loopback 
-
-				$phi tx_q_index := 
-					((LAST_READ_TX_QUEUE_INDEX+1) & ($bitcast ($uint<8>) (S_NUMBER_OF_SERVERS - 1)))
-					$on $entry,$loopback
-				$phi init_flag := $one<1> $on $entry $zero<1> $on $loopback
+				$phi TxQ_server_id := (LAST_READ_TX_QUEUE_INDEX & ($bitcast ($uint<8>) (S_NUMBER_OF_SERVERS - 1)))
+							$on $entry n_TxQ_server_id $on $loopback
 			$endmerge
-			
-			$rreport(transmitEngineDaemon trying_to_get_pointer_from_tx_queue tx_q_index)
+				
+			$rreport(TransmitEngineDaemon trying_to_get_pointer_from_tx_queue TxQ_server_id)
 
-			// Get packet pointer for server tx_q_index
-			$call getTxPacketPointerFromServer (tx_tag tx_q_index) (pkt_pointer tx_flag)
+			// Get packet pointer for server TxQ_server_id
+			$call getTxPacketPointer (tx_tag TxQ_server_id) (tx_buffer_pointer tx_flag)
+			// tx_flag == 0 is success, i.e., popped packet pointer from TxQ
 			$barrier
 			//
 			// TX_ACTIVITY_LOGGER := 1
 			//
 				
-			// if ok...
-			$guard (~tx_flag) $call transmitPacket (tx_tag pkt_pointer) (transmitted_flag)
+			// if ok transmit the packet 
+			$guard (~tx_flag) $call transmitPacket (tx_tag tx_buffer_pointer) (transmitted_flag)
+			// transmitted_flag == 1, then packet is transmitted successfully
 			$barrier
 			//
 			// TX_ACTIVITY_LOGGER := 2
@@ -52,59 +53,58 @@ $module [transmitEngineDaemon] $in () $out () $is
 			$volatile push_pointer_back_to_free_Q := ((~tx_flag) & transmitted_flag)
 
 
-			// push packet pointer to free queue
-			$rreport(transmitEngineDaemon pushing_back_to_free_queue push_pointer_back_to_free_Q pkt_pointer)
+			// push a packet pointer to free queue
+			$rreport(TransmitEngineDaemon pushing_back_to_free_queue push_pointer_back_to_free_Q tx_buffer_pointer)
 			
 			$guard (push_pointer_back_to_free_Q)
-				$call pushIntoQueue (tx_tag FREEQUEUE 0 pkt_pointer) (push_status)
+				$call pushIntoQueue (tx_tag FREEQUEUE TxQ_server_id tx_buffer_pointer) (push_status)
+			// push_status == 0 is success, i.e., pushed packet pointer back to freeQ
 			$barrier
 			//
 			// TX_ACTIVITY_LOGGER := 3
 			// 
 
-			$rreport(transmitEngineDaemon pushed_back_to_free_queue push_status)
-
 			// Increment the number of packets transmitted
 			$guard (push_pointer_back_to_free_Q)
 				$call incrementNumberOfPacketsTransmitted () ()
 
-			// move to next tx queue
-			LAST_READ_TX_QUEUE_INDEX := tx_q_index
+			// move to next server's Tx queue
+			n_TxQ_server_id := ((TxQ_server_id + 1) & ($bitcast ($uint<8>) (S_NUMBER_OF_SERVERS - 1)))
+			LAST_READ_TX_QUEUE_INDEX := TxQ_server_id
 
 			$barrier
 			//
 			// TX_ACTIVITY_LOGGER := 4
 			//
 	
-			// loop while enabled(control[0] == 1)
+			// while (control[0] == 1) loop is enabled
 			$while (S_CONTROL_REGISTER [] 0)
 			
 		$place [disable_loopback]
 	}
 }
 
-//
-//	Get a packet buffer from server server_index.
-//
-$pipeline $depth 7
-$module [getTxPacketPointerFromServer] 
-	$in (tag :$uint<8> server_index : $uint<8>)
-	$out (pkt_pointer : $uint<64> status : $uint<1>) $is
-{
 
-	$call popFromQueue    (tag TXQUEUE server_index)  (pkt_pointer status)
+//	Get a transmit packet buffer from server TxQ_server_id
+$pipeline $depth 7
+$module [getTxPacketPointer] 
+	$in (tag :$uint<8> TxQ_server_id : $uint<8>)
+	$out (tx_buffer_pointer : $uint<64> status : $uint<1>) $is
+{
+	$call popFromQueue (tag TXQUEUE TxQ_server_id) (tx_buffer_pointer status)
 
 	$attribute input_buffering 0
 }
 
 
 
-// Transmit packet, given the pointer to the
-// packet. and return 1 if success.
+// 	Transmit packet, given the pointer to the packet
+// 	and return 1 if success.
 $module [transmitPacket]
-	$in (tag :$uint<8> packet_pointer: $uint<64>) $out (status: $uint<1>) $is
+	$in (tag :$uint<8> packet_pointer: $uint<64>) 
+	$out (status: $uint<1>) $is
 {
-	// read packet information from packet buffer.
+	// read packet information from transmit packet buffer.
 	$volatile control_data_addr := packet_pointer
 
 	$rreport(transmitPacket control_data_addr_is packet_pointer control_data_addr)	
@@ -116,7 +116,6 @@ $module [transmitPacket]
 	$rreport(transmitPacket control_data_received_is packet_size last_tkeep)	
 	$branchblock[loop]
 	{
-		// TODO MPD: Check this logic (the counts!)
 		$dopipeline $depth 31 $fullrate
 		$merge $entry $loopback
 
@@ -130,8 +129,6 @@ $module [transmitPacket]
 		// read packet data
 		$call accessMemoryDword (tag READMEM control_data_addr 
 							($bitcast ($uint<64>) mem_addr_offset) $zero<64>) (data)
-		
-		// TODO: will need to calculate IP-header checksum in future
  
 		// transmit packet to MAC.
 		nic_to_mac_transmit_pipe := ($concat $zero<1> data FULL_BYTE_MASK)
@@ -156,8 +153,7 @@ $module [transmitPacket]
 		$rreport(transmitPacket sending_last_word last_word)
 		nic_to_mac_transmit_pipe := ($concat $one<1> last_word last_tkeep)
 		
-		// transmit successful if packet_size amount of data is succesfully
-		// transmitted
+		// transmit successful if packet_size amount of data is succesfully transmitted
 		status := (packet_size == ($bitcast ($uint<11>) last_offset))
 	}	
 }
