@@ -59,9 +59,19 @@ $pipe TX_ACTIVITY_LOGGER: $uint<8> $depth 1
 // Rx, Free, Tx queues (one per server 0/1/2/3)
 $pipe Rx_queue_0 Rx_queue_1 Rx_queue_2 Rx_queue_3: $uint<32> $depth 64
 $pipe Tx_queue_0 Tx_queue_1 Tx_queue_2 Tx_queue_3: $uint<32> $depth 64
-$pipe Free_queue_0 Free_queue_1 Free_queue_2 Free_queue_3: $uint<32> $depth 64
 
-$noblock $pipe noblock_free_queue_0_lock noblock_free_queue_1_lock noblock_free_queue_2_lock noblock_free_queue_3_lock: $uint<1> 
+// valid op-code wdata
+//   1      8      32 
+$noblock $pipe noblock_FREE_QUEUE_COMMAND: $uint<41> $depth 2
+
+// status wdata
+//   8      32 
+$pipe FREE_QUEUE_RESPONSE: $uint<40> $depth 2
+
+$pipe FREE_QUEUE: $uint<32> $depth 64
+
+$noblock $pipe NOBLOCK_FREE_QUEUE_LOCK: $uint<1> $depth 1
+
 
 
 

@@ -27,15 +27,20 @@ $parameter    P_TX_QUEUE_2_STATUS_INDEX		     21
 $parameter    P_TX_QUEUE_3_INDEX		     22 
 $parameter    P_TX_QUEUE_3_STATUS_INDEX		     23 
 
-$parameter    P_FREE_QUEUE_0_INDEX		     24 
-$parameter    P_FREE_QUEUE_0_STATUS_INDEX	     25 
-$parameter    P_FREE_QUEUE_1_INDEX		     26 
-$parameter    P_FREE_QUEUE_1_STATUS_INDEX	     27 
-$parameter    P_FREE_QUEUE_2_INDEX		     28 
-$parameter    P_FREE_QUEUE_2_STATUS_INDEX	     29 
-$parameter    P_FREE_QUEUE_3_INDEX		     30 
-$parameter    P_FREE_QUEUE_3_STATUS_INDEX	     31 
+$parameter    P_FREE_QUEUE_INDEX		     24 
+$parameter    P_FREE_QUEUE_STATUS_INDEX	     	     25 
 
+
+//
+// This register is accessed only using a SWAP operation
+// inside the NIC.
+//
+// A read from this register is a lock-acquire and
+// returns 0 if lock is acquired
+//
+// A write to this register is a lock-release.
+//
+$parameter    P_FREE_QUEUE_LOCK_INDEX	     	     26 
 
 
 

@@ -1,0 +1,89 @@
+// FREE_QUEUE_COMMANDS
+//   lock         1
+//   unlock       2
+//   push         3
+//   pop          4
+//   status       5
+$constant FQ_LOCK   : $uint<8> := 1
+$constant FQ_UNLOCK : $uint<8> := 2
+$constant FQ_PUSH   : $uint<8> := 3
+$constant FQ_POP    : $uint<8> := 4
+$constant FQ_STATUS : $uint<8> := 5
+
+
+$module [exec_free_queue_command]
+	$in (opcode: $uint<8> wdata: $uint<32>) $out (status: $uint<8> rdata: $uint<32>)
+{
+	$volatile command := ($concat $one<1> opcode wdata)
+	noblock_FREE_QUEUE_COMMAND := command
+	response := FREE_QUEUE_RESPONSE
+	$volatile $split (response 8 32) (status rdata)
+}
+
+
+
+
+$module [free_queue_daemon] $in () $out () $is
+{
+	FREE_QUEUE_LOCK := 1
+
+	$branchblock[loop] 
+	{
+		$dopipeline $depth 7 $fullrate
+		$merge $entry $loopback
+			$phi NENTRIES     := $zero<16> $on $entry n_NENTRIES $on $loopback
+			$phi LOCK_IS_FULL := $one<1> $on $entry n_LOCK_IS_FULL $on $loopback
+			$phi queue_command := noblock_FREE_QUEUE_COMMAND $on $entry, $loopback
+		$endmerge
+	
+		$volatile $split (queue_command 8 32) (opcode wdata)	
+		$volatile lock   := (op_code == FQ_LOCK)
+		$volatile unlock := (op_code == FQ_UNLOCK)
+		$volatile push   := (op_code == FQ_PUSH)
+		$volatile pop    := (op_code == FQ_POP)
+		$volatile status := (op_code == FQ_STATUS)
+	
+		$volatile lock_ok := (lock & LOCK_IS_FULL)
+		$guard (lock_ok) lock_value := FREE_QUEUE_LOCK
+
+		$volatile unlock_ok := (unlock & (~LOCK_IS_FULL))
+		$guard (unlock_ok) FREE_QUEUE_LOCK := 1
+
+		$volatile push_is_ok := (push & (NENTRIES < FQ_MAX_NENTRIES))
+		$guard (push_is_ok) FREE_QUEUE := wdata
+
+		$volatile pop_is_ok := (pop & (NENTRIES > 0))
+		$guard (pop_is_ok) rdata := FREE_QUEUE
+
+	
+		$volatile n_NENTRIES :=
+			($prioritymux
+				push_is_ok  (NENTRIES + 1)
+				pop_is_ok   (NENTRIES - 1)
+				$default NENTRIES)
+
+		$volatile n_LOCK_IS_FULL :=
+			($prioritymux
+				lock_ok   $zero<1>
+				unlock_ok $one<1>
+				$default LOCK_IS_FULL)
+	
+
+		$volatile result_status  :=
+			($excmux 
+				lock      ($mux lock_ok    $zero<8>  $one<8>) 
+				unlock    ($mux unlock_ok  $zero<8>  $one<8>) 
+				push      ($mux push_is_ok $zero<8>  $one<8>)
+				pop       ($mux pop_is_ok  $zero<8>  $one<8>))
+
+		$volatile result_data :=
+				($excmux 
+					pop_is_ok rdata 
+					status    ($bitcast ($uint<32>) NENTRIES))
+					
+
+
+		$while 1
+	}
+}
+

@@ -7,6 +7,8 @@
 //					   45           11             	  8
 //     1,2,..             packet data
 
+//
+//      There are four receive engines
 //	Pulls packet(to be received) from MAC
 //	and pushes it to memory
 //

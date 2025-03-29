@@ -69,6 +69,12 @@ $module [setGlobalSignals]
 	$call accessRegister (READMEM _hF P_NIC_CONTROL_REGISTER_INDEX 0) (ctrl_reg)
 
 	S_CONTROL_REGISTER := ctrl_reg
+
+	S_ENABLE_SERVER_0  := (ctrl_reg [] 3)
+	S_ENABLE_SERVER_1  := (ctrl_reg [] 4)
+	S_ENABLE_SERVER_2  := (ctrl_reg [] 5)
+	S_ENABLE_SERVER_3  := (ctrl_reg [] 6)
+
 	MAC_ENABLE := (ctrl_reg [] 1)
 	NIC_INTR_ENABLE := (ctrl_reg [] 2)
 
@@ -135,7 +141,7 @@ $module [controlDaemon] $in () $out () $is
 			$barrier 
 
 			$volatile update_control_register := ((~rwbar) & (index == 0))
-			$volatile set_globals := (update_control_register & (wdata [] 0))
+			$volatile set_globals := update_control_register
 			$guard (set_globals)
 				$call setGlobalSignals () ()
 

@@ -34,11 +34,3 @@ $is
 {
 }
 
-$module [acquireFreeQueueLock] $in (free_queue_index: $uint<2>) $out (lock_acquired_ok: $uint<1>) 
-$is
-{
-}
-
-$module [releaseFreeQueueLock] $in (free_queue_index: $uint<2>) $out (lock_release_ok: $uint<1>) $is
-{
-}
