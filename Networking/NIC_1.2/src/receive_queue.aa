@@ -1,0 +1,138 @@
+// RECEIVE_QUEUE_COMMANDS
+//   push_0         1
+//   push_1         2
+//   push_2         3
+//   push_3         4
+//   pop_0          5
+//   pop_1          6
+//   pop_2          7
+//   pop_3          8
+//   status_0       9
+//   status_1       10
+//   status_2       11
+//   status_3       12
+$constant RxQ_PUSH_0   : $uint<8> := 1
+$constant RxQ_PUSH_1   : $uint<8> := 2
+$constant RxQ_PUSH_2   : $uint<8> := 3
+$constant RxQ_PUSH_3   : $uint<8> := 4
+$constant RxQ_POP_0    : $uint<8> := 5
+$constant RxQ_POP_1    : $uint<8> := 6
+$constant RxQ_POP_2    : $uint<8> := 7
+$constant RxQ_POP_3    : $uint<8> := 8
+$constant RxQ_STATUS_0 : $uint<8> := 9
+$constant RxQ_STATUS_1 : $uint<8> := 10
+$constant RxQ_STATUS_2 : $uint<8> := 11
+$constant RxQ_STATUS_3 : $uint<8> := 12
+
+
+$module [exec_receive_queue_command]
+	$in (opcode: $uint<8> wdata: $uint<32>) $out (status: $uint<8> rdata: $uint<32>)
+{
+	$volatile command := ($concat $one<1> opcode wdata)
+	noblock_RECEIVE_QUEUE_COMMAND := command
+	response := RECEIVE_QUEUE_RESPONSE
+	$volatile $split (response 8 32) (status rdata)
+}
+
+
+$module [receive_queue_daemon] $in () $out () $is
+{	
+	$branchblock[loop] 
+	{
+		$dopipeline $depth 7 $fullrate
+		$merge $entry $loopback
+			$phi NENTRIES_0    := $zero<16> $on $entry n_NENTRIES_0 $on $loopback
+			$phi NENTRIES_1    := $zero<16> $on $entry n_NENTRIES_1 $on $loopback
+			$phi NENTRIES_2    := $zero<16> $on $entry n_NENTRIES_2 $on $loopback
+			$phi NENTRIES_3    := $zero<16> $on $entry n_NENTRIES_3 $on $loopback
+			$phi queue_command := noblock_RECEIVE_QUEUE_COMMAND $on $entry, $loopback
+		$endmerge
+	
+		$volatile $split (queue_command 1 8 32) (valid opcode wdata)	
+		$volatile push_0   := (opcode == RxQ_PUSH_0)
+		$volatile push_1   := (opcode == RxQ_PUSH_1)
+		$volatile push_2   := (opcode == RxQ_PUSH_2)
+		$volatile push_3   := (opcode == RxQ_PUSH_3)
+		$volatile pop_0    := (opcode == RxQ_POP_0)
+		$volatile pop_1    := (opcode == RxQ_POP_1)
+		$volatile pop_2    := (opcode == RxQ_POP_2)
+		$volatile pop_3    := (opcode == RxQ_POP_3)
+		$volatile status_0 := (opcode == RxQ_STATUS_0)
+		$volatile status_1 := (opcode == RxQ_STATUS_1)
+		$volatile status_2 := (opcode == RxQ_STATUS_2)
+		$volatile status_3 := (opcode == RxQ_STATUS_3)
+
+		$volatile push_is_ok_0 := (push_0 & (NENTRIES_0 < RxQ_MAX_NENTRIES))
+		$guard (push_is_ok_0) Rx_QUEUE_0 := wdata
+		
+		$volatile push_is_ok_1 := (push_1 & (NENTRIES_1 < RxQ_MAX_NENTRIES))
+		$guard (push_is_ok_1) Rx_QUEUE_1 := wdata
+		
+		$volatile push_is_ok_2 := (push_2 & (NENTRIES_2 < RxQ_MAX_NENTRIES))
+		$guard (push_is_ok_2) Rx_QUEUE_2 := wdata
+		
+		$volatile push_is_ok_3 := (push_3 & (NENTRIES_3 < RxQ_MAX_NENTRIES))
+		$guard (push_is_ok_3) Rx_QUEUE_3 := wdata
+
+		$volatile pop_is_ok_0 := (pop_0 & (NENTRIES_0 > 0))
+		$guard (pop_is_ok_0) rdata := Rx_QUEUE_0
+		
+		$volatile pop_is_ok_1 := (pop_1 & (NENTRIES_1 > 0))
+		$guard (pop_is_ok_1) rdata := Rx_QUEUE_1
+		
+		$volatile pop_is_ok_2 := (pop_2 & (NENTRIES_2 > 0))
+		$guard (pop_is_ok_2) rdata := Rx_QUEUE_2
+		
+		$volatile pop_is_ok_3 := (pop_3 & (NENTRIES_3 > 0))
+		$guard (pop_is_ok_3) rdata := Rx_QUEUE_3
+
+	
+		$volatile n_NENTRIES_0 :=
+			($prioritymux
+				push_is_ok_0  (NENTRIES_0 + 1)
+				pop_is_ok_0   (NENTRIES_0 - 1)
+				$default NENTRIES_0)
+				
+		$volatile n_NENTRIES_1 :=
+			($prioritymux
+				push_is_ok_1  (NENTRIES_1 + 1)
+				pop_is_ok_1   (NENTRIES_1 - 1)
+				$default NENTRIES_1)
+				
+		$volatile n_NENTRIES_2 :=
+			($prioritymux
+				push_is_ok_2  (NENTRIES_2 + 1)
+				pop_is_ok_2   (NENTRIES_2 - 1)
+				$default NENTRIES_2)
+				
+		$volatile n_NENTRIES_3 :=
+			($prioritymux
+				push_is_ok_3  (NENTRIES_3 + 1)
+				pop_is_ok_3   (NENTRIES_3 - 1)
+				$default NENTRIES_3)
+
+		$volatile result_status  :=
+			($excmux 
+				push_0      ($mux push_is_ok_0 $zero<8>  $one<8>)
+				push_1      ($mux push_is_ok_1 $zero<8>  $one<8>)
+				push_2      ($mux push_is_ok_2 $zero<8>  $one<8>)
+				push_3      ($mux push_is_ok_3 $zero<8>  $one<8>)
+				pop_0       ($mux pop_is_ok_0  $zero<8>  $one<8>)
+				pop_1       ($mux pop_is_ok_1  $zero<8>  $one<8>)
+				pop_2       ($mux pop_is_ok_2  $zero<8>  $one<8>)
+				pop_3       ($mux pop_is_ok_3  $zero<8>  $one<8>))
+
+		$volatile result_data :=
+				($excmux 
+					pop_is_ok_0 rdata 
+					pop_is_ok_1 rdata 
+					pop_is_ok_2 rdata 
+					pop_is_ok_3 rdata 
+					status_0    ($bitcast ($uint<32>) NENTRIES_0
+					status_1    ($bitcast ($uint<32>) NENTRIES_1
+					status_2    ($bitcast ($uint<32>) NENTRIES_2
+					status_3    ($bitcast ($uint<32>) NENTRIES_3))
+					
+		$while 1
+	}
+}

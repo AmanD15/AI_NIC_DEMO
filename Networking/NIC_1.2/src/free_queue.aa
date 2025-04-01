@@ -36,12 +36,12 @@ $module [free_queue_daemon] $in () $out () $is
 			$phi queue_command := noblock_FREE_QUEUE_COMMAND $on $entry, $loopback
 		$endmerge
 	
-		$volatile $split (queue_command 8 32) (opcode wdata)	
-		$volatile lock   := (op_code == FQ_LOCK)
-		$volatile unlock := (op_code == FQ_UNLOCK)
-		$volatile push   := (op_code == FQ_PUSH)
-		$volatile pop    := (op_code == FQ_POP)
-		$volatile status := (op_code == FQ_STATUS)
+		$volatile $split (queue_command 1 8 32) (valid opcode wdata)	
+		$volatile lock   := (opcode == FQ_LOCK)
+		$volatile unlock := (opcode == FQ_UNLOCK)
+		$volatile push   := (opcode == FQ_PUSH)
+		$volatile pop    := (opcode == FQ_POP)
+		$volatile status := (opcode == FQ_STATUS)
 	
 		$volatile lock_ok := (lock & LOCK_IS_FULL)
 		$guard (lock_ok) lock_value := FREE_QUEUE_LOCK

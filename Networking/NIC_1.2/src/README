@@ -106,9 +106,9 @@ Register     address         		Description
 					 bit [5] server 2 enable
 					 bit [6] server 3 enable
 --------------------------------------------------------------
-1.		0x04		        number of servers   (should be = number of enabled servers)
-2.		0x08			debug-register 0
-3.		0x0c			debug-register 1
+1		0x04		        number of servers   (should be = number of enabled servers)
+2		0x08			debug-register 0
+3		0x0c			debug-register 1
 
 4 to 7 are unused.
 --------------------------------------------------------------
