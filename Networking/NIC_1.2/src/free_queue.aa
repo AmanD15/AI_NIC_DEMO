@@ -12,7 +12,9 @@ $constant FQ_STATUS : $uint<8> := 5
 
 
 $module [exec_free_queue_command]
-	$in (opcode: $uint<8> wdata: $uint<32>) $out (status: $uint<8> rdata: $uint<32>)
+	$in (opcode: $uint<8> wdata: $uint<32>) 
+	$out (status: $uint<8> rdata: $uint<32>) 
+$is
 {
 	$volatile command := ($concat $one<1> opcode wdata)
 	noblock_FREE_QUEUE_COMMAND := command
@@ -81,7 +83,7 @@ $module [free_queue_daemon] $in () $out () $is
 					pop_is_ok rdata 
 					status    ($bitcast ($uint<32>) NENTRIES))
 					
-
+		FREE_QUEUE_RESPONSE := ($concat result_status result_data)
 
 		$while 1
 	}
