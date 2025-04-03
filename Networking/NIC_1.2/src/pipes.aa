@@ -59,18 +59,19 @@ $pipe FREE_QUEUE: $uint<32> $depth 64
 $pipe Rx_QUEUE_0 Rx_QUEUE_1 Rx_QUEUE_2 Rx_QUEUE_3: $uint<32> $depth 64
 $pipe Tx_QUEUE_0 Tx_QUEUE_1 Tx_QUEUE_2 Tx_QUEUE_3: $uint<32> $depth 64
 
-// valid op-code wdata
-//   1      8      32 
-$noblock $pipe noblock_FREE_QUEUE_COMMAND: $uint<41> $depth 2
+// op-code wdata
+//  8      32 
+$noblock $pipe FREE_QUEUE_COMMAND: $uint<40> $depth 2
 
 // valid server-id op-code wdata
 //   1       4	      4      32 
 $noblock $pipe noblock_RECEIVE_QUEUE_COMMAND: $uint<41> $depth 2
 $noblock $pipe noblock_TRANSMIT_QUEUE_COMMAND: $uint<41> $depth 2
 
-// status wdata
-//   8      32 
-$pipe FREE_QUEUE_RESPONSE: $uint<40> $depth 2
+// nentries push_status pop_status  read_data
+//   16       8            8          32 
+$pipe FREE_QUEUE_RESPONSE: $uint<64> $depth 2
+
 $pipe RECEIVE_QUEUE_RESPONSE: $uint<40> $depth 2
 $pipe TRANSMIT_QUEUE_RESPONSE: $uint<40> $depth 2
 

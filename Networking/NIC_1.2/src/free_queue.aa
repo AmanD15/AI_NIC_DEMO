@@ -11,15 +11,33 @@ $constant FQ_POP    : $uint<8> := 4
 $constant FQ_STATUS : $uint<8> := 5
 
 
+//
+// There are four possible operations
+//	lock, unlock, push, pop, status
+//
+//  lock
+//    if lock is available,     return value=0, push status = pop-status = 0, nentries = number of entries.
+//    if lock is not available, return value=1, push status = pop-status = 0, nentries = number of entries.
+//  unlock
+//    return value=0, push status = pop-status = 0, nentries = number of entries.
+//  push 
+//    if successful, return_value = 0, push_status = 0, pop_status = 0, nentries = number_of entries.
+//    if not successful, return_value = 0, push_status = 1, pop_status = 0, nentries = number_of entries.
+//  pop 
+//    if successful, return_value = popped_value, push_status = 0, pop_status = 0, nentries = number_of entries.
+//    if not successful, return_value = 0,        push_status = 0, pop_status = 1, nentries = number_of entries.
+//  status 
+//    return value = number_of_entries push-status=0 pop-status= 0
+//
 $module [exec_free_queue_command]
 	$in (opcode: $uint<8> wdata: $uint<32>) 
-	$out (status: $uint<8> rdata: $uint<32>) 
+	$out (nentries: $uint<16> push_status pop_status: $uint<8> rdata: $uint<32>) 
 $is
 {
 	$volatile command := ($concat $one<1> opcode wdata)
 	noblock_FREE_QUEUE_COMMAND := command
 	response := FREE_QUEUE_RESPONSE
-	$volatile $split (response 8 32) (status rdata)
+	$volatile $split (response 16 8 8 32) (nentries push_status pop_status rdata)
 }
 
 
@@ -35,10 +53,10 @@ $module [free_queue_daemon] $in () $out () $is
 		$merge $entry $loopback
 			$phi NENTRIES     := $zero<16> $on $entry n_NENTRIES $on $loopback
 			$phi LOCK_IS_FULL := $one<1> $on $entry n_LOCK_IS_FULL $on $loopback
-			$phi queue_command := noblock_FREE_QUEUE_COMMAND $on $entry, $loopback
+			$phi queue_command := FREE_QUEUE_COMMAND $on $entry, $loopback
 		$endmerge
 	
-		$volatile $split (queue_command 1 8 32) (valid opcode wdata)	
+		$volatile $split (queue_command 8 32) (opcode wdata)	
 		$volatile lock   := (opcode == FQ_LOCK)
 		$volatile unlock := (opcode == FQ_UNLOCK)
 		$volatile push   := (opcode == FQ_PUSH)
