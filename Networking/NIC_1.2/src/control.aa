@@ -3,6 +3,33 @@ $module [init_all_queues] $in () $out () $is
 
 	// TODO: coherent start sequence....
 	// setup the initial status..
+	
+	$call accessRegister (WRITEMEM _hF P_FREE_QUEUE_STATUS_INDEX _h00000000) (f_ign_rsp)
+	
+	enable_server_0 := S_ENABLE_SERVER_0
+	enable_server_1 := S_ENABLE_SERVER_1
+	enable_server_2 := S_ENABLE_SERVER_2
+	enable_server_3 := S_ENABLE_SERVER_3
+	
+	$guard (enable_server_0)
+		$call accessRegister (WRITEMEM _hF P_RX_QUEUE_0_STATUS_INDEX _h00000000) (rx_ign_rsp_0)
+	$guard (enable_server_0)
+		$call accessRegister (WRITEMEM _hF P_TX_QUEUE_0_STATUS_INDEX _h00000000) (tx_ign_rsp_0)
+		
+	$guard (enable_server_1)
+		$call accessRegister (WRITEMEM _hF P_RX_QUEUE_1_STATUS_INDEX _h00000000) (rx_ign_rsp_1)
+	$guard (enable_server_1)
+		$call accessRegister (WRITEMEM _hF P_TX_QUEUE_1_STATUS_INDEX _h00000000) (tx_ign_rsp_1)
+		
+	$guard (enable_server_2)
+		$call accessRegister (WRITEMEM _hF P_RX_QUEUE_2_STATUS_INDEX _h00000000) (rx_ign_rsp_2)
+	$guard (enable_server_2)
+		$call accessRegister (WRITEMEM _hF P_TX_QUEUE_2_STATUS_INDEX _h00000000) (tx_ign_rsp_2)
+	
+	$guard (enable_server_3)
+		$call accessRegister (WRITEMEM _hF P_RX_QUEUE_3_STATUS_INDEX _h00000000) (rx_ign_rsp_3)
+	$guard (enable_server_3)
+		$call accessRegister (WRITEMEM _hF P_TX_QUEUE_3_STATUS_INDEX _h00000000) (tx_ign_rsp_3)
 }
 
 //
@@ -19,7 +46,7 @@ $is
 {
 	$volatile is_for_rx_queue   := ((index >= 8)   &  (index < 16))
 	$volatile is_for_tx_queue   := ((index >= 16)  &  (index < 24))
-	$volatile is_for_free_queue := ((index >= 24)  &  (index < 36))  // includes lock access.
+	$volatile is_for_free_queue := ((index >= 24)  &  (index < 27))  // includes lock access.
 
 	$volatile reg_access := ($reduce &
 					(~is_for_rx_queue)
@@ -79,6 +106,8 @@ $module [setGlobalSignals]
 	NIC_INTR_ENABLE := (ctrl_reg [] 2)
 
 	$barrier
+
+	$call init_all_queues () ()
 
 	NIC_INTR := (NIC_INTR_ENABLE & NIC_INTR_INTERNAL)
 

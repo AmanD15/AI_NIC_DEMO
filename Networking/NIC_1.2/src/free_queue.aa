@@ -4,38 +4,38 @@
 //   push         3
 //   pop          4
 //   status       5
-$constant FQ_LOCK   : $uint<8> := 1
-$constant FQ_UNLOCK : $uint<8> := 2
-$constant FQ_PUSH   : $uint<8> := 3
-$constant FQ_POP    : $uint<8> := 4
-$constant FQ_STATUS : $uint<8> := 5
+$constant LOCK   : $uint<8> := 1
+$constant UNLOCK : $uint<8> := 2
+$constant PUSH   : $uint<8> := 3
+$constant POP    : $uint<8> := 4
+$constant STATUS : $uint<8> := 5
 
 
 //
-// There are four possible operations
+// There are five possible operations
 //	lock, unlock, push, pop, status
 //
 //  lock
-//    if lock is available,     return value=0, push status = pop-status = 0, nentries = number of entries.
-//    if lock is not available, return value=1, push status = pop-status = 0, nentries = number of entries.
+//    if lock is available,     return_value = 0, push_status = 0, pop_status = 0, nentries = number_of_entries.
+//    if lock is not available, return_value = 1, push_status = 0, pop_status = 0, nentries = number_of_entries.
 //  unlock
-//    return value=0, push status = pop-status = 0, nentries = number of entries.
+//    return_value = 0, push_status = pop_status = 0, nentries = number of entries.
 //  push 
-//    if successful, return_value = 0, push_status = 0, pop_status = 0, nentries = number_of entries.
-//    if not successful, return_value = 0, push_status = 1, pop_status = 0, nentries = number_of entries.
+//    if successful,     return_value = 0, push_status = 0, pop_status = 0, nentries = number_of_entries.
+//    if not successful, return_value = 0, push_status = 1, pop_status = 0, nentries = number_of_entries.
 //  pop 
-//    if successful, return_value = popped_value, push_status = 0, pop_status = 0, nentries = number_of entries.
-//    if not successful, return_value = 0,        push_status = 0, pop_status = 1, nentries = number_of entries.
+//    if successful,     return_value = popped_value, push_status = 0, pop_status = 0, nentries = number_of_entries.
+//    if not successful, return_value = 0,            push_status = 0, pop_status = 1, nentries = number_of_entries.
 //  status 
-//    return value = number_of_entries push-status=0 pop-status= 0
+//    return_value = number_of_entries, push_status = 0, pop_status = 0, nentries = number_of_entries.
 //
 $module [exec_free_queue_command]
 	$in (opcode: $uint<8> wdata: $uint<32>) 
 	$out (nentries: $uint<16> push_status pop_status: $uint<8> rdata: $uint<32>) 
 $is
 {
-	$volatile command := ($concat $one<1> opcode wdata)
-	noblock_FREE_QUEUE_COMMAND := command
+	$volatile command := ($concat opcode wdata)
+	FREE_QUEUE_COMMAND := command
 	response := FREE_QUEUE_RESPONSE
 	$volatile $split (response 16 8 8 32) (nentries push_status pop_status rdata)
 }
@@ -57,11 +57,11 @@ $module [free_queue_daemon] $in () $out () $is
 		$endmerge
 	
 		$volatile $split (queue_command 8 32) (opcode wdata)	
-		$volatile lock   := (opcode == FQ_LOCK)
-		$volatile unlock := (opcode == FQ_UNLOCK)
-		$volatile push   := (opcode == FQ_PUSH)
-		$volatile pop    := (opcode == FQ_POP)
-		$volatile status := (opcode == FQ_STATUS)
+		$volatile lock   := (opcode == LOCK)
+		$volatile unlock := (opcode == UNLOCK)
+		$volatile push   := (opcode == PUSH)
+		$volatile pop    := (opcode == POP)
+		$volatile status := (opcode == STATUS)
 	
 		$volatile lock_ok := (lock & LOCK_IS_FULL)
 		$guard (lock_ok) lock_value := FREE_QUEUE_LOCK
@@ -69,7 +69,7 @@ $module [free_queue_daemon] $in () $out () $is
 		$volatile unlock_ok := (unlock & (~LOCK_IS_FULL))
 		$guard (unlock_ok) FREE_QUEUE_LOCK := 1
 
-		$volatile push_is_ok := (push & (NENTRIES < FQ_MAX_NENTRIES))
+		$volatile push_is_ok := (push & (NENTRIES < MAX_NENTRIES))
 		$guard (push_is_ok) FREE_QUEUE := wdata
 
 		$volatile pop_is_ok := (pop & (NENTRIES > 0))
@@ -89,19 +89,31 @@ $module [free_queue_daemon] $in () $out () $is
 				$default LOCK_IS_FULL)
 	
 
-		$volatile result_status  :=
+		$volatile push_status := 
 			($excmux 
-				lock      ($mux lock_ok    $zero<8>  $one<8>) 
-				unlock    ($mux unlock_ok  $zero<8>  $one<8>) 
-				push      ($mux push_is_ok $zero<8>  $one<8>)
-				pop       ($mux pop_is_ok  $zero<8>  $one<8>))
+				lock      $zero<8>
+				unlock    $zero<8> 
+				push      ($mux push_is_ok $zero<8> $one<8>)
+				pop       $zero<8>
+				status    $zero<8>)
+		
+		$volatile pop_status  := 
+			($excmux 
+				lock      $zero<8>
+				unlock    $zero<8> 
+				push      $zero<8>
+				pop       ($mux pop_is_ok  $zero<8>  $one<8>)
+				status    $zero<8>)
 
 		$volatile result_data :=
 				($excmux 
-					pop_is_ok rdata 
-					status    ($bitcast ($uint<32>) NENTRIES))
+					lock 	($mux lock_ok $zero<32> $one<32>)
+					unlock 	$zero<32>
+					push 	$zero<32>
+					pop	($mux pop_is_ok rdata $zero<32>)
+					status  ($bitcast ($uint<32>) NENTRIES))
 					
-		FREE_QUEUE_RESPONSE := ($concat result_status result_data)
+		FREE_QUEUE_RESPONSE := ($concat n_NENTRIES push_status pop_status result_data)
 
 		$while 1
 	}
