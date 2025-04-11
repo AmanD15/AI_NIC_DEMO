@@ -1,16 +1,3 @@
-// FREE_QUEUE_COMMANDS
-//   lock         1
-//   unlock       2
-//   push         3
-//   pop          4
-//   status       5
-$constant LOCK   : $uint<8> := 1
-$constant UNLOCK : $uint<8> := 2
-$constant PUSH   : $uint<8> := 3
-$constant POP    : $uint<8> := 4
-$constant STATUS : $uint<8> := 5
-
-
 //
 // There are five possible operations
 //	lock, unlock, push, pop, status
@@ -30,11 +17,11 @@ $constant STATUS : $uint<8> := 5
 //    return_value = number_of_entries, push_status = 0, pop_status = 0, nentries = number_of_entries.
 //
 $module [exec_free_queue_command]
-	$in (opcode: $uint<8> wdata: $uint<32>) 
+	$in (server_id opcode: $uint<4> wdata: $uint<32>) 
 	$out (nentries: $uint<16> push_status pop_status: $uint<8> rdata: $uint<32>) 
 $is
 {
-	$volatile command := ($concat opcode wdata)
+	$volatile command := ($concat server_id opcode wdata)
 	FREE_QUEUE_COMMAND := command
 	response := FREE_QUEUE_RESPONSE
 	$volatile $split (response 16 8 8 32) (nentries push_status pop_status rdata)
@@ -56,9 +43,9 @@ $module [free_queue_daemon] $in () $out () $is
 			$phi queue_command := FREE_QUEUE_COMMAND $on $entry, $loopback
 		$endmerge
 	
-		$volatile $split (queue_command 8 32) (opcode wdata)	
-		$volatile lock   := (opcode == LOCK)
-		$volatile unlock := (opcode == UNLOCK)
+		$volatile $split (queue_command 4 4 32) (server_id opcode wdata)	
+		$volatile lock   := (opcode == FQ_LOCK)
+		$volatile unlock := (opcode == FQ_UNLOCK)
 		$volatile push   := (opcode == PUSH)
 		$volatile pop    := (opcode == POP)
 		$volatile status := (opcode == STATUS)

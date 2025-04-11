@@ -1,17 +1,3 @@
-// RECEIVE_QUEUE_COMMANDS
-//   push         3
-//   pop          4
-//   status       5
-$constant PUSH   : $uint<4> := 3
-$constant POP    : $uint<4> := 4
-$constant STATUS : $uint<4> := 5
-
-$constant server_0 : $uint<4> := 0
-$constant server_1 : $uint<4> := 1
-$constant server_2 : $uint<4> := 2
-$constant server_3 : $uint<4> := 3
-
-
 //
 // There are three possible operations
 //	push, pop, status
@@ -26,11 +12,11 @@ $constant server_3 : $uint<4> := 3
 //    return_value = number_of_entries, push_status = 0, pop_status = 0, nentries = number_of_entries.
 //
 $module [exec_receive_queue_command]
-	$in (opcode: $uint<8> wdata: $uint<32>) 
+	$in (server_id opcode: $uint<4> wdata: $uint<32>) 
 	$out (nentries: $uint<16> push_status pop_status: $uint<8> rdata: $uint<32>)
 $is
 {
-	$volatile command := ($concat opcode wdata)
+	$volatile command := ($concat server_id opcode wdata)
 	RECEIVE_QUEUE_COMMAND := command
 	response := RECEIVE_QUEUE_RESPONSE
 	$volatile $split (response 16 8 8 32) (nentries push_status pop_status rdata)
@@ -55,10 +41,10 @@ $module [receive_queue_daemon] $in () $out () $is
 		$volatile pop    := (opcode == POP)
 		$volatile status := (opcode == STATUS)
 		
-		$volatile server_0 := (server_id == server_0)
-		$volatile server_1 := (server_id == server_1)
-		$volatile server_2 := (server_id == server_2)
-		$volatile server_3 := (server_id == server_3)
+		$volatile server_0 := (server_id == SERVER_0)
+		$volatile server_1 := (server_id == SERVER_1)
+		$volatile server_2 := (server_id == SERVER_2)
+		$volatile server_3 := (server_id == SERVER_3)
 
 		$volatile push_is_ok_0 := (push & (NENTRIES_0 < MAX_NENTRIES) & server_0)
 		$guard (push_is_ok_0) Rx_QUEUE_0 := wdata

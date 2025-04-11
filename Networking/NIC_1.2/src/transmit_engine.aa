@@ -1,3 +1,5 @@
+//
+//      There are four transmit servers
 //	Pulls packet(to be transmitted) from memory
 //	and pushes it to MAC
 //
@@ -23,59 +25,56 @@ $module [TransmitEngineDaemon] $in () $out () $is
 		$endif
 
 		tx_tag := ($bitcast ($uint<8>) P_TX_ENGINE_TAG)
-		$rreport(TransmitEngineDaemon got_control)
 	
 		$dopipeline $depth 31 $fullrate	
 			$merge $entry $loopback 
-				$phi TxQ_server_id := (LAST_READ_TX_QUEUE_INDEX & ($bitcast ($uint<8>) (S_NUMBER_OF_SERVERS - 1)))
+				$phi TxQ_server_id := (LAST_READ_TX_QUEUE_INDEX & ($bitcast ($uint<4>) (S_NUMBER_OF_SERVERS - 1)))
 							$on $entry n_TxQ_server_id $on $loopback
 			$endmerge
-				
-			$rreport(TransmitEngineDaemon trying_to_get_pointer_from_tx_queue TxQ_server_id)
 
-			// Get packet pointer for server TxQ_server_id
-			$call getTxPacketPointer (tx_tag TxQ_server_id) (tx_buffer_pointer tx_flag)
-			// tx_flag == 0 is success, i.e., popped packet pointer from TxQ
+			// pop packet pointer from server TxQ_server_id
+			$call popFromQueue (TXQUEUE TxQ_server_id) (tx_buffer_pointer TxQ_status)
 			$barrier
-			//
-			// TX_ACTIVITY_LOGGER := 1
-			//
+			
+			// pop_status == 1 is success, i.e., popped packet pointer from TxQ
+			$volatile pop_status := (~($bitreduce | ($slice TxQ_status 7 0)))
 				
 			// if ok transmit the packet 
-			$guard (~tx_flag) $call transmitPacket (tx_tag tx_buffer_pointer) (transmitted_flag)
+			$guard (pop_status) $call transmitPacket (tx_tag tx_buffer_pointer) (transmitted_flag)
 			// transmitted_flag == 1, then packet is transmitted successfully
 			$barrier
-			//
-			// TX_ACTIVITY_LOGGER := 2
-			//
 
-			
-			$volatile push_pointer_back_to_free_Q := ((~tx_flag) & transmitted_flag)
+			$volatile push_pointer_back_to_free_Q := (pop_status & transmitted_flag)
 
 
-			// push a packet pointer to free queue
-			$rreport(TransmitEngineDaemon pushing_back_to_free_queue push_pointer_back_to_free_Q tx_buffer_pointer)
-			
+			// push packet pointer to free queue
 			$guard (push_pointer_back_to_free_Q)
-				$call pushIntoQueue (tx_tag FREEQUEUE TxQ_server_id tx_buffer_pointer) (push_status)
-			// push_status == 0 is success, i.e., pushed packet pointer back to freeQ
+			$call exec_receive_queue_command (SERVER_0 FQ_LOCK _h0000) (l_nentries l_push_status l_pop_status freeQ_lock)
+			
+			// lock_status == 0 is success, i.e., get access to freeQ lock
+			$volatile lock_status := ($bitreduce | freeQ_lock)
+			
+			$guard (~lock_status)
+				$call pushIntoQueue (FREEQUEUE SERVER_0 tx_buffer_pointer) (freeQ_status)
 			$barrier
-			//
-			// TX_ACTIVITY_LOGGER := 3
-			// 
+			
+			// push_status == 1 is success, i.e., pushed packet pointer to freeQ
+			$volatile push_status := (~($bitreduce | ($slice freeQ_status 15 8)))
+
+			// release freeQ lock
+			$guard (push_status)
+			$call exec_receive_queue_command (SERVER_0 FQ_UNLOCK _h0000) (ul_nentries ul_push_status ul_pop_status freeQ_unlock)
+
 
 			// Increment the number of packets transmitted
 			$guard (push_pointer_back_to_free_Q)
 				$call incrementNumberOfPacketsTransmitted () ()
 
 			// move to next server's Tx queue
-			n_TxQ_server_id := ((TxQ_server_id + 1) & ($bitcast ($uint<8>) (S_NUMBER_OF_SERVERS - 1)))
+			n_TxQ_server_id := ((TxQ_server_id + 1) & ($bitcast ($uint<4>) (S_NUMBER_OF_SERVERS - 1)))
 			LAST_READ_TX_QUEUE_INDEX := TxQ_server_id
 
 			$barrier
-			//
-			// TX_ACTIVITY_LOGGER := 4
-			//
 	
 			// while (control[0] == 1) loop is enabled
 			$while (S_CONTROL_REGISTER [] 0)
@@ -84,17 +83,6 @@ $module [TransmitEngineDaemon] $in () $out () $is
 	}
 }
 
-
-//	Get a transmit packet buffer from server TxQ_server_id
-$pipeline $depth 7
-$module [getTxPacketPointer] 
-	$in (tag :$uint<8> TxQ_server_id : $uint<8>)
-	$out (tx_buffer_pointer : $uint<64> status : $uint<1>) $is
-{
-	$call popFromQueue (tag TXQUEUE TxQ_server_id) (tx_buffer_pointer status)
-
-	$attribute input_buffering 0
-}
 
 
 
