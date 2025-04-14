@@ -1,31 +1,23 @@
-$module [init_all_queues] $in (ctrl_reg : $uint<32>) $out () $is
+//
+// Initializes all queues from setGlobalSignals on startup.
+// Write status registers of RxQ (all 4 servers), TxQ (all 4 servers) and freeQ to zero.
+//
+$module [init_all_queues] $in () $out () $is
 {
-
 	// TODO: coherent start sequence....
 	// setup the initial status..
-	
-	$call accessRegister (WRITEMEM _hF P_FREE_QUEUE_STATUS_INDEX _h00000000) (f_ign_rsp)
 	
 	$branchblock[loop] 
 	{
 		$dopipeline $depth 7 $fullrate
 		$merge $entry $loopback
-			$phi K := _h3 $on $entry nK $on $loopback
-			$phi RxQ_status_index := ($bitcast ($uint<8>) P_RX_QUEUE_0_STATUS_INDEX) $on $entry nRxQ_status_index $on $loopback
-			$phi TxQ_status_index := ($bitcast ($uint<8>) P_TX_QUEUE_0_STATUS_INDEX) $on $entry nTxQ_status_index $on $loopback
+			$phi status_index := ($bitcast ($uint<8>) P_RX_QUEUE_0_STATUS_INDEX) $on $entry nstatus_index $on $loopback
 		$endmerge
 			
-		$volatile nK := (K + 1)
-		$volatile nRxQ_status_index := (RxQ_status_index + 2)
-		$volatile nTxQ_status_index := (TxQ_status_index + 2)
-		$volatile continue_flag := (K < 6)
+		$volatile nstatus_index := (status_index + 2)
+		$volatile continue_flag := (status_index < P_FREE_QUEUE_STATUS_INDEX)
 			
-		$volatile enable_server_id  := (ctrl_reg [] K)
-			
-		$guard (enable_server_id)
-			$call accessRegister (WRITEMEM _hF RxQ_status_index _h00000000) (rx_ign_rsp)
-		$guard (enable_server_id)
-			$call accessRegister (WRITEMEM _hF TxQ_status_index _h00000000) (tx_ign_rsp)
+		$call accessRegister (WRITEMEM _hF status_index _h00000000) (ign_rsp)
 			
 		$while continue_flag
 	}
@@ -37,76 +29,101 @@ $module [init_all_queues] $in (ctrl_reg : $uint<32>) $out () $is
 $storage nic_registers: $array [255] $of $uint<32>
 
 
-// read modify write.
+//
+// Processor controls NIC through registers by either read or write operations.
+// Access to queue by processor is also through registers. 
+// 3 types of queue with their available operations:
+//
+// RxQ : operations can be either push or pop for all 4 servers followed by updation of respective server's RxQ status register.
+//	 Processor generally pops from RxQ
+//
+// TxQ : operations can be either push or pop for all 4 servers followed by updation of respective server's TxQ status register.
+//	 Processor generally pushes to TxQ
+//
+// FreeQ : operations can be either fq_lock, fq_unlock, push or pop.
+//	   But freeQ status register updates only after push and pop operations.
+//	   Processor pushes buffer pointers to freeQ on initialization before enabling NIC
+//	   and pops from freeQ while exiting after disabling NIC.
+//
+// 	   There's only one freeQ accessed by both processor and NIC,
+//	   so it needs to first get a lock before push/pop and also unlock it after.
+//	   This locking/unlocking needs to be done explicitly by both processor and NIC.
+//
+// 	   But, queue_status_register update is being done implicitly by both processor and NIC
+//	   after every push/pop operations.
+//
+// The 4 queue operations (opcode):
+//	PUSH 	  : if its a write access to any of the queues (generally TxQ, and freeQ in beginning)
+//	POP  	  : if its a read  access to any of the queues (generally RxQ, and freeQ in the end)
+//	FQ_LOCK   : if its a read  access to free_queue_lock
+//	FQ_UNLOCK : if its a write access to free_queue_lock
+//
+// The 2 register operations:
+//	READ 	  : if its a read  access to any of the registers including queue_status_registers (excluding queue and lock registers)
+//	WRITE 	  : if its a write access to any of the registers including queue_status_registers (excluding queue and lock registers)
+//		    OR updation of queue_status_registers following push or pop operations only
+//
 $module [accessRegister] 
 	$in (rwbar: $uint<1> bmask: $uint<4> index: $uint<8> wdata: $uint<32>)
 	$out (rdata : $uint<32>) 
 $is
-{
-	$volatile is_for_queue   := ((index >= 8)   &  (index < 27))	 // includes lock access.
-
-	$volatile is_for_rx_queue   := ((index >= 8)   &  (index < 16))
-	$volatile is_for_tx_queue   := ((index >= 16)  &  (index < 24))
-	$volatile is_for_free_queue := ((index >= 24)  &  (index < 27))  // includes lock access.
-
-	$volatile reg_access := ($reduce &
-					(~is_for_rx_queue)
-					(~is_for_tx_queue)
-					(~is_for_free_queue))
-	
-	$volatile access_Q :=	 ((index == P_FREE_QUEUE_INDEX)
-				| (index == P_RX_QUEUE_0_INDEX) | (index == P_RX_QUEUE_1_INDEX) 
-				| (index == P_RX_QUEUE_2_INDEX) | (index == P_RX_QUEUE_3_INDEX)
-				| (index == P_TX_QUEUE_0_INDEX) | (index == P_TX_QUEUE_1_INDEX) 
-				| (index == P_TX_QUEUE_2_INDEX) | (index == P_TX_QUEUE_3_INDEX))
-	
-	$volatile access_Q_status := 	 ((index == P_FREE_QUEUE_STATUS_INDEX)
-					| (index == P_RX_QUEUE_0_STATUS_INDEX) | (index == P_RX_QUEUE_1_STATUS_INDEX) 
-					| (index == P_RX_QUEUE_2_STATUS_INDEX) | (index == P_RX_QUEUE_3_STATUS_INDEX)
-					| (index == P_TX_QUEUE_0_STATUS_INDEX) | (index == P_TX_QUEUE_1_STATUS_INDEX) 
-					| (index == P_TX_QUEUE_2_STATUS_INDEX) | (index == P_TX_QUEUE_3_STATUS_INDEX))
-	
+{	
+	// To access RxQ
+	$volatile access_RxQ  	:= ($reduce | (index == P_RX_QUEUE_0_INDEX) (index == P_RX_QUEUE_1_INDEX) 
+					      (index == P_RX_QUEUE_2_INDEX) (index == P_RX_QUEUE_3_INDEX))
+	// To access TxQ
+	$volatile access_TxQ  	:= ($reduce | (index == P_TX_QUEUE_0_INDEX) (index == P_TX_QUEUE_1_INDEX) 
+				  	      (index == P_TX_QUEUE_2_INDEX) (index == P_TX_QUEUE_3_INDEX))
+	// To access freeQ
+	$volatile access_freeQ	:=  (index == P_FREE_QUEUE_INDEX)
 	$volatile access_fq_lock := (index == P_FREE_QUEUE_LOCK_INDEX)
+	$volatile access_free_queue := (access_freeQ | access_fq_lock)
 
-	$guard (is_for_queue)
-		$volatile server_id := 
-			($excmux 
-				((index == P_RX_QUEUE_0_INDEX)|(index == P_TX_QUEUE_0_INDEX)|(index == P_FREE_QUEUE_INDEX))	SERVER_0
-				((index == P_RX_QUEUE_1_INDEX)|(index == P_TX_QUEUE_1_INDEX))					SERVER_1
-				((index == P_RX_QUEUE_2_INDEX)|(index == P_TX_QUEUE_2_INDEX))   				SERVER_2
-				((index == P_RX_QUEUE_3_INDEX)|(index == P_TX_QUEUE_3_INDEX))  					SERVER_3)
+	$volatile access_Q	:=  ($reduce & access_RxQ access_TxQ access_freeQ)
+	// To access registers
+	$volatile reg_access 	:=  (~access_Q)
+	
+	// To access respective servers
+	$volatile server_id := 
+		($excmux 
+			($reduce | (index == P_RX_QUEUE_0_INDEX) (index == P_TX_QUEUE_0_INDEX) (index == P_FREE_QUEUE_INDEX))	SERVER_0
+			((index == P_RX_QUEUE_1_INDEX)|(index == P_TX_QUEUE_1_INDEX))						SERVER_1
+			((index == P_RX_QUEUE_2_INDEX)|(index == P_TX_QUEUE_2_INDEX))   					SERVER_2
+			((index == P_RX_QUEUE_3_INDEX)|(index == P_TX_QUEUE_3_INDEX))  						SERVER_3)
 
-	$guard (is_for_queue)
-		$volatile opcode := 
+	$volatile opcode := 
 			($excmux 
-				(access_fq_lock & (rwbar))	FQ_LOCK
+				(access_fq_lock & rwbar)	FQ_LOCK
 				(access_fq_lock & (~rwbar))	FQ_UNLOCK
 				(access_Q & (~rwbar))  		PUSH
-				(access_Q & (rwbar))  		POP
-				access_Q_status  		STATUS)
+				(access_Q & rwbar)  		POP)
 
+	$guard (access_RxQ)
+		$call exec_receive_queue_command (server_id opcode wdata) (rx_nentries rx_push_status rx_pop_status rxq_rdata)
+		
+	$guard (access_TxQ)
+		$call exec_transmit_queue_command (server_id opcode wdata) (tx_nentries tx_push_status tx_pop_status txq_rdata)
+		
+	$guard (access_free_queue)
+		$call exec_free_queue_command (server_id opcode wdata) (f_nentries f_push_status f_pop_status fq_rdata)
+
+	// update status register in case of push and pop operations
+	$volatile update_status_reg := ((opcode == PUSH) | (opcode == POP))
+	// status register index calculation
+	$volatile status_index := (index + 1)
+	$volatile status := ($excmux
+				access_RxQ	($concat rx_nentries rx_push_status rx_pop_status)
+				access_TxQ	($concat tx_nentries tx_push_status tx_pop_status)
+				access_freeQ	($concat f_nentries  f_push_status  f_pop_status))
+
+	// read access from register
 	$guard (reg_access) rdata_regs := nic_registers[index]
 
-	$guard (is_for_rx_queue)
-		$call exec_receive_queue_command (server_id opcode wdata) (nentries push_status pop_status rdata_q)
-		
-	$guard (is_for_tx_queue)
-		$call exec_transmit_queue_command (server_id opcode wdata) (nentries push_status pop_status rdata_q)
-		
-	$guard (is_for_free_queue)
-		$call exec_free_queue_command (server_id opcode wdata) (nentries push_status pop_status rdata_q)
-
-	$guard (is_for_queue)
-		$volatile status := ($concat nentries push_status pop_status)
-		
-	$volatile status_index := (index + 1)
-	$guard ((opcode == PUSH) | (opcode == POP))
-		nic_registers[status_index] := status
-
 	$volatile rdata := ($excmux
-				is_for_queue 	rdata_q
-				reg_access 	rdata_regs)
-
+				access_RxQ 		rxq_rdata
+				access_TxQ 		txq_rdata
+				access_free_queue 	fq_rdata
+				reg_access 		rdata_regs)
 
 	$volatile $split (bmask 1 1 1 1) (b0 b1 b2 b3)
 	$volatile $split (rdata  8 8 8 8) (r0 r1 r2 r3)
@@ -117,20 +134,30 @@ $is
 				($mux b1 w1 r1)
 				($mux b2 w2 r2)
 				($mux b3 w3 r3))
+				
+	$volatile w_index := ($excmux
+				((~rwbar) & reg_access)	index
+				update_status_reg	status_index)
+				
+	$volatile wdata_reg := ($excmux
+				((~rwbar) & reg_access)	wval
+				update_status_reg	status)
 
-	$volatile write_to_regs := ((~rwbar) & reg_access)
+	// write access to register or status register update after a push or a pop operation
+	$volatile write_to_regs := (((~rwbar) & reg_access) | update_status_reg)
 	$guard (write_to_regs)
-		nic_registers[index] := wval
-
+		nic_registers[w_index] := wdata_reg
 }
 
 
 $module [setGlobalSignals]
 	$in () $out () $is
 {
-
 	$call accessRegister (READMEM _hF P_N_SERVERS_REGISTER_INDEX 0) (n_servers)
 	S_NUMBER_OF_SERVERS  := n_servers
+
+	$call accessRegister (READMEM _hF P_N_BUFFERS_REGISTER_INDEX 0) (n_buffers)
+	S_MAX_NENTRIES  := n_buffers
 
 	$barrier
 	
@@ -144,7 +171,8 @@ $module [setGlobalSignals]
 
 	$barrier
 
-	$call init_all_queues (ctrl_reg) ()
+	// initialize all queues status registers 
+	$call init_all_queues () ()
 
 	NIC_INTR := (NIC_INTR_ENABLE & NIC_INTR_INTERNAL)
 
@@ -227,6 +255,6 @@ $module [controlDaemon] $in () $out () $is
 			$while 1
 	    }
 	}
-	ignq := QUEUE_MONITOR_SIGNAL $keep
+	//ignq := QUEUE_MONITOR_SIGNAL $keep
 }
 

@@ -2,6 +2,7 @@ $parameter    P_NIC_CONTROL_REGISTER_INDEX      0
 $parameter    P_N_SERVERS_REGISTER_INDEX        1 
 $parameter    P_DEBUG_REGISTER_0                2 
 $parameter    P_DEBUG_REGISTER_1                3  
+$parameter    P_N_BUFFERS_REGISTER_INDEX        4  
 $parameter    P_MAC_REGISTER_H_INDEX            208
 $parameter    P_MAC_REGISTER_L_INDEX            209
 $parameter    P_TX_PKT_COUNT_REGISTER_INDEX     210

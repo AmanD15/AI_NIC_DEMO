@@ -1,6 +1,6 @@
 //
-// There are five possible operations
-//	lock, unlock, push, pop, status
+// There are four possible operations
+//	lock, unlock, push, pop
 //
 //  lock
 //    if lock is available,     return_value = 0, push_status = 0, pop_status = 0, nentries = number_of_entries.
@@ -13,8 +13,6 @@
 //  pop 
 //    if successful,     return_value = popped_value, push_status = 0, pop_status = 0, nentries = number_of_entries.
 //    if not successful, return_value = 0,            push_status = 0, pop_status = 1, nentries = number_of_entries.
-//  status 
-//    return_value = number_of_entries, push_status = 0, pop_status = 0, nentries = number_of_entries.
 //
 $module [exec_free_queue_command]
 	$in (server_id opcode: $uint<4> wdata: $uint<32>) 
@@ -48,7 +46,6 @@ $module [free_queue_daemon] $in () $out () $is
 		$volatile unlock := (opcode == FQ_UNLOCK)
 		$volatile push   := (opcode == PUSH)
 		$volatile pop    := (opcode == POP)
-		$volatile status := (opcode == STATUS)
 	
 		$volatile lock_ok := (lock & LOCK_IS_FULL)
 		$guard (lock_ok) lock_value := FREE_QUEUE_LOCK
@@ -56,7 +53,7 @@ $module [free_queue_daemon] $in () $out () $is
 		$volatile unlock_ok := (unlock & (~LOCK_IS_FULL))
 		$guard (unlock_ok) FREE_QUEUE_LOCK := 1
 
-		$volatile push_is_ok := (push & (NENTRIES < MAX_NENTRIES))
+		$volatile push_is_ok := (push & (NENTRIES < ($bitcast ($uint<16>) S_MAX_NENTRIES)))
 		$guard (push_is_ok) FREE_QUEUE := wdata
 
 		$volatile pop_is_ok := (pop & (NENTRIES > 0))
@@ -81,24 +78,21 @@ $module [free_queue_daemon] $in () $out () $is
 				lock      $zero<8>
 				unlock    $zero<8> 
 				push      ($mux push_is_ok $zero<8> $one<8>)
-				pop       $zero<8>
-				status    $zero<8>)
+				pop       $zero<8>)
 		
 		$volatile pop_status  := 
 			($excmux 
 				lock      $zero<8>
 				unlock    $zero<8> 
 				push      $zero<8>
-				pop       ($mux pop_is_ok  $zero<8>  $one<8>)
-				status    $zero<8>)
+				pop       ($mux pop_is_ok  $zero<8>  $one<8>))
 
 		$volatile result_data :=
 				($excmux 
 					lock 	($mux lock_ok $zero<32> $one<32>)
 					unlock 	$zero<32>
 					push 	$zero<32>
-					pop	($mux pop_is_ok rdata $zero<32>)
-					status  ($bitcast ($uint<32>) NENTRIES))
+					pop	($mux pop_is_ok rdata $zero<32>))
 					
 		FREE_QUEUE_RESPONSE := ($concat n_NENTRIES push_status pop_status result_data)
 

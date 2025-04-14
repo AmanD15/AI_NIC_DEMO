@@ -5,15 +5,30 @@ $constant BAD_PACKET_DATA 	: $uint<64> := _hffffffffffffffff 	// Data Identifier
 $constant QUEUE_SIZE_MASK 	: $uint<32> := 4
 
 // memory access constants.
-$constant READMEM  : $uint<1> := 1
-$constant WRITEMEM : $uint<1> := 0
-$constant LOCKMEM  : $uint<1> := 1
-$constant UNLOCKMEM: $uint<1> := 0
+$constant READMEM   : $uint<1> := 1
+$constant WRITEMEM  : $uint<1> := 0
+$constant LOCKMEM   : $uint<1> := 1
+$constant UNLOCKMEM : $uint<1> := 0
 
 // queue type
-$constant FREEQUEUE : $uint<2>  := 0
-$constant TXQUEUE   : $uint<2>  := 1
-$constant RXQUEUE   : $uint<2>  := 2
+$constant FREEQUEUE : $uint<2> := 0
+$constant TXQUEUE   : $uint<2> := 1
+$constant RXQUEUE   : $uint<2> := 2
+
+// queue commands
+$constant FQ_LOCK   : $uint<4> := 1
+$constant FQ_UNLOCK : $uint<4> := 2
+$constant PUSH      : $uint<4> := 3
+$constant POP       : $uint<4> := 4
+
+// server id
+$constant SERVER_0 : $uint<4> := 0
+$constant SERVER_1 : $uint<4> := 1
+$constant SERVER_2 : $uint<4> := 2
+$constant SERVER_3 : $uint<4> := 3
+
+// max no. of entries per queue per server
+$constant MAX_NENTRIES : $uint<16> := 16
 
 // memory access instructions.
 $constant ST:     $uint<3> := 1
@@ -23,19 +38,6 @@ $constant LD:     $uint<3> := 4
 $constant LDD:    $uint<3> := 5
 $constant LDB:    $uint<3> := 6
 $constant LDSTUB: $uint<3> := 7
-
-// queue commands
-$constant FQ_LOCK   : $uint<4> := 1
-$constant FQ_UNLOCK : $uint<4> := 2
-$constant PUSH      : $uint<4> := 3
-$constant POP       : $uint<4> := 4
-$constant STATUS    : $uint<4> := 5
-
-// server id
-$constant SERVER_0 : $uint<4> := 0
-$constant SERVER_1 : $uint<4> := 1
-$constant SERVER_2 : $uint<4> := 2
-$constant SERVER_3 : $uint<4> := 3
 
 // monitor 
 $constant POPQ  : $uint<4> := 1

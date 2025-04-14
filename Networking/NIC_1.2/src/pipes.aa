@@ -55,7 +55,7 @@ $pipe TX_ACTIVITY_LOGGER: $uint<8> $depth 1
 
 
 $pipe FREE_QUEUE: $uint<32> $depth 64
-$noblock $pipe NOBLOCK_FREE_QUEUE_LOCK: $uint<1> $depth 1
+$noblock $pipe FREE_QUEUE_LOCK: $uint<1> $depth 1
 
 // Rx and Tx queues (one per server 0/1/2/3)
 $pipe Rx_QUEUE_0 Rx_QUEUE_1 Rx_QUEUE_2 Rx_QUEUE_3: $uint<32> $depth 64

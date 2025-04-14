@@ -49,26 +49,33 @@
 	control.aa  
 		control machine.
 	decls.aa 
-		most declarations
+		most declarations.
+	free_queue.aa
+		manages free queue operations (push, pop, acquirelock & releaselock).
 	general_utils.aa 
 		utils.
 	memory_utils.aa  
 		memory access with NIC as master.
+	parameters.aa
+		register indexes and engine tags.
 	pipes.aa  
 		pipe declarations.
 	queue_utils.aa  
-		queue modules (push, pop, acquirelock & releaselock)
+		queue's push and pop modules.
 	receive_engine.aa  
-		store Ethernet RX packet in memory
+		store Ethernet RX packet in memory.
+	receive_queue.aa
+		manages Rx queue operations (push and pop) for 4 servers.
 	register_utils.aa  
-		NIC register access
+		NIC register access.
 	rx_from_mac.aa  
-		packet parser to separate the header 
-		from packet data.
+		packet parser to separate the header from packet data.
 	signals.aa  
 		ahir signal declarations.
 	transmit_engine.aa  
-		sending packet out to Ethernet TX
+		sending packet out to Ethernet TX.
+	transmit_queue.aa
+		manages Tx queue operations (push and pop) for 4 servers.
 
 
 
@@ -89,7 +96,7 @@
 		- control the NIC
 		- configure the NIC
 			- number of servers
-			- physical addresses related to the
+			- initial status of the
 				rx,tx and free queues.
 		- monitor the NIC
 			- status information 
@@ -109,8 +116,10 @@ Register     address         		Description
 1		0x04		        number of servers   (should be = number of enabled servers)
 2		0x08			debug-register 0
 3		0x0c			debug-register 1
+4		0x10			number of buffers   (should be max. no. of buffers in each queue
+								 of each server -  provided by processor)
 
-4 to 7 are unused.
+5 to 7 are unused.
 --------------------------------------------------------------
       Queue mappings... 
 --------------------------------------------------------------

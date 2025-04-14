@@ -11,6 +11,7 @@ $pipe NIC_INTR : $uint<1> $signal
 
 $pipe S_CONTROL_REGISTER    : $uint<32> $signal
 $pipe S_NUMBER_OF_SERVERS   : $uint<32> $signal
+$pipe S_MAX_NENTRIES	    : $uint<32> $signal
 $pipe S_FREE_RUNNING_COUNTER: $uint<32> $signal
 
 

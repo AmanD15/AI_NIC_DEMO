@@ -13,15 +13,17 @@
 //	and pushes it to memory
 //
 //	step 0 : Wait until enabled
-//	step 1 : Get free buffer pointer from freeQ register and pop it from freeQ
-//	step 2 : Receive (write) packet data into the acquired free buffer
-//	step 3 : Write the buffer pointer into the RxQ pointed by RxQ register 
-//	Perform sequentilly for all servers so that a particular server is not overburdened
+//	step 1 : Acquire freeQ lock, pop the free buffer pointer from the freeQ and then release freeQ lock
+//	step 2 : Read control word and receive the packet into the acquired free buffer
+//	step 3 : If packet is ok, push the buffer pointer into the RxQ and increment the no. of packets received
+//		 else acquire freeQ lock, push the free buffer pointer back to the freeQ and then release freeQ lock
+//	If packet is ok, move on to the next servers (if enabled), so that a particular Rx server is not overloaded by incoming packets
+//	and run steps 1 to 3 in a loop till enabled
 
 $module [ReceiveEngineDaemon] $in () $out() $is
 {
 	// The last index in the receive queue which was written into
-	LAST_WRITTEN_RX_QUEUE_INDEX := 0
+	//LAST_WRITTEN_RX_QUEUE_INDEX := $zero<4>
 
 	$branchblock[main]
 	{
@@ -38,8 +40,7 @@ $module [ReceiveEngineDaemon] $in () $out() $is
 		//  Receive loop
 		$dopipeline $depth 31 $fullrate 
 			$merge $entry $loopback 
-				$phi RxQ_server_id := (LAST_WRITTEN_RX_QUEUE_INDEX & ($bitcast ($uint<4>) (S_NUMBER_OF_SERVERS - 1)))
-							$on $entry n_RxQ_server_id $on $loopback
+				$phi RxQ_server_id := $zero<4> $on $entry n_RxQ_server_id $on $loopback
 				$phi init_flag := $one<1> $on $entry $zero<1> $on $loopback
 			$endmerge
 
@@ -51,9 +52,10 @@ $module [ReceiveEngineDaemon] $in () $out() $is
 			$volatile lock_status := ($bitreduce | freeQ_lock)
 			
 			$guard (~lock_status)
-				$call popFromQueue (FREEQUEUE SERVER_0) (rx_buffer_pointer freeQ_status)
+				$call popFromQueue (FREEQUEUE SERVER_0) (rx_buffer_pointer_32 freeQ_status)
 			$barrier
 			
+			$volatile rx_buffer_pointer := ($bitcast ($uint<64>) rx_buffer_pointer_32)
 			// pop_status == 1 is success, i.e., popped packet pointer from freeQ
 			$volatile pop_status := (~($bitreduce | ($slice freeQ_status 7 0)))
 
@@ -88,7 +90,7 @@ $module [ReceiveEngineDaemon] $in () $out() $is
 
 	
 			$guard (ok_flag) 
-				$call pushIntoQueue (RXQUEUE RxQ_server_id rx_buffer_pointer) (RxQ_status)
+				$call pushIntoQueue (RXQUEUE RxQ_server_id rx_buffer_pointer_32) (RxQ_status)
 			$barrier
 			
 			// push_status == 1 is success, i.e., pushed packet pointer to RxQ
@@ -100,7 +102,7 @@ $module [ReceiveEngineDaemon] $in () $out() $is
 			// if packet is ok, move to next server's Rx queue
 			$guard(ok_flag)
 				n_RxQ_server_id := ((RxQ_server_id + 1) & ($bitcast ($uint<4>) (S_NUMBER_OF_SERVERS - 1)))
-			LAST_WRITTEN_RX_QUEUE_INDEX :=  RxQ_server_id
+			//LAST_WRITTEN_RX_QUEUE_INDEX := RxQ_server_id
 
 
 			// If packet is defective, free the buffer and push pointer back to freeQ
@@ -111,7 +113,7 @@ $module [ReceiveEngineDaemon] $in () $out() $is
 			$volatile re_lock_status := ($bitreduce | re_freeQ_lock)
 			
 			$guard (~re_lock_status)
-				$call pushIntoQueue (FREEQUEUE SERVER_0 rx_buffer_pointer) (re_freeQ_status)
+				$call pushIntoQueue (FREEQUEUE SERVER_0 rx_buffer_pointer_32) (re_freeQ_status)
 			$barrier
 			
 			// re_push_status == 1 is success, i.e., pushed packet pointer back to freeQ

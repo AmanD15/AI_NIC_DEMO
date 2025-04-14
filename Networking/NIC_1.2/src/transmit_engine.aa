@@ -4,15 +4,17 @@
 //	and pushes it to MAC
 //
 //	step 0 : Wait until enabled
-//	step 1 : Get Tx buffer pointer from TxQ register and pop it from TxQ
-//	step 2 : Transmit (read) packet data from the acquired Tx buffer
-//	step 3 : Write the buffer pointer into the freeQ pointed by freeQ register 
-//	Perform sequentilly for all servers so that a particular server is not overburdened
+//	step 1 : Pop the buffer pointer from the TxQ
+//	step 2 : Transmit the packet from the acquired buffer
+//	step 3 : Acquire freeQ lock, push the free buffer pointer into the freeQ, release freeQ lock 
+//		 and then increment the no. of packets transmitted
+//	Move on to the next servers (if enabled), so that other Tx servers are not overloaded by outgoing packets
+//	and run steps 1 to 3 in a loop till enabled
 
 $module [TransmitEngineDaemon] $in () $out () $is
 {
 	// The last index in the transmit queue which was read from
-	LAST_READ_TX_QUEUE_INDEX := 0
+	//LAST_READ_TX_QUEUE_INDEX := 0
 	
 	$branchblock[main]
 	{
@@ -28,14 +30,14 @@ $module [TransmitEngineDaemon] $in () $out () $is
 	
 		$dopipeline $depth 31 $fullrate	
 			$merge $entry $loopback 
-				$phi TxQ_server_id := (LAST_READ_TX_QUEUE_INDEX & ($bitcast ($uint<4>) (S_NUMBER_OF_SERVERS - 1)))
-							$on $entry n_TxQ_server_id $on $loopback
+				$phi TxQ_server_id := $zero<4> $on $entry n_TxQ_server_id $on $loopback
 			$endmerge
 
 			// pop packet pointer from server TxQ_server_id
-			$call popFromQueue (TXQUEUE TxQ_server_id) (tx_buffer_pointer TxQ_status)
+			$call popFromQueue (TXQUEUE TxQ_server_id) (tx_buffer_pointer_32 TxQ_status)
 			$barrier
 			
+			$volatile tx_buffer_pointer := ($bitcast ($uint<64>) tx_buffer_pointer_32)
 			// pop_status == 1 is success, i.e., popped packet pointer from TxQ
 			$volatile pop_status := (~($bitreduce | ($slice TxQ_status 7 0)))
 				
@@ -55,7 +57,7 @@ $module [TransmitEngineDaemon] $in () $out () $is
 			$volatile lock_status := ($bitreduce | freeQ_lock)
 			
 			$guard (~lock_status)
-				$call pushIntoQueue (FREEQUEUE SERVER_0 tx_buffer_pointer) (freeQ_status)
+				$call pushIntoQueue (FREEQUEUE SERVER_0 tx_buffer_pointer_32) (freeQ_status)
 			$barrier
 			
 			// push_status == 1 is success, i.e., pushed packet pointer to freeQ
@@ -72,7 +74,7 @@ $module [TransmitEngineDaemon] $in () $out () $is
 
 			// move to next server's Tx queue
 			n_TxQ_server_id := ((TxQ_server_id + 1) & ($bitcast ($uint<4>) (S_NUMBER_OF_SERVERS - 1)))
-			LAST_READ_TX_QUEUE_INDEX := TxQ_server_id
+			//LAST_READ_TX_QUEUE_INDEX := TxQ_server_id
 
 			$barrier
 	
