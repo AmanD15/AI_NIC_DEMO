@@ -11,14 +11,28 @@ $system nic $library work
           $pipe  NIC_TO_MEMORY_REQUEST 110 $depth 2
           $pipe  nic_to_mac_transmit_pipe 73 $depth 2
 { 
-          $signal  LAST_READ_TX_QUEUE_INDEX 8 $depth 1
-          $signal  LAST_WRITTEN_RX_QUEUE_INDEX 8 $depth 1
+          $pipe  FREE_QUEUE 32 $depth 64
+    $noblock      $pipe  FREE_QUEUE_COMMAND 40 $depth 2
+    $noblock      $pipe  FREE_QUEUE_LOCK 1 $depth 1
+          $pipe  FREE_QUEUE_RESPONSE 64 $depth 2
           $signal  NIC_INTR_ENABLE 1 $depth 1
           $signal  NIC_INTR_INTERNAL 1 $depth 1
-          $signal  QUEUE_MONITOR_SIGNAL 32 $depth 1
+    $noblock      $pipe  RECEIVE_QUEUE_COMMAND 40 $depth 2
+          $pipe  RECEIVE_QUEUE_RESPONSE 64 $depth 2
+          $pipe  Rx_QUEUE_0 32 $depth 64
+          $pipe  Rx_QUEUE_1 32 $depth 64
+          $pipe  Rx_QUEUE_2 32 $depth 64
+          $pipe  Rx_QUEUE_3 32 $depth 64
           $signal  S_CONTROL_REGISTER 32 $depth 1
           $signal  S_FREE_RUNNING_COUNTER 32 $depth 1
+          $signal  S_MAX_NENTRIES 32 $depth 1
           $signal  S_NUMBER_OF_SERVERS 32 $depth 1
+    $noblock      $pipe  TRANSMIT_QUEUE_COMMAND 40 $depth 2
+          $pipe  TRANSMIT_QUEUE_RESPONSE 64 $depth 2
+          $pipe  Tx_QUEUE_0 32 $depth 64
+          $pipe  Tx_QUEUE_1 32 $depth 64
+          $pipe  Tx_QUEUE_2 32 $depth 64
+          $pipe  Tx_QUEUE_3 32 $depth 64
           $pipe  memory_access_lock 1 $depth 1
           $pipe  nic_rx_to_header 73 $depth 2
           $pipe  nic_rx_to_packet 73 $depth 2
