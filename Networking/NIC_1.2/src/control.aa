@@ -98,9 +98,11 @@ $is
 				(access_Q & (~rwbar))  		PUSH
 				(access_Q & rwbar)  		POP)
 
+	// processor generally pops from RxQ
 	$guard (access_RxQ)
 		$call exec_receive_queue_command (server_id opcode wdata) (rx_nentries rx_push_status rx_pop_status rxq_rdata)
 		
+	// processor generally pushes to TxQ
 	$guard (access_TxQ)
 		$call exec_transmit_queue_command (server_id opcode wdata) (tx_nentries tx_push_status tx_pop_status txq_rdata)
 		

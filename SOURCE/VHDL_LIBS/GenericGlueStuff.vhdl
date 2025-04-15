@@ -2,6 +2,22 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 package GenericGlueStuffComponents is
+
+    component generic_acb_sram is -- 
+      generic (acb_sram_address_width: integer := 20);
+      port( -- 
+        MAIN_MEM_REQUEST_PIPE_WRITE_DATA : in std_logic_vector(109 downto 0);
+        MAIN_MEM_REQUEST_PIPE_WRITE_REQ : in std_logic_vector(0 downto 0);
+        MAIN_MEM_REQUEST_PIPE_WRITE_ACK : out std_logic_vector(0 downto 0);
+        MAIN_MEM_RESPONSE_PIPE_READ_DATA : out std_logic_vector(64 downto 0);
+        MAIN_MEM_RESPONSE_PIPE_READ_REQ : in std_logic_vector(0 downto 0);
+        MAIN_MEM_RESPONSE_PIPE_READ_ACK : out std_logic_vector(0 downto 0);
+        clk, reset: in std_logic 
+        -- 
+      );
+      --
+    end component;
+
     component generic_transaction_mux is
 	generic (request_data_width: integer := 32;
 			response_data_width: integer := 32;

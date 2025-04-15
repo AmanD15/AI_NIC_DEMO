@@ -86,9 +86,9 @@ Software:
     Debug: No # Yes/No (Default: No)
     FirstDebugPort: 8888
     BuildArgs: "-D USE_VMAP -D USE_CORTOS  
-    -c $AI_NIC_HOME/SBC/kc705/testing/testingNIC_1.1/main.c
-    -I $AI_NIC_HOME/Networking/NIC_1.1/driver/include
-    -C $AI_NIC_HOME/Networking/NIC_1.1/driver/src"
+    -c $AJIT_HOME/AI_NIC_DEMO/SBC/kc705/testing/testingNIC_1.1/main.c
+    -I $AJIT_HOME/AI_NIC_DEMO/Networking/NIC_1.1/driver/include
+    -C $AJIT_HOME/AI_NIC_DEMO/Networking/NIC_1.1/driver/src"
 
 
   # Required: Which functions execute on each ajit thread.

@@ -9,7 +9,7 @@ all: acb_afb_complex.hsys  $(PIPES)
 
 
 clean:
-	rm -rf lib/*.a objsw/*.o vhdl/*  aa2c/*.* *.c *.h *.txt *.log
+	rm -rf lib/*.a objsw/*.o vhdl/  aa2c/*.* *.c *.h *.txt *.log
 
 
 PHONY: all clean tests

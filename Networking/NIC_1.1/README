@@ -1,14 +1,7 @@
-Author:Siddhant Singh Tomar
-Date  :12/5/24
-
 
 	Organization of the NIC_1.1 related work
 	--------------------------------------
 
-what's new?
-	
-	Contains the NIC, with a new free queue for transmit engine
-	its called "FREEQUEUE_TX", in the implementation.
 
 1.  How to test
 
@@ -22,11 +15,11 @@ what's new?
 
 2. Correctness
 
-	To make sure FREEQUEUE_TX is working right, we send 4 packets. 
+	To make sure FREEQUEUE is working right, we send 4 packets. 
 	Each queue can hold 4 messages, so we put 4 buffers into FREEQUEUE. 
 	The receive engine uses these buffers, then passes them to TXQUEUE. 
-	The transmit engine moves the buffers to FREEQUEUE_TX. 
-	Finally, we check if the buffers in FREEQUEUE_TX arrived in the 
+	The transmit engine moves the buffers back to FREEQUEUE. 
+	Finally, we check if the buffers in FREEQUEUE arrived in the 
 	same order they were sent.
 		
 
@@ -35,6 +28,5 @@ what's new?
 	Go to build_nic_only/ and type "make".
 	Environment variable AHIR_RELEASE must be defined.
 	
-	
-	
-TODO : REFINE TESTBENCH!!
+
+

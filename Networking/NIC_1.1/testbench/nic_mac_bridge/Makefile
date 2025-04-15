@@ -53,6 +53,6 @@ vc2vhdl: .vC/nic_mac_bridge.vc
 
 
 clean:
-	rm -rf vhdl aa2c* .Aa .vC  *.vhdl *.dot *.hsys vhdlCStub*
+	rm -rf vhdl aa2c* .Aa .gsi.aa .vC  *.vhdl *.dot *.hsys vhdlCStub*
 
 PHONY: all clean	

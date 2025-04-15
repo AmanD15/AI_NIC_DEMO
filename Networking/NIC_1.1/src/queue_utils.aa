@@ -303,7 +303,7 @@ $is
 	$barrier
 
 	$guard (~lock_n) $call releaseLock (tag q_lock_address) ()
-	status := q_full
+	status := q_full // 0 = success, 1 = Fail
 }
 
 //

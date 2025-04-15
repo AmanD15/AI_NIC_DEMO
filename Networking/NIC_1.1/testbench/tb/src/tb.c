@@ -44,6 +44,9 @@ uint32_t free_queue_lock_address = 8092;
 uint32_t rx_queue_lock_address   = 8093;
 uint32_t tx_queue_lock_address   = 8094;
 
+void printNicRegisters(uint32_t nic_id);
+//void monitorNicRegisters(uint32_t nic_id, int monitor_duration_seconds); //Obsolete
+void *monitorNicRegisters_thread_func(void *arg);
 
 uint32_t accessNicReg (uint8_t rwbar, uint32_t nic_id, uint32_t reg_index, uint32_t reg_value)
 {
@@ -65,6 +68,7 @@ uint32_t accessNicReg (uint8_t rwbar, uint32_t nic_id, uint32_t reg_index, uint3
 void writeToNicReg (uint32_t nic_id, uint32_t reg_index, uint32_t reg_value)
 {
 	accessNicReg (0, nic_id, reg_index, reg_value);	
+	printNicRegisters(nic_id); // Print after every write
 }
 
 uint32_t readFromNicReg (uint32_t nic_id, uint32_t reg_index)
@@ -140,6 +144,8 @@ void setNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 	setPhysicalAddressInNicRegPair (nic_id, base_index, queue_addr); 
 	setPhysicalAddressInNicRegPair (nic_id, base_index+2, queue_lock_addr); 
 	setPhysicalAddressInNicRegPair (nic_id, base_index+4, queue_buffer_addr); 
+	
+	printNicRegisters(nic_id); // Print after setting queue addresses
 }
 
 void getNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
@@ -479,6 +485,154 @@ void setUpEmptyQueueInMemory (uint32_t queue_base_address,
 }
 
 
+// Function to print all relevant NIC registers
+void printNicRegisters(uint32_t nic_id) 
+{
+	fprintf(stderr, "--- NIC Registers (NIC ID: %u) ---\n", nic_id);
+
+    	// General Registers
+    	fprintf(stderr, "P_N_SERVERS_REGISTER_INDEX: 0x%08X\n", readFromNicReg(nic_id, P_N_SERVERS_REGISTER_INDEX));
+    	fprintf(stderr, "P_TX_PKT_COUNT_REGISTER_INDEX: 0x%08X\n", readFromNicReg(nic_id, P_TX_PKT_COUNT_REGISTER_INDEX));
+    	fprintf(stderr, "P_RX_PKT_COUNT_REGISTER_INDEX: 0x%08X\n", readFromNicReg(nic_id, P_RX_PKT_COUNT_REGISTER_INDEX));
+    	fprintf(stderr, "P_STATUS_REGISTER_INDEX: 0x%08X\n", readFromNicReg(nic_id, P_STATUS_REGISTER_INDEX));
+    	fprintf(stderr, "P_NIC_CONTROL_REGISTER_INDEX: 0x%08X\n", readFromNicReg(nic_id, P_NIC_CONTROL_REGISTER_INDEX));
+    	
+    	uint32_t counter_value = readFromNicReg(nic_id, 255); // Assuming 255 is the correct index
+    	double seconds = (double)counter_value / 125000000.0; // Divide by frequency (125 MHz)
+
+    	fprintf(stderr, "S_FREE_RUNNING_COUNTER: 0x%08X (%.9f seconds)\n", counter_value, seconds);
+    	fflush(stderr); // Important: Flush stderr to ensure output is displayed
+
+    	// Queue Registers (Iterate through server IDs if needed)
+    	int server_id;
+    	for (server_id = 0; server_id < getNumberOfServersInNic(nic_id); server_id++) 
+    	{
+        	uint64_t queue_addr, queue_lock_addr, queue_buffer_addr;
+
+        	getNicQueuePhysicalAddresses(nic_id, server_id, FREEQUEUE, &queue_addr, &queue_lock_addr, &queue_buffer_addr);
+        	fprintf(stderr, "--- Free Queue (Server %d) ---\n", server_id);
+        	fprintf(stderr, "  Address: 0x%016lX\n", queue_addr);
+        	fprintf(stderr, "  Lock Address: 0x%016lX\n", queue_lock_addr);
+        	fprintf(stderr, "  Buffer Address: 0x%016lX\n", queue_buffer_addr);
+
+        	getNicQueuePhysicalAddresses(nic_id, server_id, RXQUEUE, &queue_addr, &queue_lock_addr, &queue_buffer_addr);
+        	fprintf(stderr, "--- RX Queue (Server %d) ---\n", server_id);
+        	fprintf(stderr, "  Address: 0x%016lX\n", queue_addr);
+        	fprintf(stderr, "  Lock Address: 0x%016lX\n", queue_lock_addr);
+        	fprintf(stderr, "  Buffer Address: 0x%016lX\n", queue_buffer_addr);
+
+        	getNicQueuePhysicalAddresses(nic_id, server_id, TXQUEUE, &queue_addr, &queue_lock_addr, &queue_buffer_addr);
+        	fprintf(stderr, "--- TX Queue (Server %d) ---\n", server_id);
+        	fprintf(stderr, "  Address: 0x%016lX\n", queue_addr);
+        	fprintf(stderr, "  Lock Address: 0x%016lX\n", queue_lock_addr);
+        	fprintf(stderr, "  Buffer Address: 0x%016lX\n", queue_buffer_addr);
+    	}
+    	//fprintf(stderr, "-----------------------------\n");
+
+}
+
+
+
+/*
+//Obsolete
+void monitorNicRegisters(uint32_t nic_id, int monitor_duration_seconds) 
+{
+    	time_t start_time = time(NULL);
+    	while (time(NULL) - start_time < monitor_duration_seconds) 
+    	{
+        	printNicRegisters(nic_id);
+        	usleep(100000); // Print every 100ms (adjust as needed)
+    	}
+}
+DEFINE_THREAD(monitorNicRegisters);
+*/
+
+
+struct monitor_args {
+    int nic_id;
+    int monitor_duration_seconds;
+};
+
+void *monitorNicRegisters_thread_func(void *arg) 
+{
+    	struct monitor_args *args = (struct monitor_args *)arg;
+    	int nic_id = args->nic_id;
+    	int monitor_duration_seconds = args->monitor_duration_seconds;
+    	time_t start_time = time(NULL);
+    	while (time(NULL) - start_time < monitor_duration_seconds) 
+    	{
+        	printNicRegisters(nic_id);
+        	//usleep(100000); // 100ms
+    	}
+    	return NULL;
+}
+
+
+
+/*
+// To test and log only counter value to a file
+void monitorNicCounterToFile(uint32_t nic_id, uint32_t counter_register_index, const char *filename) {
+    FILE *outfile = fopen(filename, "w"); // Open file for writing ("w" creates/overwrites)
+    if (outfile == NULL) {
+        perror("Error opening output file");
+        return; // Or handle the error appropriately
+    }
+
+    uint32_t previous_counter_value = 0;
+    uint32_t current_counter_value;
+    double seconds;
+    time_t start_time = time(NULL);
+    while (time(NULL) - start_time < 10) {
+        current_counter_value = readFromNicReg(nic_id, counter_register_index);
+
+        if (current_counter_value != previous_counter_value) {
+            seconds = (double)current_counter_value / 125000000.0;
+            fprintf(outfile, "Counter (0x%X): 0x%08X (%.9f seconds)\n", counter_register_index, current_counter_value, seconds);
+            fflush(outfile); // Important: Flush the file buffer
+            previous_counter_value = current_counter_value;
+        }
+        usleep(1000);
+    }
+
+    fclose(outfile); // Close the file when done
+}
+
+struct monitor_args {
+    uint32_t nic_id;
+    uint32_t counter_register_index;
+    const char* filename;
+};
+// Example usage in a thread:
+void *monitorNicCounterToFile_thread_func(void *arg) {
+    struct monitor_args *args = (struct monitor_args *)arg;
+    uint32_t nic_id = args->nic_id;
+    uint32_t counter_register_index = args->counter_register_index;
+    const char* filename = args->filename;
+    monitorNicCounterToFile(nic_id, counter_register_index, filename);
+    return NULL;
+}
+
+// To log counter values in a file
+int main() {
+    pthread_t monitor_thread;
+    struct monitor_args args;
+    args.nic_id = 0;
+    args.counter_register_index = 255;
+    args.filename = "counter_log.txt"; // Specify the filename
+
+    if (pthread_create(&monitor_thread, NULL, monitorNicCounterToFile_thread_func, &args) != 0) {
+        perror("pthread_create failed");
+        return 1;
+    }
+
+    pthread_join(monitor_thread, NULL);
+    printf("Monitoring finished. Log written to counter_log.txt\n");
+    return 0;
+}
+*/
+
+
+
 int main(int argc, char* argv[])
 {
 	fprintf(stderr, "%s <n-packets> (default 4) \n", argv[0]);
@@ -496,40 +650,40 @@ int main(int argc, char* argv[])
 	PTHREAD_DECL(memoryDaemon);
 	PTHREAD_CREATE(memoryDaemon);
 
-	/*   For debug purposes...
+	//////   For debug purposes...
 		PTHREAD_DECL(RxLoggerDaemon);
 		PTHREAD_CREATE(RxLoggerDaemon);
 	
 
 		PTHREAD_DECL(TxLoggerDaemon);
 		PTHREAD_CREATE(TxLoggerDaemon);
-	*/
+	///////
 
 	//-------------------------------------------------------------------------------------//
-	//  First setup and check the free queue rx.
+	//  First setup and check the free queue.
 	//-------------------------------------------------------------------------------------//
 
 	//-------------------------------------------------------------------------------------//
-	// setup free queue rx in memory from the tb-side.
+	// setup free queue in memory from the tb-side.
 	//-------------------------------------------------------------------------------------//
 	setUpEmptyQueueInMemory (free_queue_base_address, free_queue_lock_address, 
 				free_queue_bget_address,       QUEUE_SIZE_IN_MSGS, QUEUE_MSG_SIZE_IN_BYTES);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf(stderr,"Info: setup empty free queue rx in memory.\n");
+	fprintf(stderr,"Info: setup empty free queue in memory.\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 
 	// initialize lock to '0' in free-queue.
 	releaseLock (free_queue_base_address);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf(stderr,"Info: cleared free queue rx locks.\n");
+	fprintf(stderr,"Info: cleared free queue locks.\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 
 	setNumberOfMessages (free_queue_base_address, 0);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf(stderr,"Info: set num-messages = 0 in  free queue rx.\n");
+	fprintf(stderr,"Info: set num-messages = 0 in  free queue.\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	
 	// confirm
@@ -540,7 +694,7 @@ int main(int argc, char* argv[])
 	getNicQueuePhysicalAddresses (0,0, FREEQUEUE,  &b, &l, &g);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf (stderr,"Info: finished setting physical addresses of free queue rx into NIC \n");
+	fprintf (stderr,"Info: finished setting physical addresses of free queue into NIC \n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 
 #ifdef CHECK_QUEUES
@@ -681,7 +835,7 @@ int main(int argc, char* argv[])
 	}
 	
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf (stderr,"Info: pushed %d buffers to free rx queue\n", NBUFFERS);
+	fprintf (stderr,"Info: pushed %d buffers to free queue\n", NBUFFERS);
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	
 	// start the forwarding engine
@@ -690,6 +844,8 @@ int main(int argc, char* argv[])
 	
 	// set the number of servers in the nic
 	setNumberOfServersInNic(0,1);
+	fprintf(stderr, "Number of servers set to: %d\n", getNumberOfServersInNic(0)); // Check if the value is correctly set
+	//printNicRegisters(0); // Print just after setting the number of servers
 
 	// Enable NIC, MAC
 	//   start the receive and transmit daemons!
@@ -699,6 +855,25 @@ int main(int argc, char* argv[])
 	fprintf (stderr,"Info: SPIN!\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 
+	// Print register values after initialization
+    	printNicRegisters(0);
+
+
+	// Start the monitor thread	//Obsolete
+    	//PTHREAD_DECL(monitorNicRegisters);
+    	//PTHREAD_CREATE_PARAM(monitorNicRegisters, 0, 10); // Monitor for 10 seconds	
+	
+	
+	pthread_t monitor_thread;
+    	struct monitor_args args;
+    	args.nic_id = 0; // Set your nic_id
+    	args.monitor_duration_seconds = 10; // Set your monitoring duration
+
+    	if (pthread_create(&monitor_thread, NULL, monitorNicRegisters_thread_func, &args) != 0) {
+        	perror("pthread_create failed");
+        	return 1;
+    	}
+	
 	// start the RX, TX daemons.
 	PTHREAD_DECL(packetTxDaemon);
 	PTHREAD_DECL(packetRxDaemon);
@@ -709,6 +884,11 @@ int main(int argc, char* argv[])
 	// wait to join.
 	PTHREAD_JOIN(packetTxDaemon);
 	PTHREAD_JOIN(packetRxDaemon);
+	//PTHREAD_JOIN(monitorNicRegisters); // Obsolete
+	pthread_join(monitor_thread, NULL);
+	
+	// Print register values before exiting
+    	printNicRegisters(0);
 	
 	fprintf(stderr,"%s: completed %s\n", err_flag ? "Error" : "Info", err_flag ? "with error." : "");
 	return(err_flag);

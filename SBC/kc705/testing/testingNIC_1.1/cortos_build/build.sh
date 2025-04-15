@@ -30,6 +30,7 @@ compileToSparcUclibc.py \
   -s ${_AAR_MT}/asm/generic_isr_mt.s \
   -s ${_AAR_MT}/asm/generic_sw_trap_mt.s \
   -s ${_AAR_MT}/asm/generic_sys_calls.s \
+  -s ${_AAR_MT}/asm/mutexes.s \
   -C .. \
   -C ${_CORTOS_SRC_DIR} \
   -C ${_AAR_MT}/src \
@@ -37,7 +38,7 @@ compileToSparcUclibc.py \
   -L ${_LINKER_SCRIPT} \
   -D AJIT \
   -U \
-  -D USE_VMAP -D USE_CORTOS -c $AI_NIC_HOME/SBC/kc705/testing/testingNIC_1.1/main.c -I $AI_NIC_HOME/Networking/NIC_1.1/driver/include -C $AI_NIC_HOME/Networking/NIC_1.1/driver/src;
+  -D USE_VMAP -D USE_CORTOS -c $AJIT_HOME/AI_NIC_DEMO/SBC/kc705/testing/testingNIC_1.1/main.c -I $AJIT_HOME/AI_NIC_DEMO/Networking/NIC_1.1/driver/include -C $AJIT_HOME/AI_NIC_DEMO/Networking/NIC_1.1/driver/src;
 
 #  -s ${_AAR_MT}/asm/clear_stack_pointers.s \
 #  -s ${_AAR_MT}/asm/trap_handlers_for_rtos.s \

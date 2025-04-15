@@ -27,9 +27,6 @@ $constant SERVER_1 : $uint<4> := 1
 $constant SERVER_2 : $uint<4> := 2
 $constant SERVER_3 : $uint<4> := 3
 
-// max no. of entries per queue per server
-$constant MAX_NENTRIES : $uint<16> := 16
-
 // memory access instructions.
 $constant ST:     $uint<3> := 1
 $constant STD:    $uint<3> := 2

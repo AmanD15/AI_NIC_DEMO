@@ -116,7 +116,7 @@ Register     address         		Description
 1.		0x04		        number of servers  (we can make this a mask...)
          Note: specify the servers to be polled..
 2.		0x08			debug-register 0
-3.		0x0c			debug-register 1
+3.		0x0C			debug-register 1
 
 4 to 7 are unused.
 --------------------------------------------------------------
@@ -124,11 +124,11 @@ Register     address         		Description
 8               0x20            Rx Q for server 0  physical_address[35:32]
 9               0x24            Rx Q for server 0  physical address[31:0]
 10              0x28            Rx Q for server 0  lock physical address[35:32]
-11              0x2c            Rx Q for server 0  lock physical address[31:0]
+11              0x2C            Rx Q for server 0  lock physical address[31:0]
 12              0x30            Rx Q for server 0  buf  physical address[35:32]
 13              0x34            Rx Q for server 0  buf  physical address[31:0]
 14              0x38            Rx Q for server 0  reserved for future use.
-15              0x3c            Rx Q for server 0  reserved for future use.
+15              0x3C            Rx Q for server 0  reserved for future use.
 
  .... up to 8 Rx queue sets for servers 1,...,7
 
@@ -151,11 +151,11 @@ Register     address         		Description
 128              0x200            Tx Q for server 0  physical_address[35:32]
 129              0x204            Tx Q for server 0  physical address[31:0]
 130              0x208            Tx Q for server 0  lock physical address[35:32]
-131              0x20c            Tx Q for server 0  lock physical address[31:0]
+131              0x20C            Tx Q for server 0  lock physical address[31:0]
 132              0x210            Tx Q for server 0  buf  physical address[35:32]
 133              0x214            Tx Q for server 0  buf  physical address[31:0]
 134              0x218            Tx Q for server 0  reserved for future use.
-135              0x21c            Tx Q for server 0  reserved for future use.
+135              0x21C            Tx Q for server 0  reserved for future use.
 
  .... up to 8 Tx queue sets for servers 1,...,7
 
@@ -171,11 +171,12 @@ Register     address         		Description
 	Note:  these queues will be polled by the NIC to
              determine packets to be forwarded.
 -------------------------------------------------------------
-
+      Address of FreeQueue (2 registers)
+-------------------------------------------------------------
 200             0x320            Base address of free Queue [35:32]
 201             0x324            Base address of free Queue [31:0]
 202             0x328            Lock address for free Queue [35:32]
-203             0x32c            Lock address for free Queue [31:0]
+203             0x32C            Lock address for free Queue [31:0]
 204             0x328            Buf address for free Queue [35:32]
 205             0x330            Buf address for free Queue [31:0]
 206		unused
@@ -184,14 +185,14 @@ Register     address         		Description
 -------------------------------------------------------------
       MAC address 48 bits (ie, two registers)
 -------------------------------------------------------------
-208             0x33c            MAC_ADDR[31:0]
+208             0x33C            MAC_ADDR[31:0]
 209             0x340            {unused,MAC_ADDR[47:32]}
 ---------------------------------------------------
 210	  	0x344		Count of packets transmitted
 				by NIC [31:0]
 211	 	0x348		Count of packets received 
 				by NIC [31:0]
-212		0x34c           Status word
+212		0x34C           Status word
 				[31:2] unused
 				[0] set if NIC has started (controlreg[0] = 1)
 
@@ -202,7 +203,7 @@ Register     address         		Description
 ----------------------------------------------------------------
 -- Free running counter mapped to register index 255
 ----------------------------------------------------------------
-255            0x3fc            Free-running counter..
+255            0x3FC            Free-running counter..
   
  Register file (depth = 255) (width = 32)
 

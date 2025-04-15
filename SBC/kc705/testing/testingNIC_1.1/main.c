@@ -1,6 +1,8 @@
 #include <cortos.h>
 #include "nic_driver.h"
 
+#define MAC_ADDR_LEN 6
+
 // The Queues
 CortosQueueHeader* free_queue = NULL;
 CortosQueueHeader* rx_queue = NULL;
@@ -162,13 +164,22 @@ int main()
 	uint32_t rx_pkt_count;
 	uint32_t status_reg;
 	uint32_t packetLen;
-	uint64_t* BufferPtr;
+	uint64_t* RxBufferPtr;
+	uint64_t* TxBufferPtr;
+	uint32_t counterReg;
+	double seconds, total_time, avg_time;
+	uint64_t t1, t2, cycle_diff, avg_clk_cycles;
+	uint64_t clock_spent = 0;
+	
 	while(1)
 	{
 		msgsRead = cortos_readMessages(rx_queue, (uint8_t*)(&bufptrPA), 1);
 
 		if(msgsRead)
 		{
+			//t1 = Sample clock
+			t1 = cortos_get_clock_time();
+
 			// reverse table PA -> VA access
 			bufptrVA = translatePAtoVA(bufptrPA);
 			if (bufptrVA == NULL)
@@ -177,29 +188,103 @@ int main()
 				cortos_exit(0); 
 			}
 
+/*
 			// Print Packet Contents
-			BufferPtr = (uint64_t*)(bufptrVA);
-			for(i=0;i<16 ;i++)
-				cortos_printf("Packet[%u]: %016llx\n",8*i,(*BufferPtr++));
+			RxBufferPtr = (uint64_t*)(bufptrVA);
+			TxBufferPtr = (uint64_t*)(bufptrVA);
+
+
+			// Ensuring buffers are stored properly in rx queue.
+			uint8_t* rx_addr  = (uint8_t*)(rx_queue + 1);
+			cortos_printf("no. of item in rx-queue: %u\n",rx_queue->totalMsgs);
+			
+			for(i=0 ; i < NUMBER_OF_BUFFERS;i++)
+				cortos_printf("bufferPtr(PA) stored in rx-queue at : 0x%08lx is 0x%016llx\n",
+				(uint32_t)(rx_addr + 8*i),*( (uint64_t*)(rx_addr + 8*i) ));			
 
 			// Packet processing (get packet length)
-			packetLen = (*(bufptrVA + 1) >> 8); 
-			cortos_printf("Packet Length in bytes = %u\n",packetLen);
+			//packetLen = (*(bufptrVA + 1) >> 8); 
+			//cortos_printf("Packet Length in bytes = %u\n",packetLen);
+
+
+			// Get packet length and validate
+    			packetLen = getPacketLen(bufptrVA);
+    			cortos_printf("DEBUG: Received packet length: %u bytes\n", packetLen);
+		
+    			// Debugging packet length and contents in RxBuffer
+			RxBufferPtr = (uint64_t*)(bufptrVA);
+			for(i=0;i<(((packetLen+24) / 8)+(((packetLen+24) % 8) != 0)) ;i++)
+				cortos_printf("Packet[%u]: %016llx\n",8*i,(*RxBufferPtr++));
+*/
+
+    			if (packetLen > BUFFER_SIZE_IN_BYTES) {
+        			cortos_printf("ERROR: Received packet length %u exceeds expected size %u\n", packetLen, BUFFER_SIZE_IN_BYTES);
+        			return 1;  // Drop the packet
+    			}
+
+			// Extract pointers to the destination and source MAC addresses
+    			uint8_t* dest_mac = (uint8_t*)bufptrVA + 24;
+    			uint8_t* src_mac = (uint8_t*)bufptrVA + MAC_ADDR_LEN + 24;
+
+			// Temporary buffer to hold the source MAC address
+			uint8_t temp_mac[MAC_ADDR_LEN];
+
+			// Swap the MAC addresses
+			for(i = 0; i < MAC_ADDR_LEN; i++) {
+				temp_mac[i] = src_mac[i];  // Copy source MAC to temp
+    				src_mac[i] = dest_mac[i]; // Copy destination MAC to source
+    				dest_mac[i] = temp_mac[i]; // Copy temp (original source) to destination	
+			}
 
 			// Pushing the buffer to transmit queue
 			msgs_written = cortos_writeMessages(tx_queue, (uint8_t*)(&bufptrPA), 1);
+
+
+			// t2= Sample clock
+			t2 = cortos_get_clock_time();
+			// time_spent += t2  - t1;
+			cycle_diff = t2 - t1;
+			clock_spent += cycle_diff;
+			
+/*
+			// Ensuring buffers are stored properly in tx queue.
+			uint8_t* tx_addr  = (uint8_t*)(tx_queue + 1);
+			cortos_printf("no. of item in tx-queue: %u\n",tx_queue->totalMsgs);
+			
+			for(i=0 ; i < NUMBER_OF_BUFFERS;i++)
+				cortos_printf("bufferPtr(PA) stored in tx-queue at : 0x%08lx is 0x%016llx\n",
+				(uint32_t)(tx_addr + 8*i),*( (uint64_t*)(tx_addr + 8*i) ));	
+
+			// Debugging packet length and contents in TxBuffer
+			TxBufferPtr = (uint64_t*)(bufptrVA);
+			for(i=0;i<(((packetLen+24) / 8)+(((packetLen+24) % 8) != 0)) ;i++)
+				cortos_printf("Packet[%u]: %016llx\n",8*i,(*TxBufferPtr++));
+
+			// Packet processing (get packet length)
+			//packetLen = (*(bufptrVA + 1) >> 8); 
+			//cortos_printf("Packet Length in bytes = %u\n",packetLen);
+			
+			
 			if(msgs_written)
 			cortos_printf("Transmitted the packet\n");
 			else
                     	cortos_printf("Error: Failed to write buffer to TxQ\n");
-			
+*/	
 				
 			// NIC stats
 			message_counter++;
+			cortos_printf("Time spent for iteration %d = %llu clock cycles (%.9f seconds)\n",message_counter ,cycle_diff ,
+			((double)cycle_diff/80000000.0));
+/*
 			cortos_printf("No. of messages received and sent back:%d\n",message_counter);
 			probeNic (0,&tx_pkt_count,&rx_pkt_count,&status_reg);
 			cortos_printf("Transmitted packet = %u, Received packet = %u, Status register = %u\n",
 			 tx_pkt_count, rx_pkt_count,status_reg);
+			
+			counterReg = readFromNicReg (0,255);
+			seconds = (double)counterReg / 125000000.0; // Divide by NIC frequency (125 MHz)
+			cortos_printf("Counter register = 0x%08lx (%.9f seconds)\n",counterReg, seconds);
+*/
 
 		}	
 		else
@@ -209,7 +294,15 @@ int main()
 			__ajit_sleep__ (1024);
 		}
 
-		if(message_counter == 2048)break;
+		if(message_counter == 2048)
+		{
+			total_time = (double)clock_spent / 80000000.0; // Divide by processor frequency (80 MHz)
+			cortos_printf("Total time spent in processor = %llu clock cycles (%.9f seconds)\n",clock_spent ,total_time);
+			avg_clk_cycles = clock_spent / message_counter;
+			avg_time = total_time / message_counter;
+			cortos_printf("Avegare time spent in processor = %llu clock cycles (%.9f seconds)\n",avg_clk_cycles ,avg_time);	
+			break;
+		}
 
 	}
 	
