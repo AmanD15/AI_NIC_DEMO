@@ -1,0 +1,1919 @@
+rm -rf .Aa
+mkdir .Aa
+AaLinkExtMem ../../src/signals.aa ../pipes.aa ./tester.aa  | vcFormat > .Aa/tester.linked.aa
+Info:  AaLinkExtMem built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_ENABLE width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_INTERNAL width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe S_CONTROL_REGISTER width = 32 depth = 1
+Info: parsed and added pipe S_NUMBER_OF_SERVERS width = 32 depth = 1
+Info: parsed and added pipe S_MAX_NENTRIES width = 32 depth = 1
+Info: parsed and added pipe S_FREE_RUNNING_COUNTER width = 32 depth = 1
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 256 depth = 1
+Info: finished parsing file ../../src/signals.aa
+Info: parsed and added pipe tb_to_mac_data width = 64 depth = 2
+Info: parsed and added pipe mac_to_tb_data width = 64 depth = 2
+Info: parsed and added pipe MERGED_ACB_REQUEST width = 110 depth = 2
+Info: parsed and added pipe MERGED_ACB_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_TO_MEMORY_REQUEST width = 110 depth = 2
+Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe tb_to_mac_ctrl width = 16 depth = 2
+Info: parsed and added pipe mac_to_tb_ctrl width = 16 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_TO_TB_MEM width = 64 depth = 2
+Info: parsed and added pipe TB_MEM_TO_TEST_SYSTEM width = 64 depth = 2
+Info: re-declaration of pipe: MAC_ENABLE, parameters updated.
+Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
+Info: parsed and added pipe MAC_ENABLE_8 width = 8 depth = 1
+Info: re-declaration of pipe: NIC_INTR, parameters updated.
+Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe tb_to_nic_slave_request width = 64 depth = 1
+Info: parsed and added pipe nic_slave_response_to_tb width = 32 depth = 1
+Info: parsed and added pipe TEST_SYSTEM_MEM_RESPONSE width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_REQUEST width = 64 depth = 2
+Info: parsed and added pipe TB_PROCESSOR_TO_MEM width = 64 depth = 2
+Info: parsed and added pipe MEM_TO_TB_PROCESSOR width = 64 depth = 2
+Info: parsed and added pipe AFB_NIC_REQUEST width = 74 depth = 2
+Info: parsed and added pipe AFB_NIC_RESPONSE width = 33 depth = 2
+Info: parsed and added pipe nic_to_mac_transmit_pipe width = 73 depth = 2
+Info: parsed and added pipe mac_to_nic_data width = 73 depth = 2
+Info: parsed and added pipe rx_in_pipe width = 10 depth = 2
+Info: parsed and added pipe tx_out_pipe width = 10 depth = 2
+Info: parsed and added pipe tb_to_nic_mac_bridge width = 16 depth = 2
+Info: parsed and added pipe nic_mac_bridge_to_tb width = 16 depth = 2
+Info: parsed and added pipe rx_out_pipe width = 73 depth = 2
+Info: parsed and added pipe tx_in_pipe width = 73 depth = 2
+Info: parsed and added pipe debug_queue_command width = 64 depth = 1
+Info: parsed and added pipe debug_queue_response width = 64 depth = 1
+Info: parsed and added pipe QUEUE_MONITOR_SIGNAL width = 32 depth = 1
+Info: finished parsing file ../pipes.aa
+Info: Added module tbAfbDaemon
+Info: Added module tbMemDaemon
+Info: Added module tbProcessorMemDaemon
+Info: Added module tbEnableMacIntrDaemon
+Info: Added module macRxBridgeDaemon
+Info: Added module macTxBridgeDaemon
+Info: finished parsing file ./tester.aa
+Info: Added module global_storage_initializer_
+Info: elaborating the program .... initializing the call-graph
+Info: mapping target object references..
+Info: mapping source object references..
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+	global_storage_initializer_
+	macRxBridgeDaemon
+	macTxBridgeDaemon
+	tbAfbDaemon
+	tbEnableMacIntrDaemon
+	tbMemDaemon
+	tbProcessorMemDaemon
+Info: marking modules reachable from root-modules ... 
+Info: module global_storage_initializer_ is reachable from a specified root module.
+Info: module macRxBridgeDaemon is reachable from a specified root module.
+Info: module macTxBridgeDaemon is reachable from a specified root module.
+Info: module tbAfbDaemon is reachable from a specified root module.
+Info: module tbEnableMacIntrDaemon is reachable from a specified root module.
+Info: module tbMemDaemon is reachable from a specified root module.
+Info: module tbProcessorMemDaemon is reachable from a specified root module.
+Info: propagating types in the program ... 
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
+Info: propagating constants in the program ... 
+AaOpt -B .Aa/tester.linked.aa | vcFormat > .Aa/tester.linked.opt.aa
+Info:  AaOpt built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: parsed and added pipe AFB_NIC_REQUEST width = 74 depth = 2
+Info: parsed and added pipe AFB_NIC_RESPONSE width = 33 depth = 2
+Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
+Info: parsed and added pipe MAC_ENABLE_8 width = 8 depth = 1
+Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe MEM_TO_TB_PROCESSOR width = 64 depth = 2
+Info: parsed and added pipe MERGED_ACB_REQUEST width = 110 depth = 2
+Info: parsed and added pipe MERGED_ACB_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 256 depth = 1
+Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_ENABLE width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_INTERNAL width = 1 depth = 1
+Info: parsed and added pipe NIC_TO_MEMORY_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe QUEUE_MONITOR_SIGNAL width = 32 depth = 1
+Info: parsed and added pipe S_CONTROL_REGISTER width = 32 depth = 1
+Info: parsed and added pipe S_FREE_RUNNING_COUNTER width = 32 depth = 1
+Info: parsed and added pipe S_MAX_NENTRIES width = 32 depth = 1
+Info: parsed and added pipe S_NUMBER_OF_SERVERS width = 32 depth = 1
+Info: parsed and added pipe TB_MEM_TO_TEST_SYSTEM width = 64 depth = 2
+Info: parsed and added pipe TB_PROCESSOR_TO_MEM width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_REQUEST width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_RESPONSE width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_TO_TB_MEM width = 64 depth = 2
+Info: parsed and added pipe debug_queue_command width = 64 depth = 1
+Info: parsed and added pipe debug_queue_response width = 64 depth = 1
+Info: parsed and added pipe mac_to_nic_data width = 73 depth = 2
+Info: parsed and added pipe mac_to_tb_ctrl width = 16 depth = 2
+Info: parsed and added pipe mac_to_tb_data width = 64 depth = 2
+Info: parsed and added pipe nic_mac_bridge_to_tb width = 16 depth = 2
+Info: parsed and added pipe nic_slave_response_to_tb width = 32 depth = 1
+Info: parsed and added pipe nic_to_mac_transmit_pipe width = 73 depth = 2
+Info: parsed and added pipe rx_in_pipe width = 10 depth = 2
+Info: parsed and added pipe rx_out_pipe width = 73 depth = 2
+Info: parsed and added pipe tb_to_mac_ctrl width = 16 depth = 2
+Info: parsed and added pipe tb_to_mac_data width = 64 depth = 2
+Info: parsed and added pipe tb_to_nic_mac_bridge width = 16 depth = 2
+Info: parsed and added pipe tb_to_nic_slave_request width = 64 depth = 1
+Info: parsed and added pipe tx_in_pipe width = 73 depth = 2
+Info: parsed and added pipe tx_out_pipe width = 10 depth = 2
+Info: Added module global_storage_initializer_
+Info: Added module macRxBridgeDaemon
+Info: Added module macTxBridgeDaemon
+Info: Added module tbAfbDaemon
+Info: Added module tbEnableMacIntrDaemon
+Info: Added module tbMemDaemon
+Info: Added module tbProcessorMemDaemon
+Info: elaborating the program .... initializing the call-graph
+Info: mapping target object references..
+Info: mapping source object references..
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+	global_storage_initializer_
+	macRxBridgeDaemon
+	macTxBridgeDaemon
+	tbAfbDaemon
+	tbEnableMacIntrDaemon
+	tbMemDaemon
+	tbProcessorMemDaemon
+Info: marking modules reachable from root-modules ... 
+Info: module global_storage_initializer_ is reachable from a specified root module.
+Info: module macRxBridgeDaemon is reachable from a specified root module.
+Info: module macTxBridgeDaemon is reachable from a specified root module.
+Info: module tbAfbDaemon is reachable from a specified root module.
+Info: module tbEnableMacIntrDaemon is reachable from a specified root module.
+Info: module tbMemDaemon is reachable from a specified root module.
+Info: module tbProcessorMemDaemon is reachable from a specified root module.
+Info: propagating types in the program ... 
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
+Info: propagating constants in the program ... 
+Info:  started equalizing paths for do-while statement do_while_stmt_58 in module macRxBridgeDaemon
+Info: Longest path in do_while_stmt_58 is 1
+Info:  started equalizing paths for do-while statement do_while_stmt_76 in module macTxBridgeDaemon
+Info: Longest path in do_while_stmt_76 is 1
+Info: ignored orphan statement: 		$volatile u23 := ( $slice tb_req 63 41 )  $buffering 1
+
+Info: ignored orphan statement: 		$volatile error := ( $slice afb_resp 32 32 )  $buffering 1
+
+Info: ignored orphan statement: 		$volatile err := ( $slice resp 64 64 )  $buffering 1
+
+Info: added 0 bits of buffering during path balancing.
+rm -rf .vC
+mkdir .vC
+Aa2VC -O -C .Aa/tester.linked.opt.aa | vcFormat > .vC/tester.vc
+Info:  Aa2VC built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: -O option selected, will parallelize straight-line sequences
+Info: -C option selected, will generate C-stubs for mixed C-VHDL simulation
+Info: parsed and added pipe AFB_NIC_REQUEST width = 74 depth = 2
+Info: parsed and added pipe AFB_NIC_RESPONSE width = 33 depth = 2
+Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
+Info: parsed and added pipe MAC_ENABLE_8 width = 8 depth = 1
+Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe MEM_TO_TB_PROCESSOR width = 64 depth = 2
+Info: parsed and added pipe MERGED_ACB_REQUEST width = 110 depth = 2
+Info: parsed and added pipe MERGED_ACB_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 256 depth = 1
+Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_ENABLE width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_INTERNAL width = 1 depth = 1
+Info: parsed and added pipe NIC_TO_MEMORY_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe QUEUE_MONITOR_SIGNAL width = 32 depth = 1
+Info: parsed and added pipe S_CONTROL_REGISTER width = 32 depth = 1
+Info: parsed and added pipe S_FREE_RUNNING_COUNTER width = 32 depth = 1
+Info: parsed and added pipe S_MAX_NENTRIES width = 32 depth = 1
+Info: parsed and added pipe S_NUMBER_OF_SERVERS width = 32 depth = 1
+Info: parsed and added pipe TB_MEM_TO_TEST_SYSTEM width = 64 depth = 2
+Info: parsed and added pipe TB_PROCESSOR_TO_MEM width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_REQUEST width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_RESPONSE width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_TO_TB_MEM width = 64 depth = 2
+Info: parsed and added pipe debug_queue_command width = 64 depth = 1
+Info: parsed and added pipe debug_queue_response width = 64 depth = 1
+Info: parsed and added pipe mac_to_nic_data width = 73 depth = 2
+Info: parsed and added pipe mac_to_tb_ctrl width = 16 depth = 2
+Info: parsed and added pipe mac_to_tb_data width = 64 depth = 2
+Info: parsed and added pipe nic_mac_bridge_to_tb width = 16 depth = 2
+Info: parsed and added pipe nic_slave_response_to_tb width = 32 depth = 1
+Info: parsed and added pipe nic_to_mac_transmit_pipe width = 73 depth = 2
+Info: parsed and added pipe rx_in_pipe width = 10 depth = 2
+Info: parsed and added pipe rx_out_pipe width = 73 depth = 2
+Info: parsed and added pipe tb_to_mac_ctrl width = 16 depth = 2
+Info: parsed and added pipe tb_to_mac_data width = 64 depth = 2
+Info: parsed and added pipe tb_to_nic_mac_bridge width = 16 depth = 2
+Info: parsed and added pipe tb_to_nic_slave_request width = 64 depth = 1
+Info: parsed and added pipe tx_in_pipe width = 73 depth = 2
+Info: parsed and added pipe tx_out_pipe width = 10 depth = 2
+Info: Added module global_storage_initializer_
+Info: Added module macRxBridgeDaemon
+Info: Added module macTxBridgeDaemon
+Info: Added module tbAfbDaemon
+Info: Added module tbEnableMacIntrDaemon
+Info: Added module tbMemDaemon
+Info: Added module tbProcessorMemDaemon
+Info: elaborating the program .... initializing the call-graph
+Info: mapping target object references..
+Info: mapping source object references..
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+	global_storage_initializer_
+	macRxBridgeDaemon
+	macTxBridgeDaemon
+	tbAfbDaemon
+	tbEnableMacIntrDaemon
+	tbMemDaemon
+	tbProcessorMemDaemon
+Info: marking modules reachable from root-modules ... 
+Info: module global_storage_initializer_ is reachable from a specified root module.
+Info: module macRxBridgeDaemon is reachable from a specified root module.
+Info: module macTxBridgeDaemon is reachable from a specified root module.
+Info: module tbAfbDaemon is reachable from a specified root module.
+Info: module tbEnableMacIntrDaemon is reachable from a specified root module.
+Info: module tbMemDaemon is reachable from a specified root module.
+Info: module tbProcessorMemDaemon is reachable from a specified root module.
+Info: propagating types in the program ... 
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
+Info: propagating constants in the program ... 
+Info: Writing optimized VC model.. 
+Info: Writing gated clocks.. 
+Info: Done writing optimized VC model.. 
+rm -rf vhdl
+mkdir vhdl
+mkdir vhdl/tester_lib
+mkdir vhdl/testbench
+#-D -O -S 4 -I 2 -v -a -C -e
+vc2vhdl -H -U  -O -a -C -e tester -W tester_lib -w -s ghdl -T tbAfbDaemon -T tbEnableMacIntrDaemon  -T tbMemDaemon -T tbProcessorMemDaemon -T macRxBridgeDaemon -T macTxBridgeDaemon  -f .vC/tester.vc -L /ahir/release//functionLibrary//fpu.list
+Info: hierarchical system file (.hsys) printing turned on.
+Info: -U option selected: suppress i/o pipes (set their depth = 0).
+Info: -O option selected, will try to compress control-path..
+Info: -a option selected: will try for minimum overall circuit area.
+Info: -C option selected: will generate testbench which connects to foreign link.
+Info: -e tester top-level VHDL entity will have name tester.unformatted_vhdl
+Info: -W option selected: generated VHDL will be in library tester_lib
+Info: -w tester will write separate system and testbench VHDL files.
+Info: -s ghdl option selected: will generate testbench with VHPI link.
+Info: module tbAfbDaemon set as one of the ever-running top modules. 
+   NOTE: tbAfbDaemon cannot have any input/output arguments.
+Info: module tbEnableMacIntrDaemon set as one of the ever-running top modules. 
+   NOTE: tbEnableMacIntrDaemon cannot have any input/output arguments.
+Info: module tbMemDaemon set as one of the ever-running top modules. 
+   NOTE: tbMemDaemon cannot have any input/output arguments.
+Info: module tbProcessorMemDaemon set as one of the ever-running top modules. 
+   NOTE: tbProcessorMemDaemon cannot have any input/output arguments.
+Info: module macRxBridgeDaemon set as one of the ever-running top modules. 
+   NOTE: macRxBridgeDaemon cannot have any input/output arguments.
+Info: module macTxBridgeDaemon set as one of the ever-running top modules. 
+   NOTE: macTxBridgeDaemon cannot have any input/output arguments.
+Info: will add library  /ahir/release//functionLibrary//fpu.list.
+Info: vcSystem::Add_Function_Library: added function library module fpu32 in VHDL library ahir with delay 18
+Info: vcSystem::Add_Function_Library: added function library module fpadd32 in VHDL library ahir with delay 14
+Info: vcSystem::Add_Function_Library: added function library module fpsub32 in VHDL library ahir with delay 14
+Info: vcSystem::Add_Function_Library: added function library module fpmul32 in VHDL library ahir with delay 12
+Info: vcSystem::Add_Function_Library: added function library module fpu64 in VHDL library ahir with delay 20
+Info: vcSystem::Add_Function_Library: added function library module fpadd64 in VHDL library ahir with delay 16
+Info: vcSystem::Add_Function_Library: added function library module fpsub64 in VHDL library ahir with delay 14
+Info: vcSystem::Add_Function_Library: added function library module fpmul64 in VHDL library ahir with delay 14
+Warning: module global_storage_initializer_ is not reachable from a top-level module, ignored
+Warning: all elements not reachable from entry in region branch_block_stmt_57/do_while_stmt_58/do_while_stmt_58_loop_body
+Warning: exit not reachable from every element in region branch_block_stmt_57/do_while_stmt_58/do_while_stmt_58_loop_body
+Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
+Info: Started Fix_Combinational_Loops (pass 1)
+Info: Started will double buffer interlock-buffers if needed
+Info:  Total number of strongly-connected-components is 52
+Info:  Fix_Combi pass OK
+Info: reducing Control-path 
+Info: finding nucleii 
+Info: in CPForkblock [macRxBridgeDaemon_CP], adding SCC arcs
+Info: in CPForkblock [macRxBridgeDaemon_CP], added 0 SCC arcs
+Info:  Total number of strongly-connected-components is 15
+Info: SCC 0
+	e_0
+Info: SCC 1
+	e_1
+Info: SCC 2
+	e_2
+Info: SCC 3
+	e_20
+Info: SCC 4
+	e_3
+Info: SCC 5
+	e_4
+Info: SCC 6
+	e_19
+Info: SCC 7
+	e_18
+Info: SCC 8
+	e_5
+Info: SCC 9
+	e_6
+Info: SCC 10
+	e_7
+Info: SCC 11
+	e_8
+Info: SCC 12
+	e_11
+	e_10
+	e_16
+	e_14
+	e_12
+	e_13
+	e_15
+Info: SCC 13
+	e_17
+Info: SCC 14
+	e_9
+Warning: all elements not reachable from entry in region branch_block_stmt_75/do_while_stmt_76/do_while_stmt_76_loop_body
+Warning: exit not reachable from every element in region branch_block_stmt_75/do_while_stmt_76/do_while_stmt_76_loop_body
+Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
+Info: Started Fix_Combinational_Loops (pass 1)
+Info: Started will double buffer interlock-buffers if needed
+Info:  Total number of strongly-connected-components is 52
+Info:  Fix_Combi pass OK
+Info: reducing Control-path 
+Info: finding nucleii 
+Info: in CPForkblock [macTxBridgeDaemon_CP], adding SCC arcs
+Info: in CPForkblock [macTxBridgeDaemon_CP], added 0 SCC arcs
+Info:  Total number of strongly-connected-components is 15
+Info: SCC 0
+	e_0
+Info: SCC 1
+	e_1
+Info: SCC 2
+	e_2
+Info: SCC 3
+	e_20
+Info: SCC 4
+	e_3
+Info: SCC 5
+	e_4
+Info: SCC 6
+	e_18
+Info: SCC 7
+	e_19
+Info: SCC 8
+	e_5
+Info: SCC 9
+	e_6
+Info: SCC 10
+	e_7
+Info: SCC 11
+	e_8
+Info: SCC 12
+	e_17
+Info: SCC 13
+	e_15
+	e_16
+	e_12
+	e_11
+	e_10
+	e_13
+	e_14
+Info: SCC 14
+	e_9
+Warning: exit not reachable from every element in region branch_block_stmt_96/assign_stmt_100_to_assign_stmt_148
+Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
+Info: Started Fix_Combinational_Loops (pass 1)
+Info: Started will double buffer interlock-buffers if needed
+Info:  Total number of strongly-connected-components is 84
+Info:  Fix_Combi pass OK
+Info: reducing Control-path 
+Info: removed CP-element $exit maybe it was dead?
+Info: removed CP-element dead_transition maybe it was dead?
+Info: finding nucleii 
+Info: in CPForkblock [tbAfbDaemon_CP], adding SCC arcs
+Info: in CPForkblock [tbAfbDaemon_CP], added 0 SCC arcs
+Info:  Total number of strongly-connected-components is 6
+Info: SCC 0
+	e_4
+Info: SCC 1
+	e_3
+Info: SCC 2
+	e_2
+Info: SCC 3
+	e_8
+	e_10
+	e_7
+	e_6
+	e_9
+	e_5
+	e_12
+	e_11
+	e_13
+Info: SCC 4
+	e_0
+Info: SCC 5
+	e_1
+Warning: exit not reachable from every element in region branch_block_stmt_153/assign_stmt_161_to_assign_stmt_167
+Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
+Info: Started Fix_Combinational_Loops (pass 1)
+Info: Started will double buffer interlock-buffers if needed
+Info:  Total number of strongly-connected-components is 72
+Info:  Fix_Combi pass OK
+Info: reducing Control-path 
+Info: removed CP-element $exit maybe it was dead?
+Info: removed CP-element dead_transition maybe it was dead?
+Info: finding nucleii 
+Info: in CPForkblock [tbEnableMacIntrDaemon_CP], adding SCC arcs
+Info: in CPForkblock [tbEnableMacIntrDaemon_CP], added 0 SCC arcs
+Info:  Total number of strongly-connected-components is 6
+Info: SCC 0
+	e_6
+Info: SCC 1
+	e_2
+Info: SCC 2
+	e_8
+Info: SCC 3
+	e_3
+	e_11
+	e_10
+	e_4
+	e_5
+	e_7
+	e_9
+Info: SCC 4
+	e_0
+Info: SCC 5
+	e_1
+Warning: exit not reachable from every element in region branch_block_stmt_172/assign_stmt_184_to_assign_stmt_242
+Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
+Info: Started Fix_Combinational_Loops (pass 1)
+Info: Started will double buffer interlock-buffers if needed
+Info:  Total number of strongly-connected-components is 129
+Info:  Fix_Combi pass OK
+Info: reducing Control-path 
+Info: removed CP-element $exit maybe it was dead?
+Info: removed CP-element dead_transition maybe it was dead?
+Info: finding nucleii 
+Info: in CPForkblock [tbMemDaemon_CP], adding SCC arcs
+Info: in CPForkblock [tbMemDaemon_CP], added 0 SCC arcs
+Info:  Total number of strongly-connected-components is 8
+Info: SCC 0
+	e_12
+Info: SCC 1
+	e_11
+Info: SCC 2
+	e_10
+Info: SCC 3
+	e_2
+Info: SCC 4
+	e_13
+	e_5
+	e_14
+	e_4
+	e_7
+	e_3
+	e_20
+	e_15
+	e_22
+	e_8
+	e_19
+	e_18
+	e_16
+	e_9
+	e_21
+	e_6
+Info: SCC 5
+	e_17
+Info: SCC 6
+	e_0
+Info: SCC 7
+	e_1
+Warning: exit not reachable from every element in region branch_block_stmt_247/assign_stmt_251_to_assign_stmt_271
+Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
+Info: Started Fix_Combinational_Loops (pass 1)
+Info: Started will double buffer interlock-buffers if needed
+Info:  Total number of strongly-connected-components is 96
+Info:  Fix_Combi pass OK
+Info: reducing Control-path 
+Info: removed CP-element dead_transition maybe it was dead?
+Info: removed CP-element $exit maybe it was dead?
+Info: finding nucleii 
+Info: in CPForkblock [tbProcessorMemDaemon_CP], adding SCC arcs
+Info: in CPForkblock [tbProcessorMemDaemon_CP], added 0 SCC arcs
+Info:  Total number of strongly-connected-components is 8
+Info: SCC 0
+	e_6
+Info: SCC 1
+	e_5
+Info: SCC 2
+	e_4
+Info: SCC 3
+	e_3
+Info: SCC 4
+	e_2
+Info: SCC 5
+	e_8
+	e_9
+	e_10
+	e_11
+	e_12
+	e_13
+	e_14
+	e_15
+	e_7
+Info: SCC 6
+	e_0
+Info: SCC 7
+	e_1
+Info: printing VHDL global package
+Info: printing top-level system VHDL file tester.unformatted_vhdl
+Info: printing VHDL model
+Info: printing VHDL model for module macRxBridgeDaemon
+Info: resources used by CP macRxBridgeDaemon_CP_3: ff-count=8 (saved 4), mux2-count= 6, and2-count= 0
+Info: estimated buffering for operator RPIPE_tb_to_nic_mac_bridge_61_inst = 16
+Info: estimated buffering in module macRxBridgeDaemon is 16
+Info: printing VHDL model for module macTxBridgeDaemon
+Info: resources used by CP macTxBridgeDaemon_CP_67: ff-count=8 (saved 4), mux2-count= 6, and2-count= 0
+Info: estimated buffering for operator RPIPE_tx_out_pipe_79_inst = 10
+Info: estimated buffering in module macTxBridgeDaemon is 10
+Info: printing VHDL model for module tbAfbDaemon
+Warning: CP element 1 has no predecessors.. tie to false
+-- CP-element group 1:  transition  place  bypass 
+-- CP-element group 1: predecessors 
+
+-- CP-element group 1: successors 
+
+-- CP-element group 1:  members (3) {
+-- CP-element group 1: 	 $exit
+-- CP-element group 1: 	 branch_block_stmt_96/$exit
+-- CP-element group 1: 	 branch_block_stmt_96/branch_block_stmt_96__exit__
+-- }
+Info: resources used by CP tbAfbDaemon_CP_131: ff-count=2 (saved 0), mux2-count= 2, and2-count= 1
+Info: estimated buffering for operator CONCAT_u6_u74_134_inst = 74
+Info: estimated buffering for operator RPIPE_AFB_NIC_RESPONSE_140_inst = 33
+Info: estimated buffering for operator RPIPE_tb_to_nic_slave_request_99_inst = 64
+Info: estimated buffering in module tbAfbDaemon is 171
+Info: printing VHDL model for module tbEnableMacIntrDaemon
+Warning: CP element 1 has no predecessors.. tie to false
+-- CP-element group 1:  transition  place  bypass 
+-- CP-element group 1: predecessors 
+
+-- CP-element group 1: successors 
+
+-- CP-element group 1:  members (3) {
+-- CP-element group 1: 	 $exit
+-- CP-element group 1: 	 branch_block_stmt_153/$exit
+-- CP-element group 1: 	 branch_block_stmt_153/branch_block_stmt_153__exit__
+-- }
+Info: resources used by CP tbEnableMacIntrDaemon_CP_232: ff-count=3 (saved 0), mux2-count= 3, and2-count= 2
+Info: estimated buffering for operator CONCAT_u7_u8_160_inst = 8
+Info: estimated buffering for operator RPIPE_MAC_ENABLE_159_inst = 1
+Info: estimated buffering for operator RPIPE_NIC_DEBUG_SIGNAL_166_inst = 256
+Info: estimated buffering for operator RPIPE_NIC_INTR_163_inst = 1
+Info: estimated buffering for operator W_debug_sig_165_inst = 256
+Info: estimated buffering for operator W_intr_162_inst = 1
+Info: estimated buffering in module tbEnableMacIntrDaemon is 523
+Info: printing VHDL model for module tbMemDaemon
+Warning: CP element 1 has no predecessors.. tie to false
+-- CP-element group 1:  transition  place  bypass 
+-- CP-element group 1: predecessors 
+
+-- CP-element group 1: successors 
+
+-- CP-element group 1:  members (3) {
+-- CP-element group 1: 	 $exit
+-- CP-element group 1: 	 branch_block_stmt_172/$exit
+-- CP-element group 1: 	 branch_block_stmt_172/branch_block_stmt_172__exit__
+-- }
+Info: resources used by CP tbMemDaemon_CP_319: ff-count=5 (saved 0), mux2-count= 5, and2-count= 3
+Info: estimated buffering for operator ADD_u8_u8_183_inst = 8
+Info: estimated buffering for operator CONCAT_u1_u65_238_inst = 65
+Info: estimated buffering for operator RPIPE_MERGED_ACB_REQUEST_186_inst = 110
+Info: estimated buffering for operator RPIPE_TB_MEM_TO_TEST_SYSTEM_232_inst = 64
+Info: estimated buffering for operator nCOUNT_184_178_buf = 8
+Info: estimated buffering for operator phi_stmt_174 = 8
+Info: estimated buffering in module tbMemDaemon is 263
+Info: printing VHDL model for module tbProcessorMemDaemon
+Warning: CP element 1 has no predecessors.. tie to false
+-- CP-element group 1:  transition  place  bypass 
+-- CP-element group 1: predecessors 
+
+-- CP-element group 1: successors 
+
+-- CP-element group 1:  members (3) {
+-- CP-element group 1: 	 $exit
+-- CP-element group 1: 	 branch_block_stmt_247/$exit
+-- CP-element group 1: 	 branch_block_stmt_247/branch_block_stmt_247__exit__
+-- }
+Info: resources used by CP tbProcessorMemDaemon_CP_476: ff-count=2 (saved 0), mux2-count= 2, and2-count= 1
+Info: estimated buffering for operator CONCAT_u46_u110_260_inst = 110
+Info: estimated buffering for operator RPIPE_PROCESSOR_ACB_MEM_RESPONSE_263_inst = 65
+Info: estimated buffering for operator RPIPE_TB_PROCESSOR_TO_MEM_250_inst = 64
+Info: estimated buffering for operator RPIPE_TB_PROCESSOR_TO_MEM_253_inst = 64
+Info: estimated buffering in module tbProcessorMemDaemon is 303
+Info: total estimated buffering in system tester is 1286
+Warning: pipe MEMORY_TO_NIC_RESPONSE not used in the system, ignored
+Warning: pipe NIC_INTR_ENABLE not used in the system, ignored
+Warning: pipe NIC_INTR_INTERNAL not used in the system, ignored
+Warning: pipe NIC_TO_MEMORY_REQUEST not used in the system, ignored
+Warning: pipe QUEUE_MONITOR_SIGNAL not used in the system, ignored
+Warning: pipe S_CONTROL_REGISTER not used in the system, ignored
+Warning: pipe S_FREE_RUNNING_COUNTER not used in the system, ignored
+Warning: pipe S_MAX_NENTRIES not used in the system, ignored
+Warning: pipe S_NUMBER_OF_SERVERS not used in the system, ignored
+Warning: pipe TEST_SYSTEM_MEM_REQUEST not used in the system, ignored
+Warning: pipe TEST_SYSTEM_MEM_RESPONSE not used in the system, ignored
+Warning: pipe debug_queue_command not used in the system, ignored
+Warning: pipe debug_queue_response not used in the system, ignored
+Warning: pipe mac_to_nic_data not used in the system, ignored
+Warning: pipe mac_to_tb_ctrl not used in the system, ignored
+Warning: pipe mac_to_tb_data not used in the system, ignored
+Warning: pipe nic_to_mac_transmit_pipe not used in the system, ignored
+Warning: pipe rx_out_pipe not used in the system, ignored
+Warning: pipe tb_to_mac_ctrl not used in the system, ignored
+Warning: pipe tb_to_mac_data not used in the system, ignored
+Warning: pipe tx_in_pipe not used in the system, ignored
+Info: finished printing VHDL model
+Info: number of register bits used in FIFO's = 0
+Info: number of marked arcs removed during redundancy removal = 0
+vhdlFormat < tester_global_package.unformatted_vhdl > vhdl/tester_lib/tester_global_package.vhdl
+vhdlFormat < tester.unformatted_vhdl > vhdl/tester_lib/tester.vhdl
+vhdlFormat < tester_test_bench.unformatted_vhdl > vhdl/testbench/tester_test_bench.vhdl
+rm -f *.unformatted_*
+Aa2C -T tbAfbDaemon -T tbEnableMacIntrDaemon  -T tbMemDaemon -T tbProcessorMemDaemon -T macRxBridgeDaemon -T macTxBridgeDaemon  .Aa/tester.linked.opt.aa -o ./
+Info:  Aa2C built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: marked tbAfbDaemon as a top-level daemon. 
+Info: marked tbEnableMacIntrDaemon as a top-level daemon. 
+Info: marked tbMemDaemon as a top-level daemon. 
+Info: marked tbProcessorMemDaemon as a top-level daemon. 
+Info: marked macRxBridgeDaemon as a top-level daemon. 
+Info: marked macTxBridgeDaemon as a top-level daemon. 
+Info: C output directory set to ./. 
+Info: parsed and added pipe AFB_NIC_REQUEST width = 74 depth = 2
+Info: parsed and added pipe AFB_NIC_RESPONSE width = 33 depth = 2
+Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
+Info: parsed and added pipe MAC_ENABLE_8 width = 8 depth = 1
+Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe MEM_TO_TB_PROCESSOR width = 64 depth = 2
+Info: parsed and added pipe MERGED_ACB_REQUEST width = 110 depth = 2
+Info: parsed and added pipe MERGED_ACB_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 256 depth = 1
+Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_ENABLE width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_INTERNAL width = 1 depth = 1
+Info: parsed and added pipe NIC_TO_MEMORY_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe QUEUE_MONITOR_SIGNAL width = 32 depth = 1
+Info: parsed and added pipe S_CONTROL_REGISTER width = 32 depth = 1
+Info: parsed and added pipe S_FREE_RUNNING_COUNTER width = 32 depth = 1
+Info: parsed and added pipe S_MAX_NENTRIES width = 32 depth = 1
+Info: parsed and added pipe S_NUMBER_OF_SERVERS width = 32 depth = 1
+Info: parsed and added pipe TB_MEM_TO_TEST_SYSTEM width = 64 depth = 2
+Info: parsed and added pipe TB_PROCESSOR_TO_MEM width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_REQUEST width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_RESPONSE width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_TO_TB_MEM width = 64 depth = 2
+Info: parsed and added pipe debug_queue_command width = 64 depth = 1
+Info: parsed and added pipe debug_queue_response width = 64 depth = 1
+Info: parsed and added pipe mac_to_nic_data width = 73 depth = 2
+Info: parsed and added pipe mac_to_tb_ctrl width = 16 depth = 2
+Info: parsed and added pipe mac_to_tb_data width = 64 depth = 2
+Info: parsed and added pipe nic_mac_bridge_to_tb width = 16 depth = 2
+Info: parsed and added pipe nic_slave_response_to_tb width = 32 depth = 1
+Info: parsed and added pipe nic_to_mac_transmit_pipe width = 73 depth = 2
+Info: parsed and added pipe rx_in_pipe width = 10 depth = 2
+Info: parsed and added pipe rx_out_pipe width = 73 depth = 2
+Info: parsed and added pipe tb_to_mac_ctrl width = 16 depth = 2
+Info: parsed and added pipe tb_to_mac_data width = 64 depth = 2
+Info: parsed and added pipe tb_to_nic_mac_bridge width = 16 depth = 2
+Info: parsed and added pipe tb_to_nic_slave_request width = 64 depth = 1
+Info: parsed and added pipe tx_in_pipe width = 73 depth = 2
+Info: parsed and added pipe tx_out_pipe width = 10 depth = 2
+Info: Added module global_storage_initializer_
+Info: Added module macRxBridgeDaemon
+Info: Added module macTxBridgeDaemon
+Info: Added module tbAfbDaemon
+Info: Added module tbEnableMacIntrDaemon
+Info: Added module tbMemDaemon
+Info: Added module tbProcessorMemDaemon
+Info: elaborating the program .... initializing the call-graph
+Info: mapping target object references..
+Info: mapping source object references..
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+	global_storage_initializer_
+	macRxBridgeDaemon
+	macTxBridgeDaemon
+	tbAfbDaemon
+	tbEnableMacIntrDaemon
+	tbMemDaemon
+	tbProcessorMemDaemon
+Info: marking modules reachable from root-modules ... 
+Info: module global_storage_initializer_ is reachable from a specified root module.
+Info: module macRxBridgeDaemon is reachable from a specified root module.
+Info: module macTxBridgeDaemon is reachable from a specified root module.
+Info: module tbAfbDaemon is reachable from a specified root module.
+Info: module tbEnableMacIntrDaemon is reachable from a specified root module.
+Info: module tbMemDaemon is reachable from a specified root module.
+Info: module tbProcessorMemDaemon is reachable from a specified root module.
+Info: propagating types in the program ... 
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
+Info: propagating constants in the program ... 
+AaLinkExtMem ../../src/parameters.aa ../../src/decls.aa ../../src/pipes.aa ../../src/signals.aa ../../src/control.aa ../../src/general_utils.aa ../../src/memory_utils.aa ../../src/queue_utils.aa ../../src/register_utils.aa ../../src/rx_from_mac.aa ../../src/receive_engine.aa ../../src/transmit_engine.aa | vcFormat > nic.linked.aa
+Info:  AaLinkExtMem built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: finished parsing file ../../src/parameters.aa
+Info: finished parsing file ../../src/decls.aa
+Info: parsed and added pipe enable_mac width = 1 depth = 1
+Info: parsed and added pipe NIC_TO_MEMORY_REQUEST width = 110 depth = 2
+Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe AFB_NIC_REQUEST width = 74 depth = 2
+Info: parsed and added pipe AFB_NIC_RESPONSE width = 33 depth = 2
+Info: parsed and added pipe mac_to_nic_data width = 73 depth = 2
+Info: parsed and added pipe nic_rx_to_header width = 73 depth = 2
+Info: parsed and added pipe nic_rx_to_packet width = 73 depth = 2
+Info: parsed and added pipe nic_to_mac_transmit_pipe width = 73 depth = 2
+Info: parsed and added pipe debug_queue_command width = 64 depth = 1
+Info: parsed and added pipe debug_queue_response width = 64 depth = 1
+Info: parsed and added pipe memory_access_lock width = 1 depth = 1
+Info: parsed and added pipe QUEUE_MONITOR_SIGNAL width = 32 depth = 1
+Info: parsed and added pipe RX_ACTIVITY_LOGGER width = 8 depth = 1
+Info: parsed and added pipe TX_ACTIVITY_LOGGER width = 8 depth = 1
+Info: parsed and added pipe FREE_QUEUE width = 32 depth = 64
+Info: parsed and added pipe FREE_QUEUE_LOCK width = 1 depth = 1
+Info: parsed and added pipe Rx_QUEUE_0 width = 32 depth = 64
+Info: parsed and added pipe Rx_QUEUE_1 width = 32 depth = 64
+Info: parsed and added pipe Rx_QUEUE_2 width = 32 depth = 64
+Info: parsed and added pipe Rx_QUEUE_3 width = 32 depth = 64
+Info: parsed and added pipe Tx_QUEUE_0 width = 32 depth = 64
+Info: parsed and added pipe Tx_QUEUE_1 width = 32 depth = 64
+Info: parsed and added pipe Tx_QUEUE_2 width = 32 depth = 64
+Info: parsed and added pipe Tx_QUEUE_3 width = 32 depth = 64
+Info: parsed and added pipe FREE_QUEUE_COMMAND width = 40 depth = 2
+Info: parsed and added pipe RECEIVE_QUEUE_COMMAND width = 40 depth = 2
+Info: parsed and added pipe TRANSMIT_QUEUE_COMMAND width = 40 depth = 2
+Info: parsed and added pipe FREE_QUEUE_RESPONSE width = 64 depth = 2
+Info: parsed and added pipe RECEIVE_QUEUE_RESPONSE width = 64 depth = 2
+Info: parsed and added pipe TRANSMIT_QUEUE_RESPONSE width = 64 depth = 2
+Info: finished parsing file ../../src/pipes.aa
+Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_ENABLE width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR_INTERNAL width = 1 depth = 1
+Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe S_CONTROL_REGISTER width = 32 depth = 1
+Info: parsed and added pipe S_NUMBER_OF_SERVERS width = 32 depth = 1
+Info: parsed and added pipe S_MAX_NENTRIES width = 32 depth = 1
+Info: parsed and added pipe S_FREE_RUNNING_COUNTER width = 32 depth = 1
+Info: parsed and added pipe NIC_DEBUG_SIGNAL width = 256 depth = 1
+Info: finished parsing file ../../src/signals.aa
+Info: Added module init_all_queues
+Info: Added module accessRegister
+Info: Added module setGlobalSignals
+Info: Added module controlDaemon
+Info: finished parsing file ../../src/control.aa
+Info: Added module delay_time
+Info: finished parsing file ../../src/general_utils.aa
+Info: Added module calculateAddress36
+Info: Added module accessMemoryBase
+Info: Added module accessMemoryDwordBase
+Info: Added module accessMemoryByteBase
+Info: Added module accessMemoryWordBase
+Info: Added module accessMemoryDword
+Info: Added module accessMemoryByte
+Info: Added module accessMemoryWord
+Info: Added module accessMemoryLdStub
+Info: Added module doMemAccess
+Info: finished parsing file ../../src/memory_utils.aa
+Info: Added module popFromQueue
+Info: Added module pushIntoQueue
+Info: finished parsing file ../../src/queue_utils.aa
+Info: Added module incrementNumberOfPacketsTransmitted
+Info: Added module incrementNumberOfPacketsReceived
+Info: Added module incrementRegister
+Info: finished parsing file ../../src/register_utils.aa
+Info: Added module nicRxFromMacDaemon
+Info: Added module nextLSTATE
+Info: finished parsing file ../../src/rx_from_mac.aa
+Info: Added module ReceiveEngineDaemon
+Info: Added module receivePacket
+Info: Added module writeEthernetHeaderToMem
+Info: Added module writePayloadToMem
+Info: Added module writeControlInformationToMem
+Info: finished parsing file ../../src/receive_engine.aa
+Info: Added module TransmitEngineDaemon
+Info: Added module transmitPacket
+Info: finished parsing file ../../src/transmit_engine.aa
+Info: Added module global_storage_initializer_
+Info: elaborating the program .... initializing the call-graph
+Info: mapping target object references..
+Warning: target of a PHI statement is an interface object! :line 180
+Info: mapping source object references..
+AaLinkExtMem Error: module exec_receive_queue_command not found!: file ../../src/receive_engine.aa, line 49
+AaLinkExtMem Error: module exec_receive_queue_command not found!: file ../../src/receive_engine.aa, line 64
+AaLinkExtMem Error: module exec_receive_queue_command not found!: file ../../src/receive_engine.aa, line 110
+AaLinkExtMem Error: module exec_receive_queue_command not found!: file ../../src/receive_engine.aa, line 124
+AaLinkExtMem Error: module exec_receive_queue_command not found!: file ../../src/transmit_engine.aa, line 54
+AaLinkExtMem Error: module exec_receive_queue_command not found!: file ../../src/transmit_engine.aa, line 68
+AaLinkExtMem Error: module exec_receive_queue_command not found!: file ../../src/control.aa, line 103
+AaLinkExtMem Error: module exec_transmit_queue_command not found!: file ../../src/control.aa, line 107
+AaLinkExtMem Error: module exec_free_queue_command not found!: file ../../src/control.aa, line 110
+AaLinkExtMem Error: module exec_transmit_queue_command not found!: file ../../src/queue_utils.aa, line 35
+AaLinkExtMem Error: module exec_free_queue_command not found!: file ../../src/queue_utils.aa, line 39
+AaLinkExtMem Error: module exec_receive_queue_command not found!: file ../../src/queue_utils.aa, line 88
+AaLinkExtMem Error: module exec_free_queue_command not found!: file ../../src/queue_utils.aa, line 92
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+	accessRegister
+	popFromQueue
+	calculateAddress36
+	accessMemoryBase
+	accessMemoryByteBase
+	accessMemoryWordBase
+	accessMemoryDwordBase
+	doMemAccess
+	accessMemoryDword
+	writeEthernetHeaderToMem
+	writePayloadToMem
+	writeControlInformationToMem
+	receivePacket
+	pushIntoQueue
+	incrementRegister
+	incrementNumberOfPacketsReceived
+	ReceiveEngineDaemon
+	transmitPacket
+	incrementNumberOfPacketsTransmitted
+	TransmitEngineDaemon
+	accessMemoryByte
+	accessMemoryLdStub
+	accessMemoryWord
+	init_all_queues
+	setGlobalSignals
+	controlDaemon
+	delay_time
+	global_storage_initializer_
+	nextLSTATE
+	nicRxFromMacDaemon
+Info: marking modules reachable from root-modules ... 
+Info: module ReceiveEngineDaemon is reachable from a specified root module.
+Info: module accessRegister is reachable from a specified root module.
+Info: module accessMemoryDword is reachable from a specified root module.
+Info: module doMemAccess is reachable from a specified root module.
+Info: module accessMemoryByteBase is reachable from a specified root module.
+Info: module accessMemoryBase is reachable from a specified root module.
+Info: module calculateAddress36 is reachable from a specified root module.
+Info: module accessMemoryDwordBase is reachable from a specified root module.
+Info: module accessMemoryWordBase is reachable from a specified root module.
+Info: module popFromQueue is reachable from a specified root module.
+Info: module pushIntoQueue is reachable from a specified root module.
+Info: module incrementNumberOfPacketsReceived is reachable from a specified root module.
+Info: module incrementRegister is reachable from a specified root module.
+Info: module receivePacket is reachable from a specified root module.
+Info: module writeEthernetHeaderToMem is reachable from a specified root module.
+Info: module writePayloadToMem is reachable from a specified root module.
+Info: module writeControlInformationToMem is reachable from a specified root module.
+Info: module TransmitEngineDaemon is reachable from a specified root module.
+Info: module incrementNumberOfPacketsTransmitted is reachable from a specified root module.
+Info: module transmitPacket is reachable from a specified root module.
+Info: module accessMemoryByte is reachable from a specified root module.
+Info: module accessMemoryLdStub is reachable from a specified root module.
+Info: module accessMemoryWord is reachable from a specified root module.
+Info: module controlDaemon is reachable from a specified root module.
+Info: module init_all_queues is reachable from a specified root module.
+Info: module setGlobalSignals is reachable from a specified root module.
+Info: module delay_time is reachable from a specified root module.
+Info: module global_storage_initializer_ is reachable from a specified root module.
+Info: module nextLSTATE is reachable from a specified root module.
+Info: module nicRxFromMacDaemon is reachable from a specified root module.
+Info: propagating types in the program ... 
+AaLinkExtMem Error: in type propagation, could not determine types of the following expressions/objects 
+freeQ_lock	 line 533154680
+freeQ_lock	 line 52
+re_freeQ_lock	 line 533154680
+re_freeQ_lock	 line 113
+freeQ_lock	 line 533156280
+freeQ_lock	 line 57
+rx_nentries	 line 117
+rx_nentries	 line 0
+rx_push_status	 line 117
+rx_push_status	 line 0
+rx_pop_status	 line 117
+rx_pop_status	 line 0
+tx_nentries	 line 0
+tx_nentries	 line 118
+tx_push_status	 line 0
+tx_push_status	 line 118
+tx_pop_status	 line 0
+tx_pop_status	 line 118
+f_nentries	 line 0
+f_nentries	 line 119
+f_push_status	 line 0
+f_push_status	 line 119
+f_pop_status	 line 0
+f_pop_status	 line 119
+tx_nentries	 line 512238640
+tx_nentries	 line 52
+tx_push_status	 line 512219072
+tx_push_status	 line 52
+tx_pop_status	 line 533155368
+tx_pop_status	 line 52
+f_nentries	 line 533155528
+f_nentries	 line 53
+f_push_status	 line 533155560
+f_push_status	 line 53
+f_pop_status	 line 53
+f_pop_status	 line 512050944
+rx_nentries	 line 0
+rx_nentries	 line 105
+rx_push_status	 line 0
+rx_push_status	 line 105
+rx_pop_status	 line 0
+rx_pop_status	 line 105
+f_nentries	 line 0
+f_nentries	 line 106
+f_push_status	 line 0
+f_push_status	 line 106
+f_pop_status	 line 0
+f_pop_status	 line 106
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 1 disjoint memory space(s)
+Info: Memory space 0: nic_registers 
+Info: propagating constants in the program ... 
+AaLinkExtMem Error: could not determine type of constant expression: file ../../src/receive_engine.aa, line 49
+AaLinkExtMem Error: could not determine type of constant expression: file ../../src/receive_engine.aa, line 64
+AaLinkExtMem Error: could not determine type of constant expression: file ../../src/receive_engine.aa, line 110
+AaLinkExtMem Error: could not determine type of constant expression: file ../../src/receive_engine.aa, line 124
+AaLinkExtMem Error: could not determine type of constant expression: file ../../src/transmit_engine.aa, line 54
+AaLinkExtMem Error: could not determine type of constant expression: file ../../src/transmit_engine.aa, line 68
+Error: there were errors during elaboration, check the log
+Error: there were errors during elaboration, check the log
+AaOpt -B nic.linked.aa | vcFormat > nic.linked.opt.aa
+Info:  AaOpt built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: elaborating the program .... initializing the call-graph
+Info: mapping target object references..
+Info: mapping source object references..
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+Info: marking modules reachable from root-modules ... 
+Info: propagating types in the program ... 
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
+Info: propagating constants in the program ... 
+Info: added 0 bits of buffering during path balancing.
+Aa2VC -O -C nic.linked.opt.aa | vcFormat > nic.vc
+Info:  Aa2VC built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: -O option selected, will parallelize straight-line sequences
+Info: -C option selected, will generate C-stubs for mixed C-VHDL simulation
+Info: elaborating the program .... initializing the call-graph
+Info: mapping target object references..
+Info: mapping source object references..
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+Info: marking modules reachable from root-modules ... 
+Info: propagating types in the program ... 
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
+Info: propagating constants in the program ... 
+Info: Writing optimized VC model.. 
+Info: Writing gated clocks.. 
+Info: Done writing optimized VC model.. 
+rm -rf vhdl
+mkdir vhdl
+mkdir vhdl/nic_lib
+#-D -O -S 4 -I 2 -v -a -C -e
+vc2vhdl -H -U  -O -a -C -e nic -W nic_lib -w -s ghdl -T ReceiveEngineDaemon -T nicRxFromMacDaemon -T transmitEngineDaemon -T controlDaemon  -T queueTestDaemon -f nic.vc -L /ahir/release//functionLibrary//fpu.list
+Info: hierarchical system file (.hsys) printing turned on.
+Info: -U option selected: suppress i/o pipes (set their depth = 0).
+Info: -O option selected, will try to compress control-path..
+Info: -a option selected: will try for minimum overall circuit area.
+Info: -C option selected: will generate testbench which connects to foreign link.
+Info: -e nic top-level VHDL entity will have name nic.unformatted_vhdl
+Info: -W option selected: generated VHDL will be in library nic_lib
+Info: -w nic will write separate system and testbench VHDL files.
+Info: -s ghdl option selected: will generate testbench with VHPI link.
+Info: module ReceiveEngineDaemon set as one of the ever-running top modules. 
+   NOTE: ReceiveEngineDaemon cannot have any input/output arguments.
+Info: module nicRxFromMacDaemon set as one of the ever-running top modules. 
+   NOTE: nicRxFromMacDaemon cannot have any input/output arguments.
+Info: module transmitEngineDaemon set as one of the ever-running top modules. 
+   NOTE: transmitEngineDaemon cannot have any input/output arguments.
+Info: module controlDaemon set as one of the ever-running top modules. 
+   NOTE: controlDaemon cannot have any input/output arguments.
+Info: module queueTestDaemon set as one of the ever-running top modules. 
+   NOTE: queueTestDaemon cannot have any input/output arguments.
+Info: will add library  /ahir/release//functionLibrary//fpu.list.
+Info: vcSystem::Add_Function_Library: added function library module fpu32 in VHDL library ahir with delay 18
+Info: vcSystem::Add_Function_Library: added function library module fpadd32 in VHDL library ahir with delay 14
+Info: vcSystem::Add_Function_Library: added function library module fpsub32 in VHDL library ahir with delay 14
+Info: vcSystem::Add_Function_Library: added function library module fpmul32 in VHDL library ahir with delay 12
+Info: vcSystem::Add_Function_Library: added function library module fpu64 in VHDL library ahir with delay 20
+Info: vcSystem::Add_Function_Library: added function library module fpadd64 in VHDL library ahir with delay 16
+Info: vcSystem::Add_Function_Library: added function library module fpsub64 in VHDL library ahir with delay 14
+Info: vcSystem::Add_Function_Library: added function library module fpmul64 in VHDL library ahir with delay 14
+vc2vhdl Error: did not find module ReceiveEngineDaemon in the system
+vc2vhdl Error: did not find module controlDaemon in the system
+vc2vhdl Error: did not find module nicRxFromMacDaemon in the system
+vc2vhdl Error: did not find module queueTestDaemon in the system
+vc2vhdl Error: did not find module transmitEngineDaemon in the system
+vc2vhdl Error: did not find module ReceiveEngineDaemon in the system
+vc2vhdl Error: did not find module controlDaemon in the system
+vc2vhdl Error: did not find module nicRxFromMacDaemon in the system
+vc2vhdl Error: did not find module queueTestDaemon in the system
+vc2vhdl Error: did not find module transmitEngineDaemon in the system
+There were errors during elaboration ... will not print VHDL
+Info: printing VHDL global package
+Info: printing top-level system VHDL file nic.unformatted_vhdl
+Info: printing VHDL model
+Info: total estimated buffering in system nic is 0
+Info: finished printing VHDL model
+Info: number of register bits used in FIFO's = 0
+Info: number of marked arcs removed during redundancy removal = 0
+vhdlFormat < nic_global_package.unformatted_vhdl > vhdl/nic_lib/nic_global_package.vhdl
+vhdlFormat < nic.unformatted_vhdl > vhdl/nic_lib/nic.vhdl
+vhdlFormat < nic_test_bench.unformatted_vhdl > vhdl/nic_lib/nic_test_bench.vhdl
+Aa2C -T ReceiveEngineDaemon -T nicRxFromMacDaemon -T transmitEngineDaemon -T controlDaemon  -T queueTestDaemon nic.linked.opt.aa -o ./
+Info:  Aa2C built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: marked ReceiveEngineDaemon as a top-level daemon. 
+Info: marked nicRxFromMacDaemon as a top-level daemon. 
+Info: marked transmitEngineDaemon as a top-level daemon. 
+Info: marked controlDaemon as a top-level daemon. 
+Info: marked queueTestDaemon as a top-level daemon. 
+Info: C output directory set to ./. 
+Info: elaborating the program .... initializing the call-graph
+Info: mapping target object references..
+Info: mapping source object references..
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+Info: marking modules reachable from root-modules ... 
+Info: propagating types in the program ... 
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
+Info: propagating constants in the program ... 
+rm -rf .Aa
+mkdir .Aa
+AaLinkExtMem ../../../NIC_GLUE_LOGIC/deconcatBlock/src/tx_deconcat.aa  ../../../NIC_GLUE_LOGIC/concatBlock/src/rx_concat.aa  ../pipes.aa  | vcFormat > .Aa/nic_mac_bridge.linked.aa
+Info:  AaLinkExtMem built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: Added module tx_deconcat
+Info: finished parsing file ../../../NIC_GLUE_LOGIC/deconcatBlock/src/tx_deconcat.aa
+Info: Added module rx_concat
+Info: finished parsing file ../../../NIC_GLUE_LOGIC/concatBlock/src/rx_concat.aa
+Info: parsed and added pipe tb_to_mac_data width = 64 depth = 2
+Info: parsed and added pipe mac_to_tb_data width = 64 depth = 2
+Info: parsed and added pipe MERGED_ACB_REQUEST width = 110 depth = 2
+Info: parsed and added pipe MERGED_ACB_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_TO_MEMORY_REQUEST width = 110 depth = 2
+Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe tb_to_mac_ctrl width = 16 depth = 2
+Info: parsed and added pipe mac_to_tb_ctrl width = 16 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_TO_TB_MEM width = 64 depth = 2
+Info: parsed and added pipe TB_MEM_TO_TEST_SYSTEM width = 64 depth = 2
+Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
+Info: parsed and added pipe MAC_ENABLE_8 width = 8 depth = 1
+Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe tb_to_nic_slave_request width = 64 depth = 1
+Info: parsed and added pipe nic_slave_response_to_tb width = 32 depth = 1
+Info: parsed and added pipe TEST_SYSTEM_MEM_RESPONSE width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_REQUEST width = 64 depth = 2
+Info: parsed and added pipe TB_PROCESSOR_TO_MEM width = 64 depth = 2
+Info: parsed and added pipe MEM_TO_TB_PROCESSOR width = 64 depth = 2
+Info: parsed and added pipe AFB_NIC_REQUEST width = 74 depth = 2
+Info: parsed and added pipe AFB_NIC_RESPONSE width = 33 depth = 2
+Info: parsed and added pipe nic_to_mac_transmit_pipe width = 73 depth = 2
+Info: parsed and added pipe mac_to_nic_data width = 73 depth = 2
+Info: parsed and added pipe rx_in_pipe width = 10 depth = 2
+Info: parsed and added pipe tx_out_pipe width = 10 depth = 2
+Info: parsed and added pipe tb_to_nic_mac_bridge width = 16 depth = 2
+Info: parsed and added pipe nic_mac_bridge_to_tb width = 16 depth = 2
+Info: parsed and added pipe rx_out_pipe width = 73 depth = 2
+Info: parsed and added pipe tx_in_pipe width = 73 depth = 2
+Info: parsed and added pipe debug_queue_command width = 64 depth = 1
+Info: parsed and added pipe debug_queue_response width = 64 depth = 1
+Info: parsed and added pipe QUEUE_MONITOR_SIGNAL width = 32 depth = 1
+Info: finished parsing file ../pipes.aa
+Info: Added module global_storage_initializer_
+Info: elaborating the program .... initializing the call-graph
+Info: mapping target object references..
+Info: mapping source object references..
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+	global_storage_initializer_
+	rx_concat
+	tx_deconcat
+Info: marking modules reachable from root-modules ... 
+Info: module global_storage_initializer_ is reachable from a specified root module.
+Info: module rx_concat is reachable from a specified root module.
+Info: module tx_deconcat is reachable from a specified root module.
+Info: propagating types in the program ... 
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
+Info: propagating constants in the program ... 
+#AaLinkExtMem /pipes.aa /rx_concat.aa | vcFormat > rx_concat.linked.aa
+AaOpt -B .Aa/nic_mac_bridge.linked.aa | vcFormat > .Aa/nic_mac_bridge.linked.opt.aa
+Info:  AaOpt built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: parsed and added pipe AFB_NIC_REQUEST width = 74 depth = 2
+Info: parsed and added pipe AFB_NIC_RESPONSE width = 33 depth = 2
+Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
+Info: parsed and added pipe MAC_ENABLE_8 width = 8 depth = 1
+Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe MEM_TO_TB_PROCESSOR width = 64 depth = 2
+Info: parsed and added pipe MERGED_ACB_REQUEST width = 110 depth = 2
+Info: parsed and added pipe MERGED_ACB_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe NIC_TO_MEMORY_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe QUEUE_MONITOR_SIGNAL width = 32 depth = 1
+Info: parsed and added pipe TB_MEM_TO_TEST_SYSTEM width = 64 depth = 2
+Info: parsed and added pipe TB_PROCESSOR_TO_MEM width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_REQUEST width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_RESPONSE width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_TO_TB_MEM width = 64 depth = 2
+Info: parsed and added pipe debug_queue_command width = 64 depth = 1
+Info: parsed and added pipe debug_queue_response width = 64 depth = 1
+Info: parsed and added pipe mac_to_nic_data width = 73 depth = 2
+Info: parsed and added pipe mac_to_tb_ctrl width = 16 depth = 2
+Info: parsed and added pipe mac_to_tb_data width = 64 depth = 2
+Info: parsed and added pipe nic_mac_bridge_to_tb width = 16 depth = 2
+Info: parsed and added pipe nic_slave_response_to_tb width = 32 depth = 1
+Info: parsed and added pipe nic_to_mac_transmit_pipe width = 73 depth = 2
+Info: parsed and added pipe rx_in_pipe width = 10 depth = 2
+Info: parsed and added pipe rx_out_pipe width = 73 depth = 2
+Info: parsed and added pipe tb_to_mac_ctrl width = 16 depth = 2
+Info: parsed and added pipe tb_to_mac_data width = 64 depth = 2
+Info: parsed and added pipe tb_to_nic_mac_bridge width = 16 depth = 2
+Info: parsed and added pipe tb_to_nic_slave_request width = 64 depth = 1
+Info: parsed and added pipe tx_in_pipe width = 73 depth = 2
+Info: parsed and added pipe tx_out_pipe width = 10 depth = 2
+Info: Added module global_storage_initializer_
+Info: Added module rx_concat
+Info: Added module tx_deconcat
+Info: elaborating the program .... initializing the call-graph
+Info: mapping target object references..
+Info: mapping source object references..
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+	global_storage_initializer_
+	rx_concat
+	tx_deconcat
+Info: marking modules reachable from root-modules ... 
+Info: module global_storage_initializer_ is reachable from a specified root module.
+Info: module rx_concat is reachable from a specified root module.
+Info: module tx_deconcat is reachable from a specified root module.
+Info: propagating types in the program ... 
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
+Info: propagating constants in the program ... 
+Info:  started equalizing paths for do-while statement do_while_stmt_50 in module rx_concat
+Info: Longest path in do_while_stmt_50 is 1
+Info: ignored orphan statement: 			$volatile rx_ignore := ( $slice RX 0 0 )  $buffering 1
+
+Info:  started equalizing paths for do-while statement do_while_stmt_197 in module tx_deconcat
+Info: Longest path in do_while_stmt_197 is 1
+Info: added 0 bits of buffering during path balancing.
+rm -rf .vC
+mkdir .vC
+Aa2VC -O -C .Aa/nic_mac_bridge.linked.opt.aa | vcFormat > .vC/nic_mac_bridge.vc
+Info:  Aa2VC built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: -O option selected, will parallelize straight-line sequences
+Info: -C option selected, will generate C-stubs for mixed C-VHDL simulation
+Info: parsed and added pipe AFB_NIC_REQUEST width = 74 depth = 2
+Info: parsed and added pipe AFB_NIC_RESPONSE width = 33 depth = 2
+Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
+Info: parsed and added pipe MAC_ENABLE_8 width = 8 depth = 1
+Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe MEM_TO_TB_PROCESSOR width = 64 depth = 2
+Info: parsed and added pipe MERGED_ACB_REQUEST width = 110 depth = 2
+Info: parsed and added pipe MERGED_ACB_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe NIC_TO_MEMORY_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe QUEUE_MONITOR_SIGNAL width = 32 depth = 1
+Info: parsed and added pipe TB_MEM_TO_TEST_SYSTEM width = 64 depth = 2
+Info: parsed and added pipe TB_PROCESSOR_TO_MEM width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_REQUEST width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_RESPONSE width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_TO_TB_MEM width = 64 depth = 2
+Info: parsed and added pipe debug_queue_command width = 64 depth = 1
+Info: parsed and added pipe debug_queue_response width = 64 depth = 1
+Info: parsed and added pipe mac_to_nic_data width = 73 depth = 2
+Info: parsed and added pipe mac_to_tb_ctrl width = 16 depth = 2
+Info: parsed and added pipe mac_to_tb_data width = 64 depth = 2
+Info: parsed and added pipe nic_mac_bridge_to_tb width = 16 depth = 2
+Info: parsed and added pipe nic_slave_response_to_tb width = 32 depth = 1
+Info: parsed and added pipe nic_to_mac_transmit_pipe width = 73 depth = 2
+Info: parsed and added pipe rx_in_pipe width = 10 depth = 2
+Info: parsed and added pipe rx_out_pipe width = 73 depth = 2
+Info: parsed and added pipe tb_to_mac_ctrl width = 16 depth = 2
+Info: parsed and added pipe tb_to_mac_data width = 64 depth = 2
+Info: parsed and added pipe tb_to_nic_mac_bridge width = 16 depth = 2
+Info: parsed and added pipe tb_to_nic_slave_request width = 64 depth = 1
+Info: parsed and added pipe tx_in_pipe width = 73 depth = 2
+Info: parsed and added pipe tx_out_pipe width = 10 depth = 2
+Info: Added module global_storage_initializer_
+Info: Added module rx_concat
+Info: Added module tx_deconcat
+Info: elaborating the program .... initializing the call-graph
+Info: mapping target object references..
+Info: mapping source object references..
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+	global_storage_initializer_
+	rx_concat
+	tx_deconcat
+Info: marking modules reachable from root-modules ... 
+Info: module global_storage_initializer_ is reachable from a specified root module.
+Info: module rx_concat is reachable from a specified root module.
+Info: module tx_deconcat is reachable from a specified root module.
+Info: propagating types in the program ... 
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
+Info: propagating constants in the program ... 
+Info: Writing optimized VC model.. 
+Info: Writing gated clocks.. 
+Info: Done writing optimized VC model.. 
+rm -rf vhdl
+mkdir vhdl
+mkdir vhdl/nic_mac_bridge_lib
+mkdir vhdl/testbench
+#-D -O -S 4 -I 2 -v -a -C -e
+vc2vhdl -H -U  -O -a -C -e nic_mac_bridge -w -s ghdl -W nic_mac_bridge_lib  -T rx_concat -T tx_deconcat -f .vC/nic_mac_bridge.vc -L /ahir/release//functionLibrary//fpu.list
+Info: hierarchical system file (.hsys) printing turned on.
+Info: -U option selected: suppress i/o pipes (set their depth = 0).
+Info: -O option selected, will try to compress control-path..
+Info: -a option selected: will try for minimum overall circuit area.
+Info: -C option selected: will generate testbench which connects to foreign link.
+Info: -e nic_mac_bridge top-level VHDL entity will have name nic_mac_bridge.unformatted_vhdl
+Info: -w nic_mac_bridge will write separate system and testbench VHDL files.
+Info: -s ghdl option selected: will generate testbench with VHPI link.
+Info: -W option selected: generated VHDL will be in library nic_mac_bridge_lib
+Info: module rx_concat set as one of the ever-running top modules. 
+   NOTE: rx_concat cannot have any input/output arguments.
+Info: module tx_deconcat set as one of the ever-running top modules. 
+   NOTE: tx_deconcat cannot have any input/output arguments.
+Info: will add library  /ahir/release//functionLibrary//fpu.list.
+Info: vcSystem::Add_Function_Library: added function library module fpu32 in VHDL library ahir with delay 18
+Info: vcSystem::Add_Function_Library: added function library module fpadd32 in VHDL library ahir with delay 14
+Info: vcSystem::Add_Function_Library: added function library module fpsub32 in VHDL library ahir with delay 14
+Info: vcSystem::Add_Function_Library: added function library module fpmul32 in VHDL library ahir with delay 12
+Info: vcSystem::Add_Function_Library: added function library module fpu64 in VHDL library ahir with delay 20
+Info: vcSystem::Add_Function_Library: added function library module fpadd64 in VHDL library ahir with delay 16
+Info: vcSystem::Add_Function_Library: added function library module fpsub64 in VHDL library ahir with delay 14
+Info: vcSystem::Add_Function_Library: added function library module fpmul64 in VHDL library ahir with delay 14
+Warning: module global_storage_initializer_ is not reachable from a top-level module, ignored
+Info: Info: transition [phi_stmt_52_merged_reqs] is isolated, removed.
+Warning: exit not reachable from every element in region branch_block_stmt_49/do_while_stmt_50/do_while_stmt_50_loop_body
+Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
+Info: Started Fix_Combinational_Loops (pass 1)
+Info: Started will double buffer interlock-buffers if needed
+Info:  Total number of strongly-connected-components is 101
+Info:  Fix_Combi pass OK
+Info: reducing Control-path 
+Info: finding nucleii 
+Info: in CPForkblock [rx_concat_CP], adding SCC arcs
+Info: in CPForkblock [rx_concat_CP], added 0 SCC arcs
+Info:  Total number of strongly-connected-components is 31
+Info: SCC 0
+	e_0
+Info: SCC 1
+	e_1
+Info: SCC 2
+	e_2
+Info: SCC 3
+	e_45
+Info: SCC 4
+	e_3
+Info: SCC 5
+	e_4
+Info: SCC 6
+	e_44
+Info: SCC 7
+	e_43
+Info: SCC 8
+	e_5
+Info: SCC 9
+	e_6
+Info: SCC 10
+	e_20
+Info: SCC 11
+	e_7
+Info: SCC 12
+	e_22
+Info: SCC 13
+	e_8
+Info: SCC 14
+	e_42
+Info: SCC 15
+	e_10
+Info: SCC 16
+	e_13
+Info: SCC 17
+	e_35
+	e_37
+	e_36
+	e_34
+	e_33
+	e_19
+	e_18
+	e_38
+	e_17
+	e_40
+	e_39
+	e_11
+	e_12
+	e_14
+	e_15
+	e_16
+Info: SCC 18
+	e_41
+Info: SCC 19
+	e_9
+Info: SCC 20
+	e_21
+Info: SCC 21
+	e_23
+Info: SCC 22
+	e_24
+Info: SCC 23
+	e_27
+Info: SCC 24
+	e_25
+Info: SCC 25
+	e_28
+Info: SCC 26
+	e_26
+Info: SCC 27
+	e_29
+Info: SCC 28
+	e_31
+Info: SCC 29
+	e_32
+Info: SCC 30
+	e_30
+Warning: all elements not reachable from entry in region branch_block_stmt_192/do_while_stmt_193/do_while_stmt_193_loop_body
+Warning: exit not reachable from every element in region branch_block_stmt_192/do_while_stmt_193/do_while_stmt_193_loop_body
+Info: Detect and try to fix combinational loops by increasing interlock-buffering (two passes)
+Info: Started Fix_Combinational_Loops (pass 1)
+Info: Started will double buffer interlock-buffers if needed
+Info:  Total number of strongly-connected-components is 136
+Info:  Fix_Combi pass OK
+Info: reducing Control-path 
+Info: finding nucleii 
+Info: in CPForkblock [tx_deconcat_CP], adding SCC arcs
+Info: in CPForkblock [tx_deconcat_CP], added 0 SCC arcs
+Info:  Total number of strongly-connected-components is 15
+Info: SCC 0
+	e_0
+Info: SCC 1
+	e_1
+Info: SCC 2
+	e_2
+Info: SCC 3
+	e_40
+Info: SCC 4
+	e_3
+Info: SCC 5
+	e_4
+Info: SCC 6
+	e_39
+Info: SCC 7
+	e_38
+Info: SCC 8
+	e_5
+Info: SCC 9
+	e_6
+Info: SCC 10
+	e_7
+Info: SCC 11
+	e_8
+Info: SCC 12
+	e_37
+Info: SCC 13
+	e_18
+	e_17
+	e_29
+	e_27
+	e_36
+	e_35
+	e_34
+	e_24
+	e_26
+	e_16
+	e_14
+	e_15
+	e_32
+	e_13
+	e_12
+	e_11
+	e_31
+	e_30
+	e_23
+	e_25
+	e_33
+	e_22
+	e_21
+	e_20
+	e_19
+	e_10
+	e_28
+Info: SCC 14
+	e_9
+Info: printing VHDL global package
+Info: printing top-level system VHDL file nic_mac_bridge.unformatted_vhdl
+Info: printing VHDL model
+Info: printing VHDL model for module rx_concat
+Info: resources used by CP rx_concat_CP_3: ff-count=46 (saved 26), mux2-count= 27, and2-count= 10
+Info: estimated buffering for operator RPIPE_rx_in_pipe_68_inst = 10
+Info: estimated buffering for operator next_CIRCULANT_175_54_buf = 76
+Info: estimated buffering for operator phi_stmt_52 = 76
+Info: estimated buffering in module rx_concat is 162
+Info: printing VHDL model for module tx_deconcat
+Info: resources used by CP tx_deconcat_CP_120: ff-count=20 (saved 16), mux2-count= 18, and2-count= 0
+Info: estimated buffering for operator RPIPE_tx_in_pipe_196_inst = 73
+Info: estimated buffering in module tx_deconcat is 73
+Info: total estimated buffering in system nic_mac_bridge is 235
+Warning: pipe AFB_NIC_REQUEST not used in the system, ignored
+Warning: pipe AFB_NIC_RESPONSE not used in the system, ignored
+Warning: pipe MAC_ENABLE not used in the system, ignored
+Warning: pipe MAC_ENABLE_8 not used in the system, ignored
+Warning: pipe MEMORY_TO_NIC_RESPONSE not used in the system, ignored
+Warning: pipe MEM_TO_TB_PROCESSOR not used in the system, ignored
+Warning: pipe MERGED_ACB_REQUEST not used in the system, ignored
+Warning: pipe MERGED_ACB_RESPONSE not used in the system, ignored
+Warning: pipe NIC_INTR not used in the system, ignored
+Warning: pipe NIC_TO_MEMORY_REQUEST not used in the system, ignored
+Warning: pipe PROCESSOR_ACB_MEM_REQUEST not used in the system, ignored
+Warning: pipe PROCESSOR_ACB_MEM_RESPONSE not used in the system, ignored
+Warning: pipe QUEUE_MONITOR_SIGNAL not used in the system, ignored
+Warning: pipe TB_MEM_TO_TEST_SYSTEM not used in the system, ignored
+Warning: pipe TB_PROCESSOR_TO_MEM not used in the system, ignored
+Warning: pipe TEST_SYSTEM_MEM_REQUEST not used in the system, ignored
+Warning: pipe TEST_SYSTEM_MEM_RESPONSE not used in the system, ignored
+Warning: pipe TEST_SYSTEM_TO_TB_MEM not used in the system, ignored
+Warning: pipe debug_queue_command not used in the system, ignored
+Warning: pipe debug_queue_response not used in the system, ignored
+Warning: pipe mac_to_nic_data not used in the system, ignored
+Warning: pipe mac_to_tb_ctrl not used in the system, ignored
+Warning: pipe mac_to_tb_data not used in the system, ignored
+Warning: pipe nic_mac_bridge_to_tb not used in the system, ignored
+Warning: pipe nic_slave_response_to_tb not used in the system, ignored
+Warning: pipe nic_to_mac_transmit_pipe not used in the system, ignored
+Warning: pipe tb_to_mac_ctrl not used in the system, ignored
+Warning: pipe tb_to_mac_data not used in the system, ignored
+Warning: pipe tb_to_nic_mac_bridge not used in the system, ignored
+Warning: pipe tb_to_nic_slave_request not used in the system, ignored
+Info: finished printing VHDL model
+Info: number of register bits used in FIFO's = 0
+Info: number of marked arcs removed during redundancy removal = 10
+vhdlFormat < nic_mac_bridge.unformatted_vhdl > vhdl/nic_mac_bridge_lib/nic_mac_bridge.vhdl
+vhdlFormat < nic_mac_bridge_global_package.unformatted_vhdl > vhdl/nic_mac_bridge_lib/nic_mac_bridge_global_package.vhdl
+vhdlFormat < nic_mac_bridge_test_bench.unformatted_vhdl > nic_mac_bridge_test_bench.vhdl
+rm -rf *unformatted_vhdl
+rm -rf aa2c
+mkdir aa2c
+Aa2C -T rx_concat -T tx_deconcat .Aa/nic_mac_bridge.linked.opt.aa -o aa2c/
+Info:  Aa2C built on AHIR commit 9bab90d2fbfa70d45ed410df32fc7e6e35726f14
+Info:     Date: Mon Feb 1 17:21:43 2021 +0530
+Info: marked rx_concat as a top-level daemon. 
+Info: marked tx_deconcat as a top-level daemon. 
+Info: C output directory set to aa2c/. 
+Info: parsed and added pipe AFB_NIC_REQUEST width = 74 depth = 2
+Info: parsed and added pipe AFB_NIC_RESPONSE width = 33 depth = 2
+Info: parsed and added pipe MAC_ENABLE width = 1 depth = 1
+Info: parsed and added pipe MAC_ENABLE_8 width = 8 depth = 1
+Info: parsed and added pipe MEMORY_TO_NIC_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe MEM_TO_TB_PROCESSOR width = 64 depth = 2
+Info: parsed and added pipe MERGED_ACB_REQUEST width = 110 depth = 2
+Info: parsed and added pipe MERGED_ACB_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe NIC_INTR width = 1 depth = 1
+Info: parsed and added pipe NIC_TO_MEMORY_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_REQUEST width = 110 depth = 2
+Info: parsed and added pipe PROCESSOR_ACB_MEM_RESPONSE width = 65 depth = 2
+Info: parsed and added pipe QUEUE_MONITOR_SIGNAL width = 32 depth = 1
+Info: parsed and added pipe TB_MEM_TO_TEST_SYSTEM width = 64 depth = 2
+Info: parsed and added pipe TB_PROCESSOR_TO_MEM width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_REQUEST width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_MEM_RESPONSE width = 64 depth = 2
+Info: parsed and added pipe TEST_SYSTEM_TO_TB_MEM width = 64 depth = 2
+Info: parsed and added pipe debug_queue_command width = 64 depth = 1
+Info: parsed and added pipe debug_queue_response width = 64 depth = 1
+Info: parsed and added pipe mac_to_nic_data width = 73 depth = 2
+Info: parsed and added pipe mac_to_tb_ctrl width = 16 depth = 2
+Info: parsed and added pipe mac_to_tb_data width = 64 depth = 2
+Info: parsed and added pipe nic_mac_bridge_to_tb width = 16 depth = 2
+Info: parsed and added pipe nic_slave_response_to_tb width = 32 depth = 1
+Info: parsed and added pipe nic_to_mac_transmit_pipe width = 73 depth = 2
+Info: parsed and added pipe rx_in_pipe width = 10 depth = 2
+Info: parsed and added pipe rx_out_pipe width = 73 depth = 2
+Info: parsed and added pipe tb_to_mac_ctrl width = 16 depth = 2
+Info: parsed and added pipe tb_to_mac_data width = 64 depth = 2
+Info: parsed and added pipe tb_to_nic_mac_bridge width = 16 depth = 2
+Info: parsed and added pipe tb_to_nic_slave_request width = 64 depth = 1
+Info: parsed and added pipe tx_in_pipe width = 73 depth = 2
+Info: parsed and added pipe tx_out_pipe width = 10 depth = 2
+Info: Added module global_storage_initializer_
+Info: Added module rx_concat
+Info: Added module tx_deconcat
+Info: elaborating the program .... initializing the call-graph
+Info: mapping target object references..
+Info: mapping source object references..
+Info: checking for cycles in the call-graph ... 
+Info: module order:
+	global_storage_initializer_
+	rx_concat
+	tx_deconcat
+Info: marking modules reachable from root-modules ... 
+Info: module global_storage_initializer_ is reachable from a specified root module.
+Info: module rx_concat is reachable from a specified root module.
+Info: module tx_deconcat is reachable from a specified root module.
+Info: propagating types in the program ... 
+Info: coalescing storage into distinct memory spaces ... 
+Info: Marking foreign pointers in modules which are not called from the program
+Info: Coalescing storage from native objects..
+Info: Finished coalescing storage.. identified 0 disjoint memory space(s)
+Info: propagating constants in the program ... 
+Info: simulator option is ghdl.
+Info: output-directory is vhdl.
+Info: adding pipe MAC_ENABLE width = 1, depth = 1 to global map 
+Info: marking pipe MAC_ENABLE as a signal in global set.
+Info: adding pipe NIC_INTR_ENABLE width = 1, depth = 1 to global map 
+Info: marking pipe NIC_INTR_ENABLE as a signal in global set.
+Info: adding pipe NIC_INTR_INTERNAL width = 1, depth = 1 to global map 
+Info: marking pipe NIC_INTR_INTERNAL as a signal in global set.
+Info: adding pipe NIC_INTR width = 1, depth = 1 to global map 
+Info: marking pipe NIC_INTR as a signal in global set.
+Info: adding pipe S_CONTROL_REGISTER width = 32, depth = 1 to global map 
+Info: marking pipe S_CONTROL_REGISTER as a signal in global set.
+Info: adding pipe S_NUMBER_OF_SERVERS width = 32, depth = 1 to global map 
+Info: marking pipe S_NUMBER_OF_SERVERS as a signal in global set.
+Info: adding pipe S_MAX_NENTRIES width = 32, depth = 1 to global map 
+Info: marking pipe S_MAX_NENTRIES as a signal in global set.
+Info: adding pipe S_FREE_RUNNING_COUNTER width = 32, depth = 1 to global map 
+Info: marking pipe S_FREE_RUNNING_COUNTER as a signal in global set.
+Info: adding pipe NIC_DEBUG_SIGNAL width = 256, depth = 1 to global map 
+Info: marking pipe NIC_DEBUG_SIGNAL as a signal in global set.
+Info: adding pipe tb_to_mac_data width = 64, depth = 2 to global map 
+Info: adding pipe mac_to_tb_data width = 64, depth = 2 to global map 
+Info: adding pipe MERGED_ACB_REQUEST width = 110, depth = 2 to global map 
+Info: adding pipe MERGED_ACB_RESPONSE width = 65, depth = 2 to global map 
+Info: adding pipe PROCESSOR_ACB_MEM_REQUEST width = 110, depth = 2 to global map 
+Info: adding pipe PROCESSOR_ACB_MEM_RESPONSE width = 65, depth = 2 to global map 
+Info: adding pipe NIC_TO_MEMORY_REQUEST width = 110, depth = 2 to global map 
+Info: adding pipe MEMORY_TO_NIC_RESPONSE width = 65, depth = 2 to global map 
+Info: adding pipe tb_to_mac_ctrl width = 16, depth = 2 to global map 
+Info: adding pipe mac_to_tb_ctrl width = 16, depth = 2 to global map 
+Info: adding pipe TEST_SYSTEM_TO_TB_MEM width = 64, depth = 2 to global map 
+Info: adding pipe TB_MEM_TO_TEST_SYSTEM width = 64, depth = 2 to global map 
+Info: adding pipe MAC_ENABLE width = 1, depth = 1 to global map 
+Info: marking pipe MAC_ENABLE as a signal in global set.
+Info: adding pipe MAC_ENABLE_8 width = 8, depth = 1 to global map 
+Info: marking pipe MAC_ENABLE_8 as a signal in global set.
+Info: adding pipe NIC_INTR width = 1, depth = 1 to global map 
+Info: marking pipe NIC_INTR as a signal in global set.
+Info: adding pipe tb_to_nic_slave_request width = 64, depth = 1 to global map 
+Info: adding pipe nic_slave_response_to_tb width = 32, depth = 1 to global map 
+Info: adding pipe TEST_SYSTEM_MEM_RESPONSE width = 64, depth = 2 to global map 
+Info: adding pipe TEST_SYSTEM_MEM_REQUEST width = 64, depth = 2 to global map 
+Info: adding pipe TB_PROCESSOR_TO_MEM width = 64, depth = 2 to global map 
+Info: adding pipe MEM_TO_TB_PROCESSOR width = 64, depth = 2 to global map 
+Info: adding pipe AFB_NIC_REQUEST width = 74, depth = 2 to global map 
+Info: adding pipe AFB_NIC_RESPONSE width = 33, depth = 2 to global map 
+Info: adding pipe nic_to_mac_transmit_pipe width = 73, depth = 2 to global map 
+Info: adding pipe mac_to_nic_data width = 73, depth = 2 to global map 
+Info: adding pipe rx_in_pipe width = 10, depth = 2 to global map 
+Info: adding pipe tx_out_pipe width = 10, depth = 2 to global map 
+Info: adding pipe tb_to_nic_mac_bridge width = 16, depth = 2 to global map 
+Info: adding pipe nic_mac_bridge_to_tb width = 16, depth = 2 to global map 
+Info: adding pipe rx_out_pipe width = 73, depth = 2 to global map 
+Info: adding pipe tx_in_pipe width = 73, depth = 2 to global map 
+Info: adding pipe debug_queue_command width = 64, depth = 1 to global map 
+Info: adding pipe debug_queue_response width = 64, depth = 1 to global map 
+Info: adding pipe QUEUE_MONITOR_SIGNAL width = 32, depth = 1 to global map 
+Info: marking pipe QUEUE_MONITOR_SIGNAL as a signal in global set.
+Info: setting library for acb_fast_tap to GlueModules
+Info: Added signal MIN_ADDR_TAP to system acb_fast_tap
+Info: Added signal MAX_ADDR_TAP to system acb_fast_tap
+Info: setting library for acb_fast_splitter to GlueModules
+Info: Added signal MIN_ADDR_LOW to system acb_fast_splitter
+Info: Added signal MAX_ADDR_LOW to system acb_fast_splitter
+Info: Added signal MIN_ADDR_HIGH to system acb_fast_splitter
+Info: Added signal MAX_ADDR_HIGH to system acb_fast_splitter
+Info: setting library for afb_fast_tap to GlueModules
+Info: Added signal MIN_ADDR_TAP to system afb_fast_tap
+Info: Added signal MAX_ADDR_TAP to system afb_fast_tap
+Info: setting library for icache_mux_bypass to GlueModules
+Info: setting library for icache_mux to GlueModules
+Info: setting library for acb_fast_mux to GlueModules
+Info: setting library for afb_fast_splitter to GlueModules
+Info: Added signal MIN_ADDR_LOW to system afb_fast_splitter
+Info: Added signal MAX_ADDR_LOW to system afb_fast_splitter
+Info: Added signal MIN_ADDR_HIGH to system afb_fast_splitter
+Info: Added signal MAX_ADDR_HIGH to system afb_fast_splitter
+Info: setting library for dcache_fast_interface_mux to GlueModules
+Info: setting library for afb_fast_mux to GlueModules
+Info: setting library for mem_reset_mux to GlueModules
+Info: setting library for dcache_mux to GlueModules
+Info: setting library for nic to nic_lib
+Info: setting library for tester to tester_lib
+Info: Added signal MAC_ENABLE to system tester
+Info: Added signal NIC_DEBUG_SIGNAL to system tester
+Info: Added signal NIC_INTR to system tester
+Info: Added signal MAC_ENABLE_8 to system tester
+Info: setting library for nic_mac_bridge to nic_mac_bridge_lib
+Info: setting library for test_system to test_lib
+Info: Added signal MAC_ENABLE_8 to system test_system
+Warning: Added internal pipe AFB_NIC_REQUEST to test_system
+Warning: Added internal pipe AFB_NIC_RESPONSE to test_system
+Warning: Added internal pipe rx_in_pipe to test_system
+Warning: Added internal pipe tx_out_pipe to test_system
+Warning: Added internal signal MAC_ENABLE to test_system
+Warning: Added internal pipe PROCESSOR_ACB_MEM_REQUEST to test_system
+Warning: Added internal pipe PROCESSOR_ACB_MEM_RESPONSE to test_system
+Warning: Added internal pipe MERGED_ACB_REQUEST to test_system
+Warning: Added internal pipe MERGED_ACB_RESPONSE to test_system
+Warning: mapping unmapped formal in instance tester_inst to default: NIC_DEBUG_SIGNAL
+Warning: Added internal signal NIC_DEBUG_SIGNAL to test_system
+Warning: mapping unmapped formal in instance tester_inst to default: NIC_INTR
+Warning: Added internal signal NIC_INTR to test_system
+Warning: Added internal pipe NIC_TO_MEMORY_REQUEST to test_system
+Warning: Added internal pipe MEMORY_TO_NIC_RESPONSE to test_system
+Warning: Added internal pipe nic_to_mac_transmit_pipe to test_system
+Warning: Added internal pipe mac_to_nic_data to test_system
+
+$system acb_fast_tap
+$library GlueModules
+$in 
+ $pipe CORE_BUS_REQUEST 110 $depth 2 
+ $pipe CORE_BUS_RESPONSE_TAP 65 $depth 2 
+ $pipe CORE_BUS_RESPONSE_THROUGH 65 $depth 2 
+ $signal MAX_ADDR_TAP 36 $depth 1 
+ $signal MIN_ADDR_TAP 36 $depth 1 
+
+$out 
+ $pipe CORE_BUS_REQUEST_TAP 110 $depth 2 
+ $pipe CORE_BUS_REQUEST_THROUGH 110 $depth 2 
+ $pipe CORE_BUS_RESPONSE 65 $depth 2 
+
+{
+}
+
+$system acb_fast_splitter
+$library GlueModules
+$in 
+ $pipe CORE_BUS_REQUEST 110 $depth 2 
+ $pipe CORE_BUS_RESPONSE_HIGH 65 $depth 2 
+ $pipe CORE_BUS_RESPONSE_LOW 65 $depth 2 
+ $signal MAX_ADDR_HIGH 36 $depth 1 
+ $signal MAX_ADDR_LOW 36 $depth 1 
+ $signal MIN_ADDR_HIGH 36 $depth 1 
+ $signal MIN_ADDR_LOW 36 $depth 1 
+
+$out 
+ $pipe CORE_BUS_REQUEST_HIGH 110 $depth 2 
+ $pipe CORE_BUS_REQUEST_LOW 110 $depth 2 
+ $pipe CORE_BUS_RESPONSE 65 $depth 2 
+
+{
+}
+
+$system afb_fast_tap
+$library GlueModules
+$in 
+ $pipe AFB_BUS_REQUEST 74 $depth 2 
+ $pipe AFB_BUS_RESPONSE_TAP 33 $depth 2 
+ $pipe AFB_BUS_RESPONSE_THROUGH 33 $depth 2 
+ $signal MAX_ADDR_TAP 36 $depth 1 
+ $signal MIN_ADDR_TAP 36 $depth 1 
+
+$out 
+ $pipe AFB_BUS_REQUEST_TAP 74 $depth 2 
+ $pipe AFB_BUS_REQUEST_THROUGH 74 $depth 2 
+ $pipe AFB_BUS_RESPONSE 33 $depth 2 
+
+{
+}
+
+$system icache_mux_bypass
+$library GlueModules
+$in 
+ $pipe muxed_icache_response 90 $depth 2 
+ $noblock $pipe noblock_icache_request_0 51 $depth 2 
+ $noblock $pipe noblock_icache_request_1 51 $depth 2 
+
+$out 
+ $pipe icache_response_0 90 $depth 2 
+ $pipe icache_response_1 90 $depth 2 
+ $noblock $pipe noblock_muxed_icache_request 51 $depth 2 
+
+{
+}
+
+$system icache_mux
+$library GlueModules
+$in 
+ $pipe muxed_icache_response 90 $depth 2 
+ $noblock $pipe noblock_icache_request_0 51 $depth 2 
+ $noblock $pipe noblock_icache_request_1 51 $depth 2 
+
+$out 
+ $pipe icache_response_0 90 $depth 2 
+ $pipe icache_response_1 90 $depth 2 
+ $noblock $pipe noblock_muxed_icache_request 51 $depth 2 
+
+{
+}
+
+$system acb_fast_mux
+$library GlueModules
+$in 
+ $pipe CORE_BUS_REQUEST_HIGH 110 $depth 2 
+ $pipe CORE_BUS_REQUEST_LOW 110 $depth 2 
+ $pipe CORE_BUS_RESPONSE 65 $depth 2 
+
+$out 
+ $pipe CORE_BUS_REQUEST 110 $depth 2 
+ $pipe CORE_BUS_RESPONSE_HIGH 65 $depth 2 
+ $pipe CORE_BUS_RESPONSE_LOW 65 $depth 2 
+
+{
+}
+
+$system afb_fast_splitter
+$library GlueModules
+$in 
+ $pipe AFB_BUS_REQUEST 74 $depth 2 
+ $pipe AFB_BUS_RESPONSE_HIGH 33 $depth 2 
+ $pipe AFB_BUS_RESPONSE_LOW 33 $depth 2 
+ $signal MAX_ADDR_HIGH 36 $depth 1 
+ $signal MAX_ADDR_LOW 36 $depth 1 
+ $signal MIN_ADDR_HIGH 36 $depth 1 
+ $signal MIN_ADDR_LOW 36 $depth 1 
+
+$out 
+ $pipe AFB_BUS_REQUEST_HIGH 74 $depth 2 
+ $pipe AFB_BUS_REQUEST_LOW 74 $depth 2 
+ $pipe AFB_BUS_RESPONSE 33 $depth 2 
+
+{
+}
+
+$system dcache_fast_interface_mux
+$library GlueModules
+$in 
+ $pipe muxed_dcache_response 72 $depth 2 
+ $noblock $pipe noblock_dcache_request_0 151 $depth 2 
+ $noblock $pipe noblock_dcache_request_1 151 $depth 2 
+
+$out 
+ $pipe dcache_response_0 72 $depth 2 
+ $pipe dcache_response_1 72 $depth 2 
+ $noblock $pipe noblock_muxed_dcache_request 151 $depth 2 
+
+{
+}
+
+$system afb_fast_mux
+$library GlueModules
+$in 
+ $pipe AFB_BUS_REQUEST_HIGH 74 $depth 2 
+ $pipe AFB_BUS_REQUEST_LOW 74 $depth 2 
+ $pipe AFB_BUS_RESPONSE 33 $depth 2 
+
+$out 
+ $pipe AFB_BUS_REQUEST 74 $depth 2 
+ $pipe AFB_BUS_RESPONSE_HIGH 33 $depth 2 
+ $pipe AFB_BUS_RESPONSE_LOW 33 $depth 2 
+
+{
+}
+
+$system mem_reset_mux
+$library GlueModules
+$in 
+ $pipe muxed_reset_response 1 $depth 1 
+ $noblock $pipe noblock_reset_request_0 1 $depth 1 
+ $noblock $pipe noblock_reset_request_1 1 $depth 1 
+
+$out 
+ $noblock $pipe noblock_muxed_reset_request 1 $depth 1 
+ $pipe reset_response_0 1 $depth 1 
+ $pipe reset_response_1 1 $depth 1 
+
+{
+}
+
+$system dcache_mux
+$library GlueModules
+$in 
+ $pipe muxed_dcache_response 72 $depth 2 
+ $noblock $pipe noblock_dcache_request_0 129 $depth 2 
+ $noblock $pipe noblock_dcache_request_1 129 $depth 2 
+
+$out 
+ $pipe dcache_response_0 72 $depth 2 
+ $pipe dcache_response_1 72 $depth 2 
+ $noblock $pipe noblock_muxed_dcache_request 129 $depth 2 
+
+{
+}
+
+$system nic
+$library nic_lib
+$in 
+$out 
+{
+}
+
+$system tester
+$library tester_lib
+$in 
+ $pipe AFB_NIC_RESPONSE 33 $depth 2 
+ $signal MAC_ENABLE 1 $depth 1 
+ $pipe MERGED_ACB_REQUEST 110 $depth 2 
+ $signal NIC_DEBUG_SIGNAL 256 $depth 1 
+ $signal NIC_INTR 1 $depth 1 
+ $pipe PROCESSOR_ACB_MEM_RESPONSE 65 $depth 2 
+ $pipe TB_MEM_TO_TEST_SYSTEM 64 $depth 2 
+ $pipe TB_PROCESSOR_TO_MEM 64 $depth 2 
+ $pipe tb_to_nic_mac_bridge 16 $depth 2 
+ $pipe tb_to_nic_slave_request 64 $depth 1 
+ $pipe tx_out_pipe 10 $depth 2 
+
+$out 
+ $pipe AFB_NIC_REQUEST 74 $depth 2 
+ $signal MAC_ENABLE_8 8 $depth 1 
+ $pipe MEM_TO_TB_PROCESSOR 64 $depth 2 
+ $pipe MERGED_ACB_RESPONSE 65 $depth 2 
+ $pipe PROCESSOR_ACB_MEM_REQUEST 110 $depth 2 
+ $pipe TEST_SYSTEM_TO_TB_MEM 64 $depth 2 
+ $pipe nic_mac_bridge_to_tb 16 $depth 2 
+ $pipe nic_slave_response_to_tb 32 $depth 1 
+ $pipe rx_in_pipe 10 $depth 2 
+
+{
+}
+
+$system nic_mac_bridge
+$library nic_mac_bridge_lib
+$in 
+ $pipe rx_in_pipe 10 $depth 2 
+ $pipe tx_in_pipe 73 $depth 2 
+
+$out 
+ $pipe rx_out_pipe 73 $depth 2 
+ $pipe tx_out_pipe 10 $depth 2 
+
+{
+}
+Error: in test_system, internal pipe AFB_NIC_REQUEST does not drive anything.
+Error: in test_system, internal pipe AFB_NIC_RESPONSE is not driven.
+Error: in test_system, internal pipe MAC_ENABLE is not driven.
+Error: in test_system, internal pipe MEMORY_TO_NIC_RESPONSE does not drive anything.
+Error: in test_system, internal pipe NIC_DEBUG_SIGNAL is not driven.
+Error: in test_system, internal pipe NIC_INTR is not driven.
+Error: in test_system, internal pipe NIC_TO_MEMORY_REQUEST is not driven.
+Error: in test_system, internal pipe mac_to_nic_data does not drive anything.
+Error: in test_system, internal pipe nic_to_mac_transmit_pipe is not driven.
+Error: in test_system, in pipe debug_queue_command does not drive anything.
+Error: in test_system, out pipe debug_queue_response is not driven by anything.
+Error: in building system test_system
+Error: there were 11 errors.
+../../../../SOURCE/VHDL_LIBS
+ghdl: cannot open ../vhdl/test_lib/test_system.vhdl
+ghdl: cannot open ../vhdl/testbench/test_system_test_bench.vhdl
+ghdl: cannot find entity or configuration test_system_test_bench

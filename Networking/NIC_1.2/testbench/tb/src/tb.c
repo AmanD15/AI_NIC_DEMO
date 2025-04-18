@@ -13,37 +13,42 @@
 #include "pipeHandler.h"
 #include "pthreadUtils.h"
 #include "nic_driver.h"
-#include "tb_queue.h"
+//#include "tb_queue.h"
 
 int packet_lengths[4] = {32, 37, 49, 64};
 
 // 512 MB, 64K dwords
 #define MEMSIZE (16*4096)
+#define NSERVERS 1		// servers_enable (max = 4);	from server_id 0 to (max-1) 
 #define NBUFFERS 4  		// for debug purposes, keep it 1, later 4 or 8 or ....
 
-int number_of_packets = 16;
+const int NIC_ID = 0;
+const int FQ_SERVER_ID = 0;
+
+int number_of_packets = 4;
 
 uint64_t  mem_array [16*4096];
 int 	  err_flag = 0;
 
-uint32_t  free_queue_base_address = 0;      // includes 128-bytes for buffer.
-uint32_t  rx_queue_base_address   = 256;    // includes 128-bytes for buffer.
-uint32_t  tx_queue_base_address   = 512;    // includes 128-bytes for buffer.
+/*
+uint32_t  free_queue_base_address = 0;      
+uint32_t  rx_queue_base_address   = 256;    
+uint32_t  tx_queue_base_address   = 512;    
 
 uint32_t  free_queue_bget_address = 128;  
 uint32_t  rx_queue_bget_address   = 256 + 128;    
 uint32_t  tx_queue_bget_address   = 512 + 128;   
+*/
 
+// buffers for packets
+uint32_t  buffer_addresses[NBUFFERS];
 
-// four buffers for packets, each buffer has a capacity
-// of 1024 bytes.
-uint32_t  buffer_addresses[4]     = {1024, 2048, 3072, 4096};
-
+/*
 // lock addresses
 uint32_t free_queue_lock_address = 8092;
 uint32_t rx_queue_lock_address   = 8093;
 uint32_t tx_queue_lock_address   = 8094;
-
+*/
 
 uint32_t accessNicReg (uint8_t rwbar, uint32_t nic_id, uint32_t reg_index, uint32_t reg_value)
 {
@@ -73,6 +78,7 @@ uint32_t readFromNicReg (uint32_t nic_id, uint32_t reg_index)
 	return(retval);
 }
 
+/*
 void     setPhysicalAddressInNicRegPair (uint32_t nic_id, uint32_t reg_index, uint64_t pa)
 {
 	uint32_t hval = (pa >> 32) & 0xffffffff;
@@ -92,16 +98,190 @@ uint64_t getPhysicalAddressInNicRegPair (uint32_t nic_id, uint32_t reg_index)
 
 	return(rval);
 }
+*/
 
-void     setNumberOfServersInNic (uint32_t nic_id, uint32_t number_of_servers)
+void     setNumberOfServersInNic (uint32_t nic_id, uint32_t number_of_servers_enabled)
 {
-	writeToNicReg (nic_id, P_N_SERVERS_REGISTER_INDEX, number_of_servers);
+	writeToNicReg (nic_id, P_N_SERVERS_REGISTER_INDEX, number_of_servers_enabled);
 }
 
 uint32_t getNumberOfServersInNic (uint32_t nic_id)
 {
 	return(readFromNicReg (nic_id, P_N_SERVERS_REGISTER_INDEX));
 }
+
+
+void     setNumberOfBuffersInQueue (uint32_t nic_id, uint32_t number_of_buffers)
+{
+	writeToNicReg (nic_id, P_N_BUFFERS_REGISTER_INDEX, number_of_buffers);
+}
+
+uint32_t getNumberOfBuffersInQueue (uint32_t nic_id)
+{
+	return(readFromNicReg (nic_id, P_N_BUFFERS_REGISTER_INDEX));
+}
+
+
+// return 0 on successful acquire.
+int acquireLock(uint32_t nic_id)
+{
+#ifdef DEBUGPRINT
+	fprintf(stderr,"Info: entered acquireLock\n");
+#endif
+
+	// get the lock value and 
+	uint32_t val = readFromNicReg (nic_id, P_FREE_QUEUE_LOCK_INDEX);
+
+#ifdef DEBUGPRINT
+	fprintf(stderr,"Info: acquireLock lock-value = 0x%x\n", val);
+#endif
+
+	if(val == 0x0)
+	{
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: acquireLock success.\n");
+#endif
+		return(0);
+	}
+	else 
+	{
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: acquireLock failure.\n");
+#endif
+	}
+	return(1);
+}
+
+int releaseLock(uint32_t nic_id)
+{
+#ifdef DEBUGPRINT
+	fprintf(stderr,"Info: entered releaseLock\n");
+#endif
+
+	// write the lock value and unlock the memory.
+	writeToNicReg (nic_id, P_FREE_QUEUE_LOCK_INDEX, 0);
+#ifdef DEBUGPRINT
+	fprintf(stderr,"Info: leaving releaseLock \n");
+#endif
+	return(0);
+}
+
+
+// return 0 on success
+int pushIntoQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uint32_t push_value)
+{
+	uint32_t reg_index;
+	switch(queue_type)
+	{
+		case FREEQUEUE     : reg_index = P_FREE_QUEUE_INDEX;    break;
+		case RXQUEUE       : reg_index = (P_RX_QUEUE_0_INDEX + (2*server_id)); break;
+		case TXQUEUE       : reg_index = (P_TX_QUEUE_0_INDEX + (2*server_id)); break;	
+	}
+
+#ifdef DEBUGPRINT
+	fprintf(stderr,"Info: entered pushIntoQueue 0x%x \n", val);
+#endif
+	int ret_val = 1;
+	
+	uint32_t init_status = readFromNicReg (nic_id, reg_index + 1);
+	uint16_t init_nentries = (init_status >> 16) & 0xFFFF;  // Extract the 16 most significant bits
+    	uint8_t init_push_status = (init_status >> 8) & 0xFF;      // Extract the next 8 bits
+    	uint8_t init_pop_status = init_status & 0xFF;             // Extract the least significant 8 bits
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: pushIntoQueue: before push: nentries=%d, push_status=0x%x, pop_status=0x%x.\n",
+					init_nentries, init_push_status, init_pop_status);
+#endif
+
+	writeToNicReg (nic_id, reg_index, push_value);
+
+	uint32_t final_status = readFromNicReg (nic_id, reg_index + 1);
+	uint16_t final_nentries = (init_status >> 16) & 0xFFFF;  // Extract the 16 most significant bits
+    	uint8_t final_push_status = (init_status >> 8) & 0xFF;      // Extract the next 8 bits
+    	uint8_t final_pop_status = init_status & 0xFF;             // Extract the least significant 8 bits
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: pushIntoQueue: after push: nentries=%d, push_status=0x%x, pop_status=0x%x.\n",
+					final_nentries, final_push_status, final_pop_status);
+#endif
+
+	if((init_nentries < final_nentries) && (final_push_status == 0))
+	{
+		ret_val = 0;
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: pushIntoQueue: Push Successful\n");
+#endif
+	}
+	else
+	{
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: pushIntoQueue: Push Failed\n");
+#endif	
+	}
+
+#ifdef DEBUGPRINT
+	fprintf(stderr,"Info: left pushIntoQueue returns %d \n", ret_val);
+#endif
+	return(ret_val);
+}
+
+// return 0 on success
+int popFromQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uint32_t *popped_value)
+{
+	uint32_t reg_index;
+	switch(queue_type)
+	{
+		case FREEQUEUE     : reg_index = P_FREE_QUEUE_INDEX;    break;
+		case RXQUEUE       : reg_index = (P_RX_QUEUE_0_INDEX + (2*server_id)); break;
+		case TXQUEUE       : reg_index = (P_TX_QUEUE_0_INDEX + (2*server_id)); break;	
+	}
+
+#ifdef DEBUGPRINT
+	fprintf(stderr,"Info: entered popFromQueue 0x%x \n", val);
+#endif
+	int ret_val = 1;
+	
+	uint32_t init_status = readFromNicReg (nic_id, reg_index + 1);
+	uint16_t init_nentries = (init_status >> 16) & 0xFFFF;  // Extract the 16 most significant bits
+    	uint8_t init_push_status = (init_status >> 8) & 0xFF;      // Extract the next 8 bits
+    	uint8_t init_pop_status = init_status & 0xFF;             // Extract the least significant 8 bits
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: popFromQueue: before pop: nentries=%d, push_status=0x%x, pop_status=0x%x.\n",
+					init_nentries, init_push_status, init_pop_status);
+#endif
+
+	*popped_value = readFromNicReg (nic_id, reg_index);
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: popFromQueue: after pop: popped_value=0x%x.\n", *popped_value);
+#endif
+
+	uint32_t final_status = readFromNicReg (nic_id, reg_index + 1);
+	uint16_t final_nentries = (init_status >> 16) & 0xFFFF;  // Extract the 16 most significant bits
+    	uint8_t final_push_status = (init_status >> 8) & 0xFF;      // Extract the next 8 bits
+    	uint8_t final_pop_status = init_status & 0xFF;             // Extract the least significant 8 bits
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: popFromQueue: after pop: nentries=%d, push_status=0x%x, pop_status=0x%x.\n",
+					final_nentries, final_push_status, final_pop_status);
+#endif
+
+	if((init_nentries > final_nentries) && (final_pop_status == 0))
+	{
+		ret_val = 0;
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: popFromQueue: Pop Successful\n");
+#endif
+	}
+	else
+	{
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: popFromQueue: Pop Failed\n");
+#endif	
+	}
+
+#ifdef DEBUGPRINT
+	fprintf(stderr,"Info: left popFromQueue returns %d \n", ret_val);
+#endif
+	return(ret_val);
+}
+
 
 void probeNic (uint32_t nic_id,
 		uint32_t* tx_pkt_count,
@@ -118,6 +298,7 @@ void writeNicControlRegister   (uint32_t nic_id, uint32_t enable_flags)
 	writeToNicReg (nic_id, P_NIC_CONTROL_REGISTER_INDEX, enable_flags);
 }
 
+/*
 void setNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 		uint32_t queue_type,  uint64_t queue_addr, 
 		uint64_t queue_lock_addr, uint64_t queue_buffer_addr)
@@ -165,6 +346,7 @@ void getNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 				*queue_lock_addr, *queue_buffer_addr);
 #endif
 }
+*/
 
 void RxLoggerDaemon () {
 	while(1)
@@ -402,10 +584,11 @@ DEFINE_THREAD(memoryDaemon);
 
 // forward daemon
 void forwardDaemon () {
+	uint32_t server_id = 0;
 	while(1)
 	{
-		uint64_t buf_addr;
-		while (popFromQueue (rx_queue_base_address, &buf_addr))
+		uint32_t buf_addr;
+		while (popFromQueue (NIC_ID, server_id, RXQUEUE, &buf_addr))
 		{
 			usleep (1000);
 		}
@@ -415,7 +598,7 @@ void forwardDaemon () {
 
 		usleep(1000);
 
-		while(pushIntoQueue  (tx_queue_base_address, buf_addr))
+		while(pushIntoQueue  (NIC_ID, server_id, TXQUEUE, buf_addr))
 		{
 			usleep (1000);
 		}
@@ -424,10 +607,13 @@ void forwardDaemon () {
 		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
 
 		usleep(1000);
+		
+		server_id = (server_id + 1) % NSERVERS;
 	}
 }
 DEFINE_THREAD(forwardDaemon);
 
+/*
 //
 //  From the processor side, we set up the queues..
 //
@@ -477,7 +663,7 @@ void setUpEmptyQueueInMemory (uint32_t queue_base_address,
 				max_number_of_messages, message_length_in_bytes);
 #endif
 }
-
+*/
 
 int main(int argc, char* argv[])
 {
@@ -505,12 +691,13 @@ int main(int argc, char* argv[])
 		PTHREAD_CREATE(TxLoggerDaemon);
 	*/
 
+/*
 	//-------------------------------------------------------------------------------------//
-	//  First setup and check the free queue rx.
+	//  First setup and check the free queue.
 	//-------------------------------------------------------------------------------------//
 
 	//-------------------------------------------------------------------------------------//
-	// setup free queue rx in memory from the tb-side.
+	// setup free queue in memory from the tb-side.
 	//-------------------------------------------------------------------------------------//
 	setUpEmptyQueueInMemory (free_queue_base_address, free_queue_lock_address, 
 				free_queue_bget_address,       QUEUE_SIZE_IN_MSGS, QUEUE_MSG_SIZE_IN_BYTES);
@@ -666,8 +853,21 @@ int main(int argc, char* argv[])
 	}
 
 #endif
+*/
 	
+	// buffers for packets, each buffer has a capacity of 1024 bytes.
 	int i;
+	for (i = 0; i < NBUFFERS; i++) 
+	{
+        	buffer_addresses[i] = 1024 * (i + 1);  // Starting from 1024 and increasing by 1024
+    	}
+	
+	// set the number of servers in the nic
+	setNumberOfServersInNic(NIC_ID, NSERVERS);
+
+	// set the number of buffers in the queue
+	setNumberOfBuffersInQueue(NIC_ID, NBUFFERS);
+	
 	for(i = 0; i < NBUFFERS; i++)
 	{
 		//
@@ -676,24 +876,27 @@ int main(int argc, char* argv[])
 		uint64_t max_addr_offset = 1016;
 		max_addr_offset = (max_addr_offset << 48);
 		processorAccessMemory (0, 0, 0xff, buffer_addresses[i], max_addr_offset); 
-
-		pushIntoQueue (free_queue_base_address, buffer_addresses[i]);
+		
+		while(acquireLock(NIC_ID)) 
+		{
+			usleep(1000);
+		};
+		pushIntoQueue (NIC_ID, FQ_SERVER_ID, FREEQUEUE, buffer_addresses[i]);
+		releaseLock (NIC_ID);
 	}
 	
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	fprintf (stderr,"Info: pushed %d buffers to free rx queue\n", NBUFFERS);
+	fprintf (stderr,"Info: pushed %d buffers to free queue\n", NBUFFERS);
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	
 	// start the forwarding engine
 	PTHREAD_DECL(forwardDaemon);
 	PTHREAD_CREATE(forwardDaemon);
-	
-	// set the number of servers in the nic
-	setNumberOfServersInNic(0,1);
 
-	// Enable NIC, MAC
+	// Enable NIC, MAC and servers
+	uint32_t control_value = ((((1 << NSERVERS) - 1) << 3) | 3);
 	//   start the receive and transmit daemons!
-	writeNicControlRegister(0, 3);
+	writeNicControlRegister(NIC_ID, control_value);
 
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	fprintf (stderr,"Info: SPIN!\n");

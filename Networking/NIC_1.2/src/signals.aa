@@ -6,8 +6,6 @@ $pipe NIC_INTR_ENABLE : $uint<1> $signal
 $pipe NIC_INTR_INTERNAL: $uint<1> $signal
 $pipe NIC_INTR : $uint<1> $signal
 
-// NIC interrupt signal.
-$pipe NIC_INTR : $uint<1> $signal
 
 $pipe S_CONTROL_REGISTER    : $uint<32> $signal
 $pipe S_NUMBER_OF_SERVERS   : $uint<32> $signal

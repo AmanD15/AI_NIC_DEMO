@@ -35,27 +35,47 @@ uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
 #define    P_N_SERVERS_REGISTER_INDEX        1 
 #define    P_DEBUG_REGISTER_0	             2 
 #define    P_DEBUG_REGISTER_1	             3 
+#define    P_N_BUFFERS_REGISTER_INDEX        4  
 #define    P_MAC_REGISTER_H_INDEX            208
 #define    P_MAC_REGISTER_L_INDEX            209
 #define    P_TX_PKT_COUNT_REGISTER_INDEX     210
 #define    P_RX_PKT_COUNT_REGISTER_INDEX     211
 #define    P_STATUS_REGISTER_INDEX           212
 
-	// Base index for queue's registers
-#define    P_RX_QUEUE_REGISTER_BASE_INDEX          8
-#define    P_TX_QUEUE_REGISTER_BASE_INDEX          128
-#define    P_FREE_QUEUE_REGISTER_BASE_INDEX        200
+//  Base index for queue access
+#define    P_RX_QUEUE_0_INDEX		     8 
+#define    P_RX_QUEUE_0_STATUS_INDEX	     9 
+#define    P_RX_QUEUE_1_INDEX		     10 
+#define    P_RX_QUEUE_1_STATUS_INDEX	     11 
+#define    P_RX_QUEUE_2_INDEX		     12 
+#define    P_RX_QUEUE_2_STATUS_INDEX	     13 
+#define    P_RX_QUEUE_3_INDEX		     14 
+#define    P_RX_QUEUE_3_STATUS_INDEX	     15 
+
+#define    P_TX_QUEUE_0_INDEX		     16 
+#define    P_TX_QUEUE_0_STATUS_INDEX	     17 
+#define    P_TX_QUEUE_1_INDEX		     18 
+#define    P_TX_QUEUE_1_STATUS_INDEX	     19 
+#define    P_TX_QUEUE_2_INDEX		     20 
+#define    P_TX_QUEUE_2_STATUS_INDEX	     21 
+#define    P_TX_QUEUE_3_INDEX		     22 
+#define    P_TX_QUEUE_3_STATUS_INDEX	     23 
+
+#define    P_FREE_QUEUE_INDEX		     24 
+#define    P_FREE_QUEUE_STATUS_INDEX   	     25 
+#define    P_FREE_QUEUE_LOCK_INDEX     	     26 
 
 // flags.
-#define    F_ENABLE_NIC			      0x1
-#define    F_ENABLE_NIC_INTERRUPT	      0x2
+#define    F_ENABLE_NIC			     0x1
+#define    F_ENABLE_NIC_INTERRUPT	     0x2
 
 #define    FREEQUEUE				0
 #define    TXQUEUE				1
 #define    RXQUEUE				2
 
-#define    NIC_MAX_NUMBER_OF_SERVERS		8
+#define    NIC_MAX_NUMBER_OF_SERVERS		4
 
+/*
 #ifndef USE_CORTOS
 //
 // This is a mirror of the cortos-queue data
@@ -89,15 +109,16 @@ typedef struct __NicCortosQueue {
 typedef CortosQueueHeader NicCortosQueue;
 
 #endif
-
+*/
 
 
 typedef struct __NicConfiguration {
 	uint32_t  nic_id;
 
-	// < max number of servers = 8.
-	uint32_t  number_of_servers;
-	
+	// < max number of servers = 4.
+	uint32_t  number_of_servers_enabled;
+
+/*	
 	// Physical addresses, all!
 	//    need to be double-word aligned.
 	uint64_t  free_queue_address;
@@ -111,16 +132,17 @@ typedef struct __NicConfiguration {
 	uint64_t  tx_queue_addresses[NIC_MAX_NUMBER_OF_SERVERS];
 	uint64_t  tx_queue_lock_addresses[NIC_MAX_NUMBER_OF_SERVERS];
 	uint64_t  tx_queue_buffer_addresses[NIC_MAX_NUMBER_OF_SERVERS];
-
+*/
 } NicConfiguration;
 
+/*
 void initNicCortosQueue (NicCortosQueue* cqueue,
 				uint32_t queue_capacity,
 				uint32_t message_size_in_bytes,
 				uint8_t* lock,
 				uint8_t* bget_addr,
 				uint32_t misc);
-
+*/
 
 
 
@@ -131,7 +153,7 @@ int setGlobalNicRegisterBasePointer(uint32_t ptr);
 
 
 
-
+/*
 //
 // translate the queue related virtual addresses to physical, 
 // by accessing the NIC registers (note that qptr->misc field is used
@@ -140,6 +162,7 @@ int setGlobalNicRegisterBasePointer(uint32_t ptr);
 uint64_t getQueuePhysicalAddressFromNic (NicCortosQueue* qptr);
 uint64_t getQueueLockPhysicalAddressFromNic (NicCortosQueue* qptr);
 uint64_t getQueueBufferPhysicalAddressFromNic (NicCortosQueue* qptr);
+*/
 
 //
 // There can be multiple NICs.   Each NIC will be
@@ -150,10 +173,12 @@ void writeToNicReg (uint32_t nic_id, uint32_t reg_index, uint32_t reg_value);
 uint32_t readFromNicReg (uint32_t nic_id, uint32_t reg_index);
 uint32_t accessNicReg (uint8_t rwbar, uint32_t nic_id, uint32_t reg_index, uint32_t reg_value);
 
+/*
 void     setPhysicalAddressInNicRegPair (uint32_t nic_id, uint32_t reg_index, uint64_t pa);
 uint64_t getPhysicalAddressInNicRegPair (uint32_t nic_id, uint32_t reg_index);
+*/
 
-void     setNumberOfServersInNic (uint32_t nic_id, uint32_t number_of_servers);
+void     setNumberOfServersInNic (uint32_t nic_id, uint32_t number_of_servers_enabled);
 uint32_t getNumberOfServersInNic (uint32_t nic_id);
 
 void probeNic (uint32_t nic_id,
@@ -162,12 +187,15 @@ void probeNic (uint32_t nic_id,
 			uint32_t* status);
 
 void writeNicControlRegister   (uint32_t nic_id, uint32_t enable_flags);
+
+/*
 void setNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 						uint32_t queue_type, uint64_t queue_addr, 
 						uint64_t queue_lock_addr, uint64_t queue_buffer_addr);
 void getNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 		uint32_t queue_type,  uint64_t *queue_addr, 
 		uint64_t *queue_lock_addr, uint64_t *queue_buffer_addr);
+*/
 
 void configureNic (NicConfiguration* config);
 void enableNic  (uint32_t nic_id, uint8_t enable_interrupt, uint8_t enable_mac, uint8_t enable_nic);
@@ -177,9 +205,11 @@ void disableNic (uint32_t nic_id);
 // returns 0 if translation is successful (*pa holds the return value)
 int translateVaToPa (uint32_t va, uint64_t* pa);
 
+/*
 // The following function gives various physical address for Queues: 
 // Queue struct addr, packet buffer addr and lock addr.
 void findQueuePhyAddr(char*,NicCortosQueue*,uint64_t*,uint64_t*,uint64_t*);
+*/
 
 // The following function gives actual packet length, used by LwIP: 
 uint32_t getPacketLen(uint32_t* controlWord);

@@ -41,6 +41,7 @@ uint32_t readFromNicReg (uint32_t nic_id, uint32_t reg_index)
 	return(retval);
 }
 
+/*
 void setPhysicalAddressInNicRegPair (uint32_t nic_id, uint32_t reg_index, uint64_t pa)
 {
 	uint32_t hval = (pa >> 32) & 0xffffffff;
@@ -60,10 +61,11 @@ uint64_t getPhysicalAddressInNicRegPair (uint32_t nic_id, uint32_t reg_index)
 
 	return(rval);
 }
+*/
 
-void setNumberOfServersInNic (uint32_t nic_id, uint32_t number_of_servers)
+void setNumberOfServersInNic (uint32_t nic_id, uint32_t number_of_servers_enabled)
 {
-	writeToNicReg (nic_id, P_N_SERVERS_REGISTER_INDEX, number_of_servers);
+	writeToNicReg (nic_id, P_N_SERVERS_REGISTER_INDEX, number_of_servers_enabled);
 }
 
 uint32_t getNumberOfServersInNic (uint32_t nic_id)
@@ -97,6 +99,7 @@ void disableNic (uint32_t nic_id)
 	writeNicControlRegister (nic_id, 0);
 }
 
+/*
 void setNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 								   uint32_t queue_type,  uint64_t queue_addr, 
 								   uint64_t queue_lock_addr, uint64_t queue_buffer_addr)
@@ -130,6 +133,7 @@ void getNicQueuePhysicalAddresses (uint32_t nic_id, uint32_t server_id,
 	*queue_lock_addr = getPhysicalAddressInNicRegPair (nic_id, base_index+2);
 	*queue_buffer_addr = getPhysicalAddressInNicRegPair (nic_id, base_index+4);
 }
+*/
 
 void configureNic (NicConfiguration* config)
 {
@@ -139,7 +143,7 @@ void configureNic (NicConfiguration* config)
 		writeToNicReg (config->nic_id, I, 0);
 	
 	// set the number of servers.
-	setNumberOfServersInNic (config->nic_id, config->number_of_servers);
+	setNumberOfServersInNic (config->nic_id, config->number_of_servers_enabled);
 
 	// free-queue.
 	setNicQueuePhysicalAddresses (config->nic_id, 
@@ -150,7 +154,7 @@ void configureNic (NicConfiguration* config)
 			config->free_queue_buffer_address);	
 
 
-	for(I = 0; I  < config->number_of_servers; I++)
+	for(I = 0; I  < config->number_of_servers_enabled; I++)
 	{
 		setNicQueuePhysicalAddresses (config->nic_id, 
 						I,
@@ -167,6 +171,7 @@ void configureNic (NicConfiguration* config)
 	}
 }
 
+/*
 void initNicCortosQueue (NicCortosQueue* cqueue,
 				uint32_t queue_capacity,
 				uint32_t message_size_in_bytes,
@@ -210,6 +215,7 @@ int translateVaToPa (uint32_t va, uint64_t* pa)
 									 &level, pa, &ptde_a, &ptde);	  // output args
 	return(status);
 }
+
 void findQueuePhyAddr(char *s,CortosQueueHeader* Q_VA,
 						uint64_t* Q_PA,uint64_t* Qlock_PA,uint64_t* Qbuf_PA)
 {
@@ -235,6 +241,7 @@ void findQueuePhyAddr(char *s,CortosQueueHeader* Q_VA,
 		cortos_printf("%s buffer address translation not found\n", s);
 
 }
+*/
 
 uint32_t getPacketLen(uint32_t* controlWord)
 {

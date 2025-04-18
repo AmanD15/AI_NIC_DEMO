@@ -173,9 +173,6 @@ $module [setGlobalSignals]
 
 	$barrier
 
-	// initialize all queues status registers 
-	$call init_all_queues () ()
-
 	NIC_INTR := (NIC_INTR_ENABLE & NIC_INTR_INTERNAL)
 
 	$attribute input_buffering 0
@@ -204,7 +201,7 @@ $module [controlDaemon] $in () $out () $is
 
 	S_CONTROL_REGISTER := 0
 	S_NUMBER_OF_SERVERS := 0
-	
+	S_MAX_NENTRIES	:= 0
 	
 	$rreport(controlDaemon started_controlDaemon)
 	$parallelblock [pb] {
@@ -235,7 +232,12 @@ $module [controlDaemon] $in () $out () $is
 			rdata := ($mux read_counter S_FREE_RUNNING_COUNTER  rdata_other)
 			
 			$barrier 
-
+			
+			// initialize all queues status registers 
+			$volatile initialize_queues := ((~rwbar) & (index == P_N_SERVERS_REGISTER_INDEX))
+			$guard (initialize_queues)
+				$call init_all_queues () ()
+			
 			$volatile update_control_register := ((~rwbar) & (index == 0))
 			$volatile set_globals := update_control_register
 			$guard (set_globals)
