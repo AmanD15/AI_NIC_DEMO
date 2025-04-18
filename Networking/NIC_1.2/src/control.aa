@@ -55,8 +55,8 @@ $storage nic_registers: $array [255] $of $uint<32>
 // The 4 queue operations (opcode):
 //	PUSH 	  : if its a write access to any of the queues (generally TxQ, and freeQ in beginning)
 //	POP  	  : if its a read  access to any of the queues (generally RxQ, and freeQ in the end)
-//	FQ_LOCK   : if its a read  access to free_queue_lock
-//	FQ_UNLOCK : if its a write access to free_queue_lock
+//	FQ_LOCK   : if its a read  access to free_queue_lock   (acquire lock, should read 1 on successul acquire)
+//	FQ_UNLOCK : if its a write access to free_queue_lock   (release lock, write 0)
 //
 // The 2 register operations:
 //	READ 	  : if its a read  access to any of the registers including queue_status_registers (excluding queue and lock registers)

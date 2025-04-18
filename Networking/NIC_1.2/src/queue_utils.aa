@@ -70,6 +70,9 @@ $is
 // After pushing buffer pointer to the queue it calls accessRegister module
 // to updates the respective server's queue_status_register
 //
+// Arguments:
+// Return value: 
+//
 $module [pushIntoQueue] 
 	$in  (queue_type: $uint<2> server_id: $uint<4> q_wdata: $uint<32>) 
 	$out (status: $uint<32>)
