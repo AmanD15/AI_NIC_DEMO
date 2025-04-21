@@ -9,11 +9,20 @@
 
 //
 // NIC pops the buffer pointer from only freeQ and TxQ by providing 
-// queue_type :	   TxQ 	    or 	   freeQ
-// server_id  :	(0/1/2/3)	    (0)
+// queue_type and server_id
 //
 // After popping buffer pointer from the queue it calls accessRegister module
 // to updates the respective server's queue_status_register
+//
+// Arguments:	
+//		queue_type : 	can be FREEQUEUE or TXQUEUE for pop by NIC
+//		server_id  : 	can only be SERVER_0 for FREEQUEUE, but
+//				can be any of 4 servers SERVER_0, SERVER_1, SERVER_2 or SERVER_3 for TXQUEUE
+//
+// Return value: 
+//		q_rdata    :	buffer pointers popped from FREEQUEUE or any of the TXQUEUEs
+//		status	   :	returns <no. of entries> <push_status> <pop_status>
+//				pop_status == 0 is success.
 //
 $module [popFromQueue]
 	$in (queue_type: $uint<2> server_id : $uint<4>) 
@@ -64,14 +73,20 @@ $is
 
 //
 // NIC pushes the buffer pointer to only RxQ and freeQ by providing 
-// queue_type :    RxQ	   or 	   freeQ
-// server_id  : (0/1/2/3)	    (0)
+// queue_type and server_id.
 //
 // After pushing buffer pointer to the queue it calls accessRegister module
 // to updates the respective server's queue_status_register
 //
-// Arguments:
+// Arguments:	
+//		queue_type : 	can be FREEQUEUE or RXQUEUE for push by NIC
+//		server_id  : 	can only be SERVER_0 for FREEQUEUE, but
+//				can be any of 4 servers SERVER_0, SERVER_1, SERVER_2 or SERVER_3 for RXQUEUE
+//		q_wdata    :	buffer pointers to be pushed into FREEQUEUE or any of the RXQUEUEs
+//
 // Return value: 
+//		status	   :	returns <no. of entries> <push_status> <pop_status>
+//				push_status == 0 is success.
 //
 $module [pushIntoQueue] 
 	$in  (queue_type: $uint<2> server_id: $uint<4> q_wdata: $uint<32>) 
@@ -112,3 +127,37 @@ $is
 	$call accessRegister (WRITEMEM _hF status_index status) (ign_rsp)
 }
 
+
+//
+// For debug purpose only through debug_queue pipes
+//
+$module [queueTestDaemon] $in () $out () $is
+{
+	$branchblock[loop] 
+	{
+		$merge $entry loopback $endmerge
+
+		cmd := debug_queue_command 
+		$volatile $split (cmd 1 25 2 4 32) (rwbar u15 queue_type server_id val)
+		
+		$guard (~rwbar)
+			$call pushIntoQueue (queue_type server_id val) (push_status)
+		// push_ok == 0 is success, i.e., pushed buffer pointer from queue
+		$volatile push_ok := ($bitreduce | ($slice push_status 15 8))
+			
+		$guard (rwbar)
+			$call popFromQueue (queue_type server_id) (pop_val pop_status)
+		// pop_ok == 0 is success, i.e., popped buffer pointer from queue
+		$volatile pop_ok := ($bitreduce | ($slice pop_status 7 0))
+		
+		// not_ok == 0 is ok
+		$volatile not_ok := ($mux rwbar pop_ok push_ok)
+		$volatile ret_data := ($mux rwbar ($bitcast ($uint<63>) pop_val) $zero<63>)
+		$volatile result := ($concat not_ok ret_data)
+
+		debug_queue_response := result
+
+		$place [loopback]
+	}
+
+}

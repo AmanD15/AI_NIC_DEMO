@@ -70,8 +70,8 @@ uint64_t   BufferPtrsPA[NUMBER_OF_BUFFERS];
 #define    F_ENABLE_NIC_INTERRUPT	     0x2
 
 #define    FREEQUEUE				0
-#define    TXQUEUE				1
-#define    RXQUEUE				2
+#define    RXQUEUE				1
+#define    TXQUEUE				2
 
 #define    NIC_MAX_NUMBER_OF_SERVERS		4
 

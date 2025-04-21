@@ -1,0 +1,394 @@
+./tb/bin/tb <n-packets> (default 4) 
+number_of_packets=4.
+Info:pThreadUtils: started thread memoryDaemon
+-------------------------------------------------------------------------------------
+Info: after memory daemon
+-------------------------------------------------------------------------------------
+Info: inside buffer allocation
+Info: inside buffer allocation
+Info: inside buffer allocation
+Info: inside buffer allocation
+Info: setting servers
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=1, write_reg_value=0x1, read_reg_value=0x0
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=1, write_reg_value=0x0, read_reg_value=0x1
+Info: setting buffers
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=4, write_reg_value=0x4, read_reg_value=0x0
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=4, write_reg_value=0x0, read_reg_value=0x4
+Info: resetting status registers
+Info: getStatusOfQueuesInNic reg_index=25 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=25, write_reg_value=0x0, read_reg_value=0x0
+Info: setStatusOfQueuesInNic reg_index=25 
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=25, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=25 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=25, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=9 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: setStatusOfQueuesInNic reg_index=9 
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=9 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=17 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=17, write_reg_value=0x0, read_reg_value=0x0
+Info: setStatusOfQueuesInNic reg_index=17 
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=17, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=17 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=17, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=11 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=11, write_reg_value=0x0, read_reg_value=0x0
+Info: setStatusOfQueuesInNic reg_index=11 
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=11, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=11 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=11, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=19 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=19, write_reg_value=0x0, read_reg_value=0x0
+Info: setStatusOfQueuesInNic reg_index=19 
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=19, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=19 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=19, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=13 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=13, write_reg_value=0x0, read_reg_value=0x0
+Info: setStatusOfQueuesInNic reg_index=13 
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=13, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=13 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=13, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=21 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=21, write_reg_value=0x0, read_reg_value=0x0
+Info: setStatusOfQueuesInNic reg_index=21 
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=21, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=21 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=21, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=15 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=15, write_reg_value=0x0, read_reg_value=0x0
+Info: setStatusOfQueuesInNic reg_index=15 
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=15, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=15 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=15, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=23 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=23, write_reg_value=0x0, read_reg_value=0x0
+Info: setStatusOfQueuesInNic reg_index=23 
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=23, write_reg_value=0x0, read_reg_value=0x0
+Info: getStatusOfQueuesInNic reg_index=23 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=23, write_reg_value=0x0, read_reg_value=0x0
+Info: checking queue 1.
+Info: entered pushIntoQueue: push_value=0x0 reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0x0
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0x1 reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0x1, read_reg_value=0x0
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0x2 reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0x2, read_reg_value=0x1
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0x3 reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0x3, read_reg_value=0x2
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0x4 reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0x4, read_reg_value=0x3
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0x5 reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0x5, read_reg_value=0x4
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0x6 reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0x6, read_reg_value=0x5
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0x7 reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0x7, read_reg_value=0x6
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0x8 reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0x8, read_reg_value=0x7
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0x9 reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0x9, read_reg_value=0x8
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0xa reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0xa, read_reg_value=0x9
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0xb reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0xb, read_reg_value=0xa
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0xc reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0xc, read_reg_value=0xb
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0xd reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0xd, read_reg_value=0xc
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0xe reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0xe, read_reg_value=0xd
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: entered pushIntoQueue: push_value=0xf reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: before push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=0, nic_id = 0, reg_index=8, write_reg_value=0xf, read_reg_value=0xe
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: pushIntoQueue: after push: nentries=0, push_status=0x0, pop_status=0x0.
+Info: pushIntoQueue: Push Failed
+Info: left pushIntoQueue returns 1 
+Error: checkQueues 1: push not ok.
+Info: checkQueues: pushes done.
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0x0, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0x1, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0x2, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0x3, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0x4, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0x5, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0x6, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0x7, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0x8, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0x9, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0xa, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0xb, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0xc, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0xd, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Error: checkQueues 1: expected 0xe, received 0xf
+Info: entered popFromQueue reg_index=8 
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: before pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=8, write_reg_value=0x0, read_reg_value=0xf
+Info: popFromQueue: after pop: popped_value=0xf.
+Info: accessNicReg rwbar=1, nic_id = 0, reg_index=9, write_reg_value=0x0, read_reg_value=0x0
+Info: popFromQueue: after pop: nentries=0, push_status=0x0, pop_status=0x0.
+Info: popFromQueue: Pop Failed
+Info: left popFromQueue returns 1 
+Error: checkQueues 1: pop not ok.
+Info: checkQueues: pops done.
+Error: checkQueues(1) (server_id=0) failed.

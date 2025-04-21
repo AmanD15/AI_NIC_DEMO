@@ -38,100 +38,111 @@ $module [ReceiveEngineDaemon] $in () $out() $is
 		rx_tag := ($bitcast ($uint<8>) P_RX_ENGINE_TAG)
 
 		//  Receive loop
-		$merge $entry $loopback 
+		$merge $entry loopback 
 			$phi RxQ_server_id := $zero<4> $on $entry n_RxQ_server_id $on loopback
-			$phi init_flag := $one<1> $on $entry $zero<1> $on loopback
 		$endmerge
 
-			// pop a packet pointer from free queue.
-			$call exec_receive_queue_command (SERVER_0 FQ_LOCK _h0000) (l_nentries l_push_status l_pop_status freeQ_lock)
+			// spin until lock is acquired and pop_status is successful
+			$merge $entry lock_loopback pop_loopback $endmerge
 			
-			// lock_status == 0 is success, i.e., get access to freeQ lock
-			$volatile lock_status := ($bitreduce | freeQ_lock)
+			// pop a buffer pointer from free queue.
+			$call exec_free_queue_command (SERVER_0 FQ_LOCK _h0000) (l_nentries l_push_status l_pop_status fQ_lock_status)
 			
+			// lock_status == 1 is success, i.e., get access to freeQ lock
+			$volatile lock_status := (~($bitreduce | fQ_lock_status))
+			
+			// If lock not acquired -> Loopback
 			$if(~lock_status) $then
-				$merge $entry pop_loopback $endmerge
+				$place [lock_loopback]
+			$endif
 
-				$call popFromQueue (FREEQUEUE SERVER_0) (rx_buffer_pointer_32 freeQ_status)
-				$volatile pop_status := (~($bitreduce | ($slice freeQ_status 7 0)))
+			// If lock acquired -> pop from free queue
+			$call popFromQueue (FREEQUEUE SERVER_0) (rx_buffer_pointer_32 freeQ_status)
 
-				// pop_status == 1 is success, i.e., popped packet pointer from freeQ
-				$if (pop_status == 0) $then $place [pop_loopback]
-				$else
+			// release freeQ lock immediately after pop
+			$call exec_free_queue_command (SERVER_0 FQ_UNLOCK _h0000) (ul_nentries ul_push_status ul_pop_status fQ_unlock_status)
 
-				// IN PROGRESS .... REWRITE with correct locking sequence.
-				$endif
+			// pop_status == 1 is success, i.e., popped buffer pointer from freeQ
+			$volatile pop_status := (~($bitreduce | ($slice freeQ_status 7 0)))
+			
+			// If pop not successful -> Loopback
+			$if (~pop_status) $then 
+				$place [pop_loopback]
 			$endif
 			
 			$volatile rx_buffer_pointer := ($bitcast ($uint<64>) rx_buffer_pointer_32)
-
-			// release freeQ lock
-			$guard (pop_status)
-			$call exec_receive_queue_command (SERVER_0 FQ_UNLOCK _h0000) (ul_nentries ul_push_status ul_pop_status freeQ_unlock)
 
 
 			// Read the control word of the buffer.
 			$call accessMemoryDword (rx_tag READMEM rx_buffer_pointer $zero<64> $zero<64>) (control_dword)
 			$volatile max_buffer_addr_offset := ($slice control_dword 63 48)
 
-			$guard (pop_status)
-				$call receivePacket (rx_tag max_buffer_addr_offset rx_buffer_pointer) (bad_packet_identifier)
-			// bad_packet_identifier == 0, then packet is received successfully
-			$barrier
+			// After successfully popping buffer pointer from freeQ, receive packet in that buffer
+			$call receivePacket (rx_tag max_buffer_addr_offset rx_buffer_pointer) (bad_packet_identifier)
 
-			// packet is ok, push into rx queue
-			$volatile ok_flag := (pop_status & (~bad_packet_identifier))
-
-			// packet is not ok, free the buffer.
-			$volatile free_flag := (pop_status & bad_packet_identifier)
-			
-		
-			// save the packet count 
-			pkt_cnt := ($mux init_flag $one<32>
-					($mux ok_flag (pkt_cnt + $one<32>)  pkt_cnt)) $buffering 2
-		
-			$guard(ok_flag)
-				$call accessRegister ($zero<1> (~$zero<4>) P_DEBUG_REGISTER_1 pkt_cnt) (ignore_resp)
-			// debug signal to count overall packets received (both good and bad)
-
+			// if bad_packet_identifier == 0, 
+			// then received packet is ok, push buffer pointer into rx queue
+			// else received packet is not ok, free the buffer and push buffer pointer back to free queue
 	
-			$guard (ok_flag) 
+			$if(bad_packet_identifier == 0) $then
+				// spin until push_status is successful
+				$merge $entry push_loopback $endmerge
+				
+				// received packet is ok, push buffer pointer into RxQ_server_id
 				$call pushIntoQueue (RXQUEUE RxQ_server_id rx_buffer_pointer_32) (RxQ_status)
-			$barrier
+				
+				// push_status == 1 is success, i.e., pushed buffer pointer to RxQ
+				$volatile push_status := (~($bitreduce | ($slice RxQ_status 15 8)))
 			
-			// push_status == 1 is success, i.e., pushed packet pointer to RxQ
-			$volatile push_status := (~($bitreduce | ($slice RxQ_status 15 8)))
-			
-			$guard(push_status)
+				// If push not successful -> Loopback
+				$if (~push_status) $then 
+					$place [push_loopback]
+				$endif
+					
+				// Increment the number of packets received
 				$call incrementNumberOfPacketsReceived() ()
-
-			// if packet is ok, move to next server's Rx queue
-			$guard(ok_flag)
+				
+				// if packet is ok, move to next server's Rx queue
 				n_RxQ_server_id := ((RxQ_server_id + 1) & ($bitcast ($uint<4>) (S_NUMBER_OF_SERVERS - 1)))
-			//LAST_WRITTEN_RX_QUEUE_INDEX := RxQ_server_id
-
-
-			// If packet is defective, free the buffer and push pointer back to freeQ
-			$guard (free_flag) 
-			$call exec_receive_queue_command (SERVER_0 FQ_LOCK _h0000) (rl_nentries rl_push_status rl_pop_status re_freeQ_lock)
+				//LAST_WRITTEN_RX_QUEUE_INDEX := RxQ_server_id
+				
+			$else
+				// spin until lock is acquired and push_status is successful
+				$merge $entry re_lock_loopback re_push_loopback $endmerge
 			
-			// lock_status == 0 is success, i.e., get access to freeQ lock
-			$volatile re_lock_status := ($bitreduce | re_freeQ_lock)
+				// received packet is defective, free the buffer and push buffer pointer back to freeQ
+				$call exec_free_queue_command (SERVER_0 FQ_LOCK _h0000) (rl_nentries rl_push_status rl_pop_status
+							 				re_fQ_lock_status)
+							 				
+				// lock_status == 1 is success, i.e., get access to freeQ lock
+				$volatile re_lock_status := (~($bitreduce | re_fQ_lock_status))
 			
-			$guard (~re_lock_status)
+				// If lock not acquired -> Loopback
+				$if(~lock_status) $then
+					$place [re_lock_loopback]
+				$endif
+				
+				// If lock acquired -> push back to free queue
 				$call pushIntoQueue (FREEQUEUE SERVER_0 rx_buffer_pointer_32) (re_freeQ_status)
-			$barrier
+				
+				// release freeQ lock immediately after push
+				$call exec_free_queue_command (SERVER_0 FQ_UNLOCK _h0000) (rul_nentries rul_push_status rul_pop_status
+											 re_fQ_unlock_status)
 			
-			// re_push_status == 1 is success, i.e., pushed packet pointer back to freeQ
-			$volatile re_push_status := (~($bitreduce | ($slice re_freeQ_status 15 8)))
+				// re_push_status == 1 is success, i.e., pushed buffer pointer back to freeQ
+				$volatile re_push_status := (~($bitreduce | ($slice re_freeQ_status 15 8)))
+				
+				// If push not successful -> Loopback
+				$if (~re_push_status) $then 
+					$place [re_push_loopback]
+				$endif
+							
+			$endif
 			
-			// release freeQ lock
-			$guard (re_push_status)
-			$call exec_receive_queue_command (SERVER_0 FQ_UNLOCK _h0000) (rul_nentries rul_push_status rul_pop_status re_freeQ_unlock)
-			
-			
-			// Loop while Control word is 1
-			$while (S_CONTROL_REGISTER [] 0)
+			// Loop while (control[0] == 1), i.e., NIC is enabled
+			$if ((S_CONTROL_REGISTER [] 0) == 1) $then
+				$place [loopback]
+			$endif
 			
 		$place [disable_loopback]
 	}

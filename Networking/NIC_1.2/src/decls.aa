@@ -12,8 +12,8 @@ $constant UNLOCKMEM : $uint<1> := 0
 
 // queue type
 $constant FREEQUEUE : $uint<2> := 0
-$constant TXQUEUE   : $uint<2> := 1
-$constant RXQUEUE   : $uint<2> := 2
+$constant RXQUEUE   : $uint<2> := 1
+$constant TXQUEUE   : $uint<2> := 2
 
 // queue commands
 $constant FQ_LOCK   : $uint<4> := 1

@@ -28,58 +28,77 @@ $module [TransmitEngineDaemon] $in () $out () $is
 
 		tx_tag := ($bitcast ($uint<8>) P_TX_ENGINE_TAG)
 	
-		$dopipeline $depth 31 $fullrate	
-			$merge $entry $loopback 
-				$phi TxQ_server_id := $zero<4> $on $entry n_TxQ_server_id $on $loopback
-			$endmerge
-
-			// pop packet pointer from server TxQ_server_id
+		//  Transmit loop
+		$merge $entry loopback 
+			$phi TxQ_server_id := $zero<4> $on $entry n_TxQ_server_id $on loopback
+		$endmerge
+			// spin until pop_status is successful
+			$merge $entry pop_loopback $endmerge
+				
+			// pop buffer pointer from server TxQ_server_id
 			$call popFromQueue (TXQUEUE TxQ_server_id) (tx_buffer_pointer_32 TxQ_status)
-			$barrier
+			
+			// pop_status == 1 is success, i.e., popped buffer pointer from TxQ
+			$volatile pop_status := (~($bitreduce | ($slice TxQ_status 7 0)))
+			
+			// If pop not successful -> Loopback
+			$if (~pop_status) $then 
+				$place [pop_loopback]
+			$endif
 			
 			$volatile tx_buffer_pointer := ($bitcast ($uint<64>) tx_buffer_pointer_32)
-			// pop_status == 1 is success, i.e., popped packet pointer from TxQ
-			$volatile pop_status := (~($bitreduce | ($slice TxQ_status 7 0)))
+			
 				
-			// if ok transmit the packet 
-			$guard (pop_status) $call transmitPacket (tx_tag tx_buffer_pointer) (transmitted_flag)
-			// transmitted_flag == 1, then packet is transmitted successfully
-			$barrier
-
-			$volatile push_pointer_back_to_free_Q := (pop_status & transmitted_flag)
-
-
-			// push packet pointer to free queue
-			$guard (push_pointer_back_to_free_Q)
-			$call exec_receive_queue_command (SERVER_0 FQ_LOCK _h0000) (l_nentries l_push_status l_pop_status freeQ_lock)
+			// After successfully popping buffer pointer from TxQ, transmit packet from that buffer 
+			$call transmitPacket (tx_tag tx_buffer_pointer) (transmitted_flag)
 			
-			// lock_status == 0 is success, i.e., get access to freeQ lock
-			$volatile lock_status := ($bitreduce | freeQ_lock)
+			// if transmitted_flag == 1,
+			// then packet is transmitted successfully, push buffer pointer into free queue
+
+			$if (transmitted_flag == 1) $then
+				// spin until lock is acquired and push_status is successful
+				$merge $entry lock_loopback push_loopback $endmerge
+
+				// push buffer pointer to free queue
+				$call exec_free_queue_command (SERVER_0 FQ_LOCK _h0000) (l_nentries l_push_status l_pop_status fQ_lock_status)
 			
-			$guard (~lock_status)
+				// lock_status == 1 is success, i.e., get access to freeQ lock
+				$volatile lock_status := (~($bitreduce | fQ_lock_status))
+			
+				// If lock not acquired -> Loopback
+				$if(~lock_status) $then
+					$place [lock_loopback]
+				$endif
+				
+				// If lock acquired -> push into free queue
 				$call pushIntoQueue (FREEQUEUE SERVER_0 tx_buffer_pointer_32) (freeQ_status)
-			$barrier
+				
+				// release freeQ lock immediately after push
+				$call exec_free_queue_command (SERVER_0 FQ_UNLOCK _h0000) (ul_nentries ul_push_status ul_pop_status
+											  fQ_unlock_status)
 			
-			// push_status == 1 is success, i.e., pushed packet pointer to freeQ
-			$volatile push_status := (~($bitreduce | ($slice freeQ_status 15 8)))
+				// push_status == 1 is success, i.e., pushed buffer pointer to freeQ
+				$volatile push_status := (~($bitreduce | ($slice freeQ_status 15 8)))
 
-			// release freeQ lock
-			$guard (push_status)
-			$call exec_receive_queue_command (SERVER_0 FQ_UNLOCK _h0000) (ul_nentries ul_push_status ul_pop_status freeQ_unlock)
+				// If push not successful -> Loopback
+				$if (~push_status) $then 
+					$place [push_loopback]
+				$endif
 
 
-			// Increment the number of packets transmitted
-			$guard (push_pointer_back_to_free_Q)
+				// Increment the number of packets transmitted
 				$call incrementNumberOfPacketsTransmitted () ()
 
-			// move to next server's Tx queue
-			n_TxQ_server_id := ((TxQ_server_id + 1) & ($bitcast ($uint<4>) (S_NUMBER_OF_SERVERS - 1)))
-			//LAST_READ_TX_QUEUE_INDEX := TxQ_server_id
+				// move to next server's Tx queue
+				n_TxQ_server_id := ((TxQ_server_id + 1) & ($bitcast ($uint<4>) (S_NUMBER_OF_SERVERS - 1)))
+				//LAST_READ_TX_QUEUE_INDEX := TxQ_server_id
 
-			$barrier
+			$endif
 	
-			// while (control[0] == 1) loop is enabled
-			$while (S_CONTROL_REGISTER [] 0)
+			// Loop while (control[0] == 1), i.e., NIC is enabled
+			$if ((S_CONTROL_REGISTER [] 0) == 1) $then
+				$place [loopback]
+			$endif
 			
 		$place [disable_loopback]
 	}

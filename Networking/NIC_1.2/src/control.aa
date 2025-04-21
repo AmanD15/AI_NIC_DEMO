@@ -1,29 +1,4 @@
 //
-// Initializes all queues from setGlobalSignals on startup.
-// Write status registers of RxQ (all 4 servers), TxQ (all 4 servers) and freeQ to zero.
-//
-$module [init_all_queues] $in () $out () $is
-{
-	// TODO: coherent start sequence....
-	// setup the initial status..
-	
-	$branchblock[loop] 
-	{
-		$dopipeline $depth 7 $fullrate
-		$merge $entry $loopback
-			$phi status_index := ($bitcast ($uint<8>) P_RX_QUEUE_0_STATUS_INDEX) $on $entry nstatus_index $on $loopback
-		$endmerge
-			
-		$volatile nstatus_index := (status_index + 2)
-		$volatile continue_flag := (status_index < P_FREE_QUEUE_STATUS_INDEX)
-			
-		$call accessRegister (WRITEMEM _hF status_index _h00000000) (ign_rsp)
-			
-		$while continue_flag
-	}
-}
-
-//
 // Register file (depth = 256) (width = 32)
 //
 $storage nic_registers: $array [255] $of $uint<32>
@@ -55,8 +30,8 @@ $storage nic_registers: $array [255] $of $uint<32>
 // The 4 queue operations (opcode):
 //	PUSH 	  : if its a write access to any of the queues (generally TxQ, and freeQ in beginning)
 //	POP  	  : if its a read  access to any of the queues (generally RxQ, and freeQ in the end)
-//	FQ_LOCK   : if its a read  access to free_queue_lock   (acquire lock, should read 1 on successul acquire)
-//	FQ_UNLOCK : if its a write access to free_queue_lock   (release lock, write 0)
+//	FQ_LOCK   : if its a read  access to free_queue_lock   (acquire lock, should read 1 on successful acquire)
+//	FQ_UNLOCK : if its a write access to free_queue_lock   (release lock, write 1)
 //
 // The 2 register operations:
 //	READ 	  : if its a read  access to any of the registers including queue_status_registers (excluding queue and lock registers)
@@ -98,17 +73,23 @@ $is
 				(access_Q & (~rwbar))  		PUSH
 				(access_Q & rwbar)  		POP)
 
+	$rreport(accessRegister push_or_pop access_Q reg_access server_id opcode)
+
 	// processor generally pops from RxQ
 	$guard (access_RxQ)
 		$call exec_receive_queue_command (server_id opcode wdata) (rx_nentries rx_push_status rx_pop_status rxq_rdata)
+	$rreport(accessRegister access_RxQ rx_nentries rx_push_status rx_pop_status rxq_rdata)
 		
 	// processor generally pushes to TxQ
 	$guard (access_TxQ)
 		$call exec_transmit_queue_command (server_id opcode wdata) (tx_nentries tx_push_status tx_pop_status txq_rdata)
-		
+	$rreport(accessRegister access_TxQ tx_nentries tx_push_status tx_pop_status txq_rdata)
+	
 	$guard (access_free_queue)
 		$call exec_free_queue_command (server_id opcode wdata) (f_nentries f_push_status f_pop_status fq_rdata)
-
+	$rreport(accessRegister access_free_queue f_nentries f_push_status f_pop_status fq_rdata)
+	
+	$barrier
 	// update status register in case of push and pop operations
 	$volatile update_status_reg := ((opcode == PUSH) | (opcode == POP))
 	// status register index calculation
@@ -120,7 +101,7 @@ $is
 
 	// read access from register
 	$guard (reg_access) rdata_regs := nic_registers[index]
-
+	
 	$volatile rdata := ($excmux
 				access_RxQ 		rxq_rdata
 				access_TxQ 		txq_rdata
@@ -163,7 +144,6 @@ $module [setGlobalSignals]
 
 	$barrier
 	
-
 	$call accessRegister (READMEM _hF P_NIC_CONTROL_REGISTER_INDEX 0) (ctrl_reg)
 
 	S_CONTROL_REGISTER := ctrl_reg
@@ -181,11 +161,9 @@ $module [setGlobalSignals]
 
 
 
-
 $module [controlDaemon] $in () $out () $is
 {
 
-		
 	// set up the lock, at the beginning.
 	// (will be accessed in doMemAccess)
 	memory_access_lock := 1
@@ -233,13 +211,7 @@ $module [controlDaemon] $in () $out () $is
 			
 			$barrier 
 			
-			// initialize all queues status registers 
-			$volatile initialize_queues := ((~rwbar) & (index == P_N_SERVERS_REGISTER_INDEX))
-			$guard (initialize_queues)
-				$call init_all_queues () ()
-			
-			$volatile update_control_register := ((~rwbar) & (index == 0))
-			$volatile set_globals := update_control_register
+			$volatile set_globals := ((~rwbar) & (index == 0))
 			$guard (set_globals)
 				$call setGlobalSignals () ()
 

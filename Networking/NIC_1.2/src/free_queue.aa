@@ -1,11 +1,11 @@
 //
 // There are four possible operations
-//	lock, unlock, push, pop
+//	fq_lock, fq_unlock, push, pop
 //
-//  lock
+//  fq_lock
 //    if lock is available,     return_value = 0, push_status = 0, pop_status = 0, nentries = number_of_entries.
 //    if lock is not available, return_value = 1, push_status = 0, pop_status = 0, nentries = number_of_entries.
-//  unlock
+//  fq_unlock
 //    return_value = 0, push_status = pop_status = 0, nentries = number of entries.
 //  push 
 //    if successful,     return_value = 0, push_status = 0, pop_status = 0, nentries = number_of_entries.
