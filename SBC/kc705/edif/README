@@ -1,0 +1,5 @@
+processor_2x1x64.edn.tgz
+	dual-core, no l2 cache.
+component.vhdl
+	component for the 2x1x64 processor.
+
