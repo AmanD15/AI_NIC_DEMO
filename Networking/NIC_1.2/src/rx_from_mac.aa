@@ -35,16 +35,11 @@ $module [nicRxFromMacDaemon] $in () $out () $is
 		// loop around until enabled by Software
 		$rreport(nicRxFromMacDaemon waiting_for_control)
 		$merge $entry not_enabled_yet_loopback disable_loopback $endmerge
-		
-			// for Debug
-			$call accessRegister ($zero<1> (~$zero<4>) 22 $zero<32>) (ignore_resp0)
-		
 			
 		// If not enabled yet -> Loopback
 		$if (~(S_CONTROL_REGISTER [] 0)) $then
 			$place [not_enabled_yet_loopback]
 		$endif
-
 
 		$rreport(nicRxFromMacDaemon got_the__control )
 		$call accessRegister ($zero<1> (~$zero<4>) P_STATUS_REGISTER_INDEX $one<32>) (ignore_resp1)

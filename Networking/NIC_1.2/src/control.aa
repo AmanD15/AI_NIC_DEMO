@@ -54,7 +54,7 @@ $is
 	$volatile access_fq_lock := (index == P_FREE_QUEUE_LOCK_INDEX)
 	$volatile access_free_queue := (access_freeQ | access_fq_lock)
 
-	$volatile access_Q	:=  ($reduce & access_RxQ access_TxQ access_freeQ)
+	$volatile access_Q	:=  ($reduce | access_RxQ access_TxQ access_freeQ)
 	// To access registers
 	$volatile reg_access 	:=  (~access_Q)
 	
@@ -73,23 +73,17 @@ $is
 				(access_Q & (~rwbar))  		PUSH
 				(access_Q & rwbar)  		POP)
 
-	$rreport(accessRegister push_or_pop access_Q reg_access server_id opcode)
-
 	// processor generally pops from RxQ
 	$guard (access_RxQ)
 		$call exec_receive_queue_command (server_id opcode wdata) (rx_nentries rx_push_status rx_pop_status rxq_rdata)
-	$rreport(accessRegister access_RxQ rx_nentries rx_push_status rx_pop_status rxq_rdata)
 		
 	// processor generally pushes to TxQ
 	$guard (access_TxQ)
 		$call exec_transmit_queue_command (server_id opcode wdata) (tx_nentries tx_push_status tx_pop_status txq_rdata)
-	$rreport(accessRegister access_TxQ tx_nentries tx_push_status tx_pop_status txq_rdata)
 	
 	$guard (access_free_queue)
 		$call exec_free_queue_command (server_id opcode wdata) (f_nentries f_push_status f_pop_status fq_rdata)
-	$rreport(accessRegister access_free_queue f_nentries f_push_status f_pop_status fq_rdata)
 	
-	$barrier
 	// update status register in case of push and pop operations
 	$volatile update_status_reg := ((opcode == PUSH) | (opcode == POP))
 	// status register index calculation
@@ -137,15 +131,11 @@ $module [setGlobalSignals]
 	$in () $out () $is
 {
 	$call accessRegister (READMEM _hF P_N_SERVERS_REGISTER_INDEX 0) (n_servers)
-	S_NUMBER_OF_SERVERS  := n_servers
-
-	$call accessRegister (READMEM _hF P_N_BUFFERS_REGISTER_INDEX 0) (n_buffers)
-	S_MAX_NENTRIES  := n_buffers
+	S_NUMBER_OF_SERVERS := n_servers
 
 	$barrier
 	
 	$call accessRegister (READMEM _hF P_NIC_CONTROL_REGISTER_INDEX 0) (ctrl_reg)
-
 	S_CONTROL_REGISTER := ctrl_reg
 
 	MAC_ENABLE := (ctrl_reg [] 1)
@@ -200,8 +190,11 @@ $module [controlDaemon] $in () $out () $is
 			// register_index.
 			$volatile index := ($slice addr 9 2)
 
-				
-			$volatile read_counter := (index == 255)
+			$volatile read_counter := (index == P_COUNTER_REGISTER_INDEX)
+			
+			$volatile set_buffers := ((~rwbar) & (index == P_N_BUFFERS_REGISTER_INDEX))
+			$guard (set_buffers)
+				S_MAX_NENTRIES := wdata
 
 			// access the register.
 			$guard (~read_counter)

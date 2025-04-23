@@ -59,7 +59,7 @@ $module [TransmitEngineDaemon] $in () $out () $is
 				// spin until lock is acquired and push_status is successful
 				$merge $entry lock_loopback push_loopback $endmerge
 
-				// push buffer pointer to free queue
+				// acquire free queue lock to push buffer pointer to free queue
 				$call exec_free_queue_command (SERVER_0 FQ_LOCK _h0000) (l_nentries l_push_status l_pop_status fQ_lock_status)
 			
 				// lock_status == 1 is success, i.e., get access to freeQ lock
@@ -116,7 +116,8 @@ $module [transmitPacket]
 	// read packet information from transmit packet buffer.
 	$volatile control_data_addr := packet_pointer
 
-	$rreport(transmitPacket control_data_addr_is packet_pointer control_data_addr)	
+	$rreport(transmitPacket control_data_addr_is packet_pointer control_data_addr)
+		
 	$call accessMemoryDword (tag READMEM control_data_addr  0 $zero<64>) (control_data)
 	
 	

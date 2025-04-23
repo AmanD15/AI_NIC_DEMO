@@ -25,6 +25,14 @@ $module [transmit_queue_daemon] $in () $out () $is
 {	
 	$branchblock[loop] 
 	{
+		// spin until number of buffers are set
+		$merge $entry buffers_not_set_loopback $endmerge
+		
+		// If number of buffers not set -> Loopback
+		$if (S_MAX_NENTRIES == 0) $then
+			$place [buffers_not_set_loopback]
+		$endif
+		
 		$dopipeline $depth 7 $fullrate
 		$merge $entry $loopback
 			$phi NENTRIES_0    := $zero<16> $on $entry n_NENTRIES_0 $on $loopback
