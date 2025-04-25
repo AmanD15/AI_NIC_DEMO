@@ -30,6 +30,7 @@ $module [popFromQueue]
 $is
 {
 	$volatile FreeQ   := (queue_type == FREEQUEUE)
+	$volatile RxQ     := (queue_type == RXQUEUE)
 	$volatile TxQ     := (queue_type == TXQUEUE)
 	
 	$volatile server_0 := (server_id == SERVER_0)
@@ -39,6 +40,10 @@ $is
 	
 	$volatile wdata := $zero<32>
 
+	// Pop from RxQ
+	$guard (RxQ)
+		$call exec_receive_queue_command (server_id POP wdata) (rx_nentries rx_push_status rx_pop_status rxq_rdata)
+		
 	// Pop from TxQ
 	$guard (TxQ)
 		$call exec_transmit_queue_command (server_id POP wdata) (tx_nentries tx_push_status tx_pop_status txq_rdata)
@@ -51,18 +56,25 @@ $is
 	$volatile status_index := 
 			($excmux 
 				FreeQ				P_FREE_QUEUE_STATUS_INDEX
+				RxQ    ($excmux 
+						server_0	P_RX_QUEUE_0_STATUS_INDEX
+						server_1 	P_RX_QUEUE_1_STATUS_INDEX
+						server_2 	P_RX_QUEUE_2_STATUS_INDEX
+						server_3 	P_RX_QUEUE_3_STATUS_INDEX)
 				TxQ     ($excmux 
 						server_0 	P_TX_QUEUE_0_STATUS_INDEX
-						server_1 	P_TX_QUEUE_0_STATUS_INDEX
-						server_2 	P_TX_QUEUE_0_STATUS_INDEX
-						server_3 	P_TX_QUEUE_0_STATUS_INDEX))
+						server_1 	P_TX_QUEUE_1_STATUS_INDEX
+						server_2 	P_TX_QUEUE_2_STATUS_INDEX
+						server_3 	P_TX_QUEUE_3_STATUS_INDEX))
 						
 	$volatile status := ($excmux
+				RxQ	($concat rx_nentries rx_push_status rx_pop_status)
 				TxQ	($concat tx_nentries tx_push_status tx_pop_status)
 				FreeQ	($concat f_nentries  f_push_status  f_pop_status))
 	
 	// returns popped value back to the caller		
 	q_rdata := ($excmux
+			RxQ	rxq_rdata
 			TxQ	txq_rdata
 			FreeQ	fq_rdata)
 	
@@ -95,6 +107,7 @@ $is
 {
 	$volatile FreeQ   := (queue_type == FREEQUEUE)
 	$volatile RxQ     := (queue_type == RXQUEUE)
+	$volatile TxQ     := (queue_type == TXQUEUE)
 	
 	$volatile server_0 := (server_id == SERVER_0)
 	$volatile server_1 := (server_id == SERVER_1)
@@ -104,10 +117,14 @@ $is
 	// Push into RxQ
 	$guard (RxQ)
 		$call exec_receive_queue_command (server_id PUSH q_wdata) (rx_nentries rx_push_status rx_pop_status rx_ignr)
+		
+	// Push into TxQ
+	$guard (TxQ)
+		$call exec_transmit_queue_command (server_id PUSH q_wdata) (tx_nentries tx_push_status tx_pop_status tx_ignr)
 	
 	// Push into freeQ
 	$guard (FreeQ)
-		$call exec_free_queue_command (server_id PUSH q_wdata) (f_nentries f_push_status f_pop_status f_ignf)
+		$call exec_free_queue_command (server_id PUSH q_wdata) (f_nentries f_push_status f_pop_status f_ignr)
 	
 	// queue_status_register index calculation from queue_type and server_id
 	$volatile status_index := 
@@ -115,12 +132,18 @@ $is
 				FreeQ				P_FREE_QUEUE_STATUS_INDEX
 				RxQ    ($excmux 
 						server_0	P_RX_QUEUE_0_STATUS_INDEX
-						server_1 	P_RX_QUEUE_0_STATUS_INDEX
-						server_2 	P_RX_QUEUE_0_STATUS_INDEX
-						server_3 	P_RX_QUEUE_0_STATUS_INDEX))
+						server_1 	P_RX_QUEUE_1_STATUS_INDEX
+						server_2 	P_RX_QUEUE_2_STATUS_INDEX
+						server_3 	P_RX_QUEUE_3_STATUS_INDEX)
+				TxQ     ($excmux 
+						server_0 	P_TX_QUEUE_0_STATUS_INDEX
+						server_1 	P_TX_QUEUE_1_STATUS_INDEX
+						server_2 	P_TX_QUEUE_2_STATUS_INDEX
+						server_3 	P_TX_QUEUE_3_STATUS_INDEX))
 		
 	$volatile status := ($excmux
 				RxQ	($concat rx_nentries rx_push_status rx_pop_status)
+				TxQ	($concat tx_nentries tx_push_status tx_pop_status)
 				FreeQ	($concat f_nentries  f_push_status  f_pop_status))
 
 	// update queue_status_register					
@@ -139,14 +162,37 @@ $module [queueTestDaemon] $in () $out () $is
 
 		cmd := debug_queue_command 
 		$volatile $split (cmd 1 25 2 4 32) (rwbar u15 queue_type server_id val)
+			
+		$if (queue_type == FREEQUEUE) $then
+			// spin until lock is acquired
+			$merge $entry lock_loopback $endmerge
 		
-		$guard (~rwbar)
+			// acquire free queue lock to push/pop buffer pointer to/from free queue
+			$call exec_free_queue_command (SERVER_0 FQ_LOCK _h0000) (l_nentries l_push_status l_pop_status fQ_lock_status)
+			
+			// lock_status == 0 is success, i.e., get access to freeQ lock
+			$volatile lock_status := ($bitreduce | fQ_lock_status)
+			
+			// If lock not acquired -> Loopback
+			$if (lock_status == 1) $then
+				$place [lock_loopback]
+			$endif
+		$endif
+		
+		$if (~rwbar) $then
 			$call pushIntoQueue (queue_type server_id val) (push_status)
+		$else
+			$call popFromQueue (queue_type server_id) (pop_val pop_status)
+		$endif
+			
+		$if (queue_type == FREEQUEUE) $then
+			// release freeQ lock immediately after push/pop
+			$call exec_free_queue_command (SERVER_0 FQ_UNLOCK _h0000) (ul_nentries ul_push_status ul_pop_status fQ_unlock_status)
+		$endif
+		
 		// push_ok == 0 is success, i.e., pushed buffer pointer from queue
 		$volatile push_ok := ($bitreduce | ($slice push_status 15 8))
-			
-		$guard (rwbar)
-			$call popFromQueue (queue_type server_id) (pop_val pop_status)
+		
 		// pop_ok == 0 is success, i.e., popped buffer pointer from queue
 		$volatile pop_ok := ($bitreduce | ($slice pop_status 7 0))
 		
