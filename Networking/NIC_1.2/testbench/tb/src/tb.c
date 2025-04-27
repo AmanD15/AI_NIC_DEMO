@@ -517,6 +517,16 @@ int main(int argc, char* argv[])
 	fprintf (stderr,"Info: Started memory daemon\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	
+	// Check the memory access from the TB side.
+	// Do a small read-write (march) test on the memory to ensure that it
+	// can be accessed from the processor (TB) side.
+	
+
+	// Check the memory access from the NIC side.
+	// Do a small read-write (march) test on the memory to ensure that it
+	// can be accessed from the processor (TB) side.
+
+	
 	// buffers for packets, each buffer has a capacity of 1024 bytes.
 	int i;
 	for (i = 0; i < NBUFFERS; i++) 
