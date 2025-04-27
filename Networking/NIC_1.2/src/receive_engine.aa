@@ -80,11 +80,11 @@ $module [ReceiveEngineDaemon] $in () $out() $is
 			// After successfully popping buffer pointer from freeQ, receive packet in that buffer
 			$call receivePacket (rx_tag max_buffer_addr_offset rx_buffer_pointer) (bad_packet_identifier)
 
-			// if bad_packet_identifier == 0, 
+			// if bad_packet_identifier is 0, 
 			// then received packet is ok, push buffer pointer into rx queue
 			// else received packet is not ok, free the buffer and push buffer pointer back to free queue
 	
-			$if(bad_packet_identifier == 0) $then
+			$if (bad_packet_identifier == 0) $then
 				// spin until push_status is successful
 				$merge $entry push_loopback $endmerge
 				

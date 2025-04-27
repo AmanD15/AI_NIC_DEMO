@@ -52,7 +52,7 @@ $module [TransmitEngineDaemon] $in () $out () $is
 			// After successfully popping buffer pointer from TxQ, transmit packet from that buffer 
 			$call transmitPacket (tx_tag tx_buffer_pointer) (transmitted_flag)
 			
-			// if transmitted_flag == 1,
+			// if transmitted_flag is 1,
 			// then packet is transmitted successfully, push buffer pointer into free queue
 
 			$if (transmitted_flag == 1) $then

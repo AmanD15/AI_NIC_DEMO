@@ -35,8 +35,8 @@
 #define    P_N_BUFFERS_REGISTER_INDEX        4  
 #define    P_MAC_REGISTER_H_INDEX            208
 #define    P_MAC_REGISTER_L_INDEX            209
-#define    P_TX_PKT_COUNT_REGISTER_INDEX     210
-#define    P_RX_PKT_COUNT_REGISTER_INDEX     211
+#define    P_RX_PKT_COUNT_REGISTER_INDEX     210
+#define    P_TX_PKT_COUNT_REGISTER_INDEX     211
 #define    P_STATUS_REGISTER_INDEX           212
 
 //  Base index for queue access

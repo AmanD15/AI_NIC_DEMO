@@ -231,7 +231,6 @@ int checkQueues (uint32_t queue_type, uint32_t server_id)
 			while(acquireLock(NIC_ID)) 
 			{
 				fprintf(stderr,"Warning: lock not acquired, retrying again.\n");
-				usleep(1000);
 			};
 #ifdef DEBUGPRINT
 			fprintf(stderr,"Info: Lock acquired.\n");
@@ -269,7 +268,6 @@ int checkQueues (uint32_t queue_type, uint32_t server_id)
 			while(acquireLock(NIC_ID)) 
 			{
 				fprintf(stderr,"Warning: lock not acquired, retrying again.\n");
-				usleep(1000);
 			};
 #ifdef DEBUGPRINT
 			fprintf(stderr,"Info: Lock acquired.\n");
@@ -456,7 +454,6 @@ int checkQueueSequence ()
 			while(acquireLock(NIC_ID)) 
 			{
 				fprintf(stderr,"Warning: lock not acquired, retrying again.\n");
-				usleep(1000);
 			};
 #ifdef DEBUGPRINT
 			fprintf(stderr,"Info: Lock acquired.\n");
@@ -490,7 +487,6 @@ int checkQueueSequence ()
 			while(acquireLock(NIC_ID)) 
 			{
 				fprintf(stderr,"Warning: lock not acquired, retrying again.\n");
-				usleep(1000);
 			};
 #ifdef DEBUGPRINT
 			fprintf(stderr,"Info: Lock acquired.\n");
@@ -607,7 +603,6 @@ int checkQueueSequence ()
 			while(acquireLock(NIC_ID)) 
 			{
 				fprintf(stderr,"Warning: lock not acquired, retrying again.\n");
-				usleep(1000);
 			};
 #ifdef DEBUGPRINT
 			fprintf(stderr,"Info: Lock acquired.\n");
@@ -640,7 +635,6 @@ int checkQueueSequence ()
 			while(acquireLock(NIC_ID)) 
 			{
 				fprintf(stderr,"Warning: lock not acquired, retrying again.\n");
-				usleep(1000);
 			};
 #ifdef DEBUGPRINT
 			fprintf(stderr,"Info: Lock acquired.\n");

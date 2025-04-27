@@ -1,14 +1,17 @@
 #ifndef tb_queue_h_______    
 #define tb_queue_h_______    
 
+// 512 MB, 64K dwords
+#define MEMSIZE (16*4096)
+
 // NIC settings
-#define NSERVERS 4		// number of servers enabled (max = 4);	from server_id 0 to (max-1) 
-#define NBUFFERS 64  		// number of buffer pointers in each queue (max 64 for current hardware)
+#define NSERVERS 1		// number of servers enabled (max = 4);	from server_id 0 to (max-1) 
+#define NBUFFERS 4  		// number of buffer pointers in each queue (max 64 for current hardware)
 
 // options to run different tests
 //#define CHECK_QUEUES 		// Uncomment this line to test queue operations from processor side
 //#define DEBUG_QUEUES 		// Uncomment this line to test queue operations from NIC side
-#define CHECK_QUEUE_SEQUENCE 	// Uncomment this line to mimic and test queue sequence from processor side
+//#define CHECK_QUEUE_SEQUENCE 	// Uncomment this line to mimic and test queue sequence from processor side
 //#define DEBUG_QUEUE_SEQUENCE 	// Uncomment this line to mimic and test queue sequence from NIC side
 
 // constants
