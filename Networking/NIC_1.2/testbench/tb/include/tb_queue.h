@@ -8,11 +8,19 @@
 #define NSERVERS 1		// number of servers enabled (max = 4);	from server_id 0 to (max-1) 
 #define NBUFFERS 4  		// number of buffer pointers in each queue (max 64 for current hardware)
 
+
 // options to run different tests
+
 //#define CHECK_QUEUES 		// Uncomment this line to test queue operations from processor side
 //#define DEBUG_QUEUES 		// Uncomment this line to test queue operations from NIC side
 //#define CHECK_QUEUE_SEQUENCE 	// Uncomment this line to mimic and test queue sequence from processor side
 //#define DEBUG_QUEUE_SEQUENCE 	// Uncomment this line to mimic and test queue sequence from NIC side
+
+//#define CHECK_MEMORY_ACCESS	// Uncomment this line to test memory access from processor side
+//#define DEBUG_MEMORY_ACCESS	// Uncomment this line to test memory access from NIC side
+
+#define CHECK_NIC		// Uncomment this line to check complete NIC 
+
 
 // constants
 #define NIC_ID 0
@@ -50,6 +58,16 @@ int checkQueueSequence ();
 
 #ifdef DEBUG_QUEUE_SEQUENCE
 int debugQueueSequence ();
+#endif
+
+#ifdef CHECK_MEMORY_ACCESS
+int checkMemoryAccess ();
+#endif
+
+#ifdef DEBUG_MEMORY_ACCESS
+uint64_t nicAccessMemory (uint8_t lock,  uint8_t rwbar, uint8_t bmask, uint32_t addr, uint64_t wdata);
+int debugMemoryAccess ();
+int debugMemoryAccessInReverse ();
 #endif
 
 #endif

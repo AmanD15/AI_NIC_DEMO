@@ -199,3 +199,38 @@ $pipeline $depth 15 $fullrate   $module [doMemAccess]
 	$guard (is_ldstub)
 		memory_access_lock := $one<1>
 }
+
+//
+// For debug purpose only through debug_memory pipes
+//
+$module [memoryTestDaemon] $in () $out () $is
+{
+	$branchblock[loop] 
+	{
+		$merge $entry loopback $endmerge
+		
+		// 64-bit
+		// unused lock rwbar bmask addr
+		//   18    1   1     8     36
+		cmd0 := debug_memory_command
+		cmd1 := debug_memory_command
+		
+		$volatile tag := $zero<8>
+		$volatile $split (cmd0 18 1 1 8 36) (unused lock rwbar bmask addr)
+		$volatile addr_offset := $zero<64>
+		$volatile wdata := ($mux rwbar $zero<64> cmd1)
+		
+		$if (~rwbar) $then
+			$call accessMemoryDword (tag WRITEMEM ($bitcast ($uint<64>) addr) addr_offset wdata) (ignr) 
+		$else
+			$call accessMemoryDword (tag READMEM  ($bitcast ($uint<64>) addr) addr_offset wdata) (rdata)
+		$endif
+		
+		$volatile result := ($mux rwbar rdata $zero<64>)
+		debug_memory_response := result
+
+		$place [loopback]
+	}
+
+}
+

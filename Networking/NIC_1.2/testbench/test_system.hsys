@@ -3,7 +3,6 @@ $in
 	// Packet interface
 	$pipe tb_to_nic_mac_bridge 	16 
 
-
 	// This is the response from the 
 	// memory modeled in the tb 
 	$pipe TB_MEM_TO_TEST_SYSTEM	64
@@ -17,10 +16,13 @@ $in
 
 	$pipe debug_queue_command	64
 	
+	$pipe debug_memory_command	64
+	
 $out
 
 	$pipe debug_queue_response      64
 
+	$pipe debug_memory_response     64
 	
 	// Packet interface
 	$pipe nic_mac_bridge_to_tb	16
@@ -86,7 +88,7 @@ $out
 		TEST_SYSTEM_TO_TB_MEM => TEST_SYSTEM_TO_TB_MEM
 
 	
-
+	
 	// nic instance
 	$instance nic_inst     nic_lib: nic
 		AFB_NIC_REQUEST => AFB_NIC_REQUEST
@@ -97,6 +99,7 @@ $out
 		mac_to_nic_data => mac_to_nic_data
 		MAC_ENABLE => MAC_ENABLE
 
+
 	// nic-mac-bridge instance
 	$instance nic_mac_bridge_inst  nic_mac_bridge_lib: nic_mac_bridge
 		rx_in_pipe => rx_in_pipe                 // 10-bit (from MAC)
@@ -105,7 +108,6 @@ $out
 		tx_in_pipe => nic_to_mac_transmit_pipe   // 73-bit (from NIC)
 		
 		
-
 	// acb mux instance
 	$instance acb_mux_inst  GlueModules: acb_fast_mux
 		CORE_BUS_REQUEST_HIGH => NIC_TO_MEMORY_REQUEST
@@ -116,6 +118,5 @@ $out
 
 		CORE_BUS_REQUEST  => MERGED_ACB_REQUEST
 		CORE_BUS_RESPONSE => MERGED_ACB_RESPONSE
-		
 			
 }

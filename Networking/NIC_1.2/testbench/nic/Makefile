@@ -12,7 +12,7 @@ VC2VHDL: vc2vhdl  vhdlsim
 AA2VHDLSIM: aa2vc  vc2vhdl  vhdlsim
 TOVHDL:TOVC vc2vhdl
 
-TOPMODULES=-T ReceiveEngineDaemon -T nicRxFromMacDaemon -T TransmitEngineDaemon -T controlDaemon -T free_queue_daemon -T receive_queue_daemon -T transmit_queue_daemon  -T queueTestDaemon
+TOPMODULES=-T ReceiveEngineDaemon -T nicRxFromMacDaemon -T TransmitEngineDaemon -T controlDaemon -T free_queue_daemon -T receive_queue_daemon -T transmit_queue_daemon  -T queueTestDaemon -T memoryTestDaemon
 
 
 

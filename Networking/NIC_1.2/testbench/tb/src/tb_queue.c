@@ -427,6 +427,8 @@ int debugQueuesInReverse (uint32_t queue_type, uint32_t server_id)
 #endif
 
 #ifdef CHECK_QUEUE_SEQUENCE
+// Mimics and checks queue sequencing operations from processor side
+// return 0 on success
 int checkQueueSequence ()
 {
 	int err_flag =0;
@@ -665,6 +667,8 @@ int checkQueueSequence ()
 #endif
 
 #ifdef DEBUG_QUEUE_SEQUENCE
+// Mimics and checks queue sequencing operations from NIC side
+// return 0 on success
 int debugQueueSequence ()
 {
 	int err_flag =0;
@@ -841,3 +845,106 @@ int debugQueueSequence ()
 }
 #endif
 
+
+#ifdef CHECK_MEMORY_ACCESS
+// Check the memory access from the processor side.
+// return 0 0n success
+int checkMemoryAccess ()
+{
+	int err_flag =0;
+	int I;
+	uint32_t address;
+	for (I = 0; I < NBUFFERS; I++) 
+	{
+        	address = 8 * (I + 1);  // Starting from 8 and increasing by 8
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: checkMemoryAccess : Writing value = 0x%llx to address = 0x%lx.\n", I, address);
+#endif
+		processorAccessMemory (0, 0, 0xff, address, I); 
+		
+		uint64_t J = processorAccessMemory (0, 1, 0xff, address, 0); 
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: checkMemoryAccess : Read value = 0x%llx from address = 0x%lx.\n", J, address);
+#endif
+		if (J != I)
+		{
+			fprintf(stderr,"Error: checkMemoryAccess, from address = 0x%lx: expected 0x%llx, received 0x%llx\n", address, I, J);
+			err_flag = 1;
+		}
+    	}	
+    	return(err_flag);
+}
+#endif
+
+
+#ifdef DEBUG_MEMORY_ACCESS
+uint64_t nicAccessMemory (uint8_t lock,  uint8_t rwbar, uint8_t bmask, uint32_t addr, uint64_t wdata)
+{
+	uint64_t ctrl_word = (((uint64_t) lock) << 45) | (((uint64_t) rwbar) << 44) | (((uint64_t) bmask) << 36) | addr ;
+#ifdef DEBUGPRINT
+	fprintf(stderr,"Info: nicAccessMemory: lock=%d, rwbar=%d, bmask=0x%x, addr=0x%lx, wdata=0x%llx, ctrl-word=0x%llx\n",
+				lock, rwbar, bmask, addr, wdata, ctrl_word);
+#endif
+	write_uint64 ("debug_memory_command", ctrl_word);
+	write_uint64 ("debug_memory_command", wdata);
+	
+	uint64_t rdata = read_uint64 ("debug_memory_response");
+	return(rdata);
+}
+
+// To check the write access to memory from the NIC side using debug pipes
+// return 0 0n success
+int debugMemoryAccess ()
+{
+	int err_flag =0;
+	int I;
+	uint32_t address;
+	for (I = 0; I < NBUFFERS; I++) 
+	{
+        	address = 8 * (I + 1);  // Starting from 8 and increasing by 8
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: debugMemoryAccess : Writing value = 0x%llx to address = 0x%lx from NIC side.\n", I, address);
+#endif
+		nicAccessMemory (0, 0, 0xff, address, I); 
+		
+		uint64_t J = processorAccessMemory (0, 1, 0xff, address, 0); 
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: debugMemoryAccess : Read value = 0x%llx from address = 0x%lx from processor side.\n", J, address);
+#endif
+		if (J != I)
+		{
+			fprintf(stderr,"Error: debugMemoryAccess, at address = 0x%lx: expected 0x%llx, received 0x%llx\n", address, I, J);
+			err_flag = 1;
+		}
+    	}	
+	return(err_flag);
+}
+
+// To check the read access to memory from the NIC side using debug pipes
+// return 0 0n success
+int debugMemoryAccessInReverse ()
+{
+	int err_flag =0;
+	int I;
+	uint32_t address;
+	for (I = 0; I < NBUFFERS; I++) 
+	{
+        	address = 8 * (I + 1);  // Starting from 8 and increasing by 8
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: debugMemoryAccessInReverse : Writing value = 0x%llx to address = 0x%lx from processor side.\n", I, address);
+#endif
+		processorAccessMemory (0, 0, 0xff, address, I); 
+		
+		uint64_t J = nicAccessMemory (0, 1, 0xff, address, 0); 
+#ifdef DEBUGPRINT
+		fprintf(stderr,"Info: debugMemoryAccessInReverse : Read value = 0x%llx from address = 0x%lx from NIC side.\n", J, address);
+#endif
+		if (J != I)
+		{
+			fprintf(stderr,"Error: debugMemoryAccessInReverse, at address = 0x%lx: expected 0x%llx, received 0x%llx\n", address, I, J);
+			err_flag = 1;
+		}
+    	}	
+	return(err_flag);
+}
+#endif

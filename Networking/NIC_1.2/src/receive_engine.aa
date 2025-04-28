@@ -187,29 +187,28 @@ $module [writeEthernetHeaderToMem]
 {
 	$branchblock [main]
 	{
-
 		$volatile ethHeaderTag := ((tag << 2) | ($bitcast ($uint<8>) 1))
 
 		$dopipeline $depth 15 $fullrate
-			$merge $entry $loopback
-				// Start from buffer dword 1, ie to rx_buffer_pointer + 8.
-				// Because, buffer dword 0 is reserved for control information
-				$phi addr_offset :=  ($bitcast ($uint<16>) 8) $on $entry naddr_offset $on $loopback
+		$merge $entry $loopback
+			// Start from buffer dword 1, ie to rx_buffer_pointer + 8.
+			// Because, buffer dword 0 is reserved for control information
+			$phi addr_offset :=  ($bitcast ($uint<16>) 8) $on $entry naddr_offset $on $loopback
 
-				// keep track of number of dwords read so far.
-				$phi first_time := $one<1> $on $entry $zero<1> $on $loopback 
+			// keep track of number of dwords read so far.
+			$phi first_time := $one<1> $on $entry $zero<1> $on $loopback 
 		
-				// Read Header word from pipe
-				$phi ethernet_header := nic_rx_to_header $on $entry, $loopback
-			$endmerge
+			// Read Header word from pipe
+			$phi ethernet_header := nic_rx_to_header $on $entry, $loopback
+		$endmerge
 
-			// Extract individual components of the word 
-			$volatile $split (ethernet_header 1 64 8)(last_bit wdata wkeep)
+		// Extract individual components of the word 
+		$volatile $split (ethernet_header 1 64 8)(last_bit wdata wkeep)
 	
-			$call accessMemoryDword (ethHeaderTag WRITEMEM rx_buffer_pointer 
-					($bitcast ($uint<64>) addr_offset)  wdata)  (ignore_return) 
+		$call accessMemoryDword (ethHeaderTag WRITEMEM rx_buffer_pointer 
+				($bitcast ($uint<64>) addr_offset)  wdata)  (ignore_return) 
 
-			$volatile naddr_offset := (addr_offset + 8)
+		$volatile naddr_offset := (addr_offset + 8)
 
 		// If 2 words are stored, then end
 		$while first_time

@@ -73,7 +73,7 @@ void probeNic (uint32_t nic_id, uint32_t* rx_pkt_count, uint32_t* tx_pkt_count, 
 
 uint64_t accessMemory (uint8_t count, uint8_t lock, uint8_t rwbar, uint8_t byte_mask, uint32_t addr, uint64_t wdata)
 {
-	int index = (addr >> 3) % MEMSIZE;	// since index changes after 64 bits (8 bytes)
+	int index = (addr >> 3) % MEMSIZE;
 	uint64_t retval = mem_array [index];
 	uint64_t ins_data = retval;
 	if(!rwbar) 
@@ -113,13 +113,13 @@ uint64_t accessMemory (uint8_t count, uint8_t lock, uint8_t rwbar, uint8_t byte_
 		}
 		mem_array[index] = ins_data;	
 #ifdef DEBUGPRINT
-		fprintf(stderr,"[count=0x%x]  MEM[0x%lx, 0x%x] = 0x%llx %s\n", count, addr, index, ins_data, (lock ? "lock" : ""));
+		fprintf(stderr,"Info: [count=0x%x]  MEM[0x%lx, 0x%x] = 0x%llx %s\n", count, addr, index, ins_data, (lock ? "lock" : ""));
 #endif
 	}
 	else
 	{
 #ifdef DEBUGPRINT
-		fprintf(stderr,"[count=0x%x]   0x%llx = MEM[0x%lx, 0x%x] %s\n", count, retval, addr, index, (lock ? "lock" : ""));
+		fprintf(stderr,"Info: [count=0x%x]   0x%llx = MEM[0x%lx, 0x%x] %s\n", count, retval, addr, index, (lock ? "lock" : ""));
 #endif
 	}
 	return(retval);
@@ -129,7 +129,7 @@ uint64_t processorAccessMemory (uint8_t lock,  uint8_t rwbar, uint8_t bmask, uin
 {
 	uint64_t ctrl_word = (((uint64_t) lock) << 45) | (((uint64_t) rwbar) << 44) | (((uint64_t) bmask) << 36) | addr ;
 #ifdef DEBUGPRINT
-	fprintf(stderr,"processorAccessMemory: lock=%d, rwbar=%d, bmask=0x%x, addr=0x%lx, wdata=0x%llx, ctrl-word=0x%llx\n",
+	fprintf(stderr,"Info: processorAccessMemory: lock=%d, rwbar=%d, bmask=0x%x, addr=0x%lx, wdata=0x%llx, ctrl-word=0x%llx\n",
 				lock, rwbar, bmask, addr, wdata, ctrl_word);
 #endif
 	write_uint64 ("TB_PROCESSOR_TO_MEM", ctrl_word);
@@ -158,11 +158,11 @@ void memoryDaemon ()
 		{
 			if(lock)
 			{
-				fprintf(stderr,"Error:memoryDaemon: two locks in a row.\n");
+				fprintf(stderr,"Error: memoryDaemon: two locks in a row.\n");
 			}
 			if(addr != last_locked_addr)
 			{
-				fprintf(stderr,"Error:memoryDaemon: last_locked_addr = 0x%x != addr=0x%x\n", last_locked_addr, addr);
+				fprintf(stderr,"Error: memoryDaemon: last_locked_addr = 0x%x != addr=0x%x\n", last_locked_addr, addr);
 			}
 		}
 
@@ -198,7 +198,7 @@ void packetTxDaemon () {
 	while(1)
 	{
 		int length = packet_lengths[packet_index % 4];
-		fprintf(stderr," Info: packetTxDaemon: sending packet with length = %d.\n", length);
+		fprintf(stderr,"Info: packetTxDaemon: sending packet with length = %d.\n", length);
 		while (length > 0)
 		{
 			uint16_t last = (length == 1);
@@ -509,6 +509,7 @@ int main(int argc, char* argv[])
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 #endif
 
+
 	// start the memory daemon...
 	PTHREAD_DECL(memoryDaemon);
 	PTHREAD_CREATE(memoryDaemon);
@@ -517,18 +518,53 @@ int main(int argc, char* argv[])
 	fprintf (stderr,"Info: Started memory daemon\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	
-	// Check the memory access from the TB side.
-	// Do a small read-write (march) test on the memory to ensure that it
-	// can be accessed from the processor (TB) side.
 	
+#ifdef CHECK_MEMORY_ACCESS
+	int cma_err = 0;
+	// Check the memory access from the processor side.
+	cma_err = checkMemoryAccess ();
+	if(cma_err)
+	{
+		fprintf(stderr,"Error: checkMemoryAccess failed.\n");
+		return(1);
+	}
+	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
+	fprintf (stderr,"Info: checkMemoryAccess done (ret=%d)!\n", cma_err);
+	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
+#endif	
 
-	// Check the memory access from the NIC side.
-	// Do a small read-write (march) test on the memory to ensure that it
-	// can be accessed from the processor (TB) side.
 
+#ifdef DEBUG_MEMORY_ACCESS
+	int dma_err = 0;
+	// Checking memory access using write from NIC side through debug pipes.
+	dma_err = debugMemoryAccess ();
+	if(dma_err)
+	{
+		fprintf(stderr,"Error: debugMemoryAccess failed.\n");
+		return(1);
+	}
+	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
+	fprintf (stderr,"Info: debugMemoryAccess done (ret=%d)!\n", dma_err);
+	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	
+	// Checking memory access using read from NIC side through debug pipes.
+	dma_err = debugMemoryAccessInReverse ();
+	if(dma_err)
+	{
+		fprintf(stderr,"Error: debugMemoryAccessInReverse failed.\n");
+		return(1);
+	}
+	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
+	fprintf (stderr,"Info: debugMemoryAccessInReverse done (ret=%d)!\n", dma_err);
+	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
+#endif
+	
+	
+#ifdef CHECK_NIC
+	// Checks overall functioning of NIC
 	// buffers for packets, each buffer has a capacity of 1024 bytes.
 	int i;
+	// Allocating buffers
 	for (i = 0; i < NBUFFERS; i++) 
 	{
         	buffer_addresses[i] = 1024 * (i + 1);  // Starting from 1024 and increasing by 1024
@@ -537,13 +573,12 @@ int main(int argc, char* argv[])
 
 	for(i = 0; i < NBUFFERS; i++)
 	{
-		//
-		// Note: physical addresses of buffers are pushed into "FREEQUEUE".
-		// 
+		// Writing max_addr_offset as control information to memory
 		uint64_t max_addr_offset = 1016;
 		max_addr_offset = (max_addr_offset << 48);
 		processorAccessMemory (0, 0, 0xff, buffer_addresses[i], max_addr_offset); 
 		
+		// Pushing physical addresses of buffers into "FREEQUEUE".
 		int push_not_ok;
 		do {
 #ifdef DEBUGPRINT
@@ -604,7 +639,7 @@ int main(int argc, char* argv[])
 	PTHREAD_JOIN(packetRxDaemon);
 	
 	fprintf(stderr,"%s: completed %s\n", err_flag ? "Error" : "Info", err_flag ? "with error." : "");
-	
+#endif
 	return(err_flag);
 }
 
