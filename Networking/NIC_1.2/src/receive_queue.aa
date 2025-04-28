@@ -129,7 +129,8 @@ $module [receive_queue_daemon] $in () $out () $is
 							pop_is_ok_2 	rdata_2
 							pop_is_ok_3 	rdata_3))
 		
-		RECEIVE_QUEUE_RESPONSE := ($concat n_NENTRIES push_status pop_status result_data)
+		$volatile to_resp_q := ($concat n_NENTRIES push_status pop_status result_data)
+		RECEIVE_QUEUE_RESPONSE := to_resp_q
 					
 		$while 1
 	}

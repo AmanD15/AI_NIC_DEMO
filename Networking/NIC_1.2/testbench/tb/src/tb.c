@@ -18,7 +18,7 @@
 
 int err_flag = 0;
 int number_of_packets = 1;
-int packet_lengths[4] = {1, 37, 49, 64};
+int packet_lengths[4] = {32, 37, 49, 64};
 
 uint64_t  mem_array [16*4096];
 
