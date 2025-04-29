@@ -282,9 +282,13 @@ void forwardDaemon () {
 	while(1)
 	{
 		uint32_t buf_addr;
-		while (popFromQueue (NIC_ID, server_id, RXQUEUE, &buf_addr))
+		while (1)
 		{
-			fprintf(stderr,"Warning: forwardDaemon : pop from Rx queue not ok, retrying again.\n");
+			uint32_t pop_result =popFromQueue (NIC_ID, server_id, RXQUEUE, &buf_addr);
+			if(pop_result == 0)
+				break;
+			else
+				fprintf(stderr,"Warning: forwardDaemon : pop from Rx queue returns 0x%x, retrying again.\n", pop_result);
 		}
 		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
 		fprintf(stderr,"Info: forwardDaemon: popped from Rx queue, buf_addr=0x%x\n", buf_addr);

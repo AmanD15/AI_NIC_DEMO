@@ -85,7 +85,9 @@ $is
 		$call exec_free_queue_command (server_id opcode wdata) (f_nentries f_push_status f_pop_status fq_rdata)
 	
 	// update status register in case of push and pop operations
-	$volatile update_status_reg := ((opcode == PUSH) | (opcode == POP))
+	$volatile update_status_reg := ($reduce &
+						access_Q
+						((opcode == PUSH) | (opcode == POP)))
 	// status register index calculation
 	$volatile status_index := (index + 1)
 	$volatile status := ($excmux
