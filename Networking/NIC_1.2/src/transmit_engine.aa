@@ -32,23 +32,23 @@ $module [TransmitEngineDaemon] $in () $out () $is
 		$merge $entry loopback 
 			$phi TxQ_server_id := $zero<4> $on $entry n_TxQ_server_id $on loopback
 		$endmerge
+		
 			// spin until pop_status is successful
 			$merge $entry pop_loopback $endmerge
 				
 			// pop buffer pointer from server TxQ_server_id
-			$call popFromQueue (TXQUEUE TxQ_server_id) (tx_buffer_pointer_32 TxQ_status)
+			$call popFromQueue (TXQUEUE TxQ_server_id) (tx_buffer_pointer_32)
 			
-			// pop_status == 1 is success, i.e., popped buffer pointer from TxQ
-			$volatile pop_status := (~($bitreduce | ($slice TxQ_status 7 0)))
+			// pop_status == 0 is success, i.e., popped buffer pointer from TxQ
+			$volatile pop_status := (tx_buffer_pointer_32 [] 0)
 			
 			// If pop not successful -> Loopback
-			$if (~pop_status) $then 
+			$if (pop_status == 1) $then 
 				$place [pop_loopback]
 			$endif
 			
 			$volatile tx_buffer_pointer := ($bitcast ($uint<64>) tx_buffer_pointer_32)
 			
-				
 			// After successfully popping buffer pointer from TxQ, transmit packet from that buffer 
 			$call transmitPacket (tx_tag tx_buffer_pointer) (transmitted_flag)
 			
@@ -60,13 +60,13 @@ $module [TransmitEngineDaemon] $in () $out () $is
 				$merge $entry lock_loopback push_loopback $endmerge
 
 				// acquire free queue lock to push buffer pointer to free queue
-				$call exec_free_queue_command (SERVER_0 FQ_LOCK _h0000) (l_nentries l_push_status l_pop_status fQ_lock_status)
+				$call exec_free_queue_command (SERVER_0 FQ_LOCK _h0000) (fQ_lock_status)
 			
-				// lock_status == 1 is success, i.e., get access to freeQ lock
-				$volatile lock_status := (~($bitreduce | fQ_lock_status))
+				// lock_status == 0 is success, i.e., get access to freeQ lock
+				$volatile lock_status := ($bitreduce | fQ_lock_status)
 			
 				// If lock not acquired -> Loopback
-				$if(~lock_status) $then
+				$if(lock_status == 1) $then
 					$place [lock_loopback]
 				$endif
 				
@@ -74,17 +74,15 @@ $module [TransmitEngineDaemon] $in () $out () $is
 				$call pushIntoQueue (FREEQUEUE SERVER_0 tx_buffer_pointer_32) (freeQ_status)
 				
 				// release freeQ lock immediately after push
-				$call exec_free_queue_command (SERVER_0 FQ_UNLOCK _h0000) (ul_nentries ul_push_status ul_pop_status
-											  fQ_unlock_status)
+				$call exec_free_queue_command (SERVER_0 FQ_UNLOCK _h0000) (fQ_unlock_status)
 			
-				// push_status == 1 is success, i.e., pushed buffer pointer to freeQ
-				$volatile push_status := (~($bitreduce | ($slice freeQ_status 15 8)))
+				// push_status == 0 is success, i.e., pushed buffer pointer to freeQ
+				$volatile push_status := (freeQ_status [] 1)
 
 				// If push not successful -> Loopback
-				$if (~push_status) $then 
+				$if (push_status == 1) $then 
 					$place [push_loopback]
 				$endif
-
 
 				// Increment the number of packets transmitted
 				$call incrementNumberOfPacketsTransmitted () ()

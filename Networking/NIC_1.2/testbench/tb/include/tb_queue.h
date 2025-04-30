@@ -5,8 +5,8 @@
 #define MEMSIZE (16*4096)
 
 // NIC settings
-#define NSERVERS 1		// number of servers enabled (max = 4);	from server_id 0 to (max-1) 
-#define NBUFFERS 4  		// number of buffer pointers in each queue (max 64 for current hardware)
+#define NSERVERS 4		// number of servers enabled (max = 4);	from server_id 0 to (max-1) 
+#define NBUFFERS 64  		// number of buffer pointers in each queue (max 64 for current hardware)
 
 
 // options to run different tests
@@ -31,8 +31,8 @@
 void setNumberOfServersInNic (uint32_t nic_id, uint32_t number_of_servers_enabled);
 uint32_t getNumberOfServersInNic (uint32_t nic_id);
 
-void setStatusOfQueuesInNic (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uint32_t status_value);
-uint32_t getStatusOfQueuesInNic (uint32_t nic_id, uint32_t server_id, uint32_t queue_type);
+void setNumberOfBuffersInQueue (uint32_t nic_id, uint32_t number_of_buffers);
+uint32_t getNumberOfBuffersInQueue (uint32_t nic_id);
 
 int acquireLock(uint32_t nic_id);
 int releaseLock(uint32_t nic_id);
@@ -44,8 +44,10 @@ int popFromQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uint
 int checkQueues (uint32_t queue_type, uint32_t server_id);
 #endif
 
+#if defined(DEBUG_QUEUES) || defined(DEBUG_QUEUE_SEQUENCE)
 int debugPushIntoQueue (uint32_t queue_type, uint32_t server_id, uint32_t val);
 int debugPopFromQueue (uint32_t queue_type, uint32_t server_id, uint64_t* rval);
+#endif
 
 #ifdef DEBUG_QUEUES
 int debugQueues (uint32_t queue_type, uint32_t server_id);

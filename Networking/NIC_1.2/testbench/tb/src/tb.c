@@ -17,14 +17,16 @@
 
 
 int err_flag = 0;
-int number_of_packets = 1;
-int packet_lengths[4] = {32, 37, 49, 64};
-
-uint64_t  mem_array [16*4096];
-
+#ifdef CHECK_NIC
+int number_of_packets = 6;
+int packet_lengths[6] = {32, 64, 128, 256, 512, 1024};
 // buffers for packets
 uint32_t  buffer_addresses[NBUFFERS];
+#endif
 
+#if defined(CHECK_MEMORY_ACCESS) || defined(DEBUG_MEMORY_ACCESS) || defined(CHECK_NIC)
+uint64_t  mem_array [16*4096];
+#endif
 
 uint32_t accessNicReg (uint8_t rwbar, uint32_t nic_id, uint32_t reg_index, uint32_t reg_value)
 {
@@ -42,9 +44,10 @@ uint32_t accessNicReg (uint8_t rwbar, uint32_t nic_id, uint32_t reg_index, uint3
 	return(retval);
 }
 
-void writeToNicReg (uint32_t nic_id, uint32_t reg_index, uint32_t reg_value)
+uint32_t writeToNicReg (uint32_t nic_id, uint32_t reg_index, uint32_t reg_value)
 {
-	accessNicReg (0, nic_id, reg_index, reg_value);	
+	uint32_t retval = accessNicReg (0, nic_id, reg_index, reg_value);
+	return(retval);	
 }
 
 uint32_t readFromNicReg (uint32_t nic_id, uint32_t reg_index)
@@ -53,6 +56,7 @@ uint32_t readFromNicReg (uint32_t nic_id, uint32_t reg_index)
 	return(retval);
 }
 
+#ifdef CHECK_NIC
 void writeNicControlRegister (uint32_t nic_id, uint32_t enable_flags)
 {
 	writeToNicReg (nic_id, P_NIC_CONTROL_REGISTER_INDEX, enable_flags);
@@ -70,7 +74,124 @@ void probeNic (uint32_t nic_id, uint32_t* rx_pkt_count, uint32_t* tx_pkt_count, 
 	*status       = readFromNicReg (nic_id, P_STATUS_REGISTER_INDEX);
 }
 
+// Send packets to Rx_in_pipe of NIC
+void packetTxDaemon () {
+	int packet_index = 0;
+	uint8_t tx_byte = 0;
+	while(1)
+	{
+		int length = packet_lengths[packet_index % 4];
+		fprintf(stderr,"Info: packetTxDaemon: sending packet with length = %d.\n", length);
+		while (length > 0)
+		{
+			uint16_t last = (length == 1);
+			uint16_t tx_val = (last << 9) | (tx_byte << 1);
+			// last byte unused
+			// 1     8   1
+			write_uint16 ("tb_to_nic_mac_bridge", tx_val);
 
+			fprintf(stderr,"Info: packetTxDaemon: sent%sbyte 0x%x \n", last ? " last " : " ", tx_byte);
+			tx_byte++;
+
+			length--;
+		}
+		packet_index++;
+		fprintf(stderr,"Info: packetTxDaemon: sent packet with index %d.\n", packet_index);
+
+		if(packet_index == number_of_packets)
+		{
+			fprintf(stderr,"Info: packetTxDaemon: done.\n");
+			break;
+		}
+	}
+}
+DEFINE_THREAD(packetTxDaemon);
+
+// Receive packets from Tx_in_pipe of NIC
+void packetRxDaemon () {
+	int packet_index = 0;
+	uint8_t expected_byte = 0;
+	while(1)
+	{
+		int length = packet_lengths[packet_index % 4];
+		fprintf(stderr,"Info: packetRxDaemon: expecting packet with length = %d.\n", length);
+		int rx_byte_index = 0;
+		while (length > 0)
+		{
+			// last byte unused
+			// 1     8   1
+			uint16_t rx_val = read_uint16 ("nic_mac_bridge_to_tb");
+
+			uint16_t last = (rx_val  >> 9) & 0x1;
+			uint8_t rx_byte = (rx_val >> 1) & 0xff;
+
+			fprintf(stderr,"Info: packetRxDaemon: received%sbyte 0x%x \n", last ? " last " : " ", rx_byte);
+			uint16_t expected_last = (length == 1);
+			
+			if(last != expected_last)
+			{
+				fprintf(stderr,"Error: packet %d (length=%d), last mismatch at rx_byte_index=%d.\n", 
+						packet_index, packet_lengths[packet_index % 4], rx_byte_index);
+				err_flag = 1;
+			}
+
+			if(rx_byte != expected_byte)
+			{
+				fprintf(stderr,"Error: mismatched byte: expected = 0x%x, received = 0x%x, packet %d (length=%d), rx_byte_index=%d.\n", 
+					expected_byte, rx_byte, packet_index, packet_lengths[packet_index % 4], rx_byte_index);
+				err_flag = 1;
+			}
+
+			expected_byte++;
+			rx_byte_index++;
+
+			length--;
+		}
+		packet_index++;
+		fprintf(stderr,"Info: packetRxDaemon: received packet with index %d.\n", packet_index);
+
+		if(packet_index == number_of_packets)
+		{
+			fprintf(stderr,"Info: packetRxDaemon: done.\n");
+			break;
+		}
+	}
+}
+DEFINE_THREAD(packetRxDaemon);
+
+// forward daemon
+void forwardDaemon () {
+	uint32_t server_id = 0;
+	while(1)
+	{
+		uint32_t buf_addr;
+		while (popFromQueue (NIC_ID, server_id, RXQUEUE, &buf_addr))
+		{
+#ifdef DEBUGPRINT
+			fprintf(stderr,"Warning: forwardDaemon : pop from Rx queue not ok, retrying again.\n");
+#endif
+		}
+		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
+		fprintf(stderr,"Info: forwardDaemon: popped from Rx queue server %d, buf_addr=0x%x\n", server_id, buf_addr);
+		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
+
+		while(pushIntoQueue  (NIC_ID, server_id, TXQUEUE, buf_addr))
+		{
+#ifdef DEBUGPRINT
+			fprintf(stderr,"Warning: forwardDaemon : push into Tx queue not ok, retrying again.\n");
+#endif
+		}
+		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
+		fprintf(stderr,"Info: forwardDaemon: pushed into Tx queue server %d, buf_addr=0x%x\n", server_id, buf_addr);
+		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
+		
+		server_id = (server_id + 1) % NSERVERS;
+	}
+}
+DEFINE_THREAD(forwardDaemon);
+#endif
+
+#if defined(CHECK_MEMORY_ACCESS) || defined(DEBUG_MEMORY_ACCESS) || defined(CHECK_NIC)
 uint64_t accessMemory (uint8_t count, uint8_t lock, uint8_t rwbar, uint8_t byte_mask, uint32_t addr, uint64_t wdata)
 {
 	int index = (addr >> 3) % MEMSIZE;
@@ -189,136 +310,21 @@ void memoryDaemon ()
 	}
 }
 DEFINE_THREAD(memoryDaemon);
-
-
-// Send packets to Rx_in_pipe of NIC
-void packetTxDaemon () {
-	int packet_index = 0;
-	uint8_t tx_byte = 0;
-	while(1)
-	{
-		int length = packet_lengths[packet_index % 4];
-		fprintf(stderr,"Info: packetTxDaemon: sending packet with length = %d.\n", length);
-		while (length > 0)
-		{
-			uint16_t last = (length == 1);
-			uint16_t tx_val = (last << 9) | (tx_byte << 1);
-			// last byte unused
-			// 1     8   1
-			write_uint16 ("tb_to_nic_mac_bridge", tx_val);
-
-			fprintf(stderr,"Info: packetTxDaemon: sent%sbyte 0x%x \n", last ? " last " : " ", tx_byte);
-			tx_byte++;
-
-			length--;
-		}
-		packet_index++;
-		fprintf(stderr,"Info: packetTxDaemon: sent packet with index %d.\n", packet_index);
-
-		if(packet_index == number_of_packets)
-		{
-			fprintf(stderr,"Info: packetTxDaemon: done.\n");
-			break;
-		}
-	}
-}
-DEFINE_THREAD(packetTxDaemon);
-
-// Receive packets from Tx_in_pipe of NIC
-void packetRxDaemon () {
-	int packet_index = 0;
-	uint8_t expected_byte = 0;
-	while(1)
-	{
-		int length = packet_lengths[packet_index % 4];
-		fprintf(stderr,"Info: packetRxDaemon: expecting packet with length = %d.\n", length);
-		int rx_byte_index = 0;
-		while (length > 0)
-		{
-			// last byte unused
-			// 1     8   1
-			uint16_t rx_val = read_uint16 ("nic_mac_bridge_to_tb");
-
-			uint16_t last = (rx_val  >> 9) & 0x1;
-			uint8_t rx_byte = (rx_val >> 1) & 0xff;
-
-			fprintf(stderr,"Info: packetRxDaemon: received%sbyte 0x%x \n", last ? " last " : " ", rx_byte);
-			uint16_t expected_last = (length == 1);
-			
-			if(last != expected_last)
-			{
-				fprintf(stderr,"Error: packet %d (length=%d), last mismatch at rx_byte_index=%d.\n", 
-						packet_index, packet_lengths[packet_index % 4], rx_byte_index);
-				err_flag = 1;
-			}
-
-			if(rx_byte != expected_byte)
-			{
-				fprintf(stderr,"Error: mismatched byte: expected = 0x%x, received = 0x%x, packet %d (length=%d), rx_byte_index=%d.\n", 
-					expected_byte, rx_byte, packet_index, packet_lengths[packet_index % 4], rx_byte_index);
-				err_flag = 1;
-			}
-
-			expected_byte++;
-			rx_byte_index++;
-
-			length--;
-		}
-		packet_index++;
-		fprintf(stderr,"Info: packetRxDaemon: received packet with index %d.\n", packet_index);
-
-		if(packet_index == number_of_packets)
-		{
-			fprintf(stderr,"Info: packetRxDaemon: done.\n");
-			break;
-		}
-	}
-}
-DEFINE_THREAD(packetRxDaemon);
-
-// forward daemon
-void forwardDaemon () {
-	uint32_t server_id = 0;
-	while(1)
-	{
-		uint32_t buf_addr;
-		while (1)
-		{
-			uint32_t pop_result =popFromQueue (NIC_ID, server_id, RXQUEUE, &buf_addr);
-			if(pop_result == 0)
-				break;
-			else
-				fprintf(stderr,"Warning: forwardDaemon : pop from Rx queue returns 0x%x, retrying again.\n", pop_result);
-		}
-		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
-		fprintf(stderr,"Info: forwardDaemon: popped from Rx queue, buf_addr=0x%x\n", buf_addr);
-		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
-
-		while(pushIntoQueue  (NIC_ID, server_id, TXQUEUE, buf_addr))
-		{
-			fprintf(stderr,"Warning: forwardDaemon : push into Tx queue not ok, retrying again.\n");
-		}
-		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
-		fprintf(stderr,"Info: forwardDaemon: pushed into Tx queue, buf_addr=0x%x\n", buf_addr);
-		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
-		
-		server_id = (server_id + 1) % NSERVERS;
-	}
-}
-DEFINE_THREAD(forwardDaemon);
+#endif
 
 
 int main(int argc, char* argv[])
 {
-	fprintf(stderr, "%s <n-packets> (default 4) \n", argv[0]);
+#ifdef CHECK_NIC
+	fprintf(stderr, "%s <n-packets> (default 6) \n", argv[0]);
 	if(argc > 1)
 		number_of_packets = atoi(argv[1]);
 	else
 	{
-		fprintf(stderr, "Usage: %s <n-packets> (default 4) \n", argv[0]);
-		fprintf(stderr,"number_of_packets=%d.\n", number_of_packets);
+		fprintf(stderr, "Usage: %s <n-packets> (default 6) \n", argv[0]);
 	}
-
+	fprintf(stderr,"number_of_packets=%d.\n", number_of_packets);
+#endif
 	
 	fprintf (stderr,"Info: setting number of servers enabled to %d \n", NSERVERS);
 	// set the number of servers in the nic
@@ -340,37 +346,9 @@ int main(int argc, char* argv[])
 	fprintf (stderr,"Info: reading from register, number of buffers in each queue = %d \n", buffers_in_queue);
 #endif
 	
-	fprintf (stderr,"Info: resetting status registers\n");
-	// reset the free queue status registers
-	setStatusOfQueuesInNic (NIC_ID, FQ_SERVER_ID, FREEQUEUE, INITIAL_STATUS);
-#ifdef DEBUGPRINT
-	fprintf (stderr,"Info: reset free queue status register\n");
-	uint32_t freeQ_status_value = getStatusOfQueuesInNic (NIC_ID, FQ_SERVER_ID, FREEQUEUE);
-	fprintf (stderr,"Info: reading from register, free queue status register value = %d \n", freeQ_status_value);
-#endif
-	
-	int s_id;
-	for(s_id = 0; s_id < NSERVERS; s_id++)
-	{
-		// reset the RX queue status registers for all 4 servers
-		setStatusOfQueuesInNic (NIC_ID, s_id, RXQUEUE, INITIAL_STATUS);
-#ifdef DEBUGPRINT
-		fprintf (stderr,"Info: reset Rx queue status register for server %d \n", s_id);
-		uint32_t RxQ_status_value = getStatusOfQueuesInNic (NIC_ID, s_id, RXQUEUE);
-		fprintf (stderr,"Info: reading from register, Rx queue status register value for server %d = %d \n", s_id, RxQ_status_value);
-#endif
-		
-		// reset the TX queue status registers for all 4 servers
-		setStatusOfQueuesInNic (NIC_ID, s_id, TXQUEUE, INITIAL_STATUS);
-#ifdef DEBUGPRINT
-		fprintf (stderr,"Info: reset Tx queue status register for server %d \n", s_id);
-		uint32_t TxQ_status_value = getStatusOfQueuesInNic (NIC_ID, s_id, TXQUEUE);
-		fprintf (stderr,"Info: reading from register, Tx queue status register value for server %d = %d \n", s_id, TxQ_status_value);
-#endif
-	}
-	
 	
 #ifdef CHECK_QUEUES
+	int s_id;
 	int cq_err = 0;
 	// checking free queue using lock-push/pop-unlock operations
 	cq_err = checkQueues(FREEQUEUE, FQ_SERVER_ID);
@@ -412,6 +390,7 @@ int main(int argc, char* argv[])
 	
 	
 #ifdef DEBUG_QUEUES
+	int s_id;
 	int dq_err = 0;
 	// checking freeQ using push (w/o lock-unlock) from NIC side through debug queue pipes
 	dq_err = debugQueues(FREEQUEUE, FQ_SERVER_ID);
@@ -513,7 +492,7 @@ int main(int argc, char* argv[])
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 #endif
 
-
+#if defined(CHECK_MEMORY_ACCESS) || defined(DEBUG_MEMORY_ACCESS) || defined(CHECK_NIC)
 	// start the memory daemon...
 	PTHREAD_DECL(memoryDaemon);
 	PTHREAD_CREATE(memoryDaemon);
@@ -521,7 +500,7 @@ int main(int argc, char* argv[])
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	fprintf (stderr,"Info: Started memory daemon\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
-	
+#endif
 	
 #ifdef CHECK_MEMORY_ACCESS
 	int cma_err = 0;
@@ -606,10 +585,7 @@ int main(int argc, char* argv[])
 				fprintf(stderr,"Warning: checkQueueSequence : push to free queue not ok, retrying again.\n");
 			}
 		} while (push_not_ok);
-		
-		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
-		fprintf(stderr,"forwardDaemon: pushed to free queue, buf_addr=0x%x\n", buffer_addresses[i]);
-		fprintf(stderr,"//--------------------------------------------------------------------------------//\n"); 
+		fprintf(stderr,"main: pushed to free queue, buf_addr=0x%x\n", buffer_addresses[i]);
 	}
 	
 	// start the forwarding engine

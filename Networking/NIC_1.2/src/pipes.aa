@@ -72,9 +72,9 @@ $pipe FREE_QUEUE_COMMAND: $uint<40> $depth 2
 $pipe RECEIVE_QUEUE_COMMAND : $uint<40> $depth 2
 $pipe TRANSMIT_QUEUE_COMMAND: $uint<40> $depth 2
 
-// nentries push_status pop_status  read_data
-//    16       	8          8           32 
-$pipe FREE_QUEUE_RESPONSE    : $uint<64> $depth 2
-$pipe RECEIVE_QUEUE_RESPONSE : $uint<64> $depth 2
-$pipe TRANSMIT_QUEUE_RESPONSE: $uint<64> $depth 2
+// read_data (zero/popped_value   unused   push_status   pop_status)
+//    32 	  [31:3]	   [2]	       [1]	    [0]
+$pipe FREE_QUEUE_RESPONSE    : $uint<32> $depth 2
+$pipe RECEIVE_QUEUE_RESPONSE : $uint<32> $depth 2
+$pipe TRANSMIT_QUEUE_RESPONSE: $uint<32> $depth 2
 

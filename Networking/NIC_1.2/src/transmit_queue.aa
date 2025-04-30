@@ -1,23 +1,29 @@
 //
-// There are two possible operations
-//	push, pop
+// There are three possible operations
+//	push, pop and status
 //
 //  push 
-//    if successful,     return_value = 0, push_status = 0, pop_status = 0, nentries = number_of_entries.
-//    if not successful, return_value = 0, push_status = 1, pop_status = 0, nentries = number_of_entries.
+//    if successful,     return_value = 0x0. 		(i.e., with last 3-bits 000)
+//    if not successful, return_value = 0x2. 		(i.e., with last 3-bits 010)
 //  pop 
-//    if successful,     return_value = popped_value, push_status = 0, pop_status = 0, nentries = number_of_entries.
-//    if not successful, return_value = 0,            push_status = 0, pop_status = 1, nentries = number_of_entries.
+//    if successful,     return_value = popped_value.	(i.e., with last 3-bits 000)
+//    if not successful, return_value = 0x1.		(i.e., with last 3-bits 001)
+//  status
+//    return_value = number_of_entries.
+//
+// For push and pop, return_value(32-bits) is like
+// (zero/popped_value   unused   push_status   pop_status)
+//  	 [31:3]	   	 [2]	     [1]	   [0]
+// Since byte addressable, for successful push/pop last 3 bits should always be zero.
 //
 $module [exec_transmit_queue_command]
 	$in (server_id opcode: $uint<4> wdata: $uint<32>) 
-	$out (nentries: $uint<16> push_status pop_status: $uint<8> rdata: $uint<32>)
+	$out (rdata: $uint<32>)
 $is
 {
 	$volatile command := ($concat server_id opcode wdata)
 	TRANSMIT_QUEUE_COMMAND := command
-	response := TRANSMIT_QUEUE_RESPONSE
-	$volatile $split (response 16 8 8 32) (nentries push_status pop_status rdata)
+	rdata := TRANSMIT_QUEUE_RESPONSE
 }
 
 
@@ -35,32 +41,33 @@ $module [transmit_queue_daemon] $in () $out () $is
 		
 		$dopipeline $depth 7 $fullrate
 		$merge $entry $loopback
-			$phi NENTRIES_0    := $zero<16> $on $entry n_NENTRIES_0 $on $loopback
-			$phi NENTRIES_1    := $zero<16> $on $entry n_NENTRIES_1 $on $loopback
-			$phi NENTRIES_2    := $zero<16> $on $entry n_NENTRIES_2 $on $loopback
-			$phi NENTRIES_3    := $zero<16> $on $entry n_NENTRIES_3 $on $loopback
+			$phi NENTRIES_0    := $zero<32> $on $entry n_NENTRIES_0 $on $loopback
+			$phi NENTRIES_1    := $zero<32> $on $entry n_NENTRIES_1 $on $loopback
+			$phi NENTRIES_2    := $zero<32> $on $entry n_NENTRIES_2 $on $loopback
+			$phi NENTRIES_3    := $zero<32> $on $entry n_NENTRIES_3 $on $loopback
 			$phi queue_command := TRANSMIT_QUEUE_COMMAND $on $entry, $loopback
 		$endmerge
 	
 		$volatile $split (queue_command 4 4 32) (server_id opcode wdata)	
 		$volatile push   := (opcode == PUSH)
 		$volatile pop    := (opcode == POP)
+		$volatile status := (opcode == STATUS)
 		
 		$volatile server_0 := (server_id == SERVER_0)
 		$volatile server_1 := (server_id == SERVER_1)
 		$volatile server_2 := (server_id == SERVER_2)
 		$volatile server_3 := (server_id == SERVER_3)
 
-		$volatile push_is_ok_0 := ($reduce & push (NENTRIES_0 < ($bitcast ($uint<16>) S_MAX_NENTRIES)) server_0)
+		$volatile push_is_ok_0 := ($reduce & push (NENTRIES_0 < S_MAX_NENTRIES) server_0)
 		$guard (push_is_ok_0) Tx_QUEUE_0 := wdata
 		
-		$volatile push_is_ok_1 := ($reduce & push (NENTRIES_1 < ($bitcast ($uint<16>) S_MAX_NENTRIES)) server_1)
+		$volatile push_is_ok_1 := ($reduce & push (NENTRIES_1 < S_MAX_NENTRIES) server_1)
 		$guard (push_is_ok_1) Tx_QUEUE_1 := wdata
 		
-		$volatile push_is_ok_2 := ($reduce & push (NENTRIES_2 < ($bitcast ($uint<16>) S_MAX_NENTRIES)) server_2)
+		$volatile push_is_ok_2 := ($reduce & push (NENTRIES_2 < S_MAX_NENTRIES) server_2)
 		$guard (push_is_ok_2) Tx_QUEUE_2 := wdata
 		
-		$volatile push_is_ok_3 := ($reduce & push (NENTRIES_3 < ($bitcast ($uint<16>) S_MAX_NENTRIES)) server_3)
+		$volatile push_is_ok_3 := ($reduce & push (NENTRIES_3 < S_MAX_NENTRIES) server_3)
 		$guard (push_is_ok_3) Tx_QUEUE_3 := wdata
 
 		$volatile pop_is_ok_0 := ($reduce & pop (NENTRIES_0 > 0) server_0)
@@ -103,33 +110,27 @@ $module [transmit_queue_daemon] $in () $out () $is
 				$default NENTRIES_3)
 
 
-		$volatile n_NENTRIES :=
+		$volatile NENTRIES :=
 				($excmux 
-					server_0 n_NENTRIES_0
-					server_1 n_NENTRIES_1
-					server_2 n_NENTRIES_2
-					server_3 n_NENTRIES_3)
+					server_0 NENTRIES_0
+					server_1 NENTRIES_1
+					server_2 NENTRIES_2
+					server_3 NENTRIES_3)
 
-		$volatile push_status := 
-			($excmux 
-				push      ($mux push_is_ok $zero<8> $one<8>)
-				pop       $zero<8>)
-		
-		$volatile pop_status  := 
-			($excmux 
-				push      $zero<8>
-				pop       ($mux pop_is_ok  $zero<8>  $one<8>))
-
+		$volatile rdata :=
+				($excmux 
+					pop_is_ok_0	rdata_0
+					pop_is_ok_1	rdata_1
+					pop_is_ok_2 	rdata_2
+					pop_is_ok_3 	rdata_3)
+							
 		$volatile result_data :=
 				($excmux 
-					push 	$zero<32>
-					pop	($excmux 
-							pop_is_ok_0	rdata_0
-							pop_is_ok_1	rdata_1
-							pop_is_ok_2 	rdata_2
-							pop_is_ok_3 	rdata_3))
+					push 	($mux push_is_ok $zero<32> ($bitcast ($uint<32>) 2))
+					pop	($mux pop_is_ok  rdata     $one<32>)
+					status  NENTRIES)
 		
-		TRANSMIT_QUEUE_RESPONSE := ($concat n_NENTRIES push_status pop_status result_data)
+		TRANSMIT_QUEUE_RESPONSE := result_data
 					
 		$while 1
 	}

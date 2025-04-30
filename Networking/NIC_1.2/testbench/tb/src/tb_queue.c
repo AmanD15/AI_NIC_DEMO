@@ -36,36 +36,6 @@ uint32_t getNumberOfBuffersInQueue (uint32_t nic_id)
 	return(readFromNicReg (nic_id, P_N_BUFFERS_REGISTER_INDEX));
 }
 
-void     setStatusOfQueuesInNic (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uint32_t status_value)
-{
-	uint32_t reg_index;
-	switch(queue_type)
-	{
-		case FREEQUEUE     : reg_index = P_FREE_QUEUE_STATUS_INDEX;    break;
-		case RXQUEUE       : reg_index = (P_RX_QUEUE_0_STATUS_INDEX + (2*server_id)); break;
-		case TXQUEUE       : reg_index = (P_TX_QUEUE_0_STATUS_INDEX + (2*server_id)); break;	
-	}
-#ifdef DEBUGPRINT
-	fprintf(stderr,"Info: setStatusOfQueuesInNic reg_index=%d \n", reg_index);
-#endif
-	writeToNicReg (nic_id, reg_index, status_value);
-}
-
-uint32_t getStatusOfQueuesInNic (uint32_t nic_id, uint32_t server_id, uint32_t queue_type)
-{
-	uint32_t reg_index;
-	switch(queue_type)
-	{
-		case FREEQUEUE     : reg_index = P_FREE_QUEUE_STATUS_INDEX;    break;
-		case RXQUEUE       : reg_index = (P_RX_QUEUE_0_STATUS_INDEX + (2*server_id)); break;
-		case TXQUEUE       : reg_index = (P_TX_QUEUE_0_STATUS_INDEX + (2*server_id)); break;		
-	}
-#ifdef DEBUGPRINT
-	fprintf(stderr,"Info: getStatusOfQueuesInNic reg_index=%d \n", reg_index);
-#endif
-	return(readFromNicReg (nic_id, reg_index));
-}
-
 // return 0 on successful acquire
 int acquireLock(uint32_t nic_id)
 {
@@ -121,25 +91,14 @@ int pushIntoQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uin
 #ifdef DEBUGPRINT
 	fprintf(stderr,"Info: entered pushIntoQueue: push_value=0x%x reg_index=%d \n", push_value, reg_index);
 #endif
-	uint32_t init_status = readFromNicReg (nic_id, reg_index + 1);
-	uint16_t init_nentries = (init_status >> 16) & 0xFFFF;  // Extract the 16 most significant bits
-    	uint8_t init_push_status = (init_status >> 8) & 0xFF;      // Extract the next 8 bits
-    	uint8_t init_pop_status = init_status & 0xFF;             // Extract the least significant 8 bits
-#ifdef DEBUGPRINT
-	fprintf(stderr,"Info: pushIntoQueue: before push: nentries=%d, push_status=0x%x, pop_status=0x%x.\n",
-					init_nentries, init_push_status, init_pop_status);
-#endif
-	writeToNicReg (nic_id, reg_index, push_value);
+	int status = writeToNicReg (nic_id, reg_index, push_value);
 
-	uint32_t final_status = readFromNicReg (nic_id, reg_index + 1);
-	uint16_t final_nentries = (final_status >> 16) & 0xFFFF;  // Extract the 16 most significant bits
-    	uint8_t final_push_status = (final_status >> 8) & 0xFF;      // Extract the next 8 bits
-    	uint8_t final_pop_status = final_status & 0xFF;             // Extract the least significant 8 bits
+    	uint8_t push_status = (status >> 1) & 0x1;      // Extract the second least significant bit
+    	uint8_t pop_status = status & 0x1;             // Extract the least significant bit
 #ifdef DEBUGPRINT
-	fprintf(stderr,"Info: pushIntoQueue: after push: nentries=%d, push_status=0x%x, pop_status=0x%x.\n",
-					final_nentries, final_push_status, final_pop_status);
+	fprintf(stderr,"Info: pushIntoQueue: after push: push_status=0x%x, pop_status=0x%x.\n", push_status, pop_status);
 #endif
-	if((init_nentries < final_nentries) && (final_push_status == 0))
+	if(push_status == 0)
 	{
 		ret_val = 0;
 #ifdef DEBUGPRINT
@@ -159,7 +118,7 @@ int pushIntoQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uin
 }
 
 // return 0 on success
-int popFromQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uint32_t* popped_value)
+int popFromQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uint32_t* popped_val_status)
 {
 	int ret_val = 1;
 	uint32_t reg_index;
@@ -172,31 +131,19 @@ int popFromQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uint
 #ifdef DEBUGPRINT
 	fprintf(stderr,"Info: entered popFromQueue reg_index=%d \n", reg_index);
 #endif
-	uint32_t init_status = readFromNicReg (nic_id, reg_index + 1);
-	uint16_t init_nentries = (init_status >> 16) & 0xFFFF;  // Extract the 16 most significant bits
-    	uint8_t init_push_status = (init_status >> 8) & 0xFF;      // Extract the next 8 bits
-    	uint8_t init_pop_status = init_status & 0xFF;             // Extract the least significant 8 bits
+	*popped_val_status = readFromNicReg (nic_id, reg_index);
+
+    	uint8_t push_status = (*popped_val_status >> 1) & 0x1;      // Extract the second least significant bit
+    	uint8_t pop_status = *popped_val_status & 0x1;             // Extract the least significant bit
 #ifdef DEBUGPRINT
-	fprintf(stderr,"Info: popFromQueue: before pop: nentries=%d, push_status=0x%x, pop_status=0x%x.\n",
-					init_nentries, init_push_status, init_pop_status);
+	fprintf(stderr,"Info: popFromQueue: after pop: push_status=0x%x, pop_status=0x%x.\n", push_status, pop_status);
 #endif
-	*popped_value = readFromNicReg (nic_id, reg_index);
-#ifdef DEBUGPRINT
-	fprintf(stderr,"Info: popFromQueue: after pop: popped_value=0x%x.\n", *popped_value);
-#endif
-	uint32_t final_status = readFromNicReg (nic_id, reg_index + 1);
-	uint16_t final_nentries = (final_status >> 16) & 0xFFFF;  // Extract the 16 most significant bits
-    	uint8_t final_push_status = (final_status >> 8) & 0xFF;      // Extract the next 8 bits
-    	uint8_t final_pop_status = final_status & 0xFF;             // Extract the least significant 8 bits
-#ifdef DEBUGPRINT
-	fprintf(stderr,"Info: popFromQueue: after pop: nentries=%d, push_status=0x%x, pop_status=0x%x.\n",
-					final_nentries, final_push_status, final_pop_status);
-#endif
-	if((init_nentries > final_nentries) && (final_pop_status == 0))
+	if(pop_status == 0)
 	{
 		ret_val = 0;
 #ifdef DEBUGPRINT
 		fprintf(stderr,"Info: popFromQueue: Pop Successful\n");
+		fprintf(stderr,"Info: popFromQueue: after pop: popped_value=0x%x.\n", *popped_val_status);
 #endif
 	}
 	else
@@ -222,7 +169,8 @@ int checkQueues (uint32_t queue_type, uint32_t server_id)
 	fprintf(stderr,"Info: checking queue %d server %d.\n", queue_type, server_id);
 #endif
 	for(I = 0; I < NBUFFERS; I++)
-	{
+	{	
+		uint32_t push_val = 8 * (I + 1);  // Starting from 8 and increasing by 8
 		if (queue_type == FREEQUEUE)
 		{
 #ifdef DEBUGPRINT
@@ -239,7 +187,7 @@ int checkQueues (uint32_t queue_type, uint32_t server_id)
 #ifdef DEBUGPRINT
 		fprintf(stderr,"Info: Pushing into queue %d server %d.\n", queue_type, server_id);
 #endif
-		int push_not_ok = pushIntoQueue (NIC_ID, server_id, queue_type, I);
+		int push_not_ok = pushIntoQueue (NIC_ID, server_id, queue_type, push_val);
 		if (queue_type == FREEQUEUE)
 		{
 			releaseLock (NIC_ID);
@@ -259,7 +207,8 @@ int checkQueues (uint32_t queue_type, uint32_t server_id)
 	
 	for(I = 0; I < NBUFFERS; I++)
 	{
-		uint32_t J;
+		uint32_t popped_val;
+		uint32_t expected_val = 8 * (I + 1);  // Starting from 8 and increasing by 8
 		if (queue_type == FREEQUEUE)
 		{
 #ifdef DEBUGPRINT
@@ -276,7 +225,7 @@ int checkQueues (uint32_t queue_type, uint32_t server_id)
 #ifdef DEBUGPRINT
 		fprintf(stderr,"Info: Popping from queue %d server %d.\n", queue_type, server_id);
 #endif
-		int pop_not_ok  = popFromQueue (NIC_ID, server_id, queue_type, &J);
+		int pop_not_ok  = popFromQueue (NIC_ID, server_id, queue_type, &popped_val);
 		if (queue_type == FREEQUEUE)
 		{
 			releaseLock (NIC_ID);
@@ -290,9 +239,10 @@ int checkQueues (uint32_t queue_type, uint32_t server_id)
 			err_flag = 1;
 		}
 
-		if (J != I)
+		if (popped_val != expected_val)
 		{
-			fprintf(stderr,"Error: checkQueues queue %d server %d: expected 0x%x, received 0x%x\n",queue_type, server_id, I, J);
+			fprintf(stderr,"Error: checkQueues queue %d server %d: expected 0x%x, received 0x%x\n", 
+							queue_type, server_id, expected_val, popped_val);
 			err_flag = 1;
 		}
 	}
@@ -303,7 +253,7 @@ int checkQueues (uint32_t queue_type, uint32_t server_id)
 }
 #endif
 
-
+#if defined(DEBUG_QUEUES) || defined(DEBUG_QUEUE_SEQUENCE)
 // return 0 on success
 int debugPushIntoQueue (uint32_t queue_type, uint32_t server_id, uint32_t val)
 {
@@ -327,6 +277,7 @@ int debugPopFromQueue (uint32_t queue_type, uint32_t server_id, uint64_t* rval)
 #endif
 	return((*rval >> 63) != 0);
 }
+#endif
 
 #ifdef DEBUG_QUEUES
 // To check push from NIC side using debug queue pipes
@@ -342,7 +293,8 @@ int debugQueues (uint32_t queue_type, uint32_t server_id)
 #endif
 	for(I = 0; I < NBUFFERS; I++)
 	{	
-		int push_not_ok = debugPushIntoQueue (queue_type, server_id, I);
+		uint32_t push_val = 8 * (I + 1);  // Starting from 8 and increasing by 8
+		int push_not_ok = debugPushIntoQueue (queue_type, server_id, push_val);
 		if(push_not_ok)
 		{
 			fprintf(stderr,"Error: debugCheckQueues queue %d server %d: debug push not ok.\n", queue_type, server_id);
@@ -356,18 +308,19 @@ int debugQueues (uint32_t queue_type, uint32_t server_id)
 #endif
 	for(I = 0; I < NBUFFERS; I++)
 	{
-		uint32_t J;
-		int pop_not_ok  = popFromQueue (NIC_ID, server_id, queue_type, &J);
+		uint32_t popped_val;
+		uint32_t expected_val = 8 * (I + 1);  // Starting from 8 and increasing by 8
+		int pop_not_ok  = popFromQueue (NIC_ID, server_id, queue_type, &popped_val);
 		if(pop_not_ok)
 		{
 			fprintf(stderr,"Error: debugCheckQueues queue %d server %d: pop not ok.\n", queue_type, server_id);
 			err_flag = 1;
 		}
 		
-		if (J != I)
+		if (popped_val != expected_val)
 		{
 			fprintf(stderr,"Error: debugCheckQueues queue %d server %d: expected 0x%x, received 0x%x\n",
-							 queue_type, server_id, I, J);
+							queue_type, server_id, expected_val, popped_val);
 			err_flag = 1;
 		}
 	}
@@ -390,7 +343,8 @@ int debugQueuesInReverse (uint32_t queue_type, uint32_t server_id)
 #endif
 	for(I = 0; I < NBUFFERS; I++)
 	{	
-		int push_not_ok = pushIntoQueue (NIC_ID, server_id, queue_type, I);
+		uint32_t push_val = 8 * (I + 1);  // Starting from 8 and increasing by 8
+		int push_not_ok = pushIntoQueue (NIC_ID, server_id, queue_type, push_val);
 		if(push_not_ok)
 		{
 			fprintf(stderr,"Error: debugCheckQueuesInReverse queue %d server %d: push not ok.\n", queue_type, server_id);
@@ -404,18 +358,19 @@ int debugQueuesInReverse (uint32_t queue_type, uint32_t server_id)
 #endif
 	for(I = 0; I < NBUFFERS; I++)
 	{
-		uint64_t J;
-		int pop_not_ok  = debugPopFromQueue (queue_type, server_id, &J);
+		uint64_t popped_val;
+		uint32_t expected_val = 8 * (I + 1);  // Starting from 8 and increasing by 8
+		int pop_not_ok  = debugPopFromQueue (queue_type, server_id, &popped_val);
 		if(pop_not_ok)
 		{
 			fprintf(stderr,"Error: debugCheckQueuesInReverse queue %d server %d: debug pop not ok.\n", queue_type, server_id);
 			err_flag = 1;
 		}
 
-		if ((uint32_t) J != I)
+		if ((uint32_t) popped_val != expected_val)
 		{
 			fprintf(stderr,"Error: debugCheckQueuesInReverse queue %d server %d: expected 0x%x, received 0x%x\n",
-							 queue_type, server_id, I, (uint32_t) J);
+							 queue_type, server_id, expected_val, (uint32_t) popped_val);
 			err_flag = 1;
 		}
 	}
@@ -438,7 +393,7 @@ int checkQueueSequence ()
     	
     	for (I = 0; I < NBUFFERS; I++) 
     	{
-        	buffer[I] = I + 1;         	// Assigning values to buffers
+        	buffer[I] = 8 * (I + 1);         	// Assigning values to buffers
         	buffer_ptr[I] = &buffer[I];  	// Assigning addresses of buffers to pointers
     	}
 #ifdef DEBUGPRINT
@@ -678,7 +633,7 @@ int debugQueueSequence ()
     	
     	for (I = 0; I < NBUFFERS; I++) 
     	{
-        	buffer[I] = I + 1;         	// Assigning values to buffers
+        	buffer[I] = 8 * (I + 1);         	// Assigning values to buffers
         	buffer_ptr[I] = &buffer[I];  	// Assigning addresses of buffers to pointers
     	}
 #ifdef DEBUGPRINT

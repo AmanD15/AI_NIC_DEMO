@@ -14,11 +14,11 @@ $system nic $library work
           $pipe  FREE_QUEUE 32 $depth 64
           $pipe  FREE_QUEUE_COMMAND 40 $depth 2
     $noblock      $pipe  FREE_QUEUE_LOCK 1 $depth 1
-          $pipe  FREE_QUEUE_RESPONSE 64 $depth 2
+          $pipe  FREE_QUEUE_RESPONSE 32 $depth 2
           $signal  NIC_INTR_ENABLE 1 $depth 1
           $signal  NIC_INTR_INTERNAL 1 $depth 1
           $pipe  RECEIVE_QUEUE_COMMAND 40 $depth 2
-          $pipe  RECEIVE_QUEUE_RESPONSE 64 $depth 2
+          $pipe  RECEIVE_QUEUE_RESPONSE 32 $depth 2
           $pipe  Rx_QUEUE_0 32 $depth 64
           $pipe  Rx_QUEUE_1 32 $depth 64
           $pipe  Rx_QUEUE_2 32 $depth 64
@@ -28,7 +28,7 @@ $system nic $library work
           $signal  S_MAX_NENTRIES 32 $depth 1
           $signal  S_NUMBER_OF_SERVERS 32 $depth 1
           $pipe  TRANSMIT_QUEUE_COMMAND 40 $depth 2
-          $pipe  TRANSMIT_QUEUE_RESPONSE 64 $depth 2
+          $pipe  TRANSMIT_QUEUE_RESPONSE 32 $depth 2
           $pipe  Tx_QUEUE_0 32 $depth 64
           $pipe  Tx_QUEUE_1 32 $depth 64
           $pipe  Tx_QUEUE_2 32 $depth 64

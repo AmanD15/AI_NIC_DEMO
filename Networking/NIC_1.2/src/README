@@ -96,8 +96,7 @@
 		- control the NIC
 		- configure the NIC
 			- number of servers
-			- initial status of the
-				rx,tx and free queues.
+			- number of buffers in each queue
 		- monitor the NIC
 			- status information 
 ------------------------------------------------------------
@@ -131,14 +130,16 @@ Register     address         		Description
 		treated as pops from the queue.
 	
 8               0x20            Rx Q for server 0  
-9               0x24            Rx Q for server 0 status 
+				[31:3] 	push/pop buffer value	(since byte addressable, for successful push/pop
+								 last 3 bits should always be zero)
+				[2]  	unused
+				[1]   	status of last push command
+				[0]   	status of last pop  command
 
-				[31:16] number of occupied slots in queue.
-				[15:8]  status of last push command
-				[7:0]   status of last pop  command
-
-				Note: the status register is updated
-				whenever any push/pop is performed.
+9               0x24            Rx Q for server 0 status 	
+				No. of entries in queue
+				Note: the status register is a read-only register.
+				(mainly for debug purpose)
 
 10              0x28            Rx Q for server 1  
 11              0x2c            Rx Q for server 1 status 
@@ -153,13 +154,16 @@ Register     address         		Description
 
 //---------------------------------------------------------------
 16              0x40            Tx Q for server 0  
+				[31:3] 	push/pop buffer value	(since byte addressable, for successful push/pop
+								 last 3 bits should always be zero)
+				[2]  	unused
+				[1]   	status of last push command
+				[0]   	status of last pop  command
+				
 17              0x44            Tx Q for server 0 status 
-				[31:16] number of occupied slots in queue.
-				[15:8]  status of last push command
-				[7:0]   status of last pop  command
-
-				Note: the status register is updated
-				whenever any push/pop is performed.
+				No. of entries in queue
+				Note: the status register is a read-only register.
+				(mainly for debug purpose)
 
 18              0x48            Tx Q for server 1  
 19              0x4c            Tx Q for server 1 status 
@@ -174,16 +178,20 @@ Register     address         		Description
 
 //-------------------------------------------------------------
 //  Single Free queue.
-				[31:16] number of occupied slots in queue.
-				[15:8]  status of last push command
-				[7:0]   status of last pop  command
-
-				Note: the status register is updated
-				whenever any push/pop is performed.
 
 24		0x60		free queue
-25              0x64		free queue status.
-26              0x68		free queue lock.
+				[31:3] 	push/pop buffer value	(since byte addressable, for successful push/pop
+								 last 3 bits should always be zero)
+				[2]  	unused
+				[1]   	status of last push command
+				[0]   	status of last pop  command
+				
+25              0x64		free queue status
+				No. of entries in queue
+				Note: the status register is a read-only register.
+				(mainly for debug purpose)
+				
+26              0x68		free queue lock
 
 	Note: Free queue can be filled by either processor or
 	NIC, and emptied by either processor or NIC.

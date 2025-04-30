@@ -1,28 +1,34 @@
 //
-// There are four possible operations
-//	fq_lock, fq_unlock, push, pop
+// There are five possible operations
+//	fq_lock, fq_unlock, push, pop and status
 //
 //  fq_lock
-//    if lock is available,     return_value = 0, push_status = 0, pop_status = 0, nentries = number_of_entries.
-//    if lock is not available, return_value = 1, push_status = 0, pop_status = 0, nentries = number_of_entries.
+//    if lock is available,     return_value = 0x0.
+//    if lock is not available, return_value = 0x1.
 //  fq_unlock
-//    return_value = 0, push_status = pop_status = 0, nentries = number of entries.
+//    return_value = 0x0.
 //  push 
-//    if successful,     return_value = 0, push_status = 0, pop_status = 0, nentries = number_of_entries.
-//    if not successful, return_value = 0, push_status = 1, pop_status = 0, nentries = number_of_entries.
+//    if successful,     return_value = 0x0. 		(i.e., with last 3-bits 000)
+//    if not successful, return_value = 0x2. 		(i.e., with last 3-bits 010)
 //  pop 
-//    if successful,     return_value = popped_value, push_status = 0, pop_status = 0, nentries = number_of_entries.
-//    if not successful, return_value = 0,            push_status = 0, pop_status = 1, nentries = number_of_entries.
+//    if successful,     return_value = popped_value.	(i.e., with last 3-bits 000)
+//    if not successful, return_value = 0x1.		(i.e., with last 3-bits 001)
+//  status
+//    return_value = number_of_entries.
+//
+// For push and pop, return_value(32-bits) is like
+// (zero/popped_value   unused   push_status   pop_status)
+//  	 [31:3]	   	 [2]	     [1]	   [0]
+// Since byte addressable, for successful push/pop last 3 bits should always be zero.
 //
 $module [exec_free_queue_command]
 	$in (server_id opcode: $uint<4> wdata: $uint<32>) 
-	$out (nentries: $uint<16> push_status pop_status: $uint<8> rdata: $uint<32>) 
+	$out (rdata: $uint<32>) 
 $is
 {
 	$volatile command := ($concat server_id opcode wdata)
 	FREE_QUEUE_COMMAND := command
-	response := FREE_QUEUE_RESPONSE
-	$volatile $split (response 16 8 8 32) (nentries push_status pop_status rdata)
+	rdata := FREE_QUEUE_RESPONSE
 }
 
 
@@ -42,7 +48,7 @@ $module [free_queue_daemon] $in () $out () $is
 		
 		$dopipeline $depth 7 $fullrate
 		$merge $entry $loopback
-			$phi NENTRIES     := $zero<16> $on $entry n_NENTRIES $on $loopback
+			$phi NENTRIES     := $zero<32> $on $entry n_NENTRIES $on $loopback
 			$phi LOCK_IS_FULL := $one<1> $on $entry n_LOCK_IS_FULL $on $loopback
 			$phi queue_command := FREE_QUEUE_COMMAND $on $entry, $loopback
 		$endmerge
@@ -52,6 +58,7 @@ $module [free_queue_daemon] $in () $out () $is
 		$volatile unlock := (opcode == FQ_UNLOCK)
 		$volatile push   := (opcode == PUSH)
 		$volatile pop    := (opcode == POP)
+		$volatile status := (opcode == STATUS)
 	
 		$volatile lock_ok := (lock & LOCK_IS_FULL)
 		$guard (lock_ok) lock_value := FREE_QUEUE_LOCK
@@ -59,7 +66,7 @@ $module [free_queue_daemon] $in () $out () $is
 		$volatile unlock_ok := (unlock & (~LOCK_IS_FULL))
 		$guard (unlock_ok) FREE_QUEUE_LOCK := 1
 
-		$volatile push_is_ok := (push & (NENTRIES < ($bitcast ($uint<16>) S_MAX_NENTRIES)))
+		$volatile push_is_ok := (push & (NENTRIES < S_MAX_NENTRIES))
 		$guard (push_is_ok) FREE_QUEUE := wdata
 
 		$volatile pop_is_ok := (pop & (NENTRIES > 0))
@@ -77,30 +84,16 @@ $module [free_queue_daemon] $in () $out () $is
 				lock_ok   $zero<1>
 				unlock_ok $one<1>
 				$default LOCK_IS_FULL)
-	
-
-		$volatile push_status := 
-			($excmux 
-				lock      $zero<8>
-				unlock    $zero<8> 
-				push      ($mux push_is_ok $zero<8> $one<8>)
-				pop       $zero<8>)
-		
-		$volatile pop_status  := 
-			($excmux 
-				lock      $zero<8>
-				unlock    $zero<8> 
-				push      $zero<8>
-				pop       ($mux pop_is_ok  $zero<8>  $one<8>))
 
 		$volatile result_data :=
 				($excmux 
 					lock 	($mux lock_ok $zero<32> $one<32>)
 					unlock 	$zero<32>
-					push 	$zero<32>
-					pop	($mux pop_is_ok rdata $zero<32>))
+					push 	($mux push_is_ok $zero<32> ($bitcast ($uint<32>) 2))
+					pop	($mux pop_is_ok  rdata     $one<32>)
+					status  NENTRIES)
 					
-		FREE_QUEUE_RESPONSE := ($concat n_NENTRIES push_status pop_status result_data)
+		FREE_QUEUE_RESPONSE := result_data
 
 		$while 1
 	}
