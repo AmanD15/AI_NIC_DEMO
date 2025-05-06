@@ -12,9 +12,11 @@
 #include "Pipes.h"
 #include "pipeHandler.h"
 #include "pthreadUtils.h"
-#include "nic_driver.h"
 #include "tb_queue.h"
 
+// For M Bytes packet_length, required buffer_size = (8+16+M) = (M+24) Bytes
+// (8 for control_info + 16 for additional_header required due to fsm logic)
+// and max_address_offset = (buffe_size - 8) for Dword addressable
 
 int err_flag = 0;
 #ifdef CHECK_NIC
@@ -312,6 +314,49 @@ void memoryDaemon ()
 DEFINE_THREAD(memoryDaemon);
 #endif
 
+#if defined(MONITOR_NIC_REG) || defined(DEBUGPRINT)
+// Function to print all relevant NIC registers
+void printNicRegisters(uint32_t nic_id) 
+{
+	fprintf(stderr, "--- NIC Registers (NIC ID: %u) ---\n", nic_id);
+
+    	// General Registers
+    	fprintf(stderr, "P_N_SERVERS_REGISTER_INDEX: 0x%08X\n", readFromNicReg(nic_id, P_N_SERVERS_REGISTER_INDEX));
+    	fprintf(stderr, "P_N_BUFFERS_REGISTER_INDEX: 0x%08X\n", readFromNicReg(nic_id, P_N_BUFFERS_REGISTER_INDEX));
+    	fprintf(stderr, "P_TX_PKT_COUNT_REGISTER_INDEX: 0x%08X\n", readFromNicReg(nic_id, P_TX_PKT_COUNT_REGISTER_INDEX));
+    	fprintf(stderr, "P_RX_PKT_COUNT_REGISTER_INDEX: 0x%08X\n", readFromNicReg(nic_id, P_RX_PKT_COUNT_REGISTER_INDEX));
+    	fprintf(stderr, "P_STATUS_REGISTER_INDEX: 0x%08X\n", readFromNicReg(nic_id, P_STATUS_REGISTER_INDEX));
+    	fprintf(stderr, "P_NIC_CONTROL_REGISTER_INDEX: 0x%08X\n", readFromNicReg(nic_id, P_NIC_CONTROL_REGISTER_INDEX));
+    	
+    	uint32_t counter_value = readFromNicReg(nic_id, P_COUNTER_REGISTER_INDEX); 
+    	double seconds = (double)counter_value / 125000000.0; // Divide by frequency (125 MHz)
+
+    	fprintf(stderr, "S_FREE_RUNNING_COUNTER: 0x%08X (%.9f seconds)\n", counter_value, seconds);
+    	fflush(stderr); // Important: Flush stderr to ensure output is displayed
+    	fprintf(stderr, "-----------------------------\n");
+}
+#endif
+
+#ifdef MONITOR_NIC_REG
+struct monitor_args {
+    int nic_id;
+    int monitor_duration_seconds;
+};
+
+void *monitorNicRegisters_thread_func(void *arg) 
+{
+    	struct monitor_args *args = (struct monitor_args *)arg;
+    	int nic_id = args->nic_id;
+    	int monitor_duration_seconds = args->monitor_duration_seconds;
+    	time_t start_time = time(NULL);
+    	while (time(NULL) - start_time < monitor_duration_seconds) 
+    	{
+        	printNicRegisters(nic_id);
+        	//usleep(100000); // 100ms
+    	}
+    	return NULL;
+}
+#endif
 
 int main(int argc, char* argv[])
 {
@@ -550,14 +595,14 @@ int main(int argc, char* argv[])
 	// Allocating buffers
 	for (i = 0; i < NBUFFERS; i++) 
 	{
-        	buffer_addresses[i] = 1024 * (i + 1);  // Starting from 1024 and increasing by 1024
+        	buffer_addresses[i] = 1048 * (i + 1);  // Starting from 1048 and increasing by 1048, i.e., buffer_size for 1024 B
 		fprintf (stderr,"Info: Allocated buffer %d adddress %x \n", i, buffer_addresses[i]);
     	}
 
 	for(i = 0; i < NBUFFERS; i++)
 	{
 		// Writing max_addr_offset as control information to memory
-		uint64_t max_addr_offset = 1016;
+		uint64_t max_addr_offset = 1040;	// (buffer_size - 8)
 		max_addr_offset = (max_addr_offset << 48);
 		processorAccessMemory (0, 0, 0xff, buffer_addresses[i], max_addr_offset); 
 		
@@ -582,18 +627,22 @@ int main(int argc, char* argv[])
 #endif
 			if(push_not_ok)
 			{
-				fprintf(stderr,"Warning: checkQueueSequence : push to free queue not ok, retrying again.\n");
+				fprintf(stderr,"Warning: push to free queue not ok, retrying again.\n");
 			}
 		} while (push_not_ok);
-		fprintf(stderr,"main: pushed to free queue, buf_addr=0x%x\n", buffer_addresses[i]);
+		fprintf(stderr,"Info: pushed to free queue, buf_addr=0x%x\n", buffer_addresses[i]);
 	}
+	
+	// Ensuring buffers are stored properly in free queue by reading status, i.e., no. of entries.
+	uint32_t entries_in_freeQ = getStatusOfQueueInNic (NIC_ID, FQ_SERVER_ID, FREEQUEUE);
+	fprintf(stderr,"Info: Total number of entries in free queue = %d\n", entries_in_freeQ);
 	
 	// start the forwarding engine
 	PTHREAD_DECL(forwardDaemon);
 	PTHREAD_CREATE(forwardDaemon);
 
 	// Enable NIC, MAC and servers
-	uint32_t control_value = ((((1 << NSERVERS) - 1) << 3) | 3);
+	uint32_t control_value = ((((1 << NSERVERS) - 1) << 3) | (ENABLE_NIC_INTERRUPT << 2) | (ENABLE_MAC << 1) | ENABLE_NIC);
 	fprintf (stderr,"Info: writing value = 0x%x to control register \n", control_value);
 	// To start the receive and transmit engines of NIC!
 	writeNicControlRegister(NIC_ID, control_value);
@@ -607,6 +656,22 @@ int main(int argc, char* argv[])
 	fprintf (stderr,"Info: SPIN!\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 
+#if defined(MONITOR_NIC_REG) || defined(DEBUGPRINT)
+	// Print register values after initialization
+    	printNicRegisters(NIC_ID);
+#endif
+    	
+#ifdef MONITOR_NIC_REG
+    	pthread_t monitor_thread;
+    	struct monitor_args args;
+    	args.nic_id = NIC_ID; // Set your nic_id
+    	args.monitor_duration_seconds = 10; // Set your monitoring duration
+
+    	if (pthread_create(&monitor_thread, NULL, monitorNicRegisters_thread_func, &args) != 0) {
+        	perror("pthread_create failed");
+        	return 1;
+    	}
+#endif
 	// start the RX, TX daemons.
 	PTHREAD_DECL(packetTxDaemon);
 	PTHREAD_DECL(packetRxDaemon);
@@ -618,6 +683,14 @@ int main(int argc, char* argv[])
 	PTHREAD_JOIN(packetTxDaemon);
 	PTHREAD_JOIN(packetRxDaemon);
 	
+#ifdef MONITOR_NIC_REG
+	pthread_join(monitor_thread, NULL);
+#endif
+
+#if defined(MONITOR_NIC_REG) || defined(DEBUGPRINT)
+	// Print register values before exiting
+    	printNicRegisters(NIC_ID);
+#endif
 	fprintf(stderr,"%s: completed %s\n", err_flag ? "Error" : "Info", err_flag ? "with error." : "");
 #endif
 	return(err_flag);

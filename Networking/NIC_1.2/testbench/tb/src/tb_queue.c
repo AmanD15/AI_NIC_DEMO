@@ -12,7 +12,6 @@
 #include "Pipes.h"
 #include "pipeHandler.h"
 #include "pthreadUtils.h"
-#include "nic_driver.h"
 #include "tb_queue.h"
 
 
@@ -34,6 +33,18 @@ void setNumberOfBuffersInQueue (uint32_t nic_id, uint32_t number_of_buffers)
 uint32_t getNumberOfBuffersInQueue (uint32_t nic_id)
 {
 	return(readFromNicReg (nic_id, P_N_BUFFERS_REGISTER_INDEX));
+}
+
+uint32_t getStatusOfQueueInNic (uint32_t nic_id, uint32_t server_id, uint32_t queue_type)
+{
+	uint32_t reg_index;
+	switch(queue_type)
+	{
+		case FREEQUEUE     : reg_index = P_FREE_QUEUE_STATUS_INDEX;    break;
+		case RXQUEUE       : reg_index = (P_RX_QUEUE_0_STATUS_INDEX + (2*server_id)); break;
+		case TXQUEUE       : reg_index = (P_TX_QUEUE_0_STATUS_INDEX + (2*server_id)); break;	
+	}
+	return(readFromNicReg (nic_id, reg_index));
 }
 
 // return 0 on successful acquire

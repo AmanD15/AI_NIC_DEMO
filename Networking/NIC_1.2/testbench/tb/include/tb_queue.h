@@ -20,12 +20,59 @@
 //#define DEBUG_MEMORY_ACCESS	// Uncomment this line to test memory access from NIC side
 
 #define CHECK_NIC		// Uncomment this line to check complete NIC 
+//#define MONITOR_NIC_REG	// Uncomment this line to print values of relevant NIC registers in-between
 
 
 // constants
-#define NIC_ID 0
-#define FQ_SERVER_ID 0
-#define INITIAL_STATUS 0
+#define NIC_ID 			0
+#define FQ_SERVER_ID 		0
+
+#define ENABLE_NIC		1
+#define ENABLE_MAC		1
+#define ENABLE_NIC_INTERRUPT	0
+
+
+//  Register definitions..  These must be consistent
+//  with the parameters.aa file in the NIC AA source
+#define    P_NIC_CONTROL_REGISTER_INDEX      0
+#define    P_N_SERVERS_REGISTER_INDEX        1 
+#define    P_DEBUG_REGISTER_0	             2 
+#define    P_DEBUG_REGISTER_1	             3 
+#define    P_N_BUFFERS_REGISTER_INDEX        4  
+#define    P_MAC_REGISTER_H_INDEX            208
+#define    P_MAC_REGISTER_L_INDEX            209
+#define    P_RX_PKT_COUNT_REGISTER_INDEX     210
+#define    P_TX_PKT_COUNT_REGISTER_INDEX     211
+#define    P_STATUS_REGISTER_INDEX           212
+#define    P_COUNTER_REGISTER_INDEX	     255
+
+// Index for queue access
+#define    P_RX_QUEUE_0_INDEX		     8 
+#define    P_RX_QUEUE_0_STATUS_INDEX	     9 
+#define    P_RX_QUEUE_1_INDEX		     10 
+#define    P_RX_QUEUE_1_STATUS_INDEX	     11 
+#define    P_RX_QUEUE_2_INDEX		     12 
+#define    P_RX_QUEUE_2_STATUS_INDEX	     13 
+#define    P_RX_QUEUE_3_INDEX		     14 
+#define    P_RX_QUEUE_3_STATUS_INDEX	     15 
+
+#define    P_TX_QUEUE_0_INDEX		     16 
+#define    P_TX_QUEUE_0_STATUS_INDEX	     17 
+#define    P_TX_QUEUE_1_INDEX		     18 
+#define    P_TX_QUEUE_1_STATUS_INDEX	     19 
+#define    P_TX_QUEUE_2_INDEX		     20 
+#define    P_TX_QUEUE_2_STATUS_INDEX	     21 
+#define    P_TX_QUEUE_3_INDEX		     22 
+#define    P_TX_QUEUE_3_STATUS_INDEX	     23 
+
+#define    P_FREE_QUEUE_INDEX		     24 
+#define    P_FREE_QUEUE_STATUS_INDEX   	     25 
+#define    P_FREE_QUEUE_LOCK_INDEX     	     26 
+
+
+#define    FREEQUEUE	0
+#define    RXQUEUE	1
+#define    TXQUEUE	2
 
 
 void setNumberOfServersInNic (uint32_t nic_id, uint32_t number_of_servers_enabled);
@@ -33,6 +80,8 @@ uint32_t getNumberOfServersInNic (uint32_t nic_id);
 
 void setNumberOfBuffersInQueue (uint32_t nic_id, uint32_t number_of_buffers);
 uint32_t getNumberOfBuffersInQueue (uint32_t nic_id);
+
+uint32_t getStatusOfQueueInNic (uint32_t nic_id, uint32_t server_id, uint32_t queue_type);
 
 int acquireLock(uint32_t nic_id);
 int releaseLock(uint32_t nic_id);
