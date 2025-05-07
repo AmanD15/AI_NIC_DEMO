@@ -133,6 +133,8 @@ int pushIntoQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uin
 }
 
 // return 0 on success
+//   Returns a 32-bit value.  Bits [31:2] are from the corresponding PA value and
+//   bits [1:0] should be 0 on  a successful pop.
 int popFromQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uint32_t* popped_val_status)
 {
 	int ret_val = 1;

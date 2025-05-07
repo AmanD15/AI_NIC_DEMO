@@ -102,6 +102,7 @@ int main()
 	uint32_t server_id = 0;
 	uint32_t* bufptrVA;
 	uint64_t bufptrPA;
+	uint32_t bufptrPA_lower_32;
 	uint32_t tx_pkt_count;
 	uint32_t rx_pkt_count;
 	uint32_t status_reg;
@@ -115,11 +116,14 @@ int main()
 	
 	while(1)
 	{
-		while (popFromQueue (NIC_ID, server_id, RXQUEUE, (uint32_t*)(&bufptrPA)))
+		while (popFromQueue (NIC_ID, server_id, RXQUEUE, (uint32_t*)(&bufptrPA_lower_32)))
 		{
 			cortos_printf("Warning: pop from Rx queue not ok, retrying again.\n");
 			__ajit_sleep__ (1024);
 		}
+
+		// For now, bits [35:32] of PA are 0.
+		bufptrPA = (uint64_t) bufptrPA_lower_32;
 
 		//t1 = Sample clock
 		t1 = cortos_get_clock_time();
