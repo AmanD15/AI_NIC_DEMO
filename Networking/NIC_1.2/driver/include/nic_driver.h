@@ -5,6 +5,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define DEBUGPRINT				// Uncomment this line to print debug statements on serial terminal
+#define ENABLE_PRINT				// Uncomment this line to enable printing packet details and NIC stats in loopback test 
+						// and comment it for NIC characterization
 
 #define NUMBER_OF_SERVERS 	4		// number of servers enabled (max = 4);	from server_id 0 to (max-1) 
 #define NUMBER_OF_BUFFERS 	4		// number of buffer pointers in each queue (max 64 for current hardware)
@@ -143,7 +146,7 @@ typedef struct {
 TranslationEntry translationTable[NUMBER_OF_BUFFERS];
 
 // For initialsing the translation Table 
-void initTranslationTable(uint64_t,uint32_t*);
+void initTranslationTable(uint64_t pa,uint32_t* va);
 
 // Function to translate physical address to virtual address
 uint32_t* translatePAtoVA(uint64_t pa);

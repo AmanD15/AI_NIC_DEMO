@@ -52,16 +52,22 @@ int main()
 	{
 		int push_not_ok;
 		do {
+#ifdef DEBUGPRINT
 			cortos_printf("Info: Acquiring lock for free queue.\n");
+#endif
 			while(acquireLock(NIC_ID)) 
 			{
 				("Warning: lock not acquired, retrying again.\n");
 			};
+#ifdef DEBUGPRINT
 			cortos_printf("Info: Lock acquired.\n");
 			cortos_printf("Info: Pushing into free queue.\n");
+#endif
 			push_not_ok = pushIntoQueue (NIC_ID, FQ_SERVER_ID, FREEQUEUE, (uint32_t) BufferPtrsPA[i]);
 			releaseLock (NIC_ID);
+#ifdef DEBUGPRINT
 			cortos_printf("Info: Lock released.\n");
+#endif
 			if(push_not_ok)
 			{
 				cortos_printf("Warning: push to free queue not ok, retrying again.\n");
@@ -116,10 +122,12 @@ int main()
 	
 	while(1)
 	{
-		while (popFromQueue (NIC_ID, server_id, RXQUEUE, (uint32_t*)(&bufptrPA_lower_32)))
+		while (popFromQueue (NIC_ID, server_id, RXQUEUE, &bufptrPA_lower_32))
 		{
+#ifdef DEBUGPRINT
 			cortos_printf("Warning: pop from Rx queue not ok, retrying again.\n");
 			__ajit_sleep__ (1024);
+#endif
 		}
 
 		// For now, bits [35:32] of PA are 0.
@@ -142,13 +150,14 @@ int main()
 
 		// Get packet length and validate
 		packetLen = getPacketLen(bufptrVA);
+#ifdef ENABLE_PRINT
 		cortos_printf("DEBUG: Received packet length: %u bytes\n", packetLen);
 		
     		// Debugging packet length and contents in RxBuffer
 		RxBufferPtr = (uint64_t*)(bufptrVA);
 		for(i=0;i<(((packetLen+24) / 8)+(((packetLen+24) % 8) != 0)) ;i++)
 			cortos_printf("Packet[%u]: %016llx\n",8*i,(*RxBufferPtr++));
-
+#endif
 
     		if (packetLen > BUFFER_SIZE_IN_BYTES) {
         		cortos_printf("ERROR: Received packet length %u exceeds expected size %u\n", packetLen, BUFFER_SIZE_IN_BYTES);
@@ -165,16 +174,18 @@ int main()
 		// Swap the MAC addresses
 		for(i = 0; i < MAC_ADDR_LEN; i++) 
 		{
-			temp_mac[i] = src_mac[i];  // Copy source MAC to temp
-    			src_mac[i] = dest_mac[i]; // Copy destination MAC to source
-    			dest_mac[i] = temp_mac[i]; // Copy temp (original source) to destination	
+			temp_mac[i] = src_mac[i];  	// Copy source MAC to temp
+    			src_mac[i] = dest_mac[i]; 	// Copy destination MAC to source
+    			dest_mac[i] = temp_mac[i]; 	// Copy temp (original source) to destination	
 		}
 
 		// Pushing the buffer to transmit queue
-		while(pushIntoQueue  (NIC_ID, server_id, TXQUEUE, (uint32_t*)(&bufptrPA)))
+		while(pushIntoQueue  (NIC_ID, server_id, TXQUEUE, bufptrPA_lower_32))
 		{
+#ifdef DEBUGPRINT
 			cortos_printf("Warning: push into Tx queue not ok, retrying again.\n");
 			__ajit_sleep__ (1024);
+#endif
 		}
 
 		// t2= Sample clock
@@ -182,7 +193,8 @@ int main()
 		// time_spent += t2  - t1;
 		cycle_diff = t2 - t1;
 		clock_spent += cycle_diff;
-			
+	
+#ifdef ENABLE_PRINT		
 		// Debugging packet length and contents in TxBuffer
 		TxBufferPtr = (uint64_t*)(bufptrVA);
 		for(i=0;i<(((packetLen+24) / 8)+(((packetLen+24) % 8) != 0)) ;i++)
@@ -203,6 +215,7 @@ int main()
 		counterReg = readFromNicReg (NIC_ID, P_COUNTER_REGISTER_INDEX);
 		seconds = (double)counterReg / 125000000.0; // Divide by NIC frequency (125 MHz)
 		cortos_printf("Counter register = 0x%08lx (%.9f seconds)\n",counterReg, seconds);
+#endif
 			
 		server_id = (server_id + 1) % NUMBER_OF_SERVERS;
 		
@@ -225,37 +238,78 @@ int main()
 
 	// Step 7 : Popping Buffer pointers (PA) from free_queue.
 
-	// For FREEQUEUE
-	for(i = 0; i < NUMBER_OF_BUFFERS; i++)
+	uint32_t popped_count = 0;
+	while(popped_count < NUMBER_OF_BUFFERS)
 	{
 		uint32_t J;
-		int pop_not_ok;
-		do {
-			cortos_printf("Info: Acquiring lock for free queue.\n");
-			while(acquireLock(NIC_ID)) 
-			{
-				("Warning: lock not acquired, retrying again.\n");
-			};
-			cortos_printf("Info: Lock acquired.\n");
-			cortos_printf("Info: Popping from free queue.\n");
-			pop_not_ok = popFromQueue (NIC_ID, FQ_SERVER_ID, FREEQUEUE, &J);
-			releaseLock (NIC_ID);
-			cortos_printf("Info: Lock released.\n");
-			if(pop_not_ok)
-			{
-				cortos_printf("Warning: pop from free queue not ok, retrying again.\n");
-			}
-		} while (pop_not_ok);
-		cortos_printf("Info: popped from free queue, buf_addr=0x%x\n", (uint32_t) BufferPtrsPA[i]);
-		if (J != (uint32_t) BufferPtrsPA[i])
+		// For RXQUEUE
+		for(server_id = 0; server_id < NUMBER_OF_SERVERS; server_id++)
 		{
-			cortos_printf("Error: pop from free queue: expected 0x%x, received 0x%x\n", (uint32_t) BufferPtrsPA[i], J);
+			// Getting no. of buffers to pop from Rx queue (if any) by reading status, i.e., no. of entries.
+			uint32_t entries_in_RxQ = getStatusOfQueueInNic (NIC_ID, server_id, RXQUEUE);
+			cortos_printf("Info: Total number of entries in Rx queue server %d = %d\n", entries_in_RxQ, server_id);
+			
+			while(entries_in_RxQ > 0)
+			{
+				while (popFromQueue (NIC_ID, server_id, RXQUEUE, &J))
+				{
+					cortos_printf("Warning: pop from Rx queue not ok, retrying again.\n");
+				}
+				cortos_printf("Info: popped from Rx queue server %d, buf_addr=0x%x\n", server_id, J);
+				if (J != (uint32_t) BufferPtrsPA[popped_count])
+				{
+					cortos_printf("Error: pop from Rx queue server %d: expected 0x%x, received 0x%x\n", server_id, 
+							(uint32_t) BufferPtrsPA[popped_count], J);
+				}
+				entries_in_RxQ--;
+				popped_count++;
+			}
 		}
+		
+		// For FREEQUEUE
+		// Getting no. of buffers to pop from free queue by reading status, i.e., no. of entries.
+		uint32_t entries_in_freeQ = getStatusOfQueueInNic (NIC_ID, FQ_SERVER_ID, FREEQUEUE);
+		cortos_printf("Info: Total number of entries in free queue = %d\n", entries_in_freeQ);
+		
+		while(entries_in_freeQ > 0)
+		{
+			int pop_not_ok;
+			do {
+#ifdef DEBUGPRINT
+				cortos_printf("Info: Acquiring lock for free queue.\n");
+#endif
+				while(acquireLock(NIC_ID)) 
+				{
+					("Warning: lock not acquired, retrying again.\n");
+				};
+#ifdef DEBUGPRINT
+				cortos_printf("Info: Lock acquired.\n");
+				cortos_printf("Info: Popping from free queue.\n");
+#endif
+				pop_not_ok = popFromQueue (NIC_ID, FQ_SERVER_ID, FREEQUEUE, &J);
+				releaseLock (NIC_ID);
+#ifdef DEBUGPRINT
+				cortos_printf("Info: Lock released.\n");
+#endif
+				if(pop_not_ok)
+				{
+					cortos_printf("Warning: pop from free queue not ok, retrying again.\n");
+				}
+			} while (pop_not_ok);
+			cortos_printf("Info: popped from free queue, buf_addr=0x%x\n", J);
+			if (J != (uint32_t) BufferPtrsPA[popped_count])
+			{
+				cortos_printf("Error: pop from free queue: expected 0x%x, received 0x%x\n", 
+						(uint32_t) BufferPtrsPA[popped_count], J);
+			}
+			entries_in_freeQ--;
+			popped_count++;
+		}
+		if (popped_count == NUMBER_OF_BUFFERS)
+                	break;
+                else
+                	cortos_printf("Error: Failed to pop remaining %d buffers, retrying again.\n", NUMBER_OF_BUFFERS - popped_count);
 	}
-
-	// Ensuring buffers are popped properly from free queue by reading status, i.e., no. of entries.
-	entries_in_freeQ = getStatusOfQueueInNic (NIC_ID, FQ_SERVER_ID, FREEQUEUE);
-	cortos_printf("Info: Total number of entries in free queue = %d\n", entries_in_freeQ);
 
 
 	// Step 8 : Freeing the allocated buffers
