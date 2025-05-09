@@ -7,11 +7,12 @@ int main()
 	 __ajit_write_serial_control_register__ (TX_ENABLE);
 	cortos_printf ("Started\n");
 
-#if defined(NORMAL_MODE) || defined(NIC_LOOPBACK)
+
 	// Step 1 : Configuring the NIC registers.
 
 	setGlobalNicRegisterBasePointer(NIC_START_ADDR);
 
+#if defined(NORMAL_MODE) || defined(NIC_LOOPBACK)
 	NicConfiguration nicConfig;
 	nicConfig.nic_id = NIC_ID;
 	nicConfig.number_of_servers = NUMBER_OF_SERVERS;
@@ -116,6 +117,8 @@ int main()
 	cortos_printf ("Info: Reading from register, control status = 0x%x \n", control_status);
 #endif
 	cortos_printf ("Configuration Done. NIC has started in %s loopback mode.\n", ((control_status >> 7) & 0x1) ? "NIC" : "MAC");
+	
+	while(1);
 #endif
 
 #ifdef NORMAL_MODE
