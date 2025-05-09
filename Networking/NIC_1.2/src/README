@@ -104,13 +104,16 @@ Register     address         		Description
   Id	       offset	
 ------------------------------------------------------------
 0  	        0x00		        control register
-					 bit [0] is nic enable
+					 bit [0] is nic enable		(should be disabled for MAC loopback)
 					 bit [1] is mac enable
 					 bit [2] is nic interrupt enable
 					 bit [3] server 0 enable
 					 bit [4] server 1 enable
 					 bit [5] server 2 enable
 					 bit [6] server 3 enable
+					 bits [8:7] select mode		For 00 - Normal mode	(Processor loopback)
+					 				For 01 - NIC loopback	(FQ->TxQ->FQ)
+					 				For 10 - MAC loopback	(mac_to_nic -> nic_to_mac)
 --------------------------------------------------------------
 1		0x04		        number of servers   (should be = number of enabled servers)
 2		0x08			debug-register 0

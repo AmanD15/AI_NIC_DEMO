@@ -12,7 +12,7 @@ VC2VHDL: vc2vhdl  vhdlsim
 AA2VHDLSIM: aa2vc  vc2vhdl  vhdlsim
 TOVHDL:TOVC vc2vhdl
 
-TOPMODULES=-T ReceiveEngineDaemon -T nicRxFromMacDaemon -T TransmitEngineDaemon -T controlDaemon -T free_queue_daemon -T receive_queue_daemon -T transmit_queue_daemon  -T queueTestDaemon -T memoryTestDaemon
+TOPMODULES=-T ReceiveEngineDaemon -T nicRxFromMacDaemon -T TransmitEngineDaemon -T controlDaemon -T free_queue_daemon -T receive_queue_daemon -T transmit_queue_daemon  -T queueTestDaemon -T memoryTestDaemon -T macTestDaemon
 
 
 
@@ -23,7 +23,7 @@ AA2VHDL: aa2vc vc2vhdl
 
 # Aa to vC
 aalink: $(SRC)/*.aa 
-	AaLinkExtMem $(SRC)/parameters.aa $(SRC)/decls.aa $(SRC)/pipes.aa $(SRC)/signals.aa $(SRC)/control.aa $(SRC)/general_utils.aa $(SRC)/memory_utils.aa $(SRC)/queue_utils.aa $(SRC)/register_utils.aa $(SRC)/rx_from_mac.aa $(SRC)/receive_engine.aa $(SRC)/transmit_engine.aa $(SRC)/free_queue.aa $(SRC)/receive_queue.aa $(SRC)/transmit_queue.aa | vcFormat > nic.linked.aa
+	AaLinkExtMem $(SRC)/parameters.aa $(SRC)/decls.aa $(SRC)/pipes.aa $(SRC)/signals.aa $(SRC)/control.aa $(SRC)/general_utils.aa $(SRC)/memory_utils.aa $(SRC)/queue_utils.aa $(SRC)/register_utils.aa $(SRC)/rx_from_mac.aa $(SRC)/receive_engine.aa $(SRC)/transmit_engine.aa $(SRC)/free_queue.aa $(SRC)/receive_queue.aa $(SRC)/transmit_queue.aa $(SRC)/test_utils.aa | vcFormat > nic.linked.aa
 	AaOpt -B nic.linked.aa | vcFormat > nic.linked.opt.aa
 
 aa2c : nic.linked.opt.aa
@@ -45,7 +45,7 @@ vc2vhdl: nic.vc
 
 # make clean and then make ahir_system
 ahir_system: 
-	AaLinkExtMem $(SRC)/decls.aa $(SRC)/pipes.aa $(SRC)/signals.aa $(SRC)/control.aa $(SRC)/general_utils.aa $(SRC)/memory_utils.aa $(SRC)/queue_utils.aa $(SRC)/register_utils.aa $(SRC)/rx_from_mac.aa $(SRC)/receive_engine.aa $(SRC)/transmit_engine.aa $(SRC)/free_queue.aa $(SRC)/receive_queue.aa $(SRC)/transmit_queue.aa | vcFormat > nic.linked.ahir.system.aa
+	AaLinkExtMem $(SRC)/decls.aa $(SRC)/pipes.aa $(SRC)/signals.aa $(SRC)/control.aa $(SRC)/general_utils.aa $(SRC)/memory_utils.aa $(SRC)/queue_utils.aa $(SRC)/register_utils.aa $(SRC)/rx_from_mac.aa $(SRC)/receive_engine.aa $(SRC)/transmit_engine.aa $(SRC)/free_queue.aa $(SRC)/receive_queue.aa $(SRC)/transmit_queue.aa $(SRC)/test_utils.aa | vcFormat > nic.linked.ahir.system.aa
 	AaOpt -B nic.linked.ahir.system.aa | vcFormat > nic.linked.ahir.system.opt.aa
 	Aa2C $(TOPMODULES) nic.linked.ahir.system.aa -o ./
 	Aa2VC -O -C nic.linked.ahir.system.opt.aa | vcFormat > nic.ahir.system.vc

@@ -19,14 +19,17 @@
 // and max_address_offset = (buffe_size - 8) for Dword addressable
 
 int err_flag = 0;
-#ifdef CHECK_NIC
-int number_of_packets = 6;
-int packet_lengths[6] = {32, 64, 128, 256, 512, 1024};
+#if defined(CHECK_NIC) || defined(NIC_LOOPBACK) || defined(MAC_LOOPBACK)
+int number_of_packets = 64;
+int packet_lengths[6] = {1024};
+#endif
+
+#if defined(CHECK_NIC) || defined(NIC_LOOPBACK)
 // buffers for packets
 uint32_t  buffer_addresses[NBUFFERS];
 #endif
 
-#if defined(CHECK_MEMORY_ACCESS) || defined(DEBUG_MEMORY_ACCESS) || defined(CHECK_NIC)
+#if defined(CHECK_MEMORY_ACCESS) || defined(DEBUG_MEMORY_ACCESS) || defined(CHECK_NIC) || defined(NIC_LOOPBACK)
 uint64_t  mem_array [16*4096];
 #endif
 
@@ -58,7 +61,7 @@ uint32_t readFromNicReg (uint32_t nic_id, uint32_t reg_index)
 	return(retval);
 }
 
-#ifdef CHECK_NIC
+#if defined(CHECK_NIC) || defined(NIC_LOOPBACK) || defined(MAC_LOOPBACK)
 void writeNicControlRegister (uint32_t nic_id, uint32_t enable_flags)
 {
 	writeToNicReg (nic_id, P_NIC_CONTROL_REGISTER_INDEX, enable_flags);
@@ -160,7 +163,9 @@ void packetRxDaemon () {
 	}
 }
 DEFINE_THREAD(packetRxDaemon);
+#endif
 
+#ifdef CHECK_NIC
 // forward daemon
 void forwardDaemon () {
 	uint32_t server_id = 0;
@@ -193,7 +198,7 @@ void forwardDaemon () {
 DEFINE_THREAD(forwardDaemon);
 #endif
 
-#if defined(CHECK_MEMORY_ACCESS) || defined(DEBUG_MEMORY_ACCESS) || defined(CHECK_NIC)
+#if defined(CHECK_MEMORY_ACCESS) || defined(DEBUG_MEMORY_ACCESS) || defined(CHECK_NIC) || defined(NIC_LOOPBACK)
 uint64_t accessMemory (uint8_t count, uint8_t lock, uint8_t rwbar, uint8_t byte_mask, uint32_t addr, uint64_t wdata)
 {
 	int index = (addr >> 3) % MEMSIZE;
@@ -360,7 +365,7 @@ void *monitorNicRegisters_thread_func(void *arg)
 
 int main(int argc, char* argv[])
 {
-#ifdef CHECK_NIC
+#if defined(CHECK_NIC) || defined(NIC_LOOPBACK) || defined(MAC_LOOPBACK)
 	fprintf(stderr, "%s <n-packets> (default 6) \n", argv[0]);
 	if(argc > 1)
 		number_of_packets = atoi(argv[1]);
@@ -537,7 +542,7 @@ int main(int argc, char* argv[])
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 #endif
 
-#if defined(CHECK_MEMORY_ACCESS) || defined(DEBUG_MEMORY_ACCESS) || defined(CHECK_NIC)
+#if defined(CHECK_MEMORY_ACCESS) || defined(DEBUG_MEMORY_ACCESS) || defined(CHECK_NIC) || defined(NIC_LOOPBACK)
 	// start the memory daemon...
 	PTHREAD_DECL(memoryDaemon);
 	PTHREAD_CREATE(memoryDaemon);
@@ -588,7 +593,7 @@ int main(int argc, char* argv[])
 #endif
 	
 	
-#ifdef CHECK_NIC
+#if defined(CHECK_NIC) || defined(NIC_LOOPBACK)
 	// Checks overall functioning of NIC
 	// buffers for packets, each buffer has a capacity of 1024 bytes.
 	int i;
@@ -636,25 +641,44 @@ int main(int argc, char* argv[])
 	// Ensuring buffers are stored properly in free queue by reading status, i.e., no. of entries.
 	uint32_t entries_in_freeQ = getStatusOfQueueInNic (NIC_ID, FQ_SERVER_ID, FREEQUEUE);
 	fprintf(stderr,"Info: Total number of entries in free queue = %d\n", entries_in_freeQ);
-	
+#endif
+
+#ifdef CHECK_NIC	
 	// start the forwarding engine
 	PTHREAD_DECL(forwardDaemon);
 	PTHREAD_CREATE(forwardDaemon);
 
-	// Enable NIC, MAC and servers
-	uint32_t control_value = ((((1 << NSERVERS) - 1) << 3) | (ENABLE_NIC_INTERRUPT << 2) | (ENABLE_MAC << 1) | ENABLE_NIC);
+	// Enable NIC, MAC and servers (To start the receive and transmit engines of NIC)
+	uint32_t control_value = ((NORMAL_MODE << 7) | (SERVERS_ENABLED << 3) | (DISABLE_NIC_INTERRUPT << 2) | (ENABLE_MAC << 1) | ENABLE_NIC);
 	fprintf (stderr,"Info: writing value = 0x%x to control register \n", control_value);
-	// To start the receive and transmit engines of NIC!
+#endif
+
+#ifdef NIC_LOOPBACK
+	// Enable NIC, MAC, servers and select NIC loopback test mode, i.e., control_reg [7] should be set
+	uint32_t control_value = ((NIC_LOOPBACK << 7) | (SERVERS_ENABLED << 3) | (DISABLE_NIC_INTERRUPT << 2) | (ENABLE_MAC << 1) | ENABLE_NIC);
+	fprintf (stderr,"Info: writing value = 0x%x to control register \n", control_value);
+#endif
+
+#ifdef MAC_LOOPBACK
+	// Enable MAC and select MAC loopback test mode, i.e., control_reg [8] should be set
+	uint32_t control_value = ((MAC_LOOPBACK << 7) | (SERVERS_ENABLED << 3) | (DISABLE_NIC_INTERRUPT << 2) | (ENABLE_MAC << 1) | DISABLE_NIC);
+	fprintf (stderr,"Info: writing value = 0x%x to control register \n", control_value);
+#endif
+	
+#if defined(CHECK_NIC) || defined(NIC_LOOPBACK) || defined(MAC_LOOPBACK)
+	// Write the control value
 	writeNicControlRegister(NIC_ID, control_value);
 #ifdef DEBUGPRINT
 	// Read the control status
 	uint32_t control_status = readNicControlRegister (NIC_ID);
 	fprintf (stderr,"Info: reading from register, control status = 0x%x \n", control_status);
 #endif
-
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
 	fprintf (stderr,"Info: SPIN!\n");
 	fprintf(stderr,"-------------------------------------------------------------------------------------\n");
+#endif
+
+#ifdef CHECK_NIC
 
 #if defined(MONITOR_NIC_REG) || defined(DEBUGPRINT)
 	// Print register values after initialization
@@ -672,6 +696,10 @@ int main(int argc, char* argv[])
         	return 1;
     	}
 #endif
+
+#endif
+
+#if defined(CHECK_NIC) || defined(NIC_LOOPBACK) || defined(MAC_LOOPBACK)
 	// start the RX, TX daemons.
 	PTHREAD_DECL(packetTxDaemon);
 	PTHREAD_DECL(packetRxDaemon);
@@ -682,7 +710,10 @@ int main(int argc, char* argv[])
 	// wait to join.
 	PTHREAD_JOIN(packetTxDaemon);
 	PTHREAD_JOIN(packetRxDaemon);
-	
+#endif
+
+#ifdef CHECK_NIC	
+
 #ifdef MONITOR_NIC_REG
 	pthread_join(monitor_thread, NULL);
 #endif
@@ -691,6 +722,10 @@ int main(int argc, char* argv[])
 	// Print register values before exiting
     	printNicRegisters(NIC_ID);
 #endif
+
+#endif
+
+#if defined(CHECK_NIC) || defined(NIC_LOOPBACK) || defined(MAC_LOOPBACK)
 	fprintf(stderr,"%s: completed %s\n", err_flag ? "Error" : "Info", err_flag ? "with error." : "");
 #endif
 	return(err_flag);

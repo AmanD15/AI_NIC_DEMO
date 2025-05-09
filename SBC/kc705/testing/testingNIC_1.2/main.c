@@ -7,6 +7,7 @@ int main()
 	 __ajit_write_serial_control_register__ (TX_ENABLE);
 	cortos_printf ("Started\n");
 
+#if defined(NORMAL_MODE) || defined(NIC_LOOPBACK)
 	// Step 1 : Configuring the NIC registers.
 
 	setGlobalNicRegisterBasePointer(NIC_START_ADDR);
@@ -73,7 +74,7 @@ int main()
 				cortos_printf("Warning: push to free queue not ok, retrying again.\n");
 			}
 		} while (push_not_ok);
-		cortos_printf("Info: pushed to free queue, buf_addr=0x%x\n", (uint32_t) BufferPtrsPA[i]);
+		cortos_printf("Info: pushed to free queue, buf_addr = 0x%x\n", (uint32_t) BufferPtrsPA[i]);
 	}
 
 	// Ensuring buffers are stored properly in free queue by reading status, i.e., no. of entries.
@@ -92,14 +93,38 @@ int main()
 	{
 	cortos_printf("0x%016llx	|	0x%08lx\n",translationTable[i].pa,(uint32_t)translationTable[i].va);
 	}
+#endif
 
+#ifdef MAC_LOOPBACK
+	// Enable MAC and select MAC loopback test mode, i.e., control_reg [8] should be set
+	uint32_t control_value = ((MAC_LOOPBACK << 7) | (SERVERS_ENABLED << 3) | (DISABLE_NIC_INTERRUPT << 2) | (ENABLE_MAC << 1) | DISABLE_NIC);
+	cortos_printf ("Info: Writing value = 0x%x to control register \n", control_value);
+#endif
 
+#ifdef NIC_LOOPBACK
+	// Enable NIC, MAC, servers and select NIC loopback test mode, i.e., control_reg [7] should be set
+	uint32_t control_value = ((NIC_LOOPBACK << 7) | (SERVERS_ENABLED << 3) | (DISABLE_NIC_INTERRUPT << 2) | (ENABLE_MAC << 1) | ENABLE_NIC);
+	cortos_printf ("Info: Writing value = 0x%x to control register \n", control_value);
+#endif
+
+#if defined(NIC_LOOPBACK) || defined(MAC_LOOPBACK)
+	// Write the control value
+	writeNicControlRegister(NIC_ID, control_value);
+	// Read the control status
+	uint32_t control_status = readNicControlRegister (NIC_ID);
+#ifdef DEBUGPRINT
+	cortos_printf ("Info: Reading from register, control status = 0x%x \n", control_status);
+#endif
+	cortos_printf ("Configuration Done. NIC has started in %s loopback mode.\n", ((control_status >> 7) & 0x1) ? "NIC" : "MAC");
+#endif
+
+#ifdef NORMAL_MODE
 	// Step 4 : Enabling the NIC.
 
-	enableNic (NIC_ID, ENABLE_NIC_INTERRUPT, ENABLE_MAC, ENABLE_NIC);
+	enableNic (NIC_ID, DISABLE_NIC_INTERRUPT, ENABLE_MAC, ENABLE_NIC);
 	uint32_t controlReg = readNicControlRegister (NIC_ID);
 	cortos_printf("Control register = 0x%08lx\n",controlReg);
-	cortos_printf ("Configuration Done. NIC has started\n");
+	cortos_printf ("Configuration Done. NIC has started in Normal Mode\n");
 
 		
 	// Step 5 : loopback test begins.
@@ -201,9 +226,11 @@ int main()
 			cortos_printf("Packet[%u]: %016llx\n",8*i,(*TxBufferPtr++));
 			
 		cortos_printf("Transmitted the packet\n");
-				
+#endif		
+		
 		// NIC stats
 		message_counter++;
+#ifdef ENABLE_PRINT
 		cortos_printf("Time spent for iteration %d = %llu clock cycles (%.9f seconds)\n", message_counter, cycle_diff,
 		((double)cycle_diff/80000000.0));
 
@@ -229,8 +256,8 @@ int main()
 			break;
 		}
 	}
-	
-	
+
+
 	// Step 6 : Disabling the NIC
 	
 	disableNic (NIC_ID);
@@ -247,7 +274,7 @@ int main()
 		{
 			// Getting no. of buffers to pop from Rx queue (if any) by reading status, i.e., no. of entries.
 			uint32_t entries_in_RxQ = getStatusOfQueueInNic (NIC_ID, server_id, RXQUEUE);
-			cortos_printf("Info: Total number of entries in Rx queue server %d = %d\n", entries_in_RxQ, server_id);
+			cortos_printf("Info: Total number of entries in Rx queue server %d = %d\n", server_id, entries_in_RxQ);
 			
 			while(entries_in_RxQ > 0)
 			{
@@ -271,6 +298,9 @@ int main()
 		uint32_t entries_in_freeQ = getStatusOfQueueInNic (NIC_ID, FQ_SERVER_ID, FREEQUEUE);
 		cortos_printf("Info: Total number of entries in free queue = %d\n", entries_in_freeQ);
 		
+		cortos_printf("Info: Buf_addr = 0x%x, already popped from free queue by NIC\n",(uint32_t) BufferPtrsPA[popped_count]);
+		popped_count++;
+
 		while(entries_in_freeQ > 0)
 		{
 			int pop_not_ok;
@@ -296,7 +326,7 @@ int main()
 					cortos_printf("Warning: pop from free queue not ok, retrying again.\n");
 				}
 			} while (pop_not_ok);
-			cortos_printf("Info: popped from free queue, buf_addr=0x%x\n", J);
+			cortos_printf("Info: popped from free queue, buf_addr = 0x%x\n", J);
 			if (J != (uint32_t) BufferPtrsPA[popped_count])
 			{
 				cortos_printf("Error: pop from free queue: expected 0x%x, received 0x%x\n", 
@@ -321,6 +351,7 @@ int main()
 		cortos_printf("Released  buffer[%d] 0x%lx\n",i,(uint32_t)BufferPtrsVA[i]);
 		
 	}
+#endif
 		
 	cortos_exit(0);	
 }

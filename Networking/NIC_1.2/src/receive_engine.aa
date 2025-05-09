@@ -87,11 +87,16 @@ $module [ReceiveEngineDaemon] $in () $out() $is
 				// spin until push_status is successful
 				$merge $entry push_loopback $endmerge
 				
-				// received packet is ok, push buffer pointer into RxQ_server_id
-				$call pushIntoQueue (RXQUEUE RxQ_server_id rx_buffer_pointer_32) (RxQ_status)
+				$if (~(S_CONTROL_REGISTER [] 7)) $then
+					// received packet is ok, push buffer pointer into RxQ_server_id for normal operation
+					$call pushIntoQueue (RXQUEUE RxQ_server_id rx_buffer_pointer_32) (RxQ_status)
+				$else
+					// received packet is ok, push buffer pointer into TxQ_server_id for NIC loopback
+					$call pushIntoQueue (TXQUEUE RxQ_server_id rx_buffer_pointer_32) (TxQ_status)
+				$endif
 				
 				// push_status == 0 is success, i.e., pushed buffer pointer to RxQ
-				$volatile push_status := (RxQ_status [] 1)
+				$volatile push_status := ($mux (S_CONTROL_REGISTER [] 7) (TxQ_status [] 1) (RxQ_status [] 1))
 			
 				// If push not successful -> Loopback
 				$if (push_status == 1) $then 

@@ -1,0 +1,30 @@
+//
+// Module to test MAC in loopback mode if bit [8] of control register is set
+// mac_to_nic -> nic_to_mac
+// NIC should be disabled and MAC should be enabled
+//
+$module [macTestDaemon]
+	$in () $out () $is
+{
+	$branchblock[main]
+	{
+		// spin until enabled by software
+		$merge $entry not_enabled_yet_loopback disable_loopback $endmerge
+		
+		// If not enabled yet -> Loopback
+		$if (~(S_CONTROL_REGISTER [] 8)) $then
+			$place [not_enabled_yet_loopback]
+		$endif
+		
+			$merge $entry loopback $endmerge
+		
+			nic_to_mac_transmit_pipe := mac_to_nic_data
+		
+			// Loop while (control[8] == 1), i.e., MAC loopback mode
+			$if ((S_CONTROL_REGISTER [] 8) == 1) $then
+				$place [loopback]
+			$endif
+		
+		$place [disable_loopback]
+	}
+}
