@@ -5,11 +5,20 @@
 #include <string.h>
 #include <stdlib.h>
 
+//#define DEBUGPRINT				// Uncomment this line to print debug statements on serial terminal
+//#define ENABLE_PRINT				// Uncomment this line to enable printing packet details and NIC stats in loopback test 
+						// and comment it for NIC characterization
 
 #define NUMBER_OF_SERVERS 	4		// number of servers enabled (max = 4);	from server_id 0 to (max-1) 
-#define NUMBER_OF_BUFFERS 	4		// number of buffer pointers in each queue (max 64 for current hardware)
+#define NUMBER_OF_BUFFERS 	64		// number of buffer pointers in each queue (max 64 for current hardware)
 #define BUFFER_SIZE_IN_BYTES 	1500
 #define NIC_START_ADDR 		0xFF000000
+#define SERVERS_ENABLED 	((1 << NUMBER_OF_SERVERS) - 1)
+
+// Available modes (select one at a time)
+//#define NORMAL_MODE			// Uncomment this line to check NIC for regular operation
+#define NIC_LOOPBACK		1	// Uncomment this line to check NIC in loopback mode without processor	(FQ->TxQ->FQ)
+//#define MAC_LOOPBACK		2	// Uncomment this line to check MAC in loopback mode	(mac_to_nic -> nic_to_mac)
 
 // constants
 #define NIC_ID 			0
@@ -18,7 +27,11 @@
 
 #define ENABLE_NIC		1
 #define ENABLE_MAC		1
-#define ENABLE_NIC_INTERRUPT	0
+#define ENABLE_NIC_INTERRUPT	1
+
+#define DISABLE_NIC		0
+#define DISABLE_MAC		0
+#define DISABLE_NIC_INTERRUPT	0
 
 
 #ifdef USE_CORTOS
@@ -143,7 +156,7 @@ typedef struct {
 TranslationEntry translationTable[NUMBER_OF_BUFFERS];
 
 // For initialsing the translation Table 
-void initTranslationTable(uint64_t,uint32_t*);
+void initTranslationTable(uint64_t pa,uint32_t* va);
 
 // Function to translate physical address to virtual address
 uint32_t* translatePAtoVA(uint64_t pa);

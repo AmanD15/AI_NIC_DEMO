@@ -6,8 +6,8 @@
 
 // NIC settings
 #define NSERVERS 4		// number of servers enabled (max = 4);	from server_id 0 to (max-1) 
-#define NBUFFERS 64  		// number of buffer pointers in each queue (max 64 for current hardware)
-
+#define NBUFFERS 4  		// number of buffer pointers in each queue (max 64 for current hardware)
+#define SERVERS_ENABLED ((1 << NSERVERS) - 1)
 
 // options to run different tests
 
@@ -19,9 +19,14 @@
 //#define CHECK_MEMORY_ACCESS	// Uncomment this line to test memory access from processor side
 //#define DEBUG_MEMORY_ACCESS	// Uncomment this line to test memory access from NIC side
 
-#define CHECK_NIC		// Uncomment this line to check complete NIC 
+//#define CHECK_NIC		// Uncomment this line to check complete NIC 
 //#define MONITOR_NIC_REG	// Uncomment this line to print values of relevant NIC registers in-between
 
+
+// Available modes (select one at a time)
+//#define NORMAL_MODE		0	// CHECK_NIC should be uncommented
+#define NIC_LOOPBACK		1	// Uncomment this line to check NIC in loopback mode without processor	(FQ->TxQ->FQ)
+//#define MAC_LOOPBACK		2	// Uncomment this line to check MAC in loopback mode	(mac_to_nic -> nic_to_mac)
 
 // constants
 #define NIC_ID 			0
@@ -29,8 +34,11 @@
 
 #define ENABLE_NIC		1
 #define ENABLE_MAC		1
-#define ENABLE_NIC_INTERRUPT	0
+#define ENABLE_NIC_INTERRUPT	1
 
+#define DISABLE_NIC		0
+#define DISABLE_MAC		0
+#define DISABLE_NIC_INTERRUPT	0
 
 //  Register definitions..  These must be consistent
 //  with the parameters.aa file in the NIC AA source

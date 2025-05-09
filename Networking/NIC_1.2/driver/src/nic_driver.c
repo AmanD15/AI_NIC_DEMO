@@ -76,28 +76,40 @@ uint32_t getStatusOfQueueInNic (uint32_t nic_id, uint32_t server_id, uint32_t qu
 int acquireLock(uint32_t nic_id)
 {
 	int ret_val = 1;
+#ifdef DEBUGPRINT
 	cortos_printf("Info: entered acquireLock\n");
-	// get the lock value and 
+#endif
+	// get the lock value and lock the memory
 	uint32_t val = readFromNicReg (nic_id, P_FREE_QUEUE_LOCK_INDEX);
+#ifdef DEBUGPRINT
 	cortos_printf("Info: acquireLock lock-value = 0x%x\n", val);
+#endif
 	if(val == 0x0)
 	{
+#ifdef DEBUGPRINT
 		cortos_printf("Info: acquireLock success.\n");
+#endif
 		ret_val = 0;
 	}
 	else 
 	{
+#ifdef DEBUGPRINT
 		cortos_printf("Info: acquireLock failure.\n");
+#endif
 	}
 	return(ret_val);
 }
 
 int releaseLock(uint32_t nic_id)
 {
+#ifdef DEBUGPRINT
 	cortos_printf("Info: entered releaseLock\n");
+#endif
 	// write the lock value and unlock the memory.
 	writeToNicReg (nic_id, P_FREE_QUEUE_LOCK_INDEX, 0);
+#ifdef DEBUGPRINT
 	cortos_printf("Info: leaving releaseLock \n");
+#endif
 	return(0);
 }
 
@@ -112,29 +124,39 @@ int pushIntoQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uin
 		case RXQUEUE       : reg_index = (P_RX_QUEUE_0_INDEX + (2*server_id)); break;
 		case TXQUEUE       : reg_index = (P_TX_QUEUE_0_INDEX + (2*server_id)); break;	
 	}
+#ifdef DEBUGPRINT
 	cortos_printf("Info: entered pushIntoQueue: push_value=0x%x reg_index=%d \n", push_value, reg_index);
+#endif
 	int status = writeToNicReg (nic_id, reg_index, push_value);
 
     	uint8_t push_status = (status >> 1) & 0x1;      // Extract the second least significant bit
     	uint8_t pop_status = status & 0x1;             // Extract the least significant bit
+#ifdef DEBUGPRINT
 	cortos_printf("Info: pushIntoQueue: after push: push_status=0x%x, pop_status=0x%x.\n", push_status, pop_status);
+#endif
 	if(push_status == 0)
 	{
 		ret_val = 0;
+#ifdef DEBUGPRINT
 		cortos_printf("Info: pushIntoQueue: Push Successful\n");
+#endif
 
 	}
 	else
 	{
+#ifdef DEBUGPRINT
 		cortos_printf("Info: pushIntoQueue: Push Failed\n");
+#endif
 	}
+#ifdef DEBUGPRINT
 	cortos_printf("Info: leaving pushIntoQueue : returns %d \n", ret_val);
+#endif
 	return(ret_val);
 }
 
 // return 0 on success
 //   Returns a 32-bit value.  Bits [31:2] are from the corresponding PA value and
-//   bits [1:0] should be 0 on  a successful pop.
+//   bits [1:0] should be 0 on a successful pop.
 int popFromQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uint32_t* popped_val_status)
 {
 	int ret_val = 1;
@@ -145,23 +167,33 @@ int popFromQueue (uint32_t nic_id, uint32_t server_id, uint32_t queue_type, uint
 		case RXQUEUE       : reg_index = (P_RX_QUEUE_0_INDEX + (2*server_id)); break;
 		case TXQUEUE       : reg_index = (P_TX_QUEUE_0_INDEX + (2*server_id)); break;	
 	}
+#ifdef DEBUGPRINT
 	cortos_printf("Info: entered popFromQueue reg_index=%d \n", reg_index);
+#endif
 	*popped_val_status = readFromNicReg (nic_id, reg_index);
 
     	uint8_t push_status = (*popped_val_status >> 1) & 0x1;      // Extract the second least significant bit
     	uint8_t pop_status = *popped_val_status & 0x1;             // Extract the least significant bit
+#ifdef DEBUGPRINT
 	cortos_printf("Info: popFromQueue: after pop: push_status=0x%x, pop_status=0x%x.\n", push_status, pop_status);
+#endif
 	if(pop_status == 0)
 	{
 		ret_val = 0;
+#ifdef DEBUGPRINT
 		cortos_printf("Info: popFromQueue: Pop Successful\n");
 		cortos_printf("Info: popFromQueue: after pop: popped_value=0x%x.\n", *popped_val_status);
+#endif
 	}
 	else
 	{
+#ifdef DEBUGPRINT
 		cortos_printf("Info: popFromQueue: Pop Failed\n");
+#endif
 	}
+#ifdef DEBUGPRINT
 	cortos_printf("Info: leaving popFromQueue : returns %d \n", ret_val);
+#endif
 	return(ret_val);
 }
 
@@ -184,7 +216,7 @@ uint32_t readNicControlRegister (uint32_t nic_id)
 
 void enableNic  (uint32_t nic_id, uint8_t enable_interrupt, uint8_t enable_mac, uint8_t enable_nic)
 {
-	writeNicControlRegister (nic_id, (((1 << NUMBER_OF_SERVERS) - 1) << 3) | (enable_interrupt << 2) | (enable_mac << 1) | enable_nic);
+	writeNicControlRegister (nic_id, ((SERVERS_ENABLED - 1) << 3) | (enable_interrupt << 2) | (enable_mac << 1) | enable_nic);
 }
 
 void disableNic (uint32_t nic_id)
@@ -254,24 +286,23 @@ uint32_t getPacketLen(uint32_t* controlWord)
 
 void initTranslationTable(uint64_t pa, uint32_t* va)
 {
- static int i = 0;
- 
- translationTable[i].pa = pa;  
- translationTable[i].va = va; 
- 
- i = i + 1;  
+	static int i = 0; 
+	translationTable[i].pa = pa;  
+	translationTable[i].va = va; 
+	i = i + 1;  
 }
 
-uint32_t* translatePAtoVA(uint64_t pa) {
-    // Search the translation table for the physical address
-    int i;
-    for (i = 0; i < NUMBER_OF_BUFFERS; i++) {
-        if (translationTable[i].pa == pa) {
-            return translationTable[i].va;  // Return virtual address if physical address is found
-        }
-    }
-    // Return NULL if physical address is not found
-    return NULL;
+uint32_t* translatePAtoVA(uint64_t pa) 
+{
+	// Search the translation table for the physical address
+	int i;
+	for (i = 0; i < NUMBER_OF_BUFFERS; i++) 
+	{
+		if (translationTable[i].pa == pa) 
+        		return translationTable[i].va;  // Return virtual address if physical address is found
+	}
+	// Return NULL if physical address is not found
+	return NULL;
 }
 
 uint32_t getPacketLenInDW(uint32_t lenInBytes)

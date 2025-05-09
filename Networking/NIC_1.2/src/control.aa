@@ -205,7 +205,7 @@ $module [controlDaemon] $in () $out () $is
 			
 			$barrier 
 			
-			$volatile set_globals := ((~rwbar) & (index == 0))
+			$volatile set_globals := ((~rwbar) & (index == P_NIC_CONTROL_REGISTER_INDEX))
 			$guard (set_globals)
 				$call setGlobalSignals () ()
 
