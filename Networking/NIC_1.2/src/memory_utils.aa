@@ -9,196 +9,20 @@ $module [calculateAddress36] $in (addr_base offset: $uint<64>) $out (addr: $uint
 	$attribute input_buffering 0
 }
 
-//-----------------------------------------------------------------------------------------------------
-//  Base memory access routines (used indirectly by the rest of the NIC).
-//-----------------------------------------------------------------------------------------------------
-$pipeline $depth 7 $fullrate $module [accessMemoryBase]
-	$in (tag: $uint<8> request: $uint<110>) $out (response: $uint<65>) $is
-{
-	NIC_TO_MEMORY_REQUEST := request $mark REQ
-	response := MEMORY_TO_NIC_RESPONSE  $delay (REQ 8)
 
-	$volatile debug_sig := ($concat $zero<73> tag request response)
-	NIC_DEBUG_SIGNAL := debug_sig
-
-	$attribute input_buffering 0
-	$attribute output_buffering 0
-}
-
-
-$pipeline $depth 7 $module [accessMemoryDwordBase]
-	$in (tag: $uint<8> lock rwbar: $uint<1> base_addr: $uint<64> offset: $uint<64> wdata : $uint<64>)
-	$out (rdata : $uint<64>)
-$is
-{
-	addr := ($call calculateAddress36 (base_addr offset))
-	$volatile request :=  ($concat lock rwbar (~$zero<8>) addr wdata)
-	$call accessMemoryBase (tag request) (response)
-
-	$volatile $split (response 1 64) (err rdata)
-
-	$attribute input_buffering 0
-	$attribute output_buffering 0
-}
-
-
-$pipeline $depth 7 $module [accessMemoryByteBase] 
-	$in (tag: $uint<8> lock rwbar: $uint<1> byte_addr_base : $uint<64> offset: $uint<64> wbyte: $uint<8>)
-	$out (rbyte: $uint<8>) $is
-{
-	byte_addr := ($call calculateAddress36 (byte_addr_base offset))
-
-	$volatile bb := ($slice byte_addr 2 0)
-	$volatile addr_dw := ($concat ($slice byte_addr 35 3) $zero<3>)
-	$volatile bmask :=  (_b10000000 >> ($bitcast ($uint<8>) ($slice byte_addr 2 0)))
-	$volatile wdata := 
-		(($concat wbyte $zero<56>)  >>
-				($bitcast ($uint<64>) ($concat bb $zero<3>)))
-
-	$volatile request :=  ($concat lock rwbar bmask addr_dw wdata) 
-	$call accessMemoryBase (tag request) (response)
-
-	$volatile $split (response 1
-				8 8 8 8 8 8 8 8)
-				(err b0 b1 b2 b3 b4 b5 b6 b7)
-	rbyte := ($excmux
-			(bb == 0) b0
-			(bb == 1) b1
-			(bb == 2) b2
-			(bb == 3) b3
-			(bb == 4) b4
-			(bb == 5) b5
-			(bb == 6) b6
-			(bb == 7) b7)
-
-	$attribute input_buffering 0
-	$attribute output_buffering 0
-}
-
-$pipeline $depth 7 $module [accessMemoryWordBase] 
-	$in (tag: $uint<8> lock rwbar: $uint<1> word_addr_base : $uint<64> offset: $uint<64>  wword: $uint<32>)
-	$out (rword: $uint<32>) $is
-{
-	word_addr := ($call calculateAddress36 (word_addr_base offset))
-
-	$volatile lw := (word_addr [] 2)
-	$volatile bmask := ($mux lw ($bitcast ($uint<8>) _h0F) _hF0)
-	$volatile wdata := ($mux lw ($concat $zero<32> wword) ($concat wword $zero<32>))
-	$volatile addr_dw := ($concat ($slice word_addr 35 3) $zero<3>)
-
-	$volatile request :=  ($concat lock rwbar bmask addr_dw wdata) 
-	$call accessMemoryBase (tag request) (response)
-
-	$volatile $split (response 1 32 32) (err rhw rlw)
-	rword := ($mux lw rlw rhw)
-
-	$attribute input_buffering 0
-	$attribute output_buffering 0
-}
-
-//--------------------------------------------------------------------------------------------------
-//  Routines used by the rest of the NIC to access memory.
-//--------------------------------------------------------------------------------------------------
-
-$pipeline $depth 7 $module [accessMemoryDword]
+$pipeline $depth 15 $opaque $module [accessMemoryDword]
 	$in (tag: $uint<8> rwbar: $uint<1> base_addr: $uint<64> offset: $uint<64> wdata : $uint<64>)
 	$out (rdata : $uint<64>)
 $is
 {
-	$call doMemAccess (tag ($mux rwbar LDD STD) base_addr offset wdata) (rdata)
+	addr := ($call calculateAddress36 (base_addr offset))
+	$volatile req := ($concat $zero<1> rwbar (~$zero<8>)  addr wdata)  
+	NIC_TO_MEMORY_REQUEST := req $mark REQ
+	resp := MEMORY_TO_NIC_RESPONSE  $delay (REQ 8)
+
+	$volatile $split (resp 1 64) (error_flag rdata)
 }
 
-$pipeline $depth 7 $module [accessMemoryByte] 
-	$in (tag: $uint<8> rwbar: $uint<1> byte_addr_base : $uint<64> offset: $uint<64> wbyte: $uint<8>)
-	$out (rbyte: $uint<8>) $is
-{
-	$call doMemAccess (tag ($mux rwbar LDB STB) byte_addr_base offset ($concat $zero<56> wbyte))
-					(rdword)
-	$volatile rbyte := ($slice rdword 7 0)
-}
-
-
-$pipeline $depth 7 $module [accessMemoryWord] 
-	$in (tag: $uint<8> rwbar: $uint<1> word_addr_base : $uint<64> offset: $uint<64>  wword: $uint<32>)
-	$out (rword: $uint<32>) $is
-{
-	$call doMemAccess (tag ($mux rwbar LD ST) word_addr_base offset ($concat $zero<32> wword))
-					(rdword)
-	rword := ($slice rdword 31 0)
-}
-
-$module [accessMemoryLdStub]
-	$in (tag: $uint<8> byte_addr_base offset: $uint<64>) $out (rbyte: $uint<8>) $is
-{
-	$call doMemAccess (tag LDSTUB byte_addr_base offset $zero<64>) (rdword)
-	rbyte := ($slice rdword 7 0)
-}
-
-
-//-------------------------------------------------------------------------------------------
-// Main memory access routine.. 
-//   Ensures that there is no confusion with the locking of main memory access paths
-//   due to accesses from this NIC.
-//-------------------------------------------------------------------------------------------
-$pipeline $depth 15 $fullrate   $module [doMemAccess]
-	$in  (tag: $uint<8> opcode: $uint<3> base_addr : $uint<64>  offset: $uint<64> wdata: $uint<64>) 
-	$out (rdata: $uint<64>) $is 
-{
-	$volatile is_byte_access := ((opcode == STB) | (opcode == LDB))
-	$volatile is_word_access := ((opcode == ST) | (opcode == LD))
-	$volatile is_dword_access := ((opcode == STD) | (opcode == LDD))
-	$volatile is_write := ($reduce |
-					(opcode == STB)
-					(opcode == ST)
-					(opcode == STD))
-	$volatile is_ldstub := (opcode == LDSTUB)
-	$volatile w_byte    := ($slice wdata 7 0)
-	$volatile w_word    := ($slice wdata 31 0)
-	$volatile w_dword   := wdata
-
-	$volatile  do_first_byte   := (is_ldstub | is_byte_access)
-	$volatile  first_byte_rwbar   := ($mux is_write WRITEMEM READMEM)
-	$volatile  first_byte_lock := ($mux is_ldstub LOCKMEM UNLOCKMEM)
-
-	// Get the memory lock to continue.
-	mem_lock := memory_access_lock
-	$barrier
-
-	// release the lock right-away if 
-	// it is not an atomic access.
-	$guard (~is_ldstub)
-		memory_access_lock := mem_lock
-	$barrier 
-
-	$guard (do_first_byte)
-		$call accessMemoryByteBase 
-			(tag first_byte_lock  first_byte_rwbar base_addr offset w_byte)	 (r_byte)
-
-	$guard (is_word_access)
-		$call accessMemoryWordBase (tag UNLOCKMEM  ($mux is_write WRITEMEM READMEM)
-							base_addr offset w_word) (r_word)
-	$guard (is_dword_access)
-		$call accessMemoryDwordBase (tag UNLOCKMEM  
-						($mux is_write WRITEMEM READMEM)
-							base_addr offset w_dword) (r_dword)
-
-	$volatile do_ldstub_write := (is_ldstub & (r_byte == 0))
-
-	$guard (is_ldstub)
-		$call accessMemoryByteBase (tag UNLOCKMEM ($mux do_ldstub_write WRITEMEM READMEM)
-						base_addr offset _hFF) (r_byte_second_ldstub)
-	$volatile rdata := ($excmux
-				(is_ldstub | is_byte_access) ($concat $zero<56> r_byte)
-				is_word_access      	     ($concat $zero<32> r_word)
-				is_dword_access     	     r_dword)
-
-
-	$barrier
-
-	// return the lock if it is an atomic!
-	$guard (is_ldstub)
-		memory_access_lock := $one<1>
-}
 
 //
 // For debug purpose only through debug_memory pipes
