@@ -20,8 +20,8 @@
 
 int err_flag = 0;
 #if defined(CHECK_NIC) || defined(NIC_LOOPBACK) || defined(MAC_LOOPBACK)
-int number_of_packets = 64;
-int packet_lengths[6] = {1024};
+int number_of_packets = 6;
+int packet_lengths[6] = {32, 64, 128, 256, 512, 1024};
 #endif
 
 #if defined(CHECK_NIC) || defined(NIC_LOOPBACK)
