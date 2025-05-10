@@ -216,7 +216,7 @@ uint32_t readNicControlRegister (uint32_t nic_id)
 
 void enableNic  (uint32_t nic_id, uint8_t enable_interrupt, uint8_t enable_mac, uint8_t enable_nic)
 {
-	writeNicControlRegister (nic_id, ((SERVERS_ENABLED - 1) << 3) | (enable_interrupt << 2) | (enable_mac << 1) | enable_nic);
+	writeNicControlRegister (nic_id, (SERVERS_ENABLED << 3) | (enable_interrupt << 2) | (enable_mac << 1) | enable_nic);
 }
 
 void disableNic (uint32_t nic_id)

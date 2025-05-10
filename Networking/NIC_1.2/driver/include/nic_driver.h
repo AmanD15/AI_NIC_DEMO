@@ -16,8 +16,8 @@
 #define SERVERS_ENABLED 	((1 << NUMBER_OF_SERVERS) - 1)
 
 // Available modes (select one at a time)
-//#define NORMAL_MODE			// Uncomment this line to check NIC for regular operation
-#define NIC_LOOPBACK		1	// Uncomment this line to check NIC in loopback mode without processor	(FQ->TxQ->FQ)
+#define NORMAL_MODE			// Uncomment this line to check NIC for regular operation
+//#define NIC_LOOPBACK		1	// Uncomment this line to check NIC in loopback mode without processor	(FQ->TxQ->FQ)
 //#define MAC_LOOPBACK		2	// Uncomment this line to check MAC in loopback mode	(mac_to_nic -> nic_to_mac)
 
 // constants

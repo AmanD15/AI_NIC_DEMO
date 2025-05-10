@@ -230,10 +230,11 @@ int main()
 			
 		cortos_printf("Transmitted the packet\n");
 #endif		
-		
+
+#ifdef ENABLE_PRINT		
 		// NIC stats
 		message_counter++;
-#ifdef ENABLE_PRINT
+
 		cortos_printf("Time spent for iteration %d = %llu clock cycles (%.9f seconds)\n", message_counter, cycle_diff,
 		((double)cycle_diff/80000000.0));
 
