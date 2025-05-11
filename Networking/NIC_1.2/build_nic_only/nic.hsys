@@ -6,9 +6,9 @@ $system nic $library work
    $out 
           $pipe  AFB_NIC_RESPONSE 33 $depth 2
           $signal  MAC_ENABLE 1 $depth 1
+          $signal  NIC_DEBUG_SIGNAL 256 $depth 1
           $signal  NIC_INTR 1 $depth 1
           $pipe  NIC_TO_MEMORY_REQUEST 110 $depth 2
-          $pipe  memory_access_lock 1 $depth 1
           $pipe  nic_to_mac_transmit_pipe 73 $depth 2
 { 
           $pipe  FREE_QUEUE 32 $depth 64

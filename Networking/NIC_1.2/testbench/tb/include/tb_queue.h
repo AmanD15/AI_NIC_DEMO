@@ -19,13 +19,13 @@
 //#define CHECK_MEMORY_ACCESS	// Uncomment this line to test memory access from processor side
 //#define DEBUG_MEMORY_ACCESS	// Uncomment this line to test memory access from NIC side
 
-//#define CHECK_NIC		// Uncomment this line to check complete NIC 
+#define CHECK_NIC		// Uncomment this line to check complete NIC 
 //#define MONITOR_NIC_REG	// Uncomment this line to print values of relevant NIC registers in-between
 
 
 // Available modes (select one at a time)
-//#define NORMAL_MODE		0	// CHECK_NIC should be uncommented
-#define NIC_LOOPBACK		1	// Uncomment this line to check NIC in loopback mode without processor	(FQ->TxQ->FQ)
+#define NORMAL_MODE		0	// CHECK_NIC should be uncommented
+//#define NIC_LOOPBACK		1	// Uncomment this line to check NIC in loopback mode without processor	(FQ->TxQ->FQ)
 //#define MAC_LOOPBACK		2	// Uncomment this line to check MAC in loopback mode	(mac_to_nic -> nic_to_mac)
 
 // constants
