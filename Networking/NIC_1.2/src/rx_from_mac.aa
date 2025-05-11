@@ -53,8 +53,9 @@ $module [nicRxFromMacDaemon] $in () $out () $is
 				//	2
 				$phi LSTATE := S0 $on $entry nLSTATE $on $loopback
 				$phi RX := mac_to_nic_data $on $entry, $loopback
-					// for Debug
-					$phi pkt_cnt := $zero<32> $on $entry npkt_cnt $on $loopback
+
+				// for Debug
+				$phi pkt_cnt := $zero<32> $on $entry npkt_cnt $on $loopback
 			$endmerge
 			
 			$rreport(nicRxFromMacDaemon data_is RX LSTATE)
@@ -65,10 +66,12 @@ $module [nicRxFromMacDaemon] $in () $out () $is
 			$volatile write_to_header := ((LSTATE == S0) | (LSTATE == S1))
 			
 			// if state is S1 modify the tkeep and send to header pipe
-			$guard (write_to_header) 
-				nic_rx_to_header := ($mux (LSTATE == S1)
+			$volatile to_header := ($mux (LSTATE == S1)
 								($concat ($slice RX 72 8) HEADER_TKEEP)
 								RX)
+			$guard (write_to_header) 
+				nic_rx_to_header := to_header
+
 			// send to packet pipe
 			nic_rx_to_packet := RX
 

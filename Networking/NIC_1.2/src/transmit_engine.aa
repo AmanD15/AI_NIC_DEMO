@@ -139,7 +139,8 @@ $module [transmitPacket]
 							($bitcast ($uint<64>) mem_addr_offset) $zero<64>) (data)
  
 		// transmit packet to MAC.
-		nic_to_mac_transmit_pipe := ($concat $zero<1> data FULL_BYTE_MASK)
+		$volatile to_mac_1 := ($concat $zero<1> data FULL_BYTE_MASK)
+		nic_to_mac_transmit_pipe := to_mac_1
 
 		// compute next count down and next memory address.
 		$volatile  ncount_down := (count_down - 8)
@@ -151,7 +152,7 @@ $module [transmitPacket]
 		$while not_last_word
 	
 
-		last_offset := nmem_addr_offset
+		$volatile last_offset := nmem_addr_offset
 	
 		//last word
 		$call accessMemoryDword (tag READMEM control_data_addr 
@@ -159,7 +160,8 @@ $module [transmitPacket]
 		
 		// transmit last word
 		$rreport(transmitPacket sending_last_word last_word)
-		nic_to_mac_transmit_pipe := ($concat $one<1> last_word last_tkeep)
+		$volatile to_mac_2 := ($concat $one<1> last_word last_tkeep)
+		nic_to_mac_transmit_pipe := to_mac_2
 		
 		// transmit successful if packet_size amount of data is succesfully transmitted
 		status := (packet_size == ($bitcast ($uint<11>) last_offset))

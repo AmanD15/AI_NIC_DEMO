@@ -159,7 +159,6 @@ $module [ReceiveEngineDaemon] $in () $out() $is
 //     Then, store the Payload into the buffer
 //     Finally add the Control Information at the base address pointer (index = 0) if the packet
 //     currently being stored is not a bad packet
-$pipeline $depth 31 
 $module [receivePacket] 
 	$in (tag :$uint<8> max_addr_offset: $uint<16>  rx_buffer_pointer : $uint<64>) 
 	$out(bad_packet_identifier : $uint<1>) $is
