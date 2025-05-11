@@ -81,8 +81,13 @@ void probeNic (uint32_t nic_id, uint32_t* rx_pkt_count, uint32_t* tx_pkt_count, 
 
 // Send packets to Rx_in_pipe of NIC
 void packetTxDaemon () {
+
+	uint16_t packet_buffer[1024];
+
+	// fill the packet buffer.
 	int packet_index = 0;
 	uint8_t tx_byte = 0;
+	int index_in_packet_buffer = 0;
 	while(1)
 	{
 		int length = packet_lengths[packet_index % 4];
@@ -91,16 +96,19 @@ void packetTxDaemon () {
 		{
 			uint16_t last = (length == 1);
 			uint16_t tx_val = (last << 9) | (tx_byte << 1);
-			// last byte unused
-			// 1     8   1
-			write_uint16 ("tb_to_nic_mac_bridge", tx_val);
 
-			fprintf(stderr,"Info: packetTxDaemon: sent%sbyte 0x%x \n", last ? " last " : " ", tx_byte);
+			packet_buffer[index_in_packet_buffer] = tx_val;
+			index_in_packet_buffer++;
+
+			fprintf(stderr,"Info: packetTxDaemon: %s byte is 0x%x \n", last ? " last " : " ", tx_byte);
 			tx_byte++;
 
 			length--;
 		}
+
 		packet_index++;
+
+		write_uint16_n ("tb_to_nic_mac_bridge", packet_buffer, index_in_packet_buffer);
 		fprintf(stderr,"Info: packetTxDaemon: sent packet with index %d.\n", packet_index);
 
 		if(packet_index == number_of_packets)
@@ -116,16 +124,23 @@ DEFINE_THREAD(packetTxDaemon);
 void packetRxDaemon () {
 	int packet_index = 0;
 	uint8_t expected_byte = 0;
+	uint16_t packet_buffer[1024];
+
 	while(1)
 	{
 		int length = packet_lengths[packet_index % 4];
 		fprintf(stderr,"Info: packetRxDaemon: expecting packet with length = %d.\n", length);
+		read_uint16_n ("nic_mac_bridge_to_tb", packet_buffer, length);
+		fprintf(stderr,"Info: packetRxDaemon: received packet with length = %d.\n", length);
+
 		int rx_byte_index = 0;
+		int index_in_packet_buffer = 0;
 		while (length > 0)
 		{
 			// last byte unused
 			// 1     8   1
-			uint16_t rx_val = read_uint16 ("nic_mac_bridge_to_tb");
+			uint16_t rx_val = packet_buffer[index_in_packet_buffer];
+			index_in_packet_buffer++;
 
 			uint16_t last = (rx_val  >> 9) & 0x1;
 			uint8_t rx_byte = (rx_val >> 1) & 0xff;
