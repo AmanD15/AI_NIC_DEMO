@@ -2,11 +2,10 @@
 //-----------------------------------------------------------------------------------------------------
 //  Common address calculation routine.
 //-----------------------------------------------------------------------------------------------------
-$pipeline $depth 3 $fullrate  
-$module [calculateAddress36] $in (addr_base offset: $uint<64>) $out (addr: $uint<36>) $is
+$pipeline $depth 7 $fullrate  
+$operator $module [calculateAddress36] $in (addr_base offset: $uint<64>) $out (addr: $uint<36>) $is
 {
 	addr := (($slice addr_base 35 0) + ($slice offset 35 0))
-	$attribute input_buffering 0
 }
 
 
@@ -25,6 +24,9 @@ $is
 	NIC_DEBUG_SIGNAL := debug_sig
 
 	$volatile $split (response 1 64) (err rdata)
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
 }
 
 

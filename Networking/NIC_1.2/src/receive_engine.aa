@@ -214,6 +214,9 @@ $module [writeEthernetHeaderToMem]
 		// If 2 words are stored, then end
 		$while first_time
 	}  
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
 }
 
 
@@ -260,6 +263,9 @@ $module [writePayloadToMem]
 	// how many bytes in the packet (including the control word in the first dword
 	// of the buffer, and two dwords for the header.)
 	$volatile packet_size_11 := ($bitcast ($uint<11>) active_addr_offset)
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
 }
 
 // Write the Control Information of stored packet into buffer location 0
@@ -275,4 +281,7 @@ $module [writeControlInformationToMem]
 	$volatile ctrlInfoTag := ((tag << 2) | ($bitcast ($uint<8>) 3))
 	// Write this control data with bmask set to all 1s to rx_buffer_pointer location
 	$call accessMemoryDword (ctrlInfoTag WRITEMEM rx_buffer_pointer 0 control_data) (ignore_return)
+
+	$attribute input_buffering 0
+	$attribute output_buffering 0
 }
