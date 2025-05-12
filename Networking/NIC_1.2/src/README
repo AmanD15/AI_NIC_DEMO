@@ -51,7 +51,7 @@
 	decls.aa 
 		most declarations.
 	free_queue.aa
-		manages free queue operations (push, pop, acquirelock & releaselock).
+		manages free queue operations (push, pop, acquirelock, releaselock & status).
 	general_utils.aa 
 		utils.
 	memory_utils.aa  
@@ -65,7 +65,7 @@
 	receive_engine.aa  
 		store Ethernet RX packet in memory.
 	receive_queue.aa
-		manages Rx queue operations (push and pop) for 4 servers.
+		manages Rx queue operations (push, pop & status) for 4 servers.
 	register_utils.aa  
 		NIC register access.
 	rx_from_mac.aa  
@@ -75,7 +75,7 @@
 	transmit_engine.aa  
 		sending packet out to Ethernet TX.
 	transmit_queue.aa
-		manages Tx queue operations (push and pop) for 4 servers.
+		manages Tx queue operations (push, pop & status) for 4 servers.
 
 
 

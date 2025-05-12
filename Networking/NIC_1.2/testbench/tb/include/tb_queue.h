@@ -6,7 +6,7 @@
 
 // NIC settings
 #define NSERVERS 4		// number of servers enabled (max = 4);	from server_id 0 to (max-1) 
-#define NBUFFERS 4  		// number of buffer pointers in each queue (max 64 for current hardware)
+#define NBUFFERS 64  		// number of buffer pointers in each queue (max 64 for current hardware)
 #define SERVERS_ENABLED ((1 << NSERVERS) - 1)
 
 // options to run different tests

@@ -131,7 +131,7 @@ int main()
 
 		
 	// Step 5 : loopback test begins.
-
+	
 	int message_counter = 0;
 	uint32_t server_id = 0;
 	uint32_t* bufptrVA;
@@ -163,6 +163,7 @@ int main()
 
 		//t1 = Sample clock
 		t1 = cortos_get_clock_time();
+		packet_start_times[message_counter] = t1;  // Store start time
 
 		// reverse table PA -> VA access
 		bufptrVA = translatePAtoVA(bufptrPA);
@@ -178,6 +179,9 @@ int main()
 
 		// Get packet length and validate
 		packetLen = getPacketLen(bufptrVA);
+		packet_lengths[message_counter] = packetLen;  // Store length
+		total_packet_bytes += packetLen;
+
 #ifdef ENABLE_PRINT
 		cortos_printf("DEBUG: Received packet length: %u bytes\n", packetLen);
 		
@@ -250,8 +254,8 @@ int main()
 			
 		server_id = (server_id + 1) % NUMBER_OF_SERVERS;
 		
-		if(message_counter == 2048)
-		{
+		if(message_counter == MAX_MESSAGES)
+		{		
 			total_time = (double)clock_spent / 80000000.0; // Divide by processor frequency (80 MHz)
 			cortos_printf("Total time spent in processor = %llu clock cycles (%.9f seconds)\n",clock_spent ,total_time);
 			avg_clk_cycles = clock_spent / message_counter;
@@ -359,5 +363,3 @@ int main()
 		
 	cortos_exit(0);	
 }
-
-
