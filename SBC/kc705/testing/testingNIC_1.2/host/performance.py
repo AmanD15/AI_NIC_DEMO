@@ -26,13 +26,11 @@ def send_ethernet_frame(interface, destination_mac, source_mac, ethertype, paylo
         # Initialize variables for throughput calculation
         total_bytes_sent = 0
         packets_sent = 0
-        frame_bytes_sent = 0
-	next_delay_threshold = 10000
-	frame_size = len(frame)  # Includes header and payload
 
         frame = ethernet_header + payload
-        print(f"Sending Test Packet (Payload Length: {len(payload)}) at: {time.time()}")
-        s.send(frame)
+
+        #print(f"Sending Test Packet (Payload Length: {len(payload)}) at: {time.time()}")
+        #s.send(frame)
 
         start_time = time.time()
 
@@ -40,12 +38,10 @@ def send_ethernet_frame(interface, destination_mac, source_mac, ethertype, paylo
             #print(f"Sending Packet {i+1}/{num_packets} (Payload Length: {len(payload)}) at: {time.time()}")
             s.send(frame)
             packets_sent += 1
-	    frame_bytes_sent += frame_size
-	    
-	    # Apply delay every time 10,000 bytes of total frame data are sent
-    	    if frame_bytes_sent >= next_delay_threshold:
-        	time.sleep(delay)
-        	next_delay_threshold += 10000
+            
+            # Apply delay if either threshold is crossed
+            if (packets_sent % 5 == 0)
+                time.sleep(delay)
 
         end_time = time.time()  # End time after all packets are sent
         total_bytes_sent = len(frame) * packets_sent
@@ -136,4 +132,3 @@ if __name__ == "__main__":
         receive_ethernet_frame(INTERFACE, ETHERTYPE, num_packets_to_receive)  # Pass this to the function
     else:
         print("Invalid option. Enter 'send' or 'receive'.")
-

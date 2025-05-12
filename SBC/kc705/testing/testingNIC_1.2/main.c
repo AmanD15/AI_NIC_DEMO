@@ -131,8 +131,6 @@ int main()
 
 		
 	// Step 5 : loopback test begins.
-
-	#define MAX_MESSAGES 20480	
 	
 	int message_counter = 0;
 	uint32_t server_id = 0;
@@ -149,10 +147,6 @@ int main()
 	double seconds, total_time, avg_time;
 	uint64_t t1, t2, cycle_diff, avg_clk_cycles;
 	uint64_t clock_spent = 0;
-	uint64_t clock_cycles_per_packet[MAX_MESSAGES];
-	uint32_t packet_lengths[MAX_MESSAGES];
-	uint64_t total_data_bytes = 0;
-
 	
 	while(1)
 	{
@@ -169,6 +163,7 @@ int main()
 
 		//t1 = Sample clock
 		t1 = cortos_get_clock_time();
+		packet_start_times[message_counter] = t1;  // Store start time
 
 		// reverse table PA -> VA access
 		bufptrVA = translatePAtoVA(bufptrPA);
@@ -184,9 +179,9 @@ int main()
 
 		// Get packet length and validate
 		packetLen = getPacketLen(bufptrVA);
-		packet_lengths[message_counter] = packetLen;
-		total_data_bytes += packetLen;
-		
+		packet_lengths[message_counter] = packetLen;  // Store length
+		total_packet_bytes += packetLen;
+
 #ifdef ENABLE_PRINT
 		cortos_printf("DEBUG: Received packet length: %u bytes\n", packetLen);
 		
@@ -229,7 +224,6 @@ int main()
 		t2 = cortos_get_clock_time();
 		// time_spent += t2  - t1;
 		cycle_diff = t2 - t1;
-		clock_cycles_per_packet[message_counter] = cycle_diff;
 		clock_spent += cycle_diff;
 	
 #ifdef ENABLE_PRINT		
@@ -241,9 +235,10 @@ int main()
 		cortos_printf("Transmitted the packet\n");
 #endif		
 
+#ifdef ENABLE_PRINT		
 		// NIC stats
 		message_counter++;
-#ifdef ENABLE_PRINT		
+
 		cortos_printf("Time spent for iteration %d = %llu clock cycles (%.9f seconds)\n", message_counter, cycle_diff,
 		((double)cycle_diff/80000000.0));
 
@@ -260,23 +255,13 @@ int main()
 		server_id = (server_id + 1) % NUMBER_OF_SERVERS;
 		
 		if(message_counter == MAX_MESSAGES)
-		{
+		{		
 			total_time = (double)clock_spent / 80000000.0; // Divide by processor frequency (80 MHz)
-			double throughput_mbps = ((double)total_data_bytes * 8.0) / (total_time * 1000000.0); // bytes to bits, bits/sec to Mbps
-
-			cortos_printf("Total packets processed: %d\n", message_counter);
-			cortos_printf("Total data processed: %llu bytes\n", total_data_bytes);
-			cortos_printf("Total time: %.9f seconds\n", total_time);
-			cortos_printf("Throughput: %.6f Mbps\n", throughput_mbps);
-
+			cortos_printf("Total time spent in processor = %llu clock cycles (%.9f seconds)\n",clock_spent ,total_time);
 			avg_clk_cycles = clock_spent / message_counter;
 			avg_time = total_time / message_counter;
-			cortos_printf("Average time per packet: %llu clock cycles (%.9f seconds)\n", avg_clk_cycles , avg_time);
-
-			message_counter = 0;
-			clock_spent = 0;
-			total_data_bytes = 0;
-			//break;
+			cortos_printf("Avegare time spent in processor = %llu clock cycles (%.9f seconds)\n",avg_clk_cycles ,avg_time);	
+			break;
 		}
 	}
 
@@ -378,5 +363,3 @@ int main()
 		
 	cortos_exit(0);	
 }
-
-
