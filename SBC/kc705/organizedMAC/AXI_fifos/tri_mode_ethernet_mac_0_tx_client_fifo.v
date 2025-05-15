@@ -57,6 +57,7 @@
 //
 //              The FIFO is built around an Inferred Dual Port RAM, 
 //              giving a total memory capacity of 4096 bytes.
+//	********(Now, total memory capacity is upgraded to 16384 bytes)********
 //
 //              Valid frame data received from the user interface is written
 //              into the Block RAM on the tx_fifo_aclkk. The FIFO will store
@@ -131,6 +132,12 @@ module tri_mode_ethernet_mac_0_tx_client_fifo #
   );
 
 
+  // Parameter to change TX FIFO memory size
+  // Initially total memory capacity was 4096 bytes (4 KB), i.e., TX_FIFO_ADDR_WIDTH was 12
+  // Now, total memory capacity is upgraded to 16384 bytes (16 KB), i.e., TX_FIFO_ADDR_WIDTH to 14
+  parameter TX_FIFO_ADDR_WIDTH = 14;
+  
+
   //----------------------------------------------------------------------------
   // Define internal signals
   //----------------------------------------------------------------------------
@@ -153,9 +160,9 @@ module tri_mode_ethernet_mac_0_tx_client_fifo #
   localparam  RETRANSMIT_s       = 4'b1111;
 
   
-  reg [3:0]   rd_state;
+  reg [3:0]   			rd_state;
   
-  reg [3:0]   rd_nxt_state;
+  reg [3:0]   			rd_nxt_state;
 
   // Binary encoded write state machine states.
   localparam WAIT_s   = 2'b00;
@@ -164,131 +171,131 @@ module tri_mode_ethernet_mac_0_tx_client_fifo #
   localparam OVFLOW_s = 2'b11;
 
   
-  reg  [1:0]  wr_state;
+  reg  [1:0]  			wr_state;
   
-  reg  [1:0]  wr_nxt_state;
+  reg  [1:0]  			wr_nxt_state;
 
-  wire [8:0]  wr_eof_data_bram;
-  reg  [7:0]  wr_data_bram;
-  reg  [7:0]  wr_data_pipe[0:1];
-  reg         wr_sof_pipe[0:1];
-  reg         wr_eof_pipe[0:1];
-  reg         wr_accept_pipe[0:1];
-  reg         wr_accept_bram;
-  wire        wr_sof_int;
-  reg  [0:0]  wr_eof_bram;
-  reg         wr_eof_reg;
-  reg  [11:0] wr_addr;
-  wire        wr_addr_inc;
-  wire        wr_start_addr_load;
-  wire        wr_addr_reload;
-  reg  [11:0] wr_start_addr;
-  reg         wr_fifo_full;
-  wire        wr_en;
-  reg         wr_ovflow_dst_rdy;
-  wire        tx_axis_fifo_tready_int_n;
-  reg  [3:0]  data_count;
+  wire [8:0]  			wr_eof_data_bram;
+  reg  [7:0]  			wr_data_bram;
+  reg  [7:0]  			wr_data_pipe[0:1];
+  reg         			wr_sof_pipe[0:1];
+  reg         			wr_eof_pipe[0:1];
+  reg         			wr_accept_pipe[0:1];
+  reg         			wr_accept_bram;
+  wire        			wr_sof_int;
+  reg  [0:0]  			wr_eof_bram;
+  reg         			wr_eof_reg;
+  reg  [TX_FIFO_ADDR_WIDTH-1:0] wr_addr;
+  wire        			wr_addr_inc;
+  wire        			wr_start_addr_load;
+  wire        			wr_addr_reload;
+  reg  [TX_FIFO_ADDR_WIDTH-1:0] wr_start_addr;
+  reg         			wr_fifo_full;
+  wire        			wr_en;
+  reg         			wr_ovflow_dst_rdy;
+  wire        			tx_axis_fifo_tready_int_n;
+  reg  [3:0]  			data_count;
 
-  wire        frame_in_fifo;
-  wire        frames_in_fifo;
-  reg         frame_in_fifo_valid;
+  wire        			frame_in_fifo;
+  wire        			frames_in_fifo;
+  reg         			frame_in_fifo_valid;
   (* INIT = "0" *)
-  reg         frame_in_fifo_valid_tog = 1'b0;
-  wire        frame_in_fifo_valid_sync;
-  reg         frame_in_fifo_valid_delay;
-  reg         rd_eof;
-  reg         rd_eof_reg;
-  reg         rd_eof_pipe;
-  reg  [11:0] rd_addr;
-  wire        rd_addr_inc;
-  wire        rd_addr_reload;
-  wire [8:0]  rd_eof_data_bram;
-  wire [7:0]  rd_data_bram;
-  reg  [7:0]  rd_data_pipe = 8'd0;
-  reg  [7:0]  rd_data_delay = 8'd0;
-  wire [0:0]  rd_eof_bram;
-  wire        rd_en;
+  reg         			frame_in_fifo_valid_tog = 1'b0;
+  wire        			frame_in_fifo_valid_sync;
+  reg         			frame_in_fifo_valid_delay;
+  reg         			rd_eof;
+  reg         			rd_eof_reg;
+  reg         			rd_eof_pipe;
+  reg  [TX_FIFO_ADDR_WIDTH-1:0] rd_addr;
+  wire        			rd_addr_inc;
+  wire        			rd_addr_reload;
+  wire [8:0]  			rd_eof_data_bram;
+  wire [7:0]  			rd_data_bram;
+  reg  [7:0]  			rd_data_pipe = 8'd0;
+  reg  [7:0]  			rd_data_delay = 8'd0;
+  wire [0:0]  			rd_eof_bram;
+  wire        			rd_en;
 
-
-  (* INIT = "0" *)
-  reg         rd_tran_frame_tog = 1'b0;
-  wire        wr_tran_frame_sync;
 
   (* INIT = "0" *)
-  reg         wr_tran_frame_delay = 1'b0;
+  reg         			rd_tran_frame_tog = 1'b0;
+  wire        			wr_tran_frame_sync;
 
   (* INIT = "0" *)
-  reg         rd_retran_frame_tog = 1'b0;
-  wire        wr_retran_frame_sync;
+  reg         			wr_tran_frame_delay = 1'b0;
 
   (* INIT = "0" *)
-  reg         wr_retran_frame_delay = 1'b0;
-  wire        wr_store_frame;
-  reg         wr_transmit_frame;
-  reg         wr_transmit_frame_delay;
-  reg         wr_retransmit_frame;
-  reg  [8:0]  wr_frames;
-  reg         wr_frame_in_fifo;
-  reg         wr_frames_in_fifo;
-
-  reg   [3:0] rd_16_count;
-  wire        rd_txfer_en;
-  reg  [11:0] rd_addr_txfer;
+  reg         			rd_retran_frame_tog = 1'b0;
+  wire        			wr_retran_frame_sync;
 
   (* INIT = "0" *)
-  reg         rd_txfer_tog = 1'b0;
-  wire        wr_txfer_tog_sync;
+  reg         			wr_retran_frame_delay = 1'b0;
+  wire        			wr_store_frame;
+  reg         			wr_transmit_frame;
+  reg         			wr_transmit_frame_delay;
+  reg         			wr_retransmit_frame;
+  reg  [8:0]  			wr_frames;
+  reg         			wr_frame_in_fifo;
+  reg         			wr_frames_in_fifo;
+
+  reg   [3:0] 			rd_16_count;
+  wire        			rd_txfer_en;
+  reg  [TX_FIFO_ADDR_WIDTH-1:0] rd_addr_txfer;
 
   (* INIT = "0" *)
-  reg         wr_txfer_tog_delay = 1'b0;
-  wire        wr_txfer_en;
+  reg         			rd_txfer_tog = 1'b0;
+  wire        			wr_txfer_tog_sync;
+
+  (* INIT = "0" *)
+  reg         			wr_txfer_tog_delay = 1'b0;
+  wire        			wr_txfer_en;
 
   (* ASYNC_REG = "TRUE" *)
-  reg  [11:0] wr_rd_addr;
+  reg  [TX_FIFO_ADDR_WIDTH-1:0] wr_rd_addr;
 
-  reg  [11:0] wr_addr_diff;
+  reg  [TX_FIFO_ADDR_WIDTH-1:0] wr_addr_diff;
 
-  reg  [3:0]  wr_fifo_status;
+  reg  [3:0]  			wr_fifo_status;
 
-  reg         rd_drop_frame;
-  reg         rd_retransmit;
+  reg         			rd_drop_frame;
+  reg         			rd_retransmit;
 
-  reg  [11:0] rd_start_addr;
-  wire        rd_start_addr_load;
-  wire        rd_start_addr_reload;
+  reg  [TX_FIFO_ADDR_WIDTH-1:0] rd_start_addr;
+  wire        			rd_start_addr_load;
+  wire        			rd_start_addr_reload;
 
-  reg  [11:0] rd_dec_addr;
+  reg  [TX_FIFO_ADDR_WIDTH-1:0] rd_dec_addr;
 
-  wire        rd_transmit_frame;
-  wire        rd_retransmit_frame;
-  reg         rd_col_window_expire;
-  reg         rd_col_window_pipe[0:1];
+  wire        			rd_transmit_frame;
+  wire        			rd_retransmit_frame;
+  reg         			rd_col_window_expire;
+  reg         			rd_col_window_pipe[0:1];
 
   (* ASYNC_REG = "TRUE" *)
-  reg         wr_col_window_pipe[0:1];
+  reg         			wr_col_window_pipe[0:1];
 
-  wire        wr_eof_state;
-  reg         wr_eof_state_reg;
-  wire        wr_fifo_overflow;
-  reg  [9:0]  rd_slot_timer;
-  reg         wr_col_window_expire;
-  wire        rd_idle_state;
+  wire        			wr_eof_state;
+  reg         			wr_eof_state_reg;
+  wire        			wr_fifo_overflow;
+  reg  [9:0]  			rd_slot_timer;
+  reg         			wr_col_window_expire;
+  wire        			rd_idle_state;
 
-  wire [7:0]  tx_axis_mac_tdata_int_frame;
-  wire [7:0]  tx_axis_mac_tdata_int_handshake;
-  reg  [7:0]  tx_axis_mac_tdata_int = 8'b0;
-  wire        tx_axis_mac_tvalid_int_finish;
-  wire        tx_axis_mac_tvalid_int_droperr;
-  wire        tx_axis_mac_tvalid_int_retransmiterr;
-  wire        tx_axis_mac_tlast_int_frame_handshake;
-  wire        tx_axis_mac_tlast_int_finish;
-  wire        tx_axis_mac_tlast_int_droperr;
-  wire        tx_axis_mac_tlast_int_retransmiterr;
-  wire        tx_axis_mac_tuser_int_droperr;
-  wire        tx_axis_mac_tuser_int_retransmit;
+  wire [7:0]  			tx_axis_mac_tdata_int_frame;
+  wire [7:0]  			tx_axis_mac_tdata_int_handshake;
+  reg  [7:0]  			tx_axis_mac_tdata_int = 8'b0;
+  wire        			tx_axis_mac_tvalid_int_finish;
+  wire        			tx_axis_mac_tvalid_int_droperr;
+  wire        			tx_axis_mac_tvalid_int_retransmiterr;
+  wire        			tx_axis_mac_tlast_int_frame_handshake;
+  wire        			tx_axis_mac_tlast_int_finish;
+  wire        			tx_axis_mac_tlast_int_droperr;
+  wire        			tx_axis_mac_tlast_int_retransmiterr;
+  wire        			tx_axis_mac_tuser_int_droperr;
+  wire        			tx_axis_mac_tuser_int_retransmit;
 
-  wire        tx_fifo_reset;
-  wire        tx_mac_reset;
+  wire        			tx_fifo_reset;
+  wire        			tx_mac_reset;
 
   // invert reset sense as architecture is optimised for active high resets
   assign tx_fifo_reset = !tx_fifo_resetn;
@@ -1236,13 +1243,13 @@ endgenerate
   always @(posedge tx_fifo_aclk)
   begin
      if (tx_fifo_reset == 1'b1) begin
-        wr_addr <= 12'b0;
+        wr_addr <= {TX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else if (wr_addr_reload == 1'b1) begin
         wr_addr <= wr_start_addr;
      end
      else if (wr_addr_inc == 1'b1) begin
-        wr_addr <= wr_addr + 12'b1;
+        wr_addr <= wr_addr + {{(TX_FIFO_ADDR_WIDTH-1){1'b0}}, 1'b1};
      end
   end
 
@@ -1250,10 +1257,10 @@ endgenerate
   always @(posedge tx_fifo_aclk)
   begin
      if (tx_fifo_reset == 1'b1) begin
-        wr_start_addr <= 12'b0;
+        wr_start_addr <= {TX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else if (wr_start_addr_load == 1'b1) begin
-        wr_start_addr <= wr_addr + 12'b1;
+        wr_start_addr <= wr_addr + {{(TX_FIFO_ADDR_WIDTH-1){1'b0}}, 1'b1};
      end
   end
 
@@ -1264,14 +1271,14 @@ generate if (FULL_DUPLEX_ONLY == 1) begin : gen_fd_addr
   always @(posedge tx_mac_aclk)
   begin
      if (tx_mac_reset == 1'b1) begin
-        rd_addr <= 12'b0;
+        rd_addr <= {TX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else begin
         if (rd_addr_reload == 1'b1) begin
            rd_addr <= rd_dec_addr;
         end
         else if (rd_addr_inc == 1'b1) begin
-           rd_addr <= rd_addr + 12'b1;
+           rd_addr <= rd_addr + {{(TX_FIFO_ADDR_WIDTH-1){1'b0}}, 1'b1};
         end
      end
   end
@@ -1281,7 +1288,7 @@ generate if (FULL_DUPLEX_ONLY == 1) begin : gen_fd_addr
   always @(posedge tx_mac_aclk)
   begin
      if (tx_mac_reset == 1'b1) begin
-        rd_start_addr <= 12'b0;
+        rd_start_addr <= {TX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else begin
         rd_start_addr <= rd_addr;
@@ -1298,7 +1305,7 @@ generate if (FULL_DUPLEX_ONLY != 1) begin : gen_hd_addr
   always @(posedge tx_mac_aclk)
   begin
      if (tx_mac_reset == 1'b1) begin
-        rd_addr <= 12'b0;
+        rd_addr <= {TX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else begin
         if (rd_addr_reload == 1'b1) begin
@@ -1308,7 +1315,7 @@ generate if (FULL_DUPLEX_ONLY != 1) begin : gen_hd_addr
            rd_addr <= rd_start_addr;
         end
         else if (rd_addr_inc == 1'b1) begin
-           rd_addr <= rd_addr + 12'b1;
+           rd_addr <= rd_addr + {{(TX_FIFO_ADDR_WIDTH-1){1'b0}}, 1'b1};
         end
      end
   end
@@ -1316,11 +1323,11 @@ generate if (FULL_DUPLEX_ONLY != 1) begin : gen_hd_addr
   always @(posedge tx_mac_aclk)
   begin
      if (tx_mac_reset == 1'b1) begin
-        rd_start_addr <= 12'd0;
+        rd_start_addr <= {TX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else begin
         if (rd_start_addr_load == 1'b1) begin
-           rd_start_addr <= rd_addr - 12'd6;
+           rd_start_addr <= rd_addr - {{(TX_FIFO_ADDR_WIDTH-3){1'b0}}, 3'b110};
         end
      end
   end
@@ -1382,11 +1389,11 @@ endgenerate
   always @(posedge tx_mac_aclk)
   begin
      if (tx_mac_reset == 1'b1) begin
-        rd_dec_addr <= 12'b0;
+        rd_dec_addr <= {TX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else begin
         if (rd_addr_inc == 1'b1) begin
-           rd_dec_addr <= rd_addr - 12'b1;
+           rd_dec_addr <= rd_addr - {{(TX_FIFO_ADDR_WIDTH-1){1'b0}}, 1'b1};
         end
      end
   end
@@ -1532,7 +1539,7 @@ endgenerate
   always @(posedge tx_mac_aclk)
   begin
      if (tx_mac_reset == 1'b1) begin
-        rd_addr_txfer <= 12'b0;
+        rd_addr_txfer <= {TX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else begin
         if (rd_txfer_en == 1'b1) begin
@@ -1571,7 +1578,7 @@ endgenerate
   always @(posedge tx_fifo_aclk)
   begin
      if (tx_fifo_reset == 1'b1) begin
-        wr_rd_addr <= 12'b0;
+        wr_rd_addr <= {TX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else if (wr_txfer_en == 1'b1) begin
         wr_rd_addr <= rd_addr_txfer;
@@ -1582,7 +1589,7 @@ endgenerate
   always @(posedge tx_fifo_aclk)
   begin
      if (tx_fifo_reset == 1'b1) begin
-        wr_addr_diff <= 12'b0;
+        wr_addr_diff <= {TX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else begin
         wr_addr_diff <= wr_rd_addr - wr_addr;
@@ -1598,7 +1605,7 @@ endgenerate
         wr_fifo_full <= 1'b0;
      end
      else begin
-        if (wr_addr_diff[11:4] == 8'b0 && wr_addr_diff[3:2] != 2'b0) begin
+        if (wr_addr_diff[TX_FIFO_ADDR_WIDTH-1:4] == {(TX_FIFO_ADDR_WIDTH-4){1'b0}} && wr_addr_diff[3:2] != 2'b0) begin
            wr_fifo_full <= 1'b1;
         end
         else begin
@@ -1682,14 +1689,14 @@ endgenerate
         wr_fifo_status <= 4'b0;
      end
      else begin
-        if (wr_addr_diff == 12'b0) begin
+        if (wr_addr_diff == {TX_FIFO_ADDR_WIDTH{1'b0}}) begin
            wr_fifo_status <= 4'b0;
         end
         else begin
-           wr_fifo_status[3] <= !wr_addr_diff[11];
-           wr_fifo_status[2] <= !wr_addr_diff[10];
-           wr_fifo_status[1] <= !wr_addr_diff[9];
-           wr_fifo_status[0] <= !wr_addr_diff[8];
+           wr_fifo_status[3] <= !wr_addr_diff[TX_FIFO_ADDR_WIDTH-1];
+           wr_fifo_status[2] <= !wr_addr_diff[TX_FIFO_ADDR_WIDTH-2];
+           wr_fifo_status[1] <= !wr_addr_diff[TX_FIFO_ADDR_WIDTH-3];
+           wr_fifo_status[0] <= !wr_addr_diff[TX_FIFO_ADDR_WIDTH-4];
         end
      end
   end
@@ -1710,12 +1717,12 @@ endgenerate
 tri_mode_ethernet_mac_0_bram_tdp #
   (
      .DATA_WIDTH  (9),
-     .ADDR_WIDTH  (12)
+     .ADDR_WIDTH  (TX_FIFO_ADDR_WIDTH)
   )
   tx_ramgen_i (
      .b_dout  (rd_eof_data_bram),
-     .a_addr  (wr_addr[11:0]),
-     .b_addr  (rd_addr[11:0]),
+     .a_addr  (wr_addr[TX_FIFO_ADDR_WIDTH-1:0]),
+     .b_addr  (rd_addr[TX_FIFO_ADDR_WIDTH-1:0]),
      .a_clk   (tx_fifo_aclk),
      .b_clk   (tx_mac_aclk),
      .a_din   (wr_eof_data_bram),

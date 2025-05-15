@@ -1,0 +1,16 @@
+Overview:
+  This directory contains bitfiles for NIC_1.2.
+
+Directory Structure:
+
+- SBC_fastmem:
+  Contains bitfile for fastmem architecture with Rx and Tx FIFO memory capacity of 4KB each.
+  
+- SBC_fastmem_upgraded:
+  Contains bitfile for fastmem architecture with upgraded Rx and Tx FIFO memory capacity of 16KB each.
+  
+- SBC_original:
+  Contains bitfile for normal architecture with Rx and Tx FIFO memory capacity of 4KB each.
+  
+- SBC_original_upgraded:
+  Contains bitfile for normal architecture with upgraded Rx and Tx FIFO memory capacity of 16KB each.
