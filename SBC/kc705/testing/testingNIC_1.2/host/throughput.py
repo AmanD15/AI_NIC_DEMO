@@ -55,30 +55,51 @@ class PacketManager:
         return False
 
     def run(self):
-        start_time = time.perf_counter()
+        t1 = time.perf_counter()
 
+        # Step 1: Send burst
         self.send_burst_packets()
+        
+        t2 = time.perf_counter()
 
+        # Step 2: Send rest of the packets after each receive
         while self.packets_sent < self.total_packets:
             if self.receive_packet():
                 self.send_packet()
 
-        end_time = time.perf_counter()
-        total_time = end_time - start_time
+        t3 = time.perf_counter()
+        
+        # Step 3: Receive remaining packets (up to total_packets)
+        timeout_count = 0
+        max_timeouts = 10
+        while self.packets_received < self.total_packets and timeout_count < max_timeouts:
+            if not self.receive_packet():
+                timeout_count += 1
 
+        t4 = time.perf_counter()
+
+        # Calculate send and receive durations
+        send_duration = t3 - t1
+        recv_duration = t4 - t2
+
+        # Byte calculations
         total_bytes_sent = len(self.frame) * self.packets_sent
         total_bytes_received = len(self.frame) * self.packets_received
 
-        send_throughput_bps = total_bytes_sent / total_time
-        receive_throughput_bps = total_bytes_received / total_time
+        # Throughput in bytes/sec
+        send_throughput_bps = total_bytes_sent / send_duration if send_duration > 0 else 0
+        receive_throughput_bps = total_bytes_received / recv_duration if recv_duration > 0 else 0
 
+        # Convert to Mbps
         send_throughput_mbps = (send_throughput_bps / 1_048_576) * 8
         receive_throughput_mbps = (receive_throughput_bps / 1_048_576) * 8
 
         print(f"Completed sending {self.packets_sent} packets.")
-        print(f"Total time taken: {total_time:.4f} seconds")
+        print(f"Received {self.packets_received} packets.")
+        print(f"Send Time: {send_duration:.4f} seconds")
+        print(f"Receive Time: {recv_duration:.4f} seconds")
         print(f"Send Throughput: {send_throughput_bps:.2f} bytes/sec ({send_throughput_mbps:.2f} Mbps)")
-        #print(f"Receive Throughput: {receive_throughput_bps:.2f} bytes/sec ({receive_throughput_mbps:.2f} Mbps)")
+        print(f"Receive Throughput: {receive_throughput_bps:.2f} bytes/sec ({receive_throughput_mbps:.2f} Mbps)")
 
         self.send_socket.close()
         self.recv_socket.close()
