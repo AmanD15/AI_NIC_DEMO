@@ -15,6 +15,21 @@ def build_ethernet_frame(dest_mac, src_mac, ethertype, payload, packet_type):
     ethernet_header = struct.pack('!6s6sH', mac_to_bytes(dest_mac), mac_to_bytes(src_mac), ethertype)
     return ethernet_header + struct.pack('!B', packet_type) + payload
 
+def calculate_bit_error_rate(original_file, received_file):
+    with open(original_file, 'rb') as f1, open(received_file, 'rb') as f2:
+        original_data = f1.read()
+        received_data = f2.read()
+
+    min_len = min(len(original_data), len(received_data))
+    errors = 0
+
+    for b1, b2 in zip(original_data[:min_len], received_data[:min_len]):
+        diff = b1 ^ b2
+        errors += bin(diff).count('1')
+
+    total_bits = min_len * 8
+    return errors / total_bits if total_bits > 0 else 0.0
+
 class ImagePacketManager:
     def __init__(self, interface, dest_mac, src_mac, ethertype, send_image, receive_image, burst_size):
         self.interface = interface
@@ -25,7 +40,7 @@ class ImagePacketManager:
         self.receive_image = receive_image
         self.burst_size = burst_size
 
-        self.payload_size = 900  # Safe size under MTU
+        self.payload_size = 1481
         self.sent_frames = []
         self.received_chunks = {}
 
@@ -96,28 +111,25 @@ class ImagePacketManager:
                 total_packets_received = struct.unpack('!I', payload[:4])[0]
                 total_payload_size_received = struct.unpack('!I', payload[4:8])[0]
 
-                # Check if the received total packets and total payload size match the expected values
                 if total_packets_received == self.total_packets and total_payload_size_received == self.total_payload_size:
                     print(f"Summary matched: {total_packets_received} packets, {total_payload_size_received} bytes")
-                    self.send_ack("OK", [])  # All packets received correctly
-                    return SUMMARY_PACKET, []  # No missing packets
+                    self.send_ack("OK", [])
+                    return SUMMARY_PACKET, []
                 else:
                     print(f"Summary mismatch! Expected {self.total_packets} packets and {self.total_payload_size} bytes.")
-                    # Find the missing chunks based on the expected total packets and the received chunks
                     missing = [seq for seq in range(self.total_packets) if seq not in self.received_chunks]
-                    self.send_ack("MI", missing)  # Send "MI" with the list of missing packet sequence numbers
-                    return SUMMARY_PACKET, missing  # Return the missing sequence numbers
+                    self.send_ack("MI", missing)
+                    return SUMMARY_PACKET, missing
 
             elif packet_type == ACK_PACKET:
-                payload = payload  # Extract the byte string directly here
-                ack_type = payload[:2].decode()  # Decode the first 2 bytes to check for "OK" or "MI"
+                ack_type = payload[:2].decode()
                 print(f"Received ACK type: {ack_type}, Payload: {payload[2:]}")
                 if ack_type == "OK":
-                    return ACK_PACKET, []  # No missing packets, everything is OK
+                    return ACK_PACKET, []
                 elif ack_type == "MI":
-                    count = struct.unpack('!I', payload[2:6])[0]  # Extract the number of missing packets
+                    count = struct.unpack('!I', payload[2:6])[0]
                     missing = [struct.unpack('!I', payload[6 + i * 4: 10 + i * 4])[0] for i in range(count)]
-                    return ACK_PACKET, missing  # Return the missing packet numbers
+                    return ACK_PACKET, missing
 
         except socket.timeout:
             pass
@@ -125,19 +137,18 @@ class ImagePacketManager:
 
     def send_summary_packet(self):
         summary_payload = struct.pack('!I', self.total_packets)
-        summary_payload += struct.pack('!I', self.total_payload_size)  # Total payload size
+        summary_payload += struct.pack('!I', self.total_payload_size)
         frame = build_ethernet_frame(self.dest_mac, self.src_mac, self.ethertype, summary_payload, SUMMARY_PACKET)
         print(f"Sending summary packet (length: {len(frame)})")
         self.send_socket.sendto(frame, (self.interface, 0))
 
     def send_ack(self, ack_type, missing_list):
-        # Acknowledgement packet logic
         if ack_type == "OK":
-            payload = b'OK'  # All packets received
-        else:  # ack_type == "MI"
+            payload = b'OK'
+        else:
             payload = b'MI' + struct.pack('!I', len(missing_list))
             for seq in missing_list:
-                payload += struct.pack('!I', seq)  # List missing sequence numbers
+                payload += struct.pack('!I', seq)
         frame = build_ethernet_frame(self.dest_mac, self.src_mac, self.ethertype, payload, ACK_PACKET)
         print(f"Sending ACK packet (length: {len(frame)})")
         self.send_socket.sendto(frame, (self.interface, 0))
@@ -161,16 +172,15 @@ class ImagePacketManager:
                 print("Receiver timed out waiting for packets.")
                 self.send_socket.close()
                 self.recv_socket.close()
-                return
+                return 0.0, 0.0, 0, 0.0
 
         t3 = time.perf_counter()
 
-        # Summary-ACK loop
         while True:
             self.send_summary_packet()
 
             timeout_count = 0
-            max_timeouts = 10
+            max_timeouts = 20
             ack_received = False
             missing = []
 
@@ -187,7 +197,7 @@ class ImagePacketManager:
                 print("No ACK received after summary. Timeout. Aborting this image.")
                 self.send_socket.close()
                 self.recv_socket.close()
-                return
+                return 0.0, 0.0, 0, 0.0
 
             if not missing:
                 print("All packets acknowledged by receiver.")
@@ -217,9 +227,13 @@ class ImagePacketManager:
         print(f"Send Throughput: {send_throughput_mbps:.2f} Mbps")
         print(f"Receive Throughput: {recv_throughput_mbps:.2f} Mbps")
 
+        ber = calculate_bit_error_rate(self.send_image, self.receive_image)
+        print(f"Bit Error Rate (BER): {ber:.8f}")
+
         self.send_socket.close()
         self.recv_socket.close()
 
+        return send_duration, recv_duration, total_bytes, ber
 
 if __name__ == "__main__":
     try:
@@ -232,20 +246,53 @@ if __name__ == "__main__":
         base_name = input("Enter base name for received images (without extension): ").strip()
         burst_size = int(input("Enter burst size: ").strip())
 
+        total_send_time = 0.0
+        total_recv_time = 0.0
+        total_bytes = 0
+        total_ber = 0.0
+        send_throughputs = []
+        recv_throughputs = []
+
         for i in range(1, count + 1):
             receive_image = f"{base_name}_{i}.jpg"
             print(f"\n--- Transmission {i} ---")
 
             manager = ImagePacketManager(
-                interface="enp2s0",  # Replace with your actual interface
-                dest_mac="00:0a:35:03:1e:50",
-                src_mac="9c:b6:54:0e:a5:ac",
+                interface="enp2s0",  # Replace with your actual network interface name
+                dest_mac="00:0a:35:03:1e:50",  # Replace with actual destination MAC
+                src_mac="9c:b6:54:0e:a5:ac",   # Replace with actual source MAC
                 ethertype=0x88B5,
                 send_image=send_image,
                 receive_image=receive_image,
                 burst_size=burst_size
             )
-            manager.run()
+
+            send_time, recv_time, bytes_sent, ber = manager.run()
+            total_send_time += send_time
+            total_recv_time += recv_time
+            total_bytes += bytes_sent
+            total_ber += ber
+
+            send_tp = (bytes_sent / send_time / 1_048_576) * 8 if send_time > 0 else 0
+            recv_tp = (bytes_sent / recv_time / 1_048_576) * 8 if recv_time > 0 else 0
+            send_throughputs.append(send_tp)
+            recv_throughputs.append(recv_tp)
+
+        if count > 0 and total_send_time > 0 and total_recv_time > 0:
+            avg_send_throughput = (total_bytes / total_send_time / 1_048_576) * 8
+            avg_recv_throughput = (total_bytes / total_recv_time / 1_048_576) * 8
+            avg_ber = total_ber / count
+
+            max_send_throughput = max(send_throughputs)
+            max_index = send_throughputs.index(max_send_throughput)
+            corresponding_recv_throughput = recv_throughputs[max_index]
+
+            print(f"\n=== Overall Averages for {count} Images ===")
+            print(f"Average Send Throughput: {avg_send_throughput:.2f} Mbps")
+            print(f"Average Receive Throughput: {avg_recv_throughput:.2f} Mbps")
+            print(f"Average Bit Error Rate (BER): {avg_ber:.8f}")
+            print(f"Maximum Send Throughput: {max_send_throughput:.2f} Mbps")
+            print(f"Corresponding Receive Throughput: {corresponding_recv_throughput:.2f} Mbps")
 
     except KeyboardInterrupt:
         print("\nProcess interrupted.")
