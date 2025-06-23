@@ -1,0 +1,80 @@
+			
+How to build for SBC_FASTMEM?	
+    1. ./build.sh
+    2. cd cortos_build/cortos_src
+    3. changes to be made in vmap.txt:  
+        non cacheable lock page should be mapped to 0x50000000
+    4. changes to be made in init.s
+        initialize non cacheable lock from 0x50000000
+			to first illegal address 0x50001000
+
+    (see files inside temp. for reference)
+    5. cd .. (now you are inside cortos_build)
+    6. ./build.sh
+	
+1. Overview
+-------------------------
+
+	This document describes
+	- the example used to measure packet ping speed/round trip time
+	  between the vcu128 card and the host computer via Ethernet.
+	- the setup of the host computer (to enable the connection 
+	  for the test)
+	- the application running on the host computer.
+	- the setup of the vcu128 card
+		
+2. The example
+-------------------------
+
+    During this test, raw Ethernet frames are transmitted from the host-side driver 
+    code (running on a PC/laptop) to the VCU128 card.  The SBC on the VCU128 card, 
+    with the help of NIC subsystem, receives these frames and sends them back to 
+    the host side. 
+
+3. VCU128 setup 
+-------------------------------
+
+  1) Hardware Setup
+    i) Load the bitfile generated in the vivado_synth folder to the VCU128 board
+        using UART
+    
+    ii) First press the cpu reset button on board (Refer to CPU_RESET, SW4 push button, 
+        in the VCU128 user guide present in docs folder)
+
+    iii) In the Vivado UI, go to VIO tab and reset the RESET_TO_NIC and RESET_TO_PROCESSOR
+        signals
+    
+  2) Software Setup
+    i) Run the ./build.sh script using ajit toochain to generate cortos files
+
+    ii) Run ajit debug monitor and run the command "s run.script"
+        - command for debug monitor is "ajit_debug_monitor_mt -u <tty-dev>"
+        - To learn more about debug monitor, visit https://github.com/adhuliya/ajit-toolchain/blob/marshal/AjitPublicResources/tools/		ajit_debug_monitor_mt/docs/ajit_debug_monitor_mt.txt
+
+    iii) Once the program is dumped in the FPGA, go to host folder and run different tests.
+
+    Note: You can also view cortos_printf statements from the program using serial monitor
+        of your preferred choice(Just set the baud rate at 115200).  
+    
+
+4. Host setup and application
+-------------------------------
+
+    Driver Application: 
+    Launch only after configuring Ethernet link as per Step 3 and after
+    setting Wireshark to filter packets for the specified interface.
+
+    Promiscuous Mode Settings: 
+    Enable promiscuous mode for Wireshark.
+
+    Host Configuration: 
+    On Ubuntu 16.04/20.04, modify wired settings for the ethernet connection:
+        - Details Section: Uncheck "Connect automatically", check "Make available to other users".
+        - Security Section: Disable 802.1x security.
+        - IPv4/IPv6 Section: Disable both protocols.
+          NOTE: If above settings, don't work one can simply click "disconnect" ethernet 
+                connection settings. 
+
+    Application Execution: 
+        sudo python3 send.py
+        

@@ -1,0 +1,39 @@
+
+ACB_to_UI_EA.v
+	ACB to DRAM controller bridge.
+
+acb_dram_controller_bridge.hsys
+	ACB to DRAM controller bridge hsys file
+
+./vhdl/acb_dram_controller_bridge_lib/acb_dram_controller_bridge.vhdl
+	VHDL file generated from the HSYS file.
+
+	Inputs:
+		ui_clk: This UI clock must be a half or quarter of the DRAM clock
+		init_calib_complete: PHY of DRAM controller asserts init_calib_complete when calibration is finished
+		
+		app_rd_data (512 bits): This provides the input data from read commands
+		app_rd_data_end: This active-High input indicates that the current clock cycle is the last cycle of input data on app_rd_data[]. 
+		app_rd_data_valid: This active-High input indicates that app_rd_data[] is valid.
+		
+		app_rdy: This input indicates that the UI is ready to accept commands.
+		app_wdf_rdy: This input indicates that the write data FIFO is ready to receive data.
+		app_sr_active: This input is reserved
+		app_ref_ack: This active-High input indicates that the Memory Controller has sent the requested refresh command to the PHY interface.
+		app_zq_ack: This active-High input indicates that the Memory Controller has sent the requested ZQ calibration command to the PHY interface.
+		ui_clk_sync_rst: This is the active-High UI reset.
+
+	Outputs:
+		app_addr (29 bits) : This output indicates the address for the current request
+		app_cmd (3 bits) : This output  selects the command for the current request.
+		app_en: This is the active-High strobe for the app_addr[], app_cmd[2:0], app_sz, and app_hi_pri outputs
+
+		app_wdf_data (512 bits) : This provides the data for write commands.
+		app_wdf_end: This active-High output  indicates that the current clock cycle is the last cycle of output  data on app_wdf_data[]
+		app_wdf_mask (64 bits): This provides the mask for app_wdf_data[].
+		app_wdf_wren: This is the active-High strobe for app_wdf_data[].
+
+		app_sr_req: This output  is reserved and should be tied to 0.
+		app_ref_req: This active-High output  requests that a refresh command be issued to the DRAM.
+		app_zq_req: This active-High output  requests that a ZQ calibration commandbe issued to the DRAM.
+		

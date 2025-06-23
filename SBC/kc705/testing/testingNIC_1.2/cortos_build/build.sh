@@ -12,7 +12,6 @@ _LINKER_SCRIPT="$_CORTOS_SRC_DIR/LinkerScript.txt";
 _PT="$AJIT_MINIMAL_PRINTF_TIMER";
 _AAR_MT="$AJIT_ACCESS_ROUTINES_MT";
 _AAR="$AJIT_ACCESS_ROUTINES";
-_IEEE_SOFT_FLOAT_LIB="$AJIT_HOME/application_development/soft_float/ieeelib/"
 # False
 compileToSparcUclibc.py \
   -o 2 \
@@ -30,7 +29,6 @@ compileToSparcUclibc.py \
   -s ${_AAR_MT}/asm/generic_isr_mt.s \
   -s ${_AAR_MT}/asm/generic_sw_trap_mt.s \
   -s ${_AAR_MT}/asm/generic_sys_calls.s \
-  -s ${_AAR_MT}/asm/mutexes.s \
   -C .. \
   -C ${_CORTOS_SRC_DIR} \
   -C ${_AAR_MT}/src \

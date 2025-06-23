@@ -67,6 +67,6 @@ How to build for SBC_FASTMEM?
                 connection settings. 
 
     Application Execution: 
-        sudo python send.py
+        sudo python3 send.py
         
         

@@ -78,14 +78,14 @@ class ImagePacketManager:
         for _ in range(self.burst_size):
             if self.packets_sent < self.total_packets:
                 frame = self.sent_frames[self.packets_sent]
-                print(f"Sending frame {self.packets_sent}, size: {len(frame)}")
+                #print(f"Sending frame {self.packets_sent}, size: {len(frame)}")
                 self.send_socket.sendto(frame, (self.interface, 0))
                 self.packets_sent += 1
 
     def send_packet(self):
         if self.packets_sent < self.total_packets:
             frame = self.sent_frames[self.packets_sent]
-            print(f"Sending frame {self.packets_sent}, size: {len(frame)}")
+            #print(f"Sending frame {self.packets_sent}, size: {len(frame)}")
             self.send_socket.sendto(frame, (self.interface, 0))
             self.packets_sent += 1
 
@@ -112,7 +112,7 @@ class ImagePacketManager:
                 total_payload_size_received = struct.unpack('!I', payload[4:8])[0]
 
                 if total_packets_received == self.total_packets and total_payload_size_received == self.total_payload_size:
-                    print(f"Summary matched: {total_packets_received} packets, {total_payload_size_received} bytes")
+                    #print(f"Summary matched: {total_packets_received} packets, {total_payload_size_received} bytes")
                     self.send_ack("OK", [])
                     return SUMMARY_PACKET, []
                 else:
@@ -123,7 +123,7 @@ class ImagePacketManager:
 
             elif packet_type == ACK_PACKET:
                 ack_type = payload[:2].decode()
-                print(f"Received ACK type: {ack_type}, Payload: {payload[2:]}")
+                #print(f"Received ACK type: {ack_type}, Payload: {payload[2:]}")
                 if ack_type == "OK":
                     return ACK_PACKET, []
                 elif ack_type == "MI":
@@ -139,7 +139,7 @@ class ImagePacketManager:
         summary_payload = struct.pack('!I', self.total_packets)
         summary_payload += struct.pack('!I', self.total_payload_size)
         frame = build_ethernet_frame(self.dest_mac, self.src_mac, self.ethertype, summary_payload, SUMMARY_PACKET)
-        print(f"Sending summary packet (length: {len(frame)})")
+        #print(f"Sending summary packet (length: {len(frame)})")
         self.send_socket.sendto(frame, (self.interface, 0))
 
     def send_ack(self, ack_type, missing_list):
@@ -150,11 +150,11 @@ class ImagePacketManager:
             for seq in missing_list:
                 payload += struct.pack('!I', seq)
         frame = build_ethernet_frame(self.dest_mac, self.src_mac, self.ethertype, payload, ACK_PACKET)
-        print(f"Sending ACK packet (length: {len(frame)})")
+        #print(f"Sending ACK packet (length: {len(frame)})")
         self.send_socket.sendto(frame, (self.interface, 0))
 
     def run(self):
-        print(f"\nSending image '{self.send_image}' as {self.total_packets} packets...")
+        #print(f"\nSending image '{self.send_image}' as {self.total_packets} packets...")
 
         t1 = time.perf_counter()
         self.send_burst_packets()
@@ -185,7 +185,7 @@ class ImagePacketManager:
             missing = []
 
             while timeout_count < max_timeouts:
-                print(f"Waiting for ACK... attempt {timeout_count + 1}")
+                #print(f"Waiting for ACK... attempt {timeout_count + 1}")
                 pkt_type, data = self.receive_packet()
                 if pkt_type == ACK_PACKET:
                     ack_received = True
@@ -200,7 +200,7 @@ class ImagePacketManager:
                 return 0.0, 0.0, 0, 0.0
 
             if not missing:
-                print("All packets acknowledged by receiver.")
+                #print("All packets acknowledged by receiver.")
                 break
 
             print(f"Receiver reported missing packets: {missing}")
@@ -284,15 +284,14 @@ if __name__ == "__main__":
             avg_ber = total_ber / count
 
             max_send_throughput = max(send_throughputs)
-            max_index = send_throughputs.index(max_send_throughput)
-            corresponding_recv_throughput = recv_throughputs[max_index]
+            max_recv_throughput = max(recv_throughputs)
 
             print(f"\n=== Overall Averages for {count} Images ===")
             print(f"Average Send Throughput: {avg_send_throughput:.2f} Mbps")
             print(f"Average Receive Throughput: {avg_recv_throughput:.2f} Mbps")
             print(f"Average Bit Error Rate (BER): {avg_ber:.8f}")
             print(f"Maximum Send Throughput: {max_send_throughput:.2f} Mbps")
-            print(f"Corresponding Receive Throughput: {corresponding_recv_throughput:.2f} Mbps")
+            print(f"Maximum Receive Throughput: {max_recv_throughput:.2f} Mbps")
 
     except KeyboardInterrupt:
         print("\nProcess interrupted.")

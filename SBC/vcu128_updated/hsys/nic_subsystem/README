@@ -1,0 +1,13 @@
+NIC subsystem 
+
+This nic_subsystem.hsys includes the following:
+1) NIC
+2) RX Concat and Tx Deconcat blocks 
+3) nic_mac_pipe_reset block
+
+This subsystem has 3 interfaces:
+1) MAC-side interface. 
+2) The processor side interface consists of an AFB (slave).
+3) The interface to memory consists of an ACB (master).
+
+

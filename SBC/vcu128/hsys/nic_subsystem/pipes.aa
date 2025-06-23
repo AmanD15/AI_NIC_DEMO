@@ -15,8 +15,8 @@ $pipe rx_out_pipe: $uint<73> $depth 2
 
 $pipe tx_in_pipe: $uint<73> $depth 2  
 $pipe tx_out_pipe: $uint<10> $depth 2 
-$pipe ENABLE_MAC: $uint<1> $depth 2
 
+$pipe ENABLE_MAC: $uint<1> $depth 2
 
 // nic pipes
 
@@ -29,5 +29,4 @@ $pipe MEMORY_TO_NIC_RESPONSE: $uint<65> $depth 2
 $pipe  mac_to_nic_data: $uint<10> $depth 2
 $pipe nic_to_mac_transmit_pipe: $uint<10> $depth 2
 
-$pipe enable_mac: $uint<1> $depth 2 
 
