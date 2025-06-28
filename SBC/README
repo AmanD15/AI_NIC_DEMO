@@ -5,7 +5,8 @@
 	- kc705
 	- vcu128
 
-
+Note: To generate bitfile for KC705 and for simulation, use MAC_ENABLE as signal.
+	and to generate bitfile for VCU128, use MAC_ENABLE as pipe. 
 
 2. Contents
 -----------------

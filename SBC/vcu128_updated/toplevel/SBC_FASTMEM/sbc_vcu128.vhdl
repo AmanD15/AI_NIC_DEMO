@@ -230,9 +230,9 @@ architecture structure of sbc_vcu128 is
     MAC_TO_NIC_pipe_write_req  : in std_logic_vector(0  downto 0);
     MAC_TO_NIC_pipe_write_ack  : out std_logic_vector(0  downto 0);
     MAX_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
-    MAX_ACB_TAP3_ADDR : in std_logic_vector(35 downto 0);
+    MAX_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
     MIN_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
-    MIN_ACB_TAP3_ADDR : in std_logic_vector(35 downto 0);
+    MIN_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
     RESET_TO_DRAMCTRL_BRIDGE : in std_logic_vector(0 downto 0);
     RESET_TO_NIC : in std_logic_vector(0 downto 0);
     RESET_TO_PROCESSOR : in std_logic_vector(0 downto 0);
@@ -461,11 +461,11 @@ component ddr4_0 is
 
    signal MIN_ACB_TAP1_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
    signal MAX_ACB_TAP1_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
-  -- signal MIN_ACB_TAP2_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
-  -- signal MAX_ACB_TAP2_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MIN_ACB_TAP2_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+   signal MAX_ACB_TAP2_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
    
-   signal MIN_ACB_TAP3_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
-   signal MAX_ACB_TAP3_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+  -- signal MIN_ACB_TAP3_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
+  -- signal MAX_ACB_TAP3_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
 
   -- signal MAX_ACB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
   -- signal MIN_ACB_TAP_ADDR : std_logic_vector(35 downto 0):=X"0_0000_0000";
@@ -538,8 +538,8 @@ begin
     -- MAX_ACB_TAP2_ADDR <= X"0_2FFF_FFFF"; 
     
      -- For third ACB, TAP goes to ACB SRAM.
-     MIN_ACB_TAP3_ADDR <= X"0_5000_0000";
-     MAX_ACB_TAP3_ADDR <= X"0_5FFF_FFFF"; 
+     MIN_ACB_TAP2_ADDR <= X"0_5000_0000";
+     MAX_ACB_TAP2_ADDR <= X"0_5FFF_FFFF"; 
       
      -- Tap goes to NIC + ACCL (0x0000_0000 - 0x3000_0000)
 
@@ -673,11 +673,11 @@ begin
     
     MAX_ACB_TAP1_ADDR => MAX_ACB_TAP1_ADDR,
     MIN_ACB_TAP1_ADDR => MIN_ACB_TAP1_ADDR,
-    --MAX_ACB_TAP2_ADDR => MAX_ACB_TAP2_ADDR,
-    --MIN_ACB_TAP2_ADDR => MIN_ACB_TAP2_ADDR,
+    MAX_ACB_TAP2_ADDR => MAX_ACB_TAP2_ADDR,
+    MIN_ACB_TAP2_ADDR => MIN_ACB_TAP2_ADDR
     
-    MIN_ACB_TAP3_ADDR => MIN_ACB_TAP3_ADDR,
-    MAX_ACB_TAP3_ADDR => MAX_ACB_TAP3_ADDR
+    --MIN_ACB_TAP3_ADDR => MIN_ACB_TAP3_ADDR,
+    --MAX_ACB_TAP3_ADDR => MAX_ACB_TAP3_ADDR,
     
     -- MAX_ACB_TAP_ADDR => MAX_ACB_TAP_ADDR,
     -- MIN_ACB_TAP_ADDR => MIN_ACB_TAP_ADDR,

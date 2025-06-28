@@ -1,0 +1,13 @@
+Overview:
+  This directory contains bitfiles for NIC_1.2.
+
+Directory Structure:
+
+- SBC_original:
+  Contains bitfile for normal architecture with Rx and Tx MAC FIFO depth of 1000 each.
+  
+- SBC_original_4k:
+  Contains bitfile for normal architecture with upgraded Rx and Tx MAC FIFO depth of 4000 each.
+  
+- SBC_original_10k:
+  Contains bitfile for normal architecture with upgraded Rx and Tx MAC FIFO depth of 10000 each.

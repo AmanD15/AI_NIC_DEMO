@@ -188,9 +188,9 @@ entity sbc_vcu128_core is --
     MAC_TO_NIC_pipe_write_req  : in std_logic_vector(0  downto 0);
     MAC_TO_NIC_pipe_write_ack  : out std_logic_vector(0  downto 0);
     MAX_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
-    MAX_ACB_TAP3_ADDR : in std_logic_vector(35 downto 0);
+    MAX_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
     MIN_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
-    MIN_ACB_TAP3_ADDR : in std_logic_vector(35 downto 0);
+    MIN_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
     RESET_TO_DRAMCTRL_BRIDGE : in std_logic_vector(0 downto 0);
     RESET_TO_NIC : in std_logic_vector(0 downto 0);
     RESET_TO_PROCESSOR : in std_logic_vector(0 downto 0);
@@ -396,9 +396,9 @@ use entity DualClockedQueuelib.DualClockedQueue_ACB_resp; --
       AFB_RESPONSE_FROM_NIC_pipe_write_req  : in std_logic_vector(0  downto 0);
       AFB_RESPONSE_FROM_NIC_pipe_write_ack  : out std_logic_vector(0  downto 0);
       MAX_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
-      MAX_ACB_TAP3_ADDR : in std_logic_vector(35 downto 0);
+      MAX_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
       MIN_ACB_TAP1_ADDR : in std_logic_vector(35 downto 0);
-      MIN_ACB_TAP3_ADDR : in std_logic_vector(35 downto 0);
+      MIN_ACB_TAP2_ADDR : in std_logic_vector(35 downto 0);
       RESPONSE_FROM_ACB_SRAM_pipe_write_data : in std_logic_vector(64 downto 0);
       RESPONSE_FROM_ACB_SRAM_pipe_write_req  : in std_logic_vector(0  downto 0);
       RESPONSE_FROM_ACB_SRAM_pipe_write_ack  : out std_logic_vector(0  downto 0);
@@ -742,9 +742,9 @@ port map ( --
     AFB_RESPONSE_FROM_NIC_pipe_write_req => NIC_AFB_RESPONSE_pipe_read_ack,
     AFB_RESPONSE_FROM_NIC_pipe_write_ack => NIC_AFB_RESPONSE_pipe_read_req,
     MAX_ACB_TAP1_ADDR => MAX_ACB_TAP1_ADDR,
-    MAX_ACB_TAP3_ADDR => MAX_ACB_TAP3_ADDR,
+    MAX_ACB_TAP2_ADDR => MAX_ACB_TAP2_ADDR,
     MIN_ACB_TAP1_ADDR => MIN_ACB_TAP1_ADDR,
-    MIN_ACB_TAP3_ADDR => MIN_ACB_TAP3_ADDR,
+    MIN_ACB_TAP2_ADDR => MIN_ACB_TAP2_ADDR,
     REQUEST_TO_ACB_SRAM_pipe_read_data => REQUEST_TO_ACB_SRAM_FIFO_IN_pipe_write_data,
     REQUEST_TO_ACB_SRAM_pipe_read_req => REQUEST_TO_ACB_SRAM_FIFO_IN_pipe_write_ack,
     REQUEST_TO_ACB_SRAM_pipe_read_ack => REQUEST_TO_ACB_SRAM_FIFO_IN_pipe_write_req,

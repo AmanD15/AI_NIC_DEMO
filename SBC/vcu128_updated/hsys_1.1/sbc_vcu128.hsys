@@ -28,11 +28,11 @@ $system sbc_vcu128_core $library sbc_vcu128_core_lib
         	$signal MIN_ACB_TAP1_ADDR
 	    	$signal MAX_ACB_TAP1_ADDR
 	    	
-	        //$signal MIN_ACB_TAP2_ADDR
-	    	//$signal MAX_ACB_TAP2_ADDR
+	        $signal MIN_ACB_TAP2_ADDR
+	    	$signal MAX_ACB_TAP2_ADDR
 	    	
-	    	$signal MIN_ACB_TAP3_ADDR
-	    	$signal MAX_ACB_TAP3_ADDR
+	    	//$signal MIN_ACB_TAP3_ADDR
+	    	//$signal MAX_ACB_TAP3_ADDR
 
 		// NIC
 		$pipe MAC_TO_NIC 
@@ -121,10 +121,10 @@ $system sbc_vcu128_core $library sbc_vcu128_core_lib
 		//AFB_RESPONSE_FROM_FLASH    => FLASH_AFB_RESPONSE
 		MIN_ACB_TAP1_ADDR           => MIN_ACB_TAP1_ADDR
 		MAX_ACB_TAP1_ADDR           => MAX_ACB_TAP1_ADDR
-		//MIN_ACB_TAP2_ADDR           => MIN_ACB_TAP2_ADDR
-		//MAX_ACB_TAP2_ADDR           => MAX_ACB_TAP2_ADDR
-		MIN_ACB_TAP3_ADDR           => MIN_ACB_TAP3_ADDR
-		MAX_ACB_TAP3_ADDR           => MAX_ACB_TAP3_ADDR
+		MIN_ACB_TAP2_ADDR           => MIN_ACB_TAP2_ADDR
+		MAX_ACB_TAP2_ADDR           => MAX_ACB_TAP2_ADDR
+		//MIN_ACB_TAP3_ADDR           => MIN_ACB_TAP3_ADDR
+		//MAX_ACB_TAP3_ADDR           => MAX_ACB_TAP3_ADDR
 		REQUEST_TO_ACB_SRAM	     => REQUEST_TO_ACB_SRAM_FIFO_IN
 		RESPONSE_FROM_ACB_SRAM	     => RESPONSE_FROM_ACB_SRAM_FIFO_OUT
 		

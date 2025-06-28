@@ -15,11 +15,11 @@ $system acb_afb_complex $library acb_afb_complex_lib
 		$signal MIN_ACB_TAP1_ADDR   36	$depth 1
 		$signal MAX_ACB_TAP1_ADDR   36	$depth 1
 
-		//$signal MIN_ACB_TAP2_ADDR   36	$depth 1
-		//$signal MAX_ACB_TAP2_ADDR   36	$depth 1
+		$signal MIN_ACB_TAP2_ADDR   36	$depth 1
+		$signal MAX_ACB_TAP2_ADDR   36	$depth 1
 		
-		$signal MIN_ACB_TAP3_ADDR   36	$depth 1
-		$signal MAX_ACB_TAP3_ADDR   36	$depth 1
+		//$signal MIN_ACB_TAP3_ADDR   36	$depth 1
+		//$signal MAX_ACB_TAP3_ADDR   36	$depth 1
 
 	$out
 		$pipe ACB_RESPONSE_TO_PROCESSOR
@@ -101,7 +101,7 @@ $system acb_afb_complex $library acb_afb_complex_lib
 	//	AFB_BUS_RESPONSE    => AFB_RESPONSE_FROM_FLASH
 
 
-	$instance acb_tap_inst_3  GlueModules:acb_fast_tap
+	$instance acb_tap_inst_2  GlueModules:acb_fast_tap
 		CORE_BUS_REQUEST           => ACB_THROUGH_REQUEST_TO_FASTMEM_DRAM
 		CORE_BUS_RESPONSE          => ACB_THROUGH_RESPONSE_FROM_FASTMEM_DRAM
 
@@ -113,8 +113,8 @@ $system acb_afb_complex $library acb_afb_complex_lib
 		CORE_BUS_RESPONSE_THROUGH  => ACB_RESPONSE_FROM_DRAM
 
 		// address range for tap
-		MIN_ADDR_TAP            => MIN_ACB_TAP3_ADDR 
-		MAX_ADDR_TAP            => MAX_ACB_TAP3_ADDR 
+		MIN_ADDR_TAP            => MIN_ACB_TAP2_ADDR 
+		MAX_ADDR_TAP            => MAX_ACB_TAP2_ADDR 
 
 
 	$instance acb_fast_mux_inst  GlueModules:acb_fast_mux
