@@ -1,6 +1,3 @@
-Author: Siddhant Singh Tomar
-Date: 6/7/24
-
 Overview:
 This directory contains everything needed to generate 
 the bitfiles and software for testing.
@@ -24,6 +21,7 @@ Directory Structure:
 
 - organizedMAC:
   Example design of trimode Ethernet MAC IP adapted for use with the custom NIC.
+  Parameterized trimode Ethernet MAC Rx and Tx FIFO depth in AXI_fifos directory (edited)
 
 - vivado_synth:
   Contains the TCL script "bitgen.tcl" for generating the bit file. Edit the script 

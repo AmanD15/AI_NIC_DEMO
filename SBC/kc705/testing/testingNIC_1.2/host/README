@@ -1,0 +1,55 @@
+Overview:
+This directory contains python scripts to run different tests on hardware.
+
+- checksum.py
+  To generate and append checksum at the end of packet while transmitting and also verify checksum while receiving.
+  Need to generate and verify checksum separately from different terminals.
+  (later known that checksum was also generated and verifies by MAC so dropped the idea of using this)
+
+- performance.py
+  To check throughput with or without providing delays (as required) between packets for testing NIC in different modes.
+  Need separate terminals to calculates send and receive throughput.
+  
+- ping.py
+  To check Return Trip Time (RTT) for testing NIC in different modes to get various timings traversed by different paths.
+  
+- reliable_image_sender.py
+  To send images reliably; sender first send all data packets, then send a summary of total_packets_sent and total_bytes_sent,
+  receiver compares the total_packets_sent with the total_packets_received and the total_bytes_sent wihh the total_bytes_received,
+  if both matches, then receiver sends back an acknowledge "OK" to the sender and continues sending the next image,
+  else in case of any mismatch, receiver sends back an acknowledge "MI" with the list of missing packet sequence numbers 
+  after which the send resends it again and the loop continues.
+  Need only a single terminal.
+  
+- send_file.py
+  To send and receive any file using ethernet; it first sends a burst of packets to fill the MAC FIFO for getting higher throughput 
+  and as soon as a packet is received send another packet until all packets are sent, and finally wait till all packets are received
+  and then measure the throughput on both sender and receiver sides.
+  Need only a single terminal.
+  
+- send_image.py
+  To send and receive any image using ethernet; it first sends a burst of packets to fill the MAC FIFO for getting higher throughput 
+  and as soon as a packet is received send another packet until all packets are sent, and finally wait till all packets are received
+  and then measure the throughput on both sender and receiver sides.
+  Need only a single terminal.
+  
+- send_multiple_images.py
+  To send and receive multiple images using ethernet; it first sends a burst of packets to fill the MAC FIFO for getting higher throughput 
+  and as soon as a packet is received send another packet until all packets are sent, and finally wait till all packets are received
+  and then measure the throughput on both sender and receiver sides.
+  Need only a single terminal.
+  
+- send_onnx.py
+  To send and receive any file using ethernet from different terminals; there's a constant delay between packets while sending 
+
+- send_packets.py
+  To check packet transmission and reception with or without providing delays (as required) between packets for testing NIC in different modes.
+  Need separate terminals for sending and receiving packets.
+  
+- throughput.py
+  To check throughput by providing total packets to send, burst size and payload length; 
+  it first sends a burst of packets to fill the MAC FIFO for getting higher throughput 
+  and as soon as a packet is received send another packet until all packets are sent, and finally wait till all packets are received 
+  and then measure the throughput on both sender and receiver sides.
+  Need only a single terminal.
+

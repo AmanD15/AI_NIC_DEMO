@@ -1,4 +1,4 @@
-$system sbc_kc705_core $library sbc_kc705_core_lib
+$system sbc_vcu128_core $library sbc_vcu128_core_lib
 	$in
 
 		// processor connections..
@@ -10,8 +10,8 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$pipe MAC_TO_NIC
 
 		// Flash
-		$signal SPI_FLASH_MISO
-		$signal WRITE_PROTECT
+		//$signal SPI_FLASH_MISO
+		//$signal WRITE_PROTECT
 
 		// Clocks! (hand-edited later)
 		$signal CLOCK_TO_PROCESSOR
@@ -21,29 +21,31 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		// Resets! (hand-edited later)
 		$signal RESET_TO_PROCESSOR
 		$signal RESET_TO_NIC
-        $signal RESET_TO_DRAMCTRL_BRIDGE
+        	$signal RESET_TO_DRAMCTRL_BRIDGE
      
 		// DRAM controller IP 
 		$signal DRAM_CONTROLLER_TO_ACB_BRIDGE
 
 		// TODO: tap ranges should be put here.
-        $signal MIN_ACB_TAP_ADDR
-	    $signal MAX_ACB_TAP_ADDR
+        	$signal MIN_ACB_TAP_ADDR
+	    	$signal MAX_ACB_TAP_ADDR
 
-	    $signal MIN_NIC_AFB_TAP_ADDR
-	    $signal MAX_NIC_AFB_TAP_ADDR
-		$signal MIN_FLASH_AFB_TAP_ADDR
-	    $signal MAX_FLASH_AFB_TAP_ADDR
+	    	$signal MIN_NIC_AFB_TAP_ADDR
+	    	$signal MAX_NIC_AFB_TAP_ADDR
+	    	//$signal MIN_FLASH_AFB_TAP_ADDR
+	    	//$signal MAX_FLASH_AFB_TAP_ADDR
 
-	    $signal MIN_ACC_1_2_AFB_TAP_ADDR
-	    $signal MAX_ACC_1_2_AFB_TAP_ADDR
-		$signal MIN_ACC_1_AFB_TAP_ADDR
-	    $signal MAX_ACC_1_AFB_TAP_ADDR
-	    $signal MIN_ACC_3_AFB_TAP_ADDR
-	    $signal MAX_ACC_3_AFB_TAP_ADDR
+	    	//$signal MIN_ACC_1_2_AFB_TAP_ADDR
+	    	//$signal MAX_ACC_1_2_AFB_TAP_ADDR
+	    	//$signal MIN_ACC_1_AFB_TAP_ADDR
+	    	//$signal MAX_ACC_1_AFB_TAP_ADDR
+	    	//$signal MIN_ACC_3_AFB_TAP_ADDR
+	    	//$signal MAX_ACC_3_AFB_TAP_ADDR
 
 		
 	$out
+		$signal NIC_DEBUG_SIGNAL 256 $depth 1
+		
 		// processor 
 		$pipe SOC_DEBUG_to_MONITOR 
 		$pipe SERIAL_TX_to_CONSOLE 
@@ -57,9 +59,9 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		$pipe NIC_TO_MAC
 		$signal NIC_MAC_RESETN	
 		// FLASH
-		$signal SPI_FLASH_MOSI
-		$signal SPI_FLASH_CLK
-		$signal SPI_FLASH_CS_L
+		//$signal SPI_FLASH_MOSI
+		//$signal SPI_FLASH_CLK
+		//$signal SPI_FLASH_CS_L
 
 		// DRAM controller IP
 		$signal ACB_BRIDGE_TO_DRAM_CONTROLLER
@@ -85,8 +87,8 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	//$pipe DRAM_ACB_RESPONSE
 
 	//FLASH Ctrl Pipes and Signals
-	$pipe AFB_FLASH_REQUEST
-	$pipe FLASH_AFB_RESPONSE
+	//$pipe AFB_FLASH_REQUEST
+	//$pipe FLASH_AFB_RESPONSE
 
 	//ACB_AFB_COMPLEX Pipes and Signals
 	//$signal MIN_ACB_TAP_ADDR   36	$depth 1
@@ -96,26 +98,26 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 	$pipe ACB_REQUEST_FROM_ACCELERATOR_1
 	$pipe AFB_RESPONSE_FROM_ACCELERATOR_1
 
-	$pipe ACB_REQUEST_FROM_ACCELERATOR_2
-	$pipe AFB_RESPONSE_FROM_ACCELERATOR_2
+	//$pipe ACB_REQUEST_FROM_ACCELERATOR_2
+	//$pipe AFB_RESPONSE_FROM_ACCELERATOR_2
 
-	$pipe ACB_REQUEST_FROM_ACCELERATOR_3
-	$pipe AFB_RESPONSE_FROM_ACCELERATOR_3
+	//$pipe ACB_REQUEST_FROM_ACCELERATOR_3
+	//$pipe AFB_RESPONSE_FROM_ACCELERATOR_3
 
-	$pipe ACB_REQUEST_FROM_ACCELERATOR_4
-	$pipe AFB_RESPONSE_FROM_ACCELERATOR_4
+	//$pipe ACB_REQUEST_FROM_ACCELERATOR_4
+	//$pipe AFB_RESPONSE_FROM_ACCELERATOR_4
 
 	$pipe ACB_RESPONSE_TO_ACCELERATOR_1
 	$pipe AFB_REQUEST_TO_ACCELERATOR_1
 
-	$pipe ACB_RESPONSE_TO_ACCELERATOR_2
-	$pipe AFB_REQUEST_TO_ACCELERATOR_2
+	//$pipe ACB_RESPONSE_TO_ACCELERATOR_2
+	//$pipe AFB_REQUEST_TO_ACCELERATOR_2
 
-	$pipe ACB_RESPONSE_TO_ACCELERATOR_3
-	$pipe AFB_REQUEST_TO_ACCELERATOR_3
+	//$pipe ACB_RESPONSE_TO_ACCELERATOR_3
+	//$pipe AFB_REQUEST_TO_ACCELERATOR_3
 
-	$pipe ACB_RESPONSE_TO_ACCELERATOR_4
-	$pipe AFB_REQUEST_TO_ACCELERATOR_4
+	//$pipe ACB_RESPONSE_TO_ACCELERATOR_4
+	//$pipe AFB_REQUEST_TO_ACCELERATOR_4
 
 	//FIFO Pipes connections
 	//$pipe AFB_NIC_REQUEST_FIFO_IN
@@ -156,60 +158,61 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		ACB_RESPONSE_FROM_DRAM     => DRAM_ACB_RESPONSE_FIFO_OUT
 		AFB_REQUEST_TO_NIC         => AFB_NIC_REQUEST
 		AFB_RESPONSE_FROM_NIC      => NIC_AFB_RESPONSE
-		AFB_REQUEST_TO_FLASH       => AFB_FLASH_REQUEST
-		AFB_RESPONSE_FROM_FLASH    => FLASH_AFB_RESPONSE
+		//AFB_REQUEST_TO_FLASH       => AFB_FLASH_REQUEST
+		//AFB_RESPONSE_FROM_FLASH    => FLASH_AFB_RESPONSE
 		ACB_REQUEST_FROM_ACCELERATOR_1 => ACB_REQUEST_FROM_ACCELERATOR_1
 		AFB_RESPONSE_FROM_ACCELERATOR_1 => AFB_RESPONSE_FROM_ACCELERATOR_1 
 
-		ACB_REQUEST_FROM_ACCELERATOR_2 => ACB_REQUEST_FROM_ACCELERATOR_2
-		AFB_RESPONSE_FROM_ACCELERATOR_2 => AFB_RESPONSE_FROM_ACCELERATOR_2
+		//ACB_REQUEST_FROM_ACCELERATOR_2 => ACB_REQUEST_FROM_ACCELERATOR_2
+		//AFB_RESPONSE_FROM_ACCELERATOR_2 => AFB_RESPONSE_FROM_ACCELERATOR_2
 
-		ACB_REQUEST_FROM_ACCELERATOR_3 => ACB_REQUEST_FROM_ACCELERATOR_3
-		AFB_RESPONSE_FROM_ACCELERATOR_3 => AFB_RESPONSE_FROM_ACCELERATOR_3
+		//ACB_REQUEST_FROM_ACCELERATOR_3 => ACB_REQUEST_FROM_ACCELERATOR_3
+		//AFB_RESPONSE_FROM_ACCELERATOR_3 => AFB_RESPONSE_FROM_ACCELERATOR_3
 
-		ACB_REQUEST_FROM_ACCELERATOR_4 => ACB_REQUEST_FROM_ACCELERATOR_4
-		AFB_RESPONSE_FROM_ACCELERATOR_4 => AFB_RESPONSE_FROM_ACCELERATOR_4
+		//ACB_REQUEST_FROM_ACCELERATOR_4 => ACB_REQUEST_FROM_ACCELERATOR_4
+		//AFB_RESPONSE_FROM_ACCELERATOR_4 => AFB_RESPONSE_FROM_ACCELERATOR_4
 
 		ACB_RESPONSE_TO_ACCELERATOR_1 => ACB_RESPONSE_TO_ACCELERATOR_1
 		AFB_REQUEST_TO_ACCELERATOR_1 => AFB_REQUEST_TO_ACCELERATOR_1
 
-		ACB_RESPONSE_TO_ACCELERATOR_2 => ACB_RESPONSE_TO_ACCELERATOR_2
-		AFB_REQUEST_TO_ACCELERATOR_2 => AFB_REQUEST_TO_ACCELERATOR_2
+		//ACB_RESPONSE_TO_ACCELERATOR_2 => ACB_RESPONSE_TO_ACCELERATOR_2
+		//AFB_REQUEST_TO_ACCELERATOR_2 => AFB_REQUEST_TO_ACCELERATOR_2
 
-		ACB_RESPONSE_TO_ACCELERATOR_3 => ACB_RESPONSE_TO_ACCELERATOR_3
-		AFB_REQUEST_TO_ACCELERATOR_3 => AFB_REQUEST_TO_ACCELERATOR_3
+		//ACB_RESPONSE_TO_ACCELERATOR_3 => ACB_RESPONSE_TO_ACCELERATOR_3
+		//AFB_REQUEST_TO_ACCELERATOR_3 => AFB_REQUEST_TO_ACCELERATOR_3
 
-		ACB_RESPONSE_TO_ACCELERATOR_4 => ACB_RESPONSE_TO_ACCELERATOR_4
-		AFB_REQUEST_TO_ACCELERATOR_4 => AFB_REQUEST_TO_ACCELERATOR_4
+		//ACB_RESPONSE_TO_ACCELERATOR_4 => ACB_RESPONSE_TO_ACCELERATOR_4
+		//AFB_REQUEST_TO_ACCELERATOR_4 => AFB_REQUEST_TO_ACCELERATOR_4
 
 		MIN_ACB_TAP_ADDR           => MIN_ACB_TAP_ADDR
 		MAX_ACB_TAP_ADDR           => MAX_ACB_TAP_ADDR
 		MIN_NIC_AFB_TAP_ADDR       => MIN_NIC_AFB_TAP_ADDR
 		MAX_NIC_AFB_TAP_ADDR       => MAX_NIC_AFB_TAP_ADDR
 		
-		MIN_FLASH_AFB_TAP_ADDR     => MIN_FLASH_AFB_TAP_ADDR
-		MAX_FLASH_AFB_TAP_ADDR     => MAX_FLASH_AFB_TAP_ADDR
-		MIN_ACC_1_2_AFB_TAP_ADDR   => MIN_ACC_1_2_AFB_TAP_ADDR
-		MAX_ACC_1_2_AFB_TAP_ADDR   => MAX_ACC_1_2_AFB_TAP_ADDR
+		//MIN_FLASH_AFB_TAP_ADDR     => MIN_FLASH_AFB_TAP_ADDR
+		//MAX_FLASH_AFB_TAP_ADDR     => MAX_FLASH_AFB_TAP_ADDR
+		//MIN_ACC_1_2_AFB_TAP_ADDR   => MIN_ACC_1_2_AFB_TAP_ADDR
+		//MAX_ACC_1_2_AFB_TAP_ADDR   => MAX_ACC_1_2_AFB_TAP_ADDR
 
-		MIN_ACC_1_AFB_TAP_ADDR     => MIN_ACC_1_AFB_TAP_ADDR
-		MAX_ACC_1_AFB_TAP_ADDR     => MAX_ACC_1_AFB_TAP_ADDR
-		MIN_ACC_3_AFB_TAP_ADDR     => MIN_ACC_3_AFB_TAP_ADDR
-		MAX_ACC_3_AFB_TAP_ADDR     => MAX_ACC_3_AFB_TAP_ADDR
+		//MIN_ACC_1_AFB_TAP_ADDR     => MIN_ACC_1_AFB_TAP_ADDR
+		//MAX_ACC_1_AFB_TAP_ADDR     => MAX_ACC_1_AFB_TAP_ADDR
+		//MIN_ACC_3_AFB_TAP_ADDR     => MIN_ACC_3_AFB_TAP_ADDR
+		//MAX_ACC_3_AFB_TAP_ADDR     => MAX_ACC_3_AFB_TAP_ADDR
 		
-	$instance spi_flash_controller_inst spi_flash_controller_lib:spi_flash_controller
+	//$instance spi_flash_controller_inst spi_flash_controller_lib:spi_flash_controller
 
-		AFB_REQUEST_TO_FLASH        => AFB_FLASH_REQUEST
-		AFB_RESPONSE_FROM_FLASH     => FLASH_AFB_RESPONSE
-		WRITE_PROTECT               => WRITE_PROTECT
-		SPI_FLASH_MISO              => SPI_FLASH_MISO
-		SPI_FLASH_CLK               => SPI_FLASH_CLK
-		SPI_FLASH_CS_L              => SPI_FLASH_CS_L
-		SPI_FLASH_MOSI              => SPI_FLASH_MOSI
+		//AFB_REQUEST_TO_FLASH        => AFB_FLASH_REQUEST
+		//AFB_RESPONSE_FROM_FLASH     => FLASH_AFB_RESPONSE
+		//WRITE_PROTECT               => WRITE_PROTECT
+		//SPI_FLASH_MISO              => SPI_FLASH_MISO
+		//SPI_FLASH_CLK               => SPI_FLASH_CLK
+		//SPI_FLASH_CS_L              => SPI_FLASH_CS_L
+		//SPI_FLASH_MOSI              => SPI_FLASH_MOSI
 
 
 	$instance nic_subsystem_inst nic_subsystem_lib:nic_subsystem
 
+		NIC_DEBUG_SIGNAL 	    => NIC_DEBUG_SIGNAL
 		MAC_TO_NIC_DATA             => MAC_TO_NIC
 		NIC_TO_MAC_DATA             => NIC_TO_MAC
 		AFB_TO_NIC_REQUEST          => AFB_NIC_REQUEST
@@ -229,7 +232,7 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		CORE_BUS_RESPONSE           => DRAM_ACB_RESPONSE_FIFO_IN
 
 
-		//***FIFO CONNECTIONS : Processor <--> ACB_AFB_COMPLEX , ACB_AFB_COMPLEX <--> ACB_DRAM_Bridge ***//
+	//***FIFO CONNECTIONS : Processor <--> ACB_AFB_COMPLEX , ACB_AFB_COMPLEX <--> ACB_DRAM_Bridge ***//
 
 	$instance DualClockedQueue_ACB_Proc_req_inst DualClockedQueue_lib:DualClockedQueue_ACB_req
 	
@@ -337,22 +340,22 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 
 	$thread set_addr_tap
 		$out $pipe acb_request_from_accelerator_1: $unsigned<110>
-		$out $pipe acb_request_from_accelerator_2: $unsigned<110>
-		$out $pipe acb_request_from_accelerator_3: $unsigned<110>
-		$out $pipe acb_request_from_accelerator_4: $unsigned<110>
+		//$out $pipe acb_request_from_accelerator_2: $unsigned<110>
+		//$out $pipe acb_request_from_accelerator_3: $unsigned<110>
+		//$out $pipe acb_request_from_accelerator_4: $unsigned<110>
 		$out $pipe afb_response_from_accelerator_1: $unsigned<33>
-		$out $pipe afb_response_from_accelerator_2: $unsigned<33>
-		$out $pipe afb_response_from_accelerator_3: $unsigned<33>
-		$out $pipe afb_response_from_accelerator_4: $unsigned<33>
+		//$out $pipe afb_response_from_accelerator_2: $unsigned<33>
+		//$out $pipe afb_response_from_accelerator_3: $unsigned<33>
+		//$out $pipe afb_response_from_accelerator_4: $unsigned<33>
 
 		$in $pipe acb_response_to_accelerator_1: $unsigned<65>
-		$in $pipe acb_response_to_accelerator_2: $unsigned<65>
-		$in $pipe acb_response_to_accelerator_3: $unsigned<65>
-		$in $pipe acb_response_to_accelerator_4: $unsigned<65>
+		//$in $pipe acb_response_to_accelerator_2: $unsigned<65>
+		//$in $pipe acb_response_to_accelerator_3: $unsigned<65>
+		//$in $pipe acb_response_to_accelerator_4: $unsigned<65>
 		$in $pipe afb_request_to_accelerator_1: $unsigned<74>
-		$in $pipe afb_request_to_accelerator_2: $unsigned<74>
-		$in $pipe afb_request_to_accelerator_3: $unsigned<74>
-		$in $pipe afb_request_to_accelerator_4: $unsigned<74>
+		//$in $pipe afb_request_to_accelerator_2: $unsigned<74>
+		//$in $pipe afb_request_to_accelerator_3: $unsigned<74>
+		//$in $pipe afb_request_to_accelerator_4: $unsigned<74>
 		$variable t1: $unsigned<65>
 		$variable t2: $unsigned<65>
 		$variable t3: $unsigned<65>
@@ -364,24 +367,24 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 
 	$default
 		$now acb_request_from_accelerator_1 := ($unsigned<110>) 1
-		$now acb_request_from_accelerator_2 := ($unsigned<110>) 1
-		$now acb_request_from_accelerator_3 := ($unsigned<110>) 1
-		$now acb_request_from_accelerator_4 := ($unsigned<110>) 1
+		//$now acb_request_from_accelerator_2 := ($unsigned<110>) 1
+		//$now acb_request_from_accelerator_3 := ($unsigned<110>) 1
+		//$now acb_request_from_accelerator_4 := ($unsigned<110>) 1
 
 		$now afb_response_from_accelerator_1 := ($unsigned<33>) 2
-		$now afb_response_from_accelerator_2 := ($unsigned<33>) 2
-		$now afb_response_from_accelerator_3 := ($unsigned<33>) 2
-		$now afb_response_from_accelerator_4 := ($unsigned<33>) 2
+		//$now afb_response_from_accelerator_2 := ($unsigned<33>) 2
+		//$now afb_response_from_accelerator_3 := ($unsigned<33>) 2
+		//$now afb_response_from_accelerator_4 := ($unsigned<33>) 2
 
 		t1 := acb_response_to_accelerator_1
-		t2 := acb_response_to_accelerator_2
-		t3 := acb_response_to_accelerator_3
-		t4 := acb_response_to_accelerator_4
+		//t2 := acb_response_to_accelerator_2
+		//t3 := acb_response_to_accelerator_3
+		//t4 := acb_response_to_accelerator_4
 
 		t5 := afb_request_to_accelerator_1
-		t6 := afb_request_to_accelerator_2
-		t7 := afb_request_to_accelerator_3
-		t8 := afb_request_to_accelerator_4
+		//t6 := afb_request_to_accelerator_2
+		//t7 := afb_request_to_accelerator_3
+		//t8 := afb_request_to_accelerator_4
 
 		<dummy_reset_state> {
 			$goto dummy_reset_state }
@@ -391,26 +394,26 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 		acb_request_from_accelerator_1 => ACB_REQUEST_FROM_ACCELERATOR_1
 		afb_response_from_accelerator_1 => AFB_RESPONSE_FROM_ACCELERATOR_1 
 
-		acb_request_from_accelerator_2 => ACB_REQUEST_FROM_ACCELERATOR_2
-		afb_response_from_accelerator_2 => AFB_RESPONSE_FROM_ACCELERATOR_2
+		//acb_request_from_accelerator_2 => ACB_REQUEST_FROM_ACCELERATOR_2
+		//afb_response_from_accelerator_2 => AFB_RESPONSE_FROM_ACCELERATOR_2
 
-		acb_request_from_accelerator_3 => ACB_REQUEST_FROM_ACCELERATOR_3
-		afb_response_from_accelerator_3 => AFB_RESPONSE_FROM_ACCELERATOR_3
+		//acb_request_from_accelerator_3 => ACB_REQUEST_FROM_ACCELERATOR_3
+		//afb_response_from_accelerator_3 => AFB_RESPONSE_FROM_ACCELERATOR_3
 
-		acb_request_from_accelerator_4 => ACB_REQUEST_FROM_ACCELERATOR_4
-		afb_response_from_accelerator_4 => AFB_RESPONSE_FROM_ACCELERATOR_4
+		//acb_request_from_accelerator_4 => ACB_REQUEST_FROM_ACCELERATOR_4
+		//afb_response_from_accelerator_4 => AFB_RESPONSE_FROM_ACCELERATOR_4
 
 		acb_response_to_accelerator_1 => ACB_RESPONSE_TO_ACCELERATOR_1
 		afb_request_to_accelerator_1 => AFB_REQUEST_TO_ACCELERATOR_1
 
-		acb_response_to_accelerator_2 => ACB_RESPONSE_TO_ACCELERATOR_2
-		afb_request_to_accelerator_2 => AFB_REQUEST_TO_ACCELERATOR_2
+		//acb_response_to_accelerator_2 => ACB_RESPONSE_TO_ACCELERATOR_2
+		//afb_request_to_accelerator_2 => AFB_REQUEST_TO_ACCELERATOR_2
 
-		acb_response_to_accelerator_3 => ACB_RESPONSE_TO_ACCELERATOR_3
-		afb_request_to_accelerator_3 => AFB_REQUEST_TO_ACCELERATOR_3
+		//acb_response_to_accelerator_3 => ACB_RESPONSE_TO_ACCELERATOR_3
+		//afb_request_to_accelerator_3 => AFB_REQUEST_TO_ACCELERATOR_3
 
-		acb_response_to_accelerator_4 => ACB_RESPONSE_TO_ACCELERATOR_4
-		afb_request_to_accelerator_4 => AFB_REQUEST_TO_ACCELERATOR_4
+		//acb_response_to_accelerator_4 => ACB_RESPONSE_TO_ACCELERATOR_4
+		//afb_request_to_accelerator_4 => AFB_REQUEST_TO_ACCELERATOR_4
 
 
 }

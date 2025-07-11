@@ -81,6 +81,9 @@ wire        rx_axis_tlast;
 wire        rx_axis_tuser;
 wire        rx_axis_tready;
 
+// Parameter to change the depth of Rx/Tx FIFO in Ethernet MAC
+parameter DEPTH = 10000;		// Initially it was 1000
+
 fpga_top_vcu128 fpga_top_vcu128_inst
 (
      .CLKREF_P(CLKREF_P), //100MHZ reference
@@ -203,7 +206,7 @@ fpga_top_vcu128 fpga_top_vcu128_inst
 
     
     SynchFifoWithDPRAM
-    #("rx_interface",1000,10)
+    #("rx_interface",DEPTH,10)
     rx_queue
     (
          .clk(clk_125mhz_int),    //: in std_logic;
@@ -218,7 +221,7 @@ fpga_top_vcu128 fpga_top_vcu128_inst
     );
     
     SynchFifoWithDPRAM
-        #("tx_interface",1000,10)
+        #("tx_interface",DEPTH,10)
         tx_queue
         (
              .clk(clk_125mhz_int),    //: in std_logic;

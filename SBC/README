@@ -1,0 +1,24 @@
+1. About
+----------
+   The contents of this directory are related to work
+   done on different FPGA boards
+	- kc705
+	- vcu128
+
+Note: To generate bitfile for KC705 and for simulation, use MAC_ENABLE as signal.
+	and to generate bitfile for VCU128, use MAC_ENABLE as pipe. 
+
+2. Contents
+-----------------
+  The following directories are present:
+	kc705/
+		contains all files for building and testing SBC 
+		(Processor+Memory+NIC) on kc705 for all versions of NIC
+
+	vcu128/
+		contains all files for building and testing SBC 
+		(Processor+Memory+NIC+Accelerator) on vcu128 for initial NIC
+
+	vcu128_updated/
+		contains all files for building and testing SBC 
+		(Processor+Memory+NIC) on vcu128 for NIC_1.2

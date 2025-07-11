@@ -57,6 +57,7 @@
 //
 //              The FIFO is built around an Inferred Dual Port RAM, 
 //              giving a total memory capacity of 4096 bytes.
+//	********(Now, total memory capacity is upgraded to 16384 bytes)********
 //
 //              Frame data received from the MAC receiver is written into the
 //              FIFO on the rx_mac_aclk. An end-of-frame marker is written to
@@ -133,6 +134,12 @@ module tri_mode_ethernet_mac_0_rx_client_fifo
   );
 
 
+  // Parameter to change RX FIFO memory size
+  // Initially total memory capacity was 4096 bytes (4 KB), i.e., RX_FIFO_ADDR_WIDTH was 12
+  // Now, total memory capacity is upgraded to 16384 bytes (16 KB), i.e., RX_FIFO_ADDR_WIDTH to 14
+  parameter RX_FIFO_ADDR_WIDTH = 14;
+
+
   //----------------------------------------------------------------------------
   // Define internal signals
   //----------------------------------------------------------------------------
@@ -148,9 +155,9 @@ module tri_mode_ethernet_mac_0_rx_client_fifo
   parameter EOF_s       = 3'b111;
 
   
-  reg [2:0]   rd_state;
+  reg [2:0]   			rd_state;
   
-  reg [2:0]   rd_nxt_state;
+  reg [2:0]   			rd_nxt_state;
 
   // Binary encoded write state machine states
   parameter IDLE_s   = 3'b000;
@@ -160,64 +167,64 @@ module tri_mode_ethernet_mac_0_rx_client_fifo
   parameter OVFLOW_s = 3'b100;
 
   
-  reg  [2:0]  wr_state;
+  reg  [2:0]  			wr_state;
   
-  reg  [2:0]  wr_nxt_state;
+  reg  [2:0]  			wr_nxt_state;
 
-  wire        wr_en;
-  reg  [11:0] wr_addr;
-  wire        wr_addr_inc;
-  wire        wr_start_addr_load;
-  wire        wr_addr_reload;
-  reg  [11:0] wr_start_addr;
-  wire [8:0]  wr_eof_data_bram;
-  reg  [7:0]  wr_data_bram;
-  reg  [7:0]  wr_data_pipe[0:1];
-  reg         wr_dv_pipe[0:2];
-  reg         wr_gfbf_pipe[0:1];
-  reg         wr_gf;
-  reg         wr_bf;
-  reg         wr_eof_bram_pipe[0:1];
-  reg         wr_eof_bram;
-  reg         frame_in_fifo;
+  wire        			wr_en;
+  reg  [RX_FIFO_ADDR_WIDTH-1:0] wr_addr;
+  wire        			wr_addr_inc;
+  wire        			wr_start_addr_load;
+  wire        			wr_addr_reload;
+  reg  [RX_FIFO_ADDR_WIDTH-1:0] wr_start_addr;
+  wire [8:0]  			wr_eof_data_bram;
+  reg  [7:0]  			wr_data_bram;
+  reg  [7:0]  			wr_data_pipe[0:1];
+  reg         			wr_dv_pipe[0:2];
+  reg         			wr_gfbf_pipe[0:1];
+  reg         			wr_gf;
+  reg         			wr_bf;
+  reg         			wr_eof_bram_pipe[0:1];
+  reg         			wr_eof_bram;
+  reg         			frame_in_fifo;
 
-  reg  [11:0] rd_addr;
-  wire        rd_addr_inc;
-  reg         rd_addr_reload;
-  wire [8:0]  rd_eof_data_bram;
-  wire [7:0]  rd_data_bram;
-  reg  [7:0]  rd_data_pipe = 8'd0;
-  reg  [7:0]  rd_data_delay = 8'd0;
-  reg  [1:0]  rd_valid_pipe;
-  wire [0:0]  rd_eof_bram;
-  reg         rd_en;
-  reg         rd_pull_frame;
-  reg         rd_eof;
-
-  (* INIT = "0" *)
-  reg         wr_store_frame_tog = 1'b0;
-  wire        rd_store_frame_sync;
+  reg  [RX_FIFO_ADDR_WIDTH-1:0] rd_addr;
+  wire        			rd_addr_inc;
+  reg         			rd_addr_reload;
+  wire [8:0]  			rd_eof_data_bram;
+  wire [7:0]  			rd_data_bram;
+  reg  [7:0]  			rd_data_pipe = 8'd0;
+  reg  [7:0]  			rd_data_delay = 8'd0;
+  reg  [1:0]  			rd_valid_pipe;
+  wire [0:0]  			rd_eof_bram;
+  reg         			rd_en;
+  reg         			rd_pull_frame;
+  reg         			rd_eof;
 
   (* INIT = "0" *)
-  reg         rd_store_frame_delay = 1'b0;
-  reg         rd_store_frame;
-  reg  [8:0]  rd_frames;
-  reg         wr_fifo_full;
+  reg         			wr_store_frame_tog = 1'b0;
+  wire        			rd_store_frame_sync;
 
-  reg  [1:0]  old_rd_addr;
-  reg         update_addr_tog;
-  wire        update_addr_tog_sync;
-  reg         update_addr_tog_sync_reg;
+  (* INIT = "0" *)
+  reg         			rd_store_frame_delay = 1'b0;
+  reg         			rd_store_frame;
+  reg  [8:0]  			rd_frames;
+  reg         			wr_fifo_full;
 
-  reg  [11:6] wr_rd_addr;
-  wire [12:0] wr_addr_diff_in;
-  reg  [11:0] wr_addr_diff;
+  reg  [1:0]  			old_rd_addr;
+  reg         			update_addr_tog;
+  wire        			update_addr_tog_sync;
+  reg         			update_addr_tog_sync_reg;
 
-  reg  [3:0]  wr_fifo_status;
-  reg         rx_axis_fifo_tlast_int;
+  reg  [RX_FIFO_ADDR_WIDTH-1:6] wr_rd_addr;
+  wire [RX_FIFO_ADDR_WIDTH:0] 	wr_addr_diff_in;
+  reg  [RX_FIFO_ADDR_WIDTH-1:0] wr_addr_diff;
 
-  wire        rx_fifo_reset;
-  wire        rx_mac_reset;
+  reg  [3:0]  			wr_fifo_status;
+  reg         			rx_axis_fifo_tlast_int;
+
+  wire        			rx_fifo_reset;
+  wire        			rx_mac_reset;
 
   // invert reset sense as architecture is optimised for active high resets
   assign rx_fifo_reset = !rx_fifo_resetn;
@@ -624,14 +631,14 @@ module tri_mode_ethernet_mac_0_rx_client_fifo
   always @(posedge rx_mac_aclk)
   begin
      if (rx_mac_reset == 1'b1) begin
-        wr_addr <= 12'b0;
+        wr_addr <= {RX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else begin
         if (wr_addr_reload == 1'b1) begin
            wr_addr <= wr_start_addr;
         end
         else if (wr_addr_inc == 1'b1) begin
-           wr_addr <= wr_addr + 12'b1;
+           wr_addr <= wr_addr + {{(RX_FIFO_ADDR_WIDTH-1){1'b0}}, 1'b1};
         end
      end
   end
@@ -640,7 +647,7 @@ module tri_mode_ethernet_mac_0_rx_client_fifo
   always @(posedge rx_mac_aclk)
   begin
      if (rx_mac_reset == 1'b1) begin
-        wr_start_addr <= 12'b0;
+        wr_start_addr <= {RX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else begin
         if (wr_start_addr_load == 1'b1) begin
@@ -653,14 +660,14 @@ module tri_mode_ethernet_mac_0_rx_client_fifo
   always @(posedge rx_fifo_aclk)
   begin
      if (rx_fifo_reset == 1'b1) begin
-        rd_addr <= 12'd0;
+        rd_addr <= {RX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else begin
         if (rd_addr_reload == 1'b1) begin
-           rd_addr <= rd_addr - 12'd3;
+           rd_addr <= rd_addr - {{(RX_FIFO_ADDR_WIDTH-2){1'b0}}, 2'b11};
         end
         else if (rd_addr_inc == 1'b1) begin
-           rd_addr <= rd_addr + 12'd1;
+           rd_addr <= rd_addr + {{(RX_FIFO_ADDR_WIDTH-1){1'b0}}, 1'b1};
         end
      end
   end
@@ -767,7 +774,7 @@ module tri_mode_ethernet_mac_0_rx_client_fifo
      else begin
         update_addr_tog_sync_reg <= update_addr_tog_sync;
         if (update_addr_tog_sync_reg ^ update_addr_tog_sync) begin
-           wr_rd_addr <= rd_addr[11:6];
+           wr_rd_addr <= rd_addr[RX_FIFO_ADDR_WIDTH-1:6];
         end
      end
   end
@@ -778,10 +785,10 @@ module tri_mode_ethernet_mac_0_rx_client_fifo
   always @(posedge rx_mac_aclk)
   begin
      if (rx_mac_reset == 1'b1) begin
-        wr_addr_diff <= 12'b0;
+        wr_addr_diff <= {RX_FIFO_ADDR_WIDTH{1'b0}};
      end
      else begin
-        wr_addr_diff <= wr_addr_diff_in[11:0];
+        wr_addr_diff <= wr_addr_diff_in[RX_FIFO_ADDR_WIDTH-1:0];
      end
   end
 
@@ -794,7 +801,7 @@ module tri_mode_ethernet_mac_0_rx_client_fifo
         wr_fifo_full <= 1'b0;
      end
      else begin
-        if (wr_addr_diff[11:4] == 8'b0 && wr_addr_diff[3:2] != 2'b0) begin
+        if (wr_addr_diff[RX_FIFO_ADDR_WIDTH-1:4] == {(RX_FIFO_ADDR_WIDTH-4){1'b0}} && wr_addr_diff[3:2] != 2'b0) begin
            wr_fifo_full <= 1'b1;
         end
         else begin
@@ -822,14 +829,14 @@ module tri_mode_ethernet_mac_0_rx_client_fifo
          wr_fifo_status <= 4'b0;
      end
      else begin
-        if (wr_addr_diff == 12'b0) begin
+        if (wr_addr_diff == {RX_FIFO_ADDR_WIDTH{1'b0}}) begin
            wr_fifo_status <= 4'b0;
         end
         else begin
-           wr_fifo_status[3] <= !wr_addr_diff[11];
-           wr_fifo_status[2] <= !wr_addr_diff[10];
-           wr_fifo_status[1] <= !wr_addr_diff[9];
-           wr_fifo_status[0] <= !wr_addr_diff[8];
+           wr_fifo_status[3] <= !wr_addr_diff[RX_FIFO_ADDR_WIDTH-1];
+           wr_fifo_status[2] <= !wr_addr_diff[RX_FIFO_ADDR_WIDTH-2];
+           wr_fifo_status[1] <= !wr_addr_diff[RX_FIFO_ADDR_WIDTH-3];
+           wr_fifo_status[0] <= !wr_addr_diff[RX_FIFO_ADDR_WIDTH-4];
         end
      end
   end
@@ -850,12 +857,12 @@ module tri_mode_ethernet_mac_0_rx_client_fifo
 tri_mode_ethernet_mac_0_bram_tdp #
 (
      .DATA_WIDTH  (9),
-     .ADDR_WIDTH  (12)
+     .ADDR_WIDTH  (RX_FIFO_ADDR_WIDTH)
   )
   rx_ramgen_i (
      .b_dout  (rd_eof_data_bram),
-     .a_addr  (wr_addr[11:0]),
-     .b_addr  (rd_addr[11:0]),
+     .a_addr  (wr_addr[RX_FIFO_ADDR_WIDTH-1:0]),
+     .b_addr  (rd_addr[RX_FIFO_ADDR_WIDTH-1:0]),
      .a_clk   (rx_mac_aclk),
      .b_clk   (rx_fifo_aclk),
      .a_din   (wr_eof_data_bram),

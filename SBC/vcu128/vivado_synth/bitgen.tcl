@@ -1,44 +1,18 @@
 # VHDL libs.
-# read_vhdl -library AhbApbLib ../vhdl_libs/AhbApbLib.vhdl
-# read_vhdl -library ahir_ieee_proposed ../vhdl_libs/aHiR_ieee_proposed.vhdl
-# read_vhdl -library ahir ../vhdl_libs/ahir.vhdl
-# read_vhdl -library AxiBridgeLib ../vhdl_libs/AxiBridgeLib.vhdl
-# read_vhdl -library DualClockedQueuelib ../vhdl_libs/DualClockedQueuelib.vhdl
-# read_vhdl -library GenericCoreAddOnLib ../vhdl_libs/GenericCoreAddOnLib.vhdl
-# read_vhdl -library GenericGlueStuff ../vhdl_libs/GenericGlueStuff.vhdl
-# read_vhdl -library GlueModules ../vhdl_libs/GlueModules.vhdl
-# read_vhdl -library simpleI2CLib  ../vhdl_libs/simpleI2CLib.vhdl
-# read_vhdl -library simpleUartLib ../vhdl_libs/simpleUartLib.vhdl
-# read_vhdl -library SpiMasterLib  ../vhdl_libs/SpiMasterLib.vhdl
-# read_vhdl -library AjitCustom  ../vhdl_libs/AjitCustom.vhdl
-
-#read_vhdl -library AhbApbLib ../vhdl_libs/AhbApbLib.vhdl
-
-#read_vhdl -library ahir_ieee_proposed ../vhdl_libs/aHiR_ieee_proposed.vhdl
-read_vhdl -library ahir_ieee_proposed ../../../Networking/vcu128/NicMac/vhdl_libs/aHiR_ieee_proposed.vhdl
-
-#read_vhdl -library ahir ../vhdl_libs/ahir.vhdl
-read_vhdl -library ahir ../../../Networking/vcu128/NicMac/vhdl_libs/ahir.vhdl
-
-#read_vhdl -library AxiBridgeLib ../vhdl_libs/AxiBridgeLib.vhdl
-read_vhdl -library DualClockedQueuelib ../vhdl_libs/DualClockedQueuelib.vhdl
-
-#read_vhdl -library GenericCoreAddOnLib ../vhdl_libs/GenericCoreAddOnLib.vhdl
-read_vhdl -library GenericCoreAddonLib ../../../Networking/vcu128/NicMac/vhdl_libs/GenericCoreAddOnLib.vhdl
-
-#read_vhdl -library GenericGlueStuff ../vhdl_libs/GenericGlueStuff.vhdl
-read_vhdl -library GenericGlueStuff ../../../Networking/vcu128/NicMac/vhdl_libs/GenericGlueStuff.vhdl
-
-#read_vhdl -library GlueModules ../vhdl_libs/GlueModules.vhdl
-read_vhdl -library GlueModules ../../../Networking/vcu128/NicMac/vhdl_libs/GlueModules.vhdl
-
+read_vhdl -library AhbApbLib ../vhdl_libs/AhbApbLib.vhdl
+read_vhdl -library ahir_ieee_proposed ../vhdl_libs/aHiR_ieee_proposed.vhdl
+read_vhdl -library ahir ../vhdl_libs/ahir.vhdl
+read_vhdl -library AxiBridgeLib ../vhdl_libs/AxiBridgeLib.vhdl
+read_vhdl -library DualClockedQueuelib ../vhdl/DualClockedQueuelib.vhdl
+read_vhdl -library GenericCoreAddOnLib ../vhdl/GenericCoreAddOnLib.vhdl
+read_vhdl -library GenericGlueStuff ../vhdl_libs/GenericGlueStuff.vhdl
+read_vhdl -library GlueModules ../vhdl_libs/GlueModules.vhdl
 read_vhdl -library simpleI2CLib  ../vhdl_libs/simpleI2CLib.vhdl
-
 read_vhdl -library simpleUartLib ../vhdl_libs/simpleUartLib.vhdl
-
-
 read_vhdl -library SpiMasterLib  ../vhdl_libs/SpiMasterLib.vhdl
 read_vhdl -library AjitCustom  ../vhdl_libs/AjitCustom.vhdl
+read_vhdl ../vhdl/DualClockedQueue.vhd
+read_vhdl -library nic_mac_bridge_lib ../toplevel/nic_mac_bridge_edited.vhdl
 
 
 # the SBC core vhdl files.
@@ -46,26 +20,15 @@ read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/tx_de
 read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/tx_deconcat_system/vhdl/nic_mac_bridge_lib/tx_deconcat_system.vhdl
 read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/rx_concat_system/vhdl/nic_mac_bridge_lib/rx_concat_system.vhdl
 read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/rx_concat_system/vhdl/nic_mac_bridge_lib/rx_concat_system_global_package.vhdl
-
-
-
-
-#read_vhdl -library nic_mac_bridge_lib ../hsys/nic_subsystem/nic_mac_bridge/vhdl/nic_mac_bridge_lib/nic_mac_bridge.vhdl
-read_vhdl -library nic_mac_bridge_lib ../toplevel/nic_mac_bridge_edited.vhdl
-
 read_vhdl -library nic_lib ../hsys/nic_subsystem/nic/vhdl/nic_lib/nic.vhdl
 read_vhdl -library nic_lib ../hsys/nic_subsystem/nic/vhdl/nic_lib/nic_global_package.vhdl
-
-
 read_vhdl -library nic_subsystem_lib ../hsys/nic_subsystem/vhdl/nic_subsystem_lib/nic_subsystem.vhdl
 read_vhdl -library acb_afb_complex_lib ../hsys/acb_afb_complex/vhdl/acb_afb_complex_lib/acb_afb_complex.vhdl
 read_vhdl -library ajit_processor_lib ../hsys/processor_subsystem/vhdl/ajit_processor_lib/processor_1x1x32.vhdl
 read_vhdl -library acb_dram_controller_bridge_lib ../hsys/acb_dram_controller_bridge/vhdl/acb_dram_controller_bridge_lib/acb_dram_controller_bridge.vhdl
 read_vhdl -library spi_flash_controller_lib ../hsys/spi_flash_controller/vhdl/spi_flash_controller_lib/spi_flash_controller.vhdl
-
-#read_vhdl -library sbc_kc705_core_lib ../hsys/vhdl/sbc_kc705_core_lib/sbc_kc705_core.vhdl
 read_vhdl -library sbc_vcu128_core_lib ../toplevel/sbc_vcu128_core_edited.vhdl
-read_vhdl ../vhdl/DualClockedQueue.vhd
+
 read_vhdl -library accelerator_lib ../vhdl/ai_ml_engine_global_package.vhdl
 read_vhdl -library accelerator_lib ../vhdl/ai_ml_engine.vhdl
 ############ ADDING TOP LEVEL VHDL #########################

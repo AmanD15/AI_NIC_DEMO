@@ -1,0 +1,36 @@
+NIC_1.2 on VCU128
+
+constraints/ - xdc file which contains the constraints for vcu128 board
+docs/ - Folder contains figures for explanation of the architecture
+hsys/ - source files for SBC_original subsystem
+hsys_1.1/ - source files for SBC_fastmem subsystem
+testing/ - Files for RTT and Throughput test by sending packets and images
+toplevel/ - Contains SBC core(hand edited **not_used**) and toplevel vhdl file inside respective folders
+vhdl/ - VHDL files related to ai_ml engine should be copied here
+vivado_synth/ - Script to generate bitstream files
+
+
+Building Hardware
+-----------------------
+    - Enter hsys folder and run build.sh script 
+      - This will generate required VHDL files for each subsystem
+
+    - If there are any changes that need to be done in either
+        SBC core or toplevel SBC, make those changes in the files 
+        present in toplevel folder
+    
+    - Enter vivado_synth folder and run run.sh script
+      - This should generate two files, processor_1x1x32.sbc.vcu128.bit and processor_1x1x32.sbc.vcu128.ltx
+
+
+loading the bit-file  and running an example
+----------------------------------------------
+
+	Follow the instructions in testing/testingNIC_1.2/README
+
+
+To generate bitfiles for VCU128 use 121 machine in server room of VLSI Lab
+----------------------------------------------------------------------------
+Login Id: harshad
+Password: harshad
+
