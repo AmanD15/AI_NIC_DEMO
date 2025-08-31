@@ -20,8 +20,7 @@ $system nic_subsystem $library nic_subsystem_lib
         $pipe rx_concat_to_nic_data 73 $depth 2 
         $pipe nic_to_tx_deconcat_data 73 $depth 2
 
-	// This is now a signal!
-        $pipe nic_mac_enable 1 $depth 1  
+        $pipe nic_mac_enable_pipe 1 $depth 1  
 
 /////////////////////////// MAC <--> Bridge /////////////////////////////////////////
 
@@ -31,12 +30,12 @@ $system nic_subsystem $library nic_subsystem_lib
                 tx_in_pipe          => nic_to_tx_deconcat_data      // input(73)
                 tx_out_pipe         => NIC_TO_MAC_DATA              // output(10)
 		nic_to_mac_resetn   => NIC_TO_MAC_RESETN            // output
-                ENABLE_MAC          => nic_mac_enable               // input
+                ENABLE_MAC          => nic_mac_enable_pipe               // input
 		
 ////////////////////////// Bridge <--> NIC <--> SBC_core /////////////////////////////
 
          $instance inst_nic nic_lib:nic
-                MAC_ENABLE                  => nic_mac_enable // output
+                MAC_ENABLE                  => nic_mac_enable_pipe // output
                 AFB_NIC_REQUEST             => AFB_TO_NIC_REQUEST 
                 AFB_NIC_RESPONSE            => NIC_TO_AFB_RESPONSE 
                 MEMORY_TO_NIC_RESPONSE      => ACB_TO_NIC_RESPONSE 

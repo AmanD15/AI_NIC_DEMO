@@ -22,6 +22,7 @@ $system nic_subsystem $library nic_subsystem_lib
 
 	// This is now a signal!
         $signal nic_mac_enable 1 $depth 1  
+        $pipe   nic_mac_enable_pipe 1 $depth 1  
 
 /////////////////////////// MAC <--> Bridge /////////////////////////////////////////
 
@@ -36,7 +37,7 @@ $system nic_subsystem $library nic_subsystem_lib
 ////////////////////////// Bridge <--> NIC <--> SBC_core /////////////////////////////
 
          $instance inst_nic nic_lib:nic
-                MAC_ENABLE                  => nic_mac_enable // output
+                MAC_ENABLE                  => nic_mac_enable_pipe // output
                 AFB_NIC_REQUEST             => AFB_TO_NIC_REQUEST 
                 AFB_NIC_RESPONSE            => NIC_TO_AFB_RESPONSE 
                 MEMORY_TO_NIC_RESPONSE      => ACB_TO_NIC_RESPONSE 
@@ -45,6 +46,26 @@ $system nic_subsystem $library nic_subsystem_lib
                 nic_to_mac_transmit_pipe    => nic_to_tx_deconcat_data //output
                 NIC_INTR                    => NIC_INTERRUPT_TO_PROCESSOR
 		NIC_DEBUG_SIGNAL 	    => NIC_DEBUG_SIGNAL
+
+	// convert pipe to signal
+	$thread pipe_to_sig 
+		$in  $pipe in_pipe: $unsigned<1>
+		$out $signal out_sig: $unsigned<1>
+		$constant c1 : $unsigned<1> := ($unsigned<1>) 1
+	$default
+		$now out_sig := ($unsigned<1>) 0
+		$now in_pipe$req := c1
+		<pts_reset> {
+			$if in_pipe$ack {
+				out_sig := in_pipe
+			}
+			$goto pts_reset
+		}
+	$now $tick
+
+	$string p2s: pipe_to_sig
+		in_pipe => nic_mac_enable_pipe
+		out_sig => nic_mac_enable
 
 	// tie the interrupt off for now.
 	$thread tie_interrupt_off
