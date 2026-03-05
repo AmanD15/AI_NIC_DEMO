@@ -231,11 +231,11 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 
 	// Generate a dummy invalidate to the processor
 	$thread invalidateDummy
-		$out $pipe   inval0: $unsigned<30>
+		$out $pipe   inval0: $unsigned<32>
 		$out $pipe   inval1: $unsigned<31>
 	$default
 		$now inval0$req := ($unsigned<1>) 0
-		$now inval0     := ($unsigned<30>) 0
+		$now inval0     := ($unsigned<32>) 0
 		$now inval1$req := ($unsigned<1>) 0
 		$now inval1     := ($unsigned<31>) 0
 		

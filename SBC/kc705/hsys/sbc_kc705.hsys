@@ -207,10 +207,10 @@ $system sbc_kc705_core $library sbc_kc705_core_lib
 
 	// Generate a dummy invalidate to the processor
 	$thread invalidateDummy
-		$out $pipe   inval: $unsigned<30>
+		$out $pipe   inval: $unsigned<32>
 	$default
 		$now inval$req := ($unsigned<1>) 0
-		$now inval     := ($unsigned<30>) 0
+		$now inval     := ($unsigned<32>) 0
 		<inval_rst_state> {
 			$goto inval_rst_state
 		}

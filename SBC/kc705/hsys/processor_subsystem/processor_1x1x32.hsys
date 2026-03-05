@@ -7,7 +7,7 @@ $system processor_1x1x32 $library ajit_processor_lib
 		$pipe CONSOLE_to_SERIAL_RX
 
 		$pipe MAIN_MEM_RESPONSE 65 $depth   2 $p2p
-		$pipe MAIN_MEM_INVALIDATE 30 $depth 4 $p2p
+		$pipe MAIN_MEM_INVALIDATE 32 $depth 4 $p2p
 
 
 		$signal EXTERNAL_INTERRUPT 1 $depth 1
