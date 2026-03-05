@@ -1,5 +1,13 @@
 processor_2x1x64.edn.tgz
 	dual-core, no l2 cache.
+	Note: this is obsolete, rebuild.
+
 component.vhdl
 	component for the 2x1x64 processor.
+
+
+processor_1x1x32.edn.tgz
+	single-core, no l2 cache.
+	Note: updated with latest invalidate
+		input.
 
